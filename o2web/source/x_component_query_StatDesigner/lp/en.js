@@ -72,6 +72,7 @@ MWF.xApplication.query.StatDesigner.LP = {
         "style": "Style",
         "attribute": "Attribute",
 
+        "display": "Display",
         "hidden": "Hidden",
         "orderNumber":"Order Number",
 
@@ -116,6 +117,7 @@ MWF.xApplication.query.StatDesigner.LP = {
         "specified":"Based on the specified category value",
         "intersection": "The intersection of column view calculation and specified category value",
         "sum1": "Collection of column view calculation and specified category value",
-        "groupSpecifiedList":"Specified category value"
+        "groupSpecifiedList":"Specified category value",
+        "conversion": "Row and column conversion"
     }
 };

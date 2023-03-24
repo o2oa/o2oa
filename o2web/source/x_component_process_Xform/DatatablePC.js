@@ -387,7 +387,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 				var moveTh;
 				if( this.sortable ){
-					moveTh = new Element("th.mwf_moveaction").inject(this.titleTr, "bottom"); //总计列
+					moveTh = new Element("th.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.titleTr, "bottom"); //总计列
 				}
 				if (this.json.border){
 					Array.each([actionTh,moveTh], function(th){
