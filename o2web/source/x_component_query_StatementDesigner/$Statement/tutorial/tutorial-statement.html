@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>O2OA API: Tutorial: 查询语句配置 | O2OA开发平台</title>
+    
+      <link type="text/css" rel="stylesheet" href="/api/styles/vendor/prism-custom.css">
+    
+    <link type="text/css" rel="stylesheet" href="/api/styles/styles.css">
+    
+    
+        <link type="text/css" rel="stylesheet" href="/api/styles/styles_search.css">
+    
+</head>
+<body>
+
+
+<main>
+  <div class="container">
+    <p class="page-kind">Tutorial</p>
+    <h1 class="page-title">Tutorial: statement</h1>
+    <section>
+
+<header>
+    
+
+    <h2>查询语句配置</h2>
+</header>
+
+<article>
+    <h2>语法</h2>
+<h3>1、JPQL语法</h3>
+<p>查询语句支持JPA JPQL语句，如下面的语句从系统表Task中获取待办：</p>
+<pre class="prettyprint source lang-sql"><code>SELECT o FROM Task o WHERE o.person = :person
+</code></pre>
+<p><img src="img/jpql.png" alt="JPQL">
+JPQL官网：<a href="https://www.objectdb.com/java/jpa/query/jpql/structure">https://www.objectdb.com/java/jpa/query/jpql/structure</a><br />
+中文简介：<a href="https://www.codercto.com/a/4338.html">https://www.codercto.com/a/4338.html</a></p>
+<h3>2、原生SQL语法</h3>
+<p>在v8.0及以后版本中，查询语句支持原生的SQL 语法，如下面的语句从系统表Task中获取待办：</p>
+<pre class="prettyprint source lang-sql"><code>SELECT * FROM Task WHERE person = :person
+</code></pre>
+<p><img src="img/sql.png" alt="SQL">
+w3schoole网站：<a href="https://www.w3schools.com/sql/default.asp">https://www.w3schools.com/sql/default.asp</a><br />
+中文网站：<a href="https://www.runoob.com/sql/sql-tutorial.html">https://www.runoob.com/sql/sql-tutorial.html</a></p>
+<h3></h3>
+<h2>where子句传参</h2>
+<h3>1、用冒号动态传参</h3>
+<p>查询语句中的where语句的值可以使用json传入，如：<br />查询语句的设计为 ：</p>
+<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name=:n
+</code></pre>
+<p>在调用查询语句服务的时候传入 json：</p>
+<pre class="prettyprint source lang-json"><code>{
+    &quot;n&quot; : &quot;zhangsan&quot;
+}
+</code></pre>
+<p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
+</code></pre>
+<p>如下图所示：<br />
+<img src="img/para1.png" alt="用冒号动态传参">
+了解JPQL语句动态传参可以点击链接查看：https://www.objectdb.com/java/jpa/query/parameter</p>
+<h3>2、用问号和数字动态传参</h3>
+<p>在V8.0中，平台支持用问号加数字的形式来传where语句的值，作用和冒号动态传参类似。，如：<br />查询语句的设计为 ：</p>
+<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name= ?1
+</code></pre>
+<p>在调用查询语句服务的时候传入 json：</p>
+<pre class="prettyprint source lang-json"><code>{
+    &quot;?1&quot; : &quot;zhangsan&quot;
+}
+</code></pre>
+<p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
+</code></pre>
+<p>如下图所示：<br />
+<img src="img/para2.png" alt="用问号和数字动态传参"></p>
+<h3>3、默认参数</h3>
+<p>系统中有一些默认参数，对这些默认参数，系统会自动赋值。</p>
+<table>
+<thead>
+<tr>
+<th><strong>默认参数</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>person</td>
+<td>当前人</td>
+</tr>
+<tr>
+<td>identityList</td>
+<td>当前人身份列表</td>
+</tr>
+<tr>
+<td>unitList</td>
+<td>当前人所在直接组织</td>
+</tr>
+<tr>
+<td>unitAllList</td>
+<td>当前人所在所有组织</td>
+</tr>
+<tr>
+<td>groupList</td>
+<td>当前人所在群组</td>
+</tr>
+<tr>
+<td>roleList</td>
+<td>当前人拥有的角色</td>
+</tr>
+</tbody>
+</table>
+<p>如有如下语句：</p>
+<pre class="prettyprint source lang-json"><code>select o from Task o where o.person = :person
+</code></pre>
+<p>参数<code>:person</code>为当前人，<br />在v8.0之前，外部传入参数 {person: &quot;&quot;}即可；<br />在v8.0之后，系统将自动解析这些默认参数，不需要再传入。<br />如当前人是<code>张三@zhangsan@P</code>，系统解析后自动拼接如下：</p>
+<pre class="prettyprint source lang-json"><code>select o from Task o where o.person = &quot;张三@zhangsan@P&quot;
+</code></pre>
+<h2>其他注意事项</h2>
+<h3>1、日期格式的写法</h3>
+<p>在sql中，日期格式使用文本即可，如 :&quot;2019-12-31&quot;, &quot;23:59:59&quot;, &quot;2020-01-03 13:59:59&quot;。<br />
+在jpql中，对日期格式有特殊的写法，格式如下：<br />
+Date - {d 'yyyy-mm-dd'} - for example: {d '2019-12-31'}<br />
+Time - {t 'hh:mm:ss'} - for example: {t '23:59:59'}<br />
+Timestamp(DateTime) - {ts 'yyyy-mm-dd hh:mm:ss'} - for example: {ts '2020-01-03 13:59:59'}
+<br />示例如下图：<br />
+<img src="img/datetime.png" alt="日期格式"></p>
+<h3>2、like的写法</h3>
+<p>如果运算符用的是 like，模糊查询，值为 &quot;%{value}%&quot;。</p>
+</article>
+
+</section>
+
+  </div>
+</main>
+
+
+      <div class="api-search-results layout-main" id="api-search-results">
+    <div class="container">
+        <div class="search-noresults"></div>
+        <div class="search-results">
+            <div class="has-results">
+                <h1 class="search-results-title">
+                    <span class='search-results-count'></span> results matching <span class='search-query'></span>
+                </h1>
+                <ul class="search-results-list"></ul>
+            </div>
+            <div class="no-results">
+                <h1 class="search-results-title">
+                    No results matching '<span class='search-query'></span>'
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer class="layout-footer">
+  <div class="container">
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Sun Mar 26 2023 21:52:34 GMT+0800 (中国标准时间)
+  </div>
+</footer>
+
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/prism.dev.js"></script>
+<script src="scripts/init.js" defer></script>
+
+    <script src="scripts/jquery.mark.min.js"></script>
+    <script src="scripts/search.js" defer></script>
+    <script src="scripts/seo.js" defer></script>
+
+
+</body>
+</html>

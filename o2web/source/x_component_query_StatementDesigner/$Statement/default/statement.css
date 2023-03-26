@@ -167,3 +167,10 @@
     background-color: #505050;
     cursor: row-resize;
 }
+.o2_statement_help{
+    float: right;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+    background: url("../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png") center center no-repeat;
+}
