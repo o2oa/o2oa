@@ -65,7 +65,7 @@
   "stopLearning": {"uri": "/jaxrs/neural/stop/learn/model/{modelFlag}"},
   "resetStatus": {"uri": "/jaxrs/neural/model/{modelFlag}/reset/status"},
 
-  "listStatement" : {"uri": "/jaxrs/statement/list/query/{flag}", "method": "PUT"},
+  "listStatement" : {"uri": "/jaxrs/statement/list/query/{flag}", "method": "POST"},
   "getStatement" : { "uri": "/jaxrs/statement/{flag}" },
   "updateStatement":{ "uri": "/jaxrs/statement/{flag}", "method": "PUT" },
   "createStatement":{ "uri": "/jaxrs/statement", "method": "POST" },
