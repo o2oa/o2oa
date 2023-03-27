@@ -35,6 +35,10 @@
       </div>
       <div class="label">{{$.location.title}}</div>
     </div>
+    <!-- 刷新定位按钮 -->
+    <div class="check-in-refresh-location" oo-if="$.bMapV2ApiLoaded" @click="location">
+      <span>{{$.lp.mobile.refreshLocation}}</span>
+    </div>
   </div>
   <div class="bmap"></div>
 </div>

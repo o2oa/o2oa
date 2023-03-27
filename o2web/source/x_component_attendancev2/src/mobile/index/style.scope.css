@@ -1,3 +1,20 @@
+.theme-default {
+  --main-bg-color: #ffffff;
+  --second-bg-color: #eeeeee;
+  --font-primary-color: #333333;
+  --font-second-color: #666666;
+  --font-hint-color: #999999;
+}
+
+.theme-dark {
+  --main-bg-color: #121212;
+  --second-bg-color: #1e1e1e;
+  --font-primary-color: #ffffff;
+  --font-second-color: #ffffff;
+  --font-hint-color: #efefef;
+}
+ 
+
 .mobile-page {
   display: flex;
   flex-direction: column;
@@ -5,27 +22,33 @@
   justify-content: center;
   height: 100vh;
 }
+@supports (-webkit-touch-callout: none) {
+  .mobile-page {
+    height: -webkit-fill-available;
+  }
+}
 .mobile-page .primary_color {
   color: var(--el-color-primary)!important;
 }
 .mobile-page-header {
   height: 48px;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   width: 100%;
 }
 .mobile-page-header .page-title {
   margin: 10px;
   line-height: 28px;
   font-size: 16px;
+  color: var(--font-primary-color);
 }
 .mobile-page-body {
   flex: 1;
-  background-color: #eee;
+  background-color: var(--second-bg-color);
   width: 100%;
 }
 .mobile-page-footer {
   height: 64px;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   display: flex;
   width: 100%;
 }
@@ -41,14 +64,14 @@
 }
 .mobile-page-footer .menu-item .menu-title {
    font-size: 14px;
-   color: #999999;
+   color: var(--font-hint-color);
 }
 
 .o2-icon-24 {
   width: 24px;
   height: 24px;
   display: inline-flex;
-  color: #999999;
+  color: var(--font-hint-color);
   cursor: pointer;
   justify-content: center;
     align-items: center;
@@ -58,7 +81,7 @@
   width: 14px;
   height: 14px;
   display: inline-flex;
-  color: #999999;
+  color: var(--font-hint-color);
   cursor: pointer;
   justify-content: center;
     align-items: center;

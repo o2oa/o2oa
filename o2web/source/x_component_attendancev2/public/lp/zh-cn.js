@@ -290,6 +290,7 @@ MWF.xApplication.attendancev2.LP = {
         settings: '设置',
       },
       unCheckIn: '未打卡',
+      refreshLocation: '[刷新定位]',
       locationIng: '定位中.......',
       locationError: '定位失败，请开启定位权限！',
       checkInWithTime: '已打卡{time}',

@@ -10,7 +10,7 @@
 }
 .check-in-person {
   margin: 20px 15px;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   border-radius: 8px;
   height: 72px;
   display: flex;
@@ -24,9 +24,9 @@
 .person-avatar img {
   height: 48px;
   width: 48px;
-  border: 2px solid rgb(255, 255, 255);
+  border: 2px solid var(--main-bg-color);
   border-radius: 24px;
-  background: rgb(255, 255, 255);
+  background-color: var(--main-bg-color);
   cursor: pointer;
 }
 .person-info {
@@ -38,13 +38,13 @@
 .person-info-name {
   line-height: 28px;
   font-size: 16px;
-  color: #333;
+  color: var(--font-primary-color);
   flex:1;
   align-items: center;
   display: flex;
 }
 .person-info-unit {
-  color: #666;
+  color: var(--font-second-color);
   flex:1;
   align-items: center;
   display: flex;
@@ -52,7 +52,7 @@
 
 .check-in-business {
   flex: 1;
-  background-color: #fff;
+  background-color: var(--main-bg-color);
   border-radius: 8px;
   margin: 0px 15px 20px 15px;
   display: flex;
@@ -69,7 +69,7 @@
 }
 .check-in-record-child {
   box-sizing: border-box;
-  background-color: #eee;
+  background-color: var(--second-bg-color);
   border-radius: 8px;
   flex: 0 0 calc( 50% - 10px );
   margin-right: 10px;
@@ -84,16 +84,16 @@
   margin-top: 10px;
 }
 .check-in-record-child > .check-in-type {
-  color: #333;
+  color: var(--font-primary-color);
   flex: 0 0 calc( 50% - 10px );
 }
 .check-in-record-child > .check-in-time {
-  color: #333; 
+  color: var(--font-primary-color);
   margin-right: 10px;
   flex: 0 0 calc( 50% - 20px );
 }
 .check-in-record-child > .check-in-status {
-  color: #999;
+  color: var(--font-hint-color);
   flex: 0 0 calc( 50% - 10px );
   margin-bottom: 10px;
 }
@@ -130,7 +130,7 @@
 }
 .check-in-address {
   height: 48px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
 }
@@ -142,4 +142,15 @@
 }
 .check-in-address .label {
   margin-left: 10px;
+  color: var(--font-primary-color);
+}
+.check-in-refresh-location {
+  height: 32px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.check-in-refresh-location > span {
+  color: #66BB6A!important;
 }

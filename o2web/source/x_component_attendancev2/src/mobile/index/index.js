@@ -1,5 +1,5 @@
 import {component as content} from '@o2oa/oovm';
-import {lp, o2} from '@o2oa/component';
+import {lp, component} from '@o2oa/component';
 import template from './template.html';
 import style from './style.scope.css';
  
@@ -19,6 +19,9 @@ export default content({
         
     },
     beforeRender() {
+        if (component.options && component.options.theme && component.options.theme === 'dark') {
+            this.bind.isDarkTheme = true;
+        }
         const menuList = [
           {action: "checkIn", name: lp.mobile.menu.checkIn},
           {action: "statistic", name: lp.mobile.menu.statistic},
@@ -30,6 +33,7 @@ export default content({
     bind(){
         return {
             lp,
+            isDarkTheme: false,
             menu: {
               currentMenu:  null,
               menuData: []

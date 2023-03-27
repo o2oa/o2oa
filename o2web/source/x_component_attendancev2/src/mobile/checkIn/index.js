@@ -13,6 +13,7 @@ export default content({
     bind(){
         return {
             lp,
+            bMapV2ApiLoaded: false,
             person: {},
              // 打卡按钮
              checkInCycle: {
@@ -64,12 +65,15 @@ export default content({
     },
     // 显示打卡按钮上的当前时间
     startTickTime() {
+        this.tickTime();
+        //TODO 啥时候删除 ？？？？
+        this.tickTimeInterval = setInterval(() => {
+            this.tickTime();
+        }, 1000);
+    },
+    tickTime() {
         const date = new Date();
         this.bind.checkInCycle.time = `${date.getHours() > 9 ? date.getHours() : '0'+date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : '0'+date.getMinutes()}:${date.getSeconds() > 9 ? date.getSeconds() : '0'+date.getSeconds()}`;
-        this.tickTime = setInterval(() => {
-            const date = new Date();
-            this.bind.checkInCycle.time = `${date.getHours() > 9 ? date.getHours() : '0'+date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : '0'+date.getMinutes()}:${date.getSeconds() > 9 ? date.getSeconds() : '0'+date.getSeconds()}`;
-        }, 1000);
     },
     // 加载地图api等资源 因为后面计算距离啥的要用
     async loadBDMap() {
@@ -77,7 +81,7 @@ export default content({
         const accountkey = bdKey || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         this.bind.bdKey = accountkey;
         const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
-        if( !window.BDMapV2ApiLoaded ){
+        if( !this.bind.bMapV2ApiLoaded ){
             o2.load(apiPath, () => {
                 this.location();
             });
@@ -87,7 +91,7 @@ export default content({
     },
     // 定位
     location() {
-        window.BDMapV2ApiLoaded = true;
+        this.bind.bMapV2ApiLoaded = true;
         var self = this;
         const geolocation = new BMap.Geolocation();
         // 开启SDK辅助定位 app webview 支持
