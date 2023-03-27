@@ -35,16 +35,16 @@ public class StatementAction extends StandardJaxrsAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatementAction.class);
 
     @JaxrsMethodDescribe(value = "根据query列示statement对象.", action = ActionListWithQuery.class)
-    @GET
+    @POST
     @Path("list/query/{flag}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void listWithQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("查询标识") @PathParam("flag") String flag) {
+            @JaxrsParameterDescribe("查询标识") @PathParam("flag") String flag, JsonElement jsonElement) {
         ActionResult<List<ActionListWithQuery.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListWithQuery().execute(effectivePerson, flag);
+            result = new ActionListWithQuery().execute(effectivePerson, flag, jsonElement);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
             result.error(e);

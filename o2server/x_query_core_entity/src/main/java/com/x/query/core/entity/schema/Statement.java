@@ -134,12 +134,12 @@ public class Statement extends SliceJpaObject {
     @CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Query.class) })
     private String query;
 
-    public static final String TYPE_FIELDNAME = "type";
-    @FieldDescribe("语句类型,insert,delete,update,select")
-    @Column(length = length_16B, name = ColumnNamePrefix + TYPE_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + TYPE_FIELDNAME)
-    @CheckPersist(allowEmpty = false)
-    private String type;
+//    public static final String TYPE_FIELDNAME = "type";
+//    @FieldDescribe("语句类型,insert,delete,update,select")
+//    @Column(length = length_16B, name = ColumnNamePrefix + TYPE_FIELDNAME)
+//    @Index(name = TABLE + IndexNameMiddle + TYPE_FIELDNAME)
+//    @CheckPersist(allowEmpty = false)
+//    private String type;
 
     public static final String EXECUTEPERSONLIST_FIELDNAME = "executePersonList";
     @FieldDescribe("可执行的用户.")
@@ -304,6 +304,11 @@ public class Statement extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + DISPLAY_FIELDNAME)
     private Boolean display;
 
+    public static final String VIEWENABLE_FIELDNAME = "viewEnable";
+    @FieldDescribe("是否允许作为视图嵌入到表单.")
+    @Column(name = ColumnNamePrefix + VIEWENABLE_FIELDNAME)
+    private Boolean viewEnable;
+
     public static final String ORDERNUMBER_FIELDNAME = "orderNumber";
     @FieldDescribe("排序号,为空在最后")
     @Column(name = ColumnNamePrefix + ORDERNUMBER_FIELDNAME)
@@ -445,13 +450,13 @@ public class Statement extends SliceJpaObject {
         this.table = table;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     public String getQuery() {
         return query;
@@ -539,6 +544,14 @@ public class Statement extends SliceJpaObject {
 
     public void setSqlScriptText(String sqlScriptText) {
         this.sqlScriptText = sqlScriptText;
+    }
+
+    public Boolean getViewEnable() {
+        return viewEnable;
+    }
+
+    public void setViewEnable(Boolean viewEnable) {
+        this.viewEnable = viewEnable;
     }
 
 }

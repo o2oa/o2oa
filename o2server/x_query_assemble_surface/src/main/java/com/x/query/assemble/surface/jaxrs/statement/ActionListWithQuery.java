@@ -51,9 +51,9 @@ class ActionListWithQuery extends BaseAction {
                     if (BooleanUtils.isTrue(wi.getHasView()) && StringUtils.isBlank(o.getView())) {
                         continue;
                     }
-                    if (BooleanUtils.isTrue(wi.getJustSelect()) && !Statement.TYPE_SELECT.equals(o.getType())) {
-                        continue;
-                    }
+//                    if (BooleanUtils.isTrue(wi.getJustSelect()) && !Statement.TYPE_SELECT.equals(o.getType())) {
+//                        continue;
+//                    }
                     if (business.readable(effectivePerson, o)) {
                         wos.add(Wo.copier.copy(o));
                     }
@@ -67,18 +67,18 @@ class ActionListWithQuery extends BaseAction {
 
     public static class Wi extends GsonPropertyObject {
 
-        @FieldDescribe("是否只查询select语句.")
-        private Boolean justSelect;
+//        @FieldDescribe("是否只查询select语句.")
+//        private Boolean justSelect;
         @FieldDescribe("是否只查询含有视图的语句.")
         private Boolean hasView;
 
-        public Boolean getJustSelect() {
-            return justSelect;
-        }
-
-        public void setJustSelect(Boolean justSelect) {
-            this.justSelect = justSelect;
-        }
+//        public Boolean getJustSelect() {
+//            return justSelect;
+//        }
+//
+//        public void setJustSelect(Boolean justSelect) {
+//            this.justSelect = justSelect;
+//        }
 
         public Boolean getHasView() {
             return hasView;
