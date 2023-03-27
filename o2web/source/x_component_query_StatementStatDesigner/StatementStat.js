@@ -1042,7 +1042,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
             // }else{
             //     this.loadStatementEditor();
             // }
-            switch (this.json.format) {
+            switch (this.data.format) {
                 case "script":
                     this.loadJpqlScriptEditor();
                     break;

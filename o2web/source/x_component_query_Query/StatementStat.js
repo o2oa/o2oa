@@ -66,7 +66,7 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
 
             if( this.statJson.categoryList.length ){
                 this.isGroup = true;
-                this.data.data.each(function (d) {
+                this.data.data.value.each(function (d) {
                     var ar = [];
                     this.statJson.categoryList.each(function (category) {
                         var value, c = Object.clone(category);
@@ -489,7 +489,7 @@ MWF.xApplication.query.Query.StatementStat.GroupStat = new Class({
     loadData: function(){
         var entries = {};
         var groupColumn = null;
-        this.data.calculate.calculateList.each(function(entry){
+        this.data.data.value.each(function(entry){
             entries[entry.id] = entry;
             // if (entry.column === this.data.group.column){
             //     groupColumn = entry;
@@ -885,7 +885,7 @@ MWF.xApplication.query.Query.StatementStat.GroupStat = new Class({
             "cellSpacing": "0"
         }).inject(this.tableAreaNode);
 
-        _self = this;
+        var _self = this;
         this.headTr = this.table.insertRow();
         this.selectAllTd = (this.headTr.insertCell()).setStyles(this.css.statAllSelectTd).set("title", this.lp.selecteAll);
         this.selectAllTd.addEvent("click", function(){

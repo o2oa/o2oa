@@ -598,6 +598,7 @@ MWF.xApplication.query.Query.StatementStatItem = new Class({
     loadView: function(){
         MWF.xDesktop.requireApp("query.Query", "StatementStat",function(){
             this.viewContent.empty();
+            debugger;
             this.viewer = new MWF.QStatementStat( this.viewContent, {
                 "application": this.view.query,
                 "statementStatName": this.view.name,
