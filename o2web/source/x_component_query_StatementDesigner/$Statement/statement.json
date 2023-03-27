@@ -6,9 +6,10 @@
   "query": "",
   "executePersonList": [],
   "executeUnitList": [],
-  "type": "select",
+//  "type": "select",
   "data": "",
   "beforeScriptText": "",
   "afterScriptText": "",
-  "table": ""
+  "table": "",
+  "viewEnable": true
 }

@@ -20,8 +20,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         },
 		"actions": null,
 		"category": null,
-		"processData": null,
-        "mode": ""
+		"processData": null
 	},
 
     onQueryLoad: function(){
@@ -124,11 +123,6 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
         this.formContentNode = this.contentNode;
-
-        if( this.options.mode === "stat" ){
-            this.statementListNode.hide();
-            this.contentNode.setStyle("margin-left", "0px");
-        }
     },
     loadStatementListNodes: function(){
         this.statementListTitleNode = new Element("div", {
@@ -197,7 +191,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         });
     },
     loadStatementList: function(){
-        this.actions.listStatement(this.application.id, function (json) {
+        this.actions.listStatement(this.application.id, {},function (json) {
             json.data.each(function(statement){
                 this.createListStatementItem(statement);
             }.bind(this));
@@ -551,32 +545,31 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     preview : function(){
         this.statement.preview();
     },
-
-    saveStatement: function( callbck ){
+    saveStatement: function(){
         this.statement.save(function(){
             var name = this.statement.data.name;
             this.setTitle(MWF.APPDSMD.LP.title + "-"+name);
             this.options.desktopReload = true;
             this.options.id = this.statement.data.id;
-            if(callbck)callbck(this.statement.data);
         }.bind(this));
     },
 
     statementHelp: function(){
-        var content = new Element("div", {"styles": {"margin": "20px"}});
-        content.set("html", this.lp.tableHelp);
-        o2.DL.open({
-            "title": "table help",
-            "content": content,
-            "width": 500,
-            "height": 300,
-            "buttonList": [
-                {
-                    "text": "ok",
-                    "action": function(){this.close();}
-                }
-            ]
-        });
+	    window.open("../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html", "_blank")
+        // var content = new Element("div", {"styles": {"margin": "20px"}});
+        // content.set("html", this.lp.tableHelp);
+        // o2.DL.open({
+        //     "title": "table help",
+        //     "content": content,
+        //     "width": 500,
+        //     "height": 300,
+        //     "buttonList": [
+        //         {
+        //             "text": "ok",
+        //             "action": function(){this.close();}
+        //         }
+        //     ]
+        // });
     },
     recordStatus: function(){
         //if (this.tab){
