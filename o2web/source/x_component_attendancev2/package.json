@@ -27,8 +27,9 @@
     "@o2oa/oovm": "^2.1.31"
   },
   "browserslist": [
-    "> 0.5%",
-    "ie 11"
+    "> 0.1%",
+    "ie 11",
+    "last 2 version"
   ]
 }
 
