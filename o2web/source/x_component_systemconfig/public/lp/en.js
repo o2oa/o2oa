@@ -443,7 +443,7 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo2": "2. The external system needs to call the interface service of the O2OA platform;",
         "useSSOConfigInfo3": "It is necessary to inform the external system of the authentication name and key, and the external system uses the 3DES algorithm to encrypt the <span style='color: blue'>\"person#timestamp\"</span> text with the key, and obtains a temporary ticket (token) for accessing O2OA.<br/>" +
             "<span style='color: blue'>person</span>：Indicates the username, unique code, or employee number of the specified user. (The specific field to use depends on the field associated with the O2OA user in the external system.)<br/>" +
-            "<span style='color: blue'>timestamp</span>：Expressed as the number of milliseconds from 00:00 on January 1, 1970 to the current time. (In order to ensure the timeliness of the token, the valid time is 15 minutes.)<br/><br>" +
+            "<span style='color: blue'>timestamp</span>：Expressed as the number of milliseconds from 00:00 on January 1, 1970 to the current time. (In order to ensure the timeliness of the token, the valid time is 1 minutes.)<br/><br>" +
             "After the token is generated, the external system can directly access the following address to achieve single-point authentication with O2OA:<br/>" +
             "http://servername/x_desktop/sso.html?client={<span style='color: blue'>client</span>}&xtoken={<span style='color: blue'>token</span>}&redirect={<span style='color: blue'>redirect</span>}<br/>" +
             "<span style='color: blue'>client</span>：Indicates the authentication name used;<br/>" +
