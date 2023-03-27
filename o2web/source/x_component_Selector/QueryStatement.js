@@ -9,7 +9,8 @@ MWF.xApplication.Selector.QueryStatement = new Class({
         "values": [],
         "names": [],
         "expand": false,
-        "forceSearchInItem" : true
+        "forceSearchInItem" : true,
+        "viewEnable": ""
     },
     setInitTitle: function(){
         this.setOptions({"title": MWF.xApplication.Selector.LP.selectStatement});
@@ -19,13 +20,16 @@ MWF.xApplication.Selector.QueryStatement = new Class({
         this.className = "QueryStatement";
     },
     loadSelectItems: function(addToNext){
+	    var filter = typeOf(this.options.viewEnable) === "boolean" ?  {
+                viewEnable: this.options.viewEnable
+            } : {};
         this.queryAction.listApplication(function(json){
             if (json.data.length){
                 var ps = [];
                 json.data.each(function(data){
                     var categoryArea = new Element("div").inject(this.itemAreaNode);
                     if (!data.statementList){
-                        var p = this.queryAction.listStatement(data.id, function(statementsJson){
+                        var p = this.queryAction.listStatement(data.id, filter, function(statementsJson){
                             data.statementList = statementsJson.data;
 
                             if (data.statementList && data.statementList.length){

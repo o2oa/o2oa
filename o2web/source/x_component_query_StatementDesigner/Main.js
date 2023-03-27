@@ -545,12 +545,13 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     preview : function(){
         this.statement.preview();
     },
-    saveStatement: function(){
+    saveStatement: function( callback ){
         this.statement.save(function(){
             var name = this.statement.data.name;
             this.setTitle(MWF.APPDSMD.LP.title + "-"+name);
             this.options.desktopReload = true;
             this.options.id = this.statement.data.id;
+            if(callback)callback(this.statement.data);
         }.bind(this));
     },
 
