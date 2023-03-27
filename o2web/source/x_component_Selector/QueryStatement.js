@@ -10,7 +10,7 @@ MWF.xApplication.Selector.QueryStatement = new Class({
         "names": [],
         "expand": false,
         "forceSearchInItem" : true,
-        "viewEnable": true
+        "viewEnable": ""
     },
     setInitTitle: function(){
         this.setOptions({"title": MWF.xApplication.Selector.LP.selectStatement});
@@ -20,13 +20,14 @@ MWF.xApplication.Selector.QueryStatement = new Class({
         this.className = "QueryStatement";
     },
     loadSelectItems: function(addToNext){
+	    var filter = typeOf(this.options.viewEnable) === "boolean" ?  {
+                viewEnable: this.options.viewEnable
+            } : {};
         this.queryAction.listApplication(function(json){
             if (json.data.length){
                 json.data.each(function(data){
                     if (!data.statementList){
-                        this.queryAction.listStatement(data.id, {
-                            viewEnable: this.options.viewEnable
-                        },function(statementsJson){
+                        this.queryAction.listStatement(data.id, filter,function(statementsJson){
                             data.statementList = statementsJson.data;
                         }.bind(this), null, false);
                     }

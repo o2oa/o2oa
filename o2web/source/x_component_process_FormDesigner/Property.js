@@ -1890,6 +1890,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryStatement",
                     "count": 1,
+                    "viewEnable": true,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
                 });
