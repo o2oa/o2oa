@@ -9,80 +9,122 @@
     <script>
         o2.addReady(function(){
 
-            var who = function( unloginCallback, loginCallback, failure){
+            var requestJson = function ( root, path, successCallback, failureCallback, errorCallback, method ) {
                 var locate = window.location;
                 var protocol = locate.protocol;
-                var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-                var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+                var addressObj, address;
+                if( root === "x_program_center" ){
+                    addressObj = layout.centerServer;
+                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+ "/x_program_center";
+                }else{
+                    addressObj = layout.serviceAddressList[root];
+                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+                }
 
                 var res = new Request.JSON({
-                    url: o2.filterUrl(address+"/jaxrs/authentication"),
+                    url: o2.filterUrl(address+ path),
                     secure: false,
-                    method: "GET",
+                    method: method || "GET",
                     noCache: true,
                     withCredentials: true,
                     onSuccess: function(responseJSON, responseText){
+                        if( successCallback )successCallback( responseJSON, responseText );
+                    }.bind(this),
+                    onFailure: function(xhr){
+                        if( failureCallback )failureCallback(xhr)
+                    }.bind(this),
+                    onError: function(text, error){
+                        if( errorCallback )errorCallback(text, error)
+                    }.bind(this)
+                });
+                res.send();
+            }
+
+            var who = function( unloginCallback, loginCallback, failureCallback){
+                requestJson(
+                    "x_organization_assemble_authentication",
+                    "/jaxrs/authentication",
+                    function(responseJSON, responseText){
                         if( responseJSON.data.tokenType === "anonymous" ){
                             unloginCallback()
                         }else{
                             loginCallback()
                         }
                     }.bind(this),
-                    onFailure: function(xhr){
-                        failure()
+                    function(xhr){
+                        failureCallback()
                     }.bind(this),
-                    onError: function(text, error){
-                        failure()
+                    function(text, error){
+                        failureCallback()
                     }.bind(this)
-                });
-                res.send();
+                );
             };
 
             var login = function(){
-                var locate = window.location;
-                var protocol = locate.protocol;
-
-                var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-                var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
 
                 var uri = new URI(window.location.toString());
                 var token = uri.getData("token");
                 var enterId = uri.getData("enterId");
-                var redirect = uri.getData("redirect");
-                var path = "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId;
+                // var redirect = uri.getData("redirect");
 
                 if (token && enterId){
-                    var res = new Request.JSON({
-                        url: o2.filterUrl(address+path+"&date="+(new Date()).getTime()),
-                        secure: false,
-                        method: "GET",
-                        noCache: true,
-                        withCredentials: true,
-                        onSuccess: function(responseJSON, responseText){
+
+                    requestJson(
+                        "x_organization_assemble_authentication",
+                        "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId+"&date="+(new Date()).getTime(),
+                        function(responseJSON, responseText){
                             var result = responseJSON.data.id;
                             if(result){
-                                if (redirect){
-                                    window.location = redirect;
-                                }else{
-                                    window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
-                                }
+                                redirectTo();
                             }else{
-                                $("ssoerror").set("html","单点失败！"+responseJSON.message);
+                                $("ssoerror").set("html","单点失败！"+responseJSON.message + "<br/>地址：" + window.location);
                                 $("ssoerror").show();
                             }
                         }.bind(this),
-                        onFailure: function(xhr){
+                        function(xhr){
+                            var json = JSON.parse(xhr.responseText);
+                            $("ssoerror").set("html", "单点登录失败: " + json.message + "<br/>" + (json.prompt || "") + "<br/>地址：" + window.location );
                             $("ssoerror").show();
                         }.bind(this),
-                        onError: function(text, error){
-                            $("ssoerror").show();
+                        function(text, error){
+                            $("ssoerror").set("html", text + "<br/>地址：" + window.location).show();
                         }.bind(this)
-                    });
-
-                    res.send();
+                    );
                 }else{
-                    $("ssoerror").set("html","单点失败，认证token或enterId为空！");
+                    $("ssoerror").set("html","单点失败，认证token或enterId为空！" + "<br/>地址：" + window.location);
                     $("ssoerror").show();
+                }
+            };
+
+            var redirectTo = function(){
+                var uri = new URI(window.location.toString());
+                var redirect = uri.getData("redirect");
+
+                if (redirect){
+                    window.location = redirect;
+                }else{
+                    requestJson(
+                        "x_program_center",
+                        "/jaxrs/appstyle/index/portal",
+                        function(responseJSON, responseText){
+                            var data = responseJSON.data;
+                            if( data && data.value ){
+                                // var url = "../x_desktop/portalmobile.html?id="+data.value;
+                                // if( data.indexPage ){
+                                //     url = url + "&page=" + loginPage.page;
+                                // }
+                                window.location = "../x_desktop/portalmobile.html?id="+data.value;
+                            }else{
+                                window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                            }
+                        }.bind(this),
+                        function(xhr){
+                            window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                        }.bind(this),
+                        function(text, error){
+                            window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                        }.bind(this)
+                    );
                 }
             };
 
@@ -99,9 +141,7 @@
                 layout.config = config;
                 getServiceAddress(config, function(){
 
-                    who( login, function(){
-                        window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
-                    }, login)
+                    who( login, redirectTo, login)
 
 
                 });
@@ -111,6 +151,6 @@
     </script>
 </head>
 <body style="background: rgb(239, 239, 244);">
-<div id="ssoerror" style="text-align:center;display:none;">单点失败，请联系管理员！</div>
+<div id="ssoerror" style="text-align:center;line-height: 30px;word-break: break-all;display:none;">单点失败，请联系管理员！</div>
 </body>
 </html>
