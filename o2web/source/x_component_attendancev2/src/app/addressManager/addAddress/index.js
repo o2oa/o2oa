@@ -35,14 +35,14 @@ export default content({
         const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
         if( !window.BDMapV2ApiLoaded ){
             o2.load(apiPath, () => {
-                this._initBDMap();
+                this.location();
             });
         } else {
-            this._initBDMap();
+            this.location();
         }
     },
     // 初始化地图
-    _initBDMap() {
+    location() {
         console.debug("地图加载API加载完成，开始载入地图！");
         window.BDMapV2ApiLoaded = true;
         const geolocation = new BMap.Geolocation();
@@ -51,11 +51,16 @@ export default content({
             console.debug("定位返回", r);
             if(this.getStatus() == BMAP_STATUS_SUCCESS){
                 console.debug('您的位置：'+r.point.lng+','+r.point.lat);
-                self.renderMap(r.point);
+                self.createMap(r.point);
             } else {
+                console.error("定位失败！！！！！！！！！！");
                 const point = new BMap.Point(120.135431, 30.27412);
-                self.renderMap(point);
+                self.createMap(point);
             } 
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            SDKLocation: true,
         });
 
         // if (navigator.geolocation){
@@ -69,57 +74,51 @@ export default content({
         //     this.initBDMap();
         // }
     },
-     // 初始化地图
-    // initBDMap(position) {
-    //     console.debug("位置信息", position);
-    //     this.mapNode = this.dom.querySelector(".bd-map");
-    //     if (this.mapNode) {
-    //         this.createMap(position);
-    //     } else {
-    //         console.error("map node 不存在？？？");
-    //     }
-    // },
-    // 创建地图ui
-    // createMap( position ){
-    //     let point = null;
-    //     if( !point ){
-    //         if( this.markerData && this.markerData.length > 0){
-    //             let json = this.markerData[0];
-    //             point = new BMap.Point(json.longitude, json.latitude);
-    //             this.renderMap(point);
-    //         } else {
-    //             let longitude = 120.135431;
-    //             let latitude = 30.27412;
-    //             if (position && position.coords) {
-    //                 latitude = position.coords.latitude || 30.27412;
-    //                 longitude = position.coords.longitude || 120.135431;
-    //             }
-    //             const gpsPoint = new BMap.Point(longitude, latitude);
-    //             const convertor = new BMap.Convertor();
-    //             const pointArr = [];
-    //             pointArr.push(gpsPoint);
-    //             console.debug("开始转化百度位置");
-    //             convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
-    //         }
-    //     }
-        
-    // },
+    // 初始化地图
+    initBDMap(position) {
+        console.debug("位置信息", position);
+        this.mapNode = this.dom.querySelector(".bd-map");
+        if (this.mapNode) {
+            let longitude = 120.135431;
+            let latitude = 30.27412;
+            if (position && position.coords) {
+                latitude = position.coords.latitude || 30.27412;
+                longitude = position.coords.longitude || 120.135431;
+            }
+            const gpsPoint = new BMap.Point(longitude, latitude);
+            const convertor = new BMap.Convertor();
+            const pointArr = [];
+            pointArr.push(gpsPoint);
+            console.debug("开始转化百度位置");
+            convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
+        } else {
+            console.error("map node 不存在？？？");
+        }
+    },
     // 转化百度坐标
-    // translateBMapPoint(data) {
-    //     console.debug("转化百度位置成功", data);
-    //     if (data.status === 0 && data.points && data.points[0]) {
-    //         this.renderMap(data.points[0]);
-    //     }
-    // },
+    translateBMapPoint(data) {
+        console.debug("转化百度位置成功", data);
+        if (data.status === 0 && data.points && data.points[0]) {
+            this.createMap(data.points[0]);
+        }
+    },
     // 加载百度地图
-    renderMap(point) {
-        console.debug("渲染地图", point);
-        this.map = new BMap.Map(this.mapNode);    // 创建Map实例
-        this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
-        this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-        //
-        this.addControls();
-        this.addMapClick();
+    createMap(point) {
+        this.mapNode = this.dom.querySelector(".bd-map");
+        if (this.mapNode) {
+            console.debug("渲染地图", point);
+            if (!this.map) {
+                this.map = new BMap.Map(this.mapNode);    // 创建Map实例
+            }
+            this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
+            this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+            // 测试定位 
+            const marker = new BMap.Marker(point);
+            this.map.addOverlay(marker);
+            this.map.panTo(point);
+            this.addControls();
+            this.addMapClick();
+        }
     },
     // 添加地图控件
     addControls(){

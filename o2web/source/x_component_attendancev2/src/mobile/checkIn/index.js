@@ -91,7 +91,7 @@ export default content({
         var self = this;
         const geolocation = new BMap.Geolocation();
         // 开启SDK辅助定位 app webview 支持
-        geolocation.enableSDKLocation();
+        // geolocation.enableSDKLocation();
         geolocation.getCurrentPosition(function(r){
             console.debug("定位返回", r);
             if(this.getStatus() == BMAP_STATUS_SUCCESS){
@@ -103,18 +103,53 @@ export default content({
                 console.log("定位失败。。。。。。。");
                 self.bind.location.title = lp.mobile.locationError;
             } 
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            SDKLocation: true,
         });
         // if (navigator.geolocation){
         //     try{
-        //         navigator.geolocation.getCurrentPosition(this.setLocation.bind(this), this.setLocation.bind(this));
+        //         navigator.geolocation.getCurrentPosition(this.callGpsLocation.bind(this), this.callGpsLocation.bind(this));
         //     }catch( e ){
         //         console.error(e);
-        //         this.setLocation();
+        //         this.bind.location.title = lp.mobile.locationError;
         //     }
         // } else {
         //     console.error("没有定位！。。。");
-        //     this.setLocation();
+        //     this.bind.location.title = lp.mobile.locationError;
         // }
+    },
+    // 接收gps定位地址
+    callGpsLocation(position) {
+        console.debug("gps定位位置信息", position);
+        if (position && position.coords) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            console.debug("latitude", latitude, "longitude", longitude);
+            const gpsPoint = new BMap.Point(longitude, latitude);
+            const convertor = new BMap.Convertor();
+            const pointArr = [];
+            pointArr.push(gpsPoint);
+            console.debug("开始转化百度位置");
+            convertor.translate(pointArr, 1, 5, this.translateBMapPointSuccess.bind(this));
+        } else {
+            console.error(" gps定位错误！");
+            this.bind.location.title = lp.mobile.locationError;
+        }
+    },
+    // 转化百度坐标
+    translateBMapPointSuccess(data) {
+        console.debug("转化百度位置返回结果", data);
+        if (data.status === 0 && data.points && data.points[0]) {
+            console.debug('您的位置：'+data.points[0].lng+','+data.points[0].lat);
+            this.bind.location.lnglat.longitude = data.points[0].lng;
+            this.bind.location.lnglat.latitude = data.points[0].lat;
+            this.getGeoAddress(data.points[0]);
+        } else {
+            console.error("百度转化gps位置错误！");
+            this.bind.location.title = lp.mobile.locationError; 
+        }
     },
     // 百度查询地址
     async getGeoAddress(point) {
@@ -197,12 +232,14 @@ export default content({
     _calDistance() {
         if (this.bind.location.status && this.bind.workPlaceList.length > 0) {
             // 开始计算是否在打卡范围内
-            const map = new BMap.Map(".bmap"); 
+            if (!this.map) {
+                this.map = new BMap.Map(".bmap"); 
+            }
             for (let index = 0; index < this.bind.workPlaceList.length; index++) {
                 const workPlace = this.bind.workPlaceList[index];
                 const testA = new BMap.Point(workPlace.longitude, workPlace.latitude);
                 const testB = new BMap.Point(this.bind.location.lnglat.longitude, this.bind.location.lnglat.latitude);
-                const range = map.getDistance(testA, testB).toFixed(2);
+                const range = this.map.getDistance(testA, testB).toFixed(2);
                 console.log(range);
                 if (range <= workPlace.errorRange) {
                     console.log("范围内打卡", workPlace);
@@ -303,31 +340,6 @@ export default content({
         this.getPreCheckData();
     }
   
-    // setLocation(position) {
-    //     console.debug("位置信息", position);
-    //     if (position && position.coords) {
-    //         const latitude = position.coords.latitude;
-    //         const longitude = position.coords.longitude;
-    //         console.debug("latitude", latitude, "longitude", longitude);
-    //         const gpsPoint = new BMap.Point(longitude, latitude);
-    //         const convertor = new BMap.Convertor();
-    //         const pointArr = [];
-    //         pointArr.push(gpsPoint);
-    //         console.debug("开始转化百度位置");
-    //         convertor.translate(pointArr, 1, 5, this.translateBMapPointSuccess.bind(this));
-    //     } else {
-    //         this.bind.locationAddress = lp.mobile.locationError;
-    //     }
-    // },
-    // 转化百度坐标
-    // translateBMapPointSuccess(data) {
-    //     console.debug("转化百度位置成功", data);
-    //     if (data.status === 0 && data.points && data.points[0]) {
-    //         const map = new BMap.Map(".bmap"); 
-    //         const testP = new BMap.Point(120.135431, 30.27412);
-    //         const range = map.getDistance(data.points[0], testP).toFixed(2);
-    //         console.log(range);
-    //     }
-    // },
+  
      
 });
