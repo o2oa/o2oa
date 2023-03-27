@@ -339,7 +339,8 @@
         "background": "transparent",
         "margin": "0px 5px",
         "-webkit-user-select": "text",
-        "-moz-user-select": "text"
+        "-moz-user-select": "text",
+        "overflow": "hidden"
     },
     "minAttachmentNode_sequence_mobile": {
         "width": "auto",

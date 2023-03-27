@@ -11,7 +11,6 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
-import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
 public class TaskBuilder {
 
@@ -43,6 +42,10 @@ public class TaskBuilder {
 				prevTask.setIdentity(o.getIdentity());
 				prevTask.setUnit(o.getUnit());
 				prevTask.setRouteName(o.getRouteName());
+				prevTask.setActivity(o.getActivity());
+				prevTask.setActivityName(o.getActivityName());
+				prevTask.setActivityToken(o.getActivityToken());
+				prevTask.setActivityType(o.getActivityType());
 				req.getPrevTaskIdentityList().add(prevTask.getIdentity());
 				req.getPrevTaskList().add(prevTask);
 			});
@@ -54,6 +57,10 @@ public class TaskBuilder {
 			prevTask.setIdentity(task.getIdentity());
 			prevTask.setUnit(task.getUnit());
 			prevTask.setRouteName(task.getRouteName());
+			prevTask.setActivity(task.getActivity());
+			prevTask.setActivityName(task.getActivityName());
+			prevTask.setActivityToken(task.getActivityToken());
+			prevTask.setActivityType(task.getActivityType());
 			req.getPrevTaskIdentityList().add(prevTask.getIdentity());
 			req.setPrevTaskIdentity(prevTask.getIdentity());
 			req.getPrevTaskList().add(prevTask);

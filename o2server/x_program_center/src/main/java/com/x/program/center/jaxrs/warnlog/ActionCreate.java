@@ -26,8 +26,8 @@ class ActionCreate extends BaseAction {
 		NameValuePair pair = new NameValuePair();
 		pair.setName(WarnLog.class.getName());
 		pair.setValue(o);
-		ThisApplication.logQueue.send(pair);
-		Wo wo = new Wo();
+        ThisApplication.logQueue.send(pair);
+        Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
 		return result;

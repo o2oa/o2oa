@@ -33,5 +33,19 @@
   "getWidgetByNameMobile": {"uri": "/jaxrs/widget/{name}/portal/{id}/mobile"},
 
   "readFile": {"uri": "/jaxrs/file/{flag}/portal/{applicationFlag}/content"},
-  "listFile": {"uri": "/jaxrs/file/list/portal/{applicationFlag}"}
+  "listFile": {"uri": "/jaxrs/file/list/portal/{applicationFlag}"},
+
+
+  "listDictionary": {"uri": "/jaxrs/dict/list/portal/{portalFlag}"},
+  "getDictionary": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}"},
+
+//  "updataDictionary": {"uri": "/jaxrs/applicationdict/{applicationDictFlag}/application/{applicationFlag}","method": "PUT"},
+
+  "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/data"},
+  "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data"}, //path:路径(多层路径以.分割，如person.name)
+  "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "PUT"},
+  "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "POST"},
+  "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "DELETE"},
+
+  "clazz": "x_portal_assemble_surface"
 }

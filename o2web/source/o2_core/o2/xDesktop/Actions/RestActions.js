@@ -132,7 +132,8 @@ MWF.xDesktop.Actions.RestActions = new Class({
             if (action.enctype && (action.enctype.toLowerCase()=="formdata")){
                 res = this.invokeFormData(method, uri, option.data, option.file, callback, async, progress);
             }else{
-                var data = (option.data) ? JSON.encode(option.data) : "";
+                //var data = (option.data) ? JSON.encode(option.data) : "";
+                var data = JSON.encode(option.data);
                 var credentials = true;
                 if (option.withCredentials===false){
                     credentials = false;

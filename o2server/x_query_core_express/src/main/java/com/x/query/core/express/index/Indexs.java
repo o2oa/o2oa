@@ -140,7 +140,7 @@ public class Indexs {
     public static final String PREFIX_FIELD_PROCESSPLATFORM = "processPlatform_";
 
     public static final String FIELD_ROCESSPLATFORM_TASKPERSONNAMES = "taskPersonNames";
-    public static final String FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES = "preTaskPersonNames";
+    public static final String FIELD_ROCESSPLATFORM_PREVTASKPERSONNAMES = "prevTaskPersonNames";
 
     public static final String PREFIX_FIELD_PROCESSPLATFORM_STRING = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_STRING
             + "_";

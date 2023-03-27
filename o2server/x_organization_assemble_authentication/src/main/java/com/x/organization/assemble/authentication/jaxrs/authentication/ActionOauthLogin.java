@@ -21,7 +21,7 @@ import com.x.organization.core.entity.Person;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 
+ *
  * @author ray
  *
  */
@@ -38,10 +38,14 @@ class ActionOauthLogin extends BaseAction {
 		oauthToken(oauthClient, param);
 		oauthCheckAccessToken(param);
 		oauthInfo(oauthClient, param);
-		String credential = Objects.toString(param.get(oauthClient.getInfoCredentialField()), "");
+		Object val = param.get(oauthClient.getInfoCredentialField());
+		String credential = Objects.toString(val, "");
+		if(val != null && val instanceof Double){
+			credential = ((Double)val).longValue()+"";
+		}
 		oauthCheckCredential(credential);
-		LOGGER.debug("credential:{}", credential);
-		Wo wo = null;
+		LOGGER.info("单点应用：{} 的用户ID：{} 进行oauth认证.", name, credential);
+		Wo wo;
 		if (Config.token().isInitialManager(credential)) {
 			wo = this.manager(request, response, credential, Wo.class);
 		} else {

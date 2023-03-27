@@ -101,8 +101,27 @@
   "listWarnLog" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}"},
   "listWarnLogWithDate" : {"uri": "/jaxrs/warnlog/list/{id}/next/{count}/date/{date}"},
   "listSystemLog" : {"uri": "/jaxrs/warnlog/view/system/log/tag/{tag}"},
-  "echo" : {"uri": "/jaxrs/echo"}
+  "echo" : {"uri": "/jaxrs/echo"},
 
 
+  "listDictionaryPaging": {"uri": "/jaxrs/dict/list/paging/{page}/size/{size}"},
+  "listDictionary": {"uri": "/jaxrs/dict/list"},
+  "getDictionary": {"uri": "/jaxrs/dict/{id}"},
+  "addDictionary": {"uri": "/jaxrs/dict", "method": "POST"},
+  "updateDictionary": {"uri": "/jaxrs/dict/{id}","method": "PUT"},
+  "removeDictionary": {"uri": "/jaxrs/dict/{id}","method": "DELETE"},
 
+  "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/data"},
+  "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data"}, //path:路径(多层路径以.分割，如person.name)
+  "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "PUT"},
+  "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "POST"},
+  "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "DELETE"},
+
+  "listScriptPaging": {"uri": "/jaxrs/script/list/paging/{page}/size/{size}", "method": "POST"},
+  "listScript": {"uri": "/jaxrs/script/list"},
+  "getScript": {"uri": "/jaxrs/script/{id}"},
+  "addScript": {"uri": "/jaxrs/script", "method": "POST"},
+  "removeScript": {"uri": "/jaxrs/script/{id}", "method": "DELETE"},
+  "updateScript": {"uri": "/jaxrs/script/{id}", "method": "PUT"},
+  "getScriptByName": {"uri": "/jaxrs/script/name/{name}/imported"}
 }

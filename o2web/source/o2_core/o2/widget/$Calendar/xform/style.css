@@ -128,6 +128,10 @@
 	background-color: #8E8E8E;
 	color:#FFF;
 }
+.disable_default {
+	opacity: 0.6;
+	cursor: not-allowed !important;
+}
 .dateBottom {
 	width: 148px;
 	height: 10px;

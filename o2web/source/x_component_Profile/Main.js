@@ -52,8 +52,14 @@ MWF.xApplication.Profile.Main = new Class({
             this.tab = new MWF.widget.Tab(this.contentNode, {"style": "profileV2"});
             this.tab.load();
 
+            var firstPage;
             pageConfigNodes.each(function(node){
-                this.tab.addTab(node, node.get("title"));
+                var page = this.tab.addTab(node, node.get("title"));
+                if( node.getStyle("display") === "none" ){
+                    page.tabNode.hide();
+                }else if( !firstPage ){
+                    firstPage = page;
+                }
             }.bind(this));
             this.contentNode.getElement("[name=MWFcontentNodeContainer]").setStyles({
                 "height":"calc(100% - 50px)",
@@ -81,9 +87,12 @@ MWF.xApplication.Profile.Main = new Class({
                 this.tab.pages[this.options.tab].tabNode.addClass("mainColor_border");
                 this.tab.pages[this.options.tab].textNode.addClass("mainColor_color");
             }else{
-                this.tab.pages[0].showIm();
-                this.tab.pages[0].tabNode.addClass("mainColor_border");
-                this.tab.pages[0].textNode.addClass("mainColor_color");
+                firstPage.showIm();
+                firstPage.tabNode.addClass("mainColor_border");
+                firstPage.textNode.addClass("mainColor_color");
+                // this.tab.pages[0].showIm();
+                // this.tab.pages[0].tabNode.addClass("mainColor_border");
+                // this.tab.pages[0].textNode.addClass("mainColor_color");
             }
 
             this.loadInforConfigActions();
@@ -420,9 +429,38 @@ MWF.xApplication.Profile.Main = new Class({
             ],
             "columns": [
                 {width:"30%","title": this.lp.empower.title,  "field": "subject","formatter":function(data,target){
+                        var _content = this;
                         new Element("a",{"text":data.title,"style":"cursor:pointer"}).inject(target).addEvent("click",function(e){
+                            var confirm = function () {
+                                _this.confirm("warn", e, _this.lp.workDeletedTitle, _this.lp.workDeletedContent.replace("{title}", data.title), 300, 120, function(){
+                                    o2.Actions.load("x_organization_assemble_personal").EmpowerLogAction.delete( data.id, function () {
+                                        _content.pagination.toPage();
+                                        _this.notice( _this.lp.deleteSuccess );
+                                    });
+                                    this.close();
+                                }, function(){
+                                    this.close();
+                                });
+                            }.bind(this);
                             var options = {"workId": data.work, "appId": "process.Work"+data.work};
-                            _this.desktop.openApplication(e, "process.Work", options);
+                            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.getWithWorkOrWorkCompleted(data.work, function (json) {
+                                if( json.data && (json.data.work || json.data.workCompleted) ){
+                                    _this.desktop.openApplication(e, "process.Work", options);
+                                }else{
+                                    if( type === "receiveEmPowerLog" ){
+                                        confirm();
+                                    }else{
+                                        _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                    }
+                                }
+                            }, function () {
+                                if( type === "receiveEmPowerLog" ){
+                                    confirm();
+                                }else{
+                                    _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                }
+                                return true;
+                            });
                         });
                     }},
                 type=="myEmPowerLog"?{width:"10%","title": this.lp.empower.toPerson,  "field": "toPerson","formatter":function(data,target){

@@ -88,13 +88,13 @@
 /**
  * StatementParameter  查询视图的过滤条件值参数，对查询语句where语句的形如":person"的参数部分进行赋值<br/>
  * 有以下规则：<br/>
- * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。<br/>
+ * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。v8.0以后系统自动解析，不需要再传这类参数。<br/>
  * 2、如果对比的是日期，需要传入 Date 类型。<br/>
  * 3、如果运算符用的是 like, noLike，模糊查询，值为 "%{value}%"。
  * @typedef {Object} StatementParameter
  * @example
  * {
- *    "person" : "",
+ *    "person" : "", //v8.0以后系统自动解析，不需要再传这类参数。
  *    "startTime" : (new Date("2020-01-01")),
  *    "applicationName" : "%test%",
  *    "processName" : "test流程" //其他写确定的值
@@ -261,7 +261,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //dict
     /**
-     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
+     * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
+     * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
      * @module Dict
      * @o2cn 数据字典
      * @o2category web
@@ -272,14 +273,43 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </code></pre>
      * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
      * <pre><code class='language-js'>var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *     //type: 应用类型。可以为process  cms  portal service。
+     *     //在流程和内容管理中如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //为了兼容老版本，在门户中使用需要指定type，否则默认值为process
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //数据字典所在的流程、门户、CMS的名称、别名、id, 默认为当前应用，服务管理中忽略该参数
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false，该参数名也可以是 enableAnonymous
+     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为cms的时候改参数才有效，默认为false，该参数名也可以是 enableAnonymous
      * });
+     *
+     * //引用服务管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "service",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用流程管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用内容管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用门户管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
      * </code></pre>
      * @return {Object} Dict对象
      * @o2syntax
@@ -3279,7 +3309,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
@@ -3314,7 +3344,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *     "processName" : "test流程" //其他写确定的值
@@ -3338,7 +3368,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *     "processName" : "test流程" //其他写确定的值
@@ -3439,7 +3469,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
@@ -3659,9 +3689,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
             options = { name: options };
         }
         var name = options.name;
-        var type = (options.type && options.application) ? options.type : "portal";
+        var type;
+        if( options.type === "service" ){
+            type = options.type;
+        }else{
+            type = (options.type && options.application) ? options.type : "portal";
+        }
         var application = options.application || _form.json.application;
         var key = type + "-" + application + "-" + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
         if (includedScripts.indexOf(key) > -1) {
             if (callback) callback.apply(this);
             return;
@@ -3714,8 +3752,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                     }
                     break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
             }
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+
+            var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
 
@@ -3733,6 +3780,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             includedScripts.push( type + "-" + json.data.application + "-" + flag );
                             if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
                             if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                        }else if (type === "service") {
+                            includedScripts.push(type + "-" + flag);
                         }
                     });
 
@@ -3742,7 +3791,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 } else {
                     if (callback) callback.apply(this);
                 }
-            }.bind(this), null, !!async);
+            }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
         }
     };
     this.include = function( optionsOrName , callback, async){
@@ -3936,6 +3991,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @static
      * @methodOf module:queryStatement
      * @see module:form.node
+     */
+
+
+    /**
+     * 重新加载查询视图。
+     * @method reload
+     * @methodOf module:queryStatement
+     * @static
+     * @o2syntax
+     * this.queryStatement.reload( callback );
      */
 
 
@@ -4185,7 +4250,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)。
          * //那么可能的参数如下：
          * {
-         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *    "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *    "processName" : "test流程" //其他写确定的值
@@ -4259,7 +4324,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     ],
          *     //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
          *     "parameter" : { //可选，对查询语句where语句的形如":person"的参数部分进行赋值
-         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
@@ -4277,9 +4342,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @static
          * @o2syntax
-         * this.queryView.reload();
+         * this.queryView.reload( callback );
          */
-        "reload" : function () { _form.reload(); },
+        "reload" : function ( callback ) { _form.reload( callback ); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
@@ -4413,8 +4478,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.openJob
          */
-        "openJob": function (id, choice, options) {
-            var workData = null;
+        "openJob": function (id, choice, options, callback) {
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
@@ -4446,7 +4511,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4472,7 +4540,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4496,10 +4567,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     } else {
                         if (workData.workList.length) {
                             var work = workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
+                            handel = this.openWork(work.id, null, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         } else {
                             var work = workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                            handel = this.openWork(null, work.id, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         }
                     }
                 }
@@ -5528,7 +5603,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     this.Table = MWF.xScript.createTable();
 };
 
-MWF.xScript.createTable = function(){
+if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
     return function(name){
         this.name = name;
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
@@ -5742,7 +5817,7 @@ if( !MWF.xScript.createDict ){
     };
 
 
-    MWF.xScript.createDict = function(application){
+    MWF.xScript.createDict = function(application, appType){
         //optionsOrName : {
         //  type : "", //默认为process, 可以为  process  cms
         //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
@@ -5753,10 +5828,19 @@ if( !MWF.xScript.createDict ){
         return function(optionsOrName){
             var options = optionsOrName;
             if( typeOf( options ) == "string" ){
-                options = { name : options };
+                options = {
+                    name : options,
+                    type: appType,
+                    application: application
+                };
             }
             var name = this.name = options.name;
-            var type = ( options.type && options.application ) ?  options.type : "process";
+            var type;
+            if( options.type === "service"){
+                type = options.type;
+            }else{
+                type = ( options.type && options.application ) ?  options.type : "process";
+            }
             var applicationId = options.application || application;
             var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
@@ -5772,10 +5856,16 @@ if( !MWF.xScript.createDict ){
             // this.dictData = dictLoaded[key];
 
             //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-            if( type == "cms" ){
-                var action = MWF.Actions.get("x_cms_assemble_control");
-            }else{
-                var action = MWF.Actions.get("x_processplatform_assemble_surface");
+            var action;
+            if (type === "cms") {
+                action = MWF.Actions.get("x_cms_assemble_control");
+            } else if( type === "portal" ){
+                action = MWF.Actions.get("x_portal_assemble_surface");
+            }else if( type === "service" ){
+                key = name+type+enableAnonymous;
+                action = MWF.Actions.get("x_program_center");
+            } else {
+                action = MWF.Actions.get("x_processplatform_assemble_surface");
             }
 
             var encodePath = function( path ){
@@ -5783,7 +5873,7 @@ if( !MWF.xScript.createDict ){
                 var ar = arr.map(function(v){
                     return encodeURIComponent(v);
                 });
-                return ar.join("/");
+                return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
             };
 
             this.get = function(path, success, failure, async, refresh){
@@ -5819,12 +5909,20 @@ if( !MWF.xScript.createDict ){
                 };
 
                 var promise;
-                if (path){
-                    var p = encodePath( path );
-                    //var p = path.replace(/\./g, "/");
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                if( type === "service" ){
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action.getDictData(encodeURIComponent(this.name), p, cb, null, !!async, false);
+                    }else{
+                        promise = action.getDictRoot(this.name, cb, null, !!async, false);
+                    }
                 }else{
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                    }else{
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    }
                 }
                 return (!!async) ? promise : value;
 
@@ -5856,32 +5954,50 @@ if( !MWF.xScript.createDict ){
             this.set = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.setDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ){
+                    return action.setDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this.add = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.insertDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.addDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this["delete"] = function(path, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                var successCallback = function(json){
                     MWF.xScript.deleteDictToCache(key, path);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.deleteDictData(encodeURIComponent(this.name), p, successCallback, failureCallback, false, false);
+                }else{
+                    return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, successCallback, failureCallback, false, false);
+                }
             };
             this.destory = this["delete"];
         }

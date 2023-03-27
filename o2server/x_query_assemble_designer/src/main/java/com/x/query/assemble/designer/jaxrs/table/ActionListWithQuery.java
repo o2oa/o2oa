@@ -48,8 +48,8 @@ class ActionListWithQuery extends BaseAction {
 
 		static WrapCopier<Table, Wo> copier = WrapCopierFactory.wo(Table.class, Wo.class,
 				ListTools.toList(JpaObject.singularAttributeField(Table.class, true, true),
-						Table.readPersonList_FIELDNAME, Table.readUnitList_FIELDNAME,
-						Table.editPersonList_FIELDNAME, Table.editUnitList_FIELDNAME),
+						Table.READPERSONLIST_FIELDNAME, Table.READUNITLIST_FIELDNAME,
+						Table.EDITPERSONLIST_FIELDNAME, Table.EDITUNITLIST_FIELDNAME),
 				JpaObject.FieldsInvisible);
 	}
 }

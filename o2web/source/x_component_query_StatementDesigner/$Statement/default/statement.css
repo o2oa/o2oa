@@ -26,6 +26,7 @@
     line-height: 30px;
     float: left;
     margin-right: 10px;
+    user-select: text;
 }
 .o2_statement_statementDesignerSelectTable {
     width: 80px;
@@ -68,6 +69,37 @@
     border: 1px solid #cccccc;
     background: #ffffff;
 }
+.o2_statement_statementDesignerSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+
+.o2_statement_statementRunDefaultNode {
+    /*overflow: auto;*/
+    /*float: left;*/
+    background: #ffffff;
+}
+
 .o2_statement_statementRunNode {
     margin-top: 10px;
     padding: 0px;
@@ -87,10 +119,17 @@
 .o2_statement_statementRunContentNode {
     overflow: hidden;
 }
+/*.o2_statement_statementRunLeftNode{*/
+/*    height: 100%;*/
+/*    width: 40%;*/
+/*    !*overflow: auto;*!*/
+/*    float: left;*/
+/*    background: #ffffff;*/
+/*}*/
 .o2_statement_statementRunJsonNode {
     height: 100%;
     width: 40%;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     background: #ffffff;
 }

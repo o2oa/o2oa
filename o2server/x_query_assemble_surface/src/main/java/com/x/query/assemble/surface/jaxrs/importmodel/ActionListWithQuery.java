@@ -29,9 +29,6 @@ class ActionListWithQuery extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
 			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
 			for (String id : emc.idsEqual(ImportModel.class, ImportModel.query_FIELDNAME, query.getId())) {
 				ImportModel o = business.pick(id, ImportModel.class);
 				if (null != o) {

@@ -71,6 +71,7 @@ function changeValue(e){
   clear: both;
   display: flex;
   justify-content: flex-start;
+  align-items: center;
 }
 .item_label{
   text-align: left;
@@ -81,7 +82,7 @@ function changeValue(e){
   display: block;
   float: left;
   width: 80px;
-  height: 32px;
+  /*height: 32px;*/
   line-height: 32px;
 }
 .item_input_area{

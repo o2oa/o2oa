@@ -7,6 +7,7 @@ import java.util.List;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.processplatform.core.entity.element.ActivityType;
 
 public class TaskCompletedProperties extends JsonProperties {
 
@@ -75,6 +76,8 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	public static class PrevTask extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -3290347772728724742L;
+
 		private String routeName;
 		private String unit;
 		private String identity;
@@ -82,6 +85,42 @@ public class TaskCompletedProperties extends JsonProperties {
 		private String opinion;
 		private Date startTime;
 		private Date completedTime;
+		private String activityName;
+		private String activityToken;
+		private String activity;
+		private ActivityType activityType;
+
+		public ActivityType getActivityType() {
+			return activityType;
+		}
+
+		public void setActivityType(ActivityType activityType) {
+			this.activityType = activityType;
+		}
+
+		public String getActivityName() {
+			return activityName;
+		}
+
+		public void setActivityName(String activityName) {
+			this.activityName = activityName;
+		}
+
+		public String getActivityToken() {
+			return activityToken;
+		}
+
+		public void setActivityToken(String activityToken) {
+			this.activityToken = activityToken;
+		}
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
 
 		public String getIdentity() {
 			return identity;

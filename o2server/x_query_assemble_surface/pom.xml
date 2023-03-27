@@ -39,7 +39,8 @@
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_entity</artifactId>
-		</dependency><dependency>
+		</dependency>
+		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_express</artifactId>
 		</dependency>
@@ -71,7 +72,6 @@
 							</arguments>
 						</configuration>
 					</execution>
-
 					<execution>
 						<id>apiBuilder</id>
 						<phase>prepare-package</phase>

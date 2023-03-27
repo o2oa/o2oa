@@ -64,6 +64,11 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 						prevTask.setIdentity(p.getIdentity());
 						prevTask.setUnit(p.getUnit());
 						prevTask.setRouteName(p.getRouteName());
+						prevTask.setActivity(p.getActivity());
+						prevTask.setActivityName(p.getActivityName());
+						prevTask.setActivityToken(p.getActivityToken());
+						prevTask.setActivityType(p.getActivityType());
+
 						o.getProperties().getPrevTaskList().add(prevTask);
 					});
 					if (null != bag.wi.getPrevTask()) {
@@ -75,6 +80,10 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 						prevTask.setIdentity(bag.wi.getPrevTask().getIdentity());
 						prevTask.setUnit(bag.wi.getPrevTask().getUnit());
 						prevTask.setRouteName(bag.wi.getPrevTask().getRouteName());
+						prevTask.setActivity(bag.wi.getPrevTask().getActivity());
+						prevTask.setActivityName(bag.wi.getPrevTask().getActivityName());
+						prevTask.setActivityToken(bag.wi.getPrevTask().getActivityToken());
+						prevTask.setActivityType(bag.wi.getPrevTask().getActivityType());
 						o.getProperties().setPrevTask(prevTask);
 					}
 					emc.check(o, CheckPersistType.all);

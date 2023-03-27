@@ -267,6 +267,7 @@
     "moduleSelectContentTitleButtonActionNode": {
         "height": "18px",
         "width": "45px",
+        "font-weight": "normal",
         "text-align": "center",
         "line-height": "18px",
         "font-size": "12px",

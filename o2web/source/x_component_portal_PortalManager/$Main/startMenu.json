@@ -24,6 +24,14 @@
     "sub": []
   },
   {
+    "title": MWF.xApplication.portal.PortalManager.LP.dataConfig,
+    "id": "1.1",
+    "action": "dataConfig",
+    "icon": "portal_data.png",
+    "expand": false,
+    "sub": []
+  },
+  {
     "title": MWF.xApplication.portal.PortalManager.LP.scriptConfig,
     "id": "1.1",
     "action": "scriptConfig",

@@ -7,7 +7,7 @@ MWF.xApplication.Selector.Script = new Class({
         "count": 0,
         "values": [],
         "names": [],
-        "appType" : ["process","portal","cms"],
+        "appType" : ["service","process","portal","cms"],
         "expand": false,
         "forceSearchInItem" : true
     },
@@ -30,14 +30,22 @@ MWF.xApplication.Selector.Script = new Class({
                 action = o2.Actions.load("x_portal_assemble_designer").ScriptAction.listPaging;
             }else if( type === "cms" ){
                 action = o2.Actions.load("x_cms_assemble_control").ScriptAction.listPaging;
+            }else if( type === "service" ){
+                action = o2.Actions.load("x_program_center").ScriptAction.listPaging;
             }
 
             var json = {};
             var array = [];
             action(1, 1000, {}, function( scriptJson ) {
                 scriptJson.data.each(function (script) {
-                    var appName = script.portalName || script.applicationName || script.appName;
-                    var appId = script.portal || script.application || script.appId;
+                    var appName, appId;
+                    if( type === "service" ){
+                        appName = "service";
+                        appId = "service";
+                    }else{
+                        appName = script.portalName || script.applicationName || script.appName || "";
+                        appId = script.portal || script.application || script.appId || "";
+                    }
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,
@@ -52,7 +60,7 @@ MWF.xApplication.Selector.Script = new Class({
                     script.appId = appId;
                     script.appType = type;
                     script.type = "script";
-                    json[appId].scriptList.push(script)
+                    json[appId].scriptList.push(script);
                 }.bind(this));
                 for (var application in json) {
                     if (json[application].scriptList && json[application].scriptList.length) {
@@ -68,14 +76,28 @@ MWF.xApplication.Selector.Script = new Class({
 
                 if( this.options.appType.length === 1 ){
                     array.each( function (data) {
-                        var category = this._newItemCategory(data, this, container);
+                        if( type === "service" ){
+                            data.scriptList.each(function (d) {
+                                var item = this._newItem(d, this, container, 1);
+                            }.bind(this));
+                        }else{
+                            var category = this._newItemCategory(data, this, container);
+                        }
                     }.bind(this))
                 }else{
-                    var category = this._newItemCategory({
-                        name: MWF.xApplication.Selector.LP.appType[type],
-                        id: type,
-                        applicationList: array
-                    }, this, container);
+                    if( type === "service" ) {
+                        var category = this._newItemCategory({
+                            name: MWF.xApplication.Selector.LP.appType[type],
+                            id: type,
+                            scriptList: array[0].scriptList
+                        }, this, container);
+                    }else{
+                        var category = this._newItemCategory({
+                            name: MWF.xApplication.Selector.LP.appType[type],
+                            id: type,
+                            applicationList: array
+                        }, this, container);
+                    }
                 }
             }.bind(this))
         }.bind(this));

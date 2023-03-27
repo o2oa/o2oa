@@ -4,7 +4,7 @@
     <div class="item_input">
       <div class="item_upload" @click="upload" @dragover="dragover" @drop="drop" @dragleave="dragleave" @dragenter="dragenter">
         <i class="o2icon-upload"></i>
-        <div class="item_upload_info">将文件拖到此处，或点击上传</div>
+        <div class="item_upload_info">{{lp.uploadInfo}}</div>
       </div>
     </div>
     <div class="item_upload_warn">
@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+import {lp} from '@o2oa/component';
 import {ref} from 'vue';
 
 const uploadNode = ref();

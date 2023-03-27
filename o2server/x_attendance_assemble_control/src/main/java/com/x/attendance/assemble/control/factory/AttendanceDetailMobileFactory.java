@@ -100,7 +100,7 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		}
 		if( StringUtils.isNotEmpty( startDate ) ){
 			if( StringUtils.isNotEmpty( endDate ) && !endDate.equals( startDate ) ){//查询日期区间
-				p = cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate );
+				p = cb.and( p, cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate ));
 			}else{
 				//查询startDate当天
 				p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), startDate ) );
@@ -131,7 +131,7 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		}
 		if( StringUtils.isNotEmpty( startDate ) ){
 			if( StringUtils.isNotEmpty( endDate ) && !endDate.equals( startDate ) ){//查询日期区间
-				p = cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate );
+				p = cb.and( p, cb.between( root.get( AttendanceDetailMobile_.recordDateString ), startDate, endDate ));
 			}else{
 				//查询startDate当天
 				p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), startDate ) );

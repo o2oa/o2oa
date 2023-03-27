@@ -158,6 +158,16 @@ class V2Get extends BaseAction {
                         list.add(portalScript.getId() + portalScript.getUpdateTime().getTime());
                     }
                     break;
+                case WorkCompletedProperties.RelatedScript.TYPE_SERVICE:
+                    com.x.program.center.core.entity.Script cs = business.centerService().script().pick(entry.getKey());
+                    if (null != cs) {
+                        map.put(cs.getId(),
+                                new RelatedScript(cs.getId(), cs.getName(), cs.getAlias(),
+                                        serviceScriptLoad(business, cs),
+                                        WorkCompletedProperties.RelatedScript.TYPE_SERVICE));
+                        list.add(cs.getId() + cs.getUpdateTime().getTime());
+                    }
+                    break;
                 default:
                     break;
             }
@@ -224,6 +234,28 @@ class V2Get extends BaseAction {
         StringBuilder sb = new StringBuilder("");
         List<String> imported = new ArrayList<>();
         for (com.x.portal.core.entity.Script o : list) {
+            sb.append(o.getText());
+            sb.append(System.lineSeparator());
+            imported.add(o.getId());
+            if (StringUtils.isNotEmpty(o.getName())) {
+                imported.add(o.getName());
+            }
+            if (StringUtils.isNotEmpty(o.getAlias())) {
+                imported.add(o.getAlias());
+            }
+        }
+        return sb.toString();
+    }
+
+    private String serviceScriptLoad(Business business, com.x.program.center.core.entity.Script script)
+            throws Exception {
+        List<com.x.program.center.core.entity.Script> list = new ArrayList<>();
+        for (com.x.program.center.core.entity.Script o : business.centerService().script().listScriptNestedWithFlag(script.getId())) {
+            list.add(o);
+        }
+        StringBuilder sb = new StringBuilder("");
+        List<String> imported = new ArrayList<>();
+        for (com.x.program.center.core.entity.Script o : list) {
             sb.append(o.getText());
             sb.append(System.lineSeparator());
             imported.add(o.getId());

@@ -10,12 +10,12 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
-import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
-import com.x.program.center.core.entity.wrap.WrapAgent;
-import com.x.program.center.core.entity.wrap.WrapInvoke;
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
+import com.x.program.center.core.entity.Script;
+import com.x.program.center.core.entity.wrap.*;
 
 class ActionList extends BaseAction {
 
@@ -28,9 +28,20 @@ class ActionList extends BaseAction {
 			List<WrapAgent> agentList = emc.fetchAll(Agent.class, agentCopier);
 			wo.setAgentList(agentList);
 			wos.add(wo);
+
 			wo = Wo.copyFrom(ServiceModuleEnum.INVOKE);
 			List<WrapInvoke> invokeList = emc.fetchAll(Invoke.class, invokeCopier);
 			wo.setInvokeList(invokeList);
+			wos.add(wo);
+
+			wo = Wo.copyFrom(ServiceModuleEnum.SCRIPT);
+			List<WrapScript> scriptList = emc.fetchAll(Script.class, scriptCopier);
+			wo.setScriptList(scriptList);
+			wos.add(wo);
+
+			wo = Wo.copyFrom(ServiceModuleEnum.DICT);
+			List<WrapApplicationDict> dictList = emc.fetchEqual(ApplicationDict.class, dictCopier, ApplicationDict.project_FIELDNAME, ApplicationDict.PROJECT_SERVICE);
+			wo.setDictList(dictList);
 			wos.add(wo);
 
 			result.setData(wos);
@@ -43,6 +54,12 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<Invoke, WrapInvoke> invokeCopier = WrapCopierFactory.wo(Invoke.class, WrapInvoke.class,
 			JpaObject.singularAttributeField(Invoke.class, true, true), null);
+
+	public static WrapCopier<Script, WrapScript> scriptCopier = WrapCopierFactory.wo(Script.class, WrapScript.class,
+			JpaObject.singularAttributeField(Script.class, true, true), null);
+
+	public static WrapCopier<ApplicationDict, WrapApplicationDict> dictCopier = WrapCopierFactory.wo(ApplicationDict.class, WrapApplicationDict.class,
+			JpaObject.singularAttributeField(ApplicationDict.class, true, true), null);
 
 
 	public static class Wo extends WrapServiceModule {

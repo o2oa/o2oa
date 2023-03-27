@@ -311,6 +311,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "currentIdentity":"当前身份",
         "currentPersonDirectUnit":"当前人所在直接组织",
         "currentPersonAllUnit":"当前人所在所有组织",
+        "currentPersonGroupList": "当前人所在群组",
+        "currentPersonRoleList": "当前人所拥有角色",
         "to":"到",
         "input":"输入",
         "selectable":"可选",

@@ -150,7 +150,7 @@ public class Qiyeweixin extends ConfigObject {
 				&& (cachedCorpAccessTokenDate.after(new Date()))) {
 			return cachedCorpAccessToken;
 		} else {
-			String address = default_apiAddress + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
+			String address = getApiAddress() + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
 					+ this.getCorpSecret();
 			CorpAccessTokenResp resp = HttpConnection.getAsObject(address, null, CorpAccessTokenResp.class);
 			if (resp.getErrcode() != 0) {
@@ -169,7 +169,7 @@ public class Qiyeweixin extends ConfigObject {
 				&& (cacheAttendanceAccessTokenDate.after(new Date()))) {
 			return cacheAttendanceAccessToken;
 		} else {
-			String address = default_apiAddress + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
+			String address = getApiAddress() + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
 					+ this.getAttendanceSyncSecret();
 			CorpAccessTokenResp resp = HttpConnection.getAsObject(address, null, CorpAccessTokenResp.class);
 			if (resp.getErrcode() != 0) {
@@ -189,7 +189,7 @@ public class Qiyeweixin extends ConfigObject {
 				&& (cachedSyncAccessTokenDate.after(new Date()))) {
 			return cachedSyncAccessToken;
 		} else {
-			String address = default_apiAddress + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
+			String address = getApiAddress() + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
 					+ this.getSyncSecret();
 			System.out.println("address：" + address);
 			CorpAccessTokenResp resp = HttpConnection.getAsObject(address, null, CorpAccessTokenResp.class);
@@ -209,7 +209,7 @@ public class Qiyeweixin extends ConfigObject {
 				&& (cachedJsapiTicketDate.after(new Date()))) {
 			return cachedJsapiTicket;
 		} else {
-			String address = default_apiAddress + "/get_jsapi_ticket?access_token=" + this.corpAccessToken()
+			String address = getApiAddress() + "/get_jsapi_ticket?access_token=" + this.corpAccessToken()
 					+ "&type=jsapi";
 			JsapiTicketResp resp = HttpConnection.getAsObject(address, null, JsapiTicketResp.class);
 			if (resp.getErrcode() != 0) {

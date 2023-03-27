@@ -33,6 +33,13 @@ import com.x.base.core.project.logger.MessageFormatter;
 
 public class StringTools {
 
+    private StringTools() {
+        // nothing
+    }
+
+    // 空代码判断正则表达式
+    public static final Pattern EMPTY_SCRIPT_CODE_REGEX = Pattern.compile("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*");
+
     // 脚本文本
     public static final Pattern SCRIPTTEXT_REGEX = Pattern.compile("^\\((.+?)\\)$");
     public static final Pattern MOBILE_REGEX = Pattern.compile(

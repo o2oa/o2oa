@@ -47,7 +47,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "appType" : {
         "process": "Process",
         "cms": "CMS",
-        "portal": "Portal"
+        "portal": "Portal",
+        "service": "Service"
     },
 
     "cancel": "Cancel",

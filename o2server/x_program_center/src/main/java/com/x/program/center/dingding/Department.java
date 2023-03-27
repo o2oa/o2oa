@@ -8,11 +8,13 @@ public class Department extends GsonPropertyObject {
 	// "name": "广州研发中心",
 	// "parentid": 1,
 	// "order": 10
+	// "isFromUnionOrg": false
 
 	private Long id;
 	private String name;
 	private Long parentid;
 	private Long order;
+	private Boolean isFromUnionOrg;
 
 	public Long getId() {
 		return id;
@@ -46,4 +48,11 @@ public class Department extends GsonPropertyObject {
 		this.order = order;
 	}
 
+	public Boolean getIsFromUnionOrg() {
+		return isFromUnionOrg;
+	}
+
+	public void setIsFromUnionOrg(Boolean isFromUnionOrg) {
+		this.isFromUnionOrg = isFromUnionOrg;
+	}
 }

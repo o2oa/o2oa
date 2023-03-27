@@ -208,20 +208,27 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         }
     },
     __getOptionsText: function(options, values){
-        debugger;
         if (!!this.json.props.multiple){
             var text = [];
             values.forEach(function(v){
-                text = text.concat(this.__getOptionsTextValue(options, v));
+                if( typeOf( v ) === "array" ){
+                    text = text.concat(this.__getOptionsTextValue(options, v));
+                }else{
+                    text = text.concat(this.__getLastOptionsTextValue(options, v));
+                }
             }.bind(this));
-            return text.join(",")
+            return text.join(",");
         }else{
-            return this.__getOptionsTextValue(options, values).join(",");
+            if( typeOf( values ) === "array" ){
+                return this.__getOptionsTextValue(options, values).join(",");
+            }else{
+                return this.__getLastOptionsTextValue(options, values)
+            }
         }
     },
     __getOptionsTextValue: function(options, values, prefix, prefixLabel){
         var text = [];
-        var v = values.join("/");
+        var v = typeOf( values ) === "string" ? values : values.join("/");
         options.forEach(function(op){
             var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
             var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
@@ -238,5 +245,22 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         }else{
             return text;
         }
+    },
+    __getLastOptionsTextValue: function (options, value) {
+        var text;
+        for( var i=0; i<options.length; i++ ){
+            var op = options[i];
+            if( op[this.json.props.children] && op[this.json.props.children].length ){
+                text = this.__getLastOptionsTextValue( op[this.json.props.children], value );
+                if( text )return text;
+            }else{
+                var opValue = op[this.json.props.value];
+                var opLabel = op[this.json.props.label];
+                if( opValue === value ){
+                    text = opLabel;
+                }
+            }
+        }
+        return text;
     }
 }); 

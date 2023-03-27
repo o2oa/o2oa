@@ -16,6 +16,34 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
     /** @lends MWF.xApplication.process.Xform.Widget# */
     {
     Extends: MWF.APP$Module,
+    options: {
+        /**
+         * 部件的设计已经获取到，但还没有插入html及生成内部组件。
+         * @event MWF.xApplication.process.Xform.Widget#beforeModulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 部件的设计已经获取到，已经插入html，组件json已经获取到，但未生成内部组件。
+         * * @example
+         * //获取部件所有组件id
+         * var moduleIdList = Object.keys(this.target.widgetData.json.moduleList);
+         * @event MWF.xApplication.process.Xform.Widget#modulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 部件内部组件加载完成。
+         * @example
+         * //获取部件所有组件id
+         * var moduleIdList = Object.keys(this.target.widgetData.json.moduleList);
+         * //获取部件所有组件
+         * var moduleList = moduleIdList.map(function(id){
+         *     return this.form.get(id, widgetId); //widgetId为当前部件ID，布局组件有可能id冲突，通过widgetId来确定当前部件的组件
+         * }.bind(this))
+         * @event MWF.xApplication.process.Xform.Widget#afterModulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeModulesLoad", "modulesLoad", "afterModulesLoad"]
+    },
 
     _loadUserInterface: function(){
         this.node.empty();
@@ -127,6 +155,8 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
             if( this.checkWidgetNested( this.widgetData.json.id ) ){
                 //this.form.addEvent("postLoad", function(){
 
+                this.fireEvent("beforeModulesLoad");
+
                 this.loadCss();
 
                 this.modules = [];
@@ -143,6 +173,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                 }
 
                 this.node.set("html", this.widgetData.html);
+
                 Object.each(this.widgetData.json.moduleList, function(module, key){
                     var formKey = key;
                     if (this.form.json.moduleList[key]){
@@ -155,6 +186,8 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                     this.form.json.moduleList[formKey] = module;
                     this.moduleList[formKey] = module;
                 }.bind(this));
+
+                this.fireEvent("modulesLoad");
 
                 var moduleNodes = this.form._getModuleNodes(this.node);
                 moduleNodes.each(function(node){
@@ -171,6 +204,9 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                         widgetModules[ json.orgiginalId || json.id ] = module;
                     }
                 }.bind(this));
+
+                this.fireEvent("afterModulesLoad");
+
                 //}.bind(this));
             }else{
                 this.form.notice(MWF.xApplication.process.Xform.LP.widgetNestedError, "error");

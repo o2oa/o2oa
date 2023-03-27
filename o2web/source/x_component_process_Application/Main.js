@@ -1,4 +1,4 @@
-MWF.xApplication.process.Application.options.multitask = false;
+MWF.xApplication.process.Application.options.multitask = true;
 o2.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
@@ -101,7 +101,7 @@ MWF.xApplication.process.Application.Main = new Class({
 			this.countData.readCompleted = json.data.readCompleted;
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {"applicationList":[this.application.id]}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 		}.bind(this));
 	},
 	loadList: function(type,ev,data){
@@ -528,7 +528,12 @@ MWF.xApplication.process.Application.List = new Class({
 		this._initTempate();
 		this.loadListTitle();
 
-		this.loadToolBar(this.toolbarItems.unSelect);
+		if(this.toolbarItems.unSelect.length>0){
+			this.loadToolBar(this.toolbarItems.unSelect);
+		}else {
+			this.loadToolBar(this.toolbarItems.default,true);
+		}
+
 		this.selectedList = [];
 		this.loadData().then(function(data){
 			_self.hide();
@@ -539,6 +544,9 @@ MWF.xApplication.process.Application.List = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+
+			],
 			"unSelect":[
 
 			],
@@ -551,12 +559,13 @@ MWF.xApplication.process.Application.List = new Class({
 		}
 
 	},
-	loadToolBar : function (availableTool){
+	loadToolBar : function (availableTool,disabled){
 
 		this.toolBarNode.empty();
 		this.toolbar = new MWF.xApplication.process.Application.Toolbar(this.toolBarNode, this, {
 			viewType : this.options.defaultViewType,
 			type : this.type,
+			disabled : !!disabled,
 			availableTool : availableTool
 		});
 		this.toolbar.load();
@@ -699,7 +708,13 @@ MWF.xApplication.process.Application.List = new Class({
 	},
 	_setToolBar : function (){
 		if(this.selectedList.length === 0 ){
-			this.loadToolBar(this.toolbarItems.unSelect);
+
+			if(this.toolbarItems.unSelect.length>0){
+				this.loadToolBar(this.toolbarItems.unSelect);
+			}else {
+				this.loadToolBar(this.toolbarItems.default,true);
+			}
+
 		} else if (this.selectedList.length === 1){
 			this.loadToolBar(this.toolbarItems.selected);
 		}else{
@@ -777,7 +792,10 @@ MWF.xApplication.process.Application.TaskDoneList = new Class({
 	Extends: MWF.xApplication.process.Application.List,
 	loadData: function(){
 		var _self = this;
-		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList||{}).then(function(json){
+		this.filterList = this.filterList||{};
+		this.filterList.latest = true;
+
+		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
 			return _self._fixData(json.data);
@@ -821,6 +839,9 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 	},
 	_fixData : function (dataList){
+		dataList.each(function(d){
+			if(d.title === "") d.title = this.lp.unnamed;
+		}.bind(this));
 		return dataList;
 	},
 	loadFilter: function () {
@@ -951,6 +972,11 @@ MWF.xApplication.process.Application.WorkList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delWork","jump","sendRead"],
+				["processing","endWork","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -971,6 +997,52 @@ MWF.xApplication.process.Application.WorkList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkAction"][flag === "soft"?"typeAbandoned":"delete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.WorkCompletedList = new Class({
@@ -988,6 +1060,11 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delCompletedWork"],
+				["rollback","sendRead","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -1000,7 +1077,6 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 				["sendRead","addReview"]
 			]
 		}
-
 	},
 	open : function (id){
 		debugger
@@ -1010,6 +1086,52 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkCompletedForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkCompletedAction"][flag === "soft"?"typeAbandonedWorkCompleted":"manageDelete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.SnapList = new Class({
@@ -1026,7 +1148,12 @@ MWF.xApplication.process.Application.SnapList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delSnap"],
+				["restore"]
+			],
 			"unSelect":[
+
 			],
 			"selected":[
 				["delSnap"],
@@ -1047,6 +1174,19 @@ MWF.xApplication.process.Application.SnapList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	delete : function(id,e){
+		var _self = this;
+		this.app.confirm("warn", e, "删除确认", "删除后不能恢复。", 350, 120, function () {
+
+			_self.action.SnapAction.delete( id , function(){
+				_self.app.notice("成功删除");
+				_self.refresh();
+			});
+			this.close();
+		}, function () {
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.DictList = new Class({
@@ -1064,10 +1204,7 @@ MWF.xApplication.process.Application.DictList = new Class({
 		debugger
 		var options = {
 			"id": id,
-			"application" : {
-				"id": this.app.application.id,
-				"name": this.app.application.name
-			},
+			"application" : this.app.application.id,
 			"appId":  "process.DictionaryDesigner" + id
 		};
 		layout.desktop.openApplication(null, "process.DictionaryDesigner", options);
@@ -1094,6 +1231,8 @@ MWF.xApplication.process.Application.SerialList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+			],
 			"unSelect":[
 				["addSerial"]
 			],
@@ -1114,7 +1253,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 	options: {
 		"style": "default",
 		"viewType" : "list",
-		"type" : "all"
+		"type" : "all",
+		"disabled" : false
 	},
 	initialize : function( container, explorer, options ) {
 
@@ -1148,8 +1288,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			},
 			delCompletedWork : {
 				action : "delCompletedWork",
-					text : this.lp.actionList.delete,
-					icon : "icon-upload"
+				text : this.lp.actionList.delete,
+				icon : "icon-upload"
 			},
 			processing :{
 				action : "processing",
@@ -1236,14 +1376,22 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 				}
 
 				var tool = this.tools[ t ];
+				var toolNode;
 
-				var toolNode = new Element( "div", {
-					class : className,
-					style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
-					events : {
-						click : function( ev ){ this[tool.action]( ev ) }.bind(this)
-					}
-				}).inject( toolgroupNode );
+				if(this.options.disabled){
+					toolNode = new Element( "div", {
+						class : className,
+						style : "height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: rgb(123 177 240);font-size: 13px;color: #FFFFFF;font-weight: 400;",
+					}).inject( toolgroupNode );
+				}else {
+					toolNode = new Element( "div", {
+						class : className,
+						style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
+						events : {
+							click : function( ev ){ this[tool.action]( ev ) }.bind(this)
+						}
+					}).inject( toolgroupNode );
+				}
 
 				//var iconNode = new Element("icon",{"class":"o2WorkApplication " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
 				var textNode = new Element("span").inject(toolNode);

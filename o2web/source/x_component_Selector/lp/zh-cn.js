@@ -47,7 +47,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "appType" : {
         "process": "流程管理",
         "cms": "内容管理",
-        "portal": "门户管理"
+        "portal": "门户管理",
+        "service": "服务管理"
     },
 
     "cancel": "取消",

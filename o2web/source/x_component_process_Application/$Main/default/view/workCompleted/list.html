@@ -2,13 +2,14 @@
     {{if $.data.length}}
     <table>
         <colgroup>
-            <col width="4%">
+            <col width="4%" style="min-width: 50px;">
             <col width="40%">
             <col width="15%">
             <col width="10%">
             <col width="10%">
             <col width="15%">
             <col width="15%">
+            <col width="5%" style="min-width: 50px;">
         </colgroup>
         <tbody>
 
@@ -34,7 +35,10 @@
             <td style="text-align: left;"><span>{{$.creatorUnitName}}</span></td>
             <td style="text-align: left;"><span>{{$.startTime}}</span></td>
             <td style="text-align: left;"><span>{{$.completedTime}}</span></td>
-
+            <td style="text-align: left;">
+                <span title = "{{$.lp.editAction}}" class="o2WorkApplication icon-draft operateicon" data-o2-events="click:manage:{{$.id}}"></span>
+                <span title = "{{$.lp.remove}}" class="o2WorkApplication icon-delete operateicon" data-o2-events="click:delete:{{$.id}}"></span>
+            </td>
         </tr>
         {{end each}}
         </tbody>

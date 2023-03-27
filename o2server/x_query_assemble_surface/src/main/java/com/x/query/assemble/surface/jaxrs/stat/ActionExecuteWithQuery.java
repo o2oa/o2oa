@@ -42,9 +42,6 @@ class ActionExecuteWithQuery extends BaseAction {
 			if (null == stat) {
 				throw new ExceptionEntityNotExist(flag, Stat.class);
 			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
-			}
 			if (!business.readable(effectivePerson, stat)) {
 				throw new ExceptionAccessDenied(effectivePerson, stat);
 			}

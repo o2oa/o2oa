@@ -973,7 +973,6 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                 var isContinue = true;
                 if (beforeUpload) isContinue = beforeUpload(files);
-                debugger;
                 if (isContinue){
                     var accepts = (accept) ? accept.split(o2.splitStr) : null;
 
@@ -1179,6 +1178,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     previewAttachment: function(e, node){
         if (this.selectedAttachments.length){
             if (this.module) this.module.previewAttachment(this.selectedAttachments);
+        }
+    },
+    editAttachment: function(e, node){
+        if (this.selectedAttachments.length){
+            if (this.module) this.module.editAttachment(this.selectedAttachments);
         }
     },
     downloadAttachment: function(e, node){

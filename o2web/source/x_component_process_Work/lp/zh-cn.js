@@ -68,6 +68,12 @@ MWF.xApplication.process.Work.LP = {
     "managerLogin" : "模拟登录并打开文件",
     "managerLoginConfirmTitle" : "模拟登陆",
     "managerLoginConfirmContent" : "确定要以{user}身份登录并打开文件？点击确定后，需注销重新登录才能回到当前用户。",
-    "managerLoginSuccess" : "已成功切换为{user}"
+    "managerLoginSuccess" : "已成功切换为{user}",
+
+    "selectIdentity": "选择办理此待办的身份",
+    "selectIdentityInfo": "检测到当前工作您有多个不同身份的待办，请选择一个身份处理此工作",
+
+    "org": "组织",
+    "duty": "职务"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

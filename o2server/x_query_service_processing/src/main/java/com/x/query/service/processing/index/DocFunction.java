@@ -239,7 +239,7 @@ public class DocFunction {
                 list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
                         .map(OrganizationDefinition::name).distinct()
                         .collect(Collectors.toList()));
-        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES,
+        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_PREVTASKPERSONNAMES,
                 list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
                         .map(OrganizationDefinition::name).distinct()
                         .collect(Collectors.toList()));

@@ -9,6 +9,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDictItem;
+import com.x.general.core.entity.PersistenceProperties;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,7 +61,7 @@ class ActionCover extends BaseAction {
 
 	private Portal cover(Business business, Wi wi, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
-
+		List<JpaObject> removeObjects = new ArrayList<>();
 		Portal portal = business.entityManagerContainer().find(wi.getId(), Portal.class);
 		if (null == portal) {
 			portal = WrapPortal.inCopier.copy(wi);
@@ -143,15 +148,53 @@ class ActionCover extends BaseAction {
 			}
 			obj.setPortal(portal.getId());
 		}
+		for (WrapApplicationDict _o : wi.getApplicationDictList()) {
+			ApplicationDict obj = business.entityManagerContainer().find(_o.getId(), ApplicationDict.class);
+			if (null != obj) {
+				for (ApplicationDictItem o : business.applicationDictItem()
+						.listWithApplicationDictObject(obj.getId())) {
+					removeObjects.add(o);
+				}
+				WrapApplicationDict.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapApplicationDict.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			DataItemConverter<ApplicationDictItem> converter = new DataItemConverter<>(ApplicationDictItem.class);
+			List<ApplicationDictItem> list = converter.disassemble(_o.getData());
+			for (ApplicationDictItem o : list) {
+				o.setBundle(obj.getId());
+				/** 将数据字典和数据存放在同一个分区 */
+				o.setDistributeFactor(obj.getDistributeFactor());
+				o.setApplication(obj.getApplication());
+				persistObjects.add(o);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(this.idleAliasWithPortal(business, portal.getId(), obj.getAlias(), ApplicationDict.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithPortal(business, portal.getId(), obj.getName(),
+						ApplicationDict.class, obj.getId()));
+			}
+			obj.setApplication(portal.getId());
+			obj.setProject(ApplicationDict.PROJECT_PORTAL);
+		}
 		business.entityManagerContainer().beginTransaction(Portal.class);
 		business.entityManagerContainer().beginTransaction(Widget.class);
 		business.entityManagerContainer().beginTransaction(Page.class);
 		business.entityManagerContainer().beginTransaction(Script.class);
 		business.entityManagerContainer().beginTransaction(File.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDict.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDictItem.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
+		for (JpaObject o : removeObjects) {
+			business.entityManagerContainer().remove(o);
+		}
 		business.entityManagerContainer().commit();
+		CacheManager.notify(ApplicationDictItem.class);
+		CacheManager.notify(ApplicationDict.class);
 		CacheManager.notify(Script.class);
 		CacheManager.notify(Page.class);
 		CacheManager.notify(Widget.class);
@@ -176,7 +219,11 @@ class ActionCover extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		Predicate p = root.get("name").in(list);
-		p = cb.and(p, cb.equal(root.get("portal"), portalId));
+		if(cls.getSimpleName().equals(ApplicationDict.class.getSimpleName())){
+			p = cb.and(p, cb.equal(root.get("application"), portalId));
+		}else {
+			p = cb.and(p, cb.equal(root.get("portal"), portalId));
+		}
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
 		}
@@ -202,7 +249,11 @@ class ActionCover extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		Predicate p = root.get("alias").in(list);
-		p = cb.and(p, cb.equal(root.get("portal"), portalId));
+		if(cls.getSimpleName().equals(ApplicationDict.class.getSimpleName())){
+			p = cb.and(p, cb.equal(root.get("application"), portalId));
+		}else {
+			p = cb.and(p, cb.equal(root.get("portal"), portalId));
+		}
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
 		}

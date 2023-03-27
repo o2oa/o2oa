@@ -20,7 +20,8 @@ import com.x.cms.core.entity.element.ViewFieldConfig;
 public class BaseAction extends StandardJaxrsAction {
 
 	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Form.class, View.class, ViewFieldConfig.class, ViewCategory.class,
-			Script.class, com.x.processplatform.core.entity.element.Script.class, com.x.portal.core.entity.Script.class);
+			Script.class, com.x.processplatform.core.entity.element.Script.class, com.x.portal.core.entity.Script.class,
+			com.x.program.center.core.entity.Script.class);
 
 	protected LogService logService = new LogService();
 
@@ -46,6 +47,12 @@ public class BaseAction extends StandardJaxrsAction {
 					com.x.portal.core.entity.Script p = business.portal().script().pick(entry.getKey());
 					if (null != p) {
 						list.add(p.getId() + p.getUpdateTime().getTime());
+					}
+					break;
+				case RelatedScript.TYPE_SERVICE:
+					com.x.program.center.core.entity.Script cs = business.centerService().script().pick(entry.getKey());
+					if (null != cs) {
+						list.add(cs.getId() + cs.getUpdateTime().getTime());
 					}
 					break;
 				default:
@@ -179,6 +186,7 @@ public class BaseAction extends StandardJaxrsAction {
 		public static final String TYPE_PROCESS_PLATFORM = "processPlatform";
 		public static final String TYPE_CMS = "cms";
 		public static final String TYPE_PORTAL = "portal";
+		public static final String TYPE_SERVICE = "service";
 
 		public RelatedScript() {
 		}

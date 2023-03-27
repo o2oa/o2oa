@@ -4,8 +4,8 @@
     <div class="item_input" ref="contentNode">
       <el-switch ref="node" :style="inputStyle"
           v-model="ev"
-          active-text="是"
-          inactive-text="否"
+          :active-text="lp.yes"
+          :inactive-text="lp.no"
           @change="changeValue($event)">
       </el-switch>
     </div>
@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+import {lp} from '@o2oa/component';
 import {ref, watch} from 'vue';
 const emit = defineEmits(['update:value', 'change']);
 

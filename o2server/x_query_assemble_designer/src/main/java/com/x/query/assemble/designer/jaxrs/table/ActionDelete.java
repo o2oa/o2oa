@@ -30,7 +30,7 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionEntityNotExist(flag, Table.class);
 			}
 			this.check(effectivePerson, business, table);
-			List<Statement> statements = emc.listEqual(Statement.class, Statement.table_FIELDNAME, table.getId());
+			List<Statement> statements = emc.listEqual(Statement.class, Statement.TABLE_FIELDNAME, table.getId());
 			emc.beginTransaction(Statement.class);
 			emc.beginTransaction(Table.class);
 			for (Statement statement : statements) {

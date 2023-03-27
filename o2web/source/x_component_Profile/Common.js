@@ -92,6 +92,11 @@ MWF.xApplication.Profile.Common.Pagination = new Class({
         this.load();
         this.fireEvent('afterLoad', [this.currentPage + 1]);
     },
+    toPage: function (index) {
+        if( typeOf(index) === "number" )this.currentPage = index;
+        this.load();
+        this.fireEvent('afterLoad', [this.currentPage + 1]);
+    },
     load: function () {
         this.fireEvent('beforeLoad');
         this.page = !this.total?(this.currentPage + Math.ceil((this.length)+1 / this.pageSize)):Math.ceil(this.total / this.pageSize);
@@ -148,7 +153,7 @@ MWF.xApplication.Profile.Common.Content = new Class({
             "style": "padding: 10px;"
         }).inject(this.contentNode);
 
-        new MWF.xApplication.Profile.Common.Pagination(this.paginationNode, {
+        this.pagination = new MWF.xApplication.Profile.Common.Pagination(this.paginationNode, {
             "total": this.total,
             "length": this.dataList.length,
             "pageSize": this.options.pageSize,
@@ -160,7 +165,8 @@ MWF.xApplication.Profile.Common.Content = new Class({
                 this.createTbody();
 
             }.bind(this)
-        }).load();
+        });
+        this.pagination.load();
 
     },
     createOp: function () {
@@ -300,7 +306,7 @@ MWF.xApplication.Profile.Common.Content = new Class({
                     });
                 }
             }
-        });
+        }.bind(this));
     },
     createTbody: function () {
 
@@ -315,7 +321,7 @@ MWF.xApplication.Profile.Common.Content = new Class({
                 var thNode = new Element("td").inject(trNode);
 
                 if(column.formatter){
-                    column.formatter(data,thNode);
+                    column.formatter.call(this, data, thNode);
                 }else{
                     thNode.set("text",data[column.field])
                 }

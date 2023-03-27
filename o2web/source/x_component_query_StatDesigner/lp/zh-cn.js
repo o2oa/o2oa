@@ -72,6 +72,7 @@ MWF.xApplication.query.StatDesigner.LP = {
         "style": "样式",
         "attribute": "属性",
 
+        "display": "显示",
         "hidden": "隐藏",
         "orderNumber":"排序号",
 
@@ -116,6 +117,7 @@ MWF.xApplication.query.StatDesigner.LP = {
         "specified":"根据指定的分类值",
         "intersection":"列视图计算与指定分类值的交集",
         "sum1":"列视图计算与指定分类值的合集",
-        "groupSpecifiedList":"指定分类值"
+        "groupSpecifiedList":"指定分类值",
+        "conversion": "行列转换"
     }
 };

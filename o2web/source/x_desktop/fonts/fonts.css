@@ -1,0 +1,21 @@
+@font-face {
+    font-family: '方正小标宋简体';
+    src:
+            url('../x_desktop/fonts/fangzhengxiaobiao.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: '仿宋_GB2312';
+    src:
+            url('../x_desktop/fonts/fangsonggb2312.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: '楷体_GB2312';
+    src:
+            url('../x_desktop/fonts/kaitigb2312.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

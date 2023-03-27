@@ -47,7 +47,7 @@ public class SyncOrganization {
     private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
 
     public PullResult execute(Business business) throws Exception {
-        logger.print("钉钉进行人员同步.");
+        logger.info("钉钉进行人员同步.");
         PullResult result = new PullResult();
         String accessToken = Config.dingding().corpAccessToken();
         List<Unit> units = new ArrayList<>();
@@ -67,42 +67,42 @@ public class SyncOrganization {
         CacheManager.notify(Identity.class);
         result.end();
         if (!result.getCreateUnitList().isEmpty()) {
-            logger.print("创建组织({}):{}.", result.getCreateUnitList().size(),
+            logger.info("创建组织({}):{}.", result.getCreateUnitList().size(),
                     StringUtils.join(result.getCreateUnitList(), ","));
         }
         if (!result.getUpdateUnitList().isEmpty()) {
-            logger.print("修改组织({}):{}.", result.getUpdateUnitList().size(),
+            logger.info("修改组织({}):{}.", result.getUpdateUnitList().size(),
                     StringUtils.join(result.getUpdateUnitList(), ","));
         }
         if (!result.getRemoveUnitList().isEmpty()) {
-            logger.print("删除组织({}):{}.", result.getRemoveUnitList().size(),
+            logger.info("删除组织({}):{}.", result.getRemoveUnitList().size(),
                     StringUtils.join(result.getRemoveUnitList(), ","));
         }
         if (!result.getCreatePersonList().isEmpty()) {
-            logger.print("创建个人({}):{}.", result.getCreatePersonList().size(),
+            logger.info("创建个人({}):{}.", result.getCreatePersonList().size(),
                     StringUtils.join(result.getCreatePersonList(), ","));
         }
         if (!result.getUpdatePersonList().isEmpty()) {
-            logger.print("修改个人({}):{}.", result.getUpdatePersonList().size(),
+            logger.info("修改个人({}):{}.", result.getUpdatePersonList().size(),
                     StringUtils.join(result.getUpdatePersonList(), ","));
         }
         if (!result.getRemovePersonList().isEmpty()) {
-            logger.print("删除个人({}):{}.", result.getRemovePersonList().size(),
+            logger.info("删除个人({}):{}.", result.getRemovePersonList().size(),
                     StringUtils.join(result.getRemovePersonList(), ","));
         }
         if (!result.getCreateIdentityList().isEmpty()) {
-            logger.print("创建身份({}):{}.", result.getCreateIdentityList().size(),
+            logger.info("创建身份({}):{}.", result.getCreateIdentityList().size(),
                     StringUtils.join(result.getCreateIdentityList(), ","));
         }
         if (!result.getUpdateIdentityList().isEmpty()) {
-            logger.print("修改身份({}):{}.", result.getUpdateIdentityList().size(),
+            logger.info("修改身份({}):{}.", result.getUpdateIdentityList().size(),
                     StringUtils.join(result.getUpdateIdentityList(), ","));
         }
         if (!result.getRemoveIdentityList().isEmpty()) {
-            logger.print("删除身份({}):{}.", result.getRemoveIdentityList().size(),
+            logger.info("删除身份({}):{}.", result.getRemoveIdentityList().size(),
                     StringUtils.join(result.getRemoveIdentityList(), ","));
         }
-        logger.print("从钉钉同步人员结束.");
+        logger.info("从钉钉同步人员结束.");
         return result;
     }
 
@@ -194,11 +194,13 @@ public class SyncOrganization {
     }
 
     private void removeUnit(Business business, PullResult result, Unit unit) throws Exception {
-        logger.print("正在删除组织{}.", unit.getDistinguishedName());
+        logger.info("正在删除组织{}.", unit.getDistinguishedName());
         List<Unit> os = new ArrayList<>();
         os.add(unit);
-        os.addAll(business.unit().listSupNestedObject(unit));
-        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+        // unit本身要删除 把所有子组织查询出来一起删除
+        os.addAll(business.unit().listSubNestedObject(unit));
+        // level大的 先删除
+        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit o : os) {
             this.removeSingleUnit(business, result, o);
@@ -206,7 +208,7 @@ public class SyncOrganization {
     }
 
     private void removeSingleUnit(Business business, PullResult result, Unit unit) throws Exception {
-        logger.print("正在删除单个组织{}.", unit.getDistinguishedName());
+        logger.info("正在删除单个组织{}.", unit.getDistinguishedName());
         EntityManagerContainer emc = business.entityManagerContainer();
         emc.beginTransaction(UnitAttribute.class);
         emc.beginTransaction(UnitDuty.class);
@@ -531,7 +533,7 @@ public class SyncOrganization {
         /* 组织单独方法删除 */
         List<Unit> allUnit = this.listUnit(business);
         List<Unit> removeUnits = ListUtils.subtract(allUnit, units).stream()
-                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit unit : removeUnits) {
             this.removeSingleUnit(business, result, unit);

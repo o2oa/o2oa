@@ -9,7 +9,7 @@ MWF.xApplication.cms.Xform.TinyMCEEditor = MWF.CMSTinyMCEEditor = new Class({
         };
     },
     getEditorId: function(){
-        return this.form.businessData.document.id +"_"+this.json.id + "_" + (layout.mobile ? "mobile" : "pc");
+        return this.form.businessData.document.id +"_"+this.json.id.split(".").join("_") + "_" + (layout.mobile ? "mobile" : "pc");
     },
     getText: function () {
         return this.editor ? this.editor.getContent({format: 'text'}) : "";

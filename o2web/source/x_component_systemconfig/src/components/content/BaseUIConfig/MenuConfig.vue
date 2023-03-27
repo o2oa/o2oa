@@ -311,13 +311,15 @@ const recordAppItems = (node)=>{
 
 let dragging;
 let overItem = null;
-function checkDargOverItem(rect){
+function checkDargOverItem(rect, type){
   overItem = null;
   menuItems.forEach(function(item){
     if (!item.node.isDragging){
       if (isOverlap(rect, item.rect)){
-        item.maskNode.style.display='block';
-        overItem = item;
+        if (type!=='group'){
+          item.maskNode.style.display='block';
+          overItem = item;
+        }
       }else{
         item.maskNode.style.display='none';
       }
@@ -371,7 +373,7 @@ function dragover(e){
         width: dragging.size.x-36,
         height: dragging.size.y-36,
       }
-      const overItem = checkDargOverItem(rect);
+      const overItem = checkDargOverItem(rect, dragging.type);
       if (!overItem){
         checkDargPosition(rect)
       }

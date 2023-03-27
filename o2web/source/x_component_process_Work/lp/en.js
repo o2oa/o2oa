@@ -68,6 +68,12 @@ MWF.xApplication.process.Work.LP = {
     "managerLogin": "Simulate login and open file",
     "managerLoginConfirmTitle": "Simulated Login",
     "managerLoginConfirmContent": "Are you sure you want to log in as {user} and open the file? After clicking OK, you need to log out and log in again to return to the current user.",
-    "managerLoginSuccess": "Successfully switched to {user}"
+    "managerLoginSuccess": "Successfully switched to {user}",
+
+    "selectIdentity": "Select the identity for this job",
+    "selectIdentityInfo": "It is detected that you have multiple pending identities for the current job, please select an identity to handle this job",
+
+    "org": "Unit",
+    "duty": "Duty"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

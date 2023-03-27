@@ -24,7 +24,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	CacheCategory cacheCategory = new CacheCategory(Page.class, Widget.class, Script.class, com.x.processplatform.core.entity.element.Script.class,
-			com.x.cms.core.entity.element.Script.class);
+			com.x.cms.core.entity.element.Script.class, com.x.program.center.core.entity.Script.class);
 
 	public static class AbstractWo extends WoMaxAgeFastETag {
 
@@ -225,6 +225,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
 		public static final String TYPE_CMS = "cms";
 		public static final String TYPE_PORTAL = "portal";
+		public static final String TYPE_SERVICE = "service";
 
 		public RelatedScript() {
 

@@ -40,9 +40,9 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Documenteditor", null, f
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Htmleditor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.TinyMCEEditor", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Office", null, false);
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.IWebOffice", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.YozoOffice", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OnlyOffice", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.OfficeOnline", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.WpsOffice", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.WpsOffice2", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Attachment", null, false);

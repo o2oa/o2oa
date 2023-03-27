@@ -6,7 +6,8 @@ o2.LP = window.LP || {
     "flat_style": "扁平风格",
     "cmsName" : "内容管理",
     "processName" : "流程管理",
-    "portalName" : "门户管理"
+    "portalName" : "门户管理",
+    "serviceName" : "服务管理"
 };
 
 o2.LP.process = {
@@ -325,6 +326,7 @@ o2.LP.widget = {
     "uploadInfor": "请选择要上传的文件",
     "delete": "删除",
     "previewAtt" : "预览",
+    "editAtt" : "编辑",
     "replace": "替换",
     "select": "选择",
 

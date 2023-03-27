@@ -407,6 +407,9 @@ class ActionMerge extends BaseAction {
 						case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
 							portalScript(business, map, entry);
 							break;
+						case WorkCompletedProperties.RelatedScript.TYPE_SERVICE:
+							serviceScript(business, map, entry);
+							break;
 						default:
 							break;
 						}
@@ -416,6 +419,16 @@ class ActionMerge extends BaseAction {
 				}
 				storeForm.setRelatedScriptMap(map);
 			}, ThisApplication.threadPool());
+		}
+
+		private void serviceScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)
+				throws Exception {
+			com.x.program.center.core.entity.Script script = business.element().get(entry.getKey(),
+					com.x.program.center.core.entity.Script.class);
+			if (null != script) {
+				map.put(entry.getKey(), new RelatedScript(script.getId(), script.getName(), script.getAlias(),
+						script.getText(), entry.getValue()));
+			}
 		}
 
 		private void portalScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)

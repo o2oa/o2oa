@@ -247,8 +247,8 @@ public class Business {
 
 	public boolean buildQuery(String query) throws Exception {
 		boolean result = false;
-		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build,
-				Table.query_FIELDNAME, query);
+		List<Table> tables = emc.listEqualAndEqual(Table.class, Table.STATUS_FIELDNAME, Table.STATUS_BUILD,
+				Table.QUERY_FIELDNAME, query);
 		if (ListTools.isEmpty(tables)) {
 			return true;
 		}

@@ -617,6 +617,16 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
         private Boolean allowReset;
 
+        private Boolean processingTaskOnceUnderSamePerson;
+
+        public Boolean getProcessingTaskOnceUnderSamePerson() {
+            return processingTaskOnceUnderSamePerson;
+        }
+
+        public void setProcessingTaskOnceUnderSamePerson(Boolean processingTaskOnceUnderSamePerson) {
+            this.processingTaskOnceUnderSamePerson = processingTaskOnceUnderSamePerson;
+        }
+
         private ManualMode manualMode;
 
         private JsonElement customData;

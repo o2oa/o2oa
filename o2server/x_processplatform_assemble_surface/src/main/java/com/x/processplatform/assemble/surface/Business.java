@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import com.x.processplatform.assemble.surface.factory.element.*;
+import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -395,6 +396,15 @@ public class Business {
 			this.portal = new PortalFactory(this);
 		}
 		return portal;
+	}
+
+	private CenterServiceFactory centerService;
+
+	public CenterServiceFactory centerService() throws Exception {
+		if (null == this.centerService) {
+			this.centerService = new CenterServiceFactory(this);
+		}
+		return centerService;
 	}
 
 	public Activity getActivity(Work work) throws Exception {

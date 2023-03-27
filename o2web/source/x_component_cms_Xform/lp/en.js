@@ -43,6 +43,12 @@ MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform
     "readedCountText": "Total {person} people, {count} reads",
     "defaultReadedLogText": "<font style='color:#00F;'>{person}</font>({department}) read in <font style='color:#00F'>{date}</font>, A total of <font style='color:#00F'>{count}</font> times",
 
+    "commendLogTitle" : "Commend Log",
+    "commendLogPerson" : "Commend Person",
+    "commendCountText" : "Total {count} Commend",
+    "commendLogTime" : "Commend Time",
+    "defaultCommendLogText" : "<font style='color:#00F;'>{person}</font> Commend in<font style='color:#00F'>{date}</font>",
+
     "reply": "Comment",
     "commentTitle": "Comment Area",
     "commentCountText": "Total {count} comments",
@@ -74,6 +80,10 @@ MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform
     "severalHourAgo": "{count}hours ago",
     "severalMintuesAgo": "{count} minutes ago",
     "justNow": "JustNow",
+    "commend": {
+        "do": "Commend",
+        "undo": "Un Commend"
+    },
     "form": {
         "close":"Close",
         "closeTitle": "Close Document",

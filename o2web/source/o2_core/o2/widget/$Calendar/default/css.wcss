@@ -136,6 +136,14 @@
 		"border": "1px solid #FFF",
 		"color": "#000"
 	},
+	"disable_default": {
+		"opacity": "0.3",
+		"cursor": "not-allowed"
+	},
+	"notdisable_default": {
+		"opacity": "1",
+		"cursor": "pointer"
+	},
 	"dateBottom": {
 		"width": "148px",
 		"height": "10px",

@@ -331,7 +331,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "yozoOffice" : "永中控件",
-        "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
         "SmartBI":"SmartBI报表",
@@ -464,6 +463,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "是否只读",
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
+        "itemStyle": "条目样式",
         "actionStyles": "按钮样式",
         "imageStyles": "图片样式",
         "compute": "计算",
@@ -508,6 +508,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalRow": "总计行",
         "sectionAmountCellStyle": "区段总计单元格样式",
         "showAllSection": "显示所有区段",
+
+        "rangeByDatetime": "日期时间范围",
+        "rangeByDateAndTime": "日期范围和时间范围",
+        "rangeByDate": "日期范围",
+        "rangeByTime": "时间范围",
+        "rangeByOhter": "其他",
+        "enableDate": "有效日期",
+        "enableHours": "有效小时范围",
+        "enableMinutes": "有效分钟范围",
+        "enableSeconds": "有效秒范围",
 
         "decimal": "小数点",
 
@@ -714,6 +724,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
         "allowEdit": "允许编辑",
+        "officeTool": "Office预览/编辑工具",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
@@ -1482,6 +1493,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     },
     "wpsoffice":{
         "nosetup":"请先安装WpsOffice应用",
+    },
+    "officeonline":{
+        "nosetup":"请先安装OfficeOnline应用",
     },
     "actionBar": {
         "close":"关闭",

@@ -4,6 +4,10 @@ o2.xApplication.systemconfig.LP = {
     "default": "默认",
     "permissionDenied": "当前用户权限不足，您必须使用管理员帐号访问系统配置",
 
+    "yes": "是",
+    "no": "否",
+    "uploadInfo": "将文件拖到此处，或点击上传",
+
     "baseConfig": "基础配置",
     "systemInfo": "系统信息",
     "uiConfig": "界面配置",

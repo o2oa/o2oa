@@ -1,7 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.importmodel;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,6 +20,7 @@ import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.ImportModel;
 import com.x.query.core.entity.ImportRecord;
 import com.x.query.core.entity.Query;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionExecute extends BaseAction {
 
@@ -39,9 +38,6 @@ class ActionExecute extends BaseAction {
 			Query query = business.pick(model.getQuery(), Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(model.getQuery(), Query.class);
-			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			if (!business.readable(effectivePerson, model)) {
 				throw new ExceptionAccessDenied(effectivePerson, model);

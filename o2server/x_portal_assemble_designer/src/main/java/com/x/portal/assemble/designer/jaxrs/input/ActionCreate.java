@@ -7,11 +7,16 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDictItem;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.File;
 import com.x.portal.core.entity.Page;
@@ -91,15 +96,42 @@ class ActionCreate extends BaseAction {
 			obj.setPortal(portal.getId());
 			persistObjects.add(obj);
 		}
+		for (WrapApplicationDict _o : wi.getApplicationDictList()) {
+			ApplicationDict obj = business.entityManagerContainer().find(_o.getId(), ApplicationDict.class);
+			if (null != obj) {
+				throw new ExceptionEntityExistForCreate(_o.getId(), ApplicationDict.class);
+			}
+			obj = WrapApplicationDict.inCopier.copy(_o);
+			obj.setApplication(portal.getId());
+			obj.setProject(ApplicationDict.PROJECT_PORTAL);
+			persistObjects.add(obj);
+			DataItemConverter<ApplicationDictItem> converter = new DataItemConverter<>(ApplicationDictItem.class);
+			List<ApplicationDictItem> list = converter.disassemble(_o.getData());
+			for (ApplicationDictItem o : list) {
+				o.setBundle(obj.getId());
+				/** 将数据字典和数据存放在同一个分区 */
+				o.setDistributeFactor(obj.getDistributeFactor());
+				o.setApplication(obj.getApplication());
+				persistObjects.add(o);
+			}
+		}
 		business.entityManagerContainer().beginTransaction(Portal.class);
 		business.entityManagerContainer().beginTransaction(Widget.class);
 		business.entityManagerContainer().beginTransaction(Page.class);
 		business.entityManagerContainer().beginTransaction(Script.class);
 		business.entityManagerContainer().beginTransaction(File.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDict.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDictItem.class);
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
+		CacheManager.notify(ApplicationDictItem.class);
+		CacheManager.notify(ApplicationDict.class);
+		CacheManager.notify(Script.class);
+		CacheManager.notify(Page.class);
+		CacheManager.notify(Widget.class);
+		CacheManager.notify(Portal.class);
 		return portal;
 	}
 

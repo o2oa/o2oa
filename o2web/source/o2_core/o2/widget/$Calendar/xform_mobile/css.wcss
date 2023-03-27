@@ -157,6 +157,14 @@
 		"border": "0px solid #FFF",
 		"color": "#333"
 	},
+	"disable_xform_mobile": {
+		"opacity": "0.3",
+		"cursor": "not-allowed"
+	},
+	"notdisable_xform_mobile": {
+		"opacity": "1",
+		"cursor": "pointer"
+	},
 	"dateBottom": {
 		"display": "none"
 	},

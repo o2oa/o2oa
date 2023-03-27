@@ -49,7 +49,8 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Retrac
  * 1.活动环节设置允许召回
  * 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
  * 3.回溯活动如果经过一些非人工环节那么也可以召回.
- * 在control中同样进行了这3个点的判断 
+ * 在control中同样进行了这3个点的判断
+ * 
  * @author ray
  */
 class V2Retract extends BaseAction {
@@ -112,8 +113,9 @@ class V2Retract extends BaseAction {
                 throw new ExceptionRetractNoWorkLog(work.getId());
             }
 
-            if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
-                    TaskCompleted.activityToken_FIELDNAME, work.getActivityToken()) > 0) {
+            if (emc.countEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
+                    TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
+                    false) > 0) {
                 throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
             }
 

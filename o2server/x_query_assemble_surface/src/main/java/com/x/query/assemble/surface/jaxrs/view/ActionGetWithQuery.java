@@ -1,7 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
-import java.util.Optional;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -17,6 +15,8 @@ import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 
+import java.util.Optional;
+
 class ActionGetWithQuery extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String queryFlag) throws Exception {
@@ -26,9 +26,6 @@ class ActionGetWithQuery extends BaseAction {
 			Query query = business.pick(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
-			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			CacheKey cacheKey = new CacheKey(this.getClass(), flag, queryFlag);
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);

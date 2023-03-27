@@ -19,7 +19,7 @@ import com.x.processplatform.core.entity.element.Script;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	CacheCategory cacheCategory = new CacheCategory(Form.class, Script.class, com.x.portal.core.entity.Script.class,
-			com.x.cms.core.entity.element.Script.class);
+			com.x.cms.core.entity.element.Script.class, com.x.program.center.core.entity.Script.class);
 
 	public static class AbstractWo extends WoMaxAgeFastETag {
 
@@ -77,6 +77,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				com.x.portal.core.entity.Script p = business.portal().script().pick(entry.getKey());
 				if (null != p) {
 					list.add(p.getId() + p.getUpdateTime().getTime());
+				}
+				break;
+			case WorkCompletedProperties.RelatedScript.TYPE_SERVICE:
+				com.x.program.center.core.entity.Script cs = business.centerService().script().pick(entry.getKey());
+				if (null != cs) {
+					list.add(cs.getId() + cs.getUpdateTime().getTime());
 				}
 				break;
 			default:

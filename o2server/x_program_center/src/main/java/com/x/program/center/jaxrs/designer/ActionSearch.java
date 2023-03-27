@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.x.program.center.core.entity.Script;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -47,13 +48,17 @@ class ActionSearch extends BaseAction {
 		List<CompletableFuture<List<Wo>>> list = new ArrayList<>();
 		Map<String, List<String>> designerMap = wi.getAppDesigner();
 		List<String> appList = wi.getAppIdList();
-		if ((wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
-				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()))) {
+		boolean flag = (wi.getDesignerTypes().isEmpty() || wi.getDesignerTypes().contains(DesignerType.script.toString()))
+				&& (designerMap.isEmpty() || designerMap.containsKey(DesignerType.script.toString()));
+		if (flag) {
 			if (appList.isEmpty() || appList.contains("invoke")) {
 				list.add(searchInvoke(wi, designerMap.get(DesignerType.script.toString())));
 			}
 			if (appList.isEmpty() || appList.contains("agent")) {
 				list.add(searchAgent(wi, designerMap.get(DesignerType.script.toString())));
+			}
+			if (appList.isEmpty() || appList.contains("script")) {
+				list.add(searchScript(wi, designerMap.get(DesignerType.script.toString())));
 			}
 		}
 		for (CompletableFuture<List<Wo>> cf : list) {
@@ -137,6 +142,40 @@ class ActionSearch extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
+	private CompletableFuture<List<Wo>> searchScript(final Wi wi, final List<String> designerIdList) {
+		return CompletableFuture.supplyAsync(() -> {
+			List<Wo> resWos = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				List<WoScript> woScripts;
+				if (ListTools.isNotEmpty(designerIdList)) {
+					woScripts = emc.fetchIn(Script.class, WoScript.copier, Script.id_FIELDNAME, designerIdList);
+				} else {
+					woScripts = emc.fetchAll(Script.class, WoScript.copier);
+				}
+				for (WoScript woScript : woScripts) {
+					Map<String, String> map = PropertyTools.fieldMatchKeyword(WoScript.copier.getCopyFields(), woScript,
+							wi.getKeyword(), wi.getCaseSensitive(), wi.getMatchWholeWord(), wi.getMatchRegExp());
+					if (!map.isEmpty()) {
+						Wo wo = new Wo();
+						wo.setAppId("script");
+						wo.setAppName("脚本");
+						wo.setDesignerId(woScript.getId());
+						wo.setDesignerName(woScript.getName());
+						wo.setDesignerType(DesignerType.script.toString());
+						wo.setUpdateTime(woScript.getUpdateTime());
+						wo.setPatternList(map);
+						resWos.add(wo);
+					}
+				}
+				woScripts.clear();
+				woScripts = null;
+			} catch (Exception e) {
+				logger.error(e);
+			}
+			return resWos;
+		}, ThisApplication.threadPool());
+	}
+
 	public static class Wi extends WiDesigner {
 
 		private static final long serialVersionUID = -1206063330229635926L;
@@ -164,6 +203,15 @@ class ActionSearch extends BaseAction {
 
 		static WrapCopier<Invoke, WoInvoke> copier = WrapCopierFactory.wo(Invoke.class, WoInvoke.class,
 				JpaObject.singularAttributeField(Invoke.class, true, false), null);
+
+	}
+
+	public static class WoScript extends Script {
+
+		private static final long serialVersionUID = -2827499190327453019L;
+
+		static WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo(Script.class, WoScript.class,
+				JpaObject.singularAttributeField(Script.class, true, false), null);
 
 	}
 

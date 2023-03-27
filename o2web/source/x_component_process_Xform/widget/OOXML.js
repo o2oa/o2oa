@@ -77,7 +77,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         this.rid = 11;
     },
     getDPI: function(){
-        debugger;
         var div = new Element("div", {"styles": {"width": "1in", "height": "1in"}}).inject(document.body);
         var dpi = div.offsetWidth.toInt();
         div.destroy();
@@ -379,9 +378,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     var node = dom.firstChild;
                     while (node){
                         if (node.nodeType===Node.TEXT_NODE){
-                            if (node.nodeValue.trim()){
+                            var text = node.nodeValue.replace(/(?=\s|\n|\r|\t)[^\u3000]/g, '');
+                            if (text){
                                 var oo_p = this.createParagraphFromDom(dom, oo_body, append);
-                                this.processRun(dom, oo_p, dom, node.nodeValue);
+                                this.processRun(dom, oo_p, dom, text);
                             }
                         }else{
                             this.processParagraph(node, oo_body, append);
@@ -401,8 +401,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 }else if (dom.hasClass("doc_layout_attachment_text")){
                     this.processFiletext(dom, oo_body, append);
                 }else if (dom.hasClass("doc_layout_editionArea")){
-
-                    debugger;
                     var wordSection = dom.getParent(".WordSection1");
 
                     var h = this.pxToPt(dom.getSize().y);
@@ -419,15 +417,27 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     }
                     top += offsetY;
 
+                    var tmpp = new Element("p").set('class', 'MsoNormal').set('html', '&nbsp;').inject(dom, "top");
+                    var lineHeight = tmpp.getSize().y;
+                    tmpp.destroy();
+
                     var tmp = (top+h)/pageH;
-                    var tmp2 = (top)/pageH;
+                    var tmp2 = (top+lineHeight)/pageH;
                     var ps = tmp.toInt();
                     var ps2 = tmp2.toInt();
                     if (tmp>ps) ps = ps+1;
                     if (tmp2>ps2) ps2 = ps2+1;
                     if ((ps % 2)!=0){
-                        var p = new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");
-                        if ((ps2 % 2)==0){new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");}
+                        // var p = new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");
+                        // if ((ps2 % 2)==0){new Element("p", {"styles": {"page-break-after":"always"}}).inject(dom, "top");}
+                        var p = new Element("p").set('class', 'MsoNormal').set('html', '&nbsp;').setStyles({"page-break-after":"always"}).inject(dom, "top");
+                        var lineHeight = p.getSize().y;
+                        new Element("p").set("html", "<br>").inject(dom, "top");
+                        if (ps2<ps) {
+                            if ((ps2 - tmp2) * pageH > this.pxToPt(lineHeight)) {
+                                new Element("p").set('class', 'MsoNormal').setStyles({"page-break-after": "always"}).inject(dom, "top");
+                            }
+                        }
                     }
                     this.processDom(dom, oo_body, append, divAsP);
 
@@ -474,10 +484,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
     processFiletext: function(dom, oo_body, append){
         var node = dom.firstChild;
         if (node && node.nodeType===Node.TEXT_NODE){
-            var text = node.nodeValue.replace(/[\u200B-\u200D\uFEFF]/g, '')
+            var text = node.nodeValue.replace(/(?=\s|\n|\r|\t)[^\u3000]/g, '');
             if (text){
                 var oo_p = this.createParagraphFromDom(dom, oo_body, append);
-                this.processRun(dom, oo_p, dom, node.nodeValue);
+                this.processRun(dom, oo_p, dom, text);
             }
         }
         node = dom.getFirst();
@@ -506,14 +516,18 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         node = node.firstChild;
         while (node){
             if (node.nodeType===Node.TEXT_NODE){
-                if (node.nodeValue.trim()) this.processRun(node.parentElement || node.parentNode, oo_p, p, node.nodeValue);
+                var text = node.nodeValue.replace(/(?=\s|\n|\r|\t)[^\u3000]/g, '');
+                if (text) this.processRun(node.parentElement || node.parentNode, oo_p, p, text);
             }else if (node.nodeType===Node.ELEMENT_NODE){
                 if (node.getStyle("display") === "none") {
                     continue;
                 }else if (node.tagName.toLowerCase() === "span") {
                     this.processRun(node, oo_p, p);
                 }else if (node.tagName.toLowerCase() === "br") {
-                    if (node.nextSibling) this.processRun(node, oo_p, p, "", "br");
+                    // if (node.nextSibling)
+                    if (node.nextSibling || (!node.nextSibling && !node.previousSibling)){
+                        this.processRun(node, oo_p, p, "", "br");
+                    }
                 }else if (node.tagName.toLowerCase() === "div" || node.tagName.toLowerCase() === "p") {
                     if (!this.isEmptyP(oo_p)){
                         oo_p = this.createParagraphFromDom(node, oo_body, append);
@@ -894,9 +908,10 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     this.processTableDom(dom, oo_body, append, divAsP);
                 }
             }else if (dom.nodeType===Node.TEXT_NODE){
-                if (dom.nodeValue.trim()){
+                var text = dom.nodeValue.replace(/(?=\s|\n|\r|\t)[^\u3000]/g, '');
+                if (text){
                     if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom.parentElement || dom.parentNode, oo_body, dom.parentElement);
-                    this.processRun(dom.parentElement || dom.parentNode, oo_body, append, dom.nodeValue);
+                    this.processRun(dom.parentElement || dom.parentNode, oo_body, append, text);
                 }
             }else{
                 this.processTableDom(dom, oo_body, append);
@@ -905,7 +920,6 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         }
     },
     arrangeTable: function(table){
-        debugger;
         //检查table，不合理的colspan
         var tableMatrix = [];
         var trs = table.rows;
@@ -1407,7 +1421,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var oo_drawing = this.createEl(oo_doc, "drawing");
 
         var msoStyle = this.getMsoStyle(img);
-debugger;
+
         var position = img.getStyle("position");
         var p = (msoStyle["mso-position-vertical"]==="absolute") ? "anchor" : "inline";
 
@@ -1847,7 +1861,7 @@ debugger;
             runPrs.br = br;
             var oo_run = this.createRun(oo_p.ownerDocument, runPrs);
             if (text){
-                text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
+                text = text.replace(/(?=\s|\n|\r|\t)[^\u3000]/g, '');
                 var oo_t = this.createEl(oo_run.ownerDocument,"t");
                 oo_t.appendChild(oo_run.ownerDocument.createTextNode(text));
                 oo_run.appendChild(oo_t);
@@ -1907,7 +1921,6 @@ debugger;
     },
 
     processRunTextDom: function(span, oo_p, runPrs){
-        debugger;
         var node = span.firstChild;
         while (node){
             if (node.nodeType===Node.ELEMENT_NODE){
@@ -2050,7 +2063,7 @@ debugger;
             r.appendChild(t);
         }
         if (options && options.br){
-            var oo_br = this.createEl(xmlDoc,"br");
+            var oo_br = this.createEl(xmlDoc,"t");
             r.appendChild(oo_br);
         }
         if (options && options.font){

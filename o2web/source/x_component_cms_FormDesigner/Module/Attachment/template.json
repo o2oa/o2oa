@@ -109,6 +109,8 @@
   "readonly": "n",
   "isUpload": "y",
   "isDelete": "y",
+  "isPreviewAtt": "n",
+  "isEditAtt": "n",
   "isReplace": "y",
   "isDownload": "y",
   "toolbarGroupHidden" : [],

@@ -80,6 +80,8 @@ function selectSkin(skin){
   margin-right: 10px;
   overflow: hidden;
   cursor: pointer;
+  width: 50px;
+  word-break: break-all;
 }
 .item_skin_current{
 
@@ -92,6 +94,7 @@ function selectSkin(skin){
   color: #ffffff;
   font-weight: bold;
   font-size: 18px;
+  margin: auto;
 }
 
 </style>

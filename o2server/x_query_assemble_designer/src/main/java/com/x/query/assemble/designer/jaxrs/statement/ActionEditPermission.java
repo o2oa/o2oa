@@ -73,8 +73,8 @@ class ActionEditPermission extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Statement> copier = WrapCopierFactory.wi(Wi.class, Statement.class,
-				ListTools.toList(Statement.executePersonList_FIELDNAME, Statement.executeUnitList_FIELDNAME,
-						Statement.executeGroupList_FIELDNAME, Statement.anonymousAccessible_FIELDNAME),
+				ListTools.toList(Statement.EXECUTEPERSONLIST_FIELDNAME, Statement.EXECUTEUNITLIST_FIELDNAME,
+						Statement.EXECUTEGROUPLIST_FIELDNAME, Statement.ANONYMOUSACCESSIBLE_FIELDNAME),
 				null);
 	}
 }

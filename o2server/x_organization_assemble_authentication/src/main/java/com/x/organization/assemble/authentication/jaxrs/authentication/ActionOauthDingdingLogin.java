@@ -41,7 +41,7 @@ public class ActionOauthDingdingLogin extends BaseAction {
 			Business business = new Business(emc);
 
 			// 请求钉钉用户信息地址
-			String url = "https://oapi.dingtalk.com/sns/getuserinfo_bycode";
+			String url =  Config.dingding().getOapiAddress() + "/sns/getuserinfo_bycode";
 
 			// 请求参数 签名
 			String timestamp = new Date().getTime() + "";
@@ -59,7 +59,7 @@ public class ActionOauthDingdingLogin extends BaseAction {
 			String unionid = userInfo.get("unionid").getAsString();
 			// 通过unionid获取用户userId
 			// https://oapi.dingtalk.com/user/getUseridByUnionid?access_token=ACCESS_TOKEN&unionid=xxx
-			String getDingUserIdUrl = "https://oapi.dingtalk.com/user/getUseridByUnionid?access_token="
+			String getDingUserIdUrl =  Config.dingding().getOapiAddress() + "/user/getUseridByUnionid?access_token="
 					+ Config.dingding().corpAccessToken() + "&unionid=" + unionid;
 			String dingUserBackString = HttpConnection.getAsString(getDingUserIdUrl, null);
 			JsonElement dingBackJsonElement = getDingJsonData(dingUserBackString);

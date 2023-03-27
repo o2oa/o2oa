@@ -16,8 +16,10 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
     },
     "modules": {
         "reader": "Reader",
+        "commend": "Commend",
         "author": "Author",
         "log": "Readed Log",
+        "logCommend" : "Commend Log",
         "comment": "Comment"
     },
     "formStyle":{
@@ -83,6 +85,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "setTop": "Top",
         "setTopTitle": "Set the document to the top",
         "cancelTop": "Cancel Top",
-        "cancelTopTitle": "Cancel the top of the document"
+        "cancelTopTitle": "Cancel the top of the document",
+        "downloadAll": "Download all",
+        "downloadAllTitle": "Download all"
     }
 });

@@ -6,7 +6,8 @@ o2.LP = window.LP || {
 	"flat_style": "Flat",
 	"cmsName" : "CMS",
 	"processName" : "Process",
-	"portalName" : "Portal"
+	"portalName" : "Portal",
+	"serviceName" : "Service"
 };
 
 o2.LP.process = {
@@ -340,7 +341,7 @@ o2.LP.widget = {
 	"sequence": "Sequence",
 	"icon": "Icon",
 	"preview": "Preview",
-
+	"editAtt" : "Edit",
 
 	"min": "Simple Mode",
 	"max": "Full Mode",

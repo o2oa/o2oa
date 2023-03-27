@@ -32,7 +32,7 @@ class ActionLogin extends BaseAction {
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			String url = "https://oapi.dingtalk.com/user/getuserinfo?access_token="
+			String url =  Config.dingding().getOapiAddress() + "/user/getuserinfo?access_token="
 					+ Config.dingding().corpAccessToken() + "&code=" + code;
 			String value = this.get(url);
 			Resp resp = gson.fromJson(value, Resp.class);
@@ -43,7 +43,7 @@ class ActionLogin extends BaseAction {
 
 			String userId = resp.getUserid();
 
-			url = "https://oapi.dingtalk.com/user/get?access_token=" + Config.dingding().corpAccessToken() + "&userid="
+			url =  Config.dingding().getOapiAddress() + "/user/get?access_token=" + Config.dingding().corpAccessToken() + "&userid="
 					+ userId;
 
 			value = this.get(url);

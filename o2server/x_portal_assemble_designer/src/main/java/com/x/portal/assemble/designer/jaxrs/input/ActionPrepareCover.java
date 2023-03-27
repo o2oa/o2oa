@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -105,6 +107,19 @@ class ActionPrepareCover extends BaseAction {
 			if ((null != m.getW()) && (null != m.getT())) {
 				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
 					if (StringUtils.equals(m.getW().getPortal(), m.getT().getPortal())) {
+						wos.add(new Wo(m.getW().getId(), m.getT().getId()));
+					} else {
+						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));
+					}
+				}
+			}
+		}
+		for (MatchElement<WrapApplicationDict, ApplicationDict> m : this.match(business, wi.getApplicationDictList(),
+				ListUtils.union(this.listWithIds(business, wi.getApplicationDictList(), ApplicationDict.class),
+						business.applicationDict().listWithApplicationObject(exist.getId())))) {
+			if ((null != m.getW()) && (null != m.getT())) {
+				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
+					if (StringUtils.equals(m.getW().getApplication(), m.getT().getApplication())) {
 						wos.add(new Wo(m.getW().getId(), m.getT().getId()));
 					} else {
 						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));

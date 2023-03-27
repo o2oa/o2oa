@@ -242,5 +242,8 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     },
     cancelTop: function(){
         this.form.cancelTop();
-    }
-}); 
+    },
+    downloadAll: function(){
+        this.form.downloadAll();
+    },
+});

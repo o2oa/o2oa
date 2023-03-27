@@ -1,11 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.list.TreeList;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -25,6 +19,11 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Runtime;
+import org.apache.commons.collections4.list.TreeList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class ActionBundleWithQuery extends BaseAction {
 
@@ -39,9 +38,6 @@ class ActionBundleWithQuery extends BaseAction {
 			Query query = business.pick(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
-			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			String id = business.view().getWithQuery(flag, query);
 			view = business.pick(id, View.class);
@@ -68,7 +64,7 @@ class ActionBundleWithQuery extends BaseAction {
 	public static class Wo extends WrapStringList {
 
 		private static final long serialVersionUID = 5605585771471176727L;
-		
+
 		@FieldDescribe("访问execute秘钥串.")
 		private String key;
 
@@ -83,7 +79,7 @@ class ActionBundleWithQuery extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
-		
+
 		private static final long serialVersionUID = 6425066184455473281L;
 
 		@FieldDescribe("过滤")

@@ -8,6 +8,7 @@ import com.x.base.core.project.annotation.ModuleType;
 @Module(type = ModuleType.SERVICE, category = ModuleCategory.OFFICIAL, name = "流程服务", packageName = "com.x.processplatform.service.processing", containerEntities = {
         "com.x.cms.core.entity.element.Script",
         "com.x.portal.core.entity.Script",
+        "com.x.program.center.core.entity.Script",
         "com.x.processplatform.core.entity.content.Attachment",
         "com.x.processplatform.core.entity.content.DocSign",
         "com.x.processplatform.core.entity.content.DocSignScrawl",
@@ -54,7 +55,8 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.processplatform.core.entity.message.WorkEvent",
         "com.x.query.core.entity.Item", }, storageTypes = { StorageType.processPlatform }, storeJars = {
                 "x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
-                "x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity", "x_portal_core_entity" })
+                "x_processplatform_core_express", "x_query_core_entity", "x_cms_core_entity", "x_portal_core_entity",
+        "x_program_center_core_entity" })
 public class x_processplatform_service_processing extends Deployable {
 
 }

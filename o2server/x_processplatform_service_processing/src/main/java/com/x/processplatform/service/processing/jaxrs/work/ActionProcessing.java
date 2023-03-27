@@ -20,9 +20,12 @@ import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionProcessing extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+        LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+                () -> jsonElement);
 
         String job;
 
@@ -48,7 +51,6 @@ class ActionProcessing extends BaseAction {
             open(id, wi);
             Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300,
                     TimeUnit.SECONDS);
-            // persistSignalStack(id, job, wi);
             result.setData(wo);
             return result;
         } finally {
@@ -63,22 +65,6 @@ class ActionProcessing extends BaseAction {
     private void close(String id, Wi wi) {
         ThisApplication.getProcessingToProcessingSignalStack().close(id, wi.getSeries());
     }
-
-//	private void persistSignalStack(String id, String job, Wi wi) throws Exception {
-//		if (BooleanUtils.isNotTrue(Config.processPlatform().getProcessingSignalPersistEnable())) {
-//			return;
-//		}
-//		new Thread(() -> {
-//			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//				emc.beginTransaction(SignalStackLog.class);
-//				SignalStackLog log = new SignalStackLog(id, job, wi.getSignalStack());
-//				emc.persist(log, CheckPersistType.all);
-//				emc.commit();
-//			} catch (Exception e) {
-//				logger.error(e);
-//			}
-//		}).start();
-//	}
 
     private class CallableExecute implements Callable<Wo> {
         private Wi wi;
