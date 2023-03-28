@@ -62,14 +62,23 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
     "systemTable":"System Table",
     "customTable":"self-built table",
-    "taskInstance":"Process Task",
-    "taskCompletedInstance": "Process TaskCompleted",
-    "readInstance":"Process Read",
-    "readedInstance":"Process Readed",
-    "workInstance":"Process Work",
-    "workCompletedInstance":"Process workCompleted",
-    "reviewInstance":"Process Review",
-    "documentInstance":"CMS Document",
+    "taskInstance":"Task()",
+    "taskCompletedInstance": "TaskCompleted",
+    "readInstance":"Read",
+    "readedInstance":"Readed",
+    "workInstance":"Work",
+    "workCompletedInstance":"workCompleted",
+    "reviewInstance":"Review",
+    "documentInstance":"Document",
+
+    "taskInstanceSql":"待办(PP_C_TASK)",
+    "taskCompletedInstanceSql": "已办(PP_C_TASKCOMPLETED)",
+    "readInstanceSql":"待阅(PP_C_READ)",
+    "readedInstanceSql":"已阅(PP_C_READCOMPLETED)",
+    "workInstanceSql":"流程实例(PP_C_WORK)",
+    "workCompletedInstanceSql":"已完成流程实例(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql":"可阅读(PP_C_REVIEW)",
+    "documentInstanceSql":"内容管理文档(CMS_DOCUMENT)",
 
     "propertyTemplate": {
 

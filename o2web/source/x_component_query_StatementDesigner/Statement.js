@@ -319,11 +319,16 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.entityCategorySelect = this.areaNode.getElement(".o2_statement_statementDesignerCategoryContent").getElement("select");
 
             this.dynamicTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_dynamic");
+
             this.officialTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_official");
+            this.jpqlOfficalTable = this.areaNode.getElement(".o2_statement_statementDesignerOfficialTable_JPQL");
+            this.sqlOfficalTable = this.areaNode.getElement(".o2_statement_statementDesignerOfficialTable_SQL");
+
             this.customTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_custom");
 
             this.dynamicTableSelect = this.areaNode.getElement(".o2_statement_statementDesignerSelectTable");
-            this.officialTableSelect = this.officialTableArea.getElement("select");
+            this.officialTableSelectJPQL = this.jpqlOfficalTable.getElement("select");
+            this.officialTableSelectSQL = this.sqlOfficalTable.getElement("select");
 
             this.fieldSelect = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_field").getElement("select");
             this.loadFieldSelect();
@@ -858,6 +863,26 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }.bind(this));
         }.bind(this), false);
     },
+    getSQLTableByEntity: function(entityClassName){
+        switch (entityClassName) {
+            case "com.x.processplatform.core.entity.content.Task":
+                return "PP_C_TASK";
+            case "com.x.processplatform.core.entity.content.TaskCompleted":
+                return "";
+            case "com.x.processplatform.core.entity.content.Read":
+                return "";
+            case "com.x.processplatform.core.entity.content.ReadCompleted":
+                return "";
+            case "com.x.processplatform.core.entity.content.Work":
+                return "";
+            case "com.x.processplatform.core.entity.content.WorkCompleted":
+                return "";
+            case "com.x.processplatform.core.entity.content.Review":
+                return "";
+            case "com.x.cms.core.entity.Document":
+                return "";
+        }
+    },
     setEvent: function () {
         this.designerArea.addEvent("click", function (e) {
             this.selected();
@@ -948,7 +973,23 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
         }.bind(this));
         //@todo change table
-        this.officialTableSelect.addEvent("change", function (e) {
+        this.officialTableSelectJPQL.addEvent("change", function (e) {
+            debugger;
+            var entityClassName = e.target.options[e.target.selectedIndex].value;
+            this.json.entityClassName = entityClassName;
+            if( entityClassName ){
+                this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
+            }
+            this.loadFieldSelect();
+
+            this.json.table = "";
+            this.json.tableObj = null;
+
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
+
+        }.bind(this));
+
+        this.officialTableSelectSQL.addEvent("change", function (e) {
             debugger;
             var entityClassName = e.target.options[e.target.selectedIndex].value;
             this.json.entityClassName = entityClassName;

@@ -61,14 +61,24 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
     "systemTable":"系统表",
     "customTable":"自建数据表",
-    "taskInstance":"待办(Task)",
-    "taskCompletedInstance": "已办(TaskCompleted)",
-    "readInstance":"待阅(Read)",
-    "readedInstance":"已阅(ReadCompleted)",
-    "workInstance":"流程实例(Work)",
-    "workCompletedInstance":"已完成流程实例(WorkCompleted)",
-    "reviewInstance":"可阅读(Review)",
-    "documentInstance":"内容管理文档(Document)",
+
+    "taskInstance": "To do (Task)",
+    "taskCompletedInstance": "TaskCompleted (TaskCompleted)",
+    "readInstance": "Reading (Read)",
+    "readedInstance": "Read (ReadCompleted)",
+    "workInstance": "Process instance (Work)",
+    "workCompletedInstance": "Completed process instance (WorkCompleted)",
+    "reviewInstance": "Readable (Review)",
+    "documentInstance": "Content Management Document (Document)",
+    
+    "taskInstanceSql": "To do (PP_C_TASK)",
+    "taskCompletedInstanceSql": "TaskCompleted (PP_C_TASKCOMPLETED)",
+    "readInstanceSql": "Reading (PP_C_READ)",
+    "readedInstanceSql": "Read (PP_C_READCOMPLETED)",
+    "workInstanceSql": "Process instance (PP_C_WORK)",
+    "workCompletedInstanceSql": "Completed process instance (PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "Readable (PP_C_REVIEW)",
+    "documentInstanceSql": "Content Management Document (CMS_DOCUMENT)",
 
     "propertyTemplate": {
         // "statementFormat": "如何创建语句：",
