@@ -113,9 +113,9 @@ export default content({
             this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
             this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
             // 测试定位 
-            const marker = new BMap.Marker(point);
-            this.map.addOverlay(marker);
-            this.map.panTo(point);
+            // const marker = new BMap.Marker(point);
+            // this.map.addOverlay(marker);
+            // this.map.panTo(point);
             this.addControls();
             this.addMapClick();
         }

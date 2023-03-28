@@ -44,7 +44,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 // 周几 0-6 代表 星期天 - 星期六
                 int day = DateTools.dayForWeekAttendanceV2(date);
                 // 是否工作日
-                boolean isWorkDay = false ;
+                boolean isWorkDay = false;
                 // 查询打卡数据
                 List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(model.getPerson(), model.getDate());
                 AttendanceV2Group group = groups.get(0);
@@ -107,7 +107,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         // 查询班次对象
                         shift = emc.find(shiftId, AttendanceV2Shift.class);
                         if (shift == null) {
-                            throw new ExceptionQueueAttendanceV2Detail("班次对象查询不到，id："+shiftId);
+                            throw new ExceptionQueueAttendanceV2Detail("班次对象查询不到，id：" + shiftId);
                         }
                         List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
                         if (timeList == null || timeList.isEmpty()) {
@@ -153,7 +153,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                             null, null, null);
                     recordList.add(onDutyRecord);
                     // 下班打卡
-                    AttendanceV2CheckInRecord offDutyRecord =  saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OffDuty, group, null, model.getDate(),
+                    AttendanceV2CheckInRecord offDutyRecord = saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OffDuty, group, null, model.getDate(),
                             null, null, null);
                     recordList.add(offDutyRecord);
                 }
@@ -164,7 +164,6 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         updateRecord2NoCheckIn(emc, record);
                     }
                 }
-
 
 
                 // 迟到
@@ -207,7 +206,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 }
 
                 // 外勤打卡
-                List<AttendanceV2CheckInRecord> fieldWorkList = recordList.stream().filter((r)-> r.getFieldWork() != null && BooleanUtils.isTrue(r.getFieldWork())).collect(Collectors.toList());
+                List<AttendanceV2CheckInRecord> fieldWorkList = recordList.stream().filter((r) -> r.getFieldWork() != null && BooleanUtils.isTrue(r.getFieldWork())).collect(Collectors.toList());
 
                 // 考勤对象
                 List<AttendanceV2Detail> details = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndDate(model.getPerson(), model.getDate());
@@ -269,13 +268,14 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     logger.debug("考勤数据处理完成, {}", v2Detail.toString());
                 }
                 // 如果有异常打卡数据生成对应的数据
-                generateAppealInfo(emc, business, config, recordList);
+                generateAppealInfo(emc, business, config, recordList, BooleanUtils.isTrue(group.getFieldWorkMarkError()));
             }
         }
     }
 
     /**
      * 是否休息日
+     *
      * @param configs
      * @param date
      * @param group
@@ -328,15 +328,25 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
     /**
      * 如果开启了是否开启补卡申请功能 生成对应的异常打卡申请数据
      *
+     * @param config 配置
      * @param recordList
+     * @param fieldWorkMarkError 外勤是否标记为异常数据
      * @throws Exception
      */
-    private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList) throws Exception {
+    private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList, boolean fieldWorkMarkError) throws Exception {
         if (emc != null && business != null
                 && config != null && BooleanUtils.isTrue(config.getAppealEnable())
                 && recordList != null && !recordList.isEmpty()) {
             List<AttendanceV2CheckInRecord> list = recordList.stream().filter(
-                    record -> (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)&&!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL))
+                    record -> {
+                        if (fieldWorkMarkError) {
+                            return (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(record.getFieldWork())
+                            || (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)));
+                        } else {
+                            return !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                                    && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
+                        }
+                    }
             ).collect(Collectors.toList());
             if (!list.isEmpty()) {
                 for (AttendanceV2CheckInRecord record : list) {
@@ -360,7 +370,6 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
             }
         }
     }
-
 
 
     // 工作日 预存储数据更新未未打卡

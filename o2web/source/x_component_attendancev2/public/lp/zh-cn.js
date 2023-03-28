@@ -79,6 +79,7 @@ MWF.xApplication.attendancev2.LP = {
   myAttendanceTitle: "我的统计",
   myAttendanceCalendar: "考勤日历",
   myAttendanceStatistic: "考勤统计",
+  myFieldWork: "外勤",
 
   // 班次
   shiftTitle: "班次管理",
@@ -183,6 +184,7 @@ MWF.xApplication.attendancev2.LP = {
     fieldWork: "外勤打卡",
     allowFieldWork: "是否允许外勤打卡",
     requiredFieldWorkRemarks: "外勤打卡备注是否必填",
+    fieldWorkMarkError: "外勤打卡是否作为异常数据处理",
     requiredCheckInDate: "必须打卡的日期",
     requiredCheckInDateThDate: "日期",
     requiredCheckInDateThShift: "班次",

@@ -148,6 +148,11 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + requiredFieldWorkRemarks_FIELDNAME)
 	private Boolean requiredFieldWorkRemarks;
 
+	public static final String fieldWorkMarkError_FIELDNAME = "fieldWorkMarkError";
+	@FieldDescribe("外勤打卡是否作为异常数据处理.")
+	@Column(name = ColumnNamePrefix + fieldWorkMarkError_FIELDNAME)
+	private Boolean fieldWorkMarkError;
+
 	public static final String workPlaceIdList_FIELDNAME = "workPlaceIdList";
 	@FieldDescribe("工作场所列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -293,5 +298,13 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 	public void setTrueParticipantList(List<String> trueParticipantList) {
 		this.trueParticipantList = trueParticipantList;
+	}
+
+	public Boolean getFieldWorkMarkError() {
+		return fieldWorkMarkError;
+	}
+
+	public void setFieldWorkMarkError(Boolean fieldWorkMarkError) {
+		this.fieldWorkMarkError = fieldWorkMarkError;
 	}
 }

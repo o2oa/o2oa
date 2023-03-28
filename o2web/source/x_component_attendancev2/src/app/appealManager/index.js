@@ -60,7 +60,9 @@ export default content({
         return lp.appeal.seriousLate;
       } else if (record.checkInResult == 'NotSigned') {
         return lp.appeal.notSigned;
-      }
+      } else if (record.fieldWork) {
+        return lp.appeal.fieldWork;
+      } 
     }
     return "";
   },

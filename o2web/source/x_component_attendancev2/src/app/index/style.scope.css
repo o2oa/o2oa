@@ -24,6 +24,10 @@
 .color-999 {
   color: #999999;
 }
+/* 外勤 */
+.color-fieldWork {
+  color: #f7b55e;
+}
 .o2-divider--horizontal {
   display: block;
   height: 1px;

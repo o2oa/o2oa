@@ -80,7 +80,6 @@ public class ActionCreateUpdate extends BaseAction {
             } else { // 修改
                 Wi.copier.copy(wi, group);
             }
-            group.setCheckType(wi.getCheckType());
             group.setOperator(effectivePerson.getDistinguishedName());
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);

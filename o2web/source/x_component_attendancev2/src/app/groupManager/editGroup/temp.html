@@ -201,6 +201,12 @@
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.requiredFieldWorkRemarks}}</label>
                     </div>
+                    <div class="margin-top margin-left flex" @click="clickFieldWorkMarkError">
+                        <div class="o2-icon-14">
+                            <i class="{{ $.form.fieldWorkMarkError ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" >{{$.lp.groupForm.fieldWorkMarkError}}</label>
+                    </div>
                 </div>
             </div>
             <!-- 必须打卡的日期 -->

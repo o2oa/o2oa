@@ -36,7 +36,7 @@
           <div class="item-record-parent" oo-if="item.value.detail">
             <div class="item-record-child margin-left" oo-each="item.value.detail.recordList" oo-item="record">
               <div class="{{this.formatRecordStatusClass(record.value)}}"></div>
-              <div>{{ $m.formatRecord(record.value) }}</div>
+              <div>{{ $m.formatRecord(record.value) }} <span class="color-fieldWork  margin-left " oo-if="record.value.fieldWork">({{$.lp.myFieldWork}})</span></div>
             </div>
           </div>
         </div>
