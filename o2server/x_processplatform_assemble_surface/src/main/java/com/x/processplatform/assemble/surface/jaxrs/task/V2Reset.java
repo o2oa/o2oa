@@ -100,9 +100,7 @@ public class V2Reset extends BaseAction {
             updateTask(wi.getOpinion(), wi.getRouteName());
         }
 
-        if (BooleanUtils.isNotTrue(wi.getKeep())) {
-            this.processingTask();
-        }
+        this.processingTask();
 
         this.processingWork();
 
