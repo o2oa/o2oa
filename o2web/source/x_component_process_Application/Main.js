@@ -295,7 +295,7 @@ MWF.xApplication.process.Application.List = new Class({
 
 	loadFilter: function () {
 		var lp = this.lp;
-		debugger
+
 		this.fileterNode = new Element("div.fileterNode", {
 			"styles": this.css.fileterNode
 		}).inject(this.searchNode);
@@ -406,6 +406,11 @@ MWF.xApplication.process.Application.List = new Class({
 								}
 							}
 							result.applicationList = this.filterList.applicationList;
+
+							if(result.credentialList) {
+								result.creatorPersonList = result.credentialList;
+							}
+
 							this.filterList = result;
 							this.refresh();
 						}.bind(this)
