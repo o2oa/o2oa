@@ -109,7 +109,7 @@ public class ProcessFactory extends ElementFactory {
 
     /* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
     public List<String> listStartableWithApplication(EffectivePerson effectivePerson, List<String> identities,
-            List<String> units, List<String> groups, Application application) throws Exception {
+            List<String> units, List<String> groups, Application application, String terminal) throws Exception {
         EntityManager em = this.entityManagerContainer().get(Process.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -119,8 +119,6 @@ public class ProcessFactory extends ElementFactory {
             p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
                     cb.isEmpty(root.get(Process_.startableUnitList)),
                     cb.isEmpty(root.get(Process_.startableGroupList)));
-            // p = cb.or(p, cb.equal(root.get(Process_.creatorPerson),
-            // effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
             }
@@ -133,6 +131,10 @@ public class ProcessFactory extends ElementFactory {
         }
         p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
         p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
+        p = cb.and(p,
+                cb.and(cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
+                        cb.equal(root.get(Process_.startableTerminal), terminal)),
+                        cb.notEqual(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_NONE)));
         cq.select(root.get(Process_.id)).where(p);
         return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
     }
