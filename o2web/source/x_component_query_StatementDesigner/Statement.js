@@ -365,20 +365,33 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             // this.runDefaultNode = this.runContentNode.getElement(".o2_statement_statementRunDefaultContent");
             this.setRunnerSize();
             this.designer.addEvent("resize", this.setRunnerSize.bind(this));
+            debugger;
             switch (this.json.format) {
                 case "script":
+                    this.jpqlOfficalTable.show();
+                    this.sqlOfficalTable.hide();
+
                     this.loadJpqlScriptEditor();
                     this.loadJpqlCountScriptEditor();
                     break;
                 case "sql":
+                    this.jpqlOfficalTable.hide();
+                    this.sqlOfficalTable.show();
+
                     this.loadSqlEditor();
                     this.loadSqlCountEditor();
                     break;
                 case "sqlScript":
+                    this.jpqlOfficalTable.hide();
+                    this.sqlOfficalTable.show();
+
                     this.loadSqlScriptEditor();
                     this.loadSqlCountScriptEditor();
                     break;
                 default:
+                    this.jpqlOfficalTable.show();
+                    this.sqlOfficalTable.hide();
+
                     this.loadJpqlEditor();
                     this.loadJpqlCountEditor();
             }
@@ -868,19 +881,19 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             case "com.x.processplatform.core.entity.content.Task":
                 return "PP_C_TASK";
             case "com.x.processplatform.core.entity.content.TaskCompleted":
-                return "";
+                return "PP_C_TASKCOMPLETED";
             case "com.x.processplatform.core.entity.content.Read":
-                return "";
+                return "PP_C_READ";
             case "com.x.processplatform.core.entity.content.ReadCompleted":
-                return "";
+                return "PP_C_READCOMPLETED";
             case "com.x.processplatform.core.entity.content.Work":
-                return "";
+                return "PP_C_WORK";
             case "com.x.processplatform.core.entity.content.WorkCompleted":
-                return "";
+                return "PP_C_WORKCOMPLETED";
             case "com.x.processplatform.core.entity.content.Review":
-                return "";
+                return "PP_C_REVIEW";
             case "com.x.cms.core.entity.Document":
-                return "";
+                return "CMS_DOCUMENT";
         }
     },
     setEvent: function () {
@@ -894,6 +907,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 var v = e.target.get("value");
                 switch (v) {
                     case "sql":
+                        this.jpqlOfficalTable.hide();
+                        this.sqlOfficalTable.show();
+
                         this.jpqlArea.hide();
                         this.jpqlScriptArea.hide();
                         this.sqlArea.show();
@@ -907,6 +923,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                         this.loadSqlCountEditor();
                         break;
                     case "sqlScript":
+                        this.jpqlOfficalTable.hide();
+                        this.sqlOfficalTable.show();
+
                         this.jpqlArea.hide();
                         this.jpqlScriptArea.hide();
                         this.sqlArea.hide();
@@ -920,6 +939,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                         this.loadSqlCountScriptEditor();
                         break;
                     case "script":
+                        this.jpqlOfficalTable.show();
+                        this.sqlOfficalTable.hide();
+
                         this.jpqlArea.hide();
                         this.jpqlScriptArea.show();
                         this.sqlArea.hide();
@@ -933,6 +955,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                         this.loadJpqlCountScriptEditor();
                         break;
                     default:
+                        this.jpqlOfficalTable.show();
+                        this.sqlOfficalTable.hide();
+
                         this.jpqlArea.show();
                         this.jpqlScriptArea.hide();
                         this.sqlArea.hide();
@@ -994,7 +1019,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             var entityClassName = e.target.options[e.target.selectedIndex].value;
             this.json.entityClassName = entityClassName;
             if( entityClassName ){
-                this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
+                this.changeEditorEntityClassName( this.getSQLTableByEntity(entityClassName) );
             }
             this.loadFieldSelect();
 
@@ -1076,22 +1101,25 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
     changeEditorEntityClassName : function( entityClassName ){
 
-        var replaceClassName = function (re, v) {
-            if( !re )re = /(.*from\s*)/ig;
-            //var re2 = /(\s+)/ig;
-            var arr = re.exec(v);
-            if (arr && arr[0]) {
-                var left = arr[0];
-                v = v.substring(left.length, v.length);
-                //var ar = re2.exec(v);
-                var right = v.substring(v.indexOf(" "), v.length);
-                return left + entityClassName + right;
-            }
-            return "";
-        };
+        debugger;
 
-        var re, v;
+        var re, v, replaceClassName;
         if (this.json.format === "jpql") {
+
+            replaceClassName = function (re, v) {
+                if( !re )re = /(.*from\s*)/ig;
+                //var re2 = /(\s+)/ig;
+                var arr = re.exec(v);
+                if (arr && arr[0]) {
+                    var left = arr[0];
+                    v = v.substring(left.length, v.length);
+                    //var ar = re2.exec(v);
+                    var right = v.substring(v.indexOf(" "), v.length);
+                    return left + entityClassName + right;
+                }
+                return "";
+            };
+
             if (this.jpqlEditor) {
                 // if (this.json.type === "update") re = /(.*update\s*)/ig;
                 v = replaceClassName( re, this.json.data);
@@ -1109,6 +1137,26 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 }
             }
         }else if (this.json.format === "sql") {
+
+            replaceClassName = function (re, v) {
+                if( !re )re = /(.*from\s*)/ig;
+                //var re2 = /(\s+)/ig;
+                var arr = re.exec(v);
+                if (arr && arr[0]) {
+                    var left = arr[0];
+                    v = v.substring(left.length, v.length);
+                    //var ar = re2.exec(v);
+                    var right;
+                    if( v.indexOf(" ") > -1 ){
+                        right = v.substring(v.indexOf(" "), v.length);
+                    }else{
+                        right = "";
+                    }
+                    return left + entityClassName + right;
+                }
+                return "";
+            };
+
             if (this.sqlEditor) {
                 // if (this.json.type === "update") re = /(.*update\s*)/ig;
                 v = replaceClassName( re, this.json.sql);
@@ -1142,7 +1190,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.json.table = name;
                     this.json.tableObj = items[0].data;
 
-                    this.officialTableSelect.options[0].set("selected", true);
+                    this.officialTableSelectJPQL.options[0].set("selected", true);
+                    this.officialTableSelectSQL.options[0].set("selected", true);
                     this.json.entityClassName = "";
 
                     this.changeEditorEntityClassName( name );
