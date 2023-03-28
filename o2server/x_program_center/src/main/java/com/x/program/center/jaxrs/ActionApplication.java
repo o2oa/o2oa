@@ -7,6 +7,7 @@ import javax.ws.rs.ApplicationPath;
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.program.center.jaxrs.adminlogin.AdminLoginAction;
 import com.x.program.center.jaxrs.agent.AgentAction;
+import com.x.program.center.jaxrs.andfx.AndFxAction;
 import com.x.program.center.jaxrs.applications.ApplicationsAction;
 import com.x.program.center.jaxrs.apppack.AppPackAction;
 import com.x.program.center.jaxrs.apppack.AppPackAnonymousAction;
@@ -83,6 +84,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TokenThresholdAction.class);
 		classes.add(DictAction.class);
 		classes.add(ScriptAction.class);
+		classes.add(AndFxAction.class);
 		return classes;
 	}
 }

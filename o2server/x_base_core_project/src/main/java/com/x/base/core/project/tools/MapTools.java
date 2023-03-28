@@ -1,5 +1,6 @@
 package com.x.base.core.project.tools;
 
+import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -180,6 +181,24 @@ public class MapTools {
 			}
 		}
 		return value;
+	}
+
+	/**
+	 * 将Map转换为String
+	 * @param map
+	 * @return
+	 */
+	public static String mapToString(Map<String, Object> map) {
+		if (null == map || map.isEmpty()) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
+			sb.append(entry.getValue());
+		}
+
+		return sb.toString();
 	}
 
 }

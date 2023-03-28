@@ -34,6 +34,7 @@ public class DateTools {
 	public final static String formatCompact_HHmmss = "HHmmss";
 	public final static String formatCompact_HHmm = "HHmm";
 	public final static String formatCompact_yyyyMMddHHmmss = "yyyyMMddHHmmss";
+	public final static String formatCompact_yyyyMMddHHmmssSSS = "yyyyMMddHHmmssSSS";
 
 	public final static String format_yyyyMMddTHHmmss = "yyyy-MM-ddTHH:mm:ss";
 
@@ -523,7 +524,7 @@ public class DateTools {
 
 	/**
 	 * 根据需求调整年份
-	 * 
+	 *
 	 * @param startTime
 	 * @param yearAdjust
 	 * @param monthAdjust
@@ -548,7 +549,7 @@ public class DateTools {
 
 	/**
 	 * 根据需要调整时间
-	 * 
+	 *
 	 * @param dateTime
 	 * @param dayAdjust
 	 * @param hourAdjust
@@ -580,7 +581,7 @@ public class DateTools {
 
 	/**
 	 * 判断当前日期是星期几
-	 * 
+	 *
 	 * @param dateTime 修要判断的时间
 	 * @return dayForWeek 判断结果
 	 * @Exception 发生异常
@@ -599,7 +600,7 @@ public class DateTools {
 
 	/**
 	 * 判断当前日期是星期几
-	 * 
+	 *
 	 * @param dateTime 修要判断的时间
 	 * @return dayForWeek 判断结果
 	 * @Exception 发生异常
@@ -633,7 +634,7 @@ public class DateTools {
 
 	/**
 	 * 时间戳转Unix时间戳
-	 * 
+	 *
 	 * @param timestamp
 	 * @return
 	 */
@@ -643,12 +644,16 @@ public class DateTools {
 
 	/**
 	 * Unix时间戳转时间戳
-	 * 
+	 *
 	 * @param unixTimeStamp
 	 * @return
 	 */
 	public static long toTimestamp(long unixTimeStamp) {
 		return unixTimeStamp * 1000;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmssSSS));
 	}
 
 }

@@ -1,9 +1,9 @@
 package com.x.base.core.project.tools;
-import java.security.NoSuchAlgorithmException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 /**
@@ -48,47 +48,40 @@ public class MD5Tool {
         }
     }
 
+    public static String md5(String text) {
+        String result = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(text.getBytes("UTF-8"));
+            byte[] b = md.digest();
+            int i;
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0) {
+                    i += 256;
+                }
+                if (i < 16) {
+                    buf.append("0");
+                }
+                buf.append(Integer.toHexString(i));
+            }
+            result = buf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         // TODO Auto-generated method stub
-        String test = MD5Tool.getMD5("1qaz2wsx".getBytes());
+        String test = MD5Tool.getMD5("30013110wHKFp0zRCXdkSXxl54fcee1a-037d-421b-b5cf-cf0f815e960920230323094937742STuid0000011679535045335UnSudxCsM1gpTB6pha1m8dCW1ufHQc2G1.0".getBytes());
         System.out.println(test);
-
-
-
-
-
-
-        /*String str="this is （Tom） and \"Eric\"， this is \"Bruce lee\", he is a chinese, name is \"李小龙\"。";
-        Pattern p= Pattern.compile("\"(.*?)\"");
-        Matcher m=p.matcher(str);
-        while(m.find()){
-            System.out.println(m.group());
-        }*/
-
-
-        String str="this is [Tom] and , he is a [李小花], name [is]。";
-        Matcher mat = Pattern.compile("(?<=\\[)(\\S+)(?=\\])").matcher(str);
-        while(mat.find()){
-            System.out.println(mat.group());
-        }
-
-
-        String filetext = "//[张小名] 25分//[李小花] 43分//[王力] 100分";
-        Pattern p = Pattern.compile("\\[(.*?)\\]");//正则表达式，取=和|之间的字符串，不包括=和|
-        Matcher m = p.matcher(filetext);
-        while(m.find()) {
-            System.out.println(m.group(1));//m.group(1)不包括这两个字符
-        }
-
-        String url = "http://ip:20020/x_meeting_assemble_control/jaxrs/meeting/adf3c245-dbef-41ef-b323-dfb5fae4afb7/checkin";
-        Pattern purl = Pattern.compile("x_meeting_assemble_control\\/jaxrs\\/meeting\\/(.*?)\\/checkin");//正则表达式
-        Matcher murl = purl.matcher(url);
-        if(murl.find()) {
-            System.out.println(murl.group(1));//m.group(1)不包括这两个字符
-        }
+        test = MD5Tool.getMD5("30013110wHKFp0zRCXdkSXxl54fcee1a-037d-421b-b5cf-cf0f815e960920230323094937742STuid0000011679535045335UnSudxCsM1gpTB6pha1m8dCW1ufHQc2G1.0".getBytes());
+        System.out.println(test);
 
     }
 

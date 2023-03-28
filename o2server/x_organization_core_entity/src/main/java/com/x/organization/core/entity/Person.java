@@ -385,6 +385,13 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String zhengwuDingdingId;
 
+	public static final String andFxId_FIELDNAME = "andFxId";
+	@FieldDescribe("移动办公人员ID.")
+	@Column(length = length_255B, name = ColumnNamePrefix + andFxId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + andFxId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String andFxId;
+
 	public static final String zhengwuDingdingHash_FIELDNAME = "zhengwuDingdingHash";
 	@FieldDescribe("政务钉钉人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + zhengwuDingdingHash_FIELDNAME)
@@ -406,6 +413,12 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String qiyeweixinHash;
 
+	public static final String andFxHash_FIELDNAME = "andFxHash";
+	@FieldDescribe("移动办公人员哈希特征.")
+	@Column(length = length_255B, name = ColumnNamePrefix + andFxHash_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + andFxHash_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String andFxHash;
 
 	public static final String mpweixinOpenId_FIELDNAME = "mpwxopenId";
 	@FieldDescribe("微信公众号人员openid.")
@@ -884,5 +897,21 @@ public class Person extends SliceJpaObject {
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public String getAndFxId() {
+		return andFxId;
+	}
+
+	public void setAndFxId(String andFxId) {
+		this.andFxId = andFxId;
+	}
+
+	public String getAndFxHash() {
+		return andFxHash;
+	}
+
+	public void setAndFxHash(String andFxHash) {
+		this.andFxHash = andFxHash;
 	}
 }
