@@ -517,11 +517,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             this.showNotValidationMode(this.node);
 
             var parentNode = this.errNode;
-            while( parentNode.offsetParent === null ){
+            while( parentNode && parentNode.offsetParent === null ){
                 parentNode = parentNode.getParent();
             }
 
-            if (!parentNode.isIntoView()) parentNode.scrollIntoView(false);
+            if ( parentNode && !parentNode.isIntoView()) parentNode.scrollIntoView(false);
         }
     },
     showNotValidationMode: function(node){
