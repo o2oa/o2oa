@@ -67,8 +67,7 @@
                 var enterId = uri.getData("enterId");
                 // var redirect = uri.getData("redirect");
 
-                if (token && enterId){
-
+                var loginCallback = function (token, enterId) {
                     requestJson(
                         "x_organization_assemble_authentication",
                         "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId+"&date="+(new Date()).getTime(),
@@ -77,22 +76,52 @@
                             if(result){
                                 redirectTo();
                             }else{
-                                $("ssoerror").set("html","单点失败！"+responseJSON.message + "<br/>地址：" + window.location);
-                                $("ssoerror").show();
+                                $("ssoerror").set("html","单点失败！"+responseJSON.message + "<br/>地址：" + window.location).show();
                             }
                         }.bind(this),
                         function(xhr){
                             var json = JSON.parse(xhr.responseText);
-                            $("ssoerror").set("html", "单点登录失败: " + json.message + "<br/>" + (json.prompt || "") + "<br/>地址：" + window.location );
-                            $("ssoerror").show();
+                            $("ssoerror").set("html", "单点登录失败: " + json.message + "<br/>" + (json.prompt || "") + "<br/>地址：" + window.location ).show();
                         }.bind(this),
                         function(text, error){
                             $("ssoerror").set("html", text + "<br/>地址：" + window.location).show();
                         }.bind(this)
                     );
+                };
+
+                //调用
+                function feixinGetTokenFun() {
+                    var param = {
+                        backid: 'deliveryToken',
+                        backFunc: 'deliveryToken' //回调方法
+                    };
+                    if (window.WebContainer && window.WebContainer.feixinGetToken){ //Android
+                        window.WebContainer.feixinGetToken(JSON.stringify(param))
+                    } else if ( window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.feixinGetToken) {
+                        window.webkit.messageHandlers.feixinGetToken.postMessage(param)
+                    } else if (navigator && navigator.WebContainer && navigator.WebContainer.feixinGetToken) {
+                        navigator.WebContainer.feixinGetToken(JSON.stringify(param))
+                    } else {
+                        $("ssoerror").set("html","单点失败，无token api！" + "<br/>地址：" + window.location).show();
+                    }
+                }
+
+                if ( enterId ){
+                    if( token ){
+                        loginCallback( token, enterId )
+                    }else{
+                        //回调方法
+                        window.deliveryToken = function(info){
+                            if( info ){
+                                loginCallback(info, enterId);
+                            }else{
+                                $("ssoerror").set("html","单点失败，通过API未获取到token！" + "<br/>地址：" + window.location).show();
+                            }
+                        }
+                        feixinGetTokenFun();
+                    }
                 }else{
-                    $("ssoerror").set("html","单点失败，认证token或enterId为空！" + "<br/>地址：" + window.location);
-                    $("ssoerror").show();
+                    $("ssoerror").set("html","单点失败，enterId为空！" + "<br/>地址：" + window.location).show();
                 }
             };
 
