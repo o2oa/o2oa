@@ -336,5 +336,27 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
             this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
             this.styleNode.inject(this.node, "before");
         }
-    }
+    },
+
+        getExcelData: function(){
+            var options = this.getOptionsObj();
+            var value = this.getData();
+            value = o2.typeOf(value) === "array" ? value : [value];
+            var arr = [];
+            value.each( function( a, i ){
+                var idx = options.valueList.indexOf( a );
+                arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+            });
+            return arr.join(", ");
+        },
+        setExcelData: function(d){
+            var arr = this.stringToArray(d);
+            var options = this.getOptionsObj();
+            arr.each( function( a, i ){
+                var idx = options.textList.indexOf( a );
+                arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+            });
+            var value = arr.length === 1  ? arr[0] : arr;
+            this.setData(value, true);
+        }
 }); 

@@ -3043,7 +3043,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * this.view.lookup(view, callback, async);
          *
          * //返回Promise对象后处理
-         * var promise = this.view.lookup( name );
+         * var promise = this.view.lookup( view );
          * promise.then(function(data){
          *     //data 为返回的数据。
          * })

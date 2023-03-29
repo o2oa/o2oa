@@ -408,5 +408,81 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 return false;
             }
             return true;
+        },
+
+
+        getExcelData: function(){
+            return this.getData();
+        },
+        setExcelData: function(data){
+            this.setData(data, true);
+        },
+        stringToArray: function(string){ //excel字段换行是 &#10;，换行和逗号作为数组分隔符
+            return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+                return !!s;
+            });
+        },
+        validationExcel: function () {
+            if (!this.isReadonly()){
+                if (!this.validationConfigExcel()) return errorList;
+
+                if (!this.json.validation) return true;
+                if (!this.json.validation.code) return true;
+
+                var flag = this.form.Macro.exec(this.json.validation.code, this);
+
+                if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+                if (flag.toString() !== "true") {
+                    return [flag];
+                }
+            }
+            return true;
+        },
+        validationConfigExcel: function () {
+            var errorList = [];
+            if (this.json.validationConfig){
+                if (this.json.validationConfig.length){
+                    for (var i=0; i<this.json.validationConfig.length; i++) {
+                        var flag = this.validationConfigItemExcel(this.json.validationConfig[i]);
+                        if ( flag !== true ){
+                            errorList.push( flag );
+                        }
+                    }
+                }
+                return errorList;
+            }
+        },
+        validationConfigItemExcel: function(data){
+            if ( data.status==="all"){
+                var n = this._getBusinessData();
+                var v = (data.valueType==="value") ? n : n.length;
+                switch (data.operateor){
+                    case "isnull":
+                        if (!v)return data.prompt;
+                        break;
+                    case "notnull":
+                        if (v)return data.prompt;
+                        break;
+                    case "gt":
+                        if (v>data.value)return data.prompt;
+                        break;
+                    case "lt":
+                        if (v<data.value)return data.prompt;
+                        break;
+                    case "equal":
+                        if (v===data.value)return data.prompt;
+                        break;
+                    case "neq":
+                        if (v!==data.value)return data.prompt;
+                        break;
+                    case "contain":
+                        if (v.indexOf(data.value)!==-1) return data.prompt;
+                        break;
+                    case "notcontain":
+                        if (v.indexOf(data.value)===-1)return data.prompt;
+                        break;
+                }
+            }
+            return true;
         }
     });

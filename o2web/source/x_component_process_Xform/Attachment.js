@@ -2277,6 +2277,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         return true;
     },
 
+    getExcelData: function(){
+        return "";
+    },
+    setExcelData: function(data){
+    },
 
 });
 MWF.xApplication.process.Xform.AttachmenPreview = new Class({

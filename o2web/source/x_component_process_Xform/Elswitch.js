@@ -153,5 +153,21 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
                 this.node.set("text", (this.json.inactiveText || "false"));
             }
         }
-    }
+    },
+
+        getExcelData: function(){
+            var data = this.json[this.json.$id];
+            if (data==="" || data){
+                return this.json.activeText || "true";
+            }else{
+                return this.json.inactiveText || "false";
+            }
+        },
+        setExcelData: function(d){
+            var data = true;
+            if ( (d || "").toString === ( this.json.inactiveText || "false" ) ){
+                data = false;
+            }
+            this.setData(data, true);
+        }
 }); 

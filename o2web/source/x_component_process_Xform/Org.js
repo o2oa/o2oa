@@ -1516,7 +1516,31 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }else{
             if( callback )callback( data );
         }
-    }
+    },
+
+
+        getExcelData: function(){
+            var text, value = this.getData();
+            if (o2.typeOf(value) === "array") {
+                var textArray = [];
+                value.each(function (item) {
+                    if (o2.typeOf(item) === "object") {
+                        textArray.push(item.distinguishedName);
+                    } else {
+                        textArray.push(item);
+                    }
+                }.bind(this));
+                text = textArray.join(", \n");
+            } else if (o2.typeOf(value) === "object") {
+                text = value.distinguishedName;
+            } else {
+                text = value;
+            }
+            return text;
+        },
+        setExcelData: function(data){
+            this.setData(data, true);
+        }
 
 });
 

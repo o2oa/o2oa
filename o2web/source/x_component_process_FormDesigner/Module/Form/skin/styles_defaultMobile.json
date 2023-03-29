@@ -319,7 +319,8 @@
       "border-bottom": "1px solid #cccccc"
     },
     "itemTitleStyles": {
-      "height": "40px",
+      "height": "auto",
+      "min-height": "40px",
       "background-color": "#ffffff",
       "line-height": "30px",
       "padding": "0px",

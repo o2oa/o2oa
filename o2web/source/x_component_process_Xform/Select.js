@@ -504,6 +504,21 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		this.fieldModuleLoaded = true;
 		this.fireEvent("setData", [data]);
 		if (fireChange && old!==data) this.fireEvent("change");
-	}
+	},
+
+		getExcelData: function(){
+			var value = this.getData();
+			var options = this.getOptionsObj();
+			var idx = options.textList.indexOf( value );
+			var text = idx > -1 ? options.valueList[ idx ] : "";
+			return text;
+		},
+		setExcelData: function(d){
+			var value = d.replace(/&#10;/g,""); //换行符&#10;
+			var options = this.getOptionsObj();
+			var idx = options.textList.indexOf( value );
+			value = idx > -1 ? options.valueList[ idx ] : value;
+			this.setData(value, true);
+		}
 	
 }); 

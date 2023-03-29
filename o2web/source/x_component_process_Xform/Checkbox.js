@@ -556,6 +556,63 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             }
         }
         return true;
-    }
+    },
+
+
+        getExcelData: function(){
+            var options = this.getOptionsObj();
+            var value = this.getData();
+            value = o2.typeOf(value) === "array" ? value : [value];
+            var arr = [];
+            value.each( function( a, i ){
+                var idx = options.valueList.indexOf( a );
+                arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+            });
+            return arr.join(", ");
+        },
+        setExcelData: function(d){
+            var arr = this.stringToArray(d);
+            var options = this.getOptionsObj();
+            arr.each( function( a, i ){
+                var idx = options.textList.indexOf( a );
+                arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+            });
+            var value = arr.length === 1  ? arr[0] : arr;
+            this.setData(value, true);
+        },
+        validationConfigItemExcel: function(data){
+            if (data.status==="all"){
+                var n = this.getInputData();
+                if( typeOf(n)==="array" && n.length === 0 )n = "";
+                var v = (data.valueType==="value") ? n : n.length;
+                switch (data.operateor){
+                    case "isnull":
+                        if (!v)return data.prompt;
+                        break;
+                    case "notnull":
+                        if (v)return data.prompt;
+                        break;
+                    case "gt":
+                        if (v>data.value)return data.prompt;
+                        break;
+                    case "lt":
+                        if (v<data.value)return data.prompt;
+                        break;
+                    case "equal":
+                        if (v==data.value)return data.prompt;
+                        break;
+                    case "neq":
+                        if (v!=data.value)return data.prompt;
+                        break;
+                    case "contain":
+                        if (v.indexOf(data.value)!=-1)return data.prompt;
+                        break;
+                    case "notcontain":
+                        if (v.indexOf(data.value)==-1)return data.prompt;
+                        break;
+                }
+            }
+            return true;
+        }
 	
 }); 
