@@ -1416,7 +1416,8 @@ o2.xApplication.systemconfig.LP = {
             "mail": "Mail",
             "jdbc": "JDBC",
             "table": "Database Table",
-            "hadoop": "Hadoop"
+            "hadoop": "Hadoop",
+            "andfx": "andfx"
         },
         "consumerInfoTitle": "Consumers Config",
         "consumerInfo": "The O2OA system provides a variety of message channels, where you can set how various messages need to be sent.",
