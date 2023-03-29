@@ -131,40 +131,15 @@ public class ProcessFactory extends ElementFactory {
         }
         p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
         p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
-        p = cb.and(p,
-                cb.and(cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
-                        cb.equal(root.get(Process_.startableTerminal), terminal)),
-                        cb.notEqual(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_NONE)));
+        // 如果限定了终端,对终端进行判断
+        if (StringUtils.isNotEmpty(terminal)) {
+            p = cb.and(p,
+                    cb.and(cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
+                            cb.equal(root.get(Process_.startableTerminal), terminal)),
+                            cb.notEqual(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_NONE)));
+        }
         cq.select(root.get(Process_.id)).where(p);
         return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-    }
-
-    /* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
-    public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
-            List<String> groups, Process process) throws Exception {
-        if (BooleanUtils.isTrue(this.business().canManageApplication(effectivePerson, null))) {
-            return true;
-        }
-        if (ListTools.isEmpty(process.getStartableIdentityList())
-                && ListTools.isEmpty(process.getStartableUnitList())
-                && ListTools.isEmpty(process.getStartableGroupList())) {
-            return true;
-        }
-        if (ListTools.isNotEmpty(process.getStartableIdentityList())
-                && ListTools.containsAny(identities, process.getStartableIdentityList())) {
-            return true;
-        } else {
-            if (ListTools.isNotEmpty(process.getStartableUnitList())
-                    && ListTools.containsAny(units, process.getStartableUnitList())) {
-                return true;
-            } else {
-                if (ListTools.isNotEmpty(process.getStartableGroupList())
-                        && ListTools.containsAny(groups, process.getStartableGroupList())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public List<String> listControllableProcess(EffectivePerson effectivePerson, Application application)
@@ -283,5 +258,43 @@ public class ProcessFactory extends ElementFactory {
 
         cq.select(root.get(Process_.id)).where(p);
         return em.createQuery(cq).getResultList();
+    }
+
+    /**
+     * 判断用户是否可以启动此流程
+     * 
+     * @param effectivePerson
+     * @param identities
+     * @param units
+     * @param groups
+     * @param process
+     * @return
+     * @throws Exception
+     */
+    public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
+            List<String> groups, Process process) throws Exception {
+        if (BooleanUtils.isTrue(this.business().canManageApplication(effectivePerson, null))) {
+            return true;
+        }
+        if (ListTools.isEmpty(process.getStartableIdentityList())
+                && ListTools.isEmpty(process.getStartableUnitList())
+                && ListTools.isEmpty(process.getStartableGroupList())) {
+            return true;
+        }
+        if (ListTools.isNotEmpty(process.getStartableIdentityList())
+                && ListTools.containsAny(identities, process.getStartableIdentityList())) {
+            return true;
+        } else {
+            if (ListTools.isNotEmpty(process.getStartableUnitList())
+                    && ListTools.containsAny(units, process.getStartableUnitList())) {
+                return true;
+            } else {
+                if (ListTools.isNotEmpty(process.getStartableGroupList())
+                        && ListTools.containsAny(groups, process.getStartableGroupList())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
