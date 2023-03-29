@@ -176,7 +176,7 @@ public class DocFunction {
     public static final Function<Pair<Business, String>, Pair<String, Optional<Doc>>> wrapDocument = param -> {
         try {
             Document document = param.first().entityManagerContainer().find(param.second(), Document.class);
-            if (null != document) {
+            if ((null != document) && (!StringUtils.equals(document.getDocumentType(), Document.DOCUMENT_TYPE_DATA))) {
                 LOGGER.debug("DocFunction wrapDocument:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), document));
