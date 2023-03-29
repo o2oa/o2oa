@@ -331,7 +331,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.officialTableSelectSQL = this.sqlOfficalTable.getElement("select");
 
             this.fieldSelect = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_field").getElement("select");
-            this.loadFieldSelect();
 
             this.dynamicTableContent = this.areaNode.getElement(".o2_statement_statementDesignerTableContent");
 
@@ -366,6 +365,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setRunnerSize();
             this.designer.addEvent("resize", this.setRunnerSize.bind(this));
             debugger;
+
+            this.loadFieldSelect();
+
             switch (this.json.format) {
                 case "script":
                     this.jpqlOfficalTable.show();
@@ -463,6 +465,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         var d = this.data;
         var className = d.entityCategory === "dynamic" ? d.table : d.entityClassName;
         if( !className )return;
+        var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
         o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
             className,
             d.entityCategory,
@@ -471,6 +474,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 option.store("type", d.entityCategory);
                 option.store("tableName", className );
                 (json.data||[]).each( function ( field ) {
+                    if( pre )field.name = pre + field.name;
                     var option = new Element("option", {
                         "text": field.name + ( field.description ? ("-" + field.description) : "" ),
                         "value": field.name
@@ -478,7 +482,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     option.store("field", field);
                     option.store("type", d.entityCategory );
                     option.store("tableName", className );
-                }.bind(this))
+                }.bind(this));
             }.bind(this)
         )
     },
@@ -972,6 +976,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 }
                 this.json.format = v;
             }
+            this.loadFieldSelect();
         }.bind(this));
         this.entityCategorySelect.addEvent("change", function (e) {
             var entityCategory = e.target.options[e.target.selectedIndex].value;

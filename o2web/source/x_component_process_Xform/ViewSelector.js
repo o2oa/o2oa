@@ -19,22 +19,22 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
     options: {
         /**
          * 视图参数（options）已经准备好，还未加载视图时执行。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
-         * @event MWF.xApplication.process.Xform.View#beforeLoadView
+         * @event MWF.xApplication.process.Xform.ViewSelector#beforeLoadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 异步加载视图后执行。
-         * @event MWF.xApplication.process.Xform.View#loadView
+         * @event MWF.xApplication.process.Xform.ViewSelector#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 选中视图中的一条记录后执行。
-         * @event MWF.xApplication.process.Xform.View#select
+         * @event MWF.xApplication.process.Xform.ViewSelector#select
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 打开视图中的一条记录后执行。
-         * @event MWF.xApplication.process.Xform.View#openDocument
+         * @event MWF.xApplication.process.Xform.ViewSelector#openDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
