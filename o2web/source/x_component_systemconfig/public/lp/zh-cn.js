@@ -1419,7 +1419,8 @@ o2.xApplication.systemconfig.LP = {
             "mail": "邮件",
             "jdbc": "JDBC",
             "table": "数据表",
-            "hadoop": "Hadoop"
+            "hadoop": "Hadoop",
+            "andfx": "移动办公消息"
         },
         "consumerInfoTitle": "消息通道配置",
         "consumerInfo": "O2OA系统提供多种消息通道，您可以在此处设置各类消息需要通过什么方式发送",
