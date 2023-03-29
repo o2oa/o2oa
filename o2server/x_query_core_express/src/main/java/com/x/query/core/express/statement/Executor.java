@@ -22,19 +22,21 @@ import com.x.query.core.entity.schema.Table;
 
 public class Executor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Executor.class);
-
-    public static Optional<Object> executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
-        Optional<Object> data;
-        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
-            data = executeDataSql(statement, runtime, executeTarget);
-        } else {
-            data = executeDataJpql(statement, runtime, executeTarget);
-        }
-        return data;
+    private Executor() {
+        // nothing
     }
 
-    private static Optional<Object> executeDataSql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Executor.class);
+
+    public static Object executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
+            return executeDataSql(statement, runtime, executeTarget);
+        } else {
+            return executeDataJpql(statement, runtime, executeTarget);
+        }
+    }
+
+    private static Object executeDataSql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -55,20 +57,20 @@ public class Executor {
                     query.setFirstResult((runtime.page - 1) * runtime.size);
                     query.setMaxResults(runtime.size);
                 }
-                return Optional.of(query.getResultList());
+                return query.getResultList();
             } else {
                 emc.beginTransaction(cls);
                 Object data = Integer.valueOf(query.executeUpdate());
                 emc.commit();
-                return Optional.of(data);
+                return data;
             }
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return Optional.empty();
+        return null;
     }
 
-    private static Optional<Object> executeDataJpql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+    private static Object executeDataJpql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -89,17 +91,17 @@ public class Executor {
                     query.setFirstResult((runtime.page - 1) * runtime.size);
                     query.setMaxResults(runtime.size);
                 }
-                return Optional.of(query.getResultList());
+                return query.getResultList();
             } else {
                 emc.beginTransaction(cls);
                 Object data = Integer.valueOf(query.executeUpdate());
                 emc.commit();
-                return Optional.of(data);
+                return data;
             }
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return Optional.empty();
+        return null;
     }
 
     public static Long executeCount(Statement statement, ExecuteTarget executeTarget) {

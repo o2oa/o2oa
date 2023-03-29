@@ -23,44 +23,44 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListWithPersonWithApplication extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithPersonWithApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithPersonWithApplication.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag) throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag) throws Exception {
 
-		LOGGER.debug("execute:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> applicationFlag);
+        LOGGER.debug("execute:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> applicationFlag);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			List<Wo> wos = new ArrayList<>();
-			Application application = business.application().pick(applicationFlag);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
-			}
-			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
-			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-			List<String> groups = business.organization().group().listWithIdentity(identities);
-			List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
-					groups, application);
-			for (String id : ids) {
-				wos.add(Wo.copier.copy(business.process().pick(id)));
-			}
-			SortTools.asc(wos, false, "name");
-			result.setData(wos);
-			return result;
-		}
-	}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            Business business = new Business(emc);
+            List<Wo> wos = new ArrayList<>();
+            Application application = business.application().pick(applicationFlag);
+            if (null == application) {
+                throw new ExceptionEntityNotExist(applicationFlag, Application.class);
+            }
+            List<String> roles = business.organization().role().listWithPerson(effectivePerson);
+            List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+            List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
+            if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
+            List<String> groups = business.organization().group().listWithIdentity(identities);
+            List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
+                    groups, application, "");
+            for (String id : ids) {
+                wos.add(Wo.copier.copy(business.process().pick(id)));
+            }
+            SortTools.asc(wos, false, "name");
+            result.setData(wos);
+            return result;
+        }
+    }
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListWithPersonWithApplication$Wo")
-	public static class Wo extends Process {
+    @Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListWithPersonWithApplication$Wo")
+    public static class Wo extends Process {
 
-		private static final long serialVersionUID = 1521228691441978462L;
+        private static final long serialVersionUID = 1521228691441978462L;
 
-		static WrapCopier<Process, Wo> copier = WrapCopierFactory.wo(Process.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-	}
+        static WrapCopier<Process, Wo> copier = WrapCopierFactory.wo(Process.class, Wo.class, null,
+                JpaObject.FieldsInvisible);
+    }
 }

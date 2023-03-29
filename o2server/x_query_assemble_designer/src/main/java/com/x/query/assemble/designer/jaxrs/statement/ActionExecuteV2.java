@@ -63,11 +63,11 @@ class ActionExecuteV2 extends BaseAction {
                     business.organization(), statement, runtime);
             executeTargetPair = builder.build();
         }
-        ExecuteTarget data = executeTargetPair.first();
-        Optional<ExecuteTarget> optionalCount = executeTargetPair.second();
-        result.setData(Executor.executeData(statement, runtime, data));
-        if (optionalCount.isPresent()) {
-            result.setCount(Executor.executeCount(statement, optionalCount.get()));
+        ExecuteTarget dataExecuteTarget = executeTargetPair.first();
+        Optional<ExecuteTarget> optionalCountExecuteTarget = executeTargetPair.second();
+        result.setData(Executor.executeData(statement, runtime, dataExecuteTarget));
+        if (optionalCountExecuteTarget.isPresent()) {
+            result.setCount(Executor.executeCount(statement, optionalCountExecuteTarget.get()));
         }
         return result;
     }

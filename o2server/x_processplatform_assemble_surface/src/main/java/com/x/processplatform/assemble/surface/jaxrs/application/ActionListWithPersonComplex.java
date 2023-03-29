@@ -171,8 +171,6 @@ class ActionListWithPersonComplex extends BaseAction {
                     cb.isEmpty(root.get(Process_.startableUnitList)),
                     cb.isEmpty(root.get(Process_.startableGroupList)));
             p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
-            // p = cb.or(p, cb.equal(root.get(Process_.creatorPerson),
-            // effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
             }
@@ -191,7 +189,7 @@ class ActionListWithPersonComplex extends BaseAction {
             List<String> identities, List<String> units, List<String> groups, Application application)
             throws Exception {
         List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
-                application);
+                application, "");
         List<WoProcess> wos = new ArrayList<>();
         for (String id : ids) {
             WoProcess o = WoProcess.copier.copy(business.process().pick(id));
