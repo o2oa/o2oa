@@ -136,6 +136,11 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + absenteeismDays_FIELDNAME)
     private Integer absenteeismDays = 0;
 
+    public static final String leaveDays_FIELDNAME = "leaveDays";
+    @FieldDescribe("请假天数")
+    @Column(name = ColumnNamePrefix + leaveDays_FIELDNAME)
+    private Integer leaveDays = 0;
+
     public static final String lateTimes_FIELDNAME = "lateTimes";
     @FieldDescribe("迟到次数")
     @Column(name = ColumnNamePrefix + lateTimes_FIELDNAME)
@@ -195,6 +200,14 @@ public class AttendanceV2Detail extends SliceJpaObject {
             + shiftName_FIELDNAME)
     private String shiftName;
 
+
+    public Integer getLeaveDays() {
+        return leaveDays;
+    }
+
+    public void setLeaveDays(Integer leaveDays) {
+        this.leaveDays = leaveDays;
+    }
 
     public Integer getFieldWorkTimes() {
         return fieldWorkTimes;

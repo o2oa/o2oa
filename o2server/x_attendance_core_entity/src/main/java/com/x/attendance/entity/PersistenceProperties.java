@@ -142,9 +142,15 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
     public static class AttendanceV2Config {
         public static final String table = "ATTEND_V2_CONFIG";
     }
+    public static class AttendanceV2PersonConfig {
+        public static final String table = "ATTEND_V2_CONFIG_PERSON";
+    }
 
     public static class AttendanceV2AppealInfo {
         public static final String table = "ATTEND_V2_APPEAL_INFO";
+    }
+    public static class AttendanceV2LeaveData {
+        public static final String table = "ATTEND_V2_LEAVE_DATA";
     }
 
 

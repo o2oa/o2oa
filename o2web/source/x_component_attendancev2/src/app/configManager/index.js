@@ -16,6 +16,10 @@ export default content({
       lp,
       form: {
         appealEnable: false,
+        onDutyFastCheckInEnable: false,
+        offDutyFastCheckInEnable: false,
+        checkInAlertEnable: false,
+        exceptionAlertEnable: false,
       },
       holidayList: [],
       workDayList: [],
@@ -190,6 +194,18 @@ export default content({
   // 是否启用补卡申请
   clickEnableAppeal() {
     this.bind.form.appealEnable = !this.bind.form.appealEnable;
+  },
+  clickOnDutyFastCheckInEnable() {
+    this.bind.form.onDutyFastCheckInEnable = !this.bind.form.onDutyFastCheckInEnable;
+  },
+  clickOffDutyFastCheckInEnable() {
+    this.bind.form.offDutyFastCheckInEnable = !this.bind.form.offDutyFastCheckInEnable;
+  },
+  clickCheckInAlertEnable() {
+    this.bind.form.checkInAlertEnable = !this.bind.form.checkInAlertEnable;
+  },
+  clickExceptionAlertEnable() {
+    this.bind.form.exceptionAlertEnable = !this.bind.form.exceptionAlertEnable;
   },
   showProcessSelectorValueFun() {
     if (this.bind.processSelector.value.length > 0) {

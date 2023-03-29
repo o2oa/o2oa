@@ -248,10 +248,16 @@ MWF.xApplication.attendancev2.LP = {
     workdayLabels: "设置工作日，将原本为非工作日的日期添加到此处，作为工作日",
     appealConfig: "补卡申请配置",
     appealEnableLabel: "是否启用补卡申请功能",
-
     appealProcessTypeInnerLabel: "内置固定流程",
     appealProcessTypeProcessLabel: "自定义流程",
     appealProcessTypeProcessPlaceholder: "请选择自定义流程",
+    fastCheckIn: "极速打卡",
+    onDutyFastCheckInEnable: "是否启用上班极速打卡 (app端有效)",
+    offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
+    checkInAlert: "打卡提醒",
+    checkInAlertEnable: "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
+    exceptionAlertEnable: "是否启用异常打卡提醒 (次日将收到异常打卡消息)",
+
   },
 
   // 申诉

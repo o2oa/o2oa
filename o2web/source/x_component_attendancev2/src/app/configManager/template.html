@@ -45,19 +45,59 @@
             <div class="form-item-content margin-top padding-bottom">
                 <!-- 是否启用补卡申请 -->
                 <div class="margin-top margin-left flex" @click="clickEnableAppeal">
-                    <label style="margin-right: 8px;">{{$.lp.config.appealEnableLabel}}</label>
-                    <div class="icon">
-                        <i
-                            class="{{ $.form.appealEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.appealEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
                     </div>
+                    <label style="margin-left: 8px;">{{$.lp.config.appealEnableLabel}}</label>
                 </div>
                 <div class="margin-top margin-left">
                     <!-- 自定义流程 -->
                     <o-selector-process oo-prop="$.processSelector" ></o-selector-process>
                 </div>
-
-
-
+            </div>
+        </div>
+       
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.fastCheckIn}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                 <!-- 上班极速打卡 -->
+                <div class="margin-top margin-left flex" @click="clickOnDutyFastCheckInEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.onDutyFastCheckInEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.onDutyFastCheckInEnable}}</label>
+                </div>
+                <!-- 下班极速打卡 -->
+                <div class="margin-top margin-left flex" @click="clickOffDutyFastCheckInEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.offDutyFastCheckInEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.offDutyFastCheckInEnable}}</label>
+                </div>
+            </div>
+        </div>
+       
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.checkInAlert}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                <!-- 打卡提醒 -->
+                <div class="margin-top margin-left flex" @click="clickCheckInAlertEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.checkInAlertEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.checkInAlertEnable}}</label>
+                </div>
+                <!-- 异常打卡提醒 -->
+                <div class="margin-top margin-left flex" @click="clickExceptionAlertEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.exceptionAlertEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.exceptionAlertEnable}}</label>
+                </div>
             </div>
         </div>
 

@@ -124,6 +124,57 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(length = length_255B, name = ColumnNamePrefix + processName_FIELDNAME)
     private String processName;
 
+    public static final String onDutyFastCheckInEnable_FIELDNAME = "onDutyFastCheckInEnable";
+    @FieldDescribe("上班极速打卡，app端有效")
+    @Column(name = ColumnNamePrefix + onDutyFastCheckInEnable_FIELDNAME)
+    private Boolean onDutyFastCheckInEnable = false;
+
+    public static final String offDutyFastCheckInEnable_FIELDNAME = "offDutyFastCheckInEnable";
+    @FieldDescribe("下班极速打卡，app端有效")
+    @Column(name = ColumnNamePrefix + offDutyFastCheckInEnable_FIELDNAME)
+    private Boolean offDutyFastCheckInEnable = false;
+
+    public static final String checkInAlertEnable_FIELDNAME = "checkInAlertEnable";
+    @FieldDescribe("打卡提醒，上班前，下班后会收到提醒，不要忘记打卡.")
+    @Column(name = ColumnNamePrefix + checkInAlertEnable_FIELDNAME)
+    private Boolean checkInAlertEnable = false;
+
+    public static final String exceptionAlertEnable_FIELDNAME = "exceptionAlertEnable";
+    @FieldDescribe("异常打卡提醒，次日将收到异常打卡提醒.")
+    @Column(name = ColumnNamePrefix + exceptionAlertEnable_FIELDNAME)
+    private Boolean exceptionAlertEnable = false;
+
+    public Boolean getOnDutyFastCheckInEnable() {
+        return onDutyFastCheckInEnable;
+    }
+
+    public void setOnDutyFastCheckInEnable(Boolean onDutyFastCheckInEnable) {
+        this.onDutyFastCheckInEnable = onDutyFastCheckInEnable;
+    }
+
+    public Boolean getOffDutyFastCheckInEnable() {
+        return offDutyFastCheckInEnable;
+    }
+
+    public void setOffDutyFastCheckInEnable(Boolean offDutyFastCheckInEnable) {
+        this.offDutyFastCheckInEnable = offDutyFastCheckInEnable;
+    }
+
+    public Boolean getCheckInAlertEnable() {
+        return checkInAlertEnable;
+    }
+
+    public void setCheckInAlertEnable(Boolean checkInAlertEnable) {
+        this.checkInAlertEnable = checkInAlertEnable;
+    }
+
+    public Boolean getExceptionAlertEnable() {
+        return exceptionAlertEnable;
+    }
+
+    public void setExceptionAlertEnable(Boolean exceptionAlertEnable) {
+        this.exceptionAlertEnable = exceptionAlertEnable;
+    }
 
     public Boolean getAppealEnable() {
         return appealEnable;

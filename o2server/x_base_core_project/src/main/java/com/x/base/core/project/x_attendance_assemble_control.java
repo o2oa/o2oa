@@ -21,7 +21,9 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.attendance.entity.StatisticQywxUnitForMonth",
 		"com.x.attendance.entity.v2.AttendanceV2Group", "com.x.attendance.entity.v2.AttendanceV2Shift",
 		"com.x.attendance.entity.v2.AttendanceV2WorkPlace", "com.x.attendance.entity.v2.AttendanceV2CheckInRecord",
-		"com.x.attendance.entity.v2.AttendanceV2Detail", "com.x.attendance.entity.v2.AttendanceV2Config", "com.x.attendance.entity.v2.AttendanceV2AppealInfo"}, storeJars = {
+		"com.x.attendance.entity.v2.AttendanceV2Detail", "com.x.attendance.entity.v2.AttendanceV2Config",
+		"com.x.attendance.entity.v2.AttendanceV2AppealInfo", "com.x.attendance.entity.v2.AttendanceV2PersonConfig",
+		"com.x.attendance.entity.v2.AttendanceV2LeaveData",}, storeJars = {
 				"x_attendance_core_entity", "x_organization_core_express", "x_organization_core_entity" })
 public class x_attendance_assemble_control extends Deployable {
 }

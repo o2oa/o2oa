@@ -165,6 +165,14 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     }
                 }
 
+                if (isWorkDay) {
+                    // 处理请假数据 异常打卡 是否是在请假的数据中
+                    for (AttendanceV2CheckInRecord record : recordList) {
+                        if (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)) {
+                            checkUpdateRecordIsLeave(emc, business, record);
+                        }
+                    }
+                }
 
                 // 迟到
                 List<AttendanceV2CheckInRecord> late = recordList.stream().filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late)).collect(Collectors.toList());
@@ -189,11 +197,17 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
 
                 // 上班打卡
                 List<AttendanceV2CheckInRecord> onDutyList = recordList.stream().filter(
-                                (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty) && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)))
+                                (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)
+                                        && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) || (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && StringUtils.isNotEmpty(r.getLeaveDataId())))
+                                        && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                        )
                         .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
                 // 下班打卡
                 List<AttendanceV2CheckInRecord> offDutyList = recordList.stream().filter(
-                                (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)))
+                                (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)
+                                        && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) || (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && StringUtils.isNotEmpty(r.getLeaveDataId())))
+                                        && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                        )
                         .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
                 // 工作时长
                 long workTimeDuration = 0;
@@ -207,6 +221,9 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
 
                 // 外勤打卡
                 List<AttendanceV2CheckInRecord> fieldWorkList = recordList.stream().filter((r) -> r.getFieldWork() != null && BooleanUtils.isTrue(r.getFieldWork())).collect(Collectors.toList());
+
+                // 有请假的列表
+                List<AttendanceV2CheckInRecord> leaveList = recordList.stream().filter((r) -> StringUtils.isNotEmpty(r.getLeaveDataId())).collect(Collectors.toList());
 
                 // 考勤对象
                 List<AttendanceV2Detail> details = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndDate(model.getPerson(), model.getDate());
@@ -235,16 +252,26 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 if (!isWorkDay) {
                     v2Detail.setRest(1);
                 } else {
-                    // 旷工 有正常打卡记录就不算旷工？
-                    v2Detail.setAbsenteeismDays(attendanceList.size() > 0 ? 0 : 1);
+                    if (leaveList.size() > 0) { // 请假
+                        v2Detail.setLeaveDays(1);
+                    } else {
+                        // 旷工 有正常打卡记录就不算旷工？
+                        v2Detail.setAbsenteeismDays(attendanceList.size() > 0 ? 0 : 1);
+                    }
                     // 上班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOnDutyList = recordList.stream().filter(
-                                    (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty) && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned))
+                                    (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)
+                                            && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
+                                            && StringUtils.isEmpty(r.getLeaveDataId())
+                            )
                             .collect(Collectors.toList());
                     v2Detail.setOnDutyAbsenceTimes(noCheckInOnDutyList.size());
                     // 下班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOffDutyList = recordList.stream().filter(
-                                    (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned))
+                                    (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)
+                                            && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
+                                            && StringUtils.isEmpty(r.getLeaveDataId())
+                            )
                             .collect(Collectors.toList());
                     v2Detail.setOffDutyAbsenceTimes(noCheckInOffDutyList.size());
                 }
@@ -341,9 +368,10 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     record -> {
                         if (fieldWorkMarkError) {
                             return (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(record.getFieldWork())
-                            || (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)));
+                            || (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && StringUtils.isEmpty(record.getLeaveDataId())));
                         } else {
                             return !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                                    && StringUtils.isEmpty(record.getLeaveDataId())
                                     && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
                         }
                     }
@@ -371,6 +399,17 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         }
     }
 
+
+    // 检查当前打卡记录是否在请假时间段内
+    private void checkUpdateRecordIsLeave(EntityManagerContainer emc, Business business, AttendanceV2CheckInRecord record) throws Exception {
+        List<AttendanceV2LeaveData> list = business.getAttendanceV2ManagerFactory().listLeaveDataWithRecordTime(record.getUserId(), record.getRecordDate());
+        if (list != null && !list.isEmpty()) {
+            record.setLeaveDataId(list.get(0).getId());
+            emc.beginTransaction(AttendanceV2CheckInRecord.class);
+            emc.persist(record, CheckPersistType.all);
+            emc.commit();
+        }
+    }
 
     // 工作日 预存储数据更新未未打卡
     private void updateRecord2NoCheckIn(EntityManagerContainer emc, AttendanceV2CheckInRecord record) throws Exception {

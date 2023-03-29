@@ -221,6 +221,21 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     private String appealId;
 
 
+
+    public static final String leaveDataId_FIELDNAME = "leaveDataId";
+    @FieldDescribe("请假数据id，关联请假数据，如果有值表示在请假时间段内.")
+    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + leaveDataId_FIELDNAME)
+    private String leaveDataId;
+
+
+    public String getLeaveDataId() {
+        return leaveDataId;
+    }
+
+    public void setLeaveDataId(String leaveDataId) {
+        this.leaveDataId = leaveDataId;
+    }
+
     public String getAppealId() {
         return appealId;
     }

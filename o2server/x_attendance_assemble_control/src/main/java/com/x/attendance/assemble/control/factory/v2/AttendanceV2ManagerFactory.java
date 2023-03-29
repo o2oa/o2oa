@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -321,6 +322,85 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         if (StringUtils.isNotEmpty(userId)) {
             Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
+            return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+        } else {
+            return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+        }
+    }
+
+    /**
+     * 个人配置
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2PersonConfig> personConfigWithPerson(String person) throws Exception {
+        EntityManager em =  this.entityManagerContainer().get(AttendanceV2PersonConfig.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2PersonConfig> cq = cb.createQuery(AttendanceV2PersonConfig.class);
+        Root<AttendanceV2PersonConfig> root = cq.from(AttendanceV2PersonConfig.class);
+        Predicate p = cb.equal(root.get(AttendanceV2PersonConfig_.person), person);
+        return  em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+
+    /**
+     * 查询人员打卡时间是否在请假数据中
+     * @param person 人员
+     * @param recordTime 打卡时间
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2LeaveData> listLeaveDataWithRecordTime(String person, Date recordTime) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveData.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2LeaveData> cq = cb.createQuery(AttendanceV2LeaveData.class);
+        Root<AttendanceV2LeaveData> root = cq.from(AttendanceV2LeaveData.class);
+        Predicate p = cb.equal(root.get(AttendanceV2LeaveData_.person), person);
+        p = cb.and(p, cb.lessThan(root.get(AttendanceV2LeaveData_.startTime), recordTime));
+        p = cb.and(p, cb.greaterThan(root.get(AttendanceV2LeaveData_.endTime), recordTime));
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+    /**
+     * 查询请假数据
+     * 分页查询需要
+     * @param adjustPage
+     * @param adjustPageSize
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2LeaveData> listLeaveDataByPage(Integer adjustPage,
+                                                             Integer adjustPageSize, String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveData.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2LeaveData> cq = cb.createQuery(AttendanceV2LeaveData.class);
+        Root<AttendanceV2LeaveData> root = cq.from(AttendanceV2LeaveData.class);
+        if (StringUtils.isNotEmpty(person)) {
+            Predicate p = cb.equal(root.get(AttendanceV2LeaveData_.person), person);
+            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2LeaveData_.startTime)));
+        } else {
+            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2LeaveData_.startTime)));
+        }
+        return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+                .getResultList();
+    }
+
+    /**
+     * 查询请假数据
+     * 分页查询需要
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public Long listLeaveDataCount(String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveData.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<AttendanceV2LeaveData> root = cq.from(AttendanceV2LeaveData.class);
+        if (StringUtils.isNotEmpty(person)) {
+            Predicate p = cb.equal(root.get(AttendanceV2LeaveData_.person), person);
             return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
         } else {
             return em.createQuery(cq.select(cb.count(root))).getSingleResult();
