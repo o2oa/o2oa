@@ -198,6 +198,16 @@ public class Message extends GsonPropertyObject {
 
 	}
 
+	public static class AndFxConsumer extends Consumer {
+
+		private static final long serialVersionUID = 5495671899681827755L;
+
+		public AndFxConsumer() {
+			super(MessageConnector.CONSUME_ANDFX, true);
+		}
+
+	}
+
 	public static class WelinkConsumer extends Consumer {
 
 		private static final long serialVersionUID = -5796171639649346866L;

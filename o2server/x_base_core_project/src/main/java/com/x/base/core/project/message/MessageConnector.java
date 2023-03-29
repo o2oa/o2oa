@@ -199,6 +199,8 @@ public class MessageConnector {
 
 	public static final String CONSUME_WELINK = "welink";
 
+	public static final String CONSUME_ANDFX = "andfx";
+
 	public static final String CONSUME_ZHENGWUDINGDING = "zhengwudingding";
 
 	public static final String CONSUME_QIYEWEIXIN = "qiyeweixin";

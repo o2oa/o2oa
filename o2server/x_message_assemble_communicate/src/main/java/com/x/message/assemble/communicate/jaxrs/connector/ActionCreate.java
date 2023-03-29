@@ -147,6 +147,9 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_HADOOP:
 			message = this.v3Message(wi, consumer);
 			break;
+		case MessageConnector.CONSUME_ANDFX:
+			message = this.v3AndFxMessage(wi, consumer);
+			break;
 		// custom_消息需要判断事件类型
 		default:
 			if (StringUtils.startsWith(type, MessageConnector.CONSUME_CUSTOM_PREFIX)) {
@@ -215,6 +218,19 @@ class ActionCreate extends BaseAction {
 		try {
 			if (BooleanUtils.isTrue(Config.dingding().getEnable())
 					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
+				message = this.v3Message(wi, consumer);
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return message;
+	}
+
+	private Message v3AndFxMessage(Wi wi, Consumer consumer) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.andFx().getEnable())
+					&& BooleanUtils.isTrue(Config.andFx().getMessageEnable())) {
 				message = this.v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -423,6 +439,9 @@ class ActionCreate extends BaseAction {
 				break;
 			case MessageConnector.CONSUME_HADOOP:
 				ThisApplication.hadoopConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_ANDFX:
+				ThisApplication.andFxConsumeQueue.send(message);
 				break;
 			default:
 				break;

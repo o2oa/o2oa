@@ -56,7 +56,7 @@ class ActionMoaLogin extends BaseAction {
 				throw new ExceptionAndFx(resp.getHeader().getResultcode(), resp.getHeader().resultdesc);
 			}
 
-			String mobile = AesTools.deCodeAES(resp.getBody().getMsisdn(), Config.andFx().getSourceKey());
+			String mobile = Crypto.decodeAES(resp.getBody().getMsisdn(), Config.andFx().getSourceKey());
 			Business business = new Business(emc);
 			String personId = business.person().getWithCredential(mobile);
 			if (StringUtils.isEmpty(personId)) {

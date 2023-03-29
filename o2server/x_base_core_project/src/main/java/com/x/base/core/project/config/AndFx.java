@@ -6,7 +6,7 @@ public class AndFx extends ConfigObject {
 
 	@FieldDescribe("是否启用.")
 	private Boolean enable;
-	@FieldDescribe("强制拉入同步cron,默认在每天的8点和12点强制进行同步.")
+	@FieldDescribe("强制拉入同步cron,默认不自动同步，例如：10 45 8,12 * * ?.")
 	private String forceSyncCron;
 	@FieldDescribe("移动办公认证api服务地址")
 	private String ssoApi;
@@ -24,6 +24,18 @@ public class AndFx extends ConfigObject {
 	private String addressAppKey;
 	@FieldDescribe("移动办公通讯录appSecret")
 	private String addressAppSecret;
+	@FieldDescribe("移动办公消息推送api服务地址")
+	private String msgApi;
+	@FieldDescribe("移动办公消息推送appKey")
+	private String msgAppKey;
+	@FieldDescribe("移动办公消息推送appSecret")
+	private String msgAppSecret;
+	@FieldDescribe("移动办公消息推送发送者手机号")
+	private String msgSender;
+	@FieldDescribe("移动办公消息推送行业消息类型")
+	private String msgType;
+	@FieldDescribe("移动办公消息盒子标题")
+	private String msgBoxTitle;
 	@FieldDescribe("移动办公消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
 	private String workUrl = "";
 	@FieldDescribe("移动办公消息处理完成后跳转到特定的门户页面的Id")
@@ -36,7 +48,7 @@ public class AndFx extends ConfigObject {
 	}
 
 	public static final Boolean default_enable = false;
-	public static final String default_forceSyncCron = "10 45 8,12 * * ?";
+	public static final String default_forceSyncCron = "";
 	public static final String default_ssoApi = "https://token.cmpassport.com:8300/uniapi/uniTokenValidate";
 	public static final String default_sourceId = "001311";
 	public static final String default_sourceKey = "wHKFp0zRCXdkSXxl";
@@ -45,7 +57,13 @@ public class AndFx extends ConfigObject {
 	public static final String default_addressApi = "https://test.oa.cmzq-office.com";
 	public static final String default_addressAppKey = "hasuec12469b31b2d1es86syuvdxd7s6";
 	public static final String default_addressAppSecret = "15v6675ssua8n9rtyphfb4ijgd9b6u6yh";
-	public static final String default_workUrl = "";
+	public static final String default_msgApi = "https://test.yd.cmzq-office.com/v1/origin/corporate/api/corporateApi/corporateMessages";
+	public static final String default_msgAppKey = "182461ai23etc63595d26jhsb7e0dcgs";
+	public static final String default_msgAppSecret = "ie19u678by5a8uhj684679tcbkbn853";
+	public static final String default_msgSender = "10086102021";
+	public static final String default_msgType = "102021";
+	public static final String default_msgBoxTitle = "智慧办公消息";
+	public static final String default_workUrl = "http://demo001.openlc.net/x_desktop/";
 	public static final String default_messageRedirectPortal = "";
 	public static final Boolean default_messageEnable = false;
 
@@ -60,9 +78,16 @@ public class AndFx extends ConfigObject {
 		this.addressApi = default_addressApi;
 		this.addressAppKey = default_addressAppKey;
 		this.addressAppSecret = default_addressAppSecret;
-		this.messageEnable = default_messageEnable;
+		this.msgApi = default_msgApi;
+		this.msgAppKey = default_msgAppKey;
+		this.msgAppSecret = default_msgAppSecret;
+		this.msgAppSecret = default_msgAppSecret;
+		this.msgSender = default_msgSender;
+		this.msgType = default_msgType;
+		this.msgBoxTitle = default_msgBoxTitle;
 		this.workUrl = default_workUrl;
 		this.messageRedirectPortal = default_messageRedirectPortal;
+		this.messageEnable = default_messageEnable;
 	}
 
 	public Boolean getEnable() {
@@ -167,5 +192,53 @@ public class AndFx extends ConfigObject {
 
 	public void setAddressApi(String addressApi) {
 		this.addressApi = addressApi;
+	}
+
+	public String getMsgAppKey() {
+		return msgAppKey;
+	}
+
+	public void setMsgAppKey(String msgAppKey) {
+		this.msgAppKey = msgAppKey;
+	}
+
+	public String getMsgAppSecret() {
+		return msgAppSecret;
+	}
+
+	public void setMsgAppSecret(String msgAppSecret) {
+		this.msgAppSecret = msgAppSecret;
+	}
+
+	public String getMsgSender() {
+		return msgSender;
+	}
+
+	public void setMsgSender(String msgSender) {
+		this.msgSender = msgSender;
+	}
+
+	public String getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(String msgType) {
+		this.msgType = msgType;
+	}
+
+	public String getMsgApi() {
+		return msgApi;
+	}
+
+	public void setMsgApi(String msgApi) {
+		this.msgApi = msgApi;
+	}
+
+	public String getMsgBoxTitle() {
+		return msgBoxTitle;
+	}
+
+	public void setMsgBoxTitle(String msgBoxTitle) {
+		this.msgBoxTitle = msgBoxTitle;
 	}
 }
