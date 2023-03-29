@@ -62,14 +62,24 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
     "systemTable":"System Table",
     "customTable":"self-built table",
-    "taskInstance":"Process Task",
-    "taskCompletedInstance": "Process TaskCompleted",
-    "readInstance":"Process Read",
-    "readedInstance":"Process Readed",
-    "workInstance":"Process Work",
-    "workCompletedInstance":"Process workCompleted",
-    "reviewInstance":"Process Review",
-    "documentInstance":"CMS Document",
+
+    "taskInstance": "To do (Task)",
+    "taskCompletedInstance": "TaskCompleted (TaskCompleted)",
+    "readInstance": "Reading (Read)",
+    "readedInstance": "Read (ReadCompleted)",
+    "workInstance": "Process instance (Work)",
+    "workCompletedInstance": "Completed process instance (WorkCompleted)",
+    "reviewInstance": "Readable (Review)",
+    "documentInstance": "Content Management Document (Document)",
+
+    "taskInstanceSql": "To do (PP_C_TASK)",
+    "taskCompletedInstanceSql": "TaskCompleted (PP_C_TASKCOMPLETED)",
+    "readInstanceSql": "Reading (PP_C_READ)",
+    "readedInstanceSql": "Read (PP_C_READCOMPLETED)",
+    "workInstanceSql": "Process instance (PP_C_WORK)",
+    "workCompletedInstanceSql": "Completed process instance (PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "Readable (PP_C_REVIEW)",
+    "documentInstanceSql": "Content Management Document (CMS_DOCUMENT)",
 
     "propertyTemplate": {
 
@@ -97,6 +107,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "exportWidth": "Width",
         "exportEnable": "Allow export",
         "isTime": "Time Type",
-        "isNumber": "Number Type"
+        "isNumber": "Number Type",
+        "viewEnable": "Enable View"
     }
 });

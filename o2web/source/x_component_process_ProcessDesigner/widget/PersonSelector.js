@@ -242,6 +242,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     }.bind(this));
                 }.bind(this)
             };
+            if( typeOf(this.options.viewEnable) === "boolean" )options.viewEnable = this.options.viewEnable;
             if( this.options.title )options.title = this.options.title;
             if( this.options.selectorOptions ){
                 options = Object.merge(options, this.options.selectorOptions );

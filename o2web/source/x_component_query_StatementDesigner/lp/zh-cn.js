@@ -61,14 +61,24 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
     "systemTable":"系统表",
     "customTable":"自建数据表",
-    "taskInstance":"待办(Task)",
+
+    "taskInstance": "待办(Task)",
     "taskCompletedInstance": "已办(TaskCompleted)",
-    "readInstance":"待阅(Read)",
-    "readedInstance":"已阅(ReadCompleted)",
-    "workInstance":"流程实例(Work)",
-    "workCompletedInstance":"已完成流程实例(WorkCompleted)",
-    "reviewInstance":"可阅读(Review)",
-    "documentInstance":"内容管理文档(Document)",
+    "readInstance": "待阅(Read)",
+    "readedInstance": "已阅(ReadCompleted)",
+    "workInstance": "流程实例(Work)",
+    "workCompletedInstance": "已完成流程实例(WorkCompleted)",
+    "reviewInstance": "可阅读(Review)",
+    "documentInstance": "内容管理文档(Document)",
+
+    "taskInstanceSql":"待办(PP_C_TASK)",
+    "taskCompletedInstanceSql": "已办(PP_C_TASKCOMPLETED)",
+    "readInstanceSql":"待阅(PP_C_READ)",
+    "readedInstanceSql":"已阅(PP_C_READCOMPLETED)",
+    "workInstanceSql":"流程实例(PP_C_WORK)",
+    "workCompletedInstanceSql":"已完成流程实例(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql":"可阅读(PP_C_REVIEW)",
+    "documentInstanceSql":"内容管理文档(CMS_DOCUMENT)",
 
     "propertyTemplate": {
         // "statementFormat": "如何创建语句：",
@@ -111,7 +121,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "exportWidth": "宽度",
         "exportEnable": "允许导出",
         "isTime": "时间类型",
-        "isNumber": "数字类型"
+        "isNumber": "数字类型",
+        "viewEnable": "启用视图"
 
     }
 });

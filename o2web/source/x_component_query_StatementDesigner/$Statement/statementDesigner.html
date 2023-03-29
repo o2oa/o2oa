@@ -19,8 +19,8 @@
             </select>
         </div>
 
-        <div class="o2_statement_statementDesignerFormatTitle" >{{$.lp.statementType}}: </div>
-        <div class="o2_statement_statementDesignerTypeContent" style="float: left;margin-right: 20px;">
+        <div class="o2_statement_statementDesignerFormatTitle" style="display: none;">{{$.lp.statementType}}: </div>
+        <div class="o2_statement_statementDesignerTypeContent" style="display: none;float: left;margin-right: 20px;">
             <select>
                 <!--                <option value="select">SELECT</option>-->
                 <!--                <option value="update">UPDATE</option>-->
@@ -51,7 +51,7 @@
 
         <div class="o2_statement_statementDesignerTableArea_official" style="{{if $.data.entityCategory=='dynamic' || $.data.entityCategory=='custom'}} display: none {{end if}}">
             <div class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
-            <div class="o2_statement_statementDesignerOfficialTable">
+            <div class="o2_statement_statementDesignerOfficialTable_JPQL">
                 <select>
                     <option value=""></option>
                     <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>{{$.lp.taskInstance}}</option>
@@ -62,6 +62,19 @@
                     <option value="com.x.processplatform.core.entity.content.WorkCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.WorkCompleted'}} selected {{end if}}>{{$.lp.workCompletedInstance}}</option>
                     <option value="com.x.processplatform.core.entity.content.Review" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Review'}} selected {{end if}}>{{$.lp.reviewInstance}}</option>
                     <option value="com.x.cms.core.entity.Document" {{if $.data.entityClassName =='com.x.cms.core.entity.Document'}} selected {{end if}}>{{$.lp.documentInstance}}</option>
+                </select>
+            </div>
+            <div class="o2_statement_statementDesignerOfficialTable_SQL" style="display: none;">
+                <select>
+                    <option value=""></option>
+                    <option value="com.x.processplatform.core.entity.content.Task" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Task'}} selected {{end if}}>{{$.lp.taskInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.TaskCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.TaskCompleted'}} selected {{end if}}>{{$.lp.taskCompletedInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Read" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Read'}} selected {{end if}}>{{$.lp.readInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.ReadCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.ReadCompleted'}} selected {{end if}}>{{$.lp.readedInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Work" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Work'}} selected {{end if}}>{{$.lp.workInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.WorkCompleted" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.WorkCompleted'}} selected {{end if}}>{{$.lp.workCompletedInstanceSql}}</option>
+                    <option value="com.x.processplatform.core.entity.content.Review" {{if $.data.entityClassName =='com.x.processplatform.core.entity.content.Review'}} selected {{end if}}>{{$.lp.reviewInstanceSql}}</option>
+                    <option value="com.x.cms.core.entity.Document" {{if $.data.entityClassName =='com.x.cms.core.entity.Document'}} selected {{end if}}>{{$.lp.documentInstanceSql}}</option>
                 </select>
             </div>
         </div>

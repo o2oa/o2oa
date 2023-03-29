@@ -191,7 +191,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         });
     },
     loadStatementList: function(){
-        this.actions.listStatement(this.application.id, function (json) {
+        this.actions.listStatement(this.application.id, {},function (json) {
             json.data.each(function(statement){
                 this.createListStatementItem(statement);
             }.bind(this));
