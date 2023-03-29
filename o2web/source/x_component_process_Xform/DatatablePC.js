@@ -2900,11 +2900,11 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 
 				var module = this.form._loadModule(json, node, function () {
 
-					this.field = false; //不希望保存数据
-					this._getBusinessData = function(){
-						return _self.data[templateJsonId];
-					};
-					this._setBusinessData = function () {};
+					// this.field = false; //不希望保存数据
+					// this._getBusinessData = function(){
+					// 	return _self.data[templateJsonId];
+					// };
+					// this._setBusinessData = function () {};
 
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
@@ -3584,7 +3584,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	},
 	importData: function(idata){
 
-		var data = this.parseImportedData(idata);
+		var data = this.parsedData; //this.parseImportedData(idata);
 
 		this.datatable.fireEvent("import", [data] );
 
@@ -3704,6 +3704,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var excelUtil = new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable );
 
 		var parsedData = this.parseImportedData(idata, true);
+		this.parsedData = parsedData;
 
 		idata.each( function(lineData, lineIndex){
 
@@ -3774,6 +3775,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 							errorTextList.push(colInfor + result.join("\n") );
 							errorTextListExcel.push( colInforExcel + result.join("\n"));
 						}
+						parsedLineData[json.id] = module.getData();
 					}
 				}
 			}.bind(this));
