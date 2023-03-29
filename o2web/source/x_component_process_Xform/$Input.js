@@ -626,6 +626,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         return this.getData();
     },
     setExcelData: function(data){
+	    if( typeOf(data) === "string" )data = data.replace(/&#10;/g,""); //excel字段换行是 &#10
         this.setData(data);
     },
     stringToArray: function(string){ //excel字段换行是 &#10;，换行和逗号作为数组分隔符
@@ -635,10 +636,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     validationExcel: function () {
         if (!this.isReadonly()){
-            if (!this.validationConfigExcel()) return errorList;
+            var errorList = this.validationConfigExcel();
+            if (errorList.length) return errorList;
 
-            if (!this.json.validation) return true;
-            if (!this.json.validation.code) return true;
+            if (!this.json.validation) return [];
+            if (!this.json.validation.code) return [];
 
             var flag = this.form.Macro.exec(this.json.validation.code, this);
 
@@ -647,7 +649,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 return [flag];
             }
         }
-        return true;
+        return [];
     },
     validationConfigExcel: function () {
 	    var errorList = [];

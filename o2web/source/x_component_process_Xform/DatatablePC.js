@@ -3519,49 +3519,52 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 								}.bind(this));
 							}
 							break;
-						case "Combox":
-						case "Address":
-							arr = this.stringToArray(d);
-							value = arr.length === 0  ? arr[0] : arr;
-							break;
-						case "Checkbox":
-							arr = this.stringToArray(d);
-							var options = module.getOptionsObj();
-							arr.each( function( a, i ){
-								var idx = options.textList.indexOf( a );
-								arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-							});
-							value = arr.length === 1  ? arr[0] : arr;
-							break;
-						case "Radio":
-						case "Select":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							var options = module.getOptionsObj();
-							var idx = options.textList.indexOf( value );
-							value = idx > -1 ? options.valueList[ idx ] : value;
-							break;
-						case "Textarea":
-							value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-							break;
-						case "Calendar":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							if( value && (new Date(value).isValid()) ){
-								var format;
-								if (!json.format){
-									if (json.selectType==="datetime" || json.selectType==="time"){
-										format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-									}else{
-										format = Locale.get("Date").shortDate;
-									}
-								}else{
-									format = json.format;
-								}
-								value = Date.parse( value ).format( format );
-							}
-							break;
 						default:
-							value = d.replace(/&#10;/g,""); //换行符&#10;
+							value = d; //换行符&#10;
 							break;
+						// case "Combox":
+						// case "Address":
+						// 	arr = this.stringToArray(d);
+						// 	value = arr.length === 0  ? arr[0] : arr;
+						// 	break;
+						// case "Checkbox":
+						// 	arr = this.stringToArray(d);
+						// 	var options = module.getOptionsObj();
+						// 	arr.each( function( a, i ){
+						// 		var idx = options.textList.indexOf( a );
+						// 		arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+						// 	});
+						// 	value = arr.length === 1  ? arr[0] : arr;
+						// 	break;
+						// case "Radio":
+						// case "Select":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	var options = module.getOptionsObj();
+						// 	var idx = options.textList.indexOf( value );
+						// 	value = idx > -1 ? options.valueList[ idx ] : value;
+						// 	break;
+						// case "Textarea":
+						// 	value = d.replace(/&#10;/g,"\n"); //换行符&#10;
+						// 	break;
+						// case "Calendar":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	if( value && (new Date(value).isValid()) ){
+						// 		var format;
+						// 		if (!json.format){
+						// 			if (json.selectType==="datetime" || json.selectType==="time"){
+						// 				format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+						// 			}else{
+						// 				format = Locale.get("Date").shortDate;
+						// 			}
+						// 		}else{
+						// 			format = json.format;
+						// 		}
+						// 		value = Date.parse( value ).format( format );
+						// 	}
+						// 	break;
+						// default:
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	break;
 					}
 				}
 
@@ -3765,12 +3768,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						}
 					}
 					if(!hasError){
-						module.setData(parsedD); 
-						module.validationMode();
-						if (!module.validation() && module.errNode){
-							errorTextList.push(colInfor + module.errNode.get("text"));
-							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-							module.errNode.destroy();
+						module.setExcelData(parsedD);
+						var result = module.validationExcel();
+						if ( result && result.length ){
+							errorTextList.push(colInfor + result.join("\n") );
+							errorTextListExcel.push( colInforExcel + result.join("\n"));
 						}
 					}
 				}
