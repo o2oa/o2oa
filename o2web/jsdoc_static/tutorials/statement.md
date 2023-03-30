@@ -17,6 +17,16 @@ SELECT * FROM Task WHERE person = :person
 w3schoole网站：[https://www.w3schools.com/sql/default.asp](https://www.w3schools.com/sql/default.asp)<br />
 中文网站：[https://www.runoob.com/sql/sql-tutorial.html](https://www.runoob.com/sql/sql-tutorial.html)
 
+
+### 3、差异
+| **差异项** | **JPQL** | **SQL** | **说明** |
+| --- | --- | --- | --- |
+| 系统表名 | Task TaskCompleted Read ReadCompleted Work WorkCompleted Review Document | PP_C_TASK PP_C_TASKCOMPLETED PP_C_READ PP_C_READCOMPLETED PP_C_WORK PP_C_WORKCOMPLETED PP_C_REVIEW CMS_DOCUMENT | 待办已办 待阅 已阅 流程实例 已完成流程实例 可阅读 内容管理文档 |
+| 数据表名（自建表） | TableName | QRY_DYN_TABLENAME | 假如创建数据表设置的名称为“TableName”，则SQL取的名称为 "QRY_DYN_"前缀加名称的大写。 |
+| 字段名 | id | xid | 字段以id为例，SQL的字段为"x"前缀加字段名。 |
+| 值 | `SELECT o FROM Task o WHERE o.person = '张三'` 或 `SELECT o FROM Task o WHERE o.person = "张三"` | `SELECT * FROM PP_C_TASK WHERE person = '张三'` | JPQL的值可以使用单引号和双引号，SQL只能使用单引号。建议都使用单引号。 |
+
+
 ### 
 ## where子句传参
 ### 1、用冒号动态传参

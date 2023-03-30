@@ -44,6 +44,45 @@ JPQL官网：<a href="https://www.objectdb.com/java/jpa/query/jpql/structure">ht
 w3schoole网站：<a href="https://www.w3schools.com/sql/default.asp">https://www.w3schools.com/sql/default.asp</a><br />
 中文网站：<a href="https://www.runoob.com/sql/sql-tutorial.html">https://www.runoob.com/sql/sql-tutorial.html</a></p>
 <h3></h3>
+
+    <h3>3、表、字段和值的差异</h3>
+    <table>
+        <thead>
+        <tr>
+            <th width="120"><strong>差异项</strong></th>
+            <th><strong>JPQL</strong></th>
+            <th><strong>SQL</strong></th>
+            <th><strong>说明</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>系统表名</td>
+            <td>Task <br/> TaskCompleted <br/> Read <br/> ReadCompleted <br/> Work <br/> WorkCompleted <br/> Review <br/> Document</td>
+            <td>PP_C_TASK <br/> PP_C_TASKCOMPLETED <br/> PP_C_READ <br/> PP_C_READCOMPLETED <br/> PP_C_WORK <br/> PP_C_WORKCOMPLETED <br/> PP_C_REVIEW <br/> CMS_DOCUMENT</td>
+            <td>待办 <br/> 已办 <br/> 待阅 <br/> 已阅 <br/> 流程实例 <br/> 已完成流程实例 <br/> 可阅读 <br/> 内容管理文档</td>
+        </tr>
+        <tr>
+            <td>数据表名（自建表）</td>
+            <td>TableName</td>
+            <td>QRY_DYN_TABLENAME</td>
+            <td>假如创建数据表设置的名称为“TableName”，则SQL取的名称为 &quot;QRY_DYN_&quot;前缀加名称的大写。</td>
+        </tr>
+        <tr>
+            <td>字段名</td>
+            <td>id</td>
+            <td>xid</td>
+            <td>字段以id为例，SQL的字段为&quot;x&quot;前缀加字段名。</td>
+        </tr>
+        <tr>
+            <td>值</td>
+            <td><code>SELECT o FROM Task o WHERE o.person = '张三@zhangsan@P'</code> 或 <code>SELECT o FROM Task o WHERE o.person = &quot;张三@zhangsan@P&quot;</code></td>
+            <td><code>SELECT * FROM PP_C_TASK WHERE person = '张三@zhangsan@P'</code></td>
+            <td>JPQL的值可以使用单引号和双引号，SQL只能使用单引号。建议都使用单引号。</td>
+        </tr>
+        </tbody>
+    </table>
+
 <h2>where子句传参</h2>
 <h3>1、用冒号动态传参</h3>
 <p>查询语句中的where语句的值可以使用json传入，如：<br />查询语句的设计为 ：</p>
