@@ -36,6 +36,8 @@ public class ThisApplication {
 
 	public static final DingdingConsumeQueue dingdingConsumeQueue = new DingdingConsumeQueue();
 
+	public static final AndFxConsumeQueue andFxConsumeQueue = new AndFxConsumeQueue();
+
 	public static final WelinkConsumeQueue welinkConsumeQueue = new WelinkConsumeQueue();
 
 	public static final PmsinnerConsumeQueue pmsinnerConsumeQueue = new PmsinnerConsumeQueue();
@@ -110,6 +112,7 @@ public class ThisApplication {
 				&& BooleanUtils.isTrue(Config.mpweixin().getMessageEnable())) {
 			context().startQueue(mpweixinConsumeQueue);
 		}
+		context().startQueue(andFxConsumeQueue);
 		context().startQueue(wsConsumeQueue);
 		context().startQueue(calendarConsumeQueue);
 	}

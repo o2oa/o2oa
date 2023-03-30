@@ -1,5 +1,6 @@
 {
  "manifest.json":"配置文件配置",
+ "andFx.json":"中国移动办公配置",
  "appStyle.json":"移动端应用样式配置",
  "collect.json":"连接到云平台配置",
  "components.json":"组件配置",
