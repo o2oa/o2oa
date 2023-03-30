@@ -125,35 +125,50 @@
                 }
             };
 
+
+            function isMobile() {
+                let userAgentInfo = navigator.userAgent;
+                let Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
+                let getArr = Agents.filter(function(i){
+                    return userAgentInfo.indexOf(i) > -1;
+                });
+                return getArr.length ? true : false;
+            }
+
             var redirectTo = function(){
                 var uri = new URI(window.location.toString());
                 var redirect = uri.getData("redirect");
 
+
                 if (redirect){
                     window.location = redirect;
                 }else{
-                    requestJson(
-                        "x_program_center",
-                        "/jaxrs/appstyle/index/portal",
-                        function(responseJSON, responseText){
-                            var data = responseJSON.data;
-                            if( data && data.value ){
-                                // var url = "../x_desktop/portalmobile.html?id="+data.value;
-                                // if( data.indexPage ){
-                                //     url = url + "&page=" + loginPage.page;
-                                // }
-                                window.location = "../x_desktop/portalmobile.html?id="+data.value;
-                            }else{
+                    if( isMobile() ){
+                        requestJson(
+                            "x_program_center",
+                            "/jaxrs/appstyle/index/portal",
+                            function(responseJSON, responseText){
+                                var data = responseJSON.data;
+                                if( data && data.value ){
+                                    // var url = "../x_desktop/portalmobile.html?id="+data.value;
+                                    // if( data.indexPage ){
+                                    //     url = url + "&page=" + loginPage.page;
+                                    // }
+                                    window.location = "../x_desktop/portalmobile.html?id="+data.value;
+                                }else{
+                                    window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                }
+                            }.bind(this),
+                            function(xhr){
                                 window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
-                            }
-                        }.bind(this),
-                        function(xhr){
-                            window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
-                        }.bind(this),
-                        function(text, error){
-                            window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
-                        }.bind(this)
-                    );
+                            }.bind(this),
+                            function(text, error){
+                                window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                            }.bind(this)
+                        );
+                    }else{
+                        window.location = "../x_desktop/index.html";
+                    }
                 }
             };
 
