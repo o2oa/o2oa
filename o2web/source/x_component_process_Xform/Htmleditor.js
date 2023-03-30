@@ -681,7 +681,8 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             return this.getData();
         },
         setExcelData: function(data){
-            if( typeOf(data) === "string" )data = data.replace(/&#10;/g,""); //excel字段换行是 &#10
+            if( typeOf(data) === "string" )data = data.replace(/&#10;/g,"<br>"); //excel字段换行是 &#10
+            this.excelData = data;
             this.setData(data, true);
         },
         validationExcel: function () {
@@ -712,8 +713,8 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                         }
                     }
                 }
-                return errorList;
             }
+            return errorList;
         },
         validationConfigItemExcel: function(data){
             if ( data.status==="all"){

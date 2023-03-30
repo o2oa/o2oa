@@ -165,6 +165,7 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         },
         setExcelData: function(d){
             var data = true;
+            this.excelData = d;
             if ( (d || "").toString === ( this.json.inactiveText || "false" ) ){
                 data = false;
             }

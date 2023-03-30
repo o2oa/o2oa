@@ -265,6 +265,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     },
 
         getDataByText: function(text){
+            this._loadOptions();
             var opt = this.json.options;
             if( !opt )return "";
             if( o2.typeOf(opt.then)==="function" ){
@@ -280,18 +281,18 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 var values;
                 var texts = typeOf( text ) === "array" ? text : [text];
                 texts.forEach(function(t){
-                    if( typeOf( t ) === "array" ){
+                    if( typeOf( t ) === "array" && t.length > 1 ){
                         values = values.concat(this._getEachDataByText(options, t));
                     }else{
-                        values = values.concat(this._getLastDataByText(options, t));
+                        values = values.concat(this._getLastDataByText(options, typeOf( t ) === "array" ? (t[0] || "") : t));
                     }
                 }.bind(this));
                 return values;
             }else{
-                if( typeOf( text ) === "array" ){
+                if( typeOf( text ) === "array" && text.length > 1 ){
                     return this._getEachDataByText(options, text);
                 }else{
-                    return this._getLastDataByText(options, text);
+                    return this._getLastDataByText(options, typeOf( text ) === "array" ? (text[0] || "") : text);
                 }
             }
         },
@@ -320,12 +321,12 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             for( var i=0; i<options.length; i++ ){
                 var op = options[i];
                 if( op[this.json.props.children] && op[this.json.props.children].length ){
-                    value = this._getLastDataByText( op[this.json.props.children], value );
+                    value = this._getLastDataByText( op[this.json.props.children], text );
                     if( value )return value;
                 }else{
                     var opValue = op[this.json.props.value];
                     var opLabel = op[this.json.props.label];
-                    if( opLabel === value ){
+                    if( opLabel === text ){
                         value = opValue;
                     }
                 }
@@ -350,8 +351,9 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         },
         setExcelData: function(d){
             var arr = this.stringToArray(d);
+            this.excelData = arr;
             arr = arr.map(function (a) {
-                return a.contains("/") ? a.split("/") : "";
+                return a.contains("/") ? a.split("/") : a;
             });
             var data = this.getDataByText( arr );
             this.setData(data);

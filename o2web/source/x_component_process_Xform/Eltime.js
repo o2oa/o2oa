@@ -165,6 +165,7 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         },
         setExcelData: function(data){
             var arr = this.stringToArray(data);
+            this.excelData = arr;
             var value = arr.length === 0  ? arr[0] : arr;
             this.setData(value, true);
         }

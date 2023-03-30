@@ -2822,7 +2822,7 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 	initialize: function(mainDatatable){
 		this.mainDatatable = mainDatatable;
 		this.json = Object.clone( mainDatatable.json );
-		this.json.id = this.json.id + "_simula";
+		this.json.id = this.json.id + "_o2simula";
 
 		this.node = new Element("div", {
 			id: this.json.id
@@ -2853,7 +2853,6 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 	},
 	_loadUserInterface: function(){
 		// this.fireEvent("queryLoad");
-		debugger;
 
 		this.editModules = [];
 
@@ -3932,6 +3931,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						}
 					}
 					if(!hasError){
+						debugger;
 						module.setExcelData(parsedD);
 						var result = module.validationExcel();
 						if ( result && result.length ){

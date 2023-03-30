@@ -313,12 +313,13 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             }
         },
         setExcelData: function(d){
-            if( !this.json.options )this._loadOptions();
+            this._loadOptions();
             var arr = this.stringToArray(d);
+            this.excelData = arr;
             arr = arr.map(function (a) {
-                return a.contains("/") ? a.split("/") : "";
+                return a.contains("/") ? a.split("/") : a;
             });
             var data = this.getDataByText( arr );
-            this.setData(data, true);
+            this.setData( this.json.multiple ? data : data[0], true);
         }
 }); 

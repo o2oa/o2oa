@@ -351,12 +351,14 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         },
         setExcelData: function(d){
             var arr = this.stringToArray(d);
+            this.excelData = arr;
             var options = this.getOptionsObj();
             arr.each( function( a, i ){
                 var idx = options.textList.indexOf( a );
-                arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+                arr[ i ] = idx > -1 ? options.valueList[ idx ] : null;
             });
-            var value = arr.length === 1  ? arr[0] : arr;
-            this.setData(value, true);
+            arr.clean();
+            this.json[this.json.$id] = arr;
+            this.setData(arr, true);
         }
 }); 

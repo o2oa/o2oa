@@ -375,6 +375,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
     },
     setExcelData: function(d){
         var value = d.replace(/&#10;/g,""); //换行符&#10;
+        this.excelData = value;
         var json = this.json;
         if( value && (new Date(value).isValid()) ){
             var format;

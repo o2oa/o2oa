@@ -265,5 +265,15 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
             this.styleNode = this.node.loadCssText(this.json.vueCss.code, {"notInject": true});
             this.styleNode.inject(this.node, "before");
         }
+    },
+
+    setExcelData: function(d){
+        var value = d.replace(/&#10;/g,""); //换行符&#10;
+        this.excelData = value;
+        var options = this.getOptionsObj();
+        var idx = options.textList.indexOf( value );
+        value = idx > -1 ? options.valueList[ idx ] : "";
+        this.json[this.json.$id] = value;
+        this.setData(value, true);
     }
 }); 

@@ -627,6 +627,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     setExcelData: function(data){
 	    if( typeOf(data) === "string" )data = data.replace(/&#10;/g,""); //excel字段换行是 &#10
+        this.excelData = data;
         this.setData(data, true);
     },
     stringToArray: function(string){ //excel字段换行是 &#10;，换行和逗号作为数组分隔符
@@ -662,16 +663,26 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                     }
                 }
             }
-            return errorList;
         }
+        return errorList;
     },
     validationConfigItemExcel: function(data){
         if ( data.status==="all"){
             var n = this._getBusinessData();
-            var v = (data.valueType==="value") ? n : n.length;
+            var ed = typeOf( this.excelData ) === "null" ? "" : this.excelData;
+            var v, ev;
+            if(data.valueType==="value"){
+                v = n;
+                ev = ed;
+            }else{
+                v = n.length;
+                ev = ed.length || 0;
+            }
             switch (data.operateor){
                 case "isnull":
-                    if (!v)return data.prompt;
+                    if (!v){
+                        return !ev ? data.prompt : "不在选项中";
+                    }
                     break;
                 case "notnull":
                     if (v)return data.prompt;

@@ -509,15 +509,16 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		getExcelData: function(){
 			var value = this.getData();
 			var options = this.getOptionsObj();
-			var idx = options.textList.indexOf( value );
-			var text = idx > -1 ? options.valueList[ idx ] : "";
+			var idx = options.valueList.indexOf( value );
+			var text = idx > -1 ? options.textList[ idx ] : "";
 			return text;
 		},
 		setExcelData: function(d){
 			var value = d.replace(/&#10;/g,""); //换行符&#10;
+			this.excelData = value;
 			var options = this.getOptionsObj();
 			var idx = options.textList.indexOf( value );
-			value = idx > -1 ? options.valueList[ idx ] : value;
+			value = idx > -1 ? options.valueList[ idx ] : "";
 			this.setData(value, true);
 		}
 	

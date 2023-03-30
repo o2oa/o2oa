@@ -318,6 +318,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
     },
     setExcelData: function(data){
         var arr = this.stringToArray(data);
+        this.excelData = arr;
         var value = arr.length === 0  ? arr[0] : arr;
         this.setData(value, true);
     }

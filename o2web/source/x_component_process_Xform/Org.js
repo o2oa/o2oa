@@ -1539,6 +1539,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             return text;
         },
         setExcelData: function(data){
+            this.excelData = data;
             this.setData(data, true);
         }
 
