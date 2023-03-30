@@ -149,6 +149,10 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p,cb.like(root.get(WorkCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = cb.and(p,cb.like(root.get(WorkCompleted_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
 		return p;
 	}
 
@@ -167,6 +171,9 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
 		private String endTime;
+
+		@FieldDescribe("标题")
+		private String title;
 
 		@FieldDescribe("创建组织")
 		private List<String> creatorUnitList;
@@ -235,6 +242,10 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		public void setEndTime(String endTime) {
 			this.endTime = endTime;
 		}
+
+		public String getTitle() { return title; }
+
+		public void setTitle(String title) { this.title = title; }
 
 		public List<String> getCreatorUnitList() {
 			return creatorUnitList;

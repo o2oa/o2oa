@@ -77,6 +77,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
 		private Boolean relateEditionProcess = true;
 
+		@FieldDescribe("标题")
+		private String title;
+
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
 
@@ -211,6 +214,10 @@ abstract class V2Base extends StandardJaxrsAction {
 		public void setCreatorUnitList(List<String> creatorUnitList) {
 			this.creatorUnitList = creatorUnitList;
 		}
+
+		public String getTitle() { return title; }
+
+		public void setTitle(String title) { this.title = title; }
 
 		public String getStartTime() {
 			return startTime;
@@ -530,6 +537,14 @@ abstract class V2Base extends StandardJaxrsAction {
 			p = cb.and(p, cb.or(cb.like(root.get(Review_.title), key), cb.like(root.get(Review_.serial), key),
 					cb.like(root.get(Review_.creatorPerson), key), cb.like(root.get(Review_.creatorUnit), key)));
 		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			if (StringUtils.isNotEmpty(title)) {
+				p = cb.and(p, cb.like(root.get(Review_.title), "%" + title + "%"));
+			}
+		}
+
 		return p;
 	}
 
