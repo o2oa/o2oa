@@ -405,6 +405,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
             this.loadTab();
 
+            if( this.json.table ){
+                o2.Actions.load("x_query_assemble_designer").TableAction.get( this.json.table, function(json){
+                    this.json.tableObj = json.data;
+                    this.setDynamicTableName();
+                }.bind(this), function(){
+                    return true;
+                });
+            }
+
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
@@ -900,6 +909,17 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 return "CMS_DOCUMENT";
         }
     },
+    setDynamicTableName: function(){
+        var name = this.json.tableObj && this.json.tableObj.name;
+        if( name ){
+            if( ["sql", "sqlScript"].contains(this.json.format) ){
+                name = "QRY_DYN_" + name.toUpperCase();
+            }
+            this.dynamicTableContent.set("text", name);
+        }else{
+            this.dynamicTableContent.set("text", "");
+        }
+    },
     setEvent: function () {
         this.designerArea.addEvent("click", function (e) {
             this.selected();
@@ -975,6 +995,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                         this.loadJpqlCountEditor();
                 }
                 this.json.format = v;
+                this.setDynamicTableName();
             }
             this.loadFieldSelect();
         }.bind(this));
@@ -1191,13 +1212,20 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 if (items.length) {
                     var id = items[0].data.id;
                     var name = items[0].data.name;
-                    this.dynamicTableContent.set("text", name);
                     this.json.table = name;
                     this.json.tableObj = items[0].data;
+                    if( name ){
+                        this.json.tableObj.nativeTableName = "QRY_DYN_" + name.toUpperCase();
+                    }
 
                     this.officialTableSelectJPQL.options[0].set("selected", true);
                     this.officialTableSelectSQL.options[0].set("selected", true);
                     this.json.entityClassName = "";
+
+                    if( name && ["sql", "sqlScript"].contains(this.json.format) ){
+                        name = "QRY_DYN_" + name.toUpperCase();
+                    }
+                    this.dynamicTableContent.set("text", name);
 
                     this.changeEditorEntityClassName( name );
                     this.loadFieldSelect();

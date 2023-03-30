@@ -31,6 +31,9 @@ MWF.xApplication.Selector.QueryTable = new Class({
                         var category = this._newItemCategory(data, this, this.itemAreaNode);
                         data.tableList.each(function(d){
                             d.applicationName = data.name;
+                            if( d.name ){
+                                d.nativeTableName = "QRY_DYN_" + d.name.toUpperCase();
+                            }
                             var item = this._newItem(d, this, category.children);
                             this.items.push(item);
                         }.bind(this));
@@ -70,7 +73,7 @@ MWF.xApplication.Selector.QueryTable = new Class({
 MWF.xApplication.Selector.QueryTable.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name + "(" + this.data.nativeTableName + ")";
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/table.png)");
