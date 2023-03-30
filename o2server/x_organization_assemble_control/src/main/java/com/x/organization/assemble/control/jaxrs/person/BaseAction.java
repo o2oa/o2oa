@@ -189,14 +189,14 @@ abstract class BaseAction extends StandardJaxrsAction {
                 List<Identity> identities = this.listIdentity(business, t);
                 List<Unit> units = this.listUnit(business, identities);
                 List<Unit> supUnits = new ArrayList<>();
+                supUnits.addAll(units);
                 for (Unit u : units) {
                     supUnits.addAll(business.unit().listSupNestedObject(u));
                 }
-                units.addAll(supUnits);
-                if (ListTools.isNotEmpty(units)) {
+                if (ListTools.isNotEmpty(supUnits)) {
                     allowEdit = false;
                     allowDelete = true;
-                    for (Unit o : units) {
+                    for (Unit o : supUnits) {
                         if (o.getControllerList().contains(person.getId())) {
                             allowEdit = true;
                         } else {
