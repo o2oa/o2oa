@@ -255,7 +255,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
             "identity": identity
         };
         if( this.options.workData ){
-            data.data = this.options.workData
+            data.data = this.options.workData;
+            if (data.data.title || data.data.subject) data.title = data.data.title || data.data.subject;
         }
 
         if (!data.identity){
