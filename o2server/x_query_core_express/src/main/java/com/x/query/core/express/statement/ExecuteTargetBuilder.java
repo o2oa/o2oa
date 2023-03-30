@@ -158,9 +158,12 @@ public class ExecuteTargetBuilder {
         StringBuilder builder = new StringBuilder();
         builder.append(KEY_SELECT).append(KEY_SPACE).append(KEY_COUNTSQL).append(KEY_SPACE)
                 .append(KEY_FROM).append(KEY_SPACE).append(table.getFullyQualifiedName());
-        String whereClause = plainSelect.getWhere().toString();
-        if (StringUtils.isNotBlank(whereClause)) {
-            builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
+        Expression exp = plainSelect.getWhere();
+        if (null != exp) {
+            String whereClause = exp.toString();
+            if (StringUtils.isNotBlank(whereClause)) {
+                builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
+            }
         }
         // 将在生成DATA语句中的参数对象PARAM传入避免重复计算
         return Optional

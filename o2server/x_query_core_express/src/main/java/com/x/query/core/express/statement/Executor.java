@@ -28,7 +28,8 @@ public class Executor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Executor.class);
 
-    public static Object executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+    public static Object executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
+            throws Exception {
         if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
             return executeDataSql(statement, runtime, executeTarget);
         } else {
@@ -36,7 +37,8 @@ public class Executor {
         }
     }
 
-    private static Object executeDataSql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+    private static Object executeDataSql(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
+            throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -64,13 +66,11 @@ public class Executor {
                 emc.commit();
                 return data;
             }
-        } catch (Exception e) {
-            LOGGER.error(e);
         }
-        return null;
     }
 
-    private static Object executeDataJpql(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
+    private static Object executeDataJpql(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
+            throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -98,13 +98,10 @@ public class Executor {
                 emc.commit();
                 return data;
             }
-        } catch (Exception e) {
-            LOGGER.error(e);
         }
-        return null;
     }
 
-    public static Long executeCount(Statement statement, ExecuteTarget executeTarget) {
+    public static Long executeCount(Statement statement, ExecuteTarget executeTarget) throws Exception {
         if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
             return executeCountSql(statement, executeTarget);
         } else {
@@ -112,7 +109,7 @@ public class Executor {
         }
     }
 
-    private static Long executeCountSql(Statement statement, ExecuteTarget executeTarget) {
+    private static Long executeCountSql(Statement statement, ExecuteTarget executeTarget) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -129,13 +126,10 @@ public class Executor {
                 query.setParameter(idx, entry.getValue());
             }
             return (Long) query.getSingleResult();
-        } catch (Exception e) {
-            LOGGER.error(e);
         }
-        return null;
     }
 
-    private static Long executeCountJpql(Statement statement, ExecuteTarget executeTarget) {
+    private static Long executeCountJpql(Statement statement, ExecuteTarget executeTarget) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
@@ -152,10 +146,7 @@ public class Executor {
                 query.setParameter(idx, entry.getValue());
             }
             return (Long) query.getSingleResult();
-        } catch (Exception e) {
-            LOGGER.error(e);
         }
-        return null;
     }
 
     @SuppressWarnings("unchecked")
