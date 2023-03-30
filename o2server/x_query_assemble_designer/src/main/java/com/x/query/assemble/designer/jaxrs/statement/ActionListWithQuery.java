@@ -66,8 +66,8 @@ class ActionListWithQuery extends BaseAction {
         CriteriaQuery<Statement> cq = cb.createQuery(Statement.class);
         Root<Statement> root = cq.from(Statement.class);
         Predicate p = cb.equal(root.get(Statement_.query), id);
-        if (BooleanUtils.isFalse(wi.getViewEnable())) {
-            p = cb.and(p, cb.equal(root.get(Statement_.viewEnable), false));
+        if (null != wi.getViewEnable()) {
+            p = cb.and(p, cb.equal(root.get(Statement_.viewEnable), wi.getViewEnable()));
         }
         cq.select(root).where(p);
         return em.createQuery(cq).getResultList();
