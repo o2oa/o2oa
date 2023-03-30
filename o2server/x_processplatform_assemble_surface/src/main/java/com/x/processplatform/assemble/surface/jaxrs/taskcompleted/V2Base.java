@@ -86,6 +86,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
 		private String endTime;
 
+		@FieldDescribe("活动名称")
+		private List<String> activityNameList;
+
 		@FieldDescribe("创建用户")
 		private List<String> creatorPersonList;
 
@@ -192,6 +195,10 @@ abstract class V2Base extends StandardJaxrsAction {
 		public void setEndTime(String endTime) {
 			this.endTime = endTime;
 		}
+
+		public List<String> getActivityNameList() { return activityNameList; }
+
+		public void setActivityNameList(List<String> activityNameList) { this.activityNameList = activityNameList; }
 
 		public List<String> getCreatorPersonList() {
 			return creatorPersonList;
@@ -489,6 +496,11 @@ abstract class V2Base extends StandardJaxrsAction {
 				p = cb.and(p, cb.like(root.get(TaskCompleted_.title), "%" + title + "%"));
 			}
 		}
+
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(TaskCompleted_.activityName).in(wi.getActivityNameList()));
+		}
+
 		return p;
 	}
 

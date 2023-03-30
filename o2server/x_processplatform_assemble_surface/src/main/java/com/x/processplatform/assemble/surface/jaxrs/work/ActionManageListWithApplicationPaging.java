@@ -167,6 +167,12 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p,cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = cb.and(p,cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
 		return p;
 	}
 
@@ -191,6 +197,9 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		@FieldDescribe("创建用户")
 		private List<String> credentialList;
+
+		@FieldDescribe("标题")
+		private String title;
 
 		@FieldDescribe("活动名称")
 		private List<String> activityNameList;
@@ -280,6 +289,10 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		public void setCredentialList(List<String> credentialList) {
 			this.credentialList = credentialList;
 		}
+
+		public String getTitle() { return title; }
+
+		public void setTitle(String title) { this.title = title; }
 
 		public List<String> getActivityNameList() {
 			return activityNameList;

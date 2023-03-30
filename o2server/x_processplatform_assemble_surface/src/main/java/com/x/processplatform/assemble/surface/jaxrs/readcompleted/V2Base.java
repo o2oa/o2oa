@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,14 +25,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.ReadCompleted_;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -91,6 +84,14 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss.")
 		@Schema(description = "结束时间yyyy-MM-dd HH:mm:ss.")
 		private String endTime;
+
+		@FieldDescribe("标题.")
+		@Schema(description = "标题.")
+		private String title;
+
+		@FieldDescribe("活动名称.")
+		@Schema(description = "活动名称.")
+		private List<String> activityNameList;
 
 		@FieldDescribe("创建用户.")
 		@Schema(description = "创建用户.")
@@ -207,6 +208,14 @@ abstract class V2Base extends StandardJaxrsAction {
 		public void setCreatorPersonList(List<String> creatorPersonList) {
 			this.creatorPersonList = creatorPersonList;
 		}
+
+		public String getTitle() { return title; }
+
+		public void setTitle(String title) { this.title = title; }
+
+		public List<String> getActivityNameList() { return activityNameList; }
+
+		public void setActivityNameList(List<String> activityNameList) { this.activityNameList = activityNameList; }
 
 		public List<String> getCompletedTimeMonthList() {
 			return completedTimeMonthList;
@@ -474,6 +483,18 @@ abstract class V2Base extends StandardJaxrsAction {
 							cb.like(root.get(ReadCompleted_.creatorPerson), key),
 							cb.like(root.get(ReadCompleted_.creatorUnit), key)));
 		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			if (StringUtils.isNotEmpty(title)) {
+				p = cb.and(p, cb.like(root.get(ReadCompleted_.title), "%" + title + "%"));
+			}
+		}
+
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(ReadCompleted_.activityName).in(wi.getActivityNameList()));
+		}
+
 		return p;
 	}
 
