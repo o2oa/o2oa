@@ -577,6 +577,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if( this.options.toolbarGroupHidden.contains("edit") )return false;
         return this.options.isDelete && this.options.isDelete !== "hidden";
     },
+    isAttEditAvailable : function( att ){
+        if (this.options.readonly)return false;
+        if( this.options.toolbarGroupHidden.contains("edit") )return false;
+        return this.options.isEditAtt && this.options.isEditAtt !== "hidden";
+    },
     // checkOfficeAction: function(){
     //     if (this.officeAction) this.officeAction.setStyle("display", "none");
     //     if (this.min_officeAction) this.min_officeAction.setStyle("display", "none");
@@ -1895,6 +1900,13 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
                 this.controller.deleteAttachment(e, node);
             }.bind(this));
         }
+
+        if ( this.controller.isAttEditAvailable(this) ) {
+            this.editAction = this.createAction(this.actionAreaNode, "edit_single", "edit_single_over", o2.LP.widget["editAtt"], function (e, node) {
+                this.controller.editAttachment(e, node);
+            }.bind(this));
+        }
+
         //this.actions.push( this.deleteAction );
 
         if (this.controller.configAttachment) {
@@ -1949,6 +1961,13 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
                 this.controller.deleteAttachment(e, node);
             }.bind(this));
         }
+
+        if ( this.controller.isAttEditAvailable(this) ) {
+            this.editAction = this.createAction(this.actionAreaNode, "edit_single", "edit_single_over", o2.LP.widget["editAtt"], function (e, node) {
+                this.controller.editAttachment(e, node);
+            }.bind(this));
+        }
+
         //this.actions.push( this.deleteAction );
 
 

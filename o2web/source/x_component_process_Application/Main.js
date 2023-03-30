@@ -302,8 +302,8 @@ MWF.xApplication.process.Application.List = new Class({
 
 		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
 			"<tr>" +
-			"    <td styles='filterTableTitle' lable='key'></td>" +
-			"    <td styles='filterTableValue' item='key'></td>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
 			"    <td styles='filterTableTitle' lable='activityName'></td>" +
 			"    <td styles='filterTableValue' item='activityName'></td>" +
 			"    <td styles='filterTableTitle' lable='creatorUnitList'></td>" +
@@ -329,7 +329,7 @@ MWF.xApplication.process.Application.List = new Class({
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
-				key: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				activityName: {text: lp.activity, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
 					text: lp.process,
@@ -765,6 +765,140 @@ MWF.xApplication.process.Application.AllList = new Class({
 		}.bind(this));
 
 	},
+	loadFilter: function () {
+		var lp = this.lp;
+
+		this.fileterNode = new Element("div.fileterNode", {
+			"styles": this.css.fileterNode
+		}).inject(this.searchNode);
+
+		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
+			"<tr>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
+			"    <td styles='filterTableTitle' lable='creatorUnitList'></td>" +
+			"    <td styles='filterTableValue' item='creatorUnitList'></td>" +
+			"    <td styles='filterTableTitle' lable='credentialList'></td>" +
+			"    <td styles='filterTableValue' item='credentialList'></td>" +
+			"    <td styles='filterTableValue'></td>" +
+			"</tr>" +
+			"<tr style='height: 45px;'>" +
+
+			"    <td styles='filterTableTitle' lable='processName'></td>" +
+			"    <td styles='filterTableValue' item='processName'></td>" +
+			"    <td styles='filterTableTitle' lable='startTime'></td>" +
+			"    <td styles='filterTableValue' item='startTime'></td>" +
+			"    <td styles='filterTableTitle' lable='endTime'></td>" +
+			"    <td styles='filterTableValue' item='endTime'></td>" +
+			"    <td styles='filterTableValue' style='width: 150px'><div style='float:left' item='action'></div><div item='reset'></div></td>" +
+			"</tr>" +
+			"</table>";
+		this.fileterNode.set("html", html);
+
+
+		this.form = new MForm(this.fileterNode, {}, {
+			style: "attendance",
+			isEdited: true,
+			itemTemplate: {
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				processName: {
+					text: lp.process,
+					"type": "text",
+
+					"style": {"min-width": "150px"},
+					"event": {
+
+						"click": function (item, ev){
+							var v = item.getValue();
+							o2.xDesktop.requireApp("Selector", "package", function(){
+								var options = {
+									"type": "Process",
+									"values": v!==""?[item.getValue().split("|")[1]] : [],
+									"count": 1,
+									"onComplete": function (items) {
+										var arr = [];
+										var arr2 = [];
+										items.each(function (data) {
+											arr.push(data.data);
+											arr2.push(items[0].data.name+"|"+items[0].data.id);
+										});
+										item.setValue(arr2.join(","));
+									}.bind(this)
+								};
+								new o2.O2Selector(this.app.desktop.node, options);
+							}.bind(this),false);
+						}.bind(this)}
+				},
+				credentialList: {
+					"text": lp.creator,
+					"type": "org",
+					"orgType": "identity",
+					"orgOptions": {"resultType": "person"},
+					"style": {"min-width": "150px"},
+					"orgWidgetOptions": {"disableInfor": true}
+				},
+				creatorUnitList: {
+					"text": lp.createunit,
+					"type": "org",
+					"orgType": "unit",
+					"orgOptions": {"resultType": "person"},
+					"style": {"min-width": "150px"},
+					"orgWidgetOptions": {"disableInfor": true}
+				},
+				startTime: {
+					text: lp.begin,
+					"tType": "date",
+					"style": {"min-width":"150px"}
+				},
+				endTime: {
+					text: lp.end,
+					"tType": "date",
+					"style": {"min-width":"150px"}
+				},
+				action: {
+					"value": this.lp.query, type: "button", className: "filterButton", event: {
+						click: function () {
+							var result = this.form.getResult(false, null, false, false, false);
+							for (var key in result) {
+								if (!result[key]) {
+									delete result[key];
+								} else if (key === "activityName" && result[key].length > 0) {
+									//result[key] = result[key][0].split("@")[1];
+									result["activityNameList"] = [result[key]];
+									delete result[key];
+								}else if (key === "processName" && result[key] !== "") {
+									//result[key] = result[key][0].split("@")[1];
+									result["processList"] = [result[key].split("|")[1]];
+									delete result[key];
+								}else if (key === "endTime" && result[key] !== "") {
+									result[key] = result[key] + " 23:59:59"
+
+								}
+							}
+							result.applicationList = this.filterList.applicationList;
+
+							if(result.credentialList) {
+								result.creatorPersonList = result.credentialList;
+							}
+
+							this.filterList = result;
+							this.refresh();
+						}.bind(this)
+					}
+				},
+				reset: {
+					"value": this.lp.reset, type: "button", className: "filterButtonGrey", event: {
+						click: function () {
+							this.form.reset();
+							this._initFilter();
+							this.refresh();
+						}.bind(this)
+					}
+				},
+			}
+		}, this.app, this.css);
+		this.form.load();
+	},
 	_fixData : function (dataList){
 		dataList.each(function (data){
 			data.creatorPersonName = data.creatorPerson.split("@")[0];
@@ -857,8 +991,8 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
 			"<tr style='height: 45px;'>" +
-			"    <td styles='filterTableTitle' lable='key'></td>" +
-			"    <td styles='filterTableValue' item='key'></td>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
 			"    <td styles='filterTableTitle' lable='processName'></td>" +
 			"    <td styles='filterTableValue' item='processName'></td>" +
 			"    <td styles='filterTableTitle' lable='startTime'></td>" +
@@ -875,7 +1009,7 @@ MWF.xApplication.process.Application.DraftList = new Class({
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
-				key: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
 					text: lp.process,
 					"type": "text",

@@ -138,14 +138,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
     checkEditAttAction: function () {
 
-
         if(layout.mobile){
             this.setActionDisabled(this.editAttAction);
+            this.setActionDisabled(this.min_editAttAction);
         } else if (this.options.isEditAtt === "hidden" ){
             this.setActionHidden(this.editAttAction);
+            this.setActionHidden(this.min_editAttAction);
         } else if (!this.options.isEditAtt || this.options.readonly){
             this.setActionDisabled(this.editAttAction);
-            //this.setActionDisabled(this.min_downloadAction);
+            this.setActionDisabled(this.min_editAttAction);
         }else{
             if (this.selectedAttachments.length){
                 var flag = false;
@@ -160,12 +161,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 }
                 if(flag){
                     this.setActionEnabled(this.editAttAction);
-                    //this.setActionEnabled(this.min_downloadAction);
+                    this.setActionEnabled(this.min_editAttAction);
                 }
 
             }else{
                 this.setActionDisabled(this.editAttAction);
-                //this.setActionDisabled(this.min_downloadAction);
+                this.setActionDisabled(this.min_editAttAction);
             }
         }
     },
@@ -173,11 +174,14 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     checkPreviewAttAction: function () {
         if(layout.mobile){
             this.setActionDisabled(this.previewAttAction);
+            this.setActionDisabled(this.min_previewAttAction);
         } else if (this.options.isPreviewAtt === "hidden" ){
             this.setActionHidden(this.previewAttAction);
+            this.setActionHidden(this.min_previewAttAction);
         } else if (!this.options.isPreviewAtt){
             this.setActionDisabled(this.previewAttAction);
-            //this.setActionDisabled(this.min_downloadAction);
+            this.setActionDisabled(this.min_previewAttAction);
+
         }else{
             if (this.selectedAttachments.length){
                 var flag = false;
@@ -194,12 +198,13 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 }
                 if(flag){
                     this.setActionEnabled(this.previewAttAction);
+                    this.setActionEnabled(this.min_previewAttAction);
                     //this.setActionEnabled(this.min_downloadAction);
                 }
 
             }else{
                 this.setActionDisabled(this.previewAttAction);
-                //this.setActionDisabled(this.min_downloadAction);
+                this.setActionDisabled(this.min_previewAttAction);
             }
         }
     },
@@ -712,6 +717,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
     },
     loadMinActions: function () {
+
+
         var hiddenGroup = this.options.toolbarGroupHidden;
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function (e, node) {
@@ -727,12 +734,29 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     this.replaceAttachment(e, node);
                 }.bind(this));
             }
+
+            if(!layout.mobile){
+
+                this.min_editAttAction = this.createAction(this.minActionAreaNode, "editAtt", o2.LP.widget["editAtt"], function (e, node) {
+                    this.editAttachment(e, node);
+                }.bind(this));
+            }
+
+
         }
         if (!hiddenGroup.contains("read")) {
             this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download
                 , function (e, node) {
                     this.downloadAttachment(e, node);
                 }.bind(this));
+
+            if(!layout.mobile){
+                this.min_previewAttAction = this.createAction(this.minActionAreaNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
+                    this.previewAttachment(e, node);
+                }.bind(this));
+
+            }
+
         }
         if (!hiddenGroup.contains("config")) {
             this.min_orderAction = this.createAction(this.minActionAreaNode, "order", MWF.LP.widget.order, function (e, node) {
