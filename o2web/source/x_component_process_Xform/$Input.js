@@ -627,7 +627,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
     setExcelData: function(data){
 	    if( typeOf(data) === "string" )data = data.replace(/&#10;/g,""); //excel字段换行是 &#10
-        this.setData(data);
+        this.setData(data, true);
     },
     stringToArray: function(string){ //excel字段换行是 &#10;，换行和逗号作为数组分隔符
         return string.replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){

@@ -299,6 +299,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         getExcelData: function(){
             var data = this.json[this.json.$id];
             if( !data )return "";
+            if( !this.json.options )this._loadOptions();
             var text, opt = this.json.options;
             if( !opt )return "";
             if( o2.typeOf(opt.then)==="function" ){
@@ -312,6 +313,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             }
         },
         setExcelData: function(d){
+            if( !this.json.options )this._loadOptions();
             var arr = this.stringToArray(d);
             arr = arr.map(function (a) {
                 return a.contains("/") ? a.split("/") : "";

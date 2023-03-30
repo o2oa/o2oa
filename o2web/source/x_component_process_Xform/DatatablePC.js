@@ -2817,6 +2817,142 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	}
 });
 
+MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
+	Extends: MWF.xApplication.process.Xform.DatatablePC,
+	initialize: function(mainDatatable){
+		this.mainDatatable = mainDatatable;
+		this.json = Object.clone( mainDatatable.json );
+		this.json.id = this.json.id + "_simula";
+
+		this.node = new Element("div", {
+			id: this.json.id
+		});
+		this.node.store("module", this);
+
+		this.form = mainDatatable.form;
+		this.field = false;
+		this.fieldModuleLoaded = false;
+	},
+	load: function(){
+
+		this.deleteFormData = function(data){
+			debugger;
+			delete data[this.id];
+			this._self.form.removeEvent("getData", this._self.deleteFormData);
+		}.bind({_self: this, id: this.json.id});
+		this.form.addEvent("getData", this.deleteFormData);
+
+		this._loadModuleEvents();
+		if (this.fireEvent("queryLoad")){
+			this._queryLoaded();
+			this._loadUserInterface();
+			this._afterLoaded();
+			this.fireEvent("afterLoad");
+			// this.fireEvent("load");
+		}
+	},
+	_loadUserInterface: function(){
+		// this.fireEvent("queryLoad");
+		debugger;
+
+		this.editModules = [];
+
+		this.table = new Element("table").inject(this.node);
+		this.tBody = new Element("tbody").inject(this.table);
+
+		this.editable = true;
+
+		//是否多行同时编辑
+		this.multiEditMode = true;
+
+		this.data = {"data": [], "total":{}};
+		this._setValue(this.data);
+
+		this.lineList = [];
+
+		this.loadDatatable();
+	},
+	loadDatatable: function(){
+		this.loading = true;
+
+		//this._loadTitleTr();
+		//this._loadTemplate();
+		//this._loadTotalTr();
+
+		// this.templateNode = this.mainDatatable.templateNode;
+		// this.templateTr = this.mainDatatable.templateTr;
+		this.columnCount = this.mainDatatable.columnCount;
+		this.templateHtml = this.mainDatatable.templateHtml;
+
+		this.fireEvent("load");
+		this._loadDatatable(function(){
+			this.fieldModuleLoaded = true;
+			this.loading = false;
+			this.fireEvent("postLoad");
+		}.bind(this));
+	},
+	_loadDatatable: function(callback){
+		this._loadLineList(function(){
+			//this._loadTotal();
+			if(callback)callback();
+		}.bind(this));
+	},
+	_loadLine: function(container, data, index, isEdited, isNew){
+		var line = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(container, this, data, {
+			index : index,
+			indexText : (index+1).toString()
+		});
+		this.fireEvent("beforeLoadLine", [line]);
+		line.load();
+		this.fireEvent("afterLoadLine", [line]);
+		return line;
+	},
+	_addLine: function(ev, edited, d){
+
+		var data, index, line;
+
+		index = this.lineList.length;
+		data = this.data;
+
+		data.data.push(d||{});
+		this.newLineIndex = index;
+
+		this.setData( data );
+		line = this.getLine(index);
+		line.isNewAdd = true;
+
+		this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+
+		this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
+
+		return line;
+	},
+	// _delLine: function(line){
+	// 	this.fireEvent("deleteLine", [line]);
+	//
+	// 	//使用数据驱动
+	// 	var data = this.data;
+	// 	data.data.splice(line.options.index, 1);
+	//
+	// 	if(this.currentEditedLine === line)this.currentEditedLine = null;
+	// 	this.setData( data );
+	//
+	// 	// this.validationMode();
+	// 	this.fireEvent("afterDeleteLine");
+	//
+	// 	this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
+	// },
+	destroy: function(){
+		this.clearSubModules();
+		var id = this.json.id;
+		if (this.form.all[id]) delete this.form.all[id];
+		if (this.form.forms[id])delete this.form.forms[id];
+		// if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
+		// if( this.form.Macro.environment.data.hasOwnProperty(id) )delete this.form.Macro.environment.data[id];
+		this.node.destroy();
+	}
+});
+
 //Excel导入时候创建的组件
 MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 	Implements: [Options, Events],
@@ -2873,7 +3009,7 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 
 				var templateJsonId = json.id;
 
-				var index = "simula"; //this.options.index;
+				var index = "0"; //this.options.index;
 
 				var id;
 				// if( this.datatable.isShowAllSection ){
@@ -2964,7 +3100,8 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 			//如果嵌套数据模板或者数据表格，还要清除掉下级
 			if(module.clearSubModules)module.clearSubModules();
 			this.form.modules.erase(module);
-			if( this.form.businessData.data.hasOwnProperty(key) )delete this.form.businessData.data[key];
+			// if( this.form.businessData.data.hasOwnProperty(key) )delete this.form.businessData.data[key];
+			// if( this.form.Macro.environment.data.hasOwnProperty(key) )delete this.form.Macro.environment.data[key];
 			if (this.form.all[key]) delete this.form.all[key];
 			if (this.form.forms[key])delete this.form.forms[key];
 		}
@@ -3339,6 +3476,13 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var orgTitleArray = this.getOrgTitleArray();
 
 		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
+			debugger;
+			this.loadSimulateModule();
+			this.columnJsonList.each(function (c) {
+				c.module = this.importerLine.getModule(c.mJson.id)
+			}.bind(this));
+
+
 			if( !this.checkCount(data) )return;
 			var checkAndImport = function () {
 				if( !this.checkData( data ) ){
@@ -3361,20 +3505,39 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}.bind(this));
 	},
 	destroySimulateModule: function(){
-		if( !this.importerLine )return;
-
-		this.importerLine.clearSubModules();
-		this.importerLine = null;
-
-		if(this.importerLineNode){
-			this.importerLineNode.destroy();
-			this.importerLineNode = null;
+		if( !this.importerDatatable ){
+			this.form.disallowSaving = false;
+			return;
 		}
+
+		this.importerDatatable.destroy();
+		this.importerDatatable = null;
+		this.form.disallowSaving = false;
+
+		// if( !this.importerLine ){
+		// 	this.form.disallowSaving = false;
+		// 	return;
+		// }
+		//
+		// this.importerLine.clearSubModules();
+		// this.importerLine = null;
+		//
+		// if(this.importerLineNode){
+		// 	this.importerLineNode.destroy();
+		// 	this.importerLineNode = null;
+		// }
+		// this.form.disallowSaving = false;
 	},
 	loadSimulateModule: function(){
-		this.importerLineNode = new Element("tr");
-		this.importerLine = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(this.importerLineNode, this.datatable, {});
-		this.importerLine.load();
+		this.form.disallowSaving = true;
+		this.importerDatatable = new MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale( this.datatable );
+		this.importerDatatable.load();
+
+		this.importerLine = this.importerDatatable.addLine({});
+
+		// this.importerLineNode = new Element("tr");
+		// this.importerLine = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(this.importerLineNode, this.datatable, {});
+		// this.importerLine.load();
 	},
 	// destroySimulateModule: function(){
 	// 	if( !this.simelateModuleMap )return;
@@ -3431,7 +3594,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	// 	}.bind(this));
 	// },
 	getColumnList: function(){
-		this.loadSimulateModule();
+		// this.loadSimulateModule();
 
 		this.columnJsonList = [];
 
@@ -3455,9 +3618,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					"mJson" : mJson,
 					"field": mJson.id,
 					"index": idx,
-					"module": this.importerLine.getModule(mJson.id)
+					// "module": this.importerLine.getModule(mJson.id)
 					// "module": this.simelateModuleMap[mJson.id]
-				})
+				});
 				idx++;
 			}
 		}.bind(this));
