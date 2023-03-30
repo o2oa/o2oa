@@ -89,6 +89,10 @@ public class ThisApplication {
 				// 添加一个强制同步任务
 				context().scheduleLocal(WeLinkSyncOrganizationTrigger.class, Config.weLink().getForceSyncCron());
 			}
+			// 移动办公同步
+			if (StringUtils.isNotBlank(Config.andFx().getForceSyncCron())) {
+				context().scheduleLocal(AndFxSyncOrganization.class, Config.weLink().getForceSyncCron());
+			}
 
 			// 运行间隔由300秒缩减到120秒
 			context().scheduleLocal(FireSchedule.class, 180, 120);

@@ -6,8 +6,10 @@ public class AndFx extends ConfigObject {
 
 	@FieldDescribe("是否启用.")
 	private Boolean enable;
-	@FieldDescribe("强制拉入同步cron,默认不自动同步，例如：10 45 8,12 * * ?.")
+	@FieldDescribe("强制拉入同步cron,例如在每天的8点和12点进行同步：10 45 8,12 * * ?.")
 	private String forceSyncCron;
+	@FieldDescribe("是否开启强制拉入同步,默认false")
+	private Boolean forceSyncEnable;
 	@FieldDescribe("移动办公认证api服务地址")
 	private String ssoApi;
 	@FieldDescribe("移动办公统一认证sourceId")
@@ -48,18 +50,19 @@ public class AndFx extends ConfigObject {
 	}
 
 	public static final Boolean default_enable = false;
-	public static final String default_forceSyncCron = "";
+	public static final String default_forceSyncCron = "10 45 8,12 * * ?";
+	public static final Boolean default_forceSyncEnable = false;
 	public static final String default_ssoApi = "https://token.cmpassport.com:8300/uniapi/uniTokenValidate";
 	public static final String default_sourceId = "001311";
-	public static final String default_sourceKey = "wHKFp0zRCXdkSXxl";
+	public static final String default_sourceKey = "";
 	public static final String default_clientId = "5d3fdc22dbdd7a668be5fbff";
 	public static final String default_enterId = "100000050008";
 	public static final String default_addressApi = "https://test.oa.cmzq-office.com";
 	public static final String default_addressAppKey = "hasuec12469b31b2d1es86syuvdxd7s6";
-	public static final String default_addressAppSecret = "15v6675ssua8n9rtyphfb4ijgd9b6u6yh";
+	public static final String default_addressAppSecret = "";
 	public static final String default_msgApi = "https://test.yd.cmzq-office.com/v1/origin/corporate/api/corporateApi/corporateMessages";
 	public static final String default_msgAppKey = "182461ai23etc63595d26jhsb7e0dcgs";
-	public static final String default_msgAppSecret = "ie19u678by5a8uhj684679tcbkbn853";
+	public static final String default_msgAppSecret = "";
 	public static final String default_msgSender = "10086102021";
 	public static final String default_msgType = "102021";
 	public static final String default_msgBoxTitle = "智慧办公消息";
@@ -70,6 +73,7 @@ public class AndFx extends ConfigObject {
 	public AndFx() {
 		this.enable = default_enable;
 		this.forceSyncCron = default_forceSyncCron;
+		this.forceSyncEnable = default_forceSyncEnable;
 		this.ssoApi = default_ssoApi;
 		this.sourceId = default_sourceId;
 		this.sourceKey = default_sourceKey;
@@ -240,5 +244,13 @@ public class AndFx extends ConfigObject {
 
 	public void setMsgBoxTitle(String msgBoxTitle) {
 		this.msgBoxTitle = msgBoxTitle;
+	}
+
+	public Boolean getForceSyncEnable() {
+		return forceSyncEnable;
+	}
+
+	public void setForceSyncEnable(Boolean forceSyncEnable) {
+		this.forceSyncEnable = forceSyncEnable;
 	}
 }
