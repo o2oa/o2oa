@@ -24,10 +24,11 @@ import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.core.entity.schema.Statement;
 
-import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
 public class ExecuteTargetBuilder {
@@ -36,14 +37,10 @@ public class ExecuteTargetBuilder {
 
     private static final Gson gson = XGsonBuilder.instance();
 
-    private static final String KEY_SELECT = "SELECT";
     private static final String KEY_COUNT = "COUNT";
     private static final String KEY_LEFT_PARENTHESIS = "(";
     private static final String KEY_RIGHT_PARENTHESIS = ")";
     private static final String KEY_COUNTSQL = "COUNT(*)";
-    private static final String KEY_FROM = "FROM";
-    private static final String KEY_WHERE = "WHERE";
-    private static final String KEY_SPACE = " ";
 
     private static final String[] AGGREGATE_FUNCTION_STARTS = new String[] { "AVG(", "COUNT(", "DISTINCT(", "MAX(",
             "MIN(", "SUM(" };
@@ -151,23 +148,15 @@ public class ExecuteTargetBuilder {
             throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(sql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+
         if (onlyAggregateFunction(plainSelect.getSelectItems())) {
             return Optional.empty();
         }
-        net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
-        StringBuilder builder = new StringBuilder();
-        builder.append(KEY_SELECT).append(KEY_SPACE).append(KEY_COUNTSQL).append(KEY_SPACE)
-                .append(KEY_FROM).append(KEY_SPACE).append(table.getFullyQualifiedName());
-        Expression exp = plainSelect.getWhere();
-        if (null != exp) {
-            String whereClause = exp.toString();
-            if (StringUtils.isNotBlank(whereClause)) {
-                builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
-            }
-        }
+        plainSelect.getSelectItems().clear();
+        plainSelect.getSelectItems().add(new SelectExpressionItem(new Column(KEY_COUNTSQL)));
         // 将在生成DATA语句中的参数对象PARAM传入避免重复计算
         return Optional
-                .of(new ExecuteTarget(effectivePerson, organization, builder.toString(), runtime, prevNamedParam));
+                .of(new ExecuteTarget(effectivePerson, organization, plainSelect.toString(), runtime, prevNamedParam));
     }
 
     private boolean onlyAggregateFunction(List<SelectItem> selectItems) {
@@ -198,20 +187,11 @@ public class ExecuteTargetBuilder {
             return Optional.empty();
         }
         net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
-        StringBuilder builder = new StringBuilder();
-        builder.append(KEY_SELECT).append(KEY_SPACE).append(KEY_COUNT).append(KEY_LEFT_PARENTHESIS)
-                .append(table.getAlias())
-                .append(KEY_RIGHT_PARENTHESIS).append(KEY_SPACE).append(KEY_FROM).append(KEY_SPACE)
-                .append(table.getFullyQualifiedName()).append(KEY_SPACE).append(table.getAlias());
-        Expression exp = plainSelect.getWhere();
-        if (null != exp) {
-            String whereClause = exp.toString();
-            if (StringUtils.isNotBlank(whereClause)) {
-                builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
-            }
-        }
+        plainSelect.getSelectItems().clear();
+        plainSelect.getSelectItems().add(new SelectExpressionItem(
+                new Column(KEY_COUNT + KEY_LEFT_PARENTHESIS + table.getAlias() + KEY_RIGHT_PARENTHESIS)));
         return Optional
-                .of(new ExecuteTarget(effectivePerson, organization, builder.toString(), runtime, prevNamedParam));
+                .of(new ExecuteTarget(effectivePerson, organization, plainSelect.toString(), runtime, prevNamedParam));
     }
 
     private String script(Context context, EffectivePerson effectivePerson, Organization organization, Runtime runtime,
