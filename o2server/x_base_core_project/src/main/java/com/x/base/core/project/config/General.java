@@ -174,9 +174,9 @@ public class General extends ConfigObject {
             return new AttachmentConfig();
         }
 
-        public static final Integer DEFAULT_FILE_SIZE = 0;
+        public static final Integer DEFAULT_FILE_SIZE = 2047;
 
-        @FieldDescribe("附件大小限制（单位M，默认不限制）.")
+        @FieldDescribe("附件大小限制（单位M，最大2048M）.")
         private Integer fileSize = DEFAULT_FILE_SIZE;
 
         @FieldDescribe("只允许上传的文件后缀")
