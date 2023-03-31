@@ -87,6 +87,8 @@ public class ActionFileUploadWithUrl extends BaseAction {
 			throw new Exception("can not down file from url!");
 		}
 
+		this.verifyConstraint(bytes.length, wi.getFileName(), null);
+
 		attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 		logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
 		if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
