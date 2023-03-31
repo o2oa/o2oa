@@ -399,7 +399,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.fireEvent("complete", [this.getSelectedItems(), this.getSelectedItemsObject() ]);
             this.close();
         }.bind(this));
-        this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel"); this.close();}.bind(this));
+        this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel", this); this.close();}.bind(this));
     },
     loadContent: function(){
         if( this.options.contentUrl ){

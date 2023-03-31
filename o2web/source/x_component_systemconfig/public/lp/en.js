@@ -797,7 +797,7 @@ o2.xApplication.systemconfig.LP = {
         "attachmentConfigInfo": "Here you can configure the size and type of attachments allowed in the system.",
 
         "fileSize": "Attachment size limit",
-        "fileSizeInfo": "The unit is M, and the default is 0, which means unlimited.",
+        "fileSizeInfo": "The unit is M, the maximum is 2048M.",
         "fileTypeIncludes": "Attachment types allowed to be uploaded",
         "fileTypeIncludesInfo": "Set the types of attachments that are allowed to be uploaded, and set the extensions, separated by commas.",
         "fileTypeExcludes": "Attachment types that are prohibited from uploading",

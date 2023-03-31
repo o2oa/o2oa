@@ -124,8 +124,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
          * @event MWF.xApplication.process.Xform.Org#unselectItem
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        /**
+         * 人员选择框事件：在人员选择框点取消时执行。this.target指向人员选择框。
+         * @event MWF.xApplication.process.Xform.Org#close
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "selectorEvents" : ["queryLoadSelector","postLoadSelector","queryLoadContent","postLoadContent","queryLoadCategory","postLoadCategory",
-            "selectCategory", "unselectCategory","queryLoadItem","postLoadItem","selectItem", "unselectItem","change","expand","collapse"],
+            "selectCategory", "unselectCategory","queryLoadItem","postLoadItem","selectItem", "unselectItem","change","expand","collapse","cancel"],
         "readonly": true
     },
 

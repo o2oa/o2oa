@@ -3,178 +3,193 @@
 <head>
     <meta charset="utf-8">
     <title>O2OA API: Tutorial: 查询语句配置 | O2OA开发平台</title>
-    
-      <link type="text/css" rel="stylesheet" href="/api/styles/vendor/prism-custom.css">
-    
+
+    <link type="text/css" rel="stylesheet" href="/api/styles/vendor/prism-custom.css">
+
     <link type="text/css" rel="stylesheet" href="/api/styles/styles.css">
-    
-    
-        <link type="text/css" rel="stylesheet" href="/api/styles/styles_search.css">
-    
+
+
+    <link type="text/css" rel="stylesheet" href="/api/styles/styles_search.css">
+
 </head>
 <body>
 
 
 <main>
-  <div class="container">
-    <p class="page-kind">Tutorial</p>
-    <h1 class="page-title">Tutorial: statement</h1>
-    <section>
+    <div class="container">
+        <p class="page-kind">Tutorial</p>
+        <h1 class="page-title">Tutorial: statement</h1>
+        <section>
 
-<header>
-    
+            <header>
 
-    <h2>查询语句配置</h2>
-</header>
 
-<article>
-    <h2>语法</h2>
-<h3>1、JPQL语法</h3>
-<p>查询语句支持JPA JPQL语句，如下面的语句从系统表Task中获取待办：</p>
-<pre class="prettyprint source lang-sql"><code>SELECT o FROM Task o WHERE o.person = :person
+                <h2>查询语句配置</h2>
+            </header>
+
+            <article>
+                <h2>语法</h2>
+                <h3>1、JPQL语法</h3>
+                <p>查询语句支持JPA JPQL语句，如下面的语句从系统表Task中获取待办：</p>
+                <pre class="prettyprint source lang-sql"><code>SELECT o FROM Task o WHERE o.person = :person
 </code></pre>
-<p><img src="img/jpql.png" alt="JPQL">
-JPQL官网：<a href="https://www.objectdb.com/java/jpa/query/jpql/structure">https://www.objectdb.com/java/jpa/query/jpql/structure</a><br />
-中文简介：<a href="https://www.codercto.com/a/4338.html">https://www.codercto.com/a/4338.html</a></p>
-<h3>2、原生SQL语法</h3>
-<p>在v8.0及以后版本中，查询语句支持原生的SQL 语法，如下面的语句从系统表Task中获取待办：</p>
-<pre class="prettyprint source lang-sql"><code>SELECT * FROM PP_C_TASK WHERE xperson = :person
+                <p><img src="img/jpql.png" alt="JPQL">
+                    JPQL官网：<a href="https://www.objectdb.com/java/jpa/query/jpql/structure">https://www.objectdb.com/java/jpa/query/jpql/structure</a><br/>
+                    中文简介：<a href="https://www.codercto.com/a/4338.html">https://www.codercto.com/a/4338.html</a></p>
+                <h3>2、原生SQL语法</h3>
+                <p>在v8.0及以后版本中，查询语句支持原生的SQL 语法，如下面的语句从系统表Task中获取待办：</p>
+                <pre class="prettyprint source lang-sql"><code>SELECT * FROM PP_C_TASK WHERE xperson = :person
 </code></pre>
-<p><img src="img/sql.png" alt="SQL">
-w3schoole网站：<a href="https://www.w3schools.com/sql/default.asp">https://www.w3schools.com/sql/default.asp</a><br />
-中文网站：<a href="https://www.runoob.com/sql/sql-tutorial.html">https://www.runoob.com/sql/sql-tutorial.html</a></p>
-<h3></h3>
+                <p><img src="img/sql.png" alt="SQL">
+                    w3schoole网站：<a href="https://www.w3schools.com/sql/default.asp">https://www.w3schools.com/sql/default.asp</a><br/>
+                    中文网站：<a href="https://www.runoob.com/sql/sql-tutorial.html">https://www.runoob.com/sql/sql-tutorial.html</a>
+                </p>
+                <h3></h3>
 
-    <h3>3、表、字段和值的差异</h3>
-    <table>
-        <thead>
-        <tr>
-            <th width="120"><strong>差异项</strong></th>
-            <th><strong>JPQL</strong></th>
-            <th><strong>SQL</strong></th>
-            <th><strong>说明</strong></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>系统表名</td>
-            <td>Task <br/> TaskCompleted <br/> Read <br/> ReadCompleted <br/> Work <br/> WorkCompleted <br/> Review <br/> Document</td>
-            <td>PP_C_TASK <br/> PP_C_TASKCOMPLETED <br/> PP_C_READ <br/> PP_C_READCOMPLETED <br/> PP_C_WORK <br/> PP_C_WORKCOMPLETED <br/> PP_C_REVIEW <br/> CMS_DOCUMENT</td>
-            <td>待办 <br/> 已办 <br/> 待阅 <br/> 已阅 <br/> 流程实例 <br/> 已完成流程实例 <br/> 可阅读 <br/> 内容管理文档</td>
-        </tr>
-        <tr>
-            <td>数据表名（自建表）</td>
-            <td>TableName</td>
-            <td>QRY_DYN_TABLENAME</td>
-            <td>假如创建数据表设置的名称为“TableName”，则SQL取的名称为 &quot;QRY_DYN_&quot;前缀加名称的大写。</td>
-        </tr>
-        <tr>
-            <td>字段名</td>
-            <td>id</td>
-            <td>xid</td>
-            <td>字段以id为例，SQL的字段为&quot;x&quot;前缀加字段名。</td>
-        </tr>
-        <tr>
-            <td>值</td>
-            <td><code>SELECT o FROM Task o WHERE o.person = '张三@zhangsan@P'</code> 或 <code>SELECT o FROM Task o WHERE o.person = &quot;张三@zhangsan@P&quot;</code></td>
-            <td><code>SELECT * FROM PP_C_TASK WHERE person = '张三@zhangsan@P'</code></td>
-            <td>JPQL的值可以使用单引号和双引号，SQL只能使用单引号。建议都使用单引号。</td>
-        </tr>
-        </tbody>
-    </table>
+                <h3>3、表、字段和值的差异</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th width="120"><strong>差异项</strong></th>
+                        <th><strong>JPQL</strong></th>
+                        <th><strong>SQL</strong></th>
+                        <th><strong>说明</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>系统表名</td>
+                        <td>Task <br/> TaskCompleted <br/> Read <br/> ReadCompleted <br/> Work <br/> WorkCompleted <br/>
+                            Review <br/> Document
+                        </td>
+                        <td>PP_C_TASK <br/> PP_C_TASKCOMPLETED <br/> PP_C_READ <br/> PP_C_READCOMPLETED <br/> PP_C_WORK
+                            <br/> PP_C_WORKCOMPLETED <br/> PP_C_REVIEW <br/> CMS_DOCUMENT
+                        </td>
+                        <td>待办 <br/> 已办 <br/> 待阅 <br/> 已阅 <br/> 流程实例 <br/> 已完成流程实例 <br/> 可阅读 <br/> 内容管理文档</td>
+                    </tr>
+                    <tr>
+                        <td>数据表名（自建表）</td>
+                        <td>TableName</td>
+                        <td>QRY_DYN_TABLENAME</td>
+                        <td>假如创建数据表设置的名称为“TableName”，则SQL取的名称为 &quot;QRY_DYN_&quot;前缀加名称的大写。</td>
+                    </tr>
+                    <tr>
+                        <td>字段名</td>
+                        <td>id</td>
+                        <td>xid</td>
+                        <td>字段以id为例，SQL的字段为&quot;x&quot;前缀加字段名。</td>
+                    </tr>
+                    <tr>
+                        <td>值</td>
+                        <td><code>SELECT o FROM Task o WHERE o.person = '张三@zhangsan@P'</code> 或 <code>SELECT o FROM
+                            Task o WHERE o.person = &quot;张三@zhangsan@P&quot;</code></td>
+                        <td><code>SELECT * FROM PP_C_TASK WHERE person = '张三@zhangsan@P'</code></td>
+                        <td>JPQL的值可以使用单引号和双引号，SQL只能使用单引号。建议都使用单引号。</td>
+                    </tr>
+                    </tbody>
+                </table>
 
-<h2>where子句传参</h2>
-<h3>1、用冒号动态传参</h3>
-<p>查询语句中的where语句的值可以使用json传入，如：<br />查询语句的设计为 ：</p>
-<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name=:n
+                <h2>where子句传参</h2>
+                <h3>1、用冒号动态传参</h3>
+                <p>查询语句中的where语句的值可以使用json传入，如：<br/>查询语句的设计为 ：</p>
+                <pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name=:n
 </code></pre>
-<p>在调用查询语句服务的时候传入 json：</p>
-<pre class="prettyprint source lang-json"><code>{
+                <p>在调用查询语句服务的时候传入 json：</p>
+                <pre class="prettyprint source lang-json"><code>{
     &quot;n&quot; : &quot;zhangsan&quot;
 }
 </code></pre>
-<p>最终系统在后台根据这些设计拼接成为如下语句：</p>
-<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
+                <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+                <pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
 </code></pre>
-<p>如下图所示：<br />
-<img src="img/para1.png" alt="用冒号动态传参">
-了解JPQL语句动态传参可以点击链接查看：https://www.objectdb.com/java/jpa/query/parameter</p>
-<h3>2、用问号和数字动态传参</h3>
-<p>在V8.0中，平台支持用问号加数字的形式来传where语句的值，作用和冒号动态传参类似，如：<br />查询语句的设计为 ：</p>
-<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name= ?1
+                <p>如下图所示：<br/>
+                    <img src="img/para1.png" alt="用冒号动态传参">
+                    了解JPQL语句动态传参可以点击链接查看：https://www.objectdb.com/java/jpa/query/parameter</p>
+                <h3>2、用问号和数字动态传参</h3>
+                <p>在V8.0中，平台支持用问号加数字的形式来传where语句的值，作用和冒号动态传参类似，如：<br/>查询语句的设计为 ：</p>
+                <pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name= ?1
 </code></pre>
-<p>在调用查询语句服务的时候传入 json：</p>
-<pre class="prettyprint source lang-json"><code>{
+                <p>在调用查询语句服务的时候传入 json：</p>
+                <pre class="prettyprint source lang-json"><code>{
     &quot;?1&quot; : &quot;zhangsan&quot;
 }
 </code></pre>
-<p>最终系统在后台根据这些设计拼接成为如下语句：</p>
-<pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
+                <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+                <pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name='zhangsan'
 </code></pre>
-<p>如下图所示：<br />
-<img src="img/para2.png" alt="用问号和数字动态传参"></p>
-<h3>3、默认参数</h3>
-<p>系统中有一些默认参数，对这些默认参数，系统会自动赋值。</p>
-<table>
-<thead>
-<tr>
-<th><strong>默认参数</strong></th>
-<th><strong>含义</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>person</td>
-<td>当前人</td>
-</tr>
-<tr>
-<td>identityList</td>
-<td>当前人身份列表</td>
-</tr>
-<tr>
-<td>unitList</td>
-<td>当前人所在直接组织</td>
-</tr>
-<tr>
-<td>unitAllList</td>
-<td>当前人所在所有组织</td>
-</tr>
-<tr>
-<td>groupList</td>
-<td>当前人所在群组</td>
-</tr>
-<tr>
-<td>roleList</td>
-<td>当前人拥有的角色</td>
-</tr>
-</tbody>
-</table>
-<p>如有如下语句：</p>
-<pre class="prettyprint source lang-json"><code>select o from Task o where o.person = :person
+                <p>如下图所示：<br/>
+                    <img src="img/para2.png" alt="用问号和数字动态传参"></p>
+                <h3>3、默认参数</h3>
+                <p>系统中有一些默认参数，对这些默认参数，系统会自动赋值。</p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th><strong>默认参数</strong></th>
+                        <th><strong>含义</strong></th>
+                        <th><strong>类型</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>person</td>
+                        <td>当前人</td>
+                        <td>字符串</td>
+                    </tr>
+                    <tr>
+                        <td>identityList</td>
+                        <td>当前人身份列表</td>
+                        <td>数组</td>
+                    </tr>
+                    <tr>
+                        <td>unitList</td>
+                        <td>当前人所在直接组织</td>
+                        <td>数组</td>
+                    </tr>
+                    <tr>
+                        <td>unitAllList</td>
+                        <td>当前人所在所有组织</td>
+                        <td>数组</td>
+                    </tr>
+                    <tr>
+                        <td>groupList</td>
+                        <td>当前人所在群组</td>
+                        <td>数组</td>
+                    </tr>
+                    <tr>
+                        <td>roleList</td>
+                        <td>当前人拥有的角色</td>
+                        <td>数组</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>如有如下语句：</p>
+                <pre class="prettyprint source lang-json"><code>select o from Task o where o.person = :person
 </code></pre>
-<p>参数<code>:person</code>为当前人，<br />在v8.0之前，外部传入参数 {person: &quot;&quot;}即可；<br />在v8.0之后，系统将自动解析这些默认参数，不需要再传入。<br />如当前人是<code>张三@zhangsan@P</code>，系统解析后自动拼接如下：</p>
-<pre class="prettyprint source lang-json"><code>select o from Task o where o.person = &quot;张三@zhangsan@P&quot;
+                <p>参数<code>:person</code>为当前人，<br/>在v8.0之前，外部传入参数 {person: &quot;&quot;}即可；<br/>在v8.0之后，系统将自动解析这些默认参数，不需要再传入。<br/>如当前人是<code>张三@zhangsan@P</code>，系统解析后自动拼接如下：
+                </p>
+                <pre class="prettyprint source lang-json"><code>select o from Task o where o.person = &quot;张三@zhangsan@P&quot;
 </code></pre>
-<h2>其他注意事项</h2>
-<h3>1、日期格式的写法</h3>
-<p>在sql中，日期格式使用文本即可，如 :&quot;2019-12-31&quot;, &quot;23:59:59&quot;, &quot;2020-01-03 13:59:59&quot;。<br />
-在jpql中，对日期格式有特殊的写法，格式如下：<br />
-Date - {d 'yyyy-mm-dd'} - for example: {d '2019-12-31'}<br />
-Time - {t 'hh:mm:ss'} - for example: {t '23:59:59'}<br />
-Timestamp(DateTime) - {ts 'yyyy-mm-dd hh:mm:ss'} - for example: {ts '2020-01-03 13:59:59'}
-<br />示例如下图：<br />
-<img src="img/datetime.png" alt="日期格式"></p>
-<h3>2、like的写法</h3>
-<p>如果运算符用的是 like，模糊查询，值为 &quot;%{value}%&quot;。</p>
-</article>
+                <h2>其他注意事项</h2>
+                <h3>1、日期格式的写法</h3>
+                <p>在sql中，日期格式使用文本即可，如 :&quot;2019-12-31&quot;, &quot;23:59:59&quot;, &quot;2020-01-03
+                    13:59:59&quot;。<br/>
+                    在jpql中，对日期格式有特殊的写法，格式如下：<br/>
+                    Date - {d 'yyyy-mm-dd'} - for example: {d '2019-12-31'}<br/>
+                    Time - {t 'hh:mm:ss'} - for example: {t '23:59:59'}<br/>
+                    Timestamp(DateTime) - {ts 'yyyy-mm-dd hh:mm:ss'} - for example: {ts '2020-01-03 13:59:59'}
+                    <br/>示例如下图：<br/>
+                    <img src="img/datetime.png" alt="日期格式"></p>
+                <h3>2、like的写法</h3>
+                <p>如果运算符用的是 like，模糊查询，值为 &quot;%{value}%&quot;。</p>
+            </article>
 
-</section>
+        </section>
 
-  </div>
+    </div>
 </main>
 
 
-      <div class="api-search-results layout-main" id="api-search-results">
+<div class="api-search-results layout-main" id="api-search-results">
     <div class="container">
         <div class="search-noresults"></div>
         <div class="search-results">
@@ -195,9 +210,10 @@ Timestamp(DateTime) - {ts 'yyyy-mm-dd hh:mm:ss'} - for example: {ts '2020-01-03 
 
 
 <footer class="layout-footer">
-  <div class="container">
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Sun Mar 26 2023 21:52:34 GMT+0800 (中国标准时间)
-  </div>
+    <div class="container">
+        Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Sun Mar 26 2023
+        21:52:34 GMT+0800 (中国标准时间)
+    </div>
 </footer>
 
 
