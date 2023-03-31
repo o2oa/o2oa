@@ -266,6 +266,12 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
                 }.bind(this)
             });
         }
+    },
+
+    setExcelData: function (d) {
+        var value = d.replace(/&#10;/g,"\n"); //换行符&#10;
+        this.excelData = value;
+        this.setData(value, true);
     }
 	
 }); 

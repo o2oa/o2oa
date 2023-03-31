@@ -271,5 +271,55 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             }
         }.bind(this));
         return text;
-    }
+    },
+
+        getDataByText: function(text){
+            var opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    return this._getDataByText(options, text);
+                }.bind(this));
+            }else{
+                return this._getDataByText(opt, text);
+            }
+        },
+        _getDataByText: function(options, texts){
+            var value = [];
+            options.forEach(function(op){
+                if (op.value){
+                    if (texts.indexOf(op.label || op.value)!=-1) value.push(op.value);
+                }else if (op.options && op.options.length){
+                    value = value.concat(this._getDataByText(op.options, texts));
+                }
+            }.bind(this));
+            return value;
+        },
+
+        getExcelData: function(){
+            var data = this.json[this.json.$id];
+            if( !data )return "";
+            if( !this.json.options )this._loadOptions();
+            var text, opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    text = this.__getOptionsText(options, data);
+                    return typeOf(text) === "array" ? text.join(", ") : (text || "");
+                }.bind(this));
+            }else{
+                text = this.__getOptionsText(opt, data);
+                return typeOf(text) === "array" ? text.join(", ") : (text || "");
+            }
+        },
+        setExcelData: function(d){
+            this._loadOptions();
+            var arr = this.stringToArray(d);
+            this.excelData = arr;
+            arr = arr.map(function (a) {
+                return a.contains("/") ? a.split("/") : a;
+            });
+            var data = this.getDataByText( arr );
+            this.setData( this.json.multiple ? data : data[0], true);
+        }
 }); 

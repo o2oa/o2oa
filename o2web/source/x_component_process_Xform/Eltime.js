@@ -157,5 +157,16 @@ MWF.xApplication.process.Xform.Eltime = MWF.APPEltime =  new Class(
         html += this.getCommonHtml();
         html += "</el-time-picker>";
         return html;
-    }
+    },
+
+        getExcelData: function(){
+            var value = this.getData();
+            return o2.typeOf(value) === "array" ? value.join(", ") : value;
+        },
+        setExcelData: function(data){
+            var arr = this.stringToArray(data);
+            this.excelData = arr;
+            var value = arr.length === 0  ? arr[0] : arr;
+            this.setData(value, true);
+        }
 }); 

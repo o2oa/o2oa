@@ -1486,6 +1486,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     saveWork: function (callback, silent) {
 
+        if( this.disallowSaving )return;
+
         if (this.businessData.control["allowSave"]) {
 
             if (!this.formSaveValidation()) {

@@ -524,9 +524,10 @@
         "cursor": "pointer"
     },
     "mobileDatagridActionNode": {
-        "width": "235px",
+//        "width": "235px",
         "text-align": "right",
-        "float": "right"
+        "float": "right",
+        "overflow": "hidden"
     },
     "mobileDatagridDelActionNode": {
         "width": "34px",

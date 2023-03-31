@@ -361,5 +361,46 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     },
     isNumber : function( d ){
         return parseFloat(d).toString() !== "NaN";
+    },
+
+
+    validationConfigItemExcel: function(data){
+        if (data.status=="all"){
+            var n = this.getInputData();
+            var originN = this.getInputData( true );
+
+            if( n === "" && this.json.emptyValue === "string" )n = 0;
+
+            var v = (data.valueType=="value") ? n : n.length;
+            var originV = (data.valueType=="value") ? originN : originN.length;
+
+            switch (data.operateor){
+                case "isnull":
+                    if (!originV && originV.toString()!=='0')return data.prompt;
+                    break;
+                case "notnull":
+                    if (originV)return data.prompt;
+                    break;
+                case "gt":
+                    if (v>data.value)return data.prompt;
+                    break;
+                case "lt":
+                    if (v<data.value)return data.prompt;
+                    break;
+                case "equal":
+                    if (v==data.value)return data.prompt;
+                    break;
+                case "neq":
+                    if (v!=data.value)return data.prompt;
+                    break;
+                case "contain":
+                    if (originV.toString().indexOf(data.value)!=-1)return data.prompt;
+                    break;
+                case "notcontain":
+                    if (originV.toString().indexOf(data.value)==-1)return data.prompt;
+                    break;
+            }
+        }
+        return true;
     }
 });

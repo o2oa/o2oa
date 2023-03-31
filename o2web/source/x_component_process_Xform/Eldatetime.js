@@ -111,5 +111,16 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
 
         html += "</el-date-picker>";
         return html;
-    }
+    },
+
+        getExcelData: function(){
+            var value = this.getData();
+            return o2.typeOf(value) === "array" ? value.join(", ") : value;
+        },
+        setExcelData: function(data){
+            var arr = this.stringToArray(data);
+            this.excelData = arr;
+            var value = arr.length === 0  ? arr[0] : arr;
+            this.setData(value, true);
+        }
 }); 

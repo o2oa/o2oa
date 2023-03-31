@@ -368,5 +368,28 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
         }
         return resultArr[0] + "-" + resultArr[1] + "-" + resultArr[2] + " " + resultArr[3]+":"+resultArr[4]+":"+resultArr[5];
+    },
+
+    getExcelData: function(){
+        return this.getData();
+    },
+    setExcelData: function(d){
+        var value = d.replace(/&#10;/g,""); //换行符&#10;
+        this.excelData = value;
+        var json = this.json;
+        if( value && (new Date(value).isValid()) ){
+            var format;
+            if (!json.format){
+                if (json.selectType==="datetime" || json.selectType==="time"){
+                    format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+                }else{
+                    format = Locale.get("Date").shortDate;
+                }
+            }else{
+                format = json.format;
+            }
+            value = Date.parse( value ).format( format );
+            this.setData(value, true);
+        }
     }
 });
