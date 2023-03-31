@@ -102,9 +102,9 @@ public class AppStyle extends ConfigObject {
 		if (!this.nativeAppList.contains(NativeApp.nativeAttendance())) {
 			this.nativeAppList.add(NativeApp.nativeAttendance());
 		}
-		if (!this.nativeAppList.contains(NativeApp.nativeO2ai())) {
-			this.nativeAppList.add(NativeApp.nativeO2ai());
-		}
+//		if (!this.nativeAppList.contains(NativeApp.nativeO2ai())) {
+//			this.nativeAppList.add(NativeApp.nativeO2ai());
+//		}
 		if (!this.nativeAppList.contains(NativeApp.nativeCalendar())) {
 			this.nativeAppList.add(NativeApp.nativeCalendar());
 		}
@@ -493,19 +493,19 @@ public class AppStyle extends ConfigObject {
 			o.getiOS().setVcname("");
 			return o;
 		}
-
-		public static NativeApp nativeO2ai() {
-			NativeApp o = new NativeApp();
-			o.setId(10);
-			o.setKey("o2ai");
-			o.setName("语音助手");
-			o.setEnable(true);
-			o.getiOS().setCategory("native");
-			o.getiOS().setSubcategory("coding");
-			o.getiOS().setStoryboard("checkin");
-			o.getiOS().setVcname("");
-			return o;
-		}
+//
+//		public static NativeApp nativeO2ai() {
+//			NativeApp o = new NativeApp();
+//			o.setId(10);
+//			o.setKey("o2ai");
+//			o.setName("语音助手");
+//			o.setEnable(true);
+//			o.getiOS().setCategory("native");
+//			o.getiOS().setSubcategory("coding");
+//			o.getiOS().setStoryboard("checkin");
+//			o.getiOS().setVcname("");
+//			return o;
+//		}
 
 		public static NativeApp nativeCalendar() {
 			NativeApp o = new NativeApp();
