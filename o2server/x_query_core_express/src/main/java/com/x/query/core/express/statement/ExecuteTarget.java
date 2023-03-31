@@ -52,7 +52,7 @@ public class ExecuteTarget {
         Matcher matcher = QUESTMARK_PARAMETER_REGEX.matcher(sql);
         while (matcher.find()) {
             String p = matcher.group(1);
-            Object object = getParameterFromRuntime(effectivePerson, organization, p, runtime);
+            Object object = getParameterFromBuiltInParameterThenRuntime(effectivePerson, organization, p, runtime);
             this.questionMarkParam.put(p, object);
         }
     }
@@ -64,21 +64,33 @@ public class ExecuteTarget {
         while (matcher.find()) {
             String p = usableQuestionMark(questionMarkParam);
             String name = matcher.group(2);
-            if ((null != prevNamedParam) && prevNamedParam.containsKey(name)) {
-                Object object = prevNamedParam.get(name);
-                this.namedParam.put(name, object);
-                this.questionMarkParam.put(p, object);
-            } else {
-                Object object = getParameterFromRuntime(effectivePerson, organization, name, runtime);
-                this.namedParam.put(name, object);
-                this.questionMarkParam.put(p, object);
+            if (hasParameterFromBuiltInParameterThenRuntime(name, runtime)) {
+                if ((null != prevNamedParam) && prevNamedParam.containsKey(name)) {
+                    Object object = prevNamedParam.get(name);
+                    this.namedParam.put(name, object);
+                    this.questionMarkParam.put(p, object);
+                } else {
+                    Object object = getParameterFromBuiltInParameterThenRuntime(effectivePerson, organization, name,
+                            runtime);
+                    this.namedParam.put(name, object);
+                    this.questionMarkParam.put(p, object);
+                }
+                sql = StringUtils.replaceOnce(sql, matcher.group(1), p);
             }
-            sql = StringUtils.replaceOnce(sql, matcher.group(1), p);
         }
         return sql;
     }
 
-    private Object getParameterFromRuntime(EffectivePerson effectivePerson, Organization organization, String name,
+    private boolean hasParameterFromBuiltInParameterThenRuntime(String name, Runtime runtime) {
+        if (Runtime.ALL_BUILT_IN_PARAMETER.contains(name)) {
+            return true;
+        } else {
+            return runtime.hasParameter(name);
+        }
+    }
+
+    private Object getParameterFromBuiltInParameterThenRuntime(EffectivePerson effectivePerson,
+            Organization organization, String name,
             Runtime runtime) throws Exception {
         if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_PERSON)) {
             return effectivePerson.getDistinguishedName();
