@@ -798,7 +798,7 @@ o2.xApplication.systemconfig.LP = {
         "attachmentConfigInfo": "在此处可以配置系统中允许上传附件的大小和类型",
 
         "fileSize": "附件大小限制",
-        "fileSizeInfo": "以M为单位，默认为0，表示不限制",
+        "fileSizeInfo": "以M为单位，最大2048M",
         "fileTypeIncludes": "允许上传的附件类型",
         "fileTypeIncludesInfo": "设置允许上传的附件类型，设置扩展名，用半角逗号分隔",
         "fileTypeExcludes": "禁止上传的附件类型",

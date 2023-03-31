@@ -17,6 +17,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "save_success": "查询配置保存成功！",
     "inputStatementName": "请输入查询配置名称",
     "saveStatementNotice" : "请先保存！",
+    "cannotDisabledViewNotice": "视图未启用",
     "noViewNotice" : "未创建视图，请先创建视图！",
     "previewNotSelectStatementNotice" : "只有语句类型为‘Select’才可以预览",
     "field" : "字段",

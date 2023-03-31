@@ -1480,6 +1480,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // this.runContentNode.setStyle("height", ""+y+"px");
     },
     preview: function () {
+        if( this.json.viewEnable === false ){
+            this.designer.notice(this.designer.lp.cannotDisabledViewNotice, "error");
+            return;
+        }
         if (this.isNewStatement) {
             this.designer.notice(this.designer.lp.saveStatementNotice, "error");
             return;
