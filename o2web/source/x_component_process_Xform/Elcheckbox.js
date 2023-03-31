@@ -359,6 +359,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
             });
             arr.clean();
             this.json[this.json.$id] = arr;
+            this._setBusinessData(arr);
             this.setData(arr, true);
         }
 }); 

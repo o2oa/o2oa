@@ -274,6 +274,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         var idx = options.textList.indexOf( value );
         value = idx > -1 ? options.valueList[ idx ] : "";
         this.json[this.json.$id] = value;
+        this._setBusinessData(value);
         this.setData(value, true);
     }
 }); 
