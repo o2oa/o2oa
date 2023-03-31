@@ -910,6 +910,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     } else {
                         if (this[t.action]) this[t.action](e);
                     }
+                    // 关闭
+                    if (this.actionMoreArea) {
+                        this.actionMoreArea.setStyle("display", "none");
+                        document.body.unmask();
+                    }
                 }.bind(this));
             }
         }
@@ -996,6 +1001,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         this._runCustomAction(t.actionScript);
                     } else {
                         if (this[t.action]) this[t.action](e);
+                    }
+                     // 关闭
+                     if (this.actionMoreArea) {
+                        this.actionMoreArea.setStyle("display", "none");
+                        document.body.unmask();
                     }
                 }.bind(this));
                 this._setMobileBottonStyle(action);
