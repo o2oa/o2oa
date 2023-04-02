@@ -1,7 +1,6 @@
 package com.x.query.core.express.statement;
 
 import java.util.Map;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -31,23 +30,16 @@ public class Executor {
     public static Object executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
             throws Exception {
         if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
-            return executeDataSql(statement, runtime, executeTarget);
+            return executeDataSql(runtime, executeTarget);
         } else {
             return executeDataJpql(statement, runtime, executeTarget);
         }
     }
 
-    private static Object executeDataSql(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
+    private static Object executeDataSql(Runtime runtime, ExecuteTarget executeTarget)
             throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Class<? extends JpaObject> cls = clazz(emc, statement);
-            EntityManager em;
-            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-                    && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
-                em = emc.get(DynamicBaseEntity.class);
-            } else {
-                em = emc.get(cls);
-            }
+            EntityManager em = emc.get(DynamicBaseEntity.class);
             LOGGER.debug("executeDataSql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
             Query query = em.createNativeQuery(executeTarget.getSql());
             for (Map.Entry<String, Object> entry : executeTarget.getQuestionMarkParam().entrySet()) {
@@ -61,7 +53,7 @@ public class Executor {
                 }
                 return query.getResultList();
             } else {
-                emc.beginTransaction(cls);
+                emc.beginTransaction(DynamicBaseEntity.class);
                 Object data = Integer.valueOf(query.executeUpdate());
                 emc.commit();
                 return data;
@@ -103,22 +95,15 @@ public class Executor {
 
     public static Long executeCount(Statement statement, ExecuteTarget executeTarget) throws Exception {
         if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
-            return executeCountSql(statement, executeTarget);
+            return executeCountSql(executeTarget);
         } else {
             return executeCountJpql(statement, executeTarget);
         }
     }
 
-    private static Long executeCountSql(Statement statement, ExecuteTarget executeTarget) throws Exception {
+    private static Long executeCountSql(ExecuteTarget executeTarget) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Class<? extends JpaObject> cls = clazz(emc, statement);
-            EntityManager em;
-            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-                    && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
-                em = emc.get(DynamicBaseEntity.class);
-            } else {
-                em = emc.get(cls);
-            }
+            EntityManager em = emc.get(DynamicBaseEntity.class);
             LOGGER.debug("executeCountSql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
             Query query = em.createNativeQuery(executeTarget.getSql());
             for (Map.Entry<String, Object> entry : executeTarget.getQuestionMarkParam().entrySet()) {
