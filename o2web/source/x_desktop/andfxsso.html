@@ -127,12 +127,14 @@
 
 
             function isMobile() {
-                let userAgentInfo = navigator.userAgent;
-                let Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
-                let getArr = Agents.filter(function(i){
-                    return userAgentInfo.indexOf(i) > -1;
-                });
-                return getArr.length ? true : false;
+                debugger;
+                return o2.session.isMobile;
+                // let userAgentInfo = navigator.userAgent;
+                // let Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
+                // let getArr = Agents.filter(function(i){
+                //     return userAgentInfo.indexOf(i) > -1;
+                // });
+                // return getArr.length ? true : false;
             }
 
             var redirectTo = function(){
@@ -185,16 +187,26 @@
                 layout.config = config;
                 getServiceAddress(config, function(){
 
+                    //debugger;
+
+                    //console.log(window.location);
+
                     who( login, redirectTo, login)
+
 
 
                 });
             });
 
         });
+
+        function buttonLogin() {
+            who( login, redirectTo, login)
+        }
     </script>
 </head>
 <body style="background: rgb(239, 239, 244);">
 <div id="ssoerror" style="text-align:center;line-height: 30px;word-break: break-all;display:none;">单点失败，请联系管理员！</div>
+<button onclick="buttonLogin()"></button>
 </body>
 </html>
