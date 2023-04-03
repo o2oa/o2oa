@@ -123,6 +123,7 @@ MWF.xApplication.Meeting.LP = {
 
     "meeting_input_subject_error": "Meeting title cannot be empty!",
     "meeting_input_room_error": "The meeting room cannot be empty!",
+    "meeting_input_url_number_error": "Meeting URL and meeting number cannot be empty at the same time!",
     "meeting_input_person_error": "The invited participant cannot be empty!",
     "meeting_input_date_error": "The meeting start time cannot be earlier than now!",
     "meeting_input_time_error": "The meeting end time cannot be earlier than the start time!",
@@ -163,6 +164,11 @@ MWF.xApplication.Meeting.LP = {
     "hostPerson": "Host Person",
     "hostUnit": "Host Unit",
     "meetingType":"Meeting Type",
+    "meetingMode": "meeting mode",
+    "meetingModeSelectText": ["offline meeting","online meeting"],
+    "meetingModeSelectValue": ["offline","online"],
+    "meeting Url": "meeting link",
+    "meeting Number": "meeting number",
 
     "week": "Week",
     "weeks": {

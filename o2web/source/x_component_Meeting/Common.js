@@ -687,6 +687,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     },
     _createTableContent: function () {
         var _self = this;
+        this.formTableContainer.setStyle("padding-top", "20px");
         var user = layout.desktop.session.user;
         this.userName = user.distinguishedName;
         this.userId = user.id;
@@ -694,7 +695,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.formTopTextNode.set( "text", this.lp.addMeeting );
         }else if( this.isEdited ){
             this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = this.isShowInviteDelPersonList() ? 860 : 770;
+            this.options.height = this.isShowInviteDelPersonList() ? 900 : 810;
             if( this.data.inviteDelPersonList && this.data.inviteDelPersonList.length )this.options.height += 40;
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
@@ -776,6 +777,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "<tr><td styles='formTableTitle'>"+this.lp.meetingType+":</td>" +
             "   <td styles='formTableValue'><div item='type'></div></td></tr>"+
 
+            "<tr><td styles='formTableTitle'>"+this.lp.meetingMode+":</td>" +
+            "   <td styles='formTableValue'><div item='mode'></div></td></tr>"+
+
             "<tr><td styles='formTableTitle' width='100'>"+this.lp.beginDate+":</td>" +
             "    <td styles='formTableValue' item='dateInput'></td>" +
             "</tr>" +
@@ -787,7 +791,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "       <div item='endTimeInput' style='float:left'></div>"+
             "   </td></tr>" +
 
-            "<tr><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
+            "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingUrl +":</td>" +
+            "    <td styles='formTableValue' item='url'></td></tr>" +
+            "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingNumber +":</td>" +
+            "    <td styles='formTableValue' item='number'></td></tr>" +
+
+            "<tr style='display:"+(data.mode !== "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
             "    <td styles='formTableValue' item='meetingRoom'></td></tr>" +
 
             "<tr><td styles='formTableTitle'>"+this.lp.hostPerson+":</td>" +
@@ -832,7 +841,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         this.attachmentTr = this.formTableArea.getElement("[item='attachmentTr']");
         this.attachmentArea = this.formTableArea.getElement("[item='attachment']");
 
-
         this.qrCodeArea = this.formTableArea.getElement("[item='qrCode']");
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
@@ -842,6 +850,15 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 itemTemplate: {
                     applicant : { type : "org", orgType : "person", isEdited : false,
                         defaultValue : this.userName
+                    },
+                    mode: {type: "select", isEdited : isEditing,
+                        selectValue : this.lp.meetingModeSelectValue || [],
+                        selectText : this.lp.meetingModeSelectText || [],
+                        event : {
+                            change : function( item, ev ){
+                                this.changeMode();
+                            }.bind(this)
+                        }
                     },
                     dateInput: {tType: "date", isEdited : isEditing, defaultValue: defaultDate,
                         event : {
@@ -952,6 +969,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             }.bind(this)
                         } },
                     subject: {},
+                    url: {},
+                    number: {},
                     summary: {type: "textarea"},
                     hostPerson: { type : "org", orgType : "identity",  count: 1, "defaultValue": this.getIdentity()  },
                     hostUnit: { type : "org", orgType : "unit",  count: 1 },
@@ -1290,6 +1309,18 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         this.formTableArea.empty();
         this._createTableContent();
     },
+    changeMode: function(){
+        var mode = this.form.getItem("mode").getValue();
+        if( mode === "online" ){
+            this.form.getItem("url").node.getParent("tr").setStyle("display", "");
+            this.form.getItem("number").node.getParent("tr").setStyle("display", "");
+            this.meetingRoomArea.getParent("tr").setStyle("display", "none");
+        }else{
+            this.form.getItem("url").node.getParent("tr").setStyle("display", "none");
+            this.form.getItem("number").node.getParent("tr").setStyle("display", "none");
+            this.meetingRoomArea.getParent("tr").setStyle("display", "");
+        }
+    },
     clearRoom : function(){
         this.roomId = "";
         if(this.roomInput)this.roomInput.set("text", "");
@@ -1583,7 +1614,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var now = new Date();
         var errorText = "";
         if (!this.data.subject) errorText +=this.lp.meeting_input_subject_error;
-        if (!this.data.room) errorText +=this.lp.meeting_input_room_error;
+        if( this.data.mode === "online" ){
+            if (!this.data.url && !this.data.number) errorText +=this.lp.meeting_input_url_number_error;
+        }else{
+            if (!this.data.room) errorText +=this.lp.meeting_input_room_error;
+        }
         if ((!this.data.invitePersonList || !this.data.invitePersonList.length) && (!this.data.inviteMemberList || !this.data.inviteMemberList.length)){
             errorText +=this.lp.meeting_input_person_error;
         }
@@ -1767,10 +1802,21 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='70'>"+this.lp.meetingTime+":</td>" +
-            "    <td style='"+valueStyle+";color:"+ color +"' item='meetingTime'></td></tr>" +
-            "<tr><td style='"+titleStyle+"'>"+this.lp.selectRoom +":</td>" +
-            "    <td style='"+valueStyle+"' item='meetingRoom'></td></tr>" +
-            "<tr><td style='"+titleStyle+"'>"+this.lp.invitePerson2+":</td>" +
+            "    <td style='"+valueStyle+";color:"+ color +"' item='meetingTime'></td></tr>";
+
+        if( this.data.mode === "online" ){
+            html += "<tr><td style='"+titleStyle+"'>"+this.lp.meetingUrl +":</td>" +
+                "    <td style='"+valueStyle+"' item='url'></td></tr>" +
+                "<tr><td style='"+titleStyle+"'>"+this.lp.meetingNumber +":</td>" +
+                "    <td style='"+valueStyle+"' item='number'></td></tr>";
+        }
+
+        if( this.data.mode !== "online" ){
+            html += "<tr><td style='"+titleStyle+"'>"+this.lp.selectRoom +":</td>" +
+                "    <td style='"+valueStyle+"' item='meetingRoom'></td></tr>";
+        }
+
+        html += "<tr><td style='"+titleStyle+"'>"+this.lp.invitePerson2+":</td>" +
             "    <td style='"+valueStyle+"' item='invitePerson'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.meetingDescription+":</td>" +
             "    <td style='"+valueStyle+"' item='description'></td></tr>";
@@ -1813,6 +1859,9 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
         var description = (data.description || "")+(data.summary || "");
 
+
+        this.setItemValue(contentNode, "url",  data.url );
+        this.setItemValue(contentNode, "number",  data.number );
         this.setItemValue(contentNode, "type", (this.data.type || this.lp.meetingDetail));
         this.setItemValue(contentNode, "applicant",  this.lp.applyPerson  +":" + data.applicant.split("@")[0] );
         this.setItemValue(contentNode, "subject",  data.subject );
@@ -1820,8 +1869,8 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         this.setItemValue(contentNode, "subject",  data.subject );
         this.setItemValue(contentNode, "invitePerson", persons.join(",") );
         this.setItemValue(contentNode, "description",  description );
-        this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
-        this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
+        if(this.data.hostPerson)this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
+        if(this.data.hostUnit)this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
 
         this.fireEvent("customContent", [contentNode, node]);
     },
@@ -1831,13 +1880,15 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
     },
     loadRoom: function( callback ){
         var area = this.node.getElement("[item='meetingRoom']");
-        if (this.data.room){
+        if (area && this.data.room){
             this.app.actions.getRoom(this.data.room, function(json){
                 this.app.actions.getBuilding(json.data.building, function(bjson){
                     area.set("text", json.data.name+" ("+bjson.data.name+")");
                     if( callback )callback();
                 }.bind(this));
             }.bind(this));
+        }else{
+            if( callback )callback();
         }
     },
     loadInvite : function(){

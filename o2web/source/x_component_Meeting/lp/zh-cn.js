@@ -123,6 +123,7 @@ MWF.xApplication.Meeting.LP = {
 
     "meeting_input_subject_error": "会议标题不能为空！",
     "meeting_input_room_error": "会议室不能为空！",
+    "meeting_input_url_number_error": "会议链接和会议号不能同时为空！",
     "meeting_input_person_error": "邀请参会人员不能为空！",
     "meeting_input_date_error": "会议开始时间不能早于现在！",
     "meeting_input_time_error": "会议结束时间不能早于开始时间！",
@@ -163,6 +164,11 @@ MWF.xApplication.Meeting.LP = {
     "hostPerson": "主持人",
     "hostUnit": "承办部门",
     "meetingType":"会议类型",
+    "meetingMode":"会议方式",
+    "meetingModeSelectText": ["线下会议","线上会议"],
+    "meetingModeSelectValue": ["offline","online"],
+    "meetingUrl": "会议链接",
+    "meetingNumber": "会议号",
 
     "week" : "周",
     "weeks": {
