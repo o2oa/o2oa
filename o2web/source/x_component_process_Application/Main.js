@@ -29,18 +29,22 @@ MWF.xApplication.process.Application.Main = new Class({
 	},
 	loadApplication: function(callback){
 		this.initAcl(function (){
-			this.action.ApplicationAction.get(this.options.id).then(function (json){
-				if (json.data){
-					this.setTitle(this.lp.title+"-"+json.data.name);
-					this.application = json.data;
-					var url = this.path+this.options.style+"/view/view.html";
-					this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
-						this.setLayout();
-						this.loadList(this.options.navi);
-						if (callback) callback();
-					}.bind(this));
-				}
+			this.loadProcessList(function (){
+
+				this.action.ApplicationAction.get(this.options.id).then(function (json){
+					if (json.data){
+						this.setTitle(this.lp.title+"-"+json.data.name);
+						this.application = json.data;
+						var url = this.path+this.options.style+"/view/view.html";
+						this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
+							this.setLayout();
+							this.loadList(this.options.navi);
+							if (callback) callback();
+						}.bind(this));
+					}
+				}.bind(this));
 			}.bind(this));
+
 		}.bind(this));
 	},
 	loadApplicationIcon : function (e){
@@ -67,6 +71,12 @@ MWF.xApplication.process.Application.Main = new Class({
 
 				if(callback) callback();
 			}.bind(this));
+		}.bind(this));
+	},
+	loadProcessList : function (callback){
+		this.action.ProcessAction.listWithPersonWithApplication(this.options.id).then(function (json){
+			this.processList = json.data;
+			if(callback) callback();
 		}.bind(this));
 	},
 	createCountData: function(){
@@ -795,39 +805,25 @@ MWF.xApplication.process.Application.AllList = new Class({
 			"</table>";
 		this.fileterNode.set("html", html);
 
+		var selectValue = [""];
+		var selectText = [""];
 
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
 		this.form = new MForm(this.fileterNode, {}, {
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
 				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
-					text: lp.process,
-					"type": "text",
-
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
 					"style": {"min-width": "150px"},
-					"event": {
 
-						"click": function (item, ev){
-							var v = item.getValue();
-							o2.xDesktop.requireApp("Selector", "package", function(){
-								var options = {
-									"type": "Process",
-									"values": v!==""?[item.getValue().split("|")[1]] : [],
-									"count": 1,
-									"onComplete": function (items) {
-										var arr = [];
-										var arr2 = [];
-										items.each(function (data) {
-											arr.push(data.data);
-											arr2.push(items[0].data.name+"|"+items[0].data.id);
-										});
-										item.setValue(arr2.join(","));
-									}.bind(this)
-								};
-								new o2.O2Selector(this.app.desktop.node, options);
-							}.bind(this),false);
-						}.bind(this)}
 				},
 				credentialList: {
 					"text": lp.creator,
@@ -868,7 +864,7 @@ MWF.xApplication.process.Application.AllList = new Class({
 									delete result[key];
 								}else if (key === "processName" && result[key] !== "") {
 									//result[key] = result[key][0].split("@")[1];
-									result["processList"] = [result[key].split("|")[1]];
+									result["processList"] = [result[key]];
 									delete result[key];
 								}else if (key === "endTime" && result[key] !== "") {
 									result[key] = result[key] + " 23:59:59"
@@ -1004,39 +1000,25 @@ MWF.xApplication.process.Application.DraftList = new Class({
 			"</table>";
 		this.fileterNode.set("html", html);
 
+		var selectValue = [""];
+		var selectText = [""];
 
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
 		this.form = new MForm(this.fileterNode, {}, {
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
 				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
-					text: lp.process,
-					"type": "text",
-
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
 					"style": {"min-width": "150px"},
-					"event": {
 
-						"click": function (item, ev){
-							var v = item.getValue();
-							o2.xDesktop.requireApp("Selector", "package", function(){
-								var options = {
-									"type": "Process",
-									"values": v!==""?[item.getValue().split("|")[1]] : [],
-									"count": 1,
-									"onComplete": function (items) {
-										var arr = [];
-										var arr2 = [];
-										items.each(function (data) {
-											arr.push(data.data);
-											arr2.push(items[0].data.name+"|"+items[0].data.id);
-										});
-										item.setValue(arr2.join(","));
-									}.bind(this)
-								};
-								new o2.O2Selector(this.app.desktop.node, options);
-							}.bind(this),false);
-						}.bind(this)}
 				},
 				startTime: {
 					text: lp.begin,
@@ -1061,7 +1043,7 @@ MWF.xApplication.process.Application.DraftList = new Class({
 									delete result[key];
 								}else if (key === "processName" && result[key] !== "") {
 									//result[key] = result[key][0].split("@")[1];
-									result["processList"] = [result[key].split("|")[1]];
+									result["processList"] = [result[key]];
 									delete result[key];
 								}else if (key === "endTime" && result[key] !== "") {
 									result[key] = result[key] + " 23:59:59"
