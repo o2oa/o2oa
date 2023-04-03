@@ -66,7 +66,7 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
 
             if( this.statJson.categoryList.length ){
                 this.isGroup = true;
-                this.data.data.value.each(function (d) {
+                this.data.data.each(function (d) {
                     var ar = [];
                     this.statJson.categoryList.each(function (category) {
                         var value, c = Object.clone(category);
