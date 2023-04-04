@@ -30,10 +30,20 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                     this.identitys = json.data.woIdentityList || [];
                     if (this.identitys.length){
                         if (this.options.identity){
+                            var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
                             this.identitys = this.identitys.filter(function(id){
-                                var dn = (typeOf(this.options.identity)==="string") ? this.options.identity : this.options.identity.distinguishedName;
-                                return id.distinguishedName===dn;
+                                for( var i=0; i<identityList.length; i++ ){
+                                    var identity = identityList[i] || "";
+                                    var dn = (typeOf(identity)==="string") ? identity : identity.distinguishedName;
+                                    id.index = i;
+                                    if( id.distinguishedName===dn )return true;
+                                }
+                                return false;
                             }.bind(this));
+
+                            this.identitys.sort(function(a, b){
+                                return a.index - b.index
+                            });
                         }
 
                         if (this.identitys.length){
