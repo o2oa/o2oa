@@ -1,0 +1,39 @@
+<div style="display: flex">
+    <div class="path" data-o2-element="pathNode">
+
+    </div>
+    <div class="ft_titleSearchArea" style="margin-left: auto;
+            margin-right: 20px;margin-top: 5px;margin-bottom: 10px">
+        <div class="ft_filterIcon"><icon class="iconfont-search mainColor_color"></icon></div>
+        <div class="ft_searchButton mainColor_bg" data-o2-events="click:doFilter">{{$.lp.search}}</div>
+        <div class="ft_titleInputArea"><input data-o2-element="searchKeyNode" value="{{($.filter) ? ($.filter.key || "") : ""}}" type="text" placeholder="{{$.lp.filterPlaceholder}}"  data-o2-events="keydown:inputFilter"/></div>
+    </div>
+</div>
+
+<div class="content" data-o2-element="contentNode">
+    <div class="toolBarList" data-o2-element="toolBarNode"></div>
+    <div class="contentTitle" data-o2-element="listTitleNode">
+
+    </div>
+    <div class="contentList" data-o2-element="listContentNode">
+        <div class="skeleton" data-o2-element="skeletonNode">
+            <div class="skeleton_item" style="width: 90%"></div>
+            <div class="skeleton_item" style="width: 60%"></div>
+            <div class="skeleton_item"></div>
+            <div class="skeleton_item" style="width: 70%"></div>
+            <div class="skeleton_item"></div>
+            <div class="skeleton_item" style="width: 60%"></div>
+            <div class="skeleton_item"></div>
+            <div class="skeleton_item" style="width: 80%"></div>
+        </div>
+    </div>
+    <div class="contentBottom" data-o2-element="listBottomNode">
+        <div class="contentPageArea">
+            <div class="firstPage" data-o2-events="click:firstPage">{{$.lp.firstPage}}</div>
+            <div class="prevPage iconfont-left_arrow" data-o2-events="click:prevPage"></div>
+            <div class="lastPage" data-o2-events="click:lastPage">{{$.lp.lastPage}}</div>
+            <div class="nextPage iconfont-right_arrow" data-o2-events="click:nextPage"></div>
+            <div class="pageNumberArea" data-o2-element="pageNumberAreaNode"></div>
+        </div>
+    </div>
+</div>
