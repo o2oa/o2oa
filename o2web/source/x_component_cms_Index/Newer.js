@@ -384,15 +384,36 @@ MWF.xApplication.cms.Index.Newer = new Class({
         var identities = [];
         MWF.Actions.get("x_organization_assemble_personal").getPerson(function(json){
             var identities1 = (json.data && json.data.woIdentityList) ? json.data.woIdentityList : [];
+
+            var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+
             identities1.each( function(i){
-                if( this.options.identity ){
-                    if( this.options.identity == i.distinguishedName ){
-                        if( i.distinguishedName )identities.push(i);
+                if( identityList.length ){
+
+                    for( var j=0; j<identityList.length; j++ ){
+                        var identity = identityList[j] || "";
+                        var dn = (typeOf(identity)==="string") ? identity : identity.distinguishedName;
+                        if( dn && i.distinguishedName===dn ){
+                            i.index = j;
+                            identities.push(i);
+                            return;
+                        }
                     }
+
+                    // if( this.options.identity == i.distinguishedName ){
+                    //     if( i.distinguishedName )identities.push(i);
+                    // }
                 }else{
                     if( i.distinguishedName )identities.push(i);
                 }
             }.bind(this));
+
+            if(identityList.length){
+                identities.sort( function (a, b) {
+                    return a.index - b.index;
+                });
+            }
+
         }.bind(this), null, false );
         return identities;
     },
@@ -446,8 +467,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
             title = this.options.documentData.title || this.options.documentData.subject || "";
         }
         var identity = "";
-        if( this.options.identity ){
-            identity = this.options.identity;
+
+        var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+        if( identityList.length === 1 && identityList[0] ){
+            identity = typeOf( identityList[0] ) === "string" ? identityList[0] : identityList[0].distinguishedName;
         }else if( this.identityArea ){
             identity = this.identityArea.get("value");
         }else if( this.identityList.length > 0 ){
