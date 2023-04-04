@@ -621,6 +621,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             h = height + (offset || 0);
         }
         this.options.height = h;
+        if( this.isMax )return;
         var s = this.lastStyle || {};
         this.setFormNodeSize(null, h, s.top, s.left );
         this.fireEvent("afterResize");

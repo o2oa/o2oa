@@ -796,7 +796,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingNumber +":</td>" +
             "    <td styles='formTableValue' item='number'></td></tr>" +
 
-            "<tr style='display:"+(data.mode !== "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
+            "<tr style='display:"+(data.mode !== "online" ? "" : "" )+";'><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
             "    <td styles='formTableValue' item='meetingRoom'></td></tr>" +
 
             "<tr><td styles='formTableTitle'>"+this.lp.hostPerson+":</td>" +
@@ -1314,11 +1314,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         if( mode === "online" ){
             this.form.getItem("url").node.getParent("tr").setStyle("display", "");
             this.form.getItem("number").node.getParent("tr").setStyle("display", "");
-            this.meetingRoomArea.getParent("tr").setStyle("display", "none");
+            // this.meetingRoomArea.getParent("tr").setStyle("display", "none");
         }else{
             this.form.getItem("url").node.getParent("tr").setStyle("display", "none");
             this.form.getItem("number").node.getParent("tr").setStyle("display", "none");
-            this.meetingRoomArea.getParent("tr").setStyle("display", "");
+            // this.meetingRoomArea.getParent("tr").setStyle("display", "");
         }
         this.resetHeight("auto");
     },
@@ -1814,7 +1814,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
                 "    <td style='"+valueStyle+"' item='number'></td></tr>";
         }
 
-        if( this.data.mode !== "online" ){
+        if( this.data.room ){ //this.data.mode !== "online"
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.selectRoom +":</td>" +
                 "    <td style='"+valueStyle+"' item='meetingRoom'></td></tr>";
         }
