@@ -165,10 +165,11 @@ MWF.xApplication.Meeting.LP = {
     "hostUnit": "承办部门",
     "meetingType":"会议类型",
     "meetingMode":"会议方式",
-    "meetingModeSelectText": ["线下会议","线上会议"],
+    "meetingModeSelectText": ["线下会议","网络会议"],
     "meetingModeSelectValue": ["offline","online"],
     "meetingUrl": "会议链接",
     "meetingNumber": "会议号",
+    "netMeetingAbb": "网",
 
     "week" : "周",
     "weeks": {

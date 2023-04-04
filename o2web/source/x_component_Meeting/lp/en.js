@@ -169,6 +169,7 @@ MWF.xApplication.Meeting.LP = {
     "meetingModeSelectValue": ["offline","online"],
     "meeting Url": "meeting link",
     "meeting Number": "meeting number",
+    "netMeetingAbb": "Net",
 
     "week": "Week",
     "weeks": {

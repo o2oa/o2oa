@@ -1320,6 +1320,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.form.getItem("number").node.getParent("tr").setStyle("display", "none");
             this.meetingRoomArea.getParent("tr").setStyle("display", "");
         }
+        this.resetHeight("auto");
     },
     clearRoom : function(){
         this.roomId = "";
@@ -1606,6 +1607,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.app.notice(this.lp.meeting_saveSuccess, "success");
             if (!this.attachmentNode){
                 this.loadAttachment();
+                this.resetHeight("auto", 30);
             }
         }.bind(this));
     },
@@ -1796,6 +1798,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var html = deletedInfor +
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
             "   <div style='font-size: 12px;color:#666; float: right' item='applicant'></div>" +
+            "   <div style='float: left' item='meetingFlag'></div>"+
             "   <div style='font-size: 16px;color:#333;float: left' item='type'></div>"+
             "</div>"+
             "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;' item='subject'></div>"+
@@ -1871,6 +1874,16 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         this.setItemValue(contentNode, "description",  description );
         if(this.data.hostPerson)this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
         if(this.data.hostUnit)this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
+
+        var meetingFlagArea = contentNode.getElement("[item='meetingFlag']");
+        if(meetingFlagArea){
+            if( data.mode === "online" ){
+                new Element("div.mainColor_bg", {
+                    style: "font-size:12px; line-height:22px; text-align:center; height:22px; width:22px;border-radius:22px; background:#4A90E2; color:#fff;margin-right:5px;margin-top:-4px;",
+                    text: this.lp.netMeetingAbb
+                }).inject( meetingFlagArea )
+            }
+        }
 
         this.fireEvent("customContent", [contentNode, node]);
     },
