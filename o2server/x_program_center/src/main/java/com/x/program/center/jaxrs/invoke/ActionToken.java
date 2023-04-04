@@ -1,7 +1,5 @@
 package com.x.program.center.jaxrs.invoke;
 
-import java.util.Date;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
@@ -28,7 +26,7 @@ class ActionToken extends BaseAction {
 			throw new ExceptionClientNotExist(wi.getClient());
 		}
 
-		wo.setValue(Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + (new Date().getTime()),
+		wo.setValue(Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + System.currentTimeMillis(),
 				sso.getKey(), Config.person().getEncryptType()));
 		result.setData(wo);
 		return result;
@@ -39,7 +37,7 @@ class ActionToken extends BaseAction {
 
 		private static final long serialVersionUID = -251331390296713913L;
 
-		@FieldDescribe("用户标识")
+		@FieldDescribe("鉴权认证接入名称")
 		private String client;
 
 		protected String getClient() {
