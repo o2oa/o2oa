@@ -87,9 +87,15 @@ public class AttendanceV2Config extends SliceJpaObject {
 
 
     public static final String appealEnable_FIELDNAME = "appealEnable";
-    @FieldDescribe("是否开启补卡申请功能")
+    @FieldDescribe("是否开启补卡申诉功能")
     @Column(name = ColumnNamePrefix + appealEnable_FIELDNAME)
     private Boolean appealEnable = false;
+
+
+    public static final String appealMaxTimes_FIELDNAME = "appealMaxTimes";
+    @FieldDescribe("每个月最多申诉次数，0不限制")
+    @Column(  name = ColumnNamePrefix + appealMaxTimes_FIELDNAME)
+    private Integer appealMaxTimes = 0;
 
 //    public static final String appealProcessType_Inner = "inner";
 //    public static final String appealProcessType_Process = "process";
@@ -143,6 +149,16 @@ public class AttendanceV2Config extends SliceJpaObject {
     @FieldDescribe("异常打卡提醒，次日将收到异常打卡提醒.")
     @Column(name = ColumnNamePrefix + exceptionAlertEnable_FIELDNAME)
     private Boolean exceptionAlertEnable = false;
+
+
+
+    public Integer getAppealMaxTimes() {
+        return appealMaxTimes;
+    }
+
+    public void setAppealMaxTimes(Integer appealMaxTimes) {
+        this.appealMaxTimes = appealMaxTimes;
+    }
 
     public Boolean getOnDutyFastCheckInEnable() {
         return onDutyFastCheckInEnable;

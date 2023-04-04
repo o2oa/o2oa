@@ -53,7 +53,7 @@ public class ActionUpdateForEnd extends BaseAction {
                 throw new ExceptionNotExistObject("数据不存在，" + id);
             }
             emc.beginTransaction(AttendanceV2AppealInfo.class);
-            info.setStatus(wi.getResult() == 1 ? 2 : 3); // 审批结果
+            info.setStatus(wi.getResult() == 1 ? AttendanceV2AppealInfo.status_TYPE_PROCESS_AGREE : AttendanceV2AppealInfo.status_TYPE_PROCESS_DISAGREE); // 审批结果
             info.setEndTime(DateTools.now());
             info.setReason(wi.getReason());
             info.setJobId(wi.getJobId());

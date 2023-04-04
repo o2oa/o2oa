@@ -101,11 +101,14 @@ public class AttendanceV2AppealInfo  extends SliceJpaObject {
     @Column( length = JpaObject.length_2K, name = ColumnNamePrefix + reason_FIELDNAME)
     private String reason;
 
-
+    public static final Integer status_TYPE_INIT = 0; // 待处理
+    public static final Integer status_TYPE_PROCESSING = 1; // 审批中
+    public static final Integer status_TYPE_PROCESS_AGREE = 2; // 审批通过
+    public static final Integer status_TYPE_PROCESS_DISAGREE = 3; // 审批不通过
     public static final String status_FIELDNAME = "status";
     @FieldDescribe("申诉状态:0-待处理，1-审批中（已发起流程），2-审批通过，3-审批不通过")
     @Column( name = ColumnNamePrefix + status_FIELDNAME)
-    private Integer status = 0;
+    private Integer status = status_TYPE_INIT;
 
     public static final String jobId_FIELDNAME = "jobId";
     @FieldDescribe("流程的jobId，申诉流程结束后写入.")
