@@ -41,6 +41,7 @@
  *    "formatType":"textValue"
  * }
  * @example
+ * //过滤字段month 在一月、二月、三月之中
  *  {
  *    "logic":"and",
  *    "path":"month",
@@ -48,6 +49,16 @@
  *    "value":"一月,二月,三月",
  *    "formatType":"textValue"
  * }
+ * @example
+ * //过滤字段number1 范围从10 到 20之
+ *  {
+ *    "logic": "and",
+ *    "path": "number1",
+ *    "comparison": "range"
+ *    "value": "10",
+ *    "otherValue": "20",
+ *    "formatType": "numberValue"
+ *  }
  */
 
 /**
