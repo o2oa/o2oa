@@ -23,14 +23,28 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.options}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                    }" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                    }" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'block');
+                    }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
                 </td>
             </tr>
         </table>
 
         <div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
         <div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+        <div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictItemArea" name="dictItem" title="{{$.lp.options}}"></div>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <div class="MWFMaplist" name="inputStyles" title="{{$.lp.selectStyle}}"></div>
