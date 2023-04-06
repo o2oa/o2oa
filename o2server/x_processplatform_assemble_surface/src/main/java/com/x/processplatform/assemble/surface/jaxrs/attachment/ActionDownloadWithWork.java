@@ -70,50 +70,13 @@ class ActionDownloadWithWork extends BaseAction {
 		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
 				.getWorkAttachmentDownloadEvents().bind(work.getApplication(), work.getProcess(), work.getActivity());
 		if (event.isPresent()) {
-			bytes = this.extensionService(effectivePerson, attachment.getId(), event.get());
+			bytes = this.extensionService(effectivePerson, attachment, event.get());
 		} else {
 			bytes = attachment.readContent(mapping);
 		}
 		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
 		result.setData(wo);
 		return result;
-	}
-
-	private byte[] extensionService(EffectivePerson effectivePerson, String id, WorkExtensionEvent event)
-			throws Exception {
-		byte[] bytes = null;
-		Req req = new Req();
-		req.setPerson(effectivePerson.getDistinguishedName());
-		req.setAttachment(id);
-		if (StringUtils.isNotEmpty(event.getCustom())) {
-			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
-		} else {
-			bytes = CipherConnectionAction.postBinary(effectivePerson.getDebugger(), event.getUrl(), req);
-		}
-		return bytes;
-	}
-
-	public static class Req {
-
-		private String person;
-		private String attachment;
-
-		public String getPerson() {
-			return person;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
-
-		public String getAttachment() {
-			return attachment;
-		}
-
-		public void setAttachment(String attachment) {
-			this.attachment = attachment;
-		}
-
 	}
 
 	public static class Control extends WorkControl {
