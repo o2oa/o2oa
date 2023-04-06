@@ -1358,7 +1358,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 return false;
             }
         }
-        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50, o, function (json) {
+        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50, {
+            parameter: o
+        }, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
             debugger;
