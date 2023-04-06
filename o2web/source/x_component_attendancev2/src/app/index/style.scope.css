@@ -28,6 +28,10 @@
 .color-fieldWork {
   color: #f7b55e;
 }
+/* 节假日 */
+.color-holiday {
+  color: #78c06e;
+}
 .o2-divider--horizontal {
   display: block;
   height: 1px;

@@ -73,6 +73,26 @@ public class AppealInfoAction extends StandardJaxrsAction {
 
 
 
+    @JaxrsMethodDescribe(value = "检查是否能够申诉.", action = ActionCheckCanStartAppeal.class)
+    @GET
+    @Path("{id}/start/check")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void startCheck(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id) {
+        ActionResult<ActionCheckCanStartAppeal.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionCheckCanStartAppeal().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+
     @JaxrsMethodDescribe(value = "启动流程后修改状态.", action = ActionUpdateForStart.class)
     @GET
     @Path("{id}/start/process")

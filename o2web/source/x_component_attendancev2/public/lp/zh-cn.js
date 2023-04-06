@@ -196,6 +196,7 @@ MWF.xApplication.attendancev2.LP = {
     date: "日期",
     attendance: "出勤天数",
     rest: "休息天数",
+    leave: "请假天数",
     absenteeismDays: "旷工天数",
     workTimeDuration: "工作时长",
     averageWorkTimeDuration: "平均工时",

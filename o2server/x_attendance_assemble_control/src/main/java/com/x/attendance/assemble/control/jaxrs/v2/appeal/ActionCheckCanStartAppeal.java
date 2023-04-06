@@ -7,11 +7,9 @@ import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,13 +18,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by fancyLou on 2023/3/3.
+ * Created by fancyLou on 2023/4/6.
  * Copyright © 2023 O2. All rights reserved.
  */
-public class ActionUpdateForStart extends BaseAction {
+public class ActionCheckCanStartAppeal  extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson person, String id) throws Exception {
-
         if (StringUtils.isEmpty(id)) {
             throw new ExceptionEmptyParameter("id");
         }
@@ -62,11 +59,6 @@ public class ActionUpdateForStart extends BaseAction {
                     throw new ExceptionOverAppealMaxTimes();
                 }
             }
-            emc.beginTransaction(AttendanceV2AppealInfo.class);
-            info.setStatus(AttendanceV2AppealInfo.status_TYPE_PROCESSING); // 审批中
-            info.setStartTime(DateTools.now());
-            emc.check(info, CheckPersistType.all);
-            emc.commit();
             ActionResult<Wo> result = new ActionResult<>();
             Wo wo = new Wo();
             wo.setValue(true);
@@ -77,6 +69,7 @@ public class ActionUpdateForStart extends BaseAction {
 
     public static class Wo extends WrapBoolean {
 
-        private static final long serialVersionUID = -4351149479944550193L;
+
+        private static final long serialVersionUID = 2924560227032403309L;
     }
 }

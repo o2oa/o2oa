@@ -310,13 +310,14 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
 
     /**
      * 根据日期查询申诉记录
+     * 不是初始化状态的数据
      * @param startDate 开始日期
      * @param endDate 结束日期
      * @param userId 可选
      * @return
      * @throws Exception
      */
-    public List<AttendanceV2AppealInfo> listAppealInfoByDate(Date startDate, Date endDate, String userId) throws Exception {
+    public List<AttendanceV2AppealInfo> listAppealInfoByDateNotInit(Date startDate, Date endDate, String userId) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
@@ -325,6 +326,7 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         if (StringUtils.isNotEmpty(userId)) {
             p = cb.and(p,  cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId));
         }
+        p = cb.and(p,  cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
         return em.createQuery(cq).getResultList();
     }

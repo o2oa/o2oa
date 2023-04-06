@@ -87,7 +87,7 @@ export default content({
   },
   dateClassName(detail) {
     if (detail && detail.workDay === false) {
-      return "primary_color";
+      return "color-holiday";
     }
     return "";
   },

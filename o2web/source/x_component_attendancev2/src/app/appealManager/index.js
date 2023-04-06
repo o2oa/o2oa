@@ -84,17 +84,21 @@ export default content({
     // 查询配置
     const json = await configAction("get");
     if (json && json.appealEnable && json.processId) {
-      const process = await processAction("get", json.processId);
-      MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
-        var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, app, {
-            "latest" : false,
-            "workData" : { "appealId": appeal.id, "record": appeal.record }, // 把id和打卡记录传给流程
-            "onStarted": function(data, title, processName){
-                this._afterStartProcess(data, appeal.id);
-            }.bind(this)
-        });
-        starter.load();
-      }.bind(this));
+      // 检查是否能够申诉 有可能超过限制次数
+      const checkResult = await appealInfoAction("startCheck", appeal.id);
+      if (checkResult) {
+        const process = await processAction("get", json.processId);
+        MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+          var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, app, {
+              "latest" : false,
+              "workData" : { "appealId": appeal.id, "record": appeal.record }, // 把id和打卡记录传给流程
+              "onStarted": function(data, title, processName){
+                  this._afterStartProcess(data, appeal.id);
+              }.bind(this)
+          });
+          starter.load();
+        }.bind(this));
+      }
     } else {
       o2.api.page.notice(lp.appeal.startProcessNoConfigError, 'error');
     }
