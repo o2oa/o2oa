@@ -50,11 +50,15 @@
                     </div>
                     <label style="margin-left: 8px;">{{$.lp.config.appealEnableLabel}}</label>
                 </div>
-                <div class="margin-top margin-left">
+                <div class="margin-top margin-left" oo-if="$.form.appealEnable">
                     <!-- 自定义流程 -->
                     <o-selector-process oo-prop="$.processSelector" ></o-selector-process>
                 </div>
             </div>
+            <div class="margin-left" oo-if="$.form.appealEnable">
+                <o-input oo-prop="{'label':$.lp.config.appealMaxTimesLabel, 'value': $.form.appealMaxTimes}" oo-model="form.appealMaxTimes"></o-input>
+            </div>
+            
         </div>
        
         <div class="margin-top">

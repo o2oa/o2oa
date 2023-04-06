@@ -1,20 +1,5 @@
 MWF.xApplication.attendancev2.LP = {
-  title: "考勤V2",
-  welcome: "Welcome to O2OA Component",
-  taskListTitle: "此处列出您的5个最新待办",
-
-  taskTitle: "标题",
-  taskProcess: "流程",
-  taskTime: "到达时间",
-
-  openCalendar: "打开日程管理",
-  openOrganization: "打开组织管理",
-  startProcess: "启动流程",
-  createDocument: "创建信息",
-  openInBrowser: "在新浏览器窗口中打开",
-
-  inputContent: "这是你输入的内容",
-  inputSomething: "请输入一些内容",
+  title: "考勤管理V2",
 
   menu: {
     // 我的
@@ -251,6 +236,8 @@ MWF.xApplication.attendancev2.LP = {
     appealProcessTypeInnerLabel: "内置固定流程",
     appealProcessTypeProcessLabel: "自定义流程",
     appealProcessTypeProcessPlaceholder: "请选择自定义流程",
+    appealMaxTimesLabel: "用户每月最多申诉次数",
+    appealMaxTimesError: "请输入正确的申诉次数！",
     fastCheckIn: "极速打卡",
     onDutyFastCheckInEnable: "是否启用上班极速打卡 (app端有效)",
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",

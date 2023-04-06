@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
@@ -39,19 +40,25 @@ public class ActionUpdateForStart extends BaseAction {
             }
             // 申诉次数限制查询
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
+            AttendanceV2Config config;
             if (list != null && !list.isEmpty()) {
-                AttendanceV2Config config = list.get(0);
-                if (config.getAppealMaxTimes() > 0) { // 大于0才算有限制
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.DAY_OF_MONTH, 1);
-                    Date beginDate = calendar.getTime();
-                    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-                    Date endDate = calendar.getTime();
-                    Business business = new Business(emc);
-                    List<AttendanceV2AppealInfo> appealInfoList = business.getAttendanceV2ManagerFactory().listAppealInfoByDate(beginDate, endDate, person.getDistinguishedName());
-                    if (appealInfoList != null && appealInfoList.size() >= config.getAppealMaxTimes()) {
-                        throw new ExceptionOverAppealMaxTimes();
-                    }
+                config = list.get(0);
+            } else {
+                config = new AttendanceV2Config();
+            }
+            if (BooleanUtils.isNotTrue(config.getAppealEnable())) {
+                throw new ExceptionAppealNotEnable();
+            }
+            if (config.getAppealMaxTimes() > 0) { // 大于0才算有限制
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.DAY_OF_MONTH, 1);
+                Date beginDate = calendar.getTime();
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                Date endDate = calendar.getTime();
+                Business business = new Business(emc);
+                List<AttendanceV2AppealInfo> appealInfoList = business.getAttendanceV2ManagerFactory().listAppealInfoByDate(beginDate, endDate, person.getDistinguishedName());
+                if (appealInfoList != null && appealInfoList.size() >= config.getAppealMaxTimes()) {
+                    throw new ExceptionOverAppealMaxTimes();
                 }
             }
             emc.beginTransaction(AttendanceV2AppealInfo.class);

@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2, component as c } from "@o2oa/component";
 import { configAction } from "../../utils/actions";
+import { isInt } from "../../utils/common";
 import template from "./template.html";
 import style from "./style.scope.css";
 import oInput from "../../components/o-input";
@@ -20,6 +21,7 @@ export default content({
         offDutyFastCheckInEnable: false,
         checkInAlertEnable: false,
         exceptionAlertEnable: false,
+        appealMaxTimes: 0,
       },
       holidayList: [],
       workDayList: [],
@@ -75,12 +77,20 @@ export default content({
       );
       return;
     }
-    if (this.bind.processSelector.value.length > 0) {
+    if (!isInt(form.appealMaxTimes)) {
+      o2.api.page.notice(
+        lp.config.appealMaxTimesError,
+        "error"
+      );
+      return;
+    }
+    if (form.appealEnable && this.bind.processSelector.value.length > 0) {
       form.processId = this.bind.processSelector.value[0]["id"] || "";
       form.processName = this.bind.processSelector.value[0]["name"] || "";
     } else {
       form.processId =   "";
       form.processName =  "";
+      form.appealMaxTimes = 0;
     }
 
     const result = await configAction("post", form);
