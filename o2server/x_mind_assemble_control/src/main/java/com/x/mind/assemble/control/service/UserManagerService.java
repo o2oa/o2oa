@@ -407,7 +407,7 @@ public class UserManagerService {
 			identityNames = listIdentitiesWithPerson( personName );
 			if( identity == null || identity.isEmpty() ) {
 				if ( identityNames.size() == 0 ) {
-					throw new Exception("perons has no identity.");
+					throw new Exception("person has no identity.");
 				} else if ( identityNames.size() > 0 ) {
 					identityName = identityNames.get(0);
 				}

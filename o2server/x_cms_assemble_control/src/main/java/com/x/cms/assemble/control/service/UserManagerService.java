@@ -408,7 +408,7 @@ public class UserManagerService {
 //			LogUtil.INFO("identityNames:", identityNames );
 			if (StringUtils.isEmpty(identity)) {
 				if (identityNames.size() == 0) {
-					throw new Exception("perons has no identity. personName:" + personName);
+					throw new Exception("person has no identity. personName:" + personName);
 				} else if (identityNames.size() > 0) {
 					identityName = identityNames.get(0);
 				}
