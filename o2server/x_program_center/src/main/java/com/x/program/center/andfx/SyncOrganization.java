@@ -442,11 +442,12 @@ public class SyncOrganization {
         for (Unit unit : removeUnits) {
             this.removeSingleUnit(business, result, unit);
         }
-        List<Person> allPeople = this.listPerson(business);
+
         /* 删除个人 */
+        /*List<Person> allPeople = this.listPerson(business);
         for (Person person : ListUtils.subtract(allPeople, people)) {
             this.removePerson(business, result, person);
-        }
+        }*/
     }
 
     private List<Unit> listUnit(Business business) throws Exception {
