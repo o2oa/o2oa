@@ -75,6 +75,7 @@
  * <b>lessThanOrEqualTo</b> 或 <b><=</b> ：表示小于等于。<br/>
  * <b>like</b> ：表示部分匹配。<br/>
  * <b>notLike</b> ：表示不匹配。<br/>
+ * <b>in</b> ：表示在某几个特定的值当中。<br/>
  * </div>
  * @property {String} formatType  - 过滤数据的数据类型，可选值：
  * <div style='padding-left:150px;'>
@@ -94,6 +95,14 @@
  *    "value":"关于",
  *    "formatType":"textValue"
  *}
+ * @example
+ * //in运算符的传值。然而在如果直接在查询语句里写in运算符，如下：select o from Task o where o.activityName in ('拟稿','核稿')
+ * {
+ *   "path":"o.activityName",
+ *  "comparison":"in",
+ *  "value": ['拟稿','核稿'],
+ *  "formatType":"textValue"
+ *  }
  */
 
 /**
@@ -109,6 +118,10 @@
  *    "startTime" : (new Date("2020-01-01")),
  *    "applicationName" : "%test%",
  *    "processName" : "test流程" //其他写确定的值
+ *
+ *    //下面是in运算符的传值， 如语句 select o from Task o where o.activityName in :activityName。
+ *    //通过传值后后台拼接的结果等价于select o from Task o where o.activityName in ('拟稿','核稿')
+ *    "activityName" : ["拟稿","核稿"]
  * }
  */
 
