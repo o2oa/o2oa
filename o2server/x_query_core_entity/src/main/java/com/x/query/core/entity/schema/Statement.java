@@ -36,8 +36,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Statement", description = "数据中心查询语句.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@javax.persistence.Table(name = PersistenceProperties.Schema.Statement.table, uniqueConstraints = {
-        @UniqueConstraint(name = PersistenceProperties.Schema.Statement.table + JpaObject.IndexNameMiddle
+@javax.persistence.Table(name = PersistenceProperties.Schema.Statement.TABLE, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.Schema.Statement.TABLE + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
                         JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -45,7 +45,7 @@ public class Statement extends SliceJpaObject {
 
     private static final long serialVersionUID = -5610293696763235753L;
 
-    private static final String TABLE = PersistenceProperties.Schema.Statement.table;
+    private static final String TABLE = PersistenceProperties.Schema.Statement.TABLE;
 
     public static final String TYPE_SELECT = "select";
     public static final String TYPE_DELETE = "delete";
