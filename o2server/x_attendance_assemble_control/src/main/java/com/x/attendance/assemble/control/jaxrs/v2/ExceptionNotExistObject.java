@@ -8,6 +8,6 @@ public class ExceptionNotExistObject extends PromptException {
 	private static final long serialVersionUID = 385265565348213466L;
 
 	public ExceptionNotExistObject(String name) {
-		super(name + "不存在！");
+		super( "对象不存在:{}.", name);
 	}
 }

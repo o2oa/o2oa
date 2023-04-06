@@ -72,14 +72,14 @@ public class AttendanceV2LeaveData extends SliceJpaObject {
     private String leaveType;
 
     public static final String startTime_FIELDNAME = "startTime";
-    @FieldDescribe("开始时间")
+    @FieldDescribe("开始时间：yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column( name = ColumnNamePrefix + startTime_FIELDNAME )
     @CheckPersist(allowEmpty = false)
     private Date startTime;
 
     public static final String endTime_FIELDNAME = "endTime";
-    @FieldDescribe("结束时间")
+    @FieldDescribe("结束时间：yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column( name = ColumnNamePrefix + endTime_FIELDNAME )
     @CheckPersist(allowEmpty = false)

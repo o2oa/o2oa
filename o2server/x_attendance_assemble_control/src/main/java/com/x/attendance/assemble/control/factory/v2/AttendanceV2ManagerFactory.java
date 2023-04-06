@@ -382,8 +382,8 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         CriteriaQuery<AttendanceV2LeaveData> cq = cb.createQuery(AttendanceV2LeaveData.class);
         Root<AttendanceV2LeaveData> root = cq.from(AttendanceV2LeaveData.class);
         Predicate p = cb.equal(root.get(AttendanceV2LeaveData_.person), person);
-        p = cb.and(p, cb.lessThan(root.get(AttendanceV2LeaveData_.startTime), recordTime));
-        p = cb.and(p, cb.greaterThan(root.get(AttendanceV2LeaveData_.endTime), recordTime));
+        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveData_.startTime), recordTime));
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveData_.endTime), recordTime));
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 

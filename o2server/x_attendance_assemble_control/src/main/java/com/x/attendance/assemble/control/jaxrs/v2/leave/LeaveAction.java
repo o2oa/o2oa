@@ -11,6 +11,8 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -71,5 +73,61 @@ public class LeaveAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+
+    @JaxrsMethodDescribe(value = "获取导入请假数据的模版.", action = ActionExcelTemplate.class)
+    @GET
+    @Path("template")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void template(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<ActionExcelTemplate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionExcelTemplate().execute(effectivePerson);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "上传Excel导入请假数据.", action = ActionImportExcel.class)
+    @POST
+    @Path("import")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    public void input(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                      @FormDataParam(FILE_FIELD) final byte[] bytes,
+                      @JaxrsParameterDescribe("Excel文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+        ActionResult<ActionImportExcel.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionImportExcel().execute(effectivePerson, bytes, disposition);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "获取导入人员结果.", action = ActionGetImportResult.class)
+    @GET
+    @Path("import/result/flag/{flag}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getResult(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                          @JaxrsParameterDescribe("导入文件返回的结果标记") @PathParam("flag") String flag) {
+        ActionResult<ActionGetImportResult.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGetImportResult().execute(effectivePerson, flag);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 
 }
