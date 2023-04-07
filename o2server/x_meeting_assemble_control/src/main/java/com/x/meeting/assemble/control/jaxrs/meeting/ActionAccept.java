@@ -29,7 +29,7 @@ class ActionAccept extends BaseAction {
 				emc.commit();
 				// MessageFactory.meeting_accept(effectivePerson.getDistinguishedName(),
 				// meeting);
-				MessageFactory.meeting_accept(meeting.getApplicant(), meeting);
+				MessageFactory.meeting_accept(effectivePerson.getDistinguishedName(), meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
