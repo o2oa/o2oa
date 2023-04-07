@@ -97,6 +97,11 @@ export default content({
                 },
                 {
                   id: '3-4',
+                  title: lp.menu.leavemanager,
+                  action: "leaveManager"
+                },
+                {
+                  id: '3-5',
                   title: lp.menu.configmanager,
                   action: "configManager"
                 }

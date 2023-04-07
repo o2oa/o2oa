@@ -40,6 +40,8 @@ public class ActionExcelTemplate extends BaseAction {
             cell.setCellValue("请假说明");
             cell = row.createCell(5);
             cell.setCellValue("流程的jobId,可为空");
+            cell = row.createCell(7);
+            cell.setCellValue("导入错误信息反馈");
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setWrapText(true);
             IntStream.rangeClosed(0, 6).forEach(i -> {

@@ -134,6 +134,32 @@ function detailAction(method, ...args) {
   );
 }
 
+
+/**
+ * 请假数据详细分页查询
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function leaveActionListByPaging(...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "LeaveAction",
+    "listByPaging",
+    args
+  );
+}
+
+function leaveAction(method, ...args) {
+  return doAction(
+    "x_attendance_assemble_control",
+    "LeaveAction",
+    method,
+    args
+  );
+}
+
+
 /**
  * 考勤配置API
  * @param {*} method
@@ -229,4 +255,6 @@ export {
   myAction,
   mobileAction,
   personAction,
+  leaveActionListByPaging,
+  leaveAction,
 };

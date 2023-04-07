@@ -107,6 +107,12 @@
 .att .primary_color {
   color: var(--el-color-primary);
 }
+.att .operator_link_underline {
+  color: var(--el-color-primary);
+  margin-left: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .att .operator_link {
   color: var(--el-color-primary);
   margin-left: 10px;
