@@ -25,7 +25,7 @@ export default content({
         const menuList = [
           {action: "checkIn", name: lp.mobile.menu.checkIn},
           {action: "statistic", name: lp.mobile.menu.statistic},
-          {action: "settings", name: lp.mobile.menu.settings},
+        //   {action: "settings", name: lp.mobile.menu.settings},
         ];
         this.bind.menu.menuData = menuList;
         this.bind.menu.currentMenu = menuList[0];

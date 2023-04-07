@@ -35,6 +35,10 @@ public class StatisticWo extends GsonPropertyObject {
     private Integer absenceTimes = 0;
     @FieldDescribe("外勤打卡次数")
     private Integer fieldWorkTimes = 0;
+    @FieldDescribe("请假天数")
+    private Integer leaveDays = 0;
+    @FieldDescribe("申诉次数")
+    private Integer appealNums = 0;
 
 
     public Integer getFieldWorkTimes() {
@@ -115,5 +119,21 @@ public class StatisticWo extends GsonPropertyObject {
 
     public void setAbsenceTimes(Integer absenceTimes) {
         this.absenceTimes = absenceTimes;
+    }
+
+    public Integer getLeaveDays() {
+        return leaveDays;
+    }
+
+    public void setLeaveDays(Integer leaveDays) {
+        this.leaveDays = leaveDays;
+    }
+
+    public Integer getAppealNums() {
+        return appealNums;
+    }
+
+    public void setAppealNums(Integer appealNums) {
+        this.appealNums = appealNums;
     }
 }

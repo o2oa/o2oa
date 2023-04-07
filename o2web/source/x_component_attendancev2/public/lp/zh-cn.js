@@ -311,6 +311,7 @@ MWF.xApplication.attendancev2.LP = {
       outsideTitle: '外勤打卡',
       outsideNotAllow: '不允许外勤打卡！',
       outsideRemarkPlaceholder: '请输入外勤打卡说明！',
+      statisticMonthLabel: '月',
   }
 
 };
