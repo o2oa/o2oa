@@ -188,6 +188,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "newCategory": "新分类",
     "mustSelectFormStyle" : "必须选择一种表单样式",
     "notValidJson" : "错误的json格式",
+    "mustSelectDict" : "请先选择数据字典",
 
     "imageClipper" : "图片编辑",
 
@@ -399,6 +400,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "printForm": "打印表单",
         "preloadScript": "预加载脚本",
         "script": "脚本",
+        "dict": "数据字典",
+        "dictName": "字典名称",
+        "dictPath": "数据路径",
         "copy": "复制",
         "paste": "粘贴",
         "language": "语言包",

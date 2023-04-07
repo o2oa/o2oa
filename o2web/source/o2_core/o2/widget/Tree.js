@@ -498,5 +498,14 @@ o2.widget.Tree.Node = new Class({
 		}		
 		this.node.destroy();
 		delete this;
+	},
+	getPath: function () {
+		var node = this.node;
+		var text;
+		while(node){
+			text += "/" + node.optons.text;
+			node = node.parentNode;
+		}
+		return "root"+text;
 	}
 });

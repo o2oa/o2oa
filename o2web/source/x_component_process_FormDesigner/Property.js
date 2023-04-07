@@ -153,6 +153,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadSmartBISelect();
 
+                    this.loadDicionaryItem();
+
                     this.loadHelp();
 
                     this.ready = true;
@@ -639,6 +641,100 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             });
         }.bind(this))
     },
+
+    loadJsonSelector: function(data, title){
+        var width = "770";
+        var height = "580";
+        width = width.toInt();
+        height = height.toInt();
+
+        var size = this.designer.content.getSize();
+        var x = (size.x-width)/2;
+        var y = (size.y-height)/2;
+        if (x<0) x = 0;
+        if (y<0) y = 0;
+
+        var jsonParse;
+        MWF.require("MWF.xDesktop.Dialog", function() {
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": title,
+                "style": "user",
+                "top": y,
+                "left": x - 20,
+                "fromTop": y,
+                "fromLeft": x - 20,
+                "width": width,
+                "height": height,
+                "html": "<div></div>",
+                "maskNode": this.designer.content,
+                "container": this.designer.content,
+                "buttonList": [
+                    {
+                        "text": MWF.LP.process.button.ok,
+                        "action": function () {
+                            debugger;
+                            jsonParse;
+                            this.close();
+                        }
+                    },
+                    {
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.close();
+                        }
+                    }
+                ]
+            });
+            dlg.show();
+
+            MWF.require("MWF.widget.JsonParse", function(){
+                jsonParse = new MWF.widget.JsonParse(data, dlg.content.getFirst(), null);
+                jsonParse.load();
+            }.bind(this));
+
+        }.bind(this))
+    },
+    loadDicionaryItem: function(){
+        var dictItems = this.propertyContent.getElements(".MWFDictionaryItemSelect");
+        dictItems.each(function(node) {
+            var title = node.get("title");
+            var name = node.get("name");
+
+            var addNode = new Element("div", {"styles": this.form.css.propertyAddNode}).inject(node, "before");
+            addNode.addEvent("click", function(e) {
+                var dictField = node.dataset["dict"];
+                if( !this.data[dictField] || !this.data[dictField].length ){
+                    this.designer.notice(MWF.APPFD.LP.mustSelectDict, "error");
+                    return;
+                }
+                var dict = this.data[dictField][0];
+
+                var json = this.data[name];
+                if (!json) json = {};
+
+                var p;
+                switch (dict.appType) {
+                    case "process":
+                        p = o2.Actions.load("x_processplatform_assemble_surface").ApplicationDictAction.getData(dict.id, dict.appId);
+                        break;
+                    case "cms":
+                        p = o2.Actions.load("x_cms_assemble_control").AppDictAction.getData(dict.id, dict.appId);
+                        break;
+                    case "portal":
+                        p = o2.Actions.load("x_portal_assemble_surface").DictAction.getData(dict.id, dict.appId);
+                        break;
+                    case "service":
+                        p = o2.Actions.load("x_program_center").DictAction.getData(dict.id);
+                        break;
+                }
+                p.then(function (json) {
+                    this.loadJsonSelector(json.data, title);
+                }.bind(this))
+            }.bind(this))
+
+        }.bind(this))
+    },
+
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
         this.subforms = null;
         var select = new Element("select").inject(node);
@@ -2075,7 +2171,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var data = this.data[node.get("name")];
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Dictionary",
-                    "count": 0,
+                    "count": node.dataset["count"] || 0,
                     "names": typeOf(data)==="array" ? data : [data],
                     "onChange": function(ids){
                         var data = [];

@@ -190,6 +190,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "newCategory": "New Category",
     "mustSelectFormStyle": "You must select a form style",
     "notValidJson": "Wrong json format",
+    "mustSelectDict" : "Please select the data dictionary first",
 
     "imageClipper": "ImageEditor",
 
@@ -401,6 +402,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "printForm": "PrintForm",
         "preloadScript": "PreloadScript",
         "script": "Script",
+        "dict": "Dictonary",
+        "dictName": "Dictonary Name",
+        "dictPath": "Data Path",
         "copy": "Copy",
         "paste": "Paste",
         "language": "Language",
