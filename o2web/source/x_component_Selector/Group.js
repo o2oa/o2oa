@@ -119,27 +119,77 @@ MWF.xApplication.Selector.Group.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
-        this.selector.orgAction.listPersonNested(this.data.id, function(json){
-            this.textNode.set("text", this.textNode.get("text")+" ("+json.data.length+")");
-            var usersText = "";
-            json.data.each(function(item){
-                usersText+=item.name+", ";
-            }.bind(this));
+        this.node.addEvent("mouseover", function () {
+            if( !this.detailLoaded ){
+                o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
+                    groupList: [this.data.id]
+                }, function(json){
+                    debugger;
+                    var d = json.data[0];
+                    var text = "";
+                    if( d.personList && d.personList.length ){
+                        text += MWF.xApplication.Selector.LP.person + ": " + d.personList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
 
-            var node = new Element("div", {"styles": {"max-width": "300px"}, "text": usersText});
+                    if( d.identityList && d.identityList.length ){
+                        text += MWF.xApplication.Selector.LP.identity + ": " + d.identityList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
 
-            if (!Browser.Platform.ios){
-                this.tooltip = new mBox.Tooltip({
-                    content: node,
-                    setStyles: {content: {padding: 15, lineHeight: 20}},
-                    attach: this.node,
-                    transition: 'flyin'
-                });
+                    if( d.unitList && d.unitList.length ){
+                        text += MWF.xApplication.Selector.LP.unit + ": " + d.unitList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
+
+                    if( d.groupList && d.groupList.length ){
+                        text += MWF.xApplication.Selector.LP.group + ": " + d.groupList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
+
+                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
+
+                    if (!Browser.Platform.ios){
+                        this.tooltip = new mBox.Tooltip({
+                            content: node,
+                            setStyles: {content: {padding: 15, lineHeight: 20}},
+                            attach: this.node,
+                            transition: 'flyin'
+                        });
+                        this.tooltip.open()
+                    }
+
+                    this.detailLoaded = true;
+                }.bind(this))
             }
-
-            //this.textNode.set("title", usersText);
         }.bind(this));
     }
+    // loadSubItem: function(){
+    //     this.selector.orgAction.listPersonNested(this.data.id, function(json){
+    //         this.textNode.set("text", this.textNode.get("text")+" ("+json.data.length+")");
+    //         var usersText = "";
+    //         json.data.each(function(item){
+    //             usersText+=item.name+", ";
+    //         }.bind(this));
+    //
+    //         var node = new Element("div", {"styles": {"max-width": "300px"}, "text": usersText});
+    //
+    //         if (!Browser.Platform.ios){
+    //             this.tooltip = new mBox.Tooltip({
+    //                 content: node,
+    //                 setStyles: {content: {padding: 15, lineHeight: 20}},
+    //                 attach: this.node,
+    //                 transition: 'flyin'
+    //             });
+    //         }
+    //
+    //         //this.textNode.set("title", usersText);
+    //     }.bind(this));
+    // }
 });
 
 MWF.xApplication.Selector.Group.ItemSelected = new Class({
@@ -155,27 +205,77 @@ MWF.xApplication.Selector.Group.ItemSelected = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
-        this.selector.orgAction.listPersonNested(this.data.id, function(json){
-            this.textNode.set("text", this.textNode.get("text")+" ("+json.data.length+")");
-            var usersText = "";
-            json.data.each(function(item){
-                usersText+=item.name+", ";
-            }.bind(this));
+        this.node.addEvent("mouseover", function () {
+            if( !this.detailLoaded ){
+                o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
+                    groupList: [this.data.id]
+                }, function(json){
+                    debugger;
+                    var d = json.data[0];
+                    var text = "";
+                    if( d.personList && d.personList.length ){
+                        text += MWF.xApplication.Selector.LP.person + ": " + d.personList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
 
-            var node = new Element("div", {"styles": {"max-width": "300px"}, "text": usersText});
+                    if( d.identityList && d.identityList.length ){
+                        text += MWF.xApplication.Selector.LP.identity + ": " + d.identityList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
 
-            if (!Browser.Platform.ios){
-                this.tooltip = new mBox.Tooltip({
-                    content: node,
-                    setStyles: {content: {padding: 15, lineHeight: 20}},
-                    attach: this.node,
-                    transition: 'flyin'
-                });
+                    if( d.unitList && d.unitList.length ){
+                        text += MWF.xApplication.Selector.LP.unit + ": " + d.unitList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
+
+                    if( d.groupList && d.groupList.length ){
+                        text += MWF.xApplication.Selector.LP.group + ": " + d.groupList.map(function(item){
+                            return item.split("@")[0]
+                        }.bind(this)).join(",")+ "\n";
+                    }
+
+                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
+
+                    if (!Browser.Platform.ios){
+                        this.tooltip = new mBox.Tooltip({
+                            content: node,
+                            setStyles: {content: {padding: 15, lineHeight: 20}},
+                            attach: this.node,
+                            transition: 'flyin'
+                        });
+                        this.tooltip.open()
+                    }
+
+                    this.detailLoaded = true;
+                }.bind(this))
             }
-
-            //this.textNode.set("title", usersText);
         }.bind(this));
     }
+    // loadSubItem: function(){
+    //     this.selector.orgAction.listPersonNested(this.data.id, function(json){
+    //         this.textNode.set("text", this.textNode.get("text")+" ("+json.data.length+")");
+    //         var usersText = "";
+    //         json.data.each(function(item){
+    //             usersText+=item.name+", ";
+    //         }.bind(this));
+    //
+    //         var node = new Element("div", {"styles": {"max-width": "300px"}, "text": usersText});
+    //
+    //         if (!Browser.Platform.ios){
+    //             this.tooltip = new mBox.Tooltip({
+    //                 content: node,
+    //                 setStyles: {content: {padding: 15, lineHeight: 20}},
+    //                 attach: this.node,
+    //                 transition: 'flyin'
+    //             });
+    //         }
+    //
+    //         //this.textNode.set("title", usersText);
+    //     }.bind(this));
+    // }
 });
 
 

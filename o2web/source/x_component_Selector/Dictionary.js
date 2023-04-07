@@ -8,7 +8,7 @@ MWF.xApplication.Selector.Dictionary = new Class({
         "title": "",
         "values": [],
         "names": [],
-        "appType" : ["process","cms"],
+        "appType" : ["service","process","cms","portal"],
         "expand": false,
         "forceSearchInItem" : true
     },
@@ -25,19 +25,41 @@ MWF.xApplication.Selector.Dictionary = new Class({
             var container = new Element("div").inject(this.itemAreaNode);
 
             var action;
-            if( type === "process" ){
-                action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
-            }else if( type === "cms" ){
-                action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
+            // if( type === "process" ){
+            //     action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+            // }else if( type === "cms" ){
+            //     action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
+            // }
+            switch (type) {
+                case "process":
+                    action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+                    break;
+                case "cms":
+                    action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+                    break;
+                case "portal":
+                    action = o2.Actions.load("x_portal_assemble_designer").DictAction.listPaging;
+                    break;
+                case "service":
+                    action = o2.Actions.load("x_program_center").DictAction.listPaging;
+                    break;
+
             }
 
             var json = {};
             var array = [];
             action(1, 1000, {}, function( dictionaryJson ) {
                 dictionaryJson.data.each(function (dictionary) {
-                    var appName = dictionary.appName || dictionary.applicationName;
-                    var appId = dictionary.appId || dictionary.application;
-                    var appAlias = dictionary.appAlias || dictionary.applicationAlias;
+                    var appName, appId, appAlias;
+                    if( type === "service" ){
+                        appName = "service";
+                        appId = "service";
+                        appAlias = "service";
+                    }else{
+                         appName = dictionary.appName || dictionary.applicationName;
+                         appId = dictionary.appId || dictionary.application;
+                         appAlias = dictionary.appAlias || dictionary.applicationAlias;
+                     }
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,
@@ -70,14 +92,28 @@ MWF.xApplication.Selector.Dictionary = new Class({
 
                 if( this.options.appType.length === 1 ){
                     array.each( function (data) {
-                        var category = this._newItemCategory(data, this, container);
+                        if( type === "service" ){
+                            data.dictionaryList.each(function (d) {
+                                var item = this._newItem(d, this, container, 1);
+                            }.bind(this));
+                        }else{
+                            var category = this._newItemCategory(data, this, container);
+                        }
                     }.bind(this))
                 }else{
-                    var category = this._newItemCategory({
-                        name: MWF.xApplication.Selector.LP.appType[type],
-                        id: type,
-                        applicationList: array
-                    }, this, container);
+                    if( type === "service" ) {
+                        var category = this._newItemCategory({
+                            name: MWF.xApplication.Selector.LP.appType[type],
+                            id: type,
+                            dictionaryList: array[0].dictionaryList
+                        }, this, container);
+                    }else{
+                        var category = this._newItemCategory({
+                            name: MWF.xApplication.Selector.LP.appType[type],
+                            id: type,
+                            applicationList: array
+                        }, this, container);
+                    }
                 }
             }.bind(this))
         }.bind(this));

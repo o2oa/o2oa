@@ -1,0 +1,29 @@
+<div>
+    {{if $.data.length}}
+    {{each $.data}}
+    <div class="listItem listItem_tile" styles="tileNode" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem;">
+        <div class="tileItem">
+            <div class="selectFlag selectFlag_tile" style="display: none">
+                <div class="selectFlagArea" data-o2-events="click:selectFile:{{$.id}}">
+                    <div class="selectFlagIcon" style="margin-left:0"></div>
+                </div>
+            </div>
+            <div class="tileItemIcon" data-o2-events="click:open:{{$.id}}">
+                <img class="{{$.id}}" src="../x_file_assemble_control/jaxrs/file/{{$.picId}}/download/stream">
+            </div>
+            <div class="tileItemTitle">
+                {{$.title}}
+            </div>
+        </div>
+    </div>
+    {{end each}}
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{$.lp.noFile}}
+        </div>
+    </div>
+    {{end if}}
+</div>

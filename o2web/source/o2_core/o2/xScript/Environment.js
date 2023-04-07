@@ -3717,7 +3717,7 @@ MWF.xScript.Environment = function(ev){
          *   "column" : column, //（string）可选，内容管理应用（栏目）的名称、别名或ID
          *   "category" : category, //（string）可选，要创建的文档所属的分类的名称、别名或ID
          *   "data" : data, //（json object）可选，创建文档时默认的业务数据
-         *   "identity" : identity, //（string）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         *   "identity" : identity, //（string | Array）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          *   "callback" : callback, //（funcation）可选，文档创建后的回调函数。
          *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
          *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
@@ -3727,7 +3727,7 @@ MWF.xScript.Environment = function(ev){
          * }</code></pre>
          * @param {String} [category] - 要创建的文档所属的分类的名称、别名或ID
          * @param {Object} [data] - 创建文档时默认的业务数据
-         * @param {String} [identity] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {String} [identity | Array] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback] - 文档创建后的回调函数
          * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false
          * @param {Boolean} [latest] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
@@ -3808,7 +3808,7 @@ MWF.xScript.Environment = function(ev){
          * @param {String} app  - 流程应用的名称、别名或ID。
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
-         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。

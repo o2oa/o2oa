@@ -96,7 +96,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "value": "Value",
         "columnValue": "Column Value",
         "contain": "Contain",
-        "from": "from"
+        "from": "from",
+        "in": "contain"
     },
     "delete_filterItem_title": "Confirm Delete Filter Condition",
     "delete_filterItem": "Are you sure you want to delete the current filter?",

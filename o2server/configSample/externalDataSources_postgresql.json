@@ -3,6 +3,7 @@
 		"url" : "jdbc:postgresql://localhost:5432/X",
 		"username" : "postgres",
 		"password" :"password",
+		"schema" : "X",
 		"includes": [],
 		"excludes": [],
 		"enable" : true,
