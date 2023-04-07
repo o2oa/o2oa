@@ -1,6 +1,11 @@
 o2.widget = o2.widget || {};
 o2.widget.JsonParse = new Class({
-	initialize: function(json, jsonObjectNode, jsonStringNode){
+	Implements: [Options, Events],
+	options: {
+		"topkey": "JSON"
+	},
+	initialize: function(json, jsonObjectNode, jsonStringNode, options){
+		this.setOptions(options);
 		this.json = json;
 		this.jsonObjectNode = jsonObjectNode;
 		this.jsonStringNode = jsonStringNode;
@@ -43,7 +48,7 @@ o2.widget.JsonParse = new Class({
 			this.objectTree.load();
 
             var jsonStr = JSON.stringify(this.json,null,2);
-			var str = this.parseJsonObject(0, this.objectTree, "",  "JSON", this.json, true);
+			var str = this.parseJsonObject(0, this.objectTree, "",  this.options.topkey || "JSON", this.json, true);
 			// var jsonStr = str.substring(0, str.length-2);
 
 

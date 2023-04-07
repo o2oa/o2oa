@@ -191,6 +191,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "mustSelectFormStyle": "You must select a form style",
     "notValidJson": "Wrong json format",
     "mustSelectDict" : "Please select the data dictionary first",
+    "mustSelect": "Please select.",
 
     "imageClipper": "ImageEditor",
 

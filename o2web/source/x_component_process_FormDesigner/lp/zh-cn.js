@@ -189,6 +189,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "mustSelectFormStyle" : "必须选择一种表单样式",
     "notValidJson" : "错误的json格式",
     "mustSelectDict" : "请先选择数据字典",
+    "mustSelect": "请选择",
 
     "imageClipper" : "图片编辑",
 

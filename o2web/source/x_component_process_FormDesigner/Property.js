@@ -654,6 +654,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if (x<0) x = 0;
         if (y<0) y = 0;
 
+        var _self = this;
         var jsonParse;
         MWF.require("MWF.xDesktop.Dialog", function() {
             var dlg = new MWF.xDesktop.Dialog({
@@ -673,7 +674,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         "text": MWF.LP.process.button.ok,
                         "action": function () {
                             debugger;
-                            jsonParse;
+                            if( !jsonParse.objectTree.currentNode ){
+                                _self.designer.notice(MWF.APPFD.LP.mustSelect, "error");
+                                return;
+                            }else{
+                                var path = jsonParse.objectTree.currentNode.getPath();
+                                alert(path);
+                            }
                             this.close();
                         }
                     },
@@ -688,7 +695,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             dlg.show();
 
             MWF.require("MWF.widget.JsonParse", function(){
-                jsonParse = new MWF.widget.JsonParse(data, dlg.content.getFirst(), null);
+                jsonParse = new MWF.widget.JsonParse(data, dlg.content.getFirst(), null, {
+                    topkey: "root"
+                });
                 jsonParse.load();
             }.bind(this));
 
