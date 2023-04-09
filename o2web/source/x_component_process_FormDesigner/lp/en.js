@@ -408,6 +408,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dictPath": "Data Path",
         "valueKey": "Value attribute name",
         "textKey": "Text attribute name",
+        "valueColumn": "Value Column",
+        "textColumn": "Text Column",
         "dictKeyNote": "If an object array is returned, you need to configure the value attribute name or text attribute name",
         "copy": "Copy",
         "paste": "Paste",

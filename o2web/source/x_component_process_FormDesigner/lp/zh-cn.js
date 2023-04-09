@@ -406,6 +406,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "dictPath": "数据路径",
         "valueKey": "值属性名",
         "textKey": "文本属性名",
+        "valueColumn": "值列",
+        "textColumn": "文本列",
         "dictKeyNote": "如返回对象数组，需配置值属性名或文本属性名",
         "copy": "复制",
         "paste": "粘贴",
