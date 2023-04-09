@@ -500,12 +500,12 @@ o2.widget.Tree.Node = new Class({
 		delete this;
 	},
 	getPath: function () {
-		var node = this.node;
-		var text;
-		while(node){
-			text += "/" + node.optons.text;
+		var node = this;
+		var text = node.options.text;
+		while(node.parentNode){
+			text = node.parentNode.options.text + "/" + text;
 			node = node.parentNode;
 		}
-		return "root"+text;
+		return text;
 	}
 });

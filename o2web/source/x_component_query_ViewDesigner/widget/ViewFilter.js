@@ -25,6 +25,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
 
     },
     load: function(data){
+        this.setHtml();
         this.getInputNodes();
         this.createActionNode();
         //this.createAddNode();
@@ -87,6 +88,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScriptArea.load(v);
         }.bind(this));
     },
+    setHtml: function(){},
     getInputNodes: function(){
         debugger;
         this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");

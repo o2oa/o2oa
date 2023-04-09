@@ -137,6 +137,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSourceTestRestful();
                     this.loadSidebarPosition();
                     this.loadViewFilter();
+                    this.loadViewFilterWithTemplate();
                     this.loadStatementFilter();
                     this.loadDocumentTempleteSelect();
                     this.loadFieldConfig();
@@ -153,7 +154,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadSmartBISelect();
 
-                    this.loadDicionaryItem();
+                    this.loadDictionaryItem();
+                    this.loadQueryViewItem();
 
                     this.loadHelp();
 
@@ -597,7 +599,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
 
-
     loadSubformSelect: function(){
         var subformContainers = this.propertyContent.getElements(".MWFSubFormSelectContainer");
         if (subformContainers.length){
@@ -641,109 +642,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             });
         }.bind(this))
     },
-
-    loadJsonSelector: function(data, title){
-        var width = "770";
-        var height = "580";
-        width = width.toInt();
-        height = height.toInt();
-
-        var size = this.designer.content.getSize();
-        var x = (size.x-width)/2;
-        var y = (size.y-height)/2;
-        if (x<0) x = 0;
-        if (y<0) y = 0;
-
-        var _self = this;
-        var jsonParse;
-        MWF.require("MWF.xDesktop.Dialog", function() {
-            var dlg = new MWF.xDesktop.Dialog({
-                "title": title,
-                "style": "user",
-                "top": y,
-                "left": x - 20,
-                "fromTop": y,
-                "fromLeft": x - 20,
-                "width": width,
-                "height": height,
-                "html": "<div></div>",
-                "maskNode": this.designer.content,
-                "container": this.designer.content,
-                "buttonList": [
-                    {
-                        "text": MWF.LP.process.button.ok,
-                        "action": function () {
-                            debugger;
-                            if( !jsonParse.objectTree.currentNode ){
-                                _self.designer.notice(MWF.APPFD.LP.mustSelect, "error");
-                                return;
-                            }else{
-                                var path = jsonParse.objectTree.currentNode.getPath();
-                                alert(path);
-                            }
-                            this.close();
-                        }
-                    },
-                    {
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function () {
-                            this.close();
-                        }
-                    }
-                ]
-            });
-            dlg.show();
-
-            MWF.require("MWF.widget.JsonParse", function(){
-                jsonParse = new MWF.widget.JsonParse(data, dlg.content.getFirst(), null, {
-                    topkey: "root"
-                });
-                jsonParse.load();
-            }.bind(this));
-
-        }.bind(this))
-    },
-    loadDicionaryItem: function(){
-        var dictItems = this.propertyContent.getElements(".MWFDictionaryItemSelect");
-        dictItems.each(function(node) {
-            var title = node.get("title");
-            var name = node.get("name");
-
-            var addNode = new Element("div", {"styles": this.form.css.propertyAddNode}).inject(node, "before");
-            addNode.addEvent("click", function(e) {
-                var dictField = node.dataset["dict"];
-                if( !this.data[dictField] || !this.data[dictField].length ){
-                    this.designer.notice(MWF.APPFD.LP.mustSelectDict, "error");
-                    return;
-                }
-                var dict = this.data[dictField][0];
-
-                var json = this.data[name];
-                if (!json) json = {};
-
-                var p;
-                switch (dict.appType) {
-                    case "process":
-                        p = o2.Actions.load("x_processplatform_assemble_surface").ApplicationDictAction.getData(dict.id, dict.appId);
-                        break;
-                    case "cms":
-                        p = o2.Actions.load("x_cms_assemble_control").AppDictAction.getData(dict.id, dict.appId);
-                        break;
-                    case "portal":
-                        p = o2.Actions.load("x_portal_assemble_surface").DictAction.getData(dict.id, dict.appId);
-                        break;
-                    case "service":
-                        p = o2.Actions.load("x_program_center").DictAction.getData(dict.id);
-                        break;
-                }
-                p.then(function (json) {
-                    this.loadJsonSelector(json.data, title);
-                }.bind(this))
-            }.bind(this))
-
-        }.bind(this))
-    },
-
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
         this.subforms = null;
         var select = new Element("select").inject(node);
@@ -1009,6 +907,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
                 new MWF.xApplication.query.ViewDesigner.widget.ViewFilter(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
+                    "onChange": function(ids){
+                        var data = this.getData();
+                        _slef.changeJsonDate(["filterList"], data.data);
+                        _slef.checkHistory("filterList", oldValue, data.data);
+                        oldValue = Array.clone(data.data);
+                        //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
+    },
+    loadViewFilterWithTemplate: function(){
+        var nodes = this.propertyContent.getElements(".MWFViewFilterWithTemplate");
+        var filtrData = this.data.filterList;
+        var oldValue = Array.clone(filtrData || []);
+        nodes.each(function(node){
+            MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilterWithTemplate", function(){
+                var _slef = this;
+                new MWF.xApplication.query.ViewDesigner.widget.ViewFilterWithTemplate(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
                     "onChange": function(ids){
                         var data = this.getData();
                         _slef.changeJsonDate(["filterList"], data.data);
@@ -2268,6 +2185,162 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
         }.bind(this));
     },
+
+    loadDictionaryItem: function(){
+        var dictItemContainers = this.propertyContent.getElements(".MWFDictionaryItemContainer");
+        dictItemContainers.each(function (container) {
+
+            var dictNode = container.getElement(".MWFDictionaryNode");
+            var dictItemNode = container.getElement(".MWFDictionaryItemNode");
+
+            var dictItemSelect;
+            MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+                var data = this.data[dictNode.get("name")];
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(dictNode, this.form.designer, {
+                    "type": "Dictionary",
+                    "count": dictNode.dataset["count"] || 0,
+                    "names": typeOf(data) === "array" ? data : [data],
+                    "onChange": function (ids) {
+                        var data = [];
+                        var name = dictNode.get("name");
+                        if (ids.length > 0) {
+                            // var d = ids[0].data;
+                            ids.each(function (id) {
+                                var d = id.data;
+                                data.push({
+                                    "type": "dictionary",
+                                    "name": d.name,
+                                    "alias": d.alias,
+                                    "id": d.id,
+                                    "appName": d.appName || d.applicationName,
+                                    "appAlias": d.appAlias || d.applicationAlias,
+                                    "appId": d.appId,
+                                    "application": d.application,
+                                    "appType": d.appType
+                                })
+                            });
+                        }
+                        var oldValue = this.data[name];
+                        this.data[name] = data;
+                        this.changeData(name, dictNode, oldValue);
+
+                        changeDictItemValue("");
+                        dictItemSelect.reload();
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            var changeDictItemValue = function (newValue) {
+                debugger;
+                var name = dictItemNode.get("name");
+                var oldValue = this.data[name];
+                this.data[name] = newValue;
+                this.checkHistory(name, oldValue, newValue);
+            }.bind(this);
+
+            MWF.xDesktop.requireApp("process.FormDesigner", "widget.DictItemSelector", function() {
+                dictItemSelect = new MWF.xApplication.process.FormDesigner.widget.DictItemSelector(dictItemNode, this, {
+                    onChange: function (newValue) {
+                        changeDictItemValue( newValue );
+                    }.bind(this)
+                });
+            }.bind(this))
+        }.bind(this));
+    },
+
+    loadQueryViewItem: function(){
+        var containers = this.propertyContent.getElements(".MWFQueryViewItemContainer");
+        containers.each(function (container) {
+
+            var viewNode = container.getElement(".MWFQueryViewNode");
+
+            var viewColumnSelects = container.getElements(".MWFViewColumnSelect");
+            viewColumnSelects.each(function (select) {
+                select.addEvent("change", function () {
+                    var name = select.get("name");
+                    var oldValue = this.data[name];
+                    this.data[name] = select.options[select.selectedIndex].value;
+                    this.checkHistory(name, oldValue, this.data[name]);
+                }.bind(this))
+            }.bind(this));
+
+            MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(viewNode, this.form.designer, {
+                    "type": "QueryView",
+                    "count": 1,
+                    "names": [this.data[viewNode.get("name")]],
+                    "onChange": function (ids) {
+                        var name = viewNode.get("name");
+                        var oldValue = this.data[name];
+                        if (ids[0]) {
+                            var view = ids[0].data;
+                            var data = {
+                                "name": view.name,
+                                "alias": view.alias,
+                                "id": view.id,
+                                "appName": view.appName || view.applicationName || view.query,
+                                "appId": view.appId,
+                                "application": view.application || view.query
+                            };
+                            this.data[name] = data;
+                        } else {
+                            this.data[name] = null;
+                        }
+                        this.checkHistory(name, oldValue, this.data[name]);
+
+                        loadSelectsOptions( function () {
+                            changSelectsIndex(0);
+                        }.bind(this));
+
+
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            var changSelectsIndex = function (idx) {
+                viewColumnSelects.each(function (select) {
+                    select.selectedIndex = idx;
+                    select.fireEvent("change");
+                }.bind(this))
+            }.bind(this);
+
+            var loadSelectsOptions = function ( callback ) {
+                var name = viewNode.get("name");
+                var view = this.data[name];
+                if( view && view.id ){
+                    MWF.Actions.get("x_query_assemble_designer").getView(view.id, function(json){
+                        var viewData = JSON.decode(json.data.data);
+
+                        var columnList = viewData.selectEntryList || viewData.selectList;
+                        viewColumnSelects.each(function (select) {
+                            select.empty();
+
+                            var sname = select.get("name");
+                            new Element("option", { value: "" }).inject( select );
+                            columnList.each(function ( column ) {
+                                new Element("option", {
+                                    value: column.name,
+                                    text: column.title || column.name,
+                                    checked: this.data[sname] === column.name
+                                }).inject( select );
+                            }.bind(this))
+                        }.bind(this))
+
+                        if(callback)callback();
+                    }.bind(this));
+                }else{
+                    viewColumnSelects.each(function (select) {
+                        select.empty();
+                    });
+                    if(callback)callback();
+                }
+            }.bind(this)
+
+            loadSelectsOptions();
+
+        }.bind(this));
+    },
+
     loadDictionaryIncluder : function(){
         var nodes = this.propertyContent.getElements(".MWFDictionaryIncluder");
         if (nodes.length){

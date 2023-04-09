@@ -55,6 +55,55 @@
         "overflow": "hidden",
         "text-overflow": "ellipsis",
         "white-space": "nowrap"
-    }
+    },
 
+  "editTable": {
+
+  },
+  "editTableTitleWithoutWith": {
+    "font-weight": "bold",
+    "font-size": "12px",
+    "height": "24px",
+    "line-height": "24px",
+    "border-bottom": "1px dashed #CCC"
+  },
+  "editTableTitle": {
+    "min-width": "70px",
+    "max-width": "100px",
+    "width": "20%",
+    "font-weight": "bold",
+    "font-size": "12px",
+    "height": "24px",
+    "line-height": "24px",
+    "border-bottom": "1px dashed #CCC"
+  },
+  "editTableValue": {
+    "height": "24px",
+    "line-height": "24px",
+    "border-bottom": "1px dashed #CCC"
+  },
+  "editTableInput": {
+    "width": "98%",
+    "border-top": "1px solid #DDD",
+    "border-left": "1px solid #DDD",
+    "border-bottom": "1px solid #EEE",
+    "border-right": "1px solid #EEE"
+  },
+  "editTableInputNoWidth": {
+    "border-top": "1px solid #DDD",
+    "border-left": "1px solid #DDD",
+    "border-bottom": "1px solid #EEE",
+    "border-right": "1px solid #EEE"
+  },
+  "editTableTextarea": {
+    "width": "98%",
+    "height": "100px",
+    "border-top": "1px solid #DDD",
+    "border-left": "1px solid #DDD",
+    "border-bottom": "1px solid #EEE",
+    "border-right": "1px solid #EEE"
+  },
+  "editTableRadio": {
+    "display": "inline-block"
+  }
 }

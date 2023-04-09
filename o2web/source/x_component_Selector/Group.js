@@ -151,7 +151,7 @@ MWF.xApplication.Selector.Group.Item = new Class({
                         }.bind(this)).join(",")+ "\n";
                     }
 
-                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
+                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-wrap"}, "text": text});
 
                     if (!Browser.Platform.ios){
                         this.tooltip = new mBox.Tooltip({
