@@ -1880,9 +1880,12 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.makeLnk();
     },
     addLnk: function(dragTargetLnk, dragPosition){
+        debugger;
+
         lnkdata = {
             "name": this.data.path,
             "title": this.data.title,
+            "appName": this.data.name,
             "iconData": this.data.iconData || null,
             "icon": this.iconData || null,
             "appType": null,
@@ -2853,6 +2856,7 @@ o2.xDesktop.Default.Lnk = new Class({
         this.load(targetLnk, position);
     },
     load: function(targetLnk, position){
+        debugger;
         this.node = new Element("div.layout_menu_lnk_item");
         if (targetLnk){
             if (!position) position = "before";
@@ -3065,7 +3069,7 @@ o2.xDesktop.Default.Lnk = new Class({
             }else if (this.data.iconPath){
                 icon = this.data.iconPath;
             }else {
-                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.title, function(json){
+                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.appName || this.data.title, function(json){
                     if (json.data && json.data.iconData){
                         icon = "data:image/png;base64,"+json.data.iconData+"";
                     }else if (json.data && json.data.iconPath){

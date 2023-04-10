@@ -24,7 +24,6 @@ class ActionReject extends BaseAction {
 				ListTools.subtractWithProperty(meeting, "acceptPersonList", effectivePerson.getDistinguishedName());
 				emc.check(meeting, CheckPersistType.all);
 				emc.commit();
-				// this.notifyMeetingRejectMessage(business, meeting, meeting.getApplicant());
 				MessageFactory.meeting_reject(effectivePerson.getDistinguishedName(), meeting);
 			}
 			Wo wo = new Wo();

@@ -106,8 +106,8 @@
                     }
                 }
 
-                if ( enterId ){
-                    if( token ){
+                //if ( enterId ){
+                    if( enterId && token ){
                         loginCallback( token, enterId )
                     }else{
                         //回调方法
@@ -120,9 +120,9 @@
                         }
                         feixinGetTokenFun();
                     }
-                }else{
-                    $("ssoerror").set("html","单点失败，enterId为空！" + "<br/>地址：" + window.location).show();
-                }
+                // }else{
+                //     $("ssoerror").set("html","单点失败，enterId为空！" + "<br/>地址：" + window.location).show();
+                // }
             };
 
 

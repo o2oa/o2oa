@@ -1264,7 +1264,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 }.bind(this));
                 if (this.view) {
                     var flag = true;
-                    if (this.data.type !== "select") flag = false;
+                    // if (this.data.type !== "select") flag = false;
+                    if( this.data.viewEnable === false )flag = false;
                     if (this.data.format === "script" && !this.data.scriptText) flag = false;
                     if (this.data.format === "jpql" && !this.data.data) flag = false;
                     if (this.data.format === "sql" && !this.data.sql) flag = false;

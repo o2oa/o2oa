@@ -620,7 +620,7 @@ MWF.xDesktop.WebSocket = new Class({
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingAccept;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
-            content = content.replace(/{person}/g, MWF.name.cn(data.person));
+            content = content.replace(/{person}/g, MWF.name.cn(data.body.fromPerson));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
             content = content.replace(/{subject}/g, o2.txt(meeting.subject));
@@ -649,7 +649,7 @@ MWF.xDesktop.WebSocket = new Class({
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingReject;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
-            content = content.replace(/{person}/g, MWF.name.cn(data.person));
+            content = content.replace(/{person}/g, MWF.name.cn(data.body.fromPerson));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
             content = content.replace(/{subject}/g, o2.txt(meeting.subject));

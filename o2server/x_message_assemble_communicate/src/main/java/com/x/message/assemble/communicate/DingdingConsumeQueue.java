@@ -38,37 +38,34 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				LOGGER.warn("没有接收钉钉消息的人员:{}.", message.getPerson());
 				return;
 			}
-			if (needTransferLink(message.getType())) {
-				String openUrl = getOpenUrl(message);
-				if (StringUtils.isNotEmpty(openUrl)) {
+			String openUrl = getOpenUrl(message);
+			if (needTransferLink(message.getType()) && StringUtils.isNotEmpty(openUrl)) {
 					// dingtalk://dingtalkclient/action/openapp?corpid=免登企业corpId&container_type=work_platform&app_id=0_{应用agentid}&redirect_type=jump&redirect_url=跳转url
-					String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="
-							+ Config.dingding().getCorpId() + "&container_type=work_platform&app_id=0_"
-							+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
-							+ URLEncoder.encode(openUrl, DefaultCharset.name);
-					LOGGER.info("钉钉pc 打开消息 url：{}", ()-> dingtalkUrl);
-					// 内容管理
-					String cardTitle = cardTitle(message.getTitle()); // message.getTitle() 使用uuid  消息重发的问题
-					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
-							|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
-						String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
-						if (StringUtils.isEmpty(categoryName)) {
-							categoryName = "信息通知";
-						}
-						m.setActionCardMsg(cardTitle, "# 【"+categoryName+"】 \n " +message.getTitle(), dingtalkUrl);
-					} else {
-						String processName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("processName", message.getBody());
-						if (StringUtils.isEmpty(processName)) {
-							processName = "工作通知";
-						}
-
-						m.setActionCardMsg(cardTitle, "# 【"+processName+"】 \n " + message.getTitle(), dingtalkUrl);
+				String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="
+						+ Config.dingding().getCorpId() + "&container_type=work_platform&app_id=0_"
+						+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
+						+ URLEncoder.encode(openUrl, DefaultCharset.name);
+				LOGGER.info("钉钉pc 打开消息 url：{}",  dingtalkUrl);
+				// 内容管理
+				String cardTitle = cardTitle(message.getTitle()); // message.getTitle() 使用uuid  消息重发的问题
+				if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+						|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+					String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
+					if (StringUtils.isEmpty(categoryName)) {
+						categoryName = "信息通知";
 					}
-//
+					m.setActionCardMsg(cardTitle, "# 【"+categoryName+"】 \n " +message.getTitle(), dingtalkUrl);
+				} else {
+					String processName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("processName", message.getBody());
+					if (StringUtils.isEmpty(processName)) {
+						processName = "工作通知";
+					}
+
+					m.setActionCardMsg(cardTitle, "# 【"+processName+"】 \n " + message.getTitle(), dingtalkUrl);
+				}
 //					m.getMsg().setMsgtype("markdown");
 //					m.getMsg().getMarkdown().setTitle(message.getTitle());
 //					m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
-				}
 			} else {
 				m.setTextMsg(message.getTitle());
 			}
