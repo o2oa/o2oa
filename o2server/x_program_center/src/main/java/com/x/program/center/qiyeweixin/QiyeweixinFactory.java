@@ -74,8 +74,11 @@ public class QiyeweixinFactory {
 	private void setDefaultMobileStr(User user) {
 		if (user != null && StringUtils.isNotEmpty(user.getUserid()) && StringUtils.isEmpty(user.getMobile())) {
 			String userId = user.getUserid();
-			if (userId.length() < 11) {
+			if (userId.length() < 11) { // 用户名太短的情况
 				userId = String.format("%11s", userId).replace(" ","0");
+			}
+			if (userId.length() > 11) { // 用户名超长的情况
+				userId = userId.substring(userId.length() - 11); // 截取最后的11位
 			}
 			logger.debug("这里是补全11位，{}.", userId);
 			user.setMobile(userId);
