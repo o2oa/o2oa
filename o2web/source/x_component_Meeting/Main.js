@@ -119,6 +119,9 @@ MWF.xApplication.Meeting.Main = new Class({
 
 
     },
+    isOnlineAvailable: function(){
+        return true;
+    },
     setEvent: function(){
         //this.topMenu.addEvent("mouseover", function(){this.showMenu();}.bind(this));
         //this.topMenu.addEvent("mouseout", function(){this.hideMenu();}.bind(this));
@@ -868,7 +871,17 @@ MWF.xApplication.Meeting.Config = new Class({
 
                 "<div class='line'></div>"+
                 "<div class='configTitle'>"+this.lp.config.meetingType +"</div>" +
-                "<div><textarea name='typeList' style='width: 270px;height: 120px;'>"+ d.typeList.join("\n") +"</textarea></div>"
+                "<div><textarea name='typeList' style='width: 270px;height: 120px;'>"+ d.typeList.join("\n") +"</textarea></div>" +
+
+                "<div class='line'></div>"+
+                "<div class='configTitle'>"+this.lp.config.apiAddress +"</div>" +
+                "<div><textarea name='apiAddress' style='width: 270px;height: 60px;word-break:break-all;'>"+ (d.api || "") +"</textarea></div>"+
+
+                "<div class='configTitle'>"+this.lp.config.key +"</div>" +
+                "<div><input name='key' style='width: 270px;height: 26px;' value='"+(d.key || "")+"'></input></div>"+
+
+                "<div class='configTitle'>"+this.lp.config.secret +"</div>" +
+                "<div><input name='secret' style='width: 270px;height: 26px;' value='"+(d.secret || "")+"'></input></div>";
 
         }
 

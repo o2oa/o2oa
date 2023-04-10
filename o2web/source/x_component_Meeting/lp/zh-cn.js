@@ -247,7 +247,11 @@ MWF.xApplication.Meeting.LP = {
         "viewCustomName" : "视图显示名称",
         "mobileCreateEnable" : "移动端是否能新建会议",
         "mobileCreateEnableOptions" : ["是","否"],
-        "meetingType":"会议类型（每行一种）"
+        "meetingType":"会议类型（每行一种）",
+
+        "apiAddress":"网络会议api地址",
+        "key":"key",
+        "secret":"secret"
     },
     "nextActivity": "下一个活动：",
     "nextUser": "处理人：",

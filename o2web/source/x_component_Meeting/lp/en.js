@@ -247,7 +247,11 @@ MWF.xApplication.Meeting.LP = {
         "viewCustomName": "Display name",
         "mobileCreateEnable": "Whether the mobile terminal can create a new meeting",
         "mobileCreateEnableOptions": ["Yes","No"],
-        "meetingType":"Meeting Type (one per line)"
+        "meetingType":"Meeting Type (one per line)",
+
+        "apiAddress": "web conferencing api address",
+        "key": "key",
+        "secret": "secret"
     },
     "nextActivity": "Next Activity:",
     "nextUser": "Processor:",
