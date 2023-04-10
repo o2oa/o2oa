@@ -3619,7 +3619,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				action: {
 					"value": "修改", type: "button", className: "filterButton", event: {
 						click: function (e) {
-							var result = this.form.getResult(false, null, false, true, false);
+							var result = this.form.getResult(false, null, false, false, false);
 
 							var fieldName = result["fieldName"];
 							var fieldType = result["fieldType"];
