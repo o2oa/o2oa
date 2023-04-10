@@ -60,6 +60,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
 
     "mastInputParameter": "Please enter a parameter",
     "pathExecption": "The path is written as \"table alias. Field name\", the format is incorrect",
+    "modifyViewFilterNote": "The statement format has changed, please modify the filter conditions",
 
     "systemTable":"System Table",
     "customTable":"self-built table",
@@ -99,8 +100,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "hidden": "Hidden",
         "orderNumber":"Order Number",
 
-        "parameter":"Parameter",
-        "parameterNote":"Note: The parameter corresponds to the where condition in the query statement and the total number statement like \":field\", fill in \"field\".",
+        "parameter":"Parameter","parameterNote":"Note: Corresponds to the parameters in the query statement and total statement;\nFor example, where condition of \":field\", fill in \"field\";\nFor example, where condition of \"?1\", Fill in \"?1\".",
         "pathNote":"Note: The path is written as \"table alias. field name\", such as: o.title",
         "userInput":"User Input",
 

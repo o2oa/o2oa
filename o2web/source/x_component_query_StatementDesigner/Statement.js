@@ -479,6 +479,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             className,
             d.entityCategory,
             function(json){
+                json = Object.clone(json);
                 var option = new Element("option", { "text": this.designer.lp.fileldSelectNote, "value": "" }).inject(this.fieldSelect);
                 option.store("type", d.entityCategory);
                 option.store("tableName", className );
@@ -998,6 +999,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 this.setDynamicTableName();
             }
             this.loadFieldSelect();
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.changeStatementType();
+            this.checkViewFilter();
         }.bind(this));
         this.entityCategorySelect.addEvent("change", function (e) {
             var entityCategory = e.target.options[e.target.selectedIndex].value;
@@ -1315,6 +1318,23 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     getColumnDataPath: function () {
         return this.columnDataPathList || [];
     },
+    checkViewFilter: function(){
+        var noteFlag = false;
+        if (typeOf(this.viewJson) === "object" && this.viewJson.data && this.viewJson.data.customFilterList) {
+            this.viewJson.data.customFilterList.each(function (item) {
+                if (item.path) {
+                    if (["sql", "sqlScript"].contains(this.data.format) && item.path.contains(".")) {
+                        noteFlag = true;
+                    }
+                    if (!["sql", "sqlScript"].contains(this.data.format) && !item.path.contains(".")) {
+                        noteFlag = true;
+                    }
+                }
+            }.bind(this));
+            if (noteFlag) this.designer.notice(MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info");
+        }
+        return !noteFlag;
+    },
     execute: function (success, failure) {
         var json = this.jsonEditor.editor.getValue();
         var o = JSON.parse(json);
@@ -1384,6 +1404,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         debugger;
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
+            return false;
+        }
+
+        if( !this.checkViewFilter() ){
             return false;
         }
 

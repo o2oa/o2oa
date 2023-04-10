@@ -167,6 +167,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
         this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
+        this.pathNote = this.inputAreaNode.getElement(".pathNote_vf");
+
+        if( this.pathNote && this.statementData && ["sql", "sqlScript"].contains(this.statementData.format)  ){
+            this.pathNote.hide();
+        }
+
         this.pathInputSelect = this.inputAreaNode.getElement(".pathInputSelect_vf");
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
@@ -378,22 +384,48 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //     }
         // }
     },
+    changeStatementType: function(){
+        if( !this.statementData )return;
+        this.setPathInputSelectOptions();
+        if( this.pathNote  ){
+            if( ["sql", "sqlScript"].contains(this.statementData.format) ){
+                this.pathNote.hide();
+            }else{
+                this.pathNote.show();
+            }
+        }
+
+        var noteFlag;
+        this.items.each(function (item) {
+            if( item.data.path ){
+                if( ["sql", "sqlScript"].contains(this.statementData.format) && item.data.path.contains(".") ){
+                    noteFlag = true;
+                }
+                if( !["sql", "sqlScript"].contains(this.statementData.format) && !item.data.path.contains(".") ){
+                    noteFlag = true;
+                }
+            }
+        }.bind(this));
+        if( noteFlag )this.app.notice( MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info" );
+    },
     setPathInputSelectOptions : function(){
-        debugger;
         this.pathInputSelect.empty();
         if( !this.statementData )return;
         var d = this.statementData;
+        var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
         var fun = function ( tableName ) {
             o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
                 d.entityCategory === "dynamic" ? d.table : d.entityClassName,
                 d.entityCategory,
                 function(json){
+                    json = Object.clone(json);
                     var ps = this.pathInput.get("value").split(".");
                     var p = ps[1] ? ps[1] : ps[0];
                     var option = new Element("option", { "text": "", "value": "" }).inject(this.pathInputSelect);
                     option.store("type", d.entityCategory);
                     option.store("tableName", tableName );
                     (json.data||[]).each( function ( field ) {
+                        if( pre )field.name = pre + field.name;
                         var option = new Element("option", {
                             "text": field.name + ( field.description ? ("-" + field.description) : "" ),
                             "value": field.name,
@@ -709,7 +741,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             });
             return false;
         }
-        if (!data.path || data.path.indexOf(".")<1 ) {
+        if (!data.path || ( !["sql", "sqlScript"].contains(this.statementData.format) && data.path.indexOf(".")<1 ) ) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
             new Element("div", {
