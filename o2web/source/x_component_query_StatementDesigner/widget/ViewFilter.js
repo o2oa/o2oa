@@ -271,18 +271,22 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 this.titleInput.set("value", (field.description || field.name).replace(/\./g,""));
                 if( field.name ){
                     var path = this.pathInput.get("value");
-                    if( path.indexOf(".") > -1 ){
-                        path = path.split(".")[0] +"."+ field.name;
-                    }else{
-                        var alias;
-                        var tableName = option.retrieve("tableName");
-                        if( d.data.indexOf(tableName) > -1){
-                            var str = d.data.split(tableName)[1].trim();
-                            if( str.indexOf(" ") )alias = str.split(" ")[0];
+                    if( !["sql", "sqlScript"].contains(d.format) ){
+                        if( path.indexOf(".") > -1 ){
+                            path = path.split(".")[0] +"."+ field.name;
+                        }else{
+                            var alias;
+                            var tableName = option.retrieve("tableName");
+                            if( d.data.indexOf(tableName) > -1){
+                                var str = d.data.split(tableName)[1].trim();
+                                if( str.indexOf(" ") )alias = str.split(" ")[0];
+                            }
+                            path = alias ? ( alias +"."+ field.name ) : field.name;
                         }
-                        path = alias ? ( alias +"."+ field.name ) : field.name;
+                        this.pathInput.set("value", path);
+                    }else{
+                        this.pathInput.set("value", field.name);
                     }
-                    this.pathInput.set("value", path);
                 }
                 if( field.type ){
                     var t;
