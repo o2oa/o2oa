@@ -147,7 +147,9 @@ class AttendanceDetailAnalyseSignProxy3 {
 				if( morningOffdutyTime != null ){//打卡签退，上午不判断是否早退
 					long minutes = 0L;
 					//上午已经签退了，现在计算上午的工作时长
-					minutes = dateOperation.getMinutes( onDutyTime, morningOffdutyTime);
+					if (onDutyTime != null ) {
+						minutes = dateOperation.getMinutes(onDutyTime, morningOffdutyTime);
+					}
 					detail.setWorkTimeDuration( minutes );
 					logger.debug( debugger, "直接计算上午工作时长, 从"+ onDutyTime +"到" + morningOffdutyTime + " ：minutes=" + minutes + "分钟。" );
 				}else{
@@ -156,7 +158,7 @@ class AttendanceDetailAnalyseSignProxy3 {
 						logger.debug( debugger, "上午还未结束，先不分析结果。" );
 					}else{
 						logger.debug( debugger, "员工上午未签退，属于异常状态，缺卡" );
-						if( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ){
+						if(   isSelfHoliday_Afternoon || isNotWorkDay ){
 							logger.debug( debugger, "请假或者非工作日不计考勤，不需要打卡，不算异常状态" );
 //							detail.setLeaveEarlierTimeDuration( 0L );
 //							detail.setIsLeaveEarlier( false );
@@ -210,7 +212,7 @@ class AttendanceDetailAnalyseSignProxy3 {
 					logger.debug( debugger, "早退计时时间：leaveEarlyStartTime=" + leaveEarlyStartTime );
 					if( leaveEarlyStartTime != null && offDutyTime.before( leaveEarlyStartTime )){
 						logger.debug( debugger, "下午打卡时间早于早退计时时间" );
-						if( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ){
+						if(  isSelfHoliday_Afternoon || isNotWorkDay ){
 							logger.debug( debugger, "请假、休息天不计考勤，不算出勤，不算早退" );
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
@@ -234,12 +236,10 @@ class AttendanceDetailAnalyseSignProxy3 {
 //						}
 //					}
 					//下午已经签退了，现在计算全天的工作时长
-					if( afternoonStartTime != null ){ //已经配置过了下午上班时间
-						minutes = dateOperation.getMinutes( afternoonStartTime, offDutyTime);
-						logger.debug( debugger, "计算下午工作时长, 从"+ afternoonStartTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
-						logger.debug( debugger, "直接计算全天工作时长, "+ detail.getWorkTimeDuration() +"+" + minutes + "=" + detail.getWorkTimeDuration() + minutes + "分钟。" );
-						detail.setWorkTimeDuration( detail.getWorkTimeDuration() + minutes );//记录上午的工作时长 + 下午工作时长
-					}
+					minutes = dateOperation.getMinutes( afternoonStartTime, offDutyTime);
+					logger.debug( debugger, "计算下午工作时长, 从"+ afternoonStartTime +"到" + offDutyTime + " ：minutes=" + minutes + "分钟。" );
+					logger.debug( debugger, "直接计算全天工作时长, "+ detail.getWorkTimeDuration() +"+" + minutes + "=" + detail.getWorkTimeDuration() + minutes + "分钟。" );
+					detail.setWorkTimeDuration( detail.getWorkTimeDuration() + minutes );//记录上午的工作时长 + 下午工作时长
 				}else{
 					//员工未签退：有两种情况，还没有到打卡时间，或者说没有打卡
 					//如果打卡是今天，但是今天还没有结束
@@ -249,7 +249,7 @@ class AttendanceDetailAnalyseSignProxy3 {
 						logger.debug( debugger, "今天还未结束，先不分析结果。" );
 					}else {
 						logger.debug( debugger, "员工下午未打卡，属于异常状态，缺卡" );
-						if( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ){
+						if(  isSelfHoliday_Afternoon || isNotWorkDay ){
 							logger.debug( debugger, "请假或者非工作日不计考勤，不需要打卡，不算异常状态" );
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
