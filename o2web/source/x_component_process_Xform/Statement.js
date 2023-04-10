@@ -34,11 +34,17 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 取消选中查询视图中的一条记录后执行。
+         * @since V8.0
+         * @event MWF.xApplication.process.Xform.Statement#unselect
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 打开查询视图中的一条记录后执行。
          * @event MWF.xApplication.process.Xform.Statement#openDocument，可以通过this.event得到打开的文档参数
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
     },
 
     _loadUserInterface: function(){
@@ -135,8 +141,11 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
                     this.fireEvent("loadView");
                     if(callback)callback();
                 }.bind(this),
-                "onSelect": function(){
-                    this.fireEvent("select");
+                "onSelect": function(item){
+                    this.fireEvent("select", [item]);
+                }.bind(this),
+                "onUnselect": function(item){
+                    this.fireEvent("unselect", [item]);
                 }.bind(this),
                 "onOpenDocument": function(options, item){
                     this.openOptions = {

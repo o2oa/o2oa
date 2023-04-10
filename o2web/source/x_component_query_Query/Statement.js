@@ -11,7 +11,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     initialize: function (container, json, options, app, parentMacro) {
         //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select、unselect
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
         //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
 
@@ -1115,6 +1115,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
@@ -1145,6 +1150,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("unselect", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");

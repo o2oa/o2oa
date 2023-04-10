@@ -358,7 +358,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
             // this.runTitleNode = this.areaNode.getElement(".o2_statement_statementRunTitleNode");
             this.runContentNode = this.areaNode.getElement(".o2_statement_statementRunContentNode");
+
             this.runJsonNode = this.runContentNode.getElement(".o2_statement_statementRunJsonNode");
+            this.runFilterNode = this.runContentNode.getElement(".o2_statement_statementRunFilterNode");
+            this.runPageNoInput = this.runContentNode.getElement(".o2_statement_statementRunPageNoInput");
+            this.runPageSizeInput = this.runContentNode.getElement(".o2_statement_statementRunPageSizeInput");
+
+
             this.runActionNode = this.runContentNode.getElement(".o2_statement_statementRunActionNode");
             this.runResultNode = this.runContentNode.getElement(".o2_statement_statementRunResultNode");
             // this.runDefaultNode = this.runContentNode.getElement(".o2_statement_statementRunDefaultContent");
@@ -874,19 +880,50 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             "css": this.path + this.options.style + "/statement.css",
             "html": this.path + "statementDesigner.html"
         }, {
-            "bind": {"lp": this.designer.lp, "data": this.data}
+            "bind": {"lp": this.designer.lp, "data": this.data},
+            "module": this
         }, function () {
             if (callback) callback();
         }.bind(this));
     },
+    addFilterSample: function(){
+        var filterList = this.filterListEditor.editor.getValue();
+        filterList = JSON.parse( filterList );
+        filterList.push({
+            "path": ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o.title",
+            "comparison":"like",
+            "value": ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o_title",
+            "formatType":"textValue"
+        });
+        this.filterListEditor.editor.setValue( JSON.stringify(filterList, null, 4) );
+
+        var parameter = this.jsonEditor.editor.getValue();
+        parameter = JSON.parse( parameter );
+        parameter[ ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o_title" ] = "%关于%";
+        this.jsonEditor.editor.setValue( JSON.stringify(parameter, null, 4) );
+
+    },
     loadStatementRunner: function () {
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {
-                "title": "JPQL",
+                "title": "parameter",
                 "option": {"mode": "json"}
             });
             this.jsonEditor.load(function () {
-                this.jsonEditor.editor.setValue(this.data.testParameters || "{}");
+                debugger;
+                var json = JSON.parse( this.data.testParameters || "{}" );
+                if( json.parameter )json = json.parameter;
+                this.jsonEditor.editor.setValue( JSON.stringify(json, null, 4) );
+            }.bind(this));
+
+            this.filterListEditor = new o2.widget.JavascriptEditor(this.runFilterNode, {
+                "title": "filterList",
+                "option": {"mode": "json"}
+            });
+            this.filterListEditor.load(function () {
+                var json = JSON.parse( this.data.testParameters || "{}" );
+                json = json.filterList || [];
+                this.filterListEditor.editor.setValue( JSON.stringify(json, null, 4) );
             }.bind(this));
         }.bind(this), false);
     },
@@ -1337,8 +1374,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         return !noteFlag;
     },
     execute: function (success, failure) {
-        var json = this.jsonEditor.editor.getValue();
-        var o = JSON.parse(json);
+        var json = this.jsonEditor.editor.getValue() || "{}";
+        var parameter = JSON.parse(json);
+
+        var filter = this.filterListEditor.editor.getValue() || "[]";
+        var filterList = JSON.parse(filter);
+
+        var pageNo = this.runPageNoInput.get("value").toInt();
+        var pageSize = this.runPageSizeInput.get("value").toInt();
 
         var mode = "data";
         // if (this.data.type === "select") {
@@ -1379,8 +1422,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 return false;
             }
         }
-        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50, {
-            parameter: o
+        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, pageNo || 1, pageSize || 50, {
+            parameter: parameter,
+            filterList: filterList
         }, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
@@ -1420,7 +1464,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // if (this.jpqlEditor) this.data.data = this.jpqlEditor.editor.getValue();
         // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
 
-        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+        var textJson = {};
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue());
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue());
+        this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -1457,7 +1504,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // if (this.jpqlEditor) this.data.data = this.jpqlEditor.editor.getValue();
         // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
 
-        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+        // if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+
+        var textJson = {};
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue());
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue());
+        this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
             //this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});

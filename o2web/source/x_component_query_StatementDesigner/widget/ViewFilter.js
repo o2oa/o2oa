@@ -147,8 +147,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScriptArea.load(v);
         }.bind(this));
     },
+    setHtml: function(){},
     getInputNodes: function () {
         debugger;
+        this.setHtml();
+
         this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");
         this.actionAreaNode = this.node.getElement(".actionAreaNode_vf");
         this.actionAreaNode.setStyles(this.css.actionAreaNode);
