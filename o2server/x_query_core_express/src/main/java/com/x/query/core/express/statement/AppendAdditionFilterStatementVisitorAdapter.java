@@ -99,16 +99,16 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
                     .append(TEXT_SPACE).append(TEXT_AND).append(TEXT_SPACE);
         }
         builder.append(TEXT_LEFTPARENTHESIS);
-        for (FilterEntry entry : runtime.getFilterList()) {
-            if (builder.length() > 1) {
+        for (int i = 0; i < runtime.getFilterList().size(); i++) {
+            FilterEntry entry = runtime.getFilterList().get(i);
+            if (i > 0) {
                 builder.append(TEXT_SPACE).append(entry.logic).append(TEXT_SPACE);
             }
             builder.append(pathWithFromAlias(entry.path, fromAlias)).append(TEXT_SPACE).append(comparison(entry))
                     .append(TEXT_SPACE).append(TEXT_COLON).append(entry.value);
         }
         builder.append(TEXT_RIGHTPARENTHESIS);
-        String txt = builder.toString();
-        return CCJSqlParserUtil.parseCondExpression(txt);
+        return CCJSqlParserUtil.parseCondExpression(builder.toString());
     }
 
     private String pathWithFromAlias(String path, String fromAlias) {

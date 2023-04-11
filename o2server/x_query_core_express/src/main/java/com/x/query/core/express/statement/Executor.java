@@ -47,10 +47,7 @@ public class Executor {
 				query.setParameter(idx, entry.getValue());
 			}
 			if (executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
-				if (NumberTools.greaterThan(runtime.page, 0) && NumberTools.greaterThan(runtime.size, 0)) {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
-				}
+				appendSelectRange(runtime, query);
 				return query.getResultList();
 			} else {
 				emc.beginTransaction(DynamicBaseEntity.class);
@@ -60,6 +57,13 @@ public class Executor {
 			}
 		}
 	}
+
+    private static void appendSelectRange(Runtime runtime, Query query) {
+        if (NumberTools.greaterThan(runtime.page, 0) && NumberTools.greaterThan(runtime.size, 0)) {
+        	query.setFirstResult((runtime.page - 1) * runtime.size);
+        	query.setMaxResults(runtime.size);
+        }
+    }
 
 	private static Object executeDataJpql(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
 			throws Exception {
@@ -79,10 +83,7 @@ public class Executor {
 				query.setParameter(idx, entry.getValue());
 			}
 			if (executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
-				if (NumberTools.greaterThan(runtime.page, 0) && NumberTools.greaterThan(runtime.size, 0)) {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
-				}
+				appendSelectRange(runtime, query);
 				return query.getResultList();
 			} else {
 				emc.beginTransaction(cls);
