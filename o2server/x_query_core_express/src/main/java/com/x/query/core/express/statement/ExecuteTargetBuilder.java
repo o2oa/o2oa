@@ -24,6 +24,8 @@ import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.core.entity.schema.Statement;
 
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -51,8 +53,8 @@ public class ExecuteTargetBuilder {
     private Statement statement;
     private Runtime runtime;
 
-    public ExecuteTargetBuilder(Context context,
-            EffectivePerson effectivePerson, Organization organization, Statement statement, Runtime runtime) {
+    public ExecuteTargetBuilder(Context context, EffectivePerson effectivePerson, Organization organization,
+            Statement statement, Runtime runtime) {
         this.context = context;
         this.effectivePerson = effectivePerson;
         this.organization = organization;
@@ -62,8 +64,7 @@ public class ExecuteTargetBuilder {
 
     // 创建运行对象
     public Pair<ExecuteTarget, Optional<ExecuteTarget>> build() throws Exception {
-        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL,
-                Statement.FORMAT_SQLSCRIPT)) {
+        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
             return concreteExecuteTargetSql(context, effectivePerson, organization, statement, runtime);
         } else {
             return concreteExecuteTargetJpql(context, effectivePerson, organization, statement, runtime);
@@ -71,9 +72,9 @@ public class ExecuteTargetBuilder {
     }
 
     // 创建 SQL 运行对象
-    private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetSql(
-            Context context, EffectivePerson effectivePerson, Organization organization, Statement statement,
-            Runtime runtime) throws Exception {
+    private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetSql(Context context,
+            EffectivePerson effectivePerson, Organization organization, Statement statement, Runtime runtime)
+            throws Exception {
         ExecuteTarget data;
         Optional<ExecuteTarget> optionalCount = Optional.empty();
         String sql = "";
@@ -87,22 +88,20 @@ public class ExecuteTargetBuilder {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = concreteExecuteTargetSqlCountAuto(effectivePerson, organization,
-                        runtime, sql, data.getNamedParam());
+                optionalCount = concreteExecuteTargetSqlCountAuto(effectivePerson, organization, runtime, sql,
+                        data.getNamedParam());
             } else {
-                optionalCount = Optional
-                        .of(concreteExecuteTargetSqlCountAssign(context, effectivePerson, organization, statement,
-                                runtime,
-                                data.getNamedParam()));
+                optionalCount = Optional.of(concreteExecuteTargetSqlCountAssign(context, effectivePerson, organization,
+                        statement, runtime, data.getNamedParam()));
             }
         }
         return Pair.of(data, optionalCount);
     }
 
     // 创建 JPQL 运行对象
-    private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetJpql(
-            Context context, EffectivePerson effectivePerson, Organization organization, Statement statement,
-            Runtime runtime) throws Exception {
+    private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetJpql(Context context,
+            EffectivePerson effectivePerson, Organization organization, Statement statement, Runtime runtime)
+            throws Exception {
         ExecuteTarget data;
         Optional<ExecuteTarget> optionalCount = Optional.empty();
         String jpql = "";
@@ -116,14 +115,11 @@ public class ExecuteTargetBuilder {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = concreteExecuteTargetJpqlCountAuto(effectivePerson, organization, runtime,
-                        jpql,
+                optionalCount = concreteExecuteTargetJpqlCountAuto(effectivePerson, organization, runtime, jpql,
                         data.getNamedParam());
             } else {
-                optionalCount = Optional
-                        .of(concreteExecuteTargetJpqlCountAssign(context, effectivePerson, organization, statement,
-                                runtime,
-                                data.getNamedParam()));
+                optionalCount = Optional.of(concreteExecuteTargetJpqlCountAssign(context, effectivePerson, organization,
+                        statement, runtime, data.getNamedParam()));
             }
         }
         return Pair.of(data, optionalCount);
@@ -131,8 +127,8 @@ public class ExecuteTargetBuilder {
 
     // 创建 SQL COUNT ASSIGN
     private ExecuteTarget concreteExecuteTargetSqlCountAssign(Context context, EffectivePerson effectivePerson,
-            Organization organization,
-            Statement statement, Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
+            Organization organization, Statement statement, Runtime runtime, Map<String, Object> prevNamedParam)
+            throws Exception {
         String sql = "";
         if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)) {
             sql = statement.getSqlCount();
@@ -166,8 +162,8 @@ public class ExecuteTargetBuilder {
     }
 
     private ExecuteTarget concreteExecuteTargetJpqlCountAssign(Context context, EffectivePerson effectivePerson,
-            Organization organization,
-            Statement statement, Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
+            Organization organization, Statement statement, Runtime runtime, Map<String, Object> prevNamedParam)
+            throws Exception {
         String jpql = "";
         if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_JPQL)) {
             jpql = statement.getCountData();
@@ -178,8 +174,7 @@ public class ExecuteTargetBuilder {
     }
 
     private Optional<ExecuteTarget> concreteExecuteTargetJpqlCountAuto(EffectivePerson effectivePerson,
-            Organization organization,
-            Runtime runtime, String jpql, Map<String, Object> prevNamedParam)
+            Organization organization, Runtime runtime, String jpql, Map<String, Object> prevNamedParam)
             throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(jpql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
@@ -189,7 +184,7 @@ public class ExecuteTargetBuilder {
         net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
         plainSelect.getSelectItems().clear();
         plainSelect.getSelectItems().add(new SelectExpressionItem(
-                new Column(KEY_COUNT + KEY_LEFT_PARENTHESIS + table.getAlias() + KEY_RIGHT_PARENTHESIS)));
+                new Column(KEY_COUNT + KEY_LEFT_PARENTHESIS + table.getAlias().getName() + KEY_RIGHT_PARENTHESIS)));
         return Optional
                 .of(new ExecuteTarget(effectivePerson, organization, plainSelect.toString(), runtime, prevNamedParam));
     }
@@ -208,8 +203,7 @@ public class ExecuteTargetBuilder {
     }
 
     private ScriptContext scriptContext(Context context, EffectivePerson effectivePerson, Organization organization,
-            Runtime runtime)
-            throws Exception {
+            Runtime runtime) throws Exception {
         ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
         Resources resources = new Resources();
         resources.setContext(context);
@@ -219,7 +213,7 @@ public class ExecuteTargetBuilder {
         Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
         bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
-        bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameters()));
+        bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameter()));
         return scriptContext;
     }
 
@@ -236,4 +230,5 @@ public class ExecuteTargetBuilder {
         }
 
     }
+
 }

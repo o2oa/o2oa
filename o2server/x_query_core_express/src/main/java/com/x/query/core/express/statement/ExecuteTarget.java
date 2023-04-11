@@ -8,11 +8,17 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 
+import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 
 public class ExecuteTarget {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteTarget.class);
 
     public static final Pattern QUESTMARK_PARAMETER_REGEX = Pattern.compile("(\\?\\d+)");
     public static final Pattern NAMED_PARAMETER_REGEX = Pattern.compile("(:(\\w+))");
@@ -40,9 +46,22 @@ public class ExecuteTarget {
 
     public ExecuteTarget(EffectivePerson effectivePerson, Organization organization, String sql,
             Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
+        sql = this.appendAdditionFilter(runtime, sql);
+        LOGGER.debug("sql after appendAdditionFilter:{}.", sql);
         questionMarkParameter(effectivePerson, organization, runtime, sql);
         this.sql = namedParameterChangeToQuestionMark(effectivePerson, organization, runtime, sql, prevNamedParam);
-        parsedStatement = CCJSqlParserUtil.parse(this.sql);
+        LOGGER.debug("sql after namedParameterChangeToQuestionMark:{}.", sql);
+        this.parsedStatement = CCJSqlParserUtil.parse(this.sql);
+    }
+
+    // 拼装通过runtime传递的附加选择条件
+    private String appendAdditionFilter(Runtime runtime, String sql) throws JSQLParserException {
+        if (!ListTools.isEmpty(runtime.getFilterList())) {
+            net.sf.jsqlparser.statement.Statement stmt = CCJSqlParserUtil.parse(sql);
+            stmt.accept(new AppendAdditionFilterStatementVisitorAdapter(runtime));
+            return stmt.toString();
+        }
+        return sql;
     }
 
     // 读取 QUESTION MARK PARAMETER

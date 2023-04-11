@@ -28,7 +28,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     initialize: function(container, json, options, app, parentMacro){
         //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select、unselect
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
         //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
 
@@ -2211,7 +2211,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("select", [{
+        this.view.fireEvent("unselect", [{
             "selected": false,
             "item": this,
             "data": this.data

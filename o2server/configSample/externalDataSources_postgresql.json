@@ -1,9 +1,9 @@
 [
 	{
-		"url" : "jdbc:postgresql://localhost:5432/X",
+		"url" : "jdbc:postgresql://localhost:5432/x",
 		"username" : "postgres",
 		"password" :"password",
-		"schema" : "X",
+		"schema" : "public",
 		"includes": [],
 		"excludes": [],
 		"enable" : true,

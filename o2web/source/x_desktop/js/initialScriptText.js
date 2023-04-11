@@ -2813,7 +2813,7 @@ bind.statement = {
      *  "pageSize" : 20, //（number）可选，每页的数据条数，默认为20
      *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
      *       {
-     *           "path":"o.title",
+     *           "path":"o.title",  //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
      *           "comparison":"like",
      *           "value":"关于",
      *           "formatType":"textValue"
@@ -2823,7 +2823,8 @@ bind.statement = {
      *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
      *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
      *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-     *       "processName" : "test流程" //其他写确定的值
+     *       "processName" : "test流程", //其他写确定的值
+     *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
      *     }
      * }
      * </code></pre>
@@ -2841,7 +2842,7 @@ bind.statement = {
      *  "mode" : "all",
      *  "filter": [
      *      {
-     *      "path":"o.title",
+     *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
      *      "comparison":"like",
      *      "value":"7月",
      *      "formatType":"textValue"
@@ -2851,7 +2852,8 @@ bind.statement = {
      *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
      *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
      *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-     *     "processName" : "test流程" //其他写确定的值
+     *     "processName" : "test流程", //其他写确定的值
+     *     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
      *   }
      * }, function(json){
      *  var count = json.count; //总数语句执行后返回的数字

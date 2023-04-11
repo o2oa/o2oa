@@ -555,7 +555,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     },
 
     statementHelp: function(){
-	    window.open("../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html", "_blank")
+	    window.open("../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html", "o2statement")
         // var content = new Element("div", {"styles": {"margin": "20px"}});
         // content.set("html", this.lp.tableHelp);
         // o2.DL.open({

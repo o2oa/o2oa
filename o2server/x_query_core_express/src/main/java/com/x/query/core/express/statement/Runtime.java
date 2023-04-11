@@ -1,17 +1,29 @@
 package com.x.query.core.express.statement;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.core.entity.query.Comparison;
+import com.x.organization.core.express.Organization;
+import com.x.query.core.express.plan.FilterEntry;
 
 public class Runtime extends GsonPropertyObject {
+
+    private static final long serialVersionUID = 2119629142378875023L;
 
     public static final String PARAMETER_PERSON = "person";
     public static final String PARAMETER_IDENTITYLIST = "identityList";
@@ -21,15 +33,17 @@ public class Runtime extends GsonPropertyObject {
     public static final String PARAMETER_ROLELIST = "roleList";
 
     public static final List<String> ALL_BUILT_IN_PARAMETER = ListUtils
-            .unmodifiableList(Arrays.asList(PARAMETER_PERSON,
-                    PARAMETER_IDENTITYLIST, PARAMETER_UNITLIST, PARAMETER_UNITALLLIST, PARAMETER_GROUPLIST,
-                    PARAMETER_ROLELIST));
+            .unmodifiableList(Arrays.asList(PARAMETER_PERSON, PARAMETER_IDENTITYLIST, PARAMETER_UNITLIST,
+                    PARAMETER_UNITALLLIST, PARAMETER_GROUPLIST, PARAMETER_ROLELIST));
 
-    @FieldDescribe("参数")
-    public Map<String, Object> parameters = new HashMap<>();
+    @FieldDescribe("参数.")
+    public Map<String, Object> parameter = new HashMap<>();
 
-    public Map<String, Object> getParameters() {
-        return parameters;
+    @FieldDescribe("过滤条件.")
+    public List<FilterEntry> filterList = new ArrayList<>();
+
+    public Map<String, Object> getParameter() {
+        return parameter;
     }
 
     @FieldDescribe("页码")
@@ -43,14 +57,52 @@ public class Runtime extends GsonPropertyObject {
             return false;
         }
 
-        return this.parameters.containsKey(name);
+        return this.parameter.containsKey(name);
     }
 
     public void setParameter(String name, Object obj) {
-        this.parameters.put(name, obj);
+        this.parameter.put(name, obj);
     }
 
     public Object getParameter(String name) {
-        return this.parameters.get(name);
+        return this.parameter.get(name);
     }
+
+    public List<FilterEntry> getFilterList() {
+        return filterList;
+    }
+
+    public void setFilterList(List<FilterEntry> filterList) {
+        this.filterList = filterList;
+    }
+
+    public static Runtime concrete(EffectivePerson effectivePerson, JsonElement jsonElement,
+            Organization organization, Integer page, Integer size) throws Exception {
+        Runtime runtime = XGsonBuilder.instance().fromJson(jsonElement, Runtime.class);
+        runtime.page = page;
+        runtime.size = size;
+        Set<String> keys = runtime.parameter.keySet();
+        if (keys.contains(Runtime.PARAMETER_PERSON)) {
+            runtime.parameter.put(Runtime.PARAMETER_PERSON, effectivePerson.getDistinguishedName());
+        }
+        if (keys.contains(Runtime.PARAMETER_IDENTITYLIST)) {
+            runtime.parameter.put(Runtime.PARAMETER_IDENTITYLIST,
+                    organization.identity().listWithPerson(effectivePerson));
+        }
+        if (keys.contains(Runtime.PARAMETER_UNITLIST)) {
+            runtime.parameter.put(Runtime.PARAMETER_UNITLIST, organization.unit().listWithPerson(effectivePerson));
+        }
+        if (keys.contains(Runtime.PARAMETER_UNITALLLIST)) {
+            runtime.parameter.put(Runtime.PARAMETER_UNITALLLIST,
+                    organization.unit().listWithPersonSupNested(effectivePerson));
+        }
+        if (keys.contains(Runtime.PARAMETER_GROUPLIST)) {
+            runtime.parameter.put(Runtime.PARAMETER_GROUPLIST, organization.group().listWithPerson(effectivePerson));
+        }
+        if (keys.contains(Runtime.PARAMETER_ROLELIST)) {
+            runtime.parameter.put(Runtime.PARAMETER_ROLELIST, organization.role().listWithPerson(effectivePerson));
+        }
+        return runtime;
+    }
+
 }

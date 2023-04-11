@@ -89,14 +89,16 @@
                     </tbody>
                 </table>
 
-                <h2>where子句传参</h2>
+                <h2 id="where">where子句传参</h2>
                 <h3>1、用冒号动态传参</h3>
                 <p>查询语句中的where语句的值可以使用json传入，如：<br/>查询语句的设计为 ：</p>
                 <pre class="prettyprint source lang-sql"><code>select o from tableName o where o.name=:n
 </code></pre>
                 <p>在调用查询语句服务的时候传入 json：</p>
                 <pre class="prettyprint source lang-json"><code>{
-    &quot;n&quot; : &quot;zhangsan&quot;
+  "parameter": {
+    "n" : "zhangsan"
+  }
 }
 </code></pre>
                 <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
@@ -111,7 +113,9 @@
 </code></pre>
                 <p>在调用查询语句服务的时候传入 json：</p>
                 <pre class="prettyprint source lang-json"><code>{
-    &quot;?1&quot; : &quot;zhangsan&quot;
+  "parameter": {
+    "?1" : "zhangsan"
+  }
 }
 </code></pre>
                 <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
@@ -169,6 +173,98 @@
                 </p>
                 <pre class="prettyprint source lang-json"><code>select o from Task o where o.person = &quot;张三@zhangsan@P&quot;
 </code></pre>
+
+                <h2 id="filterlist">过滤条件</h2>
+                <h3>1、JPQL过滤条件</h3>
+                <p>查询语句中的where语句的条件还可以从<code>filterList</code>传入，如有下列查询语句：</p>
+                <pre class="prettyprint source lang-sql"><code>SELECT o FROM Task o
+</code></pre>
+                <p>在调用查询语句的时候传入filterList</p>
+                <pre class="prettyprint source lang-javascript"><code>{
+    "filterList": [
+        {
+    	    "path":"o.title",
+            "comparison":"like",
+            "value":"o_title",
+            "formatType":"textValue"
+        }
+    ],
+    "parameter": {
+        "o_title": "%关于%"
+    }
+}
+</code></pre>
+                <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+                <pre class="prettyprint source lang-sql"><code>select o from Task o where o.title like '%关于%'
+</code></pre>
+                <p>如下图所示：<br/>
+                    <img src="img/filterlist_jpql.png" alt="JPQL过滤条件">
+                </p>
+                <h3>2、原生SQL过滤条件</h3>
+                <p>查询语句中的where语句的条件还可以从<code>filterList</code>传入，如有下列查询语句：</p>
+                <pre class="prettyprint source lang-sql"><code>SELECT * FROM PP_C_TASK
+</code></pre>
+                <p>在调用查询语句的时候传入filterList</p>
+                <pre class="prettyprint source lang-javascript"><code>{
+    "filterList": [
+        {
+    	    "path":"xtitle",
+            "comparison":"like",
+            "value":"xtitle",
+            "formatType":"textValue"
+        }
+    ],
+    "parameter": {
+        "xtitle": "%关于%"
+    }
+}
+</code></pre>
+                <p>最终系统在后台根据这些设计拼接成为如下语句：</p>
+                <pre class="prettyprint source lang-sql"><code>SELECT * FROM PP_C_TASK where xtitle like '%关于%'
+</code></pre>
+                <p>如下图所示：<br/>
+                    <img src="img/filterlist_sql.png" alt="SQL过滤条件">
+                </p>
+                <h3>3、过滤条件参数说明</h3>
+                <pre class="prettyprint source lang-json"><code>{
+    "filterList": [
+        {
+    	    "path":"o.title", //sql中使用xtitle
+            "comparison":"like",
+            "value":"o_title", //sql中使用xtitle
+            "formatType":"textValue"
+        }
+    ],
+    "parameter": {
+        "o_title": "%关于%" //sql中使用xtitle
+    }
+}
+</code></pre>
+                <h4>path</h4>
+                <ul>
+                    <li>String</li>
+                    <li>要过滤的data数据的路径 <br/>在JPQL中形式为查询语句中的&quot;表别名.字段名&quot;，如&quot;o.title&quot;。<br/>在SQL中形式为查询语句中的&quot;字段名&quot;，如&quot;xtitle&quot;。</li>
+                </ul>
+                <h4>comparison</h4>
+                <ul>
+                    <li>String</li>
+                    <li>比较运算符，可选值：<br/>equals 或 == ：表示等于。<br/>notEquals 或 != ：表示不等于。<br/>greaterThan 或 &gt; ：表示大于。<br/>greaterThanOrEqualTo
+                        或 =&gt; ：表示大于或等于。<br/>lessThan 或 &lt; ：表示小于。<br/>lessThanOrEqualTo 或 &lt;= ：表示小于等于。<br/>like
+                        ：表示部分匹配。<br/>notLike ：表示不匹配。<br/>in ：表示在某几个特定的值当中。
+                    </li>
+                </ul>
+                <h4>formatType</h4>
+                <ul>
+                    <li>String</li>
+                    <li>过滤数据的数据类型，可选值：<br/>textValue ：文本。<br/>numberValue ：数字。<br/>dateTimeValue ：日期时间。<br/>dateValue ：仅日期。<br/>timeValue
+                    ：仅时间。<br/>booleanValue ：布尔值。</li>
+                </ul>
+                <h4>value</h4>
+                <ul>
+                    <li>String | Number | Boolean</li>
+                    <li>过滤的值，根据formatType提供匹配的数据类型的值。</li>
+                </ul>
+
                 <h2>其他注意事项</h2>
                 <h3>1、日期格式的写法</h3>
                 <p>在sql中，日期格式使用文本即可，如 :&quot;2019-12-31&quot;, &quot;23:59:59&quot;, &quot;2020-01-03
