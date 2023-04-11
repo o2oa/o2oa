@@ -28,7 +28,7 @@
             </select>
         </div>
 
-        <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html" target="_blank"></a>
+        <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html" target="o2statement"></a>
     </div>
 
     <div class="o2_statement_statementDesignerLine">
@@ -134,8 +134,36 @@
 <div class="o2_statement_statementRunNode">
 <!--    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>-->
     <div class="o2_statement_statementRunContentNode">
-        <div class="o2_statement_statementRunJsonNode">
-            <!--            <div class="o2_statement_statementRunJsonContent"></div>-->
+        <div class="o2_statement_statementRunLeftNode">
+            <div class="o2_statement_statementRunTitleNode">
+                <div style="float:left;">查询参数(parameter)</div>
+                <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html#where" target="o2statement"></a>
+            </div>
+            <div class="o2_statement_statementRunJsonNode"></div>
+
+            <div class="o2_statement_statementRunTitleNode">
+                <div style="float:left;">过滤条件(filterList)</div>
+                <a style="float:left;color:blue;margin-left:20px;cursor:pointer;" data-o2-events="click:addFilterSample">添加样例</a>
+                <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html#filterlist" target="o2statement"></a>
+            </div>
+            <div class="o2_statement_statementRunFilterNode"></div>
+
+            <div class="o2_statement_statementRunInputNode">
+                <table>
+                    <tr>
+<!--                        <td style="width: 30px">执行模式</td>-->
+<!--                        <td style="width: calc( 33% - 30px );"><select value="1" type="number" style="width: 60px;" class="o2_statement_statementRunModeInput">-->
+<!--                            <option value="all">all</option>-->
+<!--                            <option value="data">data</option>-->
+<!--                            <option value="count">count</option>-->
+<!--                        </select></td>-->
+                        <td style="width: 40px; text-align: right;">页码</td>
+                        <td style="width: calc( 50% - 40px );"><input value="1" type="number" style="width: 60px;" class="o2_statement_statementRunPageNoInput"></td>
+                        <td style="width: 50px; text-align: right;">每页</td>
+                        <td style="width: calc( 50% - 50px );"><input value="20" type="number" style="width: 60px;" class="o2_statement_statementRunPageSizeInput">条</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="o2_statement_statementRunActionNode">
             <div class="o2_statement_statementRunActionContent"></div>

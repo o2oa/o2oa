@@ -53,7 +53,9 @@
 /**
  * StatementFilter 查询视图的过滤条件
  * @typedef {Object} StatementFilter
- * @property {String} path - 要过滤的data数据的路径，形式为查询语句中的"表别名.字段名"，如"o.title"。
+ * @property {String} path - 要过滤的data数据的路径。
+ * 如果语句格式是JPQL,形式为查询语句中的"表别名.字段名"，如"o.title"。
+ * 在v8.0以后，系统增加了原生SQL，则使用数据库的字段名，如"xtitle"。
  * @property {String} comparison - 比较运算符，可选值：<br/>
  * <div style='padding-left:150px;'>
  * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
@@ -78,7 +80,7 @@
  * 如果是dateValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD”。如果是timeValue数据类型，则提供时间格式的字符串，格式如“HH:MM:SS”。
  * @example
  *{
- *    "path":"o.title",
+ *    "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
  *    "comparison":"like",
  *    "value":"关于",
  *    "formatType":"textValue"
@@ -87,17 +89,20 @@
 
 /**
  * StatementParameter  查询视图的过滤条件值参数，对查询语句where语句的形如":person"的参数部分进行赋值<br/>
+ * 在v8.0以后，系统还新增了问号加数字的传值参数，如"?1"，用法和 ":field"一致。
  * 有以下规则：<br/>
  * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。v8.0以后系统自动解析，不需要再传这类参数。<br/>
  * 2、如果对比的是日期，需要传入 Date 类型。<br/>
  * 3、如果运算符用的是 like, noLike，模糊查询，值为 "%{value}%"。
+ * 4、
  * @typedef {Object} StatementParameter
  * @example
  * {
  *    "person" : "", //v8.0以后系统自动解析，不需要再传这类参数。
- *    "startTime" : (new Date("2020-01-01")),
- *    "applicationName" : "%test%",
- *    "processName" : "test流程" //其他写确定的值
+ *    "startTime" : (new Date("2020-01-01")), //日期格式
+ *    "applicationName" : "%test%", //like或notlike
+ *    "processName" : "test流程", //其他写确定的值
+ *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
  * }
  */
 
@@ -3302,7 +3307,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "pageSize" : 20, //（number）可选，每页的数据条数，默认为20
          *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
          *       {
-         *           "path":"o.title",
+         *           "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *           "comparison":"like",
          *           "value":"关于",
          *           "formatType":"textValue"
@@ -3312,7 +3317,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *       "processName" : "test流程" //其他写确定的值
+         *       "processName" : "test流程", //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          * }
          * </code></pre>
@@ -3337,7 +3343,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "mode" : "all",
          *  "filter": [
          *      {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"7月",
          *      "formatType":"textValue"
@@ -3347,7 +3353,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *     "processName" : "test流程" //其他写确定的值
+         *     "processName" : "test流程", //其他写确定的值
+         *     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *   }
          * }, function(json){
          *  var count = json.count; //总数语句执行后返回的数字
@@ -3361,7 +3368,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "mode" : "all",
          *  "filter": [
          *      {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"7月",
          *      "formatType":"textValue"
@@ -3371,7 +3378,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *     "processName" : "test流程" //其他写确定的值
+         *     "processName" : "test流程", //其他写确定的值
+         *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *   }
          * });
          * promise.then(function(json){
@@ -3462,7 +3470,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "caption" : "标题", //（String）可选，选择框的标题
          *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
          *       {
-         *           "path":"o.title",
+         *           "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *           "comparison":"like",
          *           "value":"关于",
          *           "formatType":"textValue"
@@ -3472,7 +3480,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *       "processName" : "test流程" //其他写确定的值
+         *       "processName" : "test流程", //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          * }
          * </code></pre>
@@ -4044,7 +4053,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    "table": "", //自建表的id
          *    "entityClassName": "com.x.processplatform.core.entity.content.Task", //系统表表名
          *    "entityCategory": "official", //表类型 official(系统表) 或 dynamic(自建表)
-         *    "format": "jpql", //语句类型,jpql 或者 script(脚本)
+         *    "format": "jpql", //语句类型,jpql 或者 script(脚本) , v8.0后还有 sql, sqlScript
          *    "type": "select", //select/update/delete
          *    "data": "SELECT o FROM Task o where o.person = :person", //查询语句
          *    "countData": "SELECT count(o.id) FROM Task o where o.person = :person", //总数语句
@@ -4238,7 +4247,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * 如果传入非空数组的时候，参数如下：
          * <pre><code class='language-js'>[
          *    {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"关于",
          *      "formatType":"textValue"
@@ -4253,7 +4262,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *    "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *    "processName" : "test流程" //其他写确定的值
+         *    "processName" : "test流程", //其他写确定的值
+         *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          * }
          * </code></pre>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
@@ -4314,7 +4324,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "showActionbar": false, //可选，是否显示操作条
          *     "filter": [  //可选，增加查询语句where子句的过滤条件
          *       {
-         *         "path": "o.title",
+         *         "path": "o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *         "title": "标题",
          *         "type": "filter",
          *         "comparison": "like",
@@ -4328,6 +4338,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          *   })
          * </code></pre>

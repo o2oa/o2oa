@@ -147,8 +147,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScriptArea.load(v);
         }.bind(this));
     },
+    setHtml: function(){},
     getInputNodes: function () {
         debugger;
+        this.setHtml();
+
         this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");
         this.actionAreaNode = this.node.getElement(".actionAreaNode_vf");
         this.actionAreaNode.setStyles(this.css.actionAreaNode);
@@ -167,6 +170,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
 
         this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
         this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
+        this.pathNote = this.inputAreaNode.getElement(".pathNote_vf");
+
+        if( this.pathNote && this.statementData && ["sql", "sqlScript"].contains(this.statementData.format)  ){
+            this.pathNote.hide();
+        }
+
         this.pathInputSelect = this.inputAreaNode.getElement(".pathInputSelect_vf");
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
@@ -265,18 +274,22 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 this.titleInput.set("value", (field.description || field.name).replace(/\./g,""));
                 if( field.name ){
                     var path = this.pathInput.get("value");
-                    if( path.indexOf(".") > -1 ){
-                        path = path.split(".")[0] +"."+ field.name;
-                    }else{
-                        var alias;
-                        var tableName = option.retrieve("tableName");
-                        if( d.data.indexOf(tableName) > -1){
-                            var str = d.data.split(tableName)[1].trim();
-                            if( str.indexOf(" ") )alias = str.split(" ")[0];
+                    if( !["sql", "sqlScript"].contains(d.format) ){
+                        if( path.indexOf(".") > -1 ){
+                            path = path.split(".")[0] +"."+ field.name;
+                        }else{
+                            var alias;
+                            var tableName = option.retrieve("tableName");
+                            if( d.data.indexOf(tableName) > -1){
+                                var str = d.data.split(tableName)[1].trim();
+                                if( str.indexOf(" ") )alias = str.split(" ")[0];
+                            }
+                            path = alias ? ( alias +"."+ field.name ) : field.name;
                         }
-                        path = alias ? ( alias +"."+ field.name ) : field.name;
+                        this.pathInput.set("value", path);
+                    }else{
+                        this.pathInput.set("value", field.name);
                     }
-                    this.pathInput.set("value", path);
                 }
                 if( field.type ){
                     var t;
@@ -378,22 +391,48 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //     }
         // }
     },
+    changeStatementType: function(){
+        if( !this.statementData )return;
+        this.setPathInputSelectOptions();
+        if( this.pathNote  ){
+            if( ["sql", "sqlScript"].contains(this.statementData.format) ){
+                this.pathNote.hide();
+            }else{
+                this.pathNote.show();
+            }
+        }
+
+        var noteFlag;
+        this.items.each(function (item) {
+            if( item.data.path ){
+                if( ["sql", "sqlScript"].contains(this.statementData.format) && item.data.path.contains(".") ){
+                    noteFlag = true;
+                }
+                if( !["sql", "sqlScript"].contains(this.statementData.format) && !item.data.path.contains(".") ){
+                    noteFlag = true;
+                }
+            }
+        }.bind(this));
+        if( noteFlag )this.app.notice( MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info" );
+    },
     setPathInputSelectOptions : function(){
-        debugger;
         this.pathInputSelect.empty();
         if( !this.statementData )return;
         var d = this.statementData;
+        var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
         var fun = function ( tableName ) {
             o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
                 d.entityCategory === "dynamic" ? d.table : d.entityClassName,
                 d.entityCategory,
                 function(json){
+                    json = Object.clone(json);
                     var ps = this.pathInput.get("value").split(".");
                     var p = ps[1] ? ps[1] : ps[0];
                     var option = new Element("option", { "text": "", "value": "" }).inject(this.pathInputSelect);
                     option.store("type", d.entityCategory);
                     option.store("tableName", tableName );
                     (json.data||[]).each( function ( field ) {
+                        if( pre )field.name = pre + field.name;
                         var option = new Element("option", {
                             "text": field.name + ( field.description ? ("-" + field.description) : "" ),
                             "value": field.name,
@@ -423,12 +462,34 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             o2.Actions.load("x_query_assemble_designer").StatementAction.get( statementId, function (json) {
                 this.statementData = json.data;
                 this.setPathInputSelectOptions();
+                if( this.pathNote ){
+                    if( ["sql", "sqlScript"].contains(this.statementData.format) ){
+                        this.pathNote.hide();
+                    }else{
+                        this.pathNote.show();
+                    }
+                }
+
+                 var noteFlag;
+                this.items.each(function (item) {
+                    if( item.data.path ){
+                        if( ["sql", "sqlScript"].contains(this.statementData.format) && item.data.path.contains(".") ){
+                            noteFlag = true;
+                        }
+                        if( !["sql", "sqlScript"].contains(this.statementData.format) && !item.data.path.contains(".") ){
+                            noteFlag = true;
+                        }
+                    }
+                }.bind(this));
+                if( noteFlag )this.app.notice( MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info" );
+
                 if(callback)callback();
             }.bind(this))
         }else{
             this.options.statementId = "";
             this.statementData = null;
             this.setPathInputSelectOptions();
+            if( this.pathNote )this.pathNote.show();
             if(callback)callback();
         }
     },
@@ -709,7 +770,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             });
             return false;
         }
-        if (!data.path || data.path.indexOf(".")<1 ) {
+        if (!data.path || ( !["sql", "sqlScript"].contains(this.statementData.format) && data.path.indexOf(".")<1 ) ) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
             new Element("div", {
@@ -765,7 +826,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //     });
         //     return false;
         // }
-        if (!data.path || data.path.indexOf(".")<1 ) {
+        var statementData = this.statementData || {};
+        if (!data.path || ( !["sql", "sqlScript"].contains(statementData.format) && data.path.indexOf(".")<1 ) ) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
             new Element("div", {

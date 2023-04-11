@@ -1115,7 +1115,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectBoxTitle": "选择框标题",
         "query": "查询",
         "pathInfo": "注：路径的写法是\"表别名.字段名\"，如：o.title",
-        "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
+        "parameterNote": "注：对应查询语句和总数语句中的参数；\n如\":field\"的where条件，填写\"field\"；\n如\"?1\"的where条件，填写\"?1\"。",
 
         "source": "数据源",
         "method": "方法",

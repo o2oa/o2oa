@@ -11,7 +11,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     initialize: function (container, json, options, app, parentMacro) {
         //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select、unselect
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
         //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
 
@@ -53,7 +53,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
     },
     init: function (callback) {
-        if (this.json.view) {
+        if (this.json.view && this.json.format) {
             this.viewJson = JSON.decode(this.json.view);
             this.statementJson = this.json;
             this.statementJson.viewJson = this.viewJson;
@@ -180,14 +180,20 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
                 this.parameter[parameterName] = value; //"%"+value+"%";
             } else {
-                if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                    value = "{ts '" + value + "'}"
-                } else if (d.formatType === "dateValue") {
-                    value = "{d '" + value + "'}"
-                } else if (d.formatType === "timeValue") {
-                    value = "{t '" + value + "'}"
-                } else if (d.formatType === "numberValue"){
-                    value = parseFloat(value);
+                if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                    if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
+                    }
+                }else{
+                    if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                        value = "{ts '" + value + "'}"
+                    } else if (d.formatType === "dateValue") {
+                        value = "{d '" + value + "'}"
+                    } else if (d.formatType === "timeValue") {
+                        value = "{t '" + value + "'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
+                    }
                 }
                 this.parameter[parameterName] = value;
             }
@@ -218,22 +224,26 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 var user = layout.user;
                 switch (f.value) {
                     case "@person":
-                        value = user.distinguishedName;
+                        // value = user.distinguishedName;
+                        value = "";
                         break;
                     case "@identityList":
-                        value = user.identityList.map(function (d) {
-                            return d.distinguishedName;
-                        });
+                        // value = user.identityList.map(function (d) {
+                        //     return d.distinguishedName;
+                        // });
+                        value = "";
                         break;
                     case "@unitList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
-                            value = json.unitList;
-                        }, null, false);
+                        // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
+                        //     value = json.unitList;
+                        // }, null, false);
+                        value = "";
                         break;
                     case "@unitAllList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
-                            value = json.unitList;
-                        }, null, false);
+                        // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
+                        //     value = json.unitList;
+                        // }, null, false);
+                        value = "";
                         break;
                     case "@year":
                         value = (new Date().getFullYear()).toString();
@@ -262,12 +272,14 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     default:
                 }
             }
-            if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
-                value = "{ts '" + value + "'}"
-            } else if (f.formatType === "dateValue") {
-                value = "{d '" + value + "'}"
-            } else if (f.formatType === "timeValue") {
-                value = "{t '" + value + "'}"
+            if( !["sql", "sqlScript"].contains(this.statementJson.format) ) {
+                if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
+                    value = "{ts '" + value + "'}"
+                } else if (f.formatType === "dateValue") {
+                    value = "{d '" + value + "'}"
+                } else if (f.formatType === "timeValue") {
+                    value = "{t '" + value + "'}"
+                }
             }
             this.parameter[f.parameter] = value;
         }.bind(this));
@@ -275,7 +287,11 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         for (var p in parameter) {
             var value = parameter[p];
             if (typeOf(value) === "date") {
-                value = "{ts '" + value.format("db") + "'}"
+                if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                    value = value.format("db");
+                }else{
+                    value = "{ts '" + value.format("db") + "'}"
+                }
             }
             this.parameter[p] = value;
         }
@@ -1115,6 +1131,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
@@ -1145,6 +1166,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("unselect", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");
