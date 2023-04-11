@@ -861,6 +861,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "singleChoice": "单选",
         "multipleChoice": "多选",
         "view": "视图",
+        "statement": "查询",
         "boxTitleStyle": "选择框标题样式",
         "boxItemStyle": "选择框条目样式",
         "selectResultProcessing": "选择结果处理",

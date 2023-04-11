@@ -155,7 +155,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSmartBISelect();
 
                     this.loadDictionaryItem();
+
                     this.loadQueryViewItem();
+                    this.loadQueryStatementItem();
 
                     this.loadHelp();
 
@@ -896,6 +898,35 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         oldParameterData = Array.clone( data.parameterData );
                     }
                 });
+            }.bind(this));
+        }.bind(this));
+    },
+    loadStatementFilterWithTemplate: function(){
+        var nodes = this.propertyContent.getElements(".MWFStatementFilterWithTemplate");
+        var filtrData = this.data.filterList;
+        var parameterData = this.data.parameterList;
+        var oldFiltrData = Array.clone( filtrData || [] );
+        var oldParameterData = Array.clone( parameterData || [] );
+        nodes.each(function(node){
+            var statementField = node.dataset["itemStatement"];
+            this.viewFilterWithTemplate = MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilterWithTemplate", function(){
+                var _slef = this;
+                new MWF.xApplication.query.StatementDesigner.widget.ViewFilterWithTemplate(node, this.form.designer,
+                    {"filtrData": filtrData, "customData": null, "parameterData": parameterData},
+                    {
+                        "statementId" : this.data[statementField] ? this.data[statementField].id : "",
+                        "withForm" : true,
+                        "onChange": function(ids){
+                            var data = this.getData();
+                            _slef.changeJsonDate(["filterList"], data.filterData);
+                            _slef.changeJsonDate(["parameterList"], data.parameterData);
+                            _slef.checkHistory("filterList", oldFiltrData, data.filterData);
+                            _slef.checkHistory( "parameterList", oldParameterData, data.parameterData );
+                            oldFiltrData = Array.clone( data.filterData );
+                            oldParameterData = Array.clone( data.parameterData );
+                        }
+                    }
+                );
             }.bind(this));
         }.bind(this));
     },
@@ -2258,9 +2289,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             viewColumnSelects.each(function (select) {
                 select.addEvent("change", function () {
                     var name = select.get("name");
-                    var oldValue = this.data[name];
-                    this.data[name] = select.options[select.selectedIndex].value;
-                    this.checkHistory(name, oldValue, this.data[name]);
+                    //var oldValue = this.data[name];
+                    var value = select.options[select.selectedIndex].value;
+                    this.setValue(name, value, select);
+                    //this.checkHistory(name, oldValue, this.data[name]);
                 }.bind(this))
             }.bind(this));
 
@@ -2319,9 +2351,109 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             new Element("option", { value: "" }).inject( select );
                             columnList.each(function ( column ) {
                                 new Element("option", {
-                                    value: column.name,
-                                    text: column.title || column.name,
-                                    checked: this.data[sname] === column.name
+                                    value: column.column,
+                                    text: column.displayName + "(" + column.column + ")",
+                                    selected: this.data[sname] === column.column
+                                }).inject( select );
+                            }.bind(this))
+                        }.bind(this))
+
+                        if(callback)callback();
+                    }.bind(this));
+                }else{
+                    viewColumnSelects.each(function (select) {
+                        select.empty();
+                    });
+                    if(callback)callback();
+                }
+            }.bind(this)
+
+            loadSelectsOptions();
+
+        }.bind(this));
+    },
+
+    loadQueryStatementItem: function(){
+        var containers = this.propertyContent.getElements(".MWFQueryStatementItemContainer");
+        containers.each(function (container) {
+
+            debugger;
+
+            var viewNode = container.getElement(".MWFQueryStatementNode");
+
+            var viewColumnSelects = container.getElements(".MWFStatementItemSelect");
+            viewColumnSelects.each(function (select) {
+                select.addEvent("change", function () {
+                    var name = select.get("name");
+                    //var oldValue = this.data[name];
+                    var value = select.options[select.selectedIndex].value;
+                    this.setValue(name, value, select);
+                    //this.checkHistory(name, oldValue, this.data[name]);
+                }.bind(this))
+            }.bind(this));
+
+            MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(viewNode, this.form.designer, {
+                    "type": "QueryStatement",
+                    "count": 1,
+                    "names": [this.data[viewNode.get("name")]],
+                    "onChange": function (ids) {
+                        var name = viewNode.get("name");
+                        var oldValue = this.data[name];
+                        if (ids[0]) {
+                            var view = ids[0].data;
+                            var data = {
+                                "name": view.name,
+                                "alias": view.alias,
+                                "id": view.id,
+                                "appName": view.appName || view.applicationName || view.query,
+                                "appId": view.appId,
+                                "application": view.application || view.query
+                            };
+                            this.data[name] = data;
+                        } else {
+                            this.data[name] = null;
+                        }
+                        this.checkHistory(name, oldValue, this.data[name]);
+
+                        if( this.viewFilterWithTemplate )this.viewFilterWithTemplate.resetStatementData(view.id);
+
+                        loadSelectsOptions( function () {
+                            changSelectsIndex(0);
+                        }.bind(this));
+
+
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            var changSelectsIndex = function (idx) {
+                viewColumnSelects.each(function (select) {
+                    select.selectedIndex = idx;
+                    select.fireEvent("change");
+                }.bind(this))
+            }.bind(this);
+
+            var loadSelectsOptions = function ( callback ) {
+                var name = viewNode.get("name");
+                var view = this.data[name];
+                if( view && view.id ){
+                    MWF.Actions.get("x_query_assemble_designer").getStatement(view.id, function(json){
+                        var viewData = JSON.decode(json.data.view || {});
+
+                        debugger;
+
+                        var columnList = viewData.data.selectEntryList || viewData.data.selectList || [];
+                        viewColumnSelects.each(function (select) {
+                            select.empty();
+
+                            var sname = select.get("name");
+                            new Element("option", { value: "" }).inject( select );
+                            columnList.each(function ( column ) {
+                                new Element("option", {
+                                    value: column.path,
+                                    text: column.displayName + "(" + column.path + ")",
+                                    selected: this.data[sname] === column.path
                                 }).inject( select );
                             }.bind(this))
                         }.bind(this))

@@ -28,25 +28,36 @@
                         $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
                     }" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
                     <input class="editTableRadio" onclick="if (this.checked){
                         $('text{$.pid}selectEditItemScript').setStyle('display', 'block');
                         $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
                     }" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
                     <input class="editTableRadio" onclick="if (this.checked){
                         $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemDict').setStyle('display', 'block');
                         $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
                     }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
                     <input class="editTableRadio" onclick="if (this.checked){
                         $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemView').setStyle('display', 'block');
-                    }" name="itemType" text{($.itemType=='view')?'checked':''} type="radio" value="dict"/>{{$.lp.view}}
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
+                    }" name="itemType" text{($.itemType=='view')?'checked':''} type="radio" value="view"/>{{$.lp.view}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'block');
+                    }" name="itemType" text{($.itemType=='statement')?'checked':''} type="radio" value="statement"/>{{$.lp.statement}}
                 </td>
             </tr>
         </table>
@@ -95,18 +106,42 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.valueColumn}}:</td>
                     <td class="editTableValue">
-                        <select class="MWFViewColumnSelect" name="viewValueColumn"></select>
+                        <select class="MWFViewColumnSelect" name="viewValueColumn" style="max-width: 270px;"></select>
                     </td>
                 </tr>
                 <tr>
                     <td class="editTableTitle">{{$.lp.textColumn}}:</td>
                     <td class="editTableValue">
-                        <select class="MWFViewColumnSelect" name="viewTextColumn"></select>
+                        <select class="MWFViewColumnSelect" name="viewTextColumn" style="max-width: 270px;"></select>
                     </td>
                 </tr>
             </table>
             <div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.filter}}</div>
             <div class="MWFViewFilterWithTemplate"></div>
+        </div>
+        <div id="text{$.pid}selectEditItemStatement" style="display: text{($.itemType=='statement')?'block':'none'}" class="MWFQueryStatementItemContainer">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.statement}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFQueryStatementNode" data-count=1 name="itemStatement"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.valueColumn}}:</td>
+                    <td class="editTableValue">
+                        <select class="MWFStatementItemSelect" name="statementValueColumn" style="max-width: 270px;"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.textColumn}}:</td>
+                    <td class="editTableValue">
+                        <select class="MWFStatementItemSelect" name="statementTextColumn" style="max-width: 270px;"></select>
+                    </td>
+                </tr>
+            </table>
+            <div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.filter}}</div>
+            <div class="MWFStatementFilterWithTemplate" data-statement="itemStatement"></div>
         </div>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
