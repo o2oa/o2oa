@@ -29,7 +29,7 @@ public class AndFxConsumeQueue extends AbstractQueue<Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AndFxConsumeQueue.class);
 
-	private static final Gson gson = XGsonBuilder.instance();
+	private static final Gson gson = new Gson();
 
 	@Override
 	protected void execute(Message message) throws Exception {
@@ -49,8 +49,7 @@ public class AndFxConsumeQueue extends AbstractQueue<Message> {
 				if (StringUtils.isNotEmpty(openUrl)) {
 					Map<String, String> map = new HashMap<>();
 					map.put("url", openUrl);
-					andFxUrl = "native://openurl?data="
-							+ URLEncoder.encode(gson.toJson(map), DefaultCharset.name);
+					andFxUrl = "native://openurl?data=" + gson.toJson(map);
 					LOGGER.debug("移动办公 打开消息 url：{}", andFxUrl);
 				}
 			}

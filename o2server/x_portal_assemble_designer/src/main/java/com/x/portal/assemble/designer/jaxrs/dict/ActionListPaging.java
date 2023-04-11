@@ -12,12 +12,15 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDict_;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 class ActionListPaging extends BaseAction {
@@ -33,7 +36,9 @@ class ActionListPaging extends BaseAction {
 			}
 			EntityManager em = emc.get(ApplicationDict.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			Predicate p = cb.conjunction();
+			CriteriaQuery<ApplicationDict> cq = cb.createQuery(ApplicationDict.class);
+			Root<ApplicationDict> root = cq.from(ApplicationDict.class);
+			Predicate p = cb.equal(root.get(ApplicationDict_.project), ApplicationDict.PROJECT_PORTAL);
 			List<Wo> wos = emc.fetchDescPaging(ApplicationDict.class, Wo.copier, p, page, size,
 					ApplicationDict.sequence_FIELDNAME);
 			wos.stream().forEach(wo -> {

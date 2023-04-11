@@ -41,15 +41,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Query", description = "数据中心应用.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Query.table, uniqueConstraints = {
-        @UniqueConstraint(name = PersistenceProperties.Query.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Query.TABLE, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.Query.TABLE + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
                         JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Query extends SliceJpaObject {
 
     private static final long serialVersionUID = -7520516033901189347L;
-    private static final String TABLE = PersistenceProperties.Query.table;
+    private static final String TABLE = PersistenceProperties.Query.TABLE;
 
     @Override
     public String getId() {

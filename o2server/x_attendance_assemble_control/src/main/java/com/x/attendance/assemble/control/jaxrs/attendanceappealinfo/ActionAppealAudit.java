@@ -9,12 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.entity.AttendanceAppealInfo;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionAppealAudit extends BaseAction {
 
@@ -115,6 +119,28 @@ public class ActionAppealAudit extends BaseAction {
 								wrapIn.getOpinion1(), // opinion
 								wrapIn.getStatus() // status审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批
 						);
+						// 2023-04-10 更新几个字段内容
+						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+							AttendanceAppealInfo appealInfo = emc.find(attendanceAppealInfo.getId(), AttendanceAppealInfo.class);
+							if (StringUtils.isNotEmpty(wrapIn.getAppealReason())) {
+								appealInfo.setAppealReason(wrapIn.getAppealReason());
+							}
+							if (StringUtils.isNotEmpty(wrapIn.getSelfHolidayType())) {
+								appealInfo.setSelfHolidayType(wrapIn.getSelfHolidayType());
+							}
+							if (StringUtils.isNotEmpty(wrapIn.getAddress())) {
+								appealInfo.setAddress(wrapIn.getAddress());
+							}
+							if (StringUtils.isNotEmpty(wrapIn.getReason())) {
+								appealInfo.setReason(wrapIn.getReason());
+							}
+							if (StringUtils.isNotEmpty(wrapIn.getAppealDescription())) {
+								appealInfo.setAppealDescription(wrapIn.getAppealDescription());
+							}
+							emc.beginTransaction( AttendanceAppealInfo.class );
+							emc.persist(appealInfo, CheckPersistType.all);
+							emc.commit();
+						}
 						processWo.setDiscription("申诉处理成功！");
 					} catch (Exception e) {
 						check = false;
@@ -128,7 +154,7 @@ public class ActionAppealAudit extends BaseAction {
 				if (subProcessCheck) {
 					wo.setSuccessCount(wo.getSuccessCount() + 1);
 				} else {
-					wo.setErrorCount(wo.getErrorCount());
+					wo.setErrorCount(wo.getErrorCount() + 1);
 				}
 				wos.add(processWo);
 			}
