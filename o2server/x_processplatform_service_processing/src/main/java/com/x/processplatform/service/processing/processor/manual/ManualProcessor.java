@@ -210,7 +210,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 
     private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
             throws Exception {
-        List<String> identities = new ArrayList<>();
         List<WorkLog> workLogs = Stream
                 .concat(Stream.concat(aeiObjects.getUpdateWorkLogs().stream(), aeiObjects.getCreateWorkLogs().stream()),
                         aeiObjects.getWorkLogs().stream())
@@ -218,7 +217,7 @@ public class ManualProcessor extends AbstractManualProcessor {
         WorkLogTree tree = new WorkLogTree(workLogs);
         Node node = tree.location(aeiObjects.getWork());
         if (null != node) {
-            calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, identities, tree, node);
+            calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, tree, node);
         }
     }
 
@@ -238,6 +237,29 @@ public class ManualProcessor extends AbstractManualProcessor {
         identities = aeiObjects.business().organization().identity().list(identities);
         if (ListTools.isNotEmpty(identities)) {
             taskIdentities.addIdentities(identities);
+        }
+    }
+
+    private void calculateRouteTypeBackIdentityByTaskCompleted(AeiObjects aeiObjects, Manual manual,
+            TaskIdentities taskIdentities, WorkLogTree tree, Node node) throws Exception {
+        for (Node n : tree.up(node)) {
+            if (StringUtils.equals(manual.getId(), n.getWorkLog().getFromActivity())) {
+                for (TaskCompleted t : aeiObjects.getTaskCompleteds()) {
+                    if (StringUtils.equals(n.getWorkLog().getFromActivityToken(), t.getActivityToken())
+                            && BooleanUtils.isTrue(t.getJoinInquire())) {
+                        String identity = aeiObjects.business().organization().identity().get(t.getIdentity());
+                        if (StringUtils.isNotEmpty(identity)) {
+                            TaskIdentity taskIdentity = new TaskIdentity();
+                            taskIdentity.setIdentity(identity);
+                            if (StringUtils.isNotEmpty(t.getEmpowerFromIdentity())) {
+                                taskIdentity.setFromIdentity(t.getEmpowerFromIdentity());
+                            }
+                            taskIdentities.add(taskIdentity);
+                        }
+                    }
+                }
+                break;
+            }
         }
     }
 
