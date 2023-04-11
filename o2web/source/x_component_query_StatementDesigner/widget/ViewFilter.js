@@ -462,12 +462,34 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             o2.Actions.load("x_query_assemble_designer").StatementAction.get( statementId, function (json) {
                 this.statementData = json.data;
                 this.setPathInputSelectOptions();
+                if( this.pathNote ){
+                    if( ["sql", "sqlScript"].contains(this.statementData.format) ){
+                        this.pathNote.hide();
+                    }else{
+                        this.pathNote.show();
+                    }
+                }
+
+                 var noteFlag;
+                this.items.each(function (item) {
+                    if( item.data.path ){
+                        if( ["sql", "sqlScript"].contains(this.statementData.format) && item.data.path.contains(".") ){
+                            noteFlag = true;
+                        }
+                        if( !["sql", "sqlScript"].contains(this.statementData.format) && !item.data.path.contains(".") ){
+                            noteFlag = true;
+                        }
+                    }
+                }.bind(this));
+                if( noteFlag )this.app.notice( MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info" );
+
                 if(callback)callback();
             }.bind(this))
         }else{
             this.options.statementId = "";
             this.statementData = null;
             this.setPathInputSelectOptions();
+            if( this.pathNote )this.pathNote.show();
             if(callback)callback();
         }
     },
@@ -804,7 +826,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         //     });
         //     return false;
         // }
-        if (!data.path || data.path.indexOf(".")<1 ) {
+        var statementData = this.statementData || {};
+        if (!data.path || ( !["sql", "sqlScript"].contains(statementData.format) && data.path.indexOf(".")<1 ) ) {
             this.verificationNode = new Element("div", {"styles": this.css.verificationNode}).inject(this.inputAreaNode);
             var text = !data.path ? MWF.APPDSMD.LP.mastInputPath : MWF.APPDSMD.LP.pathExecption;
             new Element("div", {
