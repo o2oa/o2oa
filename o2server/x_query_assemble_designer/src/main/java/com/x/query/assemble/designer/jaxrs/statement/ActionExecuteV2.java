@@ -58,7 +58,7 @@ class ActionExecuteV2 extends BaseAction {
             if (!business.executable(effectivePerson, statement)) {
                 throw new ExceptionAccessDenied(effectivePerson, statement);
             }
-            runtime = this.concreteRuntime(effectivePerson, jsonElement, business.organization(), page, size);
+            runtime = Runtime.concrete(effectivePerson, jsonElement, business.organization(), page, size);
             ExecuteTargetBuilder builder = new ExecuteTargetBuilder(ThisApplication.context(), effectivePerson,
                     business.organization(), statement, runtime);
             executeTargetPair = builder.build();
