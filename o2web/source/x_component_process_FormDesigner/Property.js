@@ -139,6 +139,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadViewFilter();
                     this.loadViewFilterWithTemplate();
                     this.loadStatementFilter();
+                    this.loadStatementFilterWithTemplate();
                     this.loadDocumentTempleteSelect();
                     this.loadFieldConfig();
 
@@ -908,10 +909,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var oldFiltrData = Array.clone( filtrData || [] );
         var oldParameterData = Array.clone( parameterData || [] );
         nodes.each(function(node){
-            var statementField = node.dataset["itemStatement"];
-            this.viewFilterWithTemplate = MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilterWithTemplate", function(){
+            var statementField = node.dataset["statement"];
+            MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilterWithTemplate", function(){
                 var _slef = this;
-                new MWF.xApplication.query.StatementDesigner.widget.ViewFilterWithTemplate(node, this.form.designer,
+                this.viewFilterWithTemplate = new MWF.xApplication.query.StatementDesigner.widget.ViewFilterWithTemplate(node, this.form.designer,
                     {"filtrData": filtrData, "customData": null, "parameterData": parameterData},
                     {
                         "statementId" : this.data[statementField] ? this.data[statementField].id : "",
