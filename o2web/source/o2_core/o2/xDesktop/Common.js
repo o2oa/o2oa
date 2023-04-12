@@ -106,9 +106,11 @@ MWF.xDesktop.notice = function(type, where, content, target, offset, option){
     }
     new mBox.Notice(options);
 };
-MWF.xDesktop.loadPortal =  function(portalId){
+MWF.xDesktop.loadPortal =  function(portalId, parameters, isLoginPage){
     layout.openApplication(null, "portal.Portal", {
         "portalId": portalId,
+        "parameters": parameters,
+        "isLoginPage": isLoginPage,
         "onAfterModulesLoad": function(){
             var layoutNode = $("layout");
             if (layoutNode) layoutNode.setStyles({
