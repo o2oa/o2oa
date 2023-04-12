@@ -2,7 +2,7 @@ package com.x.processplatform.service.processing.processor.manual;
 
 public class TaskIdentity {
 
-    public static final String TAG_IGNOREEMPOWER = "ignoreEmpower";
+    public static final String FIELD_IGNOREEMPOWER = "ignoreEmpower";
 
     private String identity;
 
