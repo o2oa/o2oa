@@ -30,7 +30,7 @@ layout.addReady(function(){
 
             layout.openApplication(null, appName, option||{}, m_status);
 
-            if (layout.session.user.name === "anonymous"){
+            if (!layout.session.user || layout.session.user.name === "anonymous"){
                 o2.loadCss("../o2_core/o2/xDesktop/$Default/blue/style-skin.css");
             }else{
                 o2.xDesktop.getUserLayout(function(){
@@ -40,24 +40,18 @@ layout.addReady(function(){
             }
         };
 
+
+        _load();
+
         // if (layout.session && layout.session.user){
         //     _load();
         // }else{
         //     if (layout.sessionPromise){
         //         layout.sessionPromise.then(function(){
         //             _load();
-        //         });
+        //         },function(){});
         //     }
         // }
-        if (layout.session && layout.session.user){
-            _load();
-        }else{
-            if (layout.sessionPromise){
-                layout.sessionPromise.then(function(){
-                    _load();
-                },function(){});
-            }
-        }
 
         window.addEventListener('popstate', function (event) {
             uri = new URI(document.location.href);

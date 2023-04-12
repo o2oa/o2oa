@@ -20,6 +20,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "isControl": false,
         "taskObject": null,
         "parameters": "",
+        "isLoginPage": false,
         "readonly": false
     },
     onQueryLoad: function(){
@@ -198,15 +199,17 @@ MWF.xApplication.portal.Portal.Main = new Class({
         var check = function(){
             if (!!pageJson && loadModuleFlag){
                 this.pageJson = pageJson;
-                if (layout.session && layout.session.user){
-                    this.openPage(pageJson, par, callback);
-                }else if( layout.sessionPromise ){
+                // if (layout.session && layout.session.user ){
+                //     this.openPage(pageJson, par, callback);
+                // }else if( layout.sessionPromise ){
                     layout.sessionPromise.then(function () {
                         this.openPage(pageJson, par, callback);
                     }.bind(this), function () {
-                        this.openPage(pageJson, par, callback);
+                        if( this.options.isLoginPage ){
+                            this.openPage(pageJson, par, callback);
+                        }
                     }.bind(this));
-                }
+                // }
             }
         }.bind(this);
 

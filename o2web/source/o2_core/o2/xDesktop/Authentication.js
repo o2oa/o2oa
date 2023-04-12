@@ -50,7 +50,7 @@ MWF.xDesktop.Authentication = new Class({
             if (node) this.loginNode = node;
             if (!node && this.loginNode) node = this.loginNode;
             if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
-                MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
+                MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter, true);
                 this.fireEvent("openLogin");
             } else {
                 this.popupOptions = {
