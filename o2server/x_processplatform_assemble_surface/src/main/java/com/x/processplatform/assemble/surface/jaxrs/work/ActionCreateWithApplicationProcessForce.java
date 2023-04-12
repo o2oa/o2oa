@@ -83,6 +83,7 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
                 throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
             }
             identities = List.of(identity);
+            units = business.organization().unit().listWithIdentitySupNested(identity);
             List<String> groups = business.organization().group().listWithIdentity(identities);
             if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
                 throw new ExceptionAccessDenied(effectivePerson, process);
