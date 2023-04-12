@@ -15,58 +15,18 @@ import com.x.processplatform.service.processing.Business;
 
 public class TaskFactory extends AbstractFactory {
 
-	public TaskFactory(Business business) throws Exception {
-		super(business);
-	}
+    public TaskFactory(Business business) throws Exception {
+        super(business);
+    }
 
-	public List<String> listWithWork(String id) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Task.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Task> root = cq.from(Task.class);
-		Predicate p = cb.equal(root.get(Task_.work), id);
-		cq.select(root.get(Task_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
-
-//	public List<Task> listWithWorkObject(String id) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Task.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
-//		Root<Task> root = cq.from(Task.class);
-//		Predicate p = cb.equal(root.get(Task_.work), id);
-//		cq.select(root).where(p);
-//		return em.createQuery(cq).getResultList();
-//	}
-
-//	public List<String> listWithJob(String job) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Task.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery(String.class);
-//		Root<Task> root = cq.from(Task.class);
-//		Predicate p = cb.equal(root.get(Task_.job), job);
-//		cq.select(root.get(Task_.id)).where(p);
-//		return em.createQuery(cq).getResultList();
-//	}
-
-//	public Long countWithActivityToken(String activityToken) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Task.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-//		Root<Task> root = cq.from(Task.class);
-//		Predicate p = cb.equal(root.get(Task_.activityToken), activityToken);
-//		cq.select(cb.count(root)).where(p);
-//		return em.createQuery(cq).getSingleResult();
-//	}
-
-//	public List<String> listWithActivityToken(String activityToken) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Task.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<String> cq = cb.createQuery(String.class);
-//		Root<Task> root = cq.from(Task.class);
-//		Predicate p = cb.equal(root.get(Task_.activityToken), activityToken);
-//		cq.select(root.get(Task_.id)).where(p);
-//		return em.createQuery(cq).getResultList();
-//	}
+    public List<String> listWithWork(String id) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(Task.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<Task> root = cq.from(Task.class);
+        Predicate p = cb.equal(root.get(Task_.work), id);
+        cq.select(root.get(Task_.id)).where(p);
+        return em.createQuery(cq).getResultList();
+    }
 
 }
