@@ -26,9 +26,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     load: function(){
         this.getOrgAction(function(){
             if (this.app.desktop.session.user.distinguishedName){
-                debugger;
-                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.listAvailableIdentityWithProcess(this.data.id, function(json){
-                    this.identitys = json.data || [];
+                this.orgAction.getPerson(function(json){
+                    this.identitys = json.data.woIdentityList || [];
                     if (this.identitys.length){
                         if (this.options.identity){
                             var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
@@ -112,7 +111,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                         var t = this.lp.noIdentitys.replace("{name}", this.app.desktop.session.user.name);
                         this.app.notice(t, "error");
                     }
-                }.bind(this))
+                }.bind(this), null, this.app.desktop.session.user.distinguishedName)
             }
         }.bind(this));
     },
