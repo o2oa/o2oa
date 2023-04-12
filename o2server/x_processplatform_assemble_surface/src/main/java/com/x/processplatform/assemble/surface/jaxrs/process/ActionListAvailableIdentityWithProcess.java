@@ -1,8 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,13 +10,14 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.Identity;
-import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.organization.WoIdentity;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Process;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionListAvailableIdentityWithProcess extends BaseAction {
 
@@ -44,8 +42,7 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 				/** 没有设置可启动人员,所有人都可以启动 */
 				dns.addAll(identities);
 			} else {
-				if (business.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-						OrganizationDefinition.ProcessPlatformManager)) {
+				if (business.canManageApplication(effectivePerson, null)) {
 					dns.addAll(identities);
 				} else {
 					for (String str : identities) {
@@ -69,10 +66,9 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 							}
 						}
 					}
-
 				}
 			}
-			List<Identity> os = business.organization().identity().listObject(dns);
+			List<WoIdentity> os = business.organization().identity().listWoObject(dns);
 			List<Wo> wos = Wo.copier.copy(os);
 			result.setData(wos);
 			return result;
@@ -80,12 +76,13 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListAvailableIdentityWithProcess$Wo")
-	public static class Wo extends Identity {
+	public static class Wo extends WoIdentity {
 
 		private static final long serialVersionUID = -3700611118921654394L;
 
-		static WrapCopier<Identity, Wo> copier = WrapCopierFactory.wo(Identity.class, Wo.class, null,
+		static WrapCopier<WoIdentity, Wo> copier = WrapCopierFactory.wo(WoIdentity.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+
 
 	}
 }
