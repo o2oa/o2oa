@@ -309,14 +309,14 @@ MWF.xApplication.MinderEditor.MainMenu = new Class({
         }.bind(this));
 
 
-        var actionArea = new Element("div.rightActionArea", {
-            "styles" : this.css.rightActionArea
-        }).inject( this.rightContentNode );
+        // var actionArea = new Element("div.rightActionArea", {
+        //     "styles" : this.css.rightActionArea
+        // }).inject( this.rightContentNode );
 
-        this.createActionNode( actionArea, "import", "打开本地文件", "上传本地脑图文件，并用脑图编辑", function(){
-            this.app.openSaveAsDialog();
-            this.hide();
-        }.bind(this) );
+        // this.createActionNode( actionArea, "import", "打开本地文件", "上传本地脑图文件，并用脑图编辑", function(){
+        //     this.app.openSaveAsDialog();
+        //     this.hide();
+        // }.bind(this) );
     },
     openMinderList : function( documentData ){
         var appId = "Minder";
