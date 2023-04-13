@@ -17,6 +17,8 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
@@ -26,135 +28,133 @@ import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.FormVersion;
 
 class ActionEdit extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Business business = new Business(emc);
-			Form form = emc.find(id, Form.class);
-			if (null == form) {
-				throw new ExceptionFormNotExist(id);
-			}
-			Application application = emc.find(form.getApplication(), Application.class);
-			if (null == application) {
-				throw new ExceptionApplicationNotExist(wi.getApplication());
-			}
-			if (!business.editable(effectivePerson, application)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
-						application.getName(), application.getId());
-			}
 
-			/* 先删除FormField */
-			List<String> formFieldIds = business.formField().listWithForm(form.getId());
-			emc.beginTransaction(FormField.class);
-			for (FormField o : emc.list(FormField.class, formFieldIds)) {
-				emc.remove(o);
-			}
-			List<FormField> formFields = WiFormField.copier.copy(wi.getFormFieldList());
-			for (FormField o : formFields) {
-				o.setApplication(application.getId());
-				o.setForm(form.getId());
-				emc.persist(o, CheckPersistType.all);
-			}
-			emc.commit();
-			emc.beginTransaction(Form.class);
-			Wi.copier.copy(wi, form);
-			form.setId(id);
-			form.setApplication(application.getId());
-			// FormProperties properties = new FormProperties();
-//			properties.setRelatedFormList(wi.getRelatedFormList());
-//			properties.setMobileRelatedFormList(wi.getMobileRelatedFormList());
-//			properties.setRelatedScriptMap(wi.getRelatedScriptMap());
-//			properties.setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
-			// form.setP!!!roperties(properties);
-			form.getProperties().setRelatedFormList(wi.getRelatedFormList());
-			form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
-			form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
-			form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
-			emc.check(form, CheckPersistType.all);
-			emc.commit();
-			CacheManager.notify(Form.class);
-			/* 保存历史版本 */
-			ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
-			Wo wo = new Wo();
-			wo.setId(form.getId());
-			result.setData(wo);
-			return result;
-		}
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
-	public static class Wo extends WoId {
-	}
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+        LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            Business business = new Business(emc);
+            Form form = emc.find(id, Form.class);
+            if (null == form) {
+                throw new ExceptionFormNotExist(id);
+            }
+            Application application = emc.find(form.getApplication(), Application.class);
+            if (null == application) {
+                throw new ExceptionApplicationNotExist(wi.getApplication());
+            }
+            if (!business.editable(effectivePerson, application)) {
+                throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
+                        application.getName(), application.getId());
+            }
 
-	public static class Wi extends Form {
+            // 先删除FormField
+            List<String> formFieldIds = business.formField().listWithForm(form.getId());
+            emc.beginTransaction(FormField.class);
+            for (FormField o : emc.list(FormField.class, formFieldIds)) {
+                emc.remove(o);
+            }
+            List<FormField> formFields = WiFormField.copier.copy(wi.getFormFieldList());
+            for (FormField o : formFields) {
+                o.setApplication(application.getId());
+                o.setForm(form.getId());
+                emc.persist(o, CheckPersistType.all);
+            }
+            emc.commit();
+            emc.beginTransaction(Form.class);
+            Wi.copier.copy(wi, form);
+            form.setId(id);
+            form.setApplication(application.getId());
+            form.getProperties().setRelatedFormList(wi.getRelatedFormList());
+            form.getProperties().setMobileRelatedFormList(wi.getMobileRelatedFormList());
+            form.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
+            form.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
+            emc.check(form, CheckPersistType.all);
+            emc.commit();
+            CacheManager.notify(Form.class);
+            // 保存历史版本
+            ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
+            Wo wo = new Wo();
+            wo.setId(form.getId());
+            result.setData(wo);
+            return result;
+        }
+    }
 
-		private static final long serialVersionUID = 4289841165185269299L;
+    public static class Wo extends WoId {
+    }
 
-		static WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null, ListTools
-				.toList(JpaObject.FieldsUnmodify, Form.lastUpdatePerson_FIELDNAME, Form.lastUpdateTime_FIELDNAME));
+    public static class Wi extends Form {
 
-		@FieldDescribe("字段")
-		private List<WiFormField> formFieldList = new ArrayList<>();
+        private static final long serialVersionUID = 4289841165185269299L;
 
-		@FieldDescribe("关联表单")
-		private List<String> relatedFormList = new ArrayList<>();
+        static WrapCopier<Wi, Form> copier = WrapCopierFactory.wi(Wi.class, Form.class, null, ListTools
+                .toList(JpaObject.FieldsUnmodify, Form.lastUpdatePerson_FIELDNAME, Form.lastUpdateTime_FIELDNAME));
 
-		@FieldDescribe("移动端关联表单")
-		private List<String> mobileRelatedFormList = new ArrayList<>();
+        @FieldDescribe("字段")
+        private List<WiFormField> formFieldList = new ArrayList<>();
 
-		@FieldDescribe("关联脚本.")
-		private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
+        @FieldDescribe("关联表单")
+        private List<String> relatedFormList = new ArrayList<>();
 
-		@FieldDescribe("移动端关联脚本.")
-		private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
+        @FieldDescribe("移动端关联表单")
+        private List<String> mobileRelatedFormList = new ArrayList<>();
 
-		public List<WiFormField> getFormFieldList() {
-			return formFieldList;
-		}
+        @FieldDescribe("关联脚本.")
+        private Map<String, String> relatedScriptMap = new LinkedHashMap<>();
 
-		public void setFormFieldList(List<WiFormField> formFieldList) {
-			this.formFieldList = formFieldList;
-		}
+        @FieldDescribe("移动端关联脚本.")
+        private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
 
-		public List<String> getRelatedFormList() {
-			return relatedFormList;
-		}
+        public List<WiFormField> getFormFieldList() {
+            return formFieldList;
+        }
 
-		public void setRelatedFormList(List<String> relatedFormList) {
-			this.relatedFormList = relatedFormList;
-		}
+        public void setFormFieldList(List<WiFormField> formFieldList) {
+            this.formFieldList = formFieldList;
+        }
 
-		public List<String> getMobileRelatedFormList() {
-			return mobileRelatedFormList;
-		}
+        public List<String> getRelatedFormList() {
+            return relatedFormList;
+        }
 
-		public void setMobileRelatedFormList(List<String> mobileRelatedFormList) {
-			this.mobileRelatedFormList = mobileRelatedFormList;
-		}
+        public void setRelatedFormList(List<String> relatedFormList) {
+            this.relatedFormList = relatedFormList;
+        }
 
-		public Map<String, String> getRelatedScriptMap() {
-			return relatedScriptMap;
-		}
+        public List<String> getMobileRelatedFormList() {
+            return mobileRelatedFormList;
+        }
 
-		public void setRelatedScriptMap(Map<String, String> relatedScriptMap) {
-			this.relatedScriptMap = relatedScriptMap;
-		}
+        public void setMobileRelatedFormList(List<String> mobileRelatedFormList) {
+            this.mobileRelatedFormList = mobileRelatedFormList;
+        }
 
-		public Map<String, String> getMobileRelatedScriptMap() {
-			return mobileRelatedScriptMap;
-		}
+        public Map<String, String> getRelatedScriptMap() {
+            return relatedScriptMap;
+        }
 
-		public void setMobileRelatedScriptMap(Map<String, String> mobileRelatedScriptMap) {
-			this.mobileRelatedScriptMap = mobileRelatedScriptMap;
-		}
+        public void setRelatedScriptMap(Map<String, String> relatedScriptMap) {
+            this.relatedScriptMap = relatedScriptMap;
+        }
 
-	}
+        public Map<String, String> getMobileRelatedScriptMap() {
+            return mobileRelatedScriptMap;
+        }
 
-	public static class WiFormField extends FormField {
+        public void setMobileRelatedScriptMap(Map<String, String> mobileRelatedScriptMap) {
+            this.mobileRelatedScriptMap = mobileRelatedScriptMap;
+        }
 
-		private static final long serialVersionUID = -4951139918340180031L;
+    }
 
-		static WrapCopier<WiFormField, FormField> copier = WrapCopierFactory.wi(WiFormField.class, FormField.class,
-				null, JpaObject.FieldsUnmodify);
-	}
+    public static class WiFormField extends FormField {
+
+        private static final long serialVersionUID = -4951139918340180031L;
+
+        static WrapCopier<WiFormField, FormField> copier = WrapCopierFactory.wi(WiFormField.class, FormField.class,
+                null, JpaObject.FieldsUnmodify);
+    }
 }
