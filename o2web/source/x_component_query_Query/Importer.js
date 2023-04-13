@@ -126,7 +126,14 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 }
                 return false;
             });
-            debugger;
+            if( !importedData.length )return;
+
+            var titleLength = importedData[0].length;
+            importedData.each(function (array) {
+                for( var i=0; i<titleLength; i++){
+                    if( typeOf(array[i]) === "null" )array[i] = "";
+                }
+            })
 
             this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
                 "onPostShow": function(){
@@ -649,6 +656,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
 MWF.xApplication.query.Query.Importer.Row = new Class({
     initialize: function(importer, importedData, rowIndex){
+        debugger;
         this.importer = importer;
         this.importedData = importedData;
         this.clazzType = "row";
