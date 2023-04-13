@@ -44,7 +44,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		debugger;
 		var processTools = ( this.json.multiTools || [] ).filter( function (tool) {
 			return ["closeWork","saveWork","processWork","rerouteWork","resetWork","addTask","addSplit","retractWork","rollback",
-				"deleteWork","printWork","pressWork","pauseTask","resumeTask","downloadAll"].contains( tool.action )
+				"deleteWork","printWork","pressWork","pauseTask","resumeTask"].contains( tool.action )
 		});
 		processTools.each(function (tool) {
 			var actionNode = this.node.getElement("[mwfbuttonaction='"+tool.action+"']");

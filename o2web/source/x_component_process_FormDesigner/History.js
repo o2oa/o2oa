@@ -367,6 +367,7 @@ MWF.FCWHistory.Item = new Class({
         }
     },
     comeHere: function ( e, notRedoThis ) {
+        debugger;
         this.history.goto(this, notRedoThis);
     },
     undo: function () { //回退
@@ -1133,6 +1134,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         return this.data.changeList[0].compareName || this.data.changeList[0].name;
     },
     comeHere: function (e) {
+        debugger;
         this.parentItem.comeHere( null, true );
         this.parentItem.goto( this );
     },
