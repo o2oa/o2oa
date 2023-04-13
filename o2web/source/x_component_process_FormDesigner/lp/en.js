@@ -540,6 +540,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "simple": "Simple",
         "separator": "Separator",
         "asyncMode": "Async Mode",
+        "asyncLoad": "Async Loading",
 
         "identity": "Identity",
         "unit": "Unit",

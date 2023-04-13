@@ -538,6 +538,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "simple": "精简",
         "separator": "分隔符",
         "asyncMode": "异步模式",
+        "asyncLoad": "异步加载",
 
         "identity": "身份",
         "unit": "组织",

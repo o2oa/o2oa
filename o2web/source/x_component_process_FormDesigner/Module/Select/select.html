@@ -79,6 +79,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="editTableTitle">{{$.lp.asyncLoad}}</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="itemDictAsync" value="true" text{($.itemDictAsync)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="itemDictAsync" value="false" text{(!$.itemDictAsync)?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
                     <td class="editTableValue" colspan="2">{{$.lp.dictKeyNote}}:</td>
                 </tr>
                 <tr>
