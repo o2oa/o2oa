@@ -4495,6 +4495,27 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
 
+            if( !layout.inBrowser && o2.typeOf(callback) === "function" ){
+                if( !options )options = {};
+                var queryLoad = options.onQueryLoad;
+                options.onQueryLoad = function () {
+                    if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
+                    callback(this);
+                }
+            };
+
+            runCallback = function ( handel ) {
+                if( o2.typeOf(callback) === "function" ) {
+                    if (layout.inBrowser) {
+                        callback(handel);
+                    } else if (options && options.appId) {
+                        if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
+                            callback(layout.desktop.apps[options.appId], true);
+                        }
+                    }
+                }
+            };
+
             if (workData) {
                 var len = workData.workList.length + workData.workCompletedList.length;
                 if (len) {
@@ -4524,7 +4545,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                                 var work = e.target.retrieve("work");
                                 if (work){
                                    handel =  this.openWork(work.id, null, work.title, options);
-                                   if(callback)callback( handel );
+                                   runCallback( handel );
                                 }
                                 dlg.close();
                             }.bind(this));
@@ -4553,7 +4574,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                                 var work = e.target.retrieve("work");
                                 if (work){
                                     handel =  this.openWork(null, work.id, work.title, options);
-                                    if(callback)callback( handel );
+                                    runCallback( handel );
                                 }
                                 dlg.close();
                             }.bind(this));
@@ -4579,12 +4600,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         if (workData.workList.length) {
                             var work = workData.workList[0];
                             handel = this.openWork(work.id, null, work.title, options);
-                            if(callback)callback(handel);
+                            runCallback(handel);
                             return handel;
                         } else {
                             var work = workData.workCompletedList[0];
                             handel = this.openWork(null, work.id, work.title, options);
-                            if(callback)callback(handel);
+                            runCallback(handel);
                             return handel;
                         }
                     }
