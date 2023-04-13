@@ -24,7 +24,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         "readonly": false
     },
     onQueryLoad: function(){
-        if (!this.options.title) this.setOptions({"title": MWF.xApplication.portal.Portal.LP.title});
+        if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.portal.Portal.LP.title});
         this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
             this.options.portalId = this.status.portalId;
@@ -238,7 +238,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.portal = json.data;
             if (this.pageJson){
                 var pageName = this.pageJson.data.page ? this.pageJson.data.page.name : this.pageJson.data.name;
-                this.setTitle(this.portal.name+"-"+pageName);
+                if(!layout.mobile)this.setTitle(this.portal.name+"-"+pageName);
             }
 
             if (this.portal.icon){
