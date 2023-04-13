@@ -7,6 +7,7 @@ import java.util.List;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.Identity;
+import com.x.base.core.project.organization.WoIdentity;
 import com.x.base.core.project.tools.ListTools;
 
 public class IdentityFactory {
@@ -39,7 +40,7 @@ public class IdentityFactory {
 
 	/** 获取身份对象 */
 	public Identity getObject(String value) throws Exception {
-		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(value), false);
 		if (ListTools.isEmpty(os)) {
 			return null;
 		} else {
@@ -49,13 +50,19 @@ public class IdentityFactory {
 
 	/** 批量获取身份对象 */
 	public List<Identity> listObject(Collection<String> values) throws Exception {
-		List<? extends Identity> os = ActionListObject.execute(context, values);
+		List<? extends Identity> os = ActionListObject.execute(context, values, false);
 		return (List<Identity>) os;
 	}
 
 	/** 批量获取身份对象 */
+	public List<WoIdentity> listWoObject(Collection<String> values) throws Exception {
+		List<? extends Identity> os = ActionListObject.execute(context, values, true);
+		return (List<WoIdentity>) os;
+	}
+
+	/** 批量获取身份对象 */
 	public List<Identity> listObject(String... values) throws Exception {
-		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(values));
+		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(values), false);
 		return (List<Identity>) os;
 	}
 
@@ -152,7 +159,7 @@ public class IdentityFactory {
 
 	/** 根据个人获取排序号 */
 	public Integer getOrderNumber(String value, Integer defaultValue) throws Exception {
-		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Identity> os = ActionListObject.execute(context, Arrays.asList(value), false);
 		if (os.isEmpty()) {
 			return defaultValue;
 		} else {

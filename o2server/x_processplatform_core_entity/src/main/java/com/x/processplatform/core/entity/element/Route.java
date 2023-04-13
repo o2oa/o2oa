@@ -42,8 +42,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Route extends SliceJpaObject {
 
+    // 路由类型,正常
     public static final String TYPE_NORMAL = "normal";
+    // 路由类型,转交
     public static final String TYPE_APPENDTASK = "appendTask";
+    // 路由类型,退回
     public static final String TYPE_BACK = "back";
 
     public static final String APPENDTASKIDENTITYTYPE_SCRIPT = "script";

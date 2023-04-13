@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
-    <title>登录中...</title>
+    <title></title>
     <script src="../o2_core/o2.min.js"></script>
     <script src="js/sso.min.js"></script>
     <script>
@@ -106,7 +106,7 @@
                     }
                 }
 
-                // if ( enterId ){
+                //if ( enterId ){
                     if( enterId && token ){
                         loginCallback( token, enterId )
                     }else{
@@ -137,13 +137,17 @@
                 // return getArr.length ? true : false;
             }
 
+            var gotoPage = function (uri) {
+                history.replaceState(null, "gotoPage", uri);
+                document.location.href = uri;
+            };
+
             var redirectTo = function(){
                 var uri = new URI(window.location.toString());
                 var redirect = uri.getData("redirect");
 
-
                 if (redirect){
-                    window.location = redirect + ( redirect.indexOf("?") > -1 ? "&debugger" : "?debugger" );
+                    gotoPage( redirect );
                 }else{
                     if( isMobile() ){
                         requestJson(
@@ -156,20 +160,20 @@
                                     // if( data.indexPage ){
                                     //     url = url + "&page=" + loginPage.page;
                                     // }
-                                    window.location = "../x_desktop/portalmobile.html?id="+data.value;
+                                    gotoPage( "../x_desktop/portalmobile.html?id="+data.value );
                                 }else{
-                                    window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                    gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter" );
                                 }
                             }.bind(this),
                             function(xhr){
-                                window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter");
                             }.bind(this),
                             function(text, error){
-                                window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter" );
                             }.bind(this)
                         );
                     }else{
-                        window.location = "../x_desktop/index.html";
+                        gotoPage( "../x_desktop/index.html" );
                     }
                 }
             };

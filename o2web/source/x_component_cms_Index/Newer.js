@@ -386,6 +386,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
             var identities1 = (json.data && json.data.woIdentityList) ? json.data.woIdentityList : [];
 
             var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+            identityList = identityList.filter(function( i ){ return !!i });
 
             identities1.each( function(i){
                 if( identityList.length ){
@@ -469,6 +470,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
         var identity = "";
 
         var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+        identityList = identityList.filter(function( i ){ return !!i });
         if( identityList.length === 1 && identityList[0] ){
             identity = typeOf( identityList[0] ) === "string" ? identityList[0] : identityList[0].distinguishedName;
         }else if( this.identityArea ){

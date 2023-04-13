@@ -28,7 +28,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("表单版本")
 public class FormVersionAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(FormVersionAction.class);
+	private static final  Logger LOGGER = LoggerFactory.getLogger(FormVersionAction.class);
 
 	@JaxrsMethodDescribe(value = "根据脚本id获取历史版本列表.", action = ActionListWithForm.class)
 	@GET
@@ -42,7 +42,7 @@ public class FormVersionAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithForm().execute(effectivePerson, formId);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -60,7 +60,7 @@ public class FormVersionAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

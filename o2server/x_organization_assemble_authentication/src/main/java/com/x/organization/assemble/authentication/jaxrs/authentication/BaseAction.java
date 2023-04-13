@@ -412,7 +412,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else {
 			LOGGER.debug("info script:{}.", oauthClient.getInfoScriptText());
 			CompiledScript sc = ScriptingFactory.functionalizationCompile(oauthClient.getInfoScriptText());
-			ScriptContext scriptContext = new SimpleScriptContext();
+			//ScriptContext scriptContext = new SimpleScriptContext();
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			bindings.put("text", body);
 			JsonScriptingExecutor.jsonElement(sc, scriptContext, jsonElement -> {

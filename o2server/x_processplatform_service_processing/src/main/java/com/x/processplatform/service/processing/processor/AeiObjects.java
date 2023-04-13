@@ -76,6 +76,8 @@ public class AeiObjects extends GsonPropertyObject {
             ProcessingAttributes processingAttributes) throws Exception {
         this.business = business;
         this.work = work;
+        this.oldWork = new Work();
+        this.work.copyTo(this.oldWork);
         this.activity = activity;
         this.processingAttributes = processingAttributes;
         this.processingConfigurator = processingConfigurator;
@@ -93,6 +95,8 @@ public class AeiObjects extends GsonPropertyObject {
     private List<Route> selectRoutes = new ArrayList<>();
 
     private Work work;
+
+    private Work oldWork;
 
     // 使用用懒加载,初始为null
     private List<Work> works = null;
@@ -674,7 +678,12 @@ public class AeiObjects extends GsonPropertyObject {
         this.message();
     }
 
-    private void modify() {
+    private void modify() throws Exception{
+        if(StringUtils.isNotBlank(this.work.getSerial()) && !this.work.getSerial().equals(this.oldWork.getSerial())) {
+            executeProjectionFullyNotIncludeNormalTaskCompleted();
+            executeProjectionFullyNotIncludeNormalReadCompleted();
+            executeProjectionFullyNotIncludeNormalReview();
+        }
         this.modifyTaskCompleted();
         this.modifyRead();
         this.modifyReadCompleted();
@@ -685,10 +694,12 @@ public class AeiObjects extends GsonPropertyObject {
         for (TaskCompleted o : this.getCreateTaskCompleteds()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
             o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
         for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
             o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
     }
 
@@ -696,28 +707,38 @@ public class AeiObjects extends GsonPropertyObject {
         for (Read o : this.getCreateReads()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
             o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
         for (Read o : this.getUpdateReads()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
             o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
     }
 
     private void modifyReadCompleted() {
         for (ReadCompleted o : this.getCreateReadCompleteds()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
+            o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
         for (ReadCompleted o : this.getUpdateReadCompleteds()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
+            o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
     }
 
     private void modifyReview() {
         for (Review o : this.getCreateReviews()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
+            o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
         for (Review o : this.getUpdateReviews()) {
             o.setCurrentActivityName(this.getWork().getActivityName());
+            o.setTitle(this.getWork().getTitle());
+            o.setSerial(this.getWork().getSerial());
         }
     }
 
@@ -1488,7 +1509,7 @@ public class AeiObjects extends GsonPropertyObject {
 
     /**
      * 更新data对象,这个方法会在流程executingCommitted之后再次调用,实现可以在after事件中修改数据.
-     * 
+     *
      * @return 是否有Item发生了更新
      * @throws Exception
      */

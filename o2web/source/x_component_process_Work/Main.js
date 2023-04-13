@@ -28,7 +28,7 @@ MWF.xApplication.process.Work.Main = new Class({
         "worklogType": "record" //record, worklog
 	},
 	onQueryLoad: function(){
-        if (!this.options.title) this.setOptions({
+        if (!this.options.title && !layout.mobile) this.setOptions({
             "title": MWF.xApplication.process.Work.LP.title
         });
 		this.lp = MWF.xApplication.process.Work.LP;
