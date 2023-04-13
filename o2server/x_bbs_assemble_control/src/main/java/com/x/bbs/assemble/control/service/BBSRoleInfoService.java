@@ -1,10 +1,5 @@
 package com.x.bbs.assemble.control.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,26 +8,25 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.assemble.control.factory.BBSPermissionInfoFactory;
 import com.x.bbs.assemble.control.factory.BBSPermissionRoleFactory;
 import com.x.bbs.assemble.control.factory.BBSRoleInfoFactory;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.bean.BindObject;
-import com.x.bbs.entity.BBSForumInfo;
-import com.x.bbs.entity.BBSPermissionInfo;
-import com.x.bbs.entity.BBSPermissionRole;
-import com.x.bbs.entity.BBSRoleInfo;
-import com.x.bbs.entity.BBSSectionInfo;
-import com.x.bbs.entity.BBSUserRole;
+import com.x.bbs.entity.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 论坛角色信息管理服务类
- * 
+ *
  * 论坛角色
  * 论坛访客(FORUM_GUEST):论坛访客
  * 		0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
- * 
+ *
  * 论坛管理员(FORUM_SUPER_MANAGER):论坛管理员，拥有该论坛管理的最大权限
  *      0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
  * 		1、论坛信息管理（FORUM_INFO_MANAGEMENT）：用户拥有对论坛的版块增加，删除，修改权限
@@ -45,12 +39,12 @@ import com.x.bbs.entity.BBSUserRole;
  * 		7、论坛回贴管理（FORUM_REPLY_MANAGEMENT）：用户拥有对论坛中所有的回复的删除权限
  * 		8、论坛权限管理（FORUM_PERMISSION_MANAGEMENT）：用户拥有对论坛的用户进行该论坛权限设置的权限
  * 		9、论坛配置管理（FORUM_CONFIG_MANAGEMENT）：用户拥有对论坛的参数配置进行设置的权限
- * 
- * 
+ *
+ *
  * 版块角色
  * 版块访客(SECTION_GUEST):版块访客
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
- * 
+ *
  * 版块主(SECTION_MANAGER):拥有版块及版块内容管理的最大权限
  *      0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 		1、发布主题（SECTION_SUBJECT_PUBLISH）:用户可以在指定版块中发布主题
@@ -64,32 +58,32 @@ import com.x.bbs.entity.BBSUserRole;
  * 		9、版块主题申精（SECTION_SUBJECT_CREAM）:用户可以在指定版块中对指定主题进行精华主题设置操作
  * 		10、版块权限管理（SECTION_PERMISSION_MANAGEMENT）:用户可以对论坛用户进行指定版块的权限管理
  * 		11、版块配置管理（SECTION_CONFIG_MANAGEMENT）:用户可以对指定版块进行系统参数配置修改
- * 
+ *
  * 主题发布者(SECTION_SUBJECT_PUBLISHER):允许在指定版块内发布主题
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 		1、发布主题（SECTION_SUBJECT_PUBLISH）:用户可以在指定版块中发布主题
- * 
+ *
  * 主题回复者(SECTION_REPLY_PUBLISHER):允许在指定版块内发布主题
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 		1、发表回复（SECTION_REPLY_PUBLISH）:用户可以在指定版块中对所有主题进行回复
- * 
+ *
  * 主题推荐者(SECTION_RECOMMENDER):允许在指定版块内发布主题
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 		1、版块主题推荐（SECTION_SUBJECT_RECOMMEND）:用户可以在指定版块中对指定主题进行推荐操作
- * 
+ *
  * 主题审核者(SECTION_SUBJECT_AUDITOR):允许在指定版块内发布主题
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
  * 		1、审核主题（SECTION_SUBJECT_AUDIT）:用户可以审核在指定版块中发布的主题，如果主题需要审核
- * 
+ *
  * 回复审核者(SECTION_REPLY_AUDITOR):允许在指定版块内发布主题
  * 		0、论坛可见（SECTION_VIEW）:用户可以BBS系统中访问该版块
- * 		1、审核回复（SECTION_REPLY_AUDIT）:用户可以审核在指定版块中的所有回复内容，如果回复需要审核 * 
- * 
+ * 		1、审核回复（SECTION_REPLY_AUDIT）:用户可以审核在指定版块中的所有回复内容，如果回复需要审核 *
+ *
  * @author LIYI
  *
  */
 public class BBSRoleInfoService {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( BBSRoleInfoService.class );
 	private UserManagerService userManagerService = new UserManagerService();
 	/**
@@ -111,10 +105,10 @@ public class BBSRoleInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 查询所有的角色信息
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -128,7 +122,7 @@ public class BBSRoleInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据指定的ID列表查询角色信息
 	 * @param ids
@@ -148,7 +142,7 @@ public class BBSRoleInfoService {
 			throw e;
 		}
 	}
-	
+
 	public void createForumRole( EffectivePerson effectivePerson, String forumId ) throws Exception {
 		BBSForumInfo forumInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -161,7 +155,7 @@ public class BBSRoleInfoService {
 			createForumRole( effectivePerson, forumInfo );
 		}
 	}
-	
+
 	/**
 	 * 检查并且创建指定论坛的角色对象
 	 * @param _bBSForumInfo
@@ -183,16 +177,16 @@ public class BBSRoleInfoService {
 		}else {
 			personName = effectivePerson.getDistinguishedName();
 		}
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business( emc );
 			/**
 			 * 论坛角色信息管理服务类
-			 * 
+			 *
 			 * 论坛角色
 			 * 论坛访客(FORUM_GUEST):论坛访客
 			 * 		0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
-			 * 
+			 *
 			 * 论坛管理员(FORUM_SUPER_MANAGER):论坛管理员，拥有该论坛管理的最大权限
 			 *      0、论坛可见（FORUM_VIEW）:用户可以BBS系统中访问该论坛
 			 * 		1、论坛信息管理（FORUM_INFO_MANAGEMENT）：用户拥有对论坛的版块增加，删除，修改权限
@@ -208,13 +202,13 @@ public class BBSRoleInfoService {
 			 */
 			permissionCodeList.clear();
 			permissionCodeList.add( "FORUM_VIEW_" + forumId );
-			checkAndSaveBBSRoleInfo( emc, personName, 
-					_bBSForumInfo, "FORUM_GUEST_" + forumId, forumName + "-论坛访客", "系统角色，论坛["+ forumName +"]对指定范围用户可见。", 
+			checkAndSaveBBSRoleInfo( emc, personName,
+					_bBSForumInfo, "FORUM_GUEST_" + forumId, forumName + "-论坛访客", "系统角色，论坛["+ forumName +"]对指定范围用户可见。",
 					permissionCodeList );
-			
+
 			//查询该论坛下有多少版块
 			sectionInfoList = business.sectionInfoFactory().listAllSectionByForumId( _bBSForumInfo.getId() );
-			
+
 			//论坛超级管理员(FORUM_SUPER_MANAGER):删除、审核，回复，置顶，精华，推荐等等
 			permissionCodeList.clear();
 			permissionCodeList.add( "FORUM_VIEW_" + forumId );
@@ -227,7 +221,7 @@ public class BBSRoleInfoService {
 //			permissionCodeList.add( "FORUM_SUBJECT_MANAGEMENT_" + forumId );
 //			permissionCodeList.add( "FORUM_REPLY_MANAGEMENT_" + forumId );
 			permissionCodeList.add( "FORUM_PERMISSION_MANAGEMENT_" + forumId );
-			permissionCodeList.add( "FORUM_CONFIG_MANAGEMENT_" + forumId );			
+			permissionCodeList.add( "FORUM_CONFIG_MANAGEMENT_" + forumId );
 			//该论坛下所有版块的相关权限都要给
 			if( sectionInfoList != null ){
 				for( BBSSectionInfo section : sectionInfoList ){
@@ -247,15 +241,15 @@ public class BBSRoleInfoService {
 					permissionCodeList.add( "SECTION_CONFIG_MANAGEMENT_" + sectionId );
 				}
 			}
-			checkAndSaveBBSRoleInfo( emc, personName, _bBSForumInfo, "FORUM_SUPER_MANAGER_" + forumId, 
-					forumName + "-论坛超级管理员", "系统角色，在论坛["+ forumName +"]中拥有最大管理权限。", 
+			checkAndSaveBBSRoleInfo( emc, personName, _bBSForumInfo, "FORUM_SUPER_MANAGER_" + forumId,
+					forumName + "-论坛超级管理员", "系统角色，在论坛["+ forumName +"]中拥有最大管理权限。",
 					permissionCodeList );
 		}catch( Exception e ){
 			logger.warn( "system check and create forum role got an exception!" );
 			throw e;
 		}
 	}
-	
+
 	public void createSectionRole( String creatorName, String sectionId ) throws Exception {
 		BBSSectionInfo sectionInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -288,7 +282,7 @@ public class BBSRoleInfoService {
 			business = new Business( emc );
 			//查询该论坛下有多少版块
 			sectionInfoList = business.sectionInfoFactory().listSubSectionByMainSectionId( _sectionInfo.getId() );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			if( sectionInfoList != null ){
@@ -298,7 +292,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName,  _sectionInfo, "SECTION_GUEST_" + sectionId, forumName + "-" + sectionName + "-版块访问", "系统角色，版块[" + forumName + "-"+ sectionName +"]对指定范围内的用户可见，并且用户可发布可回复。", permissionCodeList );
-			
+
 			//版主(SECTION_MANAGER):拥有版块及版块内容管理的最大权限
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
@@ -334,7 +328,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_MANAGER_" + sectionId, forumName + "-" + sectionName + "-版主", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]中拥有版块及版块内容管理的最大权限。", permissionCodeList );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			permissionCodeList.add( "SECTION_SUBJECT_PUBLISH_" + sectionId );
@@ -346,7 +340,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_SUBJECT_PUBLISHER_" + sectionId, forumName + "-" + sectionName + "-主题发布者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]发布主题。", permissionCodeList );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			permissionCodeList.add( "SECTION_REPLY_PUBLISH_" + sectionId );
@@ -358,7 +352,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_REPLY_PUBLISHER_" + sectionId, forumName + "-" + sectionName + "-回复发布者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]发表回复。", permissionCodeList );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			permissionCodeList.add( "SECTION_SUBJECT_RECOMMEND_" + sectionId );
@@ -370,7 +364,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_RECOMMENDER_" + sectionId, forumName + "-" + sectionName + "-主题推荐者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]对主题进行推荐到主页操作。", permissionCodeList );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			permissionCodeList.add( "SECTION_SUBJECT_AUDIT_" + sectionId );
@@ -382,7 +376,7 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_SUBJECT_AUDITOR_" + sectionId, forumName + "-" + sectionName + "-主题审核者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]对发布的主题进行审核。", permissionCodeList );
-			
+
 			permissionCodeList.clear();
 			permissionCodeList.add( "SECTION_VIEW_" + sectionId );
 			permissionCodeList.add( "SECTION_REPLY_AUDIT_" + sectionId );
@@ -394,13 +388,13 @@ public class BBSRoleInfoService {
 				}
 			}
 			checkAndSaveBBSRoleInfo( emc, creatorName, _sectionInfo, "SECTION_REPLY_AUDITOR_" + sectionId, forumName + "-" + sectionName + "-回复审核者", "系统角色，用户可以在版块[" + forumName + "-"+ sectionName +"]中对发表的回复进行审核。", permissionCodeList );
-			
+
 		}catch( Exception e ){
 			logger.warn( "system check and create section role got an exception!" );
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据传入的参数组织角色信息，并且验证角色是否已经存在，如果不存在则新增一个角色信息
 	 * @param emc
@@ -417,9 +411,9 @@ public class BBSRoleInfoService {
 		BBSRoleInfoFactory roleInfoFactory = business.roleInfoFactory();
 		BBSPermissionInfoFactory permissionInfoFactory = business.permissionInfoFactory();
 		BBSPermissionRoleFactory permissionRoleFactory  = business.permissionRoleFactory();
-		BBSRoleInfo roleInfo = roleInfoFactory.getRoleByCode( roleCode );		
+		BBSRoleInfo roleInfo = roleInfoFactory.getRoleByCode( roleCode );
         if( roleInfo == null ){
-        	roleInfo = new BBSRoleInfo( creatorName,  _bBSForumInfo.getId(), _bBSForumInfo.getForumName(), null, null, null, null, 
+        	roleInfo = new BBSRoleInfo( creatorName,  _bBSForumInfo.getId(), _bBSForumInfo.getForumName(), null, null, null, null,
         			"论坛角色", roleName, roleCode, description, _bBSForumInfo.getOrderNumber() );
         	emc.beginTransaction( BBSRoleInfo.class );
         	emc.persist( roleInfo, CheckPersistType.all );
@@ -433,8 +427,8 @@ public class BBSRoleInfoService {
         			//查询角色和权限的绑定关系是否存在，如果不存在则进行数据增加，此操作只在新增角色的时候进行一次
         			if( !permissionRoleFactory.exsistPermissionRole( roleCode, permissionCode ) ){
         				emc.beginTransaction( BBSPermissionRole.class );
-        				permissionRole = new BBSPermissionRole( roleInfo.getForumId(), roleInfo.getForumName(), roleInfo.getSectionId(), 
-        						roleInfo.getSectionName(), roleInfo.getMainSectionId(), roleInfo.getMainSectionName(), permissionInfo.getPermissionType(), 
+        				permissionRole = new BBSPermissionRole( roleInfo.getForumId(), roleInfo.getForumName(), roleInfo.getSectionId(),
+        						roleInfo.getSectionName(), roleInfo.getMainSectionId(), roleInfo.getMainSectionName(), permissionInfo.getPermissionType(),
         						permissionInfo.getPermissionName(), permissionInfo.getPermissionCode(), roleInfo.getId(), roleName, roleCode, description, _bBSForumInfo.getOrderNumber() );
         				emc.persist( permissionRole, CheckPersistType.all );
         			}
@@ -443,17 +437,17 @@ public class BBSRoleInfoService {
         	emc.commit();
         }
 	}
-	
+
 	/**
 	 * 根据传入的参数组织权限信息，并且验证权限是否已经存在，如果不存在则新增一个权限信息
 	 * @param emc
 	 * @param _sectionInfo
-	 * @param permissionCode
-	 * @param permissionName
+	 * @param roleCode
+	 * @param roleName
 	 * @param description
 	 * @throws Exception
 	 */
-	private void checkAndSaveBBSRoleInfo( EntityManagerContainer emc, String creatorName, BBSSectionInfo _sectionInfo, String roleCode, String roleName, 
+	private void checkAndSaveBBSRoleInfo( EntityManagerContainer emc, String creatorName, BBSSectionInfo _sectionInfo, String roleCode, String roleName,
 			String description, List<String> permissionCodeList ) throws Exception{
 		Business business = new Business( emc );
 		BBSPermissionInfo permissionInfo  = null;
@@ -463,7 +457,7 @@ public class BBSRoleInfoService {
 		BBSPermissionRoleFactory permissionRoleFactory  = business.permissionRoleFactory();
 		BBSRoleInfo roleInfo = roleInfoFactory.getRoleByCode( roleCode );
         if( roleInfo == null ){
-        	roleInfo = new BBSRoleInfo( creatorName, _sectionInfo.getForumId(), _sectionInfo.getForumName(), _sectionInfo.getId(), _sectionInfo.getSectionName(), _sectionInfo.getMainSectionId(), _sectionInfo.getMainSectionName(), 
+        	roleInfo = new BBSRoleInfo( creatorName, _sectionInfo.getForumId(), _sectionInfo.getForumName(), _sectionInfo.getId(), _sectionInfo.getSectionName(), _sectionInfo.getMainSectionId(), _sectionInfo.getMainSectionName(),
         			"版块角色", roleName, roleCode, description, _sectionInfo.getOrderNumber() );
         	emc.beginTransaction( BBSRoleInfo.class );
         	emc.persist( roleInfo, CheckPersistType.all );
@@ -477,8 +471,8 @@ public class BBSRoleInfoService {
         			//查询角色和权限的绑定关系是否存在，如果不存在则进行数据增加，此操作只在新增角色的时候进行一次
         			if( !permissionRoleFactory.exsistPermissionRole( roleCode, permissionCode ) ){
         				emc.beginTransaction( BBSPermissionRole.class );
-        				permissionRole = new BBSPermissionRole( roleInfo.getForumId(), roleInfo.getForumName(), roleInfo.getSectionId(), 
-        						roleInfo.getSectionName(), roleInfo.getMainSectionId(), roleInfo.getMainSectionName(), permissionInfo.getPermissionType(), 
+        				permissionRole = new BBSPermissionRole( roleInfo.getForumId(), roleInfo.getForumName(), roleInfo.getSectionId(),
+        						roleInfo.getSectionName(), roleInfo.getMainSectionId(), roleInfo.getMainSectionName(), permissionInfo.getPermissionType(),
         						permissionInfo.getPermissionName(), permissionInfo.getPermissionCode(), roleInfo.getId(), roleName, roleCode, description, _sectionInfo.getOrderNumber() );
         				emc.persist( permissionRole, CheckPersistType.all );
         			}
@@ -503,7 +497,7 @@ public class BBSRoleInfoService {
 			throw e;
 		}
 	}
-	
+
 	public List<BBSRoleInfo> listRoleBySectionId( String sectionId ) throws Exception {
 		if( sectionId == null ){
 			throw new Exception("sectionId is null, can not query any role info!");
@@ -522,7 +516,7 @@ public class BBSRoleInfoService {
 
 	/**
 	 * 根据对象类别和对象的唯一标识来查询对象所关联的角色信息
-	 * 
+	 *
 	 * @param uniqueId
 	 * @param objectType
 	 * @return
@@ -575,7 +569,6 @@ public class BBSRoleInfoService {
 	 * 3、判断并且新增需要的角色权限绑定信息
 	 * @param _roleInfo
 	 * @param permissionCodes
-	 * @param updateFlag
 	 * @return
 	 * @throws Exception
 	 */
@@ -592,10 +585,10 @@ public class BBSRoleInfoService {
 			emc.beginTransaction( BBSRoleInfo.class );
 			emc.beginTransaction( BBSPermissionInfo.class );
 			emc.beginTransaction( BBSPermissionRole.class );
-			
+
 			//=========================================  1、删除无效的权限信息，不在绑定权限列表内的
 			//根据角色编码获取所有的权限信息列表
-			ids = business.permissionRoleFactory().listPermissionByRoleCode( _roleInfo.getRoleCode() );				
+			ids = business.permissionRoleFactory().listPermissionByRoleCode( _roleInfo.getRoleCode() );
 			//先删除不需要的绑定关系
 			if( ListTools.isNotEmpty( ids ) ){
 				permissionRoleList = business.permissionRoleFactory().list( ids );
@@ -613,7 +606,7 @@ public class BBSRoleInfoService {
 					}
 				}
 			}
-			
+
 			//=========================================  2、新增或者更新一个角色信息
 			_roleInfo_tmp = business.roleInfoFactory().getRoleByCode( _roleInfo.getRoleCode() );
 			if( _roleInfo_tmp == null ){
@@ -627,7 +620,7 @@ public class BBSRoleInfoService {
 				_roleInfo.copyTo( _roleInfo_tmp, JpaObject.FieldsUnmodify  );
 				emc.check( _roleInfo_tmp, CheckPersistType.all );
 			}
-			
+
 			//=========================================  3、判断并且新增需要的角色权限绑定信息
 			//根据权限ID获取所有的权限信息列表
 			permissionInfoList = business.permissionInfoFactory().listByPermissionCodes( permissionCodes );
@@ -636,14 +629,14 @@ public class BBSRoleInfoService {
 					//查询绑定指定角色和权限的关系
 					permissionRole = business.permissionRoleFactory().getByRoleAndPermission( _roleInfo.getRoleCode(), permissionInfo.getPermissionCode() );
 					if( permissionRole == null ){
-						permissionRole = new BBSPermissionRole( _roleInfo.getForumId(), _roleInfo.getForumName(), _roleInfo.getSectionId(), _roleInfo.getSectionName(), 
-								_roleInfo.getMainSectionId(), _roleInfo.getMainSectionName(), permissionInfo.getPermissionType(), permissionInfo.getPermissionName(), 
+						permissionRole = new BBSPermissionRole( _roleInfo.getForumId(), _roleInfo.getForumName(), _roleInfo.getSectionId(), _roleInfo.getSectionName(),
+								_roleInfo.getMainSectionId(), _roleInfo.getMainSectionName(), permissionInfo.getPermissionType(), permissionInfo.getPermissionName(),
 								permissionInfo.getPermissionCode(), _roleInfo.getId(), _roleInfo.getRoleName(), _roleInfo.getRoleCode(), _roleInfo.getDescription(), _roleInfo.getOrderNumber() );
 						emc.persist( permissionRole, CheckPersistType.all);
-					}					
+					}
 				}
 			}
-			
+
 			emc.commit();
 		}catch( Exception e ){
 			logger.warn( "system find BBSRoleInfo{'id':'"+_roleInfo.getId()+"'} got an exception!" );
@@ -659,12 +652,12 @@ public class BBSRoleInfoService {
 		List<BBSUserRole> uerRoleList = null;
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			business = new Business( emc );		
-			
+			business = new Business( emc );
+
 			emc.beginTransaction( BBSRoleInfo.class );
 			emc.beginTransaction( BBSPermissionRole.class );
 			emc.beginTransaction( BBSUserRole.class );
-			
+
 			roleInfo = emc.find( id, BBSRoleInfo.class );
 			if( roleInfo == null ){
 				throw new Exception("role info not exists, can not excute delete.");
@@ -679,7 +672,7 @@ public class BBSRoleInfoService {
 						emc.remove( permissionRole, CheckRemoveType.all );
 					}
 				}
-			}			
+			}
 			ids = business.userRoleFactory().listIdsByRoleCode( roleInfo.getRoleCode() );
 			if( ids != null ){
 				uerRoleList = business.userRoleFactory().list(ids);
@@ -735,7 +728,7 @@ public class BBSRoleInfoService {
 						emc.persist( userRole, CheckPersistType.all );
 					}
 				}
-			}			
+			}
 			emc.commit();
 		}catch( Exception e ){
 			logger.warn( "system bindRoleToUser got an exception!" );
@@ -758,7 +751,7 @@ public class BBSRoleInfoService {
 			if( roleInfo == null ){
 				throw new Exception( "roleInfo not exists!bindRoleCode = " + bindRoleCode );
 			}
-			
+
 			//先删该用户的所有角色绑定
 			ids = business.userRoleFactory().listIdsByRoleCode( bindRoleCode );
 			for( String id : ids ){
@@ -767,7 +760,7 @@ public class BBSRoleInfoService {
 					emc.remove( userRole, CheckRemoveType.all );
 				}
 			}
-			
+
 			if( ListTools.isNotEmpty( bindObjects )){
 				String unitName = null;
 				String topUnitName = null;
@@ -783,28 +776,27 @@ public class BBSRoleInfoService {
 					userRole.setRoleName( roleInfo.getRoleName() );
 					userRole.setOrderNumber( userRole.getOrderNumber() );
 					userRole.setUniqueId( bindObject.getObjectName() );
-					try {
-						unitName = userManagerService.getUnitNameWithPerson( bindObject.getObjectName() );
-					}catch( Exception e ) {
-						logger.warn("user has no identity!user:" + bindObject.getObjectName() );
-						unitName = "未知组织";
+					if(OrganizationDefinition.isPersonDistinguishedName(bindObject.getObjectName())) {
+						try {
+							unitName = userManagerService.getUnitNameWithPerson(bindObject.getObjectName());
+						} catch (Exception e) {
+							logger.warn("user has no identity!user:" + bindObject.getObjectName());
+							unitName = "未知组织";
+						}
+						try {
+							topUnitName = userManagerService.getTopUnitNameWithPerson(bindObject.getObjectName());
+						} catch (Exception e) {
+							logger.warn("user has no identity!user:" + bindObject.getObjectName());
+							topUnitName = "未知公司";
+						}
+					}else if(OrganizationDefinition.isUnitDistinguishedName(bindObject.getObjectName())){
+						unitName = bindObject.getObjectName();
 					}
-					try {
-						topUnitName = userManagerService.getTopUnitNameWithPerson( bindObject.getObjectName() );
-					}catch( Exception e ) {
-						logger.warn("user has no identity!user:" + bindObject.getObjectName() );
-						topUnitName = "未知公司";
-					}
-					
-					
-					if( StringUtils.isNotEmpty( unitName ) && StringUtils.isNotEmpty( topUnitName )  ) {
-						userRole.setTopUnitName( topUnitName );
-						userRole.setUnitName( unitName );
-						emc.persist( userRole, CheckPersistType.all );
-					}else {
-						logger.warn("user has no identity, please check user info! user:"+ bindObject.getObjectName() );
-					}
-				}	
+
+					userRole.setTopUnitName( topUnitName );
+					userRole.setUnitName( unitName );
+					emc.persist( userRole, CheckPersistType.all );
+				}
 			}
 			emc.commit();
 		}catch( Exception e ){
@@ -821,7 +813,7 @@ public class BBSRoleInfoService {
 	 * 查询用户所有的组织，顶层组织和群组所关联的所有角色列表
 	 * @param userName
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSRoleInfo> listAllRoleForUser( String userName ) throws Exception {
 		if( userName == null ){
@@ -833,15 +825,15 @@ public class BBSRoleInfoService {
 		List<String> unitNameList = new ArrayList<>();
 		List<String> ids = null;
 		List<String> groupNameList = null;
-		
+
 		objectUniqueIds.add( userName );
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			
+
 			unitNameList = userManagerService.listUnitNamesWithPerson( userName );
 			groupNameList = userManagerService.listGroupNamesSupNestedWithPerson(userName);
-			
+
 			//然后把组织名称，群组名称放到同一个LIST里供查询使用
 			if( ListTools.isNotEmpty( unitNameList ) ){
 				for( String unitName : unitNameList ){
@@ -854,13 +846,13 @@ public class BBSRoleInfoService {
 				}
 			}
 			ids = business.userRoleFactory().listRoleIdsByObjectUnique( objectUniqueIds );
-			
+
 			return business.roleInfoFactory().list(ids);
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listAllRoleCodesForUser(String userName) throws Exception {
 		if( userName == null ){
 			throw new Exception("userName is null, can not query any role info!");
@@ -870,14 +862,13 @@ public class BBSRoleInfoService {
 		List<String> objectUniqueIds = new ArrayList<>();
 		List<String> unitNameList = new ArrayList<>();
 		List<String> groupNameList = null;
-		
+
 		objectUniqueIds.add( userName );
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			
-			
-			unitNameList = userManagerService.listUnitNamesWithPerson( userName );
+
+			unitNameList = userManagerService.listUnitSupNestedWithPerson( userName );
 			groupNameList = userManagerService.listGroupNamesSupNestedWithPerson(userName);
 
 			//然后把组织名称,群组名称放到同一个LIST里供查询使用
@@ -912,5 +903,5 @@ public class BBSRoleInfoService {
 			throw e;
 		}
 	}
-	
+
 }

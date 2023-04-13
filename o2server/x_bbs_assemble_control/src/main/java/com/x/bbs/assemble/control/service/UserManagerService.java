@@ -107,6 +107,12 @@ public class UserManagerService {
 			throw e;
 		}
 	}
+
+	public List<String> listUnitSupNestedWithPerson(String personName ) throws Exception {
+		Business business = new Business(null);
+		return business.organization().unit().listWithPersonSupNested( personName );
+	}
+
 	public String getTopUnitNameWithPerson( String personName ) throws Exception {
 		List<String> identities = null;
 		Business business = null;
