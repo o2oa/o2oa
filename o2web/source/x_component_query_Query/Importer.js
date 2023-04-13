@@ -196,8 +196,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         var data = this.getData();
 
-        debugger;
-
         this.lookupAction.getUUID(function(json){
             this.recordId = json.data;
             this.lookupAction.executImportModel(this.json.id, {
@@ -656,7 +654,6 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
 MWF.xApplication.query.Query.Importer.Row = new Class({
     initialize: function(importer, importedData, rowIndex){
-        debugger;
         this.importer = importer;
         this.importedData = importedData;
         this.clazzType = "row";
