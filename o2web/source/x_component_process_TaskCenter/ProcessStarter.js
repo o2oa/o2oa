@@ -29,6 +29,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                 o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.listAvailableIdentityWithProcess(this.data.id, function(json){
                     this.identitys = json.data || [];
                     if (this.identitys.length){
+
                         if (this.options.identity){
                             var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
                             this.identitys = this.identitys.filter(function(id){
@@ -106,6 +107,17 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 
                                 this.fireEvent("selectId");
                             }
+                        }else{
+                            var dns = [];
+                            var iList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+                            for( var i=0; i<iList.length; i++ ){
+                                var identity = iList[i] || "";
+                                var dn = (typeOf(identity)==="string") ? identity : identity.distinguishedName;
+                                if(dn)dns.push(dn);
+                            }
+
+                            var t = this.lp.identityNotInRange.replace("{name}", dns.join("、"));
+                            this.app.notice(t, "error");
                         }
                     }else{
                         var t = this.lp.noIdentitys.replace("{name}", this.app.desktop.session.user.name);

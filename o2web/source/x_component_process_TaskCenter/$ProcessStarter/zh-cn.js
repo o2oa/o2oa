@@ -19,5 +19,6 @@ MWF.xApplication.process.TaskCenter.ProcessStarter.lp = {
     "processStarted": "流程已启动",
     "unnamed": "无标题",
     "selectStartIdentity": "请选择您的身份",
-    "noIdentitys": "“{name}”没有加入任何组织，不能启动流程。请联系管理员将您添加到对应的组织中。"
+    "noIdentitys": "“{name}”没有加入任何组织，不能启动流程。请联系管理员将您添加到对应的组织中。",
+    "identityNotInRange": "“{name}”不在您的身份范围中，请联系管理员。"
 };

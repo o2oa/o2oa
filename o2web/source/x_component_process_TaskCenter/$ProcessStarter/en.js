@@ -19,5 +19,6 @@ MWF.xApplication.process.TaskCenter.ProcessStarter.lp = {
     "processStarted": "Process has been started",
     "unnamed": "Untitled",
     "selectStartIdentity": "Please select your identity",
-    "noIdentitys": "\"{name}\" has not joined any unit and cannot start the process. Please contact the administrator to add you to unit."
+    "noIdentitys": "\"{name}\" has not joined any unit and cannot start the process. Please contact the administrator to add you to unit.",
+    "identityNotInRange": "\"{name}\" is not in your identity range, please contact the administrator.",
 };
