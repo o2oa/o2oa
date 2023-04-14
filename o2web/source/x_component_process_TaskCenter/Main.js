@@ -346,7 +346,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
     openTab: function () {
         var tab = "task";
         if (this.options.navi) tab = this.options.navi;
-        if (this.status) tab = this.status.navi;
+        if (this.status && this.status.navi) tab = this.status.navi;
         switch (tab) {
             case "task":
                 this.showTask();

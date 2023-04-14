@@ -35,13 +35,13 @@ MWF.xApplication.process.Work.Main = new Class({
         if (!this.status) {
             if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
-            this.options.workId = this.status.workId;
-            this.options.taskId = this.status.taskId;
-            this.options.workCompletedId = this.status.workCompletedId;
-            this.options.jobId = this.status.jobId;
-            this.options.draftId = this.status.draftId;
-            this.options.priorityWork = this.status.priorityWork;
-            this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
+            if(this.status.workId)this.options.workId = this.status.workId;
+            if(this.status.taskId)this.options.taskId = this.status.taskId;
+            if(this.status.workCompletedId)this.options.workCompletedId = this.status.workCompletedId;
+            if(this.status.jobId)this.options.jobId = this.status.jobId;
+            if(this.status.draftId)this.options.draftId = this.status.draftId;
+            if(this.status.priorityWork)this.options.priorityWork = this.status.priorityWork;
+            if(this.status.hasOwnProperty("readonly"))this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},

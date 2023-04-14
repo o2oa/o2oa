@@ -30,19 +30,19 @@ MWF.xApplication.cms.Document.Main = new Class({
         if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
         this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status){
-            this.options.documentId = this.status.documentId;
-            this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
-            this.options.autoSave = (this.status.autoSave==="true" || this.status.autoSave===true) ? true : false;
-            this.options.saveOnClose = (this.status.saveOnClose==="true" || this.status.saveOnClose===true) ? true : false;
+            if(this.status.documentId)this.options.documentId = this.status.documentId;
+            if(this.status.hasOwnProperty("readonly"))this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
+            if(this.status.hasOwnProperty("autoSave"))this.options.autoSave = (this.status.autoSave==="true" || this.status.autoSave===true) ? true : false;
+            if(this.status.hasOwnProperty("saveOnClose"))this.options.saveOnClose = (this.status.saveOnClose==="true" || this.status.saveOnClose===true) ? true : false;
 
-            this.options.formId = this.status.formId;
-            this.options.formEditId = this.status.formEditId;
+            if(this.status.formId)this.options.formId = this.status.formId;
+            if(this.status.formEditId)this.options.formEditId = this.status.formEditId;
 
-            this.options.printFormId = this.status.printFormId;
-            this.options.forceFormId = this.status.forceFormId;
-            this.options.readFormId = this.status.readFormId;
-            this.options.editFormId = this.status.editFormId;
-            this.options.useProcessForm = this.status.useProcessForm;
+            if(this.status.printFormId)this.options.printFormId = this.status.printFormId;
+            if(this.status.forceFormId)this.options.forceFormId = this.status.forceFormId;
+            if(this.status.readFormId)this.options.readFormId = this.status.readFormId;
+            if(this.status.editFormId)this.options.editFormId = this.status.editFormId;
+            if(this.status.useProcessForm)this.options.useProcessForm = this.status.useProcessForm;
         }
 
         //兼容之前的 formEditId 和 formId
