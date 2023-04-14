@@ -553,33 +553,29 @@ public class Business {
     }
 
     public Optional<Quintuple<Collection<String>, Collection<String>, Collection<String>, Collection<String>, Collection<String>>> detailOfPerson(
-            String flag, boolean fetchGroup, boolean fetchRole, boolean fetchPersonAttribute)
+            String flag, boolean fetchIdentity, boolean fetchUnit, boolean fetchGroup, boolean fetchRole,
+            boolean fetchPersonAttribute)
             throws Exception {
         // identity,unit,group,role,personAttribute
         Person p = this.person().pick(flag);
         if (null == p) {
             return Optional.empty();
         }
-        List<String> identityIds = this.entityManagerContainer().idsEqual(Identity.class, Identity.person_FIELDNAME,
-                p.getId());
+
+        List<String> identityIds = new ArrayList<>();
         ListOrderedSet<String> unitIds = new ListOrderedSet<>();
-        for (String s : identityIds) {
-            Identity obj = this.identity().pick(s);
-            if (null != obj) {
-                unitIds.add(obj.getUnit());
-                unitIds.addAll(this.unit().listSupNested(obj.getUnit()));
-            }
-        }
         ListOrderedSet<String> groupIds = new ListOrderedSet<>();
         ListOrderedSet<String> roleIds = new ListOrderedSet<>();
         List<String> personAttributeIds = new ArrayList<>();
+        if (fetchIdentity || fetchUnit || fetchGroup || fetchRole) {
+            identityIds = this.entityManagerContainer().idsEqual(Identity.class, Identity.person_FIELDNAME,
+                    p.getId());
+        }
+        if (fetchUnit || fetchGroup || fetchRole) {
+            detailOfPersonUnits(unitIds, identityIds);
+        }
         if (fetchGroup || fetchRole) {
-            groupIds.addAll(this.entityManagerContainer().idsInOrInOrIsMember(Group.class, Group.unitList_FIELDNAME,
-                    unitIds, Group.identityList_FIELDNAME, identityIds, Group.personList_FIELDNAME, p.getId()));
-            for (String s : new ArrayList<>(groupIds)) {
-                groupIds.add(s);
-                groupIds.addAll(this.group().listSupNested(s));
-            }
+            detailOfPersonGroups(groupIds, p, identityIds, unitIds);
         }
         if (fetchRole) {
             roleIds.addAll(this.entityManagerContainer().idsInOrIsMember(Role.class, Role.groupList_FIELDNAME,
@@ -591,5 +587,25 @@ public class Business {
                     p.getId());
         }
         return Optional.of(Quintuple.of(identityIds, unitIds, groupIds, roleIds, personAttributeIds));
+    }
+
+    private void detailOfPersonUnits(ListOrderedSet<String> unitIds, List<String> identityIds) throws Exception {
+        for (String s : identityIds) {
+            Identity obj = this.identity().pick(s);
+            if (null != obj) {
+                unitIds.add(obj.getUnit());
+                unitIds.addAll(this.unit().listSupNested(obj.getUnit()));
+            }
+        }
+    }
+
+    private void detailOfPersonGroups(ListOrderedSet<String> groupIds, Person p, List<String> identityIds,
+            ListOrderedSet<String> unitIds) throws Exception {
+        groupIds.addAll(this.entityManagerContainer().idsInOrInOrIsMember(Group.class, Group.unitList_FIELDNAME,
+                unitIds, Group.identityList_FIELDNAME, identityIds, Group.personList_FIELDNAME, p.getId()));
+        for (String s : new ArrayList<>(groupIds)) {
+            groupIds.add(s);
+            groupIds.addAll(this.group().listSupNested(s));
+        }
     }
 }
