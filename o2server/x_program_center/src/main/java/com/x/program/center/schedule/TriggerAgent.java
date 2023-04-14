@@ -1,6 +1,11 @@
 package com.x.program.center.schedule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +45,6 @@ import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.program.center.Business;
@@ -59,7 +63,7 @@ public class TriggerAgent extends BaseAction {
 
     private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
-    private static final ConcurrentHashMap<String, Map.Entry<String, CenterServer>> memoCenterServerMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Map.Entry<String, CenterServer>> AGENTRUNONCENTERSERVER = new ConcurrentHashMap<>();
 
     private static final ExecutorService executorService = new ScheduledThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors(),
@@ -275,7 +279,7 @@ public class TriggerAgent extends BaseAction {
 
         private Map.Entry<String, CenterServer> getCenterServer(String agentId) {
             try {
-                Map.Entry<String, CenterServer> entry = memoCenterServerMap.get(agentId);
+                Map.Entry<String, CenterServer> entry = AGENTRUNONCENTERSERVER.get(agentId);
                 if (null != entry) {
                     ActionResponse response = CipherConnectionAction.get(false, 2000, 4000,
                             Config.url_x_program_center_jaxrs(entry, "echo"));
@@ -298,7 +302,7 @@ public class TriggerAgent extends BaseAction {
                     return false;
                 }).findFirst();
                 if (optional.isPresent()) {
-                    memoCenterServerMap.put(agentId, optional.get());
+                    AGENTRUNONCENTERSERVER.put(agentId, optional.get());
                     return optional.get();
                 }
             } catch (Exception e) {
