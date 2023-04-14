@@ -234,16 +234,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 
 	/**
 	 * @summary 获取整理后的选择项。
-	 * @return {Object} 返回整理后的选择项，如：
+	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
+	 * @param {Boolean} [refresh] 如果是true，从后台重新获取；否则从缓存获取。默认为false。
+	 * @return {Object | Promise} 返回整理后的选择项，如：
 	 * <pre><code class='language-js'>{"valueList": ["","female","male"], "textList": ["","女","男"]}
 	 * </code></pre>
 	 * @example
 	 * var optionData = this.form.get('fieldId').getOptionsObj();
+	 * @example
+	 * //异步
+	 * var opt = this.form.get('fieldId').getOptionsObj(true);
+	 * Promise.resolve(opt).then(function(optionData){
+	 *     //optionData为选择项
+	 * })
 	 */
-	getOptionsObj : function(){
+	getOptionsObj : function(async, refresh){
 		var textList = [];
 		var valueList = [];
-		var optionItems = this.getOptions();
+		var optionItems = this.getOptions(async, refresh);
 		if (!optionItems) optionItems = [];
 		if (o2.typeOf(optionItems)==="array"){
 			optionItems.each(function(item){
@@ -434,7 +442,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		var value = [];
 		var text = [];
 		if (this.isReadonly()){
-			var ops = this.getOptionsObj();
+			var ops = this.getOptionsObj(false);
 			var data = this._getBusinessData();
 			var d = typeOf(data) === "array" ? data : [data];
 			d.each( function (v) {
@@ -514,7 +522,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this._setBusinessData(data);
 		if (this.isReadonly()){
 			var d = typeOf(data) === "array" ? data : [data];
-			var ops = this.getOptionsObj();
+			var ops = this.getOptionsObj(false);
 			var result = [];
 			d.each( function (v) {
 				var idx = ops.valueList.indexOf( v );
