@@ -498,12 +498,19 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         ]);
 
         if( this.data.id ){
-            o2.Actions.load("x_organization_assemble_control").RoleAction.listWithPerson(this.data.id, function (json) {
-                this.roleDataList = json.data;
-                json.data.each( function ( item ) {
+            // o2.Actions.load("x_organization_assemble_control").RoleAction.listWithPerson(this.data.id, function (json) {
+            //     this.roleDataList = json.data;
+            //     json.data.each( function ( item ) {
+            //         this.roleList.push(item);
+            //     }.bind(this))
+            // }.bind(this), null, false);
+            if( this.data.woRoleList && this.data.woRoleList.length ){
+                this.roleDataList = this.data.woRoleList;
+                this.data.woRoleList.each( function ( item ) {
                     this.roleList.push(item);
                 }.bind(this))
-            }.bind(this), null, false);
+            }
+
         }
 
         // this.data.woPersonAttributeList.each(function(item){
