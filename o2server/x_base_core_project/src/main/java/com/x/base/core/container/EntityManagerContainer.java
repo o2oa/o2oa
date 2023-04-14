@@ -1200,6 +1200,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
         return new ArrayList<>(os);
     }
 
+    public <T extends JpaObject, W> List<String> idsInOrIsMember(Class<T> cls, String inAttribute,
+            Collection<W> inCollection,
+            String isMemberAttribute, Object isMemberValue) throws Exception {
+        EntityManager em = this.get(cls);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<T> root = cq.from(cls);
+        Predicate p = cb.or(root.get(inAttribute).in(inCollection),
+                cb.isMember(isMemberValue, root.get(isMemberAttribute)));
+        List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME)).where(p)).getResultList();
+        return new ArrayList<>(os);
+    }
+
     public void commit() throws Exception {
         try {
             for (EntityManager em : entityManagerMap.values()) {

@@ -39,13 +39,13 @@ import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
-class ActionGet extends BaseAction {
+class ActionGet2 extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet2.class);
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 
-        LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
