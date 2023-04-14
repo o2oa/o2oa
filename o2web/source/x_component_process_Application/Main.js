@@ -20,7 +20,7 @@ MWF.xApplication.process.Application.Main = new Class({
 		this.lp = MWF.xApplication.process.Application.LP;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 		if (this.status) {
-			this.options.id = this.status.id;
+			if(this.status.id)this.options.id = this.status.id;
 			if(this.status.navi){
 				this.options.navi = this.status.navi;
 			}

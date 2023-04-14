@@ -26,7 +26,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         this._loadCss();
         this.shortcut = true;
 		if (this.status){
-			this.options.id = this.status.id;
+			if(this.status.id)this.options.id = this.status.id;
 		}
 		if (!this.options.id){
 			this.options.desktopReload = false;
