@@ -670,6 +670,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectStyle": "Select Style",
         "options": "Options",
         "optionScript": "Options Script",
+        "extendOptions": "Additional optional values",
         "divStyle": "Container style",
         "buttonStyle": "Button style",
 

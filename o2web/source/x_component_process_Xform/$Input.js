@@ -708,6 +708,84 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             }
         }
         return true;
+    },
+     getOptionsWithDict: function ( refresh ) {
+        debugger;
+        if( !this.json.itemDict || !this.json.itemDict.length )return [];
+        var obj = this.json.itemDict[0];
+        var dict = new this.form.Macro.environment.Dict({
+            "type": obj.appType,
+            "application": obj.appId,
+            "name": obj.id
+        });
+
+        var paths = (this.json.itemDictPath || "").split("/");
+         paths.splice(0, 1); //第一个是root，删掉
+         var path = paths.length ? paths.join(".") : null;
+
+        var async = this.json.itemDictAsync !== false;
+        var data = dict.get( path, null, null, async, refresh === true );
+        if( !async ){
+            return this.parseDictOptions(data);
+        }else{
+            return data.then(function (data) {
+                return this.parseDictOptions(data);
+            }.bind(this));
+        }
+
+    },
+    parseDictOptions: function (d) {
+        var arr = [], value, text, valuekey = this.json.dictValueKey, textkey = this.json.dictTextKey;
+        switch ( o2.typeOf(d) ) {
+            case "array":
+                d.each(function (i) {
+                    switch ( o2.typeOf(i) ) {
+                        case "object":
+                            if( valuekey && textkey ){
+                                value = i[ valuekey ] || "";
+                                text = i[ textkey ] || "";
+                                arr.push( text + "|" + value );
+                            }else if( valuekey ){
+                                arr.push( i[ valuekey ] || "" );
+                            }else if( textkey ){
+                                arr.push( i[ textkey ] || "" );
+                            }
+                            break;
+                        case "null": break;
+                        default: arr.push( i.toString() ); break;
+                    }
+                });
+                return arr;
+            case "object":
+                Object.each(d, function (i, key) {
+                    switch ( o2.typeOf(i) ) {
+                        case "object":
+                            if( valuekey && textkey ){
+                                value = i[ valuekey ] || "";
+                                text = i[ textkey ] || "";
+                                arr.push( value + "|" + text );
+                            }else if( valuekey ){
+                                arr.push( i[ valuekey ] || "" );
+                            }else if( textkey ){
+                                arr.push( i[ textkey ] || "" );
+                            }
+                            break;
+                        case "null": break;
+                        default: arr.push( i.toString() + "|" + key.toString() ); break;
+                    }
+                }.bind(this))
+                return arr;
+            case "null":
+                return [];
+            default:
+                return [d.toString()];
+        }
+    },
+    getOptionsWithView: function(){
+
+    },
+    getOptionsWithStatement: function(){
+
     }
 	
 }); 

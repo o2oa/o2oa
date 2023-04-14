@@ -59,6 +59,15 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
+		if( optionItems && typeOf(optionItems.then) === "function" ){
+			optionItems.then(function (opt) {
+				this.__showValue(node, opt, value)
+			}.bind(this));
+		}else{
+			this.__showValue(node, optionItems, value)
+		}
+	},
+	__showValue: function(node, optionItems, value){
 		if (value){
 			if (typeOf(value)!=="array") value = [value];
 			var texts = [];
@@ -167,16 +176,19 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
 	/**
 	 * @summary 刷新选择项，如果选择项是脚本，重新计算。
+	 * @param {Boolean} [refresh] 是否强制刷新，如果是true，从后台重新获取；否则从缓存获取。默认为false。
 	 * @example
 	 * this.form.get('fieldId').resetOption();
+	 * this.form.get('fieldId').resetOption(true);
 	 */
-    resetOption: function(){
+    resetOption: function( refresh ){
         this.node.empty();
-        this.setOptions();
+        this.setOptions( refresh );
 		this.fireEvent("resetOption")
     },
 	/**
 	 * @summary 获取选择项。
+	 * @param {Boolean} [refresh] 如果是true，从后台重新获取；否则从缓存获取。默认为false。
 	 * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定，如：<pre><code class='language-js'>[
 	 *  "女|female",
 	 *  "男|male"
@@ -184,11 +196,29 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	 * @example
 	 * this.form.get('fieldId').getOptions();
 	 */
-	getOptions: function(){
-		if (this.json.itemType == "values"){
-			return this.json.itemValues;
+	getOptions: function( refresh ){
+		var opt = this.getDefaultOptions();
+		var extOpt = this.getExtendOptions( refresh );
+		if( (opt && typeOf(opt.then) === "function") || (extOpt && typeOf(extOpt.then) === "function") ){
+			return Promise.all( [opt, extOpt] ).then(function (arr) {
+				return (arr[0] || []).concat( arr[1] || [] );
+			});
 		}else{
-			return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
+			return (opt || []).concat( extOpt || [] );
+		}
+	},
+	getDefaultOptions: function(){
+		switch (this.json.itemType) {
+			case "values": return this.json.itemValues;
+			default:
+				return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
+		}
+	},
+	getExtendOptions: function( refresh ){
+		switch (this.json.itemTypeExtend) {
+			case "dict": return this.getOptionsWithDict( refresh );
+			case "view": return this.getOptionsWithView( refresh );
+			case "statement": return this.getOptionsWithStatement( refresh );
 		}
 		return [];
 	},
@@ -216,8 +246,8 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		return { textList : textList, valueList : valueList };
 	},
 
-	setOptions: function(){
-		var optionItems = this.getOptions();
+	setOptions: function( refresh ){
+		var optionItems = this.getOptions( refresh );
 		this._setOptions(optionItems);
 	},
 	_setOptions: function(optionItems){

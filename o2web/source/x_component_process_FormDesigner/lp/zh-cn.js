@@ -670,6 +670,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "optionScript": "可选值脚本",
         "divStyle": "容器样式",
         "buttonStyle": "按钮样式",
+        "extendOptions": "其他可选值",
 
         "dynamic": "动态计算",
         "canSelectCount": "可选数量",

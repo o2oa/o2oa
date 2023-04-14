@@ -2836,7 +2836,6 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 	load: function(){
 
 		this.deleteFormData = function(data){
-			debugger;
 			delete data[this.id];
 			this._self.form.removeEvent("getData", this._self.deleteFormData);
 		}.bind({_self: this, id: this.json.id});
@@ -3232,7 +3231,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var exportData = [];
 		this.columnJsonList.each(function (column) {
 
-			debugger;
 
 			var module;
 			if( column.mJson && column.available ){

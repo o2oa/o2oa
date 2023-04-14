@@ -1406,7 +1406,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function () {
-        debugger;
         this.node.empty();
         if (this.form.businessData.work.startTime){
             this.loadAttachmentController();
@@ -1538,7 +1537,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
     createUploadFileNode: function (files) {
-        debugger;
         var accept = "*";
         if (!this.json.attachmentExtType || (this.json.attachmentExtType.indexOf("other") != -1 && !this.json.attachmentExtOtherType)) {
         } else {

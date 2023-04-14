@@ -152,7 +152,6 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     },
 
     _createElementHtml: function(radioValues){
-        debugger;
         this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
         var html = "<el-checkbox-group class='o2_vue' style='box-sizing: border-box!important'";
         html += " v-model=\""+this.json.$id+"\"";

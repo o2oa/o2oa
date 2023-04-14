@@ -48,7 +48,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     },
 
 	_loadUserInterface: function(){
-	    debugger;
 		this.node.empty();
         if (this.isReadonly()){
             // this.node.set("html", this._getBusinessData());
@@ -84,7 +83,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                     }
                 }.bind(this));
             }
-            debugger;
             this.node.loadCss("../o2_lib/htmleditor/ckeditor4161/contents_o2.css");
         }else{
             var config = Object.clone(this.json.editorProperties);

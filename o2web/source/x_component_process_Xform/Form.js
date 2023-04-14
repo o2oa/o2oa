@@ -3157,8 +3157,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode_current);
         node.getLast().setStyles(this.css.rollbackItemTaskBodyNode_current);
 
-        debugger;
-
         var checkeds = item.getElements("input");
         if (checkeds){
             checkeds.set("checked", true);
@@ -3310,7 +3308,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var text = this.app.lp.rollbackConfirmContent;
                 var log = items[i].retrieve("log");
                 var checks = items[i].getElements("input:checked");
-                debugger;
+
                 var idList = [];
                 checks.each(function (check) {
                     var id = check.get("value");
@@ -4572,7 +4570,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var p = MWF.getCenterPosition(content, width, height);
 
             var _self = this;
-debugger;
+
             //"您确定要将“" + title + "”标记为已阅吗？";
             var title = this.businessData.work.title;
             var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);
