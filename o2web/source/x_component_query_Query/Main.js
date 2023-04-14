@@ -18,11 +18,11 @@ MWF.xApplication.query.Query.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.query.Query.LP;
         if (this.status){
-            if(this.status.id)this.options.id = this.status.id;
-            if(this.status.viewId)this.options.viewId = this.status.viewId;
-            if(this.status.statId)this.options.statId = this.status.statId;
-            if(this.status.statementId)this.options.statementId = this.status.statementId;
-            if(this.status.importerId)this.options.importerId = this.status.importerId;
+            this.options.id = this.status.id;
+            this.options.viewId = this.status.viewId;
+            this.options.statId = this.status.statId;
+            this.options.statementId = this.status.statementId;
+            this.options.importerId = this.status.importerId;
         }
 	},
     loadApplication: function(callback){

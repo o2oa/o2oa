@@ -9,9 +9,9 @@ MWF.xApplication.portal.Portal.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
-            if(this.status.portalId)this.options.portalId = this.status.portalId;
-            if(this.status.pageId)this.options.pageId = this.status.pageId;
-            if(this.status.parameters)this.options.parameters = this.status.parameters;
+            this.options.portalId = this.status.portalId;
+            this.options.pageId = this.status.pageId;
+            this.options.parameters = this.status.parameters;
         }
 	},
 	loadApplication: function(callback){

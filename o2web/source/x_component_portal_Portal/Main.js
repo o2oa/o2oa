@@ -27,10 +27,10 @@ MWF.xApplication.portal.Portal.Main = new Class({
         if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.portal.Portal.LP.title});
         this.lp = MWF.xApplication.portal.Portal.LP;
         if (this.status){
-            if(this.status.portalId)this.options.portalId = this.status.portalId;
-            if(this.status.pageId)this.options.pageId = this.status.pageId;
-            if(this.status.widgetId)this.options.widgetId = this.status.widgetId;
-            if(this.status.parameters)this.options.parameters = this.status.parameters;
+            this.options.portalId = this.status.portalId;
+            this.options.pageId = this.status.pageId;
+            this.options.widgetId = this.status.widgetId;
+            this.options.parameters = this.status.parameters;
         }
     },
     loadApplication: function(callback){

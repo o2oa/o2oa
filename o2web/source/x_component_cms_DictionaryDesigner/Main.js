@@ -24,10 +24,10 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 	onQueryLoad: function(){
         this.shortcut = true;
         if (this.status){
-            if(this.status.applicationId)this.options.application = this.status.applicationId;
+            this.options.application = this.status.applicationId;
             this.application = this.status.application || this.status.applicationId;
-            if(this.status.id)this.options.id = this.status.id;
-            if(this.status.options)this.setOptions(this.status.options);
+            this.options.id = this.status.id;
+            this.setOptions(this.status.options);
         }
 
         if( this.options.application ){
