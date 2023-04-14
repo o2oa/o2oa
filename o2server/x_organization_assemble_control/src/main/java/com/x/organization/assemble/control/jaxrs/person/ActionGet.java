@@ -68,7 +68,7 @@ class ActionGet extends BaseAction {
                     }
                     wo = Wo.copier.copy(person);
                     Optional<Quintuple<Collection<String>, Collection<String>, Collection<String>, Collection<String>, Collection<String>>> detail = business
-                            .detailOfPerson(flag, true, true, true);
+                            .detailOfPerson(flag, true, true, true, true, true);
                     if (detail.isPresent()) {
                         this.referenceIdentity(business, wo, detail.get().first());
                         wo.setWoGroupList(business.group()

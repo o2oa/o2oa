@@ -64,7 +64,7 @@ class ActionListWithPerson extends BaseAction {
             throw new ExceptionPersonNotExist(personFlag);
         }
         Optional<Quintuple<Collection<String>, Collection<String>, Collection<String>, Collection<String>, Collection<String>>> detail = business
-                .detailOfPerson(personFlag, true, true, false);
+                .detailOfPerson(personFlag, true, true, true, true, false);
         List<Wo> wos = new ArrayList<>();
         if (detail.isPresent()) {
             wos = Wo.copier.copy(business.entityManagerContainer().list(Role.class, detail.get().fourth()));
