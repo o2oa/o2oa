@@ -709,7 +709,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
         return true;
     },
-     getOptionsWithDict: function ( refresh ) {
+     getOptionsWithDict: function ( async, refresh ) {
         debugger;
         if( !this.json.itemDict || !this.json.itemDict.length )return [];
         var obj = this.json.itemDict[0];
@@ -723,14 +723,14 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
          paths.splice(0, 1); //第一个是root，删掉
          var path = paths.length ? paths.join(".") : null;
 
-        var async = this.json.itemDictAsync !== false;
-        var data = dict.get( path, null, null, async, refresh === true );
-        if( !async ){
-            return this.parseDictOptions(data);
-        }else{
+        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemDictAsync !== false);
+        var data = dict.get( path, null, null, asy, refresh === true );
+        if( data && typeOf(data.then) === "function" ){
             return data.then(function (data) {
                 return this.parseDictOptions(data);
             }.bind(this));
+        }else{
+            return this.parseDictOptions(data);
         }
 
     },
@@ -781,10 +781,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 return [d.toString()];
         }
     },
-    getOptionsWithView: function(){
+    getOptionsWithView: function(async, refresh){
 
     },
-    getOptionsWithStatement: function(){
+    getOptionsWithStatement: function(async, refresh){
 
     }
 	

@@ -176,27 +176,36 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
 	/**
 	 * @summary 刷新选择项，如果选择项是脚本，重新计算。
+	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
 	 * @param {Boolean} [refresh] 是否强制刷新，如果是true，从后台重新获取；否则从缓存获取。默认为false。
 	 * @example
 	 * this.form.get('fieldId').resetOption();
 	 * this.form.get('fieldId').resetOption(true);
 	 */
-    resetOption: function( refresh ){
+    resetOption: function( async, refresh ){
         this.node.empty();
-        this.setOptions( refresh );
-		this.fireEvent("resetOption")
+        this.setOptions( async, refresh );
+		this.fireEvent("resetOption");
     },
 	/**
 	 * @summary 获取选择项。
+	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
 	 * @param {Boolean} [refresh] 如果是true，从后台重新获取；否则从缓存获取。默认为false。
-	 * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定，如：<pre><code class='language-js'>[
+	 * @return {Array | Promise} 返回选择项数组；如果可选值脚本返回Promise，或其他可选值为异步加载，返回Promise。如：<pre><code class='language-js'>[
 	 *  "女|female",
 	 *  "男|male"
 	 * ]</code></pre>
 	 * @example
-	 * this.form.get('fieldId').getOptions();
+	 * //同步
+	 * var options = this.form.get('fieldId').getOptions(); //options为选择项数组
+	 * @example
+	 * //异步
+	 * var opt = this.form.get('fieldId').getOptions(true);
+	 * Promise.resolve(opt).then(function(options){
+	 *     //options为选择项数组
+	 * })
 	 */
-	getOptions: function( refresh ){
+	getOptions: function( async, refresh ){
 		var opt = this.getDefaultOptions();
 		var extOpt = this.getExtendOptions( refresh );
 		if( (opt && typeOf(opt.then) === "function") || (extOpt && typeOf(extOpt.then) === "function") ){
@@ -214,11 +223,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
 		}
 	},
-	getExtendOptions: function( refresh ){
+	getExtendOptions: function( async, refresh ){
 		switch (this.json.itemTypeExtend) {
-			case "dict": return this.getOptionsWithDict( refresh );
-			case "view": return this.getOptionsWithView( refresh );
-			case "statement": return this.getOptionsWithStatement( refresh );
+			case "dict": return this.getOptionsWithDict( async, refresh );
+			case "view": return this.getOptionsWithView( async, refresh );
+			case "statement": return this.getOptionsWithStatement( async, refresh );
 		}
 		return [];
 	},
@@ -246,8 +255,8 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		return { textList : textList, valueList : valueList };
 	},
 
-	setOptions: function( refresh ){
-		var optionItems = this.getOptions( refresh );
+	setOptions: function( async, refresh ){
+		var optionItems = this.getOptions( async, refresh );
 		this._setOptions(optionItems);
 	},
 	_setOptions: function(optionItems){
