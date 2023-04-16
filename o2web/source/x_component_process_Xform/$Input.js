@@ -709,6 +709,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
         return true;
     },
+
      getOptionsWithDict: function ( async, refresh ) {
         debugger;
         if( !this.json.itemDict || !this.json.itemDict.length )return [];
@@ -782,10 +783,115 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
     },
     getOptionsWithView: function(async, refresh){
+        if( !this.json.itemView )return [];
+        var obj = this.json.itemView;
 
+        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+        var data = this.form.Macro.environment.view.lookup({
+            "view": obj.id,
+            "application": obj.application,
+            // "filter": [
+            //     {
+            //         "logic":"and",
+            //         "path":"$work.title",
+            //         "comparison":"like",
+            //         "value":"7月",
+            //         "formatType":"textValue"
+            //     }
+            // ]
+        }, null, asy);
+        if( data && typeOf(data.then) === "function" ){
+            return data.then(function (data) {
+                return this.parseViewOptions(data);
+            }.bind(this));
+        }else{
+            return this.parseViewOptions(data);
+        }
+    },
+    parseViewOptions: function(json){
+        var arr = [], value, text, valuekey = this.json.viewValueColumn, textkey = this.json.viewTextColumn;
+        json.grid.each(function(d){
+            var i = d.data || {};
+            if( valuekey && textkey ){
+                value = valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "");
+                text = textkey === "bundle" ? d.bundle : (i[ textkey ] || "");
+                arr.push( text + "|" + value );
+            }else if( valuekey ){
+                arr.push( valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "") );
+            }else if( textkey ){
+                arr.push( textkey === "bundle" ? d.bundle : (i[ textkey ] || "") );
+            }
+        })
+        return arr.unique();
     },
     getOptionsWithStatement: function(async, refresh){
+	    debugger;
+        if( !this.json.itemStatement )return [];
+        var obj = this.json.itemStatement;
 
+        var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+        var data = this.form.Macro.environment.statement.execute({
+            "name" : obj.name,
+            "mode" : "data",
+            "page" : 1, //（number）可选，当前页码，默认为1
+            "pageSize" : 1000, //（number）可选，每页的数据条数，默认为20
+            // "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
+            //     {
+            //         "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
+            //         "comparison":"like",
+            //         "value":"关于",
+            //         "formatType":"textValue"
+            //     }
+            // ],
+            // parameter : {
+            //     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
+            //     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+            //     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+            //     "processName" : "test流程", //其他写确定的值
+            //     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
+            // }
+        }, null, asy);
+        if( data && typeOf(data.then) === "function" ){
+            return data.then(function (data) {
+                return this.parseStatementOptions(data);
+            }.bind(this));
+        }else{
+            return this.parseStatementOptions(data);
+        }
+    },
+    parseStatementOptions: function(json){
+        var arr = [], value, text, valuekey = this.json.statementValueColumn, textkey = this.json.statementTextColumn;
+        json.data.each(function(d){
+            if( valuekey && textkey ){
+                value = this.getDataByPath(d, valuekey);
+                text = this.getDataByPath(d, textkey);
+                arr.push( text + "|" + value );
+            }else if( valuekey ){
+                value = this.getDataByPath(d, valuekey);
+                arr.push( value );
+            }else if( textkey ){
+                text = this.getDataByPath(d, textkey);
+                arr.push( text );
+            }
+        }.bind(this))
+        return arr.unique();
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else if(obj[p] === undefined || obj[p] === null) {
+                obj = "";
+                break;
+            } else {
+                obj = obj[p];
+                break;
+            }
+        }
+        return obj;
     }
 	
 }); 

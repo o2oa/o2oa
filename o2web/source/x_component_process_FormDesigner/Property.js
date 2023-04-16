@@ -2350,6 +2350,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                             var sname = select.get("name");
                             new Element("option", { value: "" }).inject( select );
+                            new Element("option", { value: "bundle", text: "bundle", selected: this.data[sname] === "bundle" }).inject( select );
                             columnList.each(function ( column ) {
                                 new Element("option", {
                                     value: column.column,
