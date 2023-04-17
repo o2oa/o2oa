@@ -316,6 +316,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.sqlCountEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountSqlLine");
 
             this.formatTypeArea = this.areaNode.getElement(".o2_statement_statementDesignerFormatContent");
+            this.formatTypeArea.getElements("input").each(function (input) {
+                input.set("name", input.get("name") + "_" +this.json.id);
+            }.bind(this));
             this.entityCategorySelect = this.areaNode.getElement(".o2_statement_statementDesignerCategoryContent").getElement("select");
 
             this.dynamicTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_dynamic");

@@ -1309,12 +1309,42 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         };
 
         this.statement = {
-            "execute": function (statement, callback, async) {
-                var parameter = this.parseParameter(statement.parameter);
-                var filterList = this.parseFilter(statement.filter, parameter);
+            execute: function (obj, callback, async) {
+                if( obj.format ){
+                    return this._execute(obj, callback, async, obj.format);
+                }else{
+                    if( this.needCheckFormat(obj) ){
+                        var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, null, null, async);
+                        Promise.resolve(p).then(function (json) {
+                            return this._execute(obj, callback, async, json.data.format);
+                        }.bind(this));
+                    }else{
+                        return this._execute(obj, callback, async, "");
+                    }
+
+                }
+            },
+            needCheckFormat: function(s){
+                if( s.format )return false;
+                if( typeOf(s.parameter) === "object" ){
+                    for( var p in s.parameter ){
+                        if( typeOf( s.parameter[p] ) === "date" )return true;
+                    }
+                }
+                if( typeOf(s.filter) === "array" ){
+                    for( var i=0; i< s.filter.length; i++){
+                        var fType = s.filter[i].formatType;
+                        if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
+                    }
+                }
+                return false;
+            },
+            _execute: function(statement, callback, async, format){
+                var parameter = this.parseParameter(statement.parameter, format);
+                var filterList = this.parseFilter(statement.filter, parameter, format);
                 var obj = {
                     "filterList": filterList,
-                    "parameter": parameter
+                    "parameter" : parameter
                 };
                 return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                     statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
@@ -1323,9 +1353,9 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         return json;
                     }, null, async);
             },
-            parseFilter: function (filter, parameter) {
+            parseFilter: function (filter, parameter, format) {
                 if (typeOf(filter) !== "array") return [];
-            if( !parameter )parameter = {};
+                if( !parameter )parameter = {};
                 var filterList = [];
                 (filter || []).each(function (d) {
                     //var parameterName = d.path.replace(/\./g, "_");
@@ -1343,14 +1373,20 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
                         parameter[parameterName] = value; //"%"+value+"%";
                     } else {
-                        if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                            value = "{ts '" + value + "'}"
-                        } else if (d.formatType === "dateValue") {
-                            value = "{d '" + value + "'}"
-                        } else if (d.formatType === "timeValue") {
-                            value = "{t '" + value + "'}"
-                        } else if (d.formatType === "numberValue"){
-                            value = parseFloat(value);
+                         if( ["sql", "sqlScript"].contains(format) ) {
+                            if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }else{
+                            if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                                value = "{ts '" + value + "'}"
+                            } else if (d.formatType === "dateValue") {
+                                value = "{d '" + value + "'}"
+                            } else if (d.formatType === "timeValue") {
+                                value = "{t '" + value + "'}"
+                            } else if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
                         }
                         parameter[parameterName] = value;
                     }
@@ -1360,16 +1396,20 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 }.bind(this));
                 return filterList;
             },
-            parseParameter: function (obj) {
-                if (typeOf(obj) !== "object") return {};
+            parseParameter : function( obj, format ){
+                if( typeOf(obj) !== "object" )return {};
                 var parameter = {};
                 //传入的参数
-                for (var p in obj) {
+                for( var p in obj ){
                     var value = obj[p];
-                    if (typeOf(value) === "date") {
-                        value = "{ts '" + value.format("db") + "'}"
+                    if( typeOf( value ) === "date" ){
+                        if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
                     }
-                    parameter[p] = value;
+                    parameter[ p ] = value;
                 }
                 return parameter;
             },
