@@ -36,8 +36,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemPrimitiveType;
 import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
@@ -94,9 +94,9 @@ public abstract class Plan extends GsonPropertyObject {
 
     public List<Object> columnGrid;
 
-    public Boolean exportGrid;
-
-    public Boolean exportGroupGrid;
+//    public Boolean exportGrid;
+//
+//    public Boolean exportGroupGrid;
 
     public Integer count;
 
@@ -316,6 +316,11 @@ public abstract class Plan extends GsonPropertyObject {
             }
         }
         this.grid = table;
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!############");
+        System.out.println(XGsonBuilder.toJson(this.selectList));
+        System.out.println(XGsonBuilder.toJson(this.findGroupSelectEntry()));
+        System.out.println(XGsonBuilder.toJson(this.group));
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!############");
         if (null != this.findGroupSelectEntry()) {
             GroupTable groupTable = group(table);
             if (StringUtils.isNotEmpty(this.afterGroupGridScriptText)) {
@@ -348,12 +353,12 @@ public abstract class Plan extends GsonPropertyObject {
                 }
             }
         }
-        if (BooleanUtils.isFalse(exportGrid)) {
-            this.grid = null;
-        }
-        if (BooleanUtils.isFalse(exportGroupGrid)) {
-            this.groupGrid = null;
-        }
+//        if (BooleanUtils.isFalse(exportGrid)) {
+//            this.grid = null;
+//        }
+//        if (BooleanUtils.isFalse(exportGroupGrid)) {
+//            this.groupGrid = null;
+//        }
         if (null != this.grid) {
             this.selectList.stream().filter(o -> BooleanUtils.isTrue(o.isName)).forEach(
                     o -> this.grid.forEach(row -> row.put(o.column, name(Objects.toString(row.find(o.column), "")))));
