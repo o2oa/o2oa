@@ -3203,14 +3203,29 @@ MDomItem.Org = new Class({
         if( _self.orgObject ){
             data = [];
             _self.orgObject.each( function( d ){
+                if( d.data ){
+                    if( d.data.distinguishedName ){
+                        if( d.data.distinguishedName != dn )data.push( d );
+                    }else{
+                        if( d.data.name != dn )data.push( d );
+                    }
+                }
+            });
+            _self.orgObject = data;
+        }
+
+        if( _self.orgObjData ){
+            data = [];
+            _self.orgObjData.each( function( d ){
                 if( d.distinguishedName ){
                     if( d.distinguishedName != dn )data.push( d );
                 }else{
                     if( d.name != dn )data.push( d );
                 }
             });
-            _self.orgObject = data;
+            _self.orgObjData = data;
         }
+
         this.node.destroy();
         _self.items[0].fireEvent("change");
         ev.stopPropagation();

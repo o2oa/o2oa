@@ -28,9 +28,9 @@ MWF.xApplication.Attendance.MyDetail = new Class({
     loadTab : function(){
 
         this.tabNode = new Element("div",{"styles" : this.css.tabNode }).inject(this.node);
-        this.detailArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
+        this.detailArea = new Element("div",{"styles" : this.app.css.tabPageContainer }).inject(this.tabNode);
         //this.selfHolidayArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode)
-        this.detailStaticArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
+        this.detailStaticArea = new Element("div",{"styles" : this.app.css.tabPageContainer }).inject(this.tabNode);
         //this.selfHolidayStaticArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode)
 
         MWF.require("MWF.widget.Tab", function(){
@@ -252,7 +252,11 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                                 if( typeOf( result.isLackOfTime ) == "string" )result.isLackOfTime = this.getBoolean( result.isLackOfTime );
 
                                 if( result.date && result.date !="" ){
-                                    result.q_date =  year + "-" + month + "-" + result.date;
+                                    if( !result.cycleMonth ){
+                                        this.app.notice( this.lp.mustSelectMonth, "error");
+                                        return;
+                                    }
+                                    result.q_date =  result.cycleYear + "-" + result.cycleMonth + "-" + result.date;
                                 }
                                 this.loadView( result );
                             }.bind(this)
