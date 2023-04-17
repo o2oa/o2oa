@@ -141,17 +141,17 @@ public class AttendanceV2Group extends SliceJpaObject {
 	public static final String allowFieldWork_FIELDNAME = "allowFieldWork";
 	@FieldDescribe("是否允许外勤打卡.")
 	@Column(name = ColumnNamePrefix + allowFieldWork_FIELDNAME)
-	private Boolean allowFieldWork;
+	private Boolean allowFieldWork = true;
 
 	public static final String requiredFieldWorkRemarks_FIELDNAME = "requiredFieldWorkRemarks";
 	@FieldDescribe("外勤打卡备注是否必填.")
 	@Column(name = ColumnNamePrefix + requiredFieldWorkRemarks_FIELDNAME)
-	private Boolean requiredFieldWorkRemarks;
+	private Boolean requiredFieldWorkRemarks = true;
 
 	public static final String fieldWorkMarkError_FIELDNAME = "fieldWorkMarkError";
 	@FieldDescribe("外勤打卡是否作为异常数据处理.")
 	@Column(name = ColumnNamePrefix + fieldWorkMarkError_FIELDNAME)
-	private Boolean fieldWorkMarkError;
+	private Boolean fieldWorkMarkError = true;
 
 	public static final String workPlaceIdList_FIELDNAME = "workPlaceIdList";
 	@FieldDescribe("工作场所列表.")

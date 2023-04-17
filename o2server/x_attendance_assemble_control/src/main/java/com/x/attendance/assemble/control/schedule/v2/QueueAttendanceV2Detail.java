@@ -93,8 +93,8 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         }
                     }
                 }
-
-                if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) { // 固定班制
+                // 固定班制
+                if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
                     // 查询是否有对应的班次
                     if (StringUtils.isEmpty(shiftId)) {
                         shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
@@ -364,21 +364,10 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         if (emc != null && business != null
                 && config != null && BooleanUtils.isTrue(config.getAppealEnable())
                 && recordList != null && !recordList.isEmpty()) {
-            List<AttendanceV2CheckInRecord> list = recordList.stream().filter(
-                    record -> {
-                        if (fieldWorkMarkError) {
-                            return (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(record.getFieldWork())
-                            || (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && StringUtils.isEmpty(record.getLeaveDataId())));
-                        } else {
-                            return !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
-                                    && StringUtils.isEmpty(record.getLeaveDataId())
-                                    && !record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
-                        }
-                    }
-            ).collect(Collectors.toList());
-            if (!list.isEmpty()) {
-                for (AttendanceV2CheckInRecord record : list) {
-                    List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+            for (AttendanceV2CheckInRecord record : recordList) {
+                List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+                // 异常打卡 新增AttendanceV2AppealInfo记录
+                if (record.checkResultException(fieldWorkMarkError)) {
                     if (appealList != null && !appealList.isEmpty()) {
                         logger.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
                         continue;
@@ -393,6 +382,17 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     emc.commit();
                     if (logger.isDebugEnabled()) {
                         logger.debug("生成对应的异常打卡申请数据, {}", appealInfo.toString());
+                    }
+                } else {
+                    // 正常的打卡记录 需要删除原来有的异常AttendanceV2AppealInfo数据，有可能打卡记录修改过，现在已经是正常的了
+                    if (appealList != null && !appealList.isEmpty()) {
+                        List<String> deleteIds = new ArrayList<>();
+                        for (AttendanceV2AppealInfo appealInfo : appealList) {
+                            deleteIds.add(appealInfo.getId());
+                        }
+                        emc.beginTransaction(AttendanceV2AppealInfo.class);
+                        emc.delete(AttendanceV2AppealInfo.class, deleteIds);
+                        emc.commit();
                     }
                 }
             }

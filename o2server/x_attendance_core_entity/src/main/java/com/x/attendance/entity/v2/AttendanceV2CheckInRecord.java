@@ -8,6 +8,8 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -100,6 +102,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     // 打卡数据来源
     public static final String SOURCE_TYPE_USER_CHECK = "USER_CHECK"; // 用户打卡
     public static final String SOURCE_TYPE_AUTO_CHECK = "AUTO_CHECK"; // 系统自动打卡
+    public static final String SOURCE_TYPE_FAST_CHECK = "FAST_CHECK"; // 极速打卡
     public static final String SOURCE_TYPE_SYSTEM_IMPORT = "SYSTEM_IMPORT"; // 系统倒入
     public static final String sourceType_FIELDNAME = "sourceType";
     @FieldDescribe("打卡数据来源")
@@ -226,6 +229,28 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @FieldDescribe("请假数据id，关联请假数据，如果有值表示在请假时间段内.")
     @Column( length = JpaObject.length_id, name = ColumnNamePrefix + leaveDataId_FIELDNAME)
     private String leaveDataId;
+
+
+    /**
+     * 判断当前打卡记录是否为异常数据
+     * @param fieldWorkMarkError 外勤是否标记为异常数据
+     * @return true 是异常数据
+     */
+    public boolean checkResultException(boolean fieldWorkMarkError) {
+        if (fieldWorkMarkError) {
+            return (getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(getFieldWork())
+                    || (
+                            !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                                    && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)
+                                    && StringUtils.isEmpty(getLeaveDataId())));
+        } else {
+            return !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                    && StringUtils.isEmpty(getLeaveDataId())
+                    && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
+        }
+    }
+
+
 
 
     public String getLeaveDataId() {

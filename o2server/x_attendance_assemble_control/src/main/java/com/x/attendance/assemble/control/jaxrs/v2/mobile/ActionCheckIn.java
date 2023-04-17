@@ -147,7 +147,11 @@ public class ActionCheckIn extends BaseAction {
             // 更新打卡
             emc.beginTransaction(AttendanceV2CheckInRecord.class);
             record.setRecordDate(nowDate);
-            record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
+            if (StringUtils.isNotEmpty(wi.getSourceType())) {
+                record.setSourceType(wi.getSourceType());
+            } else {
+                record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
+            }
             record.setCheckInResult(checkInResult);
             record.setSourceDevice(wi.getSourceDevice());
             record.setDescription(wi.getDescription());
@@ -162,6 +166,8 @@ public class ActionCheckIn extends BaseAction {
             record.setRecordAddress(wi.getRecordAddress());
             emc.check(record, CheckPersistType.all);
             emc.commit();
+            // 异常数据
+            generateAppealInfo(record, groups.get(0).getFieldWorkMarkError(), emc, business);
             Wo wo = new Wo();
             wo.setCheckInResult(checkInResult);
             wo.setRecordDate(nowDate);
@@ -172,6 +178,45 @@ public class ActionCheckIn extends BaseAction {
             throw new ExceptionNoCheckInResult();
         }
         return result;
+    }
+
+    /**
+     * 异常
+     * @param record
+     * @param emc
+     * @param business
+     */
+    private void generateAppealInfo(AttendanceV2CheckInRecord record,boolean fieldWorkMarkError, EntityManagerContainer emc, Business business) {
+        try {
+            if (record != null && record.checkResultException(fieldWorkMarkError)) {
+                AttendanceV2Config config = null;
+                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+                if (configs != null && !configs.isEmpty()) {
+                    config = configs.get(0);
+                }
+                if (config == null || !config.getAppealEnable()) {
+                    return;
+                }
+                List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+                if (appealList != null && !appealList.isEmpty()) {
+                    LOGGER.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
+                    return;
+                }
+                AttendanceV2AppealInfo appealInfo = new AttendanceV2AppealInfo();
+                appealInfo.setRecordId(record.getId());
+                appealInfo.setRecordDateString(record.getRecordDateString());
+                appealInfo.setRecordDate(record.getRecordDate());
+                appealInfo.setUserId(record.getUserId());
+                emc.beginTransaction(AttendanceV2AppealInfo.class);
+                emc.persist(appealInfo, CheckPersistType.all);
+                emc.commit();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("生成对应的异常打卡申请数据, {}", appealInfo.toString());
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
     }
 
 
@@ -241,6 +286,16 @@ public class ActionCheckIn extends BaseAction {
         @FieldDescribe("当前位置地点描述")
         private String recordAddress;
 
+        @FieldDescribe("打卡数据来源： USER_CHECK（用户打卡） FAST_CHECK（极速打卡） ")
+        private String sourceType;
+
+        public String getSourceType() {
+            return sourceType;
+        }
+
+        public void setSourceType(String sourceType) {
+            this.sourceType = sourceType;
+        }
 
         public String getRecordId() {
             return recordId;
