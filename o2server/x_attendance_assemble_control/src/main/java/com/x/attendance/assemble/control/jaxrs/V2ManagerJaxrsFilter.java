@@ -11,7 +11,8 @@ import javax.servlet.annotation.WebFilter;
         "/jaxrs/v2/workplace/*",
         "/jaxrs/v2/detail/*",
         "/jaxrs/v2/config/*",
-        "/jaxrs/v2/leave/*"
+        "/jaxrs/v2/leave/*",
+        "/jaxrs/v2/record/*"
 }, asyncSupported = true)
 public class V2ManagerJaxrsFilter extends ManagerUserJaxrsFilter {
 }

@@ -47,24 +47,30 @@ export default content({
     }
   },
   formatRecordResult(record) {
-    if (record && record.checkInResult) {
-      if (record.checkInResult == 'Absenteeism') {
-        return lp.appeal.absenteeism;
-      } else if (record.checkInResult == 'Early') {
-        return lp.appeal.early;
-      }  else if (record.checkInResult == 'Normal') {
-        return lp.appeal.normal;
-      } else if (record.checkInResult == 'Late') {
-        return lp.appeal.late;
-      } else if (record.checkInResult == 'SeriousLate') {
-        return lp.appeal.seriousLate;
-      } else if (record.checkInResult == 'NotSigned') {
-        return lp.appeal.notSigned;
-      } else if (record.fieldWork) {
-        return lp.appeal.fieldWork;
-      } 
+    let span = "";
+    if (record.fieldWork) {
+      span = lp.appeal.fieldWork;
+    } else {
+      const result = record.checkInResult;
+      if (result === 'PreCheckIn') {
+        span = "";
+      } else if (result === 'NotSigned') {
+        span =  lp.appeal.notSigned;
+      }  else if (result === 'Normal') {
+        span =   lp.appeal.normal;
+      } else if (result === 'Early') {
+        span =   lp.appeal.early;
+      } else if (result === 'Late') {
+        span =   lp.appeal.late;
+      } else if (result === 'SeriousLate') {
+        span =   lp.appeal.seriousLate;
+      } else if (result === 'Absenteeism') {
+        span =   lp.appeal.absenteeism;
+      } else { 
+        span = "" ;
+      }
     }
-    return "";
+    return span;
   },
   formatAppealStatus(appeal) {
     if (appeal) {

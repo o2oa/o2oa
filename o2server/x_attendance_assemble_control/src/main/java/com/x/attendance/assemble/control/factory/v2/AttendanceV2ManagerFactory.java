@@ -174,6 +174,55 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.recordDate)))).getResultList();
     }
 
+
+    /**
+     * 查询打卡记录
+     * 分页查询需要
+     * @param adjustPage
+     * @param adjustPageSize
+     * @param userId
+     * @param recordDateString YYYY-MM-dd
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2CheckInRecord> listRecordByPage(Integer adjustPage,
+                                                     Integer adjustPageSize, String userId, String recordDateString) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2CheckInRecord> cq = cb.createQuery(AttendanceV2CheckInRecord.class);
+        Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
+        Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
+        if (StringUtils.isNotEmpty(recordDateString)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+        return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+                .getResultList();
+    }
+
+    /**
+     * 查询打卡记录
+     * 分页查询需要
+     * @param userId 可以为空
+     * @param recordDateString YYYY-MM-dd
+     * @return
+     * @throws Exception
+     */
+    public Long recordCount(String userId, String recordDateString) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
+        Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
+        if (StringUtils.isNotEmpty(recordDateString)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+        }
+        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+    }
+
+
+
+
     /**
      * 根据人员和日期 查询考勤详细
      * @param person

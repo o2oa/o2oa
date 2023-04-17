@@ -71,13 +71,13 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     private String userId;
 
     public static final String recordDateString_FIELDNAME = "recordDateString";
-    @FieldDescribe("打卡记录日期字符串")
+    @FieldDescribe("打卡记录日期字符串: YYYY-MM-dd")
     @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + recordDateString_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String recordDateString;
 
     public static final String recordDate_FIELDNAME = "recordDate";
-    @FieldDescribe("打卡记录日期")
+    @FieldDescribe("打卡记录时间: YYYY-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = ColumnNamePrefix + recordDate_FIELDNAME)
     @CheckPersist(allowEmpty = false)
@@ -126,7 +126,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     public static final String CHECKIN_RESULT_PreCheckIn = "PreCheckIn";
 
     public static final String checkInResult_FIELDNAME = "checkInResult";
-    @FieldDescribe("打卡结果")
+    @FieldDescribe("打卡结果: Normal|Early|Late|SeriousLate|NotSigned")
     @Column(length = length_32B, name = ColumnNamePrefix + checkInResult_FIELDNAME)
     private String checkInResult;
 
@@ -135,7 +135,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     public static final String OffDuty = "OffDuty";
 
     public static final String checkInType_FIELDNAME = "checkInType";
-    @FieldDescribe("考勤类型")
+    @FieldDescribe("考勤类型: OnDuty|OffDuty")
     @Column(length = length_16B, name = ColumnNamePrefix + checkInType_FIELDNAME)
     private String checkInType;
 
