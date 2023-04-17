@@ -117,6 +117,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             "showActionbar" : this.json.actionbar === "show",
             "filter": filter,
             "parameter": parameter,
+            "parameterList": this.json.parameterList,
             "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
             "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
         };
@@ -180,63 +181,65 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
         if( f.valueType === "script" ){
             value = this.form.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
         }
-        if (typeOf(value) === "date") {
-            value = value.format("db");
-        }
-        var user = layout.user;
-        switch (value) {
-            case "@person":
-                value = user.distinguishedName;
-                break;
-            case "@identityList":
-                value = user.identityList.map(function (d) {
-                    return d.distinguishedName;
-                });
-                break;
-            case "@unitList":
-                o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
-                    value = json.unitList;
-                }, null, false);
-                break;
-            case "@unitAllList":
-                o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
-                    value = json.unitList;
-                }, null, false);
-                break;
-            case "@year":
-                value = (new Date().getFullYear()).toString();
-                break;
-            case "@season":
-                var m = new Date().format("%m");
-                if (["01", "02", "03"].contains(m)) {
-                    value = "1"
-                } else if (["04", "05", "06"].contains(m)) {
-                    value = "2"
-                } else if (["07", "08", "09"].contains(m)) {
-                    value = "3"
-                } else {
-                    value = "4"
-                }
-                break;
-            case "@month":
-                value = new Date().format("%Y-%m");
-                break;
-            case "@time":
-                value = new Date().format("db");
-                break;
-            case "@date":
-                value = new Date().format("%Y-%m-%d");
-                break;
-            default:
-        }
-
-        if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
-            value = "{ts '" + value + "'}"
-        } else if (f.formatType === "dateValue") {
-            value = "{d '" + value + "'}"
-        } else if (f.formatType === "timeValue") {
-            value = "{t '" + value + "'}"
-        }
         return value;
+        // 后面的放在 queryStatement中解析了
+        // if (typeOf(value) === "date") {
+        //     value = value.format("db");
+        // }
+        // var user = layout.user;
+        // switch (value) {
+            // case "@person":
+            //     value = user.distinguishedName;
+            //     break;
+            // case "@identityList":
+            //     value = user.identityList.map(function (d) {
+            //         return d.distinguishedName;
+            //     });
+            //     break;
+            // case "@unitList":
+            //     o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
+            //         value = json.unitList;
+            //     }, null, false);
+            //     break;
+            // case "@unitAllList":
+            //     o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
+            //         value = json.unitList;
+            //     }, null, false);
+            //     break;
+        //     case "@year":
+        //         value = (new Date().getFullYear()).toString();
+        //         break;
+        //     case "@season":
+        //         var m = new Date().format("%m");
+        //         if (["01", "02", "03"].contains(m)) {
+        //             value = "1"
+        //         } else if (["04", "05", "06"].contains(m)) {
+        //             value = "2"
+        //         } else if (["07", "08", "09"].contains(m)) {
+        //             value = "3"
+        //         } else {
+        //             value = "4"
+        //         }
+        //         break;
+        //     case "@month":
+        //         value = new Date().format("%Y-%m");
+        //         break;
+        //     case "@time":
+        //         value = new Date().format("db");
+        //         break;
+        //     case "@date":
+        //         value = new Date().format("%Y-%m-%d");
+        //         break;
+        //     default:
+        // }
+        //
+        // if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
+        //     value = "{ts '" + value + "'}"
+        // } else if (f.formatType === "dateValue") {
+        //     value = "{d '" + value + "'}"
+        // } else if (f.formatType === "timeValue") {
+        //     value = "{t '" + value + "'}"
+        // }
+        // return value;
     }
 });
