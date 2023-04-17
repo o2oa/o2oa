@@ -23,10 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ActionAppealAudit extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionAppealAudit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionAppealAudit.class);
 
     protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
             JsonElement jsonElement) throws Exception {
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
         List<String> ids = null;
@@ -46,7 +47,7 @@ public class ActionAppealAudit extends BaseAction {
             check = false;
             Exception exception = new ExceptionWrapInConvert(e, jsonElement);
             result.error(exception);
-            logger.error(e, effectivePerson, request, null);
+            LOGGER.error(e, effectivePerson, request, null);
         }
 
         if (check) {
@@ -88,7 +89,7 @@ public class ActionAppealAudit extends BaseAction {
                     processWo.setDiscription("考勤申诉信息查询发生异常！");
                     Exception exception = new ExceptionAttendanceAppealProcess(e, "系统在根据ID查询考勤申诉信息数据时发生异常。ID:" + id);
                     result.error(exception);
-                    logger.error(e, effectivePerson, request, null);
+                    LOGGER.error(e, effectivePerson, request, null);
                 }
 
                 if (subProcessCheck) {
@@ -110,7 +111,7 @@ public class ActionAppealAudit extends BaseAction {
                         Exception exception = new ExceptionAttendanceAppealProcess(e,
                                 "系统根据员工姓名查询组织信息时发生异常！name:" + effectivePerson.getDistinguishedName());
                         result.error(exception);
-                        logger.error(e, effectivePerson, request, null);
+                        LOGGER.error(e, effectivePerson, request, null);
                     }
                 }
                 if (subProcessCheck) {
@@ -151,7 +152,7 @@ public class ActionAppealAudit extends BaseAction {
                         processWo.setDiscription("申诉处理失败！");
                         Exception exception = new ExceptionAttendanceAppealProcess(e, id);
                         result.error(exception);
-                        logger.error(e, effectivePerson, request, null);
+                        LOGGER.error(e, effectivePerson, request, null);
                     }
                 }
                 if (subProcessCheck) {
