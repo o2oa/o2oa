@@ -201,6 +201,40 @@ public class AttendanceDetailStatisticFactory extends AbstractFactory {
 		cq.select( cb.count( root ) );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
+
+	/**
+	 * 根据员工，年月，统计次数 就是出勤天数
+	 * @param employeeNames
+	 * @param cycleYear
+	 * @param cycleMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long countDutyDaysByEmployeeCycleYearAndMonth( List<String> employeeNames, String cycleYear, String cycleMonth) throws Exception {
+		if( employeeNames == null || employeeNames.size() == 0 ){
+			logger.error( new EmployeeNamesEmptyException() );
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		Predicate p = cb.equal( root.get( AttendanceDetail_.recordStatus ), 1);
+		p = cb.and( p, root.get( AttendanceDetail_.empName).in( employeeNames ));
+		if( cycleYear == null || cycleYear.isEmpty() ){
+			logger.error( new CycleYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleYear), cycleYear));
+		}
+		if( cycleMonth == null || cycleMonth.isEmpty() ){
+			logger.error( new CycleMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get( AttendanceDetail_.cycleMonth), cycleMonth));
+		}
+		//查询总数
+		cq.select( cb.count( root ) );
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
 	
 	/**
 	 * 根据员工，年月，统计签退次数

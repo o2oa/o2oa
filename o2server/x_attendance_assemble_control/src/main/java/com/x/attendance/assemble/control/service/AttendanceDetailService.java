@@ -181,6 +181,7 @@ public class AttendanceDetailService {
 				attendanceDetail.setIsAbsent(false);
 				attendanceDetail.setIsAbnormalDuty(false);
 				attendanceDetail.setIsLackOfTime(false);
+				attendanceDetail.setIsLeaveEarlier(false);
 				//并对该条考勤数据发起统计请求
 				attendanceDetailAnalyseService.recordStatisticRequireLog(attendanceDetail,true);
 			}
