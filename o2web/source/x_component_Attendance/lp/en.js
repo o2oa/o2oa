@@ -120,6 +120,7 @@ MWF.xApplication.Attendance.LP = {
 	"registerBiaduNotice": "The workplace setting uses the services of the Baidu Maps Open Platform. You can register for Baidu Developer Certification to increase the concurrency of the map. After the certification is completed, please fill in the key into the input box below.",
 	"openRegisterUrl": "Click here to open the authentication channel",
 	"secretKey": "Secret Key",
+	"mustSelectMonth": "When selecting a date, you must also select a month",
 
 	"index": {
 		"attendanceCalendar":"Attendance Calendar",
