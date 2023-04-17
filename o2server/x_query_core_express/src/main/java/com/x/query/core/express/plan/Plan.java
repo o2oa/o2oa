@@ -316,11 +316,6 @@ public abstract class Plan extends GsonPropertyObject {
             }
         }
         this.grid = table;
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!############");
-        System.out.println(XGsonBuilder.toJson(this.selectList));
-        System.out.println(XGsonBuilder.toJson(this.findGroupSelectEntry()));
-        System.out.println(XGsonBuilder.toJson(this.group));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!############");
         if (null != this.findGroupSelectEntry()) {
             GroupTable groupTable = group(table);
             if (StringUtils.isNotEmpty(this.afterGroupGridScriptText)) {
