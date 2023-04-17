@@ -88,6 +88,24 @@ public class StatementAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "获取语句的格式.", action = ActionGetFormat.class)
+    @GET
+    @Path("{id}/format")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getFormat(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+        ActionResult<ActionGetFormat.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGetFormat().execute(effectivePerson, id);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "执行语句V2,可以同时执行查询结果及查询总数.", action = ActionExecuteV2.class)
     @POST
     @Path("{flag}/execute/mode/{mode}/page/{page}/size/{size}")

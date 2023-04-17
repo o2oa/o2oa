@@ -1067,11 +1067,11 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.layout.menuData = this.menuData;
     },
     setScroll: function(){
-        o2.require("o2.widget.ScrollBar", function(){
-            this.appScrollBar = new o2.widget.ScrollBar(this.appScrollNode, {
-                "style":"xDesktop_Message", "where": "before", "indent": false, "distance": 100, "friction": 6,	"axis": {"x": false, "y": true}
-            });
-        }.bind(this));
+        // o2.require("o2.widget.ScrollBar", function(){
+        //     this.appScrollBar = new o2.widget.ScrollBar(this.appScrollNode, {
+        //         "style":"xDesktop_Message", "where": "before", "indent": false, "distance": 100, "friction": 6,	"axis": {"x": false, "y": true}
+        //     });
+        // }.bind(this));
     },
     loadTitle: function(){
         this.lnkTitleNode.set("text", o2.LP.desktop.lnkAppTitle);
@@ -1689,7 +1689,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                 this.isShow = true;
                 this.isMorph = false;
                 this.layout.desktopNode.addEvent("mousedown", this.hideMessage);
-                this.setScroll();
+                // this.setScroll();
                 this.fireEvent("show");
             }.bind(this));
         }

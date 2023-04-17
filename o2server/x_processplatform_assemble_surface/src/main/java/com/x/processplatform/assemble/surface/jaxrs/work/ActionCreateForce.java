@@ -44,18 +44,11 @@ class ActionCreateForce extends BaseCreateAction {
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
-			Application application = business.application().pick(process.getApplication());
-			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
-			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
-			}
-			identities = List.of(identity);
-			units = business.organization().unit().listWithIdentitySupNested(identity);
+			List<String> identities = List.of(identity);
+			List<String> units = business.organization().unit().listWithIdentitySupNested(identity);
 			List<String> groups = business.organization().group().listWithIdentity(identities);
 			if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
-				throw new ExceptionAccessDenied(effectivePerson, process);
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			if (BooleanUtils.isTrue(wi.getLatest())) {
 				// 判断是否是要直接打开之前创建的草稿,草稿的判断标准:有待办无任何已办

@@ -1309,12 +1309,42 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         };
 
         this.statement = {
-            "execute": function (statement, callback, async) {
-                var parameter = this.parseParameter(statement.parameter);
-                var filterList = this.parseFilter(statement.filter, parameter);
+            execute: function (obj, callback, async) {
+                if( obj.format ){
+                    return this._execute(obj, callback, async, obj.format);
+                }else{
+                    if( this.needCheckFormat(obj) ){
+                        var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, null, null, async);
+                        Promise.resolve(p).then(function (json) {
+                            return this._execute(obj, callback, async, json.data.format);
+                        }.bind(this));
+                    }else{
+                        return this._execute(obj, callback, async, "");
+                    }
+
+                }
+            },
+            needCheckFormat: function(s){
+                if( s.format )return false;
+                if( typeOf(s.parameter) === "object" ){
+                    for( var p in s.parameter ){
+                        if( typeOf( s.parameter[p] ) === "date" )return true;
+                    }
+                }
+                if( typeOf(s.filter) === "array" ){
+                    for( var i=0; i< s.filter.length; i++){
+                        var fType = s.filter[i].formatType;
+                        if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
+                    }
+                }
+                return false;
+            },
+            _execute: function(statement, callback, async, format){
+                var parameter = this.parseParameter(statement.parameter, format);
+                var filterList = this.parseFilter(statement.filter, parameter, format);
                 var obj = {
                     "filterList": filterList,
-                    "parameter": parameter
+                    "parameter" : parameter
                 };
                 return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                     statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
@@ -1323,9 +1353,9 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         return json;
                     }, null, async);
             },
-            parseFilter: function (filter, parameter) {
+            parseFilter: function (filter, parameter, format) {
                 if (typeOf(filter) !== "array") return [];
-            if( !parameter )parameter = {};
+                if( !parameter )parameter = {};
                 var filterList = [];
                 (filter || []).each(function (d) {
                     //var parameterName = d.path.replace(/\./g, "_");
@@ -1343,14 +1373,20 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
                         parameter[parameterName] = value; //"%"+value+"%";
                     } else {
-                        if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                            value = "{ts '" + value + "'}"
-                        } else if (d.formatType === "dateValue") {
-                            value = "{d '" + value + "'}"
-                        } else if (d.formatType === "timeValue") {
-                            value = "{t '" + value + "'}"
-                        } else if (d.formatType === "numberValue"){
-                            value = parseFloat(value);
+                         if( ["sql", "sqlScript"].contains(format) ) {
+                            if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }else{
+                            if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                                value = "{ts '" + value + "'}"
+                            } else if (d.formatType === "dateValue") {
+                                value = "{d '" + value + "'}"
+                            } else if (d.formatType === "timeValue") {
+                                value = "{t '" + value + "'}"
+                            } else if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
                         }
                         parameter[parameterName] = value;
                     }
@@ -1360,16 +1396,20 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 }.bind(this));
                 return filterList;
             },
-            parseParameter: function (obj) {
-                if (typeOf(obj) !== "object") return {};
+            parseParameter : function( obj, format ){
+                if( typeOf(obj) !== "object" )return {};
                 var parameter = {};
                 //传入的参数
-                for (var p in obj) {
+                for( var p in obj ){
                     var value = obj[p];
-                    if (typeOf(value) === "date") {
-                        value = "{ts '" + value.format("db") + "'}"
+                    if( typeOf( value ) === "date" ){
+                        if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
                     }
-                    parameter[p] = value;
+                    parameter[ p ] = value;
                 }
                 return parameter;
             },
@@ -1903,6 +1943,29 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     if (json.data) workData = json.data;
                 }.bind(this), null, false);
 
+                if( !layout.inBrowser && o2.typeOf(callback) === "function" ){
+                    if( !options )options = {};
+                    var queryLoad = options.onQueryLoad;
+                    options.onQueryLoad = function () {
+                        if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
+                        callback(this);
+                    }
+                };
+
+                runCallback = function ( handel ) {
+                    if( o2.typeOf(callback) === "function" ) {
+                        if (layout.inBrowser) {
+                            callback(handel);
+                        } else if (options && options.appId) {
+                            if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
+                                callback(layout.desktop.apps[options.appId], true);
+                            }
+                        }
+                    }
+                };
+
+
+
                 if (workData) {
                     var len = workData.workList.length + workData.workCompletedList.length;
                     if (len) {
@@ -1937,7 +2000,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     var work = e.target.retrieve("work");
                                     if (work){
                                        handel =  this.openWork(work.id, null, work.title, options);
-                                       if(callback)callback( handel );
+                                       runCallback( handel );
                                     }
                                     dlg.close();
                                 }.bind(this));
@@ -1966,7 +2029,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     var work = e.target.retrieve("work");
                                     if (work){
                                         handel =  this.openWork(null, work.id, work.title, options);
-                                        if(callback)callback( handel );
+                                        runCallback( handel );
                                     }
                                     dlg.close();
                                 }.bind(this));
@@ -1994,12 +2057,12 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                             if (workData.workList.length) {
                                 var work = workData.workList[0];
                                 handel = this.openWork(work.id, null, work.title, options);
-                                if(callback)callback(handel);
+                                runCallback(handel);
                                 return handel;
                             } else {
                                 var work = workData.workCompletedList[0];
                                 handel = this.openWork(null, work.id, work.title, options);
-                                if(callback)callback(handel);
+                                runCallback(handel);
                                 return handel;
                             }
                         }

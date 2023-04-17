@@ -439,6 +439,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 y = offset.y
             }
         }
+        if( x + size.x > psize.x )x = psize.x - size.x;
+        if( y + size.y > psize.y )y = psize.y - size.y;
+        if( x < 0 )x = 0;
+        if( y < 0 )y = 0;
 
         // var p = this.paperNode.getScroll();
         // var scrollY = 0;

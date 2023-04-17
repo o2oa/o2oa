@@ -5,28 +5,28 @@
     <div class="item_title">{{lp._processConfig.urge}}</div>
     <div class="item_info">{{lp._processConfig.urgeInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.urge.enable" :label="lp._processConfig.enable" @change="save('urge')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.urge.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'urge.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.urge.cron" :label="lp._processConfig.cron" @change="save('urge')"></BaseCron>
     </div>
 
     <div class="item_title">{{lp._processConfig.expire}}</div>
     <div class="item_info">{{lp._processConfig.expireInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.expire.enable" :label="lp._processConfig.enable" @change="save('expire')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.expire.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'expire.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.expire.cron" :label="lp._processConfig.cron" @change="save('expire')"></BaseCron>
     </div>
 
     <div class="item_title">{{lp._processConfig.touchDelay}}</div>
     <div class="item_info">{{lp._processConfig.touchDelayInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.touchDelay.enable" :label="lp._processConfig.enable" @change="save('touchDelay')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.touchDelay.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'touchDelay.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.touchDelay.cron" :label="lp._processConfig.cron" @change="save('touchDelay')"></BaseCron>
     </div>
 
     <div class="item_title">{{lp._processConfig.deleteDraft}}</div>
     <div class="item_info">{{lp._processConfig.deleteDraftInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.deleteDraft.enable" :label="lp._processConfig.enable" @change="save('deleteDraft')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.deleteDraft.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'deleteDraft.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.deleteDraft.cron" :label="lp._processConfig.cron" @change="save('deleteDraft')"></BaseCron>
 
       <div class="item_info" style="display: inline-flex; align-items: center;">
@@ -45,14 +45,14 @@
     <div class="item_title">{{lp._processConfig.passExpired}}</div>
     <div class="item_info">{{lp._processConfig.passExpiredInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.passExpired.enable" :label="lp._processConfig.enable" @change="save('passExpired')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.passExpired.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'passExpired.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.passExpired.cron" :label="lp._processConfig.cron" @change="save('passExpired')"></BaseCron>
     </div>
 
     <div class="item_title">{{lp._processConfig.touchDetained}}</div>
     <div class="item_info">{{lp._processConfig.touchDetainedInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.touchDetained.enable" :label="lp._processConfig.enable" @change="save('touchDetained')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.touchDetained.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'touchDetained.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.touchDetained.cron" :label="lp._processConfig.cron" @change="save('touchDetained')"></BaseCron>
 
       <div class="item_info" style="display: inline-flex; align-items: center;">
@@ -71,7 +71,7 @@
     <div class="item_title">{{lp._processConfig.updateTable}}</div>
     <div class="item_info">{{lp._processConfig.updateTableInfo}}</div>
     <div class="item_info">
-      <BaseBoolean v-model:value="processData.updateTable.enable" :label="lp._processConfig.enable" @change="save('updateTable')"></BaseBoolean>
+      <BaseBoolean v-model:value="processData.updateTable.enable" :label="lp._processConfig.enable" @change="(value)=>{saveConfig('processPlatform', 'updateTable.enable', value)}"></BaseBoolean>
       <BaseCron v-model:value="processData.updateTable.cron" :label="lp._processConfig.cron" @change="save('updateTable')"></BaseCron>
     </div>
 
@@ -93,12 +93,10 @@
 <script setup>
 import {lp, o2, component} from '@o2oa/component';
 import {ref} from 'vue';
-import {getConfigData, saveConfigData, getConfig, saveConfig} from '@/util/acrions';
+import {getConfigData, saveConfig} from '@/util/acrions';
 import BaseInput from '@/components/item/BaseInput.vue';
 import BaseCron from '@/components/item/BaseCron.vue';
-import BaseSelect from '@/components/item/BaseSelect.vue';
 import BaseItem from '@/components/item/BaseItem.vue';
-import { minify } from "terser";
 import BaseBoolean from "@/components/item/BaseBoolean";
 
 const processData = ref();
@@ -121,6 +119,7 @@ const saveHadoop = (key)=>{
 }
 
 const save = (key)=>{
+    debugger;
   return saveConfig('processPlatform', key, processData.value[key]);
 }
 
@@ -148,6 +147,7 @@ const selectMaintenanceIdentity = ()=>{
 
 
 getConfigData('processPlatform').then((data)=>{
+    debugger;
   processData.value = data;
 });
 

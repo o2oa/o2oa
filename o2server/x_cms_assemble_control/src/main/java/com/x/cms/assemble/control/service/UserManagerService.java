@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -129,7 +130,7 @@ public class UserManagerService {
 				}
 			}
 			identity = getMajorIdentityWithPerson(personName);
-			if (identity != null && !identity.isEmpty()) {
+			if (StringUtils.isNotBlank(identity)) {
 				topUnitName = business.organization().unit().getWithIdentityWithLevel(identity, 1);
 			}
 			return topUnitName;
@@ -182,7 +183,7 @@ public class UserManagerService {
 				}else{
 					for (String identity : identities) {
 						Identity obj = business.organization().identity().getObject(identity);
-						if (obj.getMajor()) {
+						if (obj!= null && BooleanUtils.isTrue(obj.getMajor())) {
 							return identity;
 						}
 					}

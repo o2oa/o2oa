@@ -28,7 +28,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(IdentityAction.class);
 		classes.add(GroupAction.class);
 		classes.add(RoleAction.class);
-		// classes.add(FunctionAction.class);
 		classes.add(LoginRecordAction.class);
 		classes.add(InputPersonAction.class);
 		classes.add(UnitAction.class);

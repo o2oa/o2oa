@@ -28,19 +28,121 @@ MWF.xApplication.Profile.Main = new Class({
         MWF.xDesktop.requireApp("Profile", "Common", null, false);
     },
     loadApplication: function(callback){
-        this.action.getPerson(function(json){
-            this.personData = json.data;
-            this.personData.personIcon = this.action.getPersonIcon();
+        if( this.isThreeManager() && !this.isSystemmanager ){
+            var user = layout.desktop.session.user;
+            this.personData = {
+                name: user.name,
+                employee: user.employee
+            };
 
-            this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser||layout.viewMode=="Default")? "viewBrowser": "view")+".html", {"bind": {"data": this.personData, "lp": this.lp}, "module": this}, function(){
-                this.loadContent()
+            this.content.loadHtml(this.path+this.options.style+"/view_xadmin.html",
+                {"bind": {"data": this.personData, "lp": this.lp}, "module": this},
+                function(){
+                    this.loadContent_3admin();
+                }.bind(this)
+            );
+        }else{
+            this.action.getPerson(function(json){
+                this.personData = json.data;
+                this.personData.personIcon = this.action.getPersonIcon();
+
+                if(this.isSystemmanager){
+                    var user = layout.desktop.session.user;
+                    this.personData.name = user.name;
+                    this.personData.employee = user.employee;
+                    this.personData.mail = "";
+                }
+
+                this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser||layout.viewMode=="Default")? "viewBrowser": "view")+".html",
+                    {"bind": {"data": this.personData, "lp": this.lp}, "module": this},
+                    function(){
+                        this.loadContent()
+                    }.bind(this)
+                );
             }.bind(this));
-        }.bind(this));
-        //this.loadCss();
+            //this.loadCss();
 
-        // this.loadTitle();
-        // this.loadContent();
-        if (callback) callback();
+            // this.loadTitle();
+            // this.loadContent();
+            if (callback) callback();
+        }
+    },
+    isThreeManager: function(){
+        if( typeOf(this.threeManagerFlag) === "boolean" )return this.threeManagerFlag;
+        var user = layout.desktop.session.user;
+        if (user.roleList) {
+            var userRoleName = [];
+            user.roleList.each(function (role) {
+                userRoleName.push(role.substring(0, role.indexOf("@")));
+            });
+            user.roleList = user.roleList.concat(userRoleName);
+        }
+        var roleLCList = (user.roleList || []).map(function (role) {
+            return role.toLowerCase();
+        }.bind(this));
+        this.isSystemmanager = roleLCList.isIntersect(["systemmanager"]);
+        this.threeManagerFlag = roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"]);
+        return this.threeManagerFlag;
+    },
+    loadContent_3admin: function(){
+        var pageConfigNodes = this.content.getElements(".o2_profile_configNode");
+
+        this.contentNode = this.content.getElement(".o2_profile_contentNode");
+        MWF.require("MWF.widget.Tab", function(){
+            this.tab = new MWF.widget.Tab(this.contentNode, {"style": "profileV2"});
+            this.tab.load();
+
+            var firstPage;
+            pageConfigNodes.each(function(node, i){
+                var page = this.tab.addTab(node, node.get("title"));
+                if( !this.isSystemmanager ){
+                    if( i > 0 )node.hide();
+                }
+                if( node.getStyle("display") === "none" ){
+                    page.tabNode.hide();
+                }else if( !firstPage ){
+                    firstPage = page;
+                }
+            }.bind(this));
+            this.contentNode.getElement("[name=MWFcontentNodeContainer]").setStyles({
+                "height":"calc(100% - 50px)",
+                "overflow":"auto"
+            });
+            this.tab.pages.map(function(stab){
+
+                var tabNode = stab.tabNode;
+
+                tabNode.addEvent("click",function(){
+                    this.addClass("mainColor_border");
+                    this.getChildren().addClass("mainColor_color");
+                    this.getSiblings().removeClass("mainColor_border");
+
+                    this.getSiblings().map(function(otabNode) {
+                        otabNode.getChildren().removeClass("mainColor_color");
+                    });
+
+                }.bind(tabNode));
+            }.bind(this));
+
+            if (this.options.tab){
+                this.tab.pages[this.options.tab].showIm();
+                this.tab.pages[this.options.tab].tabNode.addClass("mainColor_border");
+                this.tab.pages[this.options.tab].textNode.addClass("mainColor_color");
+            }else{
+                firstPage.showIm();
+                firstPage.tabNode.addClass("mainColor_border");
+                firstPage.textNode.addClass("mainColor_color");
+            }
+
+            if( this.isSystemmanager ){
+                if (!this.inBrowser&&layout.viewMode=="Layout"){
+                    this.loadLayoutConfigActions();
+                }
+
+                this.loadIdeaConfigActions( 2 );
+            }
+
+        }.bind(this));
     },
 
     loadContent: function(){
@@ -218,8 +320,8 @@ MWF.xApplication.Profile.Main = new Class({
         this.loadDesktopBackground(UINode);
     },
 
-    loadIdeaConfigActions: function(){
-        var i = (this.inBrowser||layout.viewMode=="Default")? 1 : 2;
+    loadIdeaConfigActions: function( i ){
+        if( typeOf(i) !== "number" ) i = (this.inBrowser||layout.viewMode=="Default")? 1 : 2;
         this.ideasArea = this.tab.pages[i].contentNode.setStyle("min-height","500px").getElement("textarea").addEvent("focus",function(){
             this.addClass("mainColor_border mainColor_color");
         }).addEvent("blur",function(){

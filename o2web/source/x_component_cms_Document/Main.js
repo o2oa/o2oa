@@ -27,7 +27,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         "useProcessForm": false //表单ID参数是流程的
     },
     onQueryLoad: function(){
-        if (!this.options.title) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
+        if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
         this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status){
             this.options.documentId = this.status.documentId;

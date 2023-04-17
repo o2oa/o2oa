@@ -1,8 +1,10 @@
 package com.x.base.core.project.config;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -23,14 +25,22 @@ public class CenterServers extends ConcurrentSkipListMap<String, CenterServer> {
 		}
 	}
 
-	public List<Entry<String, CenterServer>> orderedEntry() {
-		List<Entry<String, CenterServer>> list = new ArrayList<>();
-		this.entrySet().stream().sorted((o1, o2) -> {
-			return o1.getValue().getOrder().compareTo(o2.getValue().getOrder());
-		}).forEachOrdered(o -> {
-			list.add(o);
-		});
-		return list;
+//	public List<Entry<String, CenterServer>> orderedEntry() {
+//		List<Entry<String, CenterServer>> list = new ArrayList<>();
+//		this.entrySet().stream().sorted((o1, o2) -> {
+//			return o1.getValue().getOrder().compareTo(o2.getValue().getOrder());
+//		}).forEachOrdered(o -> {
+//			list.add(o);
+//		});
+//		return list;
+//	}
+
+	public List<Map.Entry<String, CenterServer>> orderedEntry() {
+		Comparator<Entry<String, CenterServer>> compareOrder = Comparator.comparing(o -> o.getValue().getOrder(),
+				Comparator.nullsLast(Comparator.naturalOrder()));
+		Comparator<Entry<String, CenterServer>> compareName = Comparator.comparing(Map.Entry::getKey,
+				Comparator.nullsLast(Comparator.naturalOrder()));
+		return this.entrySet().stream().sorted(compareOrder.thenComparing(compareName)).collect(Collectors.toList());
 	}
 
 	public Entry<String, CenterServer> first() {
@@ -47,8 +57,8 @@ public class CenterServers extends ConcurrentSkipListMap<String, CenterServer> {
 
 	public Entry<String, CenterServer> findByNode(String node) {
 
-		for(Entry<String, CenterServer> entry : this.entrySet()){
-			if(entry.getKey().equals(node)){
+		for (Entry<String, CenterServer> entry : this.entrySet()) {
+			if (entry.getKey().equals(node)) {
 				return entry;
 			}
 		}

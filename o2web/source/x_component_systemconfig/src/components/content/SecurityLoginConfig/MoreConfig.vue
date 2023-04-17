@@ -42,6 +42,7 @@
         :info="lp._loginConfig.tokenExpiredInfo"
         :config="tokenExpiredMinutes"
         :allowEditor="true"
+        min="1"
         type="number"
         @changeConfig="(value)=>{tokenExpiredMinutes = value.toInt(); saveConfig('person', 'tokenExpiredMinutes', value.toInt())}"></BaseItem>
 
