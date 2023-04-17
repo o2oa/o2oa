@@ -1030,9 +1030,41 @@ bind.Table = function(name){
 }
 
 bind.statement = {
-    "execute": function (statement, callback) {
-        var parameter = this.parseParameter(statement.parameter);
-        var filterList = this.parseFilter(statement.filter, parameter);
+        execute: function (obj, callback) {
+        if( obj.format ){
+            return this._execute(obj, callback, obj.format);
+        }else{
+            if( this.needCheckFormat(obj) ){
+                var value;
+                var _self = this;
+                bind.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, function(json){
+                    value = _self._execute(obj, callback, json.data.format);
+                });
+                return value;
+            }else{
+                return this._execute(obj, callback, "");
+            }
+
+        }
+    },
+    needCheckFormat: function(s){
+        if( s.format )return false;
+        if( typeOf(s.parameter) === "object" ){
+            for( var p in s.parameter ){
+                if( typeOf( s.parameter[p] ) === "date" )return true;
+            }
+        }
+        if( typeOf(s.filter) === "array" ){
+            for( var i=0; i< s.filter.length; i++){
+                var fType = s.filter[i].formatType;
+                if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].indexOf( fType ) > -1 )return true;
+            }
+        }
+        return false;
+    },
+    _execute: function (statement, callback, format) {
+        var parameter = this.parseParameter(statement.parameter, format);
+        var filterList = this.parseFilter(statement.filter, parameter, format);
         var obj = {
             "filterList": filterList,
             "parameter" : parameter
@@ -1047,23 +1079,41 @@ bind.statement = {
         );
         return value;
     },
-    parseFilter : function( filter, parameter ){
+    parseFilter : function( filter, parameter, format ){
         if( typeOf(filter) !== "array" )return [];
+        if( !parameter )parameter = {};
         var filterList = [];
         ( filter || [] ).each( function (d) {
-            var parameterName = d.path.replace(/\./g, "_");
+            //var parameterName = d.path.replace(/\./g, "_");
+            var pName = d.path.replace(/\./g, "_");
+
+            var parameterName = pName;
+            var suffix = 1;
+            while( parameter[parameterName] ){
+                parameterName = pName + "_" + suffix;
+                suffix++;
+            }
+
             var value = d.value;
             if( d.comparison === "like" || d.comparison === "notLike" ){
                 if( value.substr(0, 1) !== "%" )value = "%"+value;
                 if( value.substr(value.length-1,1) !== "%" )value = value+"%";
                 parameter[ parameterName ] = value; //"%"+value+"%";
             }else{
-                if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
-                    value = "{ts '"+value+"'}"
-                }else if( d.formatType === "dateValue" ){
-                    value = "{d '"+value+"'}"
-                }else if( d.formatType === "timeValue" ){
-                    value = "{t '"+value+"'}"
+                if( ["sql", "sqlScript"].contains(format) ) {
+                    if (d.formatType === "numberValue") {
+                        value = parseFloat(value);
+                    }
+                }else{
+                    if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                        value = "{ts '" + value + "'}"
+                    } else if (d.formatType === "dateValue") {
+                        value = "{d '" + value + "'}"
+                    } else if (d.formatType === "timeValue") {
+                        value = "{t '" + value + "'}"
+                    } else if (d.formatType === "numberValue") {
+                        value = parseFloat(value);
+                    }
                 }
                 parameter[ parameterName ] = value;
             }
@@ -1073,14 +1123,18 @@ bind.statement = {
         });
         return filterList;
     },
-    parseParameter : function( obj ){
+    parseParameter : function( obj, format ){
         if( typeOf(obj) !== "object" )return {};
         var parameter = {};
         //传入的参数
         for( var p in obj ){
             var value = obj[p];
             if( typeOf( value ) === "date" ){
-                value = "{ts '"+value.format("db")+"'}"
+                if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
             }
             parameter[ p ] = value;
         }
