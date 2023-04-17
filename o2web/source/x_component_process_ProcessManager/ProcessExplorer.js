@@ -117,6 +117,9 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         }.bind(this), function(){if (failure) failure();}.bind(this));
     },
     saveItemAsUpdate: function(someItem, process, success, failure){
+	    debugger;
+        var isSameApp = process.application === someItem.application;
+
         process.id = someItem.id;
         process.name = someItem.name;
         process.alias = someItem.alias;
@@ -125,23 +128,31 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         process.applicationName = someItem.applicationName;
         process.isNewProcess = false;
 
-        if (process.begin) process.begin.process = process.id;
-        if (process.endList) process.endList.each(function(a){a.process = process.id;});
-        if (process.agentList) process.agentList.each(function(a){a.process = process.id;});
-        if (process.manualList) process.manualList.each(function(a){a.process = process.id;});
-        if (process.conditionList) process.conditionList.each(function(a){a.process = process.id;});
-        if (process.choiceList) process.choiceList.each(function(a){a.process = process.id;});
-        if (process.parallelList) process.parallelList.each(function(a){a.process = process.id;});
-        if (process.splitList) process.splitList.each(function(a){a.process = process.id;});
-        if (process.mergeList) process.mergeList.each(function(a){a.process = process.id;});
-        if (process.embedList) process.embedList.each(function(a){a.process = process.id;});
-        if (process.publishList) process.publishList.each(function(a){a.process = process.id;});
-        if (process.invokeList) process.invokeList.each(function(a){a.process = process.id;});
-        if (process.cancelList) process.cancelList.each(function(a){a.process = process.id;});
-        if (process.delayList) process.delayList.each(function(a){a.process = process.id;});
-        if (process.messageList) process.messageList.each(function(a){a.process = process.id;});
-        if (process.serviceList) process.serviceList.each(function(a){a.process = process.id;});
-        if (process.routeList) process.routeList.each(function(a){a.process = process.id;});
+        var checkActivity = function(a) {
+            a.process = process.id;
+            if(a.form && !isSameApp)a.form="";
+        }
+
+        if (process.begin) {
+            process.begin.process = process.id;
+            if(process.begin.form && !isSameApp)process.begin.form="";
+        }
+        if (process.endList) process.endList.each(function(a){ checkActivity(a); });
+        if (process.agentList) process.agentList.each(function(a){ checkActivity(a); });
+        if (process.manualList) process.manualList.each(function(a){ checkActivity(a); });
+        if (process.conditionList) process.conditionList.each(function(a){ checkActivity(a); });
+        if (process.choiceList) process.choiceList.each(function(a){ checkActivity(a); });
+        if (process.parallelList) process.parallelList.each(function(a){ checkActivity(a); });
+        if (process.splitList) process.splitList.each(function(a){ checkActivity(a); });
+        if (process.mergeList) process.mergeList.each(function(a){ checkActivity(a); });
+        if (process.embedList) process.embedList.each(function(a){ checkActivity(a); });
+        if (process.publishList) process.publishList.each(function(a){ checkActivity(a); });
+        if (process.invokeList) process.invokeList.each(function(a){ checkActivity(a); });
+        if (process.cancelList) process.cancelList.each(function(a){ checkActivity(a); });
+        if (process.delayList) process.delayList.each(function(a){ checkActivity(a); });
+        if (process.messageList) process.messageList.each(function(a){ checkActivity(a); });
+        if (process.serviceList) process.serviceList.each(function(a){ checkActivity(a); });
+        if (process.routeList) process.routeList.each(function(a){ checkActivity(a); });
 
         this.app.restActions.saveProcess(process, function(){
             if (success) success();
@@ -151,9 +162,12 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
     },
     saveItemAsNew: function(processJson, process, success, failure){
 	    debugger;
+
         var item = this.app.options.application;
         var id = item.id;
         var name = item.name;
+
+        var isSameApp = process.application === id;
 
         process.alias = "";
         var oldName = process.name;
@@ -168,23 +182,33 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
 
         var oldIds = [];
         oldIds.push(process.id);
-        if (process.begin) oldIds.push(process.begin.id);
-        if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
-        if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
-        if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
-        if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
-        if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});
-        if (process.parallelList) process.parallelList.each(function(a){oldIds.push(a.id);});
-        if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
-        if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
-        if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
-        if (process.publishList) process.publishList.each(function(a){oldIds.push(a.id);});
-        if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
-        if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
-        if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
-        if (process.messageList) process.messageList.each(function(a){oldIds.push(a.id);});
-        if (process.serviceList) process.serviceList.each(function(a){oldIds.push(a.id);});
-        if (process.routeList) process.routeList.each(function(a){oldIds.push(a.id);});
+
+        var checkActivity = function(a) {
+            oldIds.push(a.id);
+            if(a.form && !isSameApp)a.form="";
+        };
+
+        if (process.begin) {
+            oldIds.push(process.begin.id);
+            if(process.begin.form && !isSameApp)process.begin.form="";
+        }
+
+        if (process.endList) process.endList.each(function(a){ checkActivity(a); });
+        if (process.agentList) process.agentList.each(function(a){ checkActivity(a); });
+        if (process.manualList) process.manualList.each(function(a){ checkActivity(a); });
+        if (process.conditionList) process.conditionList.each(function(a){ checkActivity(a); });
+        if (process.choiceList) process.choiceList.each(function(a){ checkActivity(a); });
+        if (process.parallelList) process.parallelList.each(function(a){ checkActivity(a); });
+        if (process.splitList) process.splitList.each(function(a){ checkActivity(a); });
+        if (process.mergeList) process.mergeList.each(function(a){ checkActivity(a); });
+        if (process.embedList) process.embedList.each(function(a){ checkActivity(a); });
+        if (process.publishList) process.publishList.each(function(a){ checkActivity(a); });
+        if (process.invokeList) process.invokeList.each(function(a){ checkActivity(a); });
+        if (process.cancelList) process.cancelList.each(function(a){ checkActivity(a); });
+        if (process.delayList) process.delayList.each(function(a){ checkActivity(a); });
+        if (process.messageList) process.messageList.each(function(a){ checkActivity(a); });
+        if (process.serviceList) process.serviceList.each(function(a){ checkActivity(a); });
+        if (process.routeList) process.routeList.each(function(a){ checkActivity(a); });
 
         this.app.restActions.getId(oldIds.length, function(ids) {
             var checkUUIDs = ids.data;
@@ -407,28 +431,40 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer.Process = new Class({
                     process.name = oldName+"_copy"+i;
                     i++;
                 }
+
+                var isSameApp = process.application === id;
+
                 process.application = id;
                 process.applicationName = name;
 
                 var oldIds = [];
                 oldIds.push(process.id);
-                if (process.begin) oldIds.push(process.begin.id);
-                if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
-                if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
-                if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
-                if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
-                if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});
-                if (process.parallelList) process.parallelList.each(function(a){oldIds.push(a.id);});
-                if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
-                if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
-                if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
-                if (process.publishList) process.publishList.each(function(a){oldIds.push(a.id);});
-                if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
-                if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
-                if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
-                if (process.messageList) process.messageList.each(function(a){oldIds.push(a.id);});
-                if (process.serviceList) process.serviceList.each(function(a){oldIds.push(a.id);});
-                if (process.routeList) process.routeList.each(function(a){oldIds.push(a.id);});
+
+                var checkActivity = function(a) {
+                    oldIds.push(a.id);
+                    if(a.form && !isSameApp)a.form="";
+                };
+
+                if (process.begin) {
+                    oldIds.push(process.begin.id);
+                    if(process.begin.form && !isSameApp)process.begin.form="";
+                }
+                if (process.endList) process.endList.each(function(a){ checkActivity(a); });
+                if (process.agentList) process.agentList.each(function(a){ checkActivity(a); });
+                if (process.manualList) process.manualList.each(function(a){ checkActivity(a); });
+                if (process.conditionList) process.conditionList.each(function(a){ checkActivity(a); });
+                if (process.choiceList) process.choiceList.each(function(a){ checkActivity(a); });
+                if (process.parallelList) process.parallelList.each(function(a){ checkActivity(a); });
+                if (process.splitList) process.splitList.each(function(a){ checkActivity(a); });
+                if (process.mergeList) process.mergeList.each(function(a){ checkActivity(a); });
+                if (process.embedList) process.embedList.each(function(a){ checkActivity(a); });
+                if (process.publishList) process.publishList.each(function(a){ checkActivity(a); });
+                if (process.invokeList) process.invokeList.each(function(a){ checkActivity(a); });
+                if (process.cancelList) process.cancelList.each(function(a){ checkActivity(a); });
+                if (process.delayList) process.delayList.each(function(a){ checkActivity(a); });
+                if (process.messageList) process.messageList.each(function(a){ checkActivity(a); });
+                if (process.serviceList) process.serviceList.each(function(a){ checkActivity(a); });
+                if (process.routeList) process.routeList.each(function(a){ checkActivity(a); });
 
                 this.explorer.app.restActions.getId(oldIds.length, function(ids) {
                     var checkUUIDs = ids.data;
