@@ -787,18 +787,19 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         var obj = this.json.itemView;
 
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+
+        var filter = [];
+        if (this.json.filterList && this.json.filterList.length){
+            this.json.filterList.each(function(entry){
+                entry.value = this.form.Macro.exec(entry.code.code, this);
+                filter.push(entry);
+            }.bind(this));
+        }
+
         var data = this.form.Macro.environment.view.lookup({
             "view": obj.id,
             "application": obj.application,
-            // "filter": [
-            //     {
-            //         "logic":"and",
-            //         "path":"$work.title",
-            //         "comparison":"like",
-            //         "value":"7月",
-            //         "formatType":"textValue"
-            //     }
-            // ]
+            "filter": filter
         }, null, asy);
         if( data && typeOf(data.then) === "function" ){
             return data.then(function (data) {
@@ -830,26 +831,29 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         var obj = this.json.itemStatement;
 
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
+
+        var filter = [];
+        if (this.json.filterList && this.json.filterList.length){
+            this.json.filterList.each(function(entry){
+                entry.value = this.form.Macro.exec(entry.code.code, this);
+                filter.push(entry);
+            }.bind(this));
+        }
+
+        var parameter = {};
+        if( this.json.parameterList && this.json.parameterList.length ){
+            this.json.parameterList.each(function(entry){
+                parameter[entry.parameter] = this.parseParameter(entry);
+            }.bind(this));
+        }
+
         var data = this.form.Macro.environment.statement.execute({
             "name" : obj.name,
             "mode" : "data",
             "page" : 1, //（number）可选，当前页码，默认为1
             "pageSize" : 1000, //（number）可选，每页的数据条数，默认为20
-            // "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
-            //     {
-            //         "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
-            //         "comparison":"like",
-            //         "value":"关于",
-            //         "formatType":"textValue"
-            //     }
-            // ],
-            // parameter : {
-            //     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
-            //     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
-            //     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-            //     "processName" : "test流程", //其他写确定的值
-            //     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
-            // }
+            "filter": filter,
+            "parameter" : parameter
         }, null, asy);
         if( data && typeOf(data.then) === "function" ){
             return data.then(function (data) {
@@ -873,8 +877,54 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 text = this.getDataByPath(d, textkey);
                 arr.push( text );
             }
-        }.bind(this))
+        }.bind(this));
         return arr.unique();
+    },
+    parseParameter: function (f) {
+        var value = f.value;
+        if( f.valueType === "script" ){
+            value = this.form.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
+        }
+        if (typeOf(value) === "date") {
+            value = value.format("db");
+        }
+        var user = layout.user;
+        switch (value) {
+            case "@year":
+                value = (new Date().getFullYear()).toString();
+                break;
+            case "@season":
+                var m = new Date().format("%m");
+                if (["01", "02", "03"].contains(m)) {
+                    value = "1"
+                } else if (["04", "05", "06"].contains(m)) {
+                    value = "2"
+                } else if (["07", "08", "09"].contains(m)) {
+                    value = "3"
+                } else {
+                    value = "4"
+                }
+                break;
+            case "@month":
+                value = new Date().format("%Y-%m");
+                break;
+            case "@time":
+                value = new Date().format("db");
+                break;
+            case "@date":
+                value = new Date().format("%Y-%m-%d");
+                break;
+            default:
+        }
+
+        if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
+            value = "{ts '" + value + "'}"
+        } else if (f.formatType === "dateValue") {
+            value = "{d '" + value + "'}"
+        } else if (f.formatType === "timeValue") {
+            value = "{t '" + value + "'}"
+        }
+        return value;
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");
