@@ -96,6 +96,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
     load: function () {
         this.loadFilter();
         this.loadContentNode();
+        this.loadView({}, true);
         this.setNodeScroll();
     },
     loadFilter: function () {
@@ -214,14 +215,18 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
         }).inject(this.node);
         this.app.addEvent("resize", function () { this.setContentSize(); }.bind(this));
 
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.fileterNode)this.fileterNode.scrollTo(scroll.x);
+        }.bind(this));
     },
-    loadView: function (filterData) {
+    loadView: function (filterData, onlyShowTitle) {
         this.elementContentNode.empty();
         if (this.view) delete this.view;
         this.view = new MWF.xApplication.Attendance.PeopleQywxDetail.View(this.elementContentNode, this.app, this);
         this.view.filterData = filterData;
         this.view.listItemUrl = this.path + "listItem_qywx.json";
-        this.view.load();
+        this.view.load(onlyShowTitle);
         this.setContentSize();
     },
     setContentSize: function () {
