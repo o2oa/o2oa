@@ -19,5 +19,10 @@
     "padding-top" :"10px",
     "padding-bottom" :"10px",
     "background-color": "#F0F0F0"
+  },
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px",
+    "min-width": "900px"
   }
 }

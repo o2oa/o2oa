@@ -251,7 +251,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         this.count = 0;
         //this.controllers =[];
     },
-    load : function(){
+    load : function( onlyShowTitle ){
         this.initData();
 
         this.node = new Element("div", {
@@ -261,7 +261,12 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         this.table = new Element("table",{ "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "editTable"}).inject(this.node);
         this.initSortData();
         this.createListHead();
-        this.loadElementList();
+        if( onlyShowTitle ){
+           this.onlyShowTitle = true;
+        }else{
+            this.onlyShowTitle = false;
+            this.loadElementList();
+        }
     },
     initSortData : function(){
         this.sortField = null;
@@ -360,6 +365,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         }.bind(this))
     },
     loadElementList: function(count){
+        if( this.onlyShowTitle )return;
         if (!this.isItemsLoaded){
             if (!this.isItemLoadding){
                 this.isItemLoadding = true;

@@ -19,12 +19,18 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     load: function(){
+        this.topWrapNode = new Element("div", {"style": "width:900px"}).inject(this.node);
         this.topNode = new Element("div", {
             "styles" : this.css.topNode
-        }).inject(this.node);
+        }).inject(this.topWrapNode);
         this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
+
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.topNode)this.topNode.scrollTo(scroll.x);
+        }.bind(this));
 
         var month = (new Date().getMonth()+1).toString();
         if( month.length == 1 )month = "0"+month;
@@ -55,7 +61,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
             "styles" : this.css.fileterNode
         }).inject(this.topNode);
 
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' style='font-size: 14px;color:#666;'>"+
             "<tr>" +
             "    <td styles='filterTableTitle' lable='yearString'></td>"+
             "    <td styles='filterTableValue' item='yearString'></td>" +
