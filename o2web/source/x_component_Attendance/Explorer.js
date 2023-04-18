@@ -168,6 +168,22 @@ MWF.xApplication.Attendance.Explorer = new Class({
             this.view.loadElementList(this.pageCount-this.view.items.length);
         }
     },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
+    },
     _setContentSize: function(){
 
     },

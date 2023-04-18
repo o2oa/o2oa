@@ -23,12 +23,19 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     },
     load: function(){
         this.loadConfig();
+        this.topWrapNode = new Element("div", {"style": "width:100%;overflow:hidden;background:rgb(240, 240, 240);"}).inject(this.node);
         this.topNode = new Element("div", {
             "styles" : this.css.topNode
-        }).inject(this.node);
+        }).inject(this.topWrapNode);
+        this.topNode.setStyle("width", "900px");
         this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
+
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.topWrapNode)this.topWrapNode.scrollTo(scroll.x);
+        }.bind(this));
 
         var month = (this.preMonthDate.getMonth()+1).toString();
         if( month.length == 1 )month = "0"+month;
@@ -250,16 +257,10 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
         var selector = new MWF.O2Selector(this.app.content, options);
     },
     setContentSize: function(){
-        var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {"x":0,"y":0};
-        var titlebarSize = this.app.titleBar ? this.app.titleBar.getSize() : {"x":0,"y":0};
-        var filterSize = this.fileterNode ? this.fileterNode.getSize() : {"x":0,"y":0};
+        var topNodeSize = this.topNode ? this.topNode.getSize() : {"x":0,"y":0};
         var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
-        //var filterSize = this.filterNode.getSize();
-        var filterConditionSize = this.filterConditionNode ? this.filterConditionNode.getSize() : {"x":0,"y":0};
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y-filterSize.y;
+        var height = nodeSize.y - topNodeSize.y - this.getOffsetY(this.topNode) - this.getOffsetY(this.elementContentNode) - this.getOffsetY(this.node);
         this.elementContentNode.setStyle("height", ""+height+"px");
 
         this.pageCount = (height/30).toInt()+5;

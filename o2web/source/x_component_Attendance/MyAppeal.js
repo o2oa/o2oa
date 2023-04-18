@@ -19,17 +19,18 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
         if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
     },
     load: function(){
-        this.topWrapNode = new Element("div", {"style": "width:900px"}).inject(this.node);
+        this.topWrapNode = new Element("div", {"style": "width:100%;overflow:hidden;background:rgb(240, 240, 240);"}).inject(this.node);
         this.topNode = new Element("div", {
             "styles" : this.css.topNode
         }).inject(this.topWrapNode);
+        this.topNode.setStyle("width", "900px");
         this.loadToolbar();
         this.loadFilter();
         this.loadContentNode();
 
         this.elementContentNode.addEvent("scroll", function () {
             var scroll = this.elementContentNode.getScroll();
-            if(this.topNode)this.topNode.scrollTo(scroll.x);
+            if(this.topWrapNode)this.topWrapNode.scrollTo(scroll.x);
         }.bind(this));
 
         var month = (new Date().getMonth()+1).toString();
@@ -157,158 +158,11 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
         }
         return days;
     },
-    //loadFilter : function(){
-    //    this.fileterNode = new Element("div.fileterNode", {
-    //        "styles" : this.css.fileterNode
-    //    }).inject(this.node)
-    //
-    //    var table = new Element("table", {
-    //        "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "styles" : this.css.filterTable, "class" : "filterTable"
-    //    }).inject( this.fileterNode );
-    //
-    //    var tr = new Element("tr").inject(table);
-    //
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : (new Date).format(this.app.lp.dateFormatMonth)  }).inject(tr);
-    //
-    //    this.createStatusSelectTd(tr);
-    //    this.createAppealReasonTd(tr);
-    //    //this.createUnitTd(tr);
-    //    //this.createPersonTd( tr );
-    //    //this.createYearSelectTd( tr );
-    //    //this.createMonthSelectTd( tr );
-    //    this.createActionTd( tr );
-    //},
-    //createStatusSelectTd : function( tr ){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "审批状态"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.status = new MDomItem( td, {
-    //        "name" : "status",
-    //        "type" : "select",
-    //        "value" : "999",
-    //        "selectText" :["所有状态","待处理","审批通过","审批未通过"],
-    //        "selectValue" :["999","0","1","-1"]
-    //    }, true, this.app );
-    //    this.status.load();
-    //},
-    //createAppealReasonTd : function( tr ){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "申诉原因"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.appealReason = new MDomItem( td, {
-    //        "name" : "appealReason",
-    //        "type" : "select",
-    //        "selectText" :["","临时请假","出差","因公外出","其他"]
-    //    }, true, this.app );
-    //    this.appealReason.load();
-    //},
-    //createUnitTd : function(tr){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "部门"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.unitName = new MDomItem( td, {
-    //        "name" : "unitName",
-    //        "style" : {"width":"60px"},
-    //        "defaultValue" : this.app.manageUnits.length > 0 ? this.app.manageUnits[0] : "",
-    //        "event" : {
-    //            "click" : function(mdi){ _self.selecePerson( mdi, "unit" ); }
-    //        }
-    //    }, true, this.app );
-    //    this.unitName.load();
-    //},
-    //createPersonTd : function(tr){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "人员"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.empName = new MDomItem( td, {
-    //        "name" : "empName",
-    //        "style" : {"width":"60px"},
-    //        "event" : {
-    //            "click" : function(mdi){ _self.selecePerson( mdi, "person" ); }
-    //        }
-    //    }, true, this.app );
-    //    this.empName.load();
-    //},
-    //createYearSelectTd : function( tr ){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "年度"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.yearString = new MDomItem( td, {
-    //        "name" : "yearString",
-    //        "type" : "select",
-    //        "selectValue" : function(){
-    //            var years = [];
-    //            var year = new Date().getFullYear();
-    //            for(var i=0; i<6; i++ ){
-    //                years.push( year-- );
-    //            }
-    //            return years;
-    //        }
-    //    }, true, this.app );
-    //    this.yearString.load();
-    //},
-    //createMonthSelectTd : function( tr ){
-    //    var _self = this;
-    //    var td = new Element("td", {  "styles" : this.css.filterTableTitle, "text" : "月份"  }).inject(tr);
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    this.monthString = new MDomItem( td, {
-    //        "name" : "monthString",
-    //        "type" : "select",
-    //        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"]
-    //    }, true, this.app );
-    //    this.monthString.load();
-    //},
-    //createActionTd : function( tr ){
-    //    var td = new Element("td", {  "styles" : this.css.filterTableValue }).inject(tr);
-    //    var input = new Element("button",{
-    //        "text" : "查询",
-    //        "styles" : this.css.filterButton
-    //    }).inject(td);
-    //    input.addEvent("click", function(){
-    //        var filterData = {
-    //            status : this.status.getValue(),
-    //            appealReason : this.appealReason.getValue(),
-    //            //unitName : this.unitName.getValue(),
-    //            //empName : this.empName.getValue(),
-    //            //yearString : this.yearString.getValue(),
-    //           //monthString : this.monthString.getValue()
-    //        }
-    //        this.loadView( filterData );
-    //    }.bind(this))
-    //},
-    //selecePerson: function( el, type ){
-    //    var text = "选择人员"
-    //    if( type=="topUnit") {
-    //        text = "选择公司"
-    //    }else if( type=="unit"){
-    //        text = "选择部门"
-    //    }
-    //    var options = {
-    //        "type": type, //topUnit unit person,
-    //        "title": text,
-    //        "count" : "1",
-    //        "values": [ el.get("value") ] || [],
-    //        "onComplete": function(items){
-    //            var  arr = [];
-    //            items.each(function(item){
-    //                arr.push(item.data.name);
-    //            }.bind(this));
-    //            el.set("value",arr.join(","));
-    //        }.bind(this)
-    //    };
-    //    var selector = new MWF.O2Selector(this.app.content, options);
-    //},
     setContentSize: function(){
-        var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {"x":0,"y":0};
-        var titlebarSize = this.app.titleBar ? this.app.titleBar.getSize() : {"x":0,"y":0};
-        var filterSize = this.fileterNode ? this.fileterNode.getSize() : {"x":0,"y":0};
+        var topNodeSize = this.topNode ? this.topNode.getSize() : {"x":0,"y":0};
         var nodeSize = this.node.getSize();
-        var pt = this.elementContentNode.getStyle("padding-top").toFloat();
-        var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
-        //var filterSize = this.filterNode.getSize();
-        var filterConditionSize = this.filterConditionNode ? this.filterConditionNode.getSize() : {"x":0,"y":0};
 
-        var height = nodeSize.y-toolbarSize.y-pt-pb-filterConditionSize.y-titlebarSize.y-filterSize.y;
+        var height = nodeSize.y - topNodeSize.y - this.getOffsetY(this.topNode) - this.getOffsetY(this.elementContentNode) - this.getOffsetY(this.node);
         this.elementContentNode.setStyle("height", ""+height+"px");
 
         this.pageCount = (height/30).toInt()+5;
