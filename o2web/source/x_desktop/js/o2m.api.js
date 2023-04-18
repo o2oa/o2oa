@@ -1010,7 +1010,7 @@
    * @example
    * o2m.util.device.scan({
    * onSuccess : function(result) {
-   *     // result返回结果：{ 'text': '扫码内容'}
+   *     // result返回结果就是扫码的结果
    *  },
    *  onFail : function(err) {}
    *});
