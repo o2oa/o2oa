@@ -1,4 +1,10 @@
 {
+
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px",
+    "min-width": "990px"
+  },
   "editTableHead" : {
     "height": "50px",
     "line-height": "50px",
