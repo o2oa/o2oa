@@ -1,3 +1,7 @@
 {
-
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px",
+    "min-width": "860px"
+  }
 }

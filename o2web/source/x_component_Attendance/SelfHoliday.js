@@ -23,9 +23,34 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
         this.loadFilter();
         this.loadContentNode();
 
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.fileterNode)this.fileterNode.scrollTo(scroll.x);
+        }.bind(this));
+
         this.loadView();
         this.setNodeScroll();
 
+    },
+    setContentSize: function(){
+        debugger;
+        var toolbarSize = this.toolbarNode ? this.toolbarNode.getSize() : {"x":0,"y":0};
+        var titlebarSize = this.app.titleBar ? this.app.titleBar.getSize() : {"x":0,"y":0};
+        var nodeSize = this.node.getSize();
+        // var pt = this.elementContentNode.getStyle("padding-top").toFloat();
+        // var pb = this.elementContentNode.getStyle("padding-bottom").toFloat();
+        //var filterSize = this.filterNode.getSize();
+        var filterConditionSize = this.fileterNode ? this.fileterNode.getSize() : {"x":0,"y":0};
+
+        var height = nodeSize.y-toolbarSize.y-filterConditionSize.y-titlebarSize.y - this.getOffsetX(this.fileterNode) - this.getOffsetX(this.elementContentNode);
+        this.elementContentNode.setStyle("height", ""+height+"px");
+
+        this.pageCount = (height/30).toInt()+5;
+
+        this._setContentSize();
+        if (this.view && this.view.items.length<this.pageCount){
+            this.view.loadElementList(this.pageCount-this.view.items.length);
+        }
     },
     loadFilter : function(){
         this.fileterNode = new Element("div.fileterNode", {
@@ -41,7 +66,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
     _loadFilterContent : function(){
 	    var lp = MWF.xApplication.Attendance.LP;
         var _self = this;
-        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
+        var html = "<table bordr='0' cellpadding='5' cellspacing='0' styles='formTable' style='width: 1000px;'>"+
             "<tr>" +
             "    <td styles='filterTableTitle' lable='q_topUnitName'></td>"+
             "    <td styles='filterTableValue' item='q_topUnitName'></td>"+

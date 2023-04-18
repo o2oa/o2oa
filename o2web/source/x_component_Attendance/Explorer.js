@@ -168,6 +168,22 @@ MWF.xApplication.Attendance.Explorer = new Class({
             this.view.loadElementList(this.pageCount-this.view.items.length);
         }
     },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
+    },
     _setContentSize: function(){
 
     },
@@ -251,7 +267,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         this.count = 0;
         //this.controllers =[];
     },
-    load : function(){
+    load : function( onlyShowTitle ){
         this.initData();
 
         this.node = new Element("div", {
@@ -261,7 +277,12 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         this.table = new Element("table",{ "width" : "100%", "border" : "0", "cellpadding" : "5", "cellspacing" : "0",  "class" : "editTable"}).inject(this.node);
         this.initSortData();
         this.createListHead();
-        this.loadElementList();
+        if( onlyShowTitle ){
+           this.onlyShowTitle = true;
+        }else{
+            this.onlyShowTitle = false;
+            this.loadElementList();
+        }
     },
     initSortData : function(){
         this.sortField = null;
@@ -360,6 +381,7 @@ MWF.xApplication.Attendance.Explorer.View = new Class({
         }.bind(this))
     },
     loadElementList: function(count){
+        if( this.onlyShowTitle )return;
         if (!this.isItemsLoaded){
             if (!this.isItemLoadding){
                 this.isItemLoadding = true;
