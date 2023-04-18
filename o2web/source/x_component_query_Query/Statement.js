@@ -923,7 +923,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }
 
         try{
-            if (code && code.trim()) obj = this.view.Macro.exec(code, {
+            if (code && code.trim()) obj = this.Macro.exec(code, {
                 "value": obj,
                 "data": data,
                 "entry": c,
