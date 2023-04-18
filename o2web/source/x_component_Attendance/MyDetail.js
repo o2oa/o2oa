@@ -476,11 +476,14 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
     //    var selector = new MWF.O2Selector(this.app.content, options);
     //},
     loadContentNode: function(){
-        this.elementContentNode = new Element("div", {
+        this.elementContentNode = new Element("div.elementContentNode", {
             "styles": this.css.elementContentNode
         }).inject(this.node);
         this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
-
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.fileterNode)this.fileterNode.scrollTo(scroll.x);
+        }.bind(this));
     },
     loadView : function( filterData ){
         this.elementContentNode.empty();

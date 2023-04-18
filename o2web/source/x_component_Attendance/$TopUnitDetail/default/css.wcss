@@ -1,6 +1,9 @@
 {
-
-
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px",
+    "min-width": "1060px"
+  },
   "createMarkNode": {
     "width": "100%",
     "height": "100%",
