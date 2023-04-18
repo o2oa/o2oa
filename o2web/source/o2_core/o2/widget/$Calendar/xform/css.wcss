@@ -43,7 +43,8 @@
 		"font-size": "12px"
 	},
 	"dateCurrentText": {
-		"cursor": "pointer"
+		"cursor": "pointer",
+		"color": "#FFFFFF"
 	},
 	"calendarContent": {
 		"width": "210px",
