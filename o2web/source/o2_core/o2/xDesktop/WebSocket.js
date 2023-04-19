@@ -167,6 +167,7 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
+                                break;
                             case "im_create":
                             case "im_revoke":
                                 this.receiveIMMessage(data);
