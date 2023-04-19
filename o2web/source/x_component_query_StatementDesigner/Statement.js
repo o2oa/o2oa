@@ -1431,7 +1431,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
-            debugger;
             if (failure) failure();
             var errorText = error;
             if (xhr) {
@@ -1449,7 +1448,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
 
     save: function (callback) {
-        debugger;
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
@@ -1540,7 +1538,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
     },
     setViewSize: function () {
-        debugger;
         var size = this.areaNode.getSize();
         var designerSize = this.designerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
@@ -1752,7 +1749,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
 
     loadViewData: function () {
-        debugger;
         if (this.data.id) {
             // this.statement.saveSilence(function () {
             this.viewContentBodyNode.empty();
@@ -1864,8 +1860,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }
     },
     addColumn: function () {
-
-        debugger;
 
         MWF.require("MWF.widget.UUID", function () {
             var id = (new MWF.widget.UUID).id;
