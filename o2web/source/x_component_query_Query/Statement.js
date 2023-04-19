@@ -215,64 +215,87 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 value = parameter[f.parameter];
                 delete parameter[f.parameter];
             }
-            if (typeOf(value) === "date") {
-                value = value.format("db");
-            }
             if (f.valueType === "script") {
                 value = this.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
-            } else {
-                var user = layout.user;
-                switch (f.value) {
-                    case "@person":
-                        // value = user.distinguishedName;
-                        value = "";
-                        break;
-                    case "@identityList":
-                        // value = user.identityList.map(function (d) {
-                        //     return d.distinguishedName;
-                        // });
-                        value = "";
-                        break;
-                    case "@unitList":
-                        // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
-                        //     value = json.unitList;
-                        // }, null, false);
-                        value = "";
-                        break;
-                    case "@unitAllList":
-                        // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
-                        //     value = json.unitList;
-                        // }, null, false);
-                        value = "";
-                        break;
-                    case "@year":
-                        value = (new Date().getFullYear()).toString();
-                        break;
-                    case "@season":
-                        var m = new Date().format("%m");
-                        if (["01", "02", "03"].contains(m)) {
-                            value = "1"
-                        } else if (["04", "05", "06"].contains(m)) {
-                            value = "2"
-                        } else if (["07", "08", "09"].contains(m)) {
-                            value = "3"
-                        } else {
-                            value = "4"
-                        }
-                        break;
-                    case "@month":
-                        value = new Date().format("%Y-%m");
-                        break;
-                    case "@time":
-                        value = new Date().format("db");
-                        break;
-                    case "@date":
-                        value = new Date().format("%Y-%m-%d");
-                        break;
-                    default:
+            }
+            value = this.parseParameterValue( f, value );
+
+            this.parameter[f.parameter] = value;
+        }.bind(this));
+        //传入的参数
+        for (var p in parameter) {
+            var value = parameter[p];
+            var configs = (this.json.parameterList || []).filter( function(d){ return d.parameter === p; } );
+            if( configs.length > 0 ){
+                value = this.parseParameterValue(configs[0], value);
+            }else{
+                if (typeOf(value) === "date") {
+                    if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                        value = value.format("db");
+                    }else{
+                        value = "{ts '" + value.format("db") + "'}"
+                    }
                 }
             }
-            if( !["sql", "sqlScript"].contains(this.statementJson.format) ) {
+            this.parameter[p] = value;
+        }
+    },
+    parseParameterValue: function( f, value ){
+        // var user = layout.user;
+        if (typeOf(value) === "date") {
+            value = value.format("db");
+        }
+        switch (value) {
+            case "@person":
+                // value = user.distinguishedName;
+                value = "";
+                break;
+            case "@identityList":
+                // value = user.identityList.map(function (d) {
+                //     return d.distinguishedName;
+                // });
+                value = "";
+                break;
+            case "@unitList":
+                // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
+                //     value = json.unitList;
+                // }, null, false);
+                value = "";
+                break;
+            case "@unitAllList":
+                // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
+                //     value = json.unitList;
+                // }, null, false);
+                value = "";
+                break;
+            case "@year":
+                value = (new Date().getFullYear()).toString();
+                break;
+            case "@season":
+                var m = new Date().format("%m");
+                if (["01", "02", "03"].contains(m)) {
+                    value = "1"
+                } else if (["04", "05", "06"].contains(m)) {
+                    value = "2"
+                } else if (["07", "08", "09"].contains(m)) {
+                    value = "3"
+                } else {
+                    value = "4"
+                }
+                break;
+            case "@month":
+                value = new Date().format("%Y-%m");
+                break;
+            case "@time":
+                value = new Date().format("db");
+                break;
+            case "@date":
+                value = new Date().format("%Y-%m-%d");
+                break;
+            default:
+        }
+        if( !["sql", "sqlScript"].contains(this.statementJson.format) ) {
+            if( typeOf(value) === "string" && value.substr(0, 1) !== "{" ){
                 if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
                     value = "{ts '" + value + "'}"
                 } else if (f.formatType === "dateValue") {
@@ -281,20 +304,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                     value = "{t '" + value + "'}"
                 }
             }
-            this.parameter[f.parameter] = value;
-        }.bind(this));
-        //传入的参数
-        for (var p in parameter) {
-            var value = parameter[p];
-            if (typeOf(value) === "date") {
-                if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
-                    value = value.format("db");
-                }else{
-                    value = "{ts '" + value.format("db") + "'}"
-                }
-            }
-            this.parameter[p] = value;
         }
+        return value;
     },
     loadCurrentPageData: function (callback, async, type) {
         //是否需要在翻页的时候清空之前的items ?
@@ -912,7 +923,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }
 
         try{
-            if (code && code.trim()) obj = this.view.Macro.exec(code, {
+            if (code && code.trim()) obj = this.Macro.exec(code, {
                 "value": obj,
                 "data": data,
                 "entry": c,

@@ -167,11 +167,15 @@ public class AttendanceStatisticService {
 			statisticPersonForMonth.setOnSelfHolidayCount((double)onSelfHolidayCount);
 			
 			//    1.2.2 实际出勤天数
-			double onworkday = Double.parseDouble( workDayCountForMonth+"") - (double)absenceDayCount - (double)onSelfHolidayCount;
-			if( onworkday < 0 ){
-				onworkday = 0.0;
+			Long onworkday = business.getAttendanceDetailStatisticFactory().countDutyDaysByEmployeeCycleYearAndMonth(query_employeeNames, cycleYear, cycleMonth);
+			if (onworkday == null) {
+				onworkday = 0L;
 			}
-			statisticPersonForMonth.setOnDutyDayCount( onworkday );
+//			double onworkday = Double.parseDouble( workDayCountForMonth+"") - (double)absenceDayCount - (double)onSelfHolidayCount;
+//			if( onworkday < 0 ){
+//				onworkday = 0.0;
+//			}
+			statisticPersonForMonth.setOnDutyDayCount( Double.parseDouble(onworkday+"") );
 			
 			//查询该员工该年份月份的统计是否存在，如果存在则删除
 			statisticPersonForMonth_tmp = business.getStatisticPersonForMonthFactory().get( employeeName, cycleYear, cycleMonth );

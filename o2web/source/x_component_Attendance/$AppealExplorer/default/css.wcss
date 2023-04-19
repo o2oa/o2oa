@@ -1,5 +1,9 @@
 {
-
+  "elementContentListNode": {
+    "overflow": "hidden",
+    "margin": "20px",
+    "min-width": "860px"
+  },
   "topNode": {
     "overflow":"hidden", "background-color":"#F0F0F0", "border-bottom" : "1px solid #ddd"
   },

@@ -187,12 +187,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
             default:
                 throw new ExceptionUnknownHttpMethod(invoke.getJaxrsMethod());
         }
-        // 同步执行状态下进行调用判断
         if ((!BooleanUtils.isTrue(invoke.getAsync()))
                 && ((null == resp) || (!Objects.equals(Type.success, resp.getType())))) {
-            throw new RunningException("invoke not success, work:{}.", aeiObjects.getWork().getId());
+            LOGGER.warn("invoke not success, work:{}, resp:{}.", aeiObjects.getWork().getId(), resp);
         }
         boolean passThrough = false;
+        // 同步执行状态下进行调用判断
         if (!BooleanUtils.isTrue(invoke.getAsync())) {
             WrapScriptObject jaxrsResponse = new WrapScriptObject();
             if (null != resp) {

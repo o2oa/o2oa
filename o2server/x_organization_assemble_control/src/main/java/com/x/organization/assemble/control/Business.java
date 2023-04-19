@@ -2,8 +2,10 @@ package com.x.organization.assemble.control;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -17,7 +19,9 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.bean.tuple.Quintuple;
 import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.instrument.Instrument;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -545,6 +549,63 @@ public class Business {
             List<Unit> units = listTopUnitWithPerson(effectivePerson.getDistinguishedName());
             List<String> ids = ListTools.extractField(units, JpaObject.id_FIELDNAME, String.class, true, true);
             return cb.or(root.get(Person_.topUnitList).in(ids), cb.isEmpty(root.get(Person_.topUnitList)));
+        }
+    }
+
+    public Optional<Quintuple<Collection<String>, Collection<String>, Collection<String>, Collection<String>, Collection<String>>> detailOfPerson(
+            String flag, boolean fetchIdentity, boolean fetchUnit, boolean fetchGroup, boolean fetchRole,
+            boolean fetchPersonAttribute)
+            throws Exception {
+        // identity,unit,group,role,personAttribute
+        Person p = this.person().pick(flag);
+        if (null == p) {
+            return Optional.empty();
+        }
+
+        List<String> identityIds = new ArrayList<>();
+        ListOrderedSet<String> unitIds = new ListOrderedSet<>();
+        ListOrderedSet<String> groupIds = new ListOrderedSet<>();
+        ListOrderedSet<String> roleIds = new ListOrderedSet<>();
+        List<String> personAttributeIds = new ArrayList<>();
+        if (fetchIdentity || fetchUnit || fetchGroup || fetchRole) {
+            identityIds = this.entityManagerContainer().idsEqual(Identity.class, Identity.person_FIELDNAME,
+                    p.getId());
+        }
+        if (fetchUnit || fetchGroup || fetchRole) {
+            detailOfPersonUnits(unitIds, identityIds);
+        }
+        if (fetchGroup || fetchRole) {
+            detailOfPersonGroups(groupIds, p, identityIds, unitIds);
+        }
+        if (fetchRole) {
+            roleIds.addAll(this.entityManagerContainer().idsInOrIsMember(Role.class, Role.groupList_FIELDNAME,
+                    groupIds, Role.personList_FIELDNAME, p.getId()));
+        }
+        if (fetchPersonAttribute) {
+            personAttributeIds = this.entityManagerContainer().idsEqual(PersonAttribute.class,
+                    PersonAttribute.person_FIELDNAME,
+                    p.getId());
+        }
+        return Optional.of(Quintuple.of(identityIds, unitIds, groupIds, roleIds, personAttributeIds));
+    }
+
+    private void detailOfPersonUnits(ListOrderedSet<String> unitIds, List<String> identityIds) throws Exception {
+        for (String s : identityIds) {
+            Identity obj = this.identity().pick(s);
+            if (null != obj) {
+                unitIds.add(obj.getUnit());
+                unitIds.addAll(this.unit().listSupNested(obj.getUnit()));
+            }
+        }
+    }
+
+    private void detailOfPersonGroups(ListOrderedSet<String> groupIds, Person p, List<String> identityIds,
+            ListOrderedSet<String> unitIds) throws Exception {
+        groupIds.addAll(this.entityManagerContainer().idsInOrInOrIsMember(Group.class, Group.unitList_FIELDNAME,
+                unitIds, Group.identityList_FIELDNAME, identityIds, Group.personList_FIELDNAME, p.getId()));
+        for (String s : new ArrayList<>(groupIds)) {
+            groupIds.add(s);
+            groupIds.addAll(this.group().listSupNested(s));
         }
     }
 }
