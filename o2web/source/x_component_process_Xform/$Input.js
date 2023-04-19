@@ -853,7 +853,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "page" : 1, //（number）可选，当前页码，默认为1
             "pageSize" : 1000, //（number）可选，每页的数据条数，默认为20
             "filter": filter,
-            "parameter" : parameter
+            "parameter" : parameter,
+            "parameterList": this.json.parameterList
         }, null, asy);
         if( data && typeOf(data.then) === "function" ){
             return data.then(function (data) {
