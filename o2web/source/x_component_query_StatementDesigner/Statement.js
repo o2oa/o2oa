@@ -1284,7 +1284,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
 
     runStatement: function () {
-        debugger;
         // if (!this.json.data){
         //     this.designer.notice(this.designer.lp.inputStatementData, "error");
         //     return false;
@@ -1294,7 +1293,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // this.runMask.loadNode(this.node);
 
         this.saveSilence(function () {
-            debugger;
             this.execute(function (json) {
                 this.executeData = json;
                 o2.require("o2.widget.JsonParse", function () {
@@ -1360,6 +1358,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         return this.columnDataPathList || [];
     },
     checkViewFilter: function(){
+        if( this.json.viewEnable === false )return true;
+
         var noteFlag = false;
         if (typeOf(this.viewJson) === "object" && this.viewJson.data && this.viewJson.data.customFilterList) {
             this.viewJson.data.customFilterList.each(function (item) {
@@ -1431,7 +1431,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
-            debugger;
             if (failure) failure();
             var errorText = error;
             if (xhr) {
@@ -1449,7 +1448,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
 
     save: function (callback) {
-        debugger;
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
@@ -1468,8 +1466,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
 
         var textJson = {};
-        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue());
-        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue());
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue() || "{}");
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue() || "[]");
         this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
@@ -1510,8 +1508,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
 
         var textJson = {};
-        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue());
-        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue());
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue() || "{}");
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue() || "[]");
         this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
@@ -1540,7 +1538,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
     },
     setViewSize: function () {
-        debugger;
         var size = this.areaNode.getSize();
         var designerSize = this.designerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
@@ -1752,7 +1749,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
 
     loadViewData: function () {
-        debugger;
         if (this.data.id) {
             // this.statement.saveSilence(function () {
             this.viewContentBodyNode.empty();
@@ -1864,8 +1860,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }
     },
     addColumn: function () {
-
-        debugger;
 
         MWF.require("MWF.widget.UUID", function () {
             var id = (new MWF.widget.UUID).id;
