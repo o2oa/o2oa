@@ -38,11 +38,17 @@ public class ExternalDataSource extends ConfigObject {
 
     public static final String DEFAULT_STATFILTER = "mergeStat";
 
+    private static final Boolean DEFAULT_SLOWSQLENABLE = true;
+
+    private static final Integer DEFAULT_SLOWSQLTHRESHOLD = 3000;
+
+    private static final Boolean DEFAULT_LOGSTATENABLE = false;
+
+    private static final Integer DEFAULT_LOGSTATINTERVAL = 180;
+
     public static final List<String> DEFAULT_INCLUDES = new ArrayList<>();
 
     public static final List<String> DEFAULT_EXCLUDES = new ArrayList<>();
-
-    public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 
     public static final String DEFAULT_LOGLEVEL = "ERROR";
 
@@ -55,8 +61,6 @@ public class ExternalDataSource extends ConfigObject {
     public static final Integer DEFAULT_MAXIDLETIME = 300;
 
     public static final Boolean DEFAULT_AUTOCOMMIT = false;
-
-    public static final Boolean DEFAULT_TRACESQLENABLE = false;
 
     public static final String DEFAULT_SCHEMA = "X";
 
@@ -73,7 +77,10 @@ public class ExternalDataSource extends ConfigObject {
         o.maxIdle = DEFAULT_MAXIDLE;
         o.statEnable = DEFAULT_STATENABLE;
         o.statFilter = DEFAULT_STATFILTER;
-        o.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
+        o.slowSqlEnable = DEFAULT_SLOWSQLENABLE;
+        o.slowSqlThreshold = DEFAULT_SLOWSQLTHRESHOLD;
+        o.logStatEnable = DEFAULT_LOGSTATENABLE;
+        o.logStatInterval = DEFAULT_LOGSTATINTERVAL;
         o.includes = DEFAULT_INCLUDES;
         o.excludes = DEFAULT_EXCLUDES;
         o.logLevel = DEFAULT_LOGLEVEL;
@@ -82,7 +89,6 @@ public class ExternalDataSource extends ConfigObject {
         o.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
         o.maxIdleTime = DEFAULT_MAXIDLETIME;
         o.autoCommit = DEFAULT_AUTOCOMMIT;
-        o.traceSqlEnable = DEFAULT_TRACESQLENABLE;
         return o;
     }
 
@@ -106,8 +112,6 @@ public class ExternalDataSource extends ConfigObject {
     private Boolean statEnable;
     @FieldDescribe("统计方式配置,默认mergeStat.")
     private String statFilter;
-    @FieldDescribe("执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.")
-    private Integer slowSqlMillis;
     @FieldDescribe("设置此数据库存储的类,默认情况下存储所有类型,如果需要对每个类进行单独的控制以达到高性能,可以将不同的类存储到不同的节点上提高性能.可以使用通配符*.")
     private List<String> includes;
     @FieldDescribe("在此节点上不存储的类,和includes一起设置实际存储的类,可以使用通配符*.")
@@ -124,13 +128,33 @@ public class ExternalDataSource extends ConfigObject {
     private Integer maxIdleTime;
     @FieldDescribe("自动提交,默认为false.")
     private Boolean autoCommit = DEFAULT_AUTOCOMMIT;
-    @FieldDescribe("启用sql跟踪.")
-    private Boolean traceSqlEnable = DEFAULT_TRACESQLENABLE;
     @FieldDescribe("模式.")
     private String schema = DEFAULT_SCHEMA;
+    @FieldDescribe("启用记录统计日志.")
+    private Boolean logStatEnable;
+    @FieldDescribe("统计日志输出间隔,单位分钟,默认180.")
+    private Integer logStatInterval;
+    @FieldDescribe("是否启用执行慢sql记录.")
+    private Boolean slowSqlEnable;
+    @FieldDescribe("执行慢sql记录阈值,毫秒数,默认3000毫秒.")
+    private Integer slowSqlThreshold;
 
-    public Boolean getTraceSqlEnable() {
-        return (null == this.traceSqlEnable) ? DEFAULT_TRACESQLENABLE : this.traceSqlEnable;
+    public Boolean getLogStatEnable() {
+        return BooleanUtils.isTrue(this.logStatEnable);
+    }
+
+    public Integer getLogStatInterval() {
+        return (null == this.logStatInterval || this.logStatInterval < 1) ? DEFAULT_LOGSTATINTERVAL
+                : this.logStatInterval;
+    }
+
+    public Boolean getSlowSqlEnable() {
+        return BooleanUtils.isTrue(this.slowSqlEnable);
+    }
+
+    public Integer getSlowSqlThreshold() {
+        return (null == this.slowSqlThreshold || this.slowSqlThreshold < 1) ? DEFAULT_SLOWSQLTHRESHOLD
+                : this.slowSqlThreshold;
     }
 
     public Boolean getAutoCommit() {
@@ -166,10 +190,6 @@ public class ExternalDataSource extends ConfigObject {
     public String getDictionary() throws Exception {
         return StringUtils.isEmpty(this.dictionary) ? SlicePropertiesBuilder.dictionaryOfUrl(this.url)
                 : this.dictionary;
-    }
-
-    public Integer getSlowSqlMillis() {
-        return (null == this.slowSqlMillis || this.slowSqlMillis < 1) ? DEFAULT_SLOWSQLMILLIS : this.slowSqlMillis;
     }
 
     public String getStatFilter() {

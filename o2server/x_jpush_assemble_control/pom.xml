@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>7.3</version>
+		<version>8.0</version>
 	</parent>
 	<artifactId>x_jpush_assemble_control</artifactId>
 	<packaging>war</packaging>
@@ -132,7 +132,7 @@
 					</execution>
 				</executions>
 			</plugin>
-				<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>

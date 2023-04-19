@@ -16,6 +16,34 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     /** @lends MWF.xApplication.process.Xform.Subform# */
 {
     Extends: MWF.APP$Module,
+    options: {
+        /**
+         * 子表单的设计已经获取到，但还没有插入html及生成内部组件。
+         * @event MWF.xApplication.process.Xform.Subform#beforeModulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 子表单的设计已经获取到，已经插入html，组件json已经获取到，但未生成内部组件。
+         * @example
+         * //获取子表单所有组件id
+         * var moduleIdList = Object.keys(this.target.subformData.json.moduleList);
+         * @event MWF.xApplication.process.Xform.Subform#modulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 子表单内部组件加载完成。
+         * @example
+         * //获取子表单所有组件id
+         * var moduleIdList = Object.keys(this.target.subformData.json.moduleList);
+         * //获取子表单所有组件
+         * var moduleList = moduleIdList.map(function(id){
+         *     return this.form.get(id, subformId); //subformId为当前子表单ID，布局组件有可能id冲突，通过subformId来确定当前子表单的组件
+         * }.bind(this))
+         * @event MWF.xApplication.process.Xform.Subform#afterModulesLoad
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeModulesLoad", "modulesLoad", "afterModulesLoad"]
+    },
 
     _loadUserInterface: function () {
         /**
@@ -170,6 +198,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
             } else {
                 //this.form.addEvent("postLoad", function(){
 
+                this.fireEvent("beforeModulesLoad");
+
                 this.loadCss();
 
                 this.modules = [];
@@ -188,6 +218,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                     this.moduleList[formKey] = module;
                 }.bind(this));
 
+                this.fireEvent("modulesLoad");
+
                 var moduleNodes = this.form._getModuleNodes(this.node);
                 moduleNodes.each(function (node) {
                     if (node.get("MWFtype") !== "form") {
@@ -203,6 +235,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                 }.bind(this));
 
                 this.form.subformLoaded.push(this.subformData.json.id);
+
+                this.fireEvent("afterModulesLoad");
 
                 //}.bind(this));
             }
@@ -335,6 +369,9 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                 //this.form.addEvent("postLoad", function(){
 
                 // this.fireSubFormEvent("queryLoad");
+
+                this.fireEvent("beforeModulesLoad");
+
                 this.loadCss();
 
                 this.node.set("html", this.subformData.html);

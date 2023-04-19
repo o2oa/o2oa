@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>7.3</version>
+		<version>8.0</version>
 	</parent>
 	<artifactId>x_processplatform_service_processing</artifactId>
 	<packaging>war</packaging>
@@ -36,6 +36,10 @@
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_portal_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.o2oa</groupId>
+			<artifactId>x_program_center_core_entity</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

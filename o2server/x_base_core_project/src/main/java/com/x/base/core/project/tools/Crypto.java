@@ -26,11 +26,13 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -46,6 +48,8 @@ public class Crypto {
 	}
 
 	private static final String DES = "DES";
+
+	private static final String AES = "AES";
 
 	private static final String RSA = "RSA";
 
@@ -92,6 +96,33 @@ public class Crypto {
 		// 用密钥初始化Cipher对象
 		cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
 		return cipher.doFinal(data);
+	}
+
+	private static byte[] encryptAes(byte[] text, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException,
+			InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
+		SecretKeySpec aesKey = new SecretKeySpec(key, AES);
+
+		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+		cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+
+		return cipher.doFinal(text);
+
+	}
+
+
+	private static byte[] decryptAes(byte[] text, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException,
+			InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
+		SecretKeySpec aesKey = new SecretKeySpec(key, AES);
+
+		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+		cipher.init(Cipher.DECRYPT_MODE, aesKey);
+
+		return cipher.doFinal(text);
+
 	}
 
 	private static byte[] encryptSm4(byte[] data, String password)
@@ -240,5 +271,45 @@ public class Crypto {
 
 	public static String base64Decode(String value) {
 		return new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
+	}
+
+	/**
+	 * AES加密
+	 * @param data 明文
+	 * @param key 秘钥
+	 * @return
+	 * @throws Exception
+	 */
+	public static String encodeAES(String data, String key) throws Exception {
+
+		byte[] keyBytes = DigestUtils.md5(key);
+
+		byte[] passwordBytes = data.getBytes();
+
+		byte[] aesBytes = encryptAes(passwordBytes, keyBytes);
+
+		return new String(Base64.encodeBase64(aesBytes));
+
+	}
+
+
+	/**
+	 * AES解密
+	 * @param data 密文
+	 * @param key 秘钥
+	 * @return
+	 * @throws Exception
+	 */
+	public static String decodeAES(String data, String key) throws Exception {
+		if (StringUtils.isEmpty(data) && StringUtils.isEmpty(key)) {
+			return null;
+		}
+
+		byte[] keyBytes = DigestUtils.md5(key);
+
+		byte[] debase64Bytes = Base64.decodeBase64(data.getBytes());
+
+		return new String(decryptAes(debase64Bytes, keyBytes));
+
 	}
 }

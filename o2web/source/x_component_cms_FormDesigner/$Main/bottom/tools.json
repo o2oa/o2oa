@@ -84,6 +84,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.button,
     "className": "Button"
   },
+  "commend": {
+    "icon": "button.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.commend,
+    "className": "Commend"
+  },
   "Address": {
     "icon": "address.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.Address,
@@ -209,11 +214,6 @@
     "icon": "office.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.office,
     "className": "Office"
-  },
-  "iWebOffice": {
-    "icon": "iWebOffice.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.iWebOffice,
-    "className": "IWebOffice"
   },
   "yozoOffice": {
     "icon": "yozoOffice.png",

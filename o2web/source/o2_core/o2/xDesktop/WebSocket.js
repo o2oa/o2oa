@@ -105,6 +105,7 @@ MWF.xDesktop.WebSocket = new Class({
                             case "task_urge":
                             case "task_expire":
                             case "task_press":
+                            case "task_delete":
                                 this.receiveTaskMessage(data);
                                 break;
                             case "read":
@@ -279,7 +280,7 @@ MWF.xDesktop.WebSocket = new Class({
         //if (layout.desktop.top.userPanel) layout.desktop.top.userPanel.receiveChatMessage(data);
     },
     openWork: function(id, e){
-        o2.Actions.get("x_processplatform_assemble_surface").getWorkInfor(id, function(){
+        o2.Actions.get("x_processplatform_assemble_surface").loadWork(id, function(){
             var options = {"workId": id, "appId": "process.Work"+id};
             layout.desktop.openApplication(e, "process.Work", options);
         }.bind(this), function(){
@@ -306,12 +307,12 @@ MWF.xDesktop.WebSocket = new Class({
         var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
-            this.openWork(task.work,e);
+            if( data.type !== "task_delete" )this.openWork(task.work,e);
         }.bind(this));
         messageItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
-            this.openWork(task.work,e);
+            if( data.type !== "task_delete" )this.openWork(task.work,e);
         }.bind(this));
     },
     receiveReadMessage: function(data){
@@ -619,7 +620,7 @@ MWF.xDesktop.WebSocket = new Class({
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingAccept;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
-            content = content.replace(/{person}/g, MWF.name.cn(data.person));
+            content = content.replace(/{person}/g, MWF.name.cn(data.body.fromPerson));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
             content = content.replace(/{subject}/g, o2.txt(meeting.subject));
@@ -648,7 +649,7 @@ MWF.xDesktop.WebSocket = new Class({
         this.getMeeting(data, function(meeting){
             var content = MWF.LP.desktop.messsage.meetingReject;
             //content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
-            content = content.replace(/{person}/g, MWF.name.cn(data.person));
+            content = content.replace(/{person}/g, MWF.name.cn(data.body.fromPerson));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
             content = content.replace(/{subject}/g, o2.txt(meeting.subject));

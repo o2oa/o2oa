@@ -89,10 +89,10 @@ public class HotPictureInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String summary = "";
 
-	public static final String url_FIELDNAME = "url";
-	@FieldDescribe("信息访问URL")
-	@Column(name = "xurl", length = JpaObject.length_255B)
-	private String url = "";
+//	public static final String url_FIELDNAME = "url";
+//	@FieldDescribe("信息访问URL")
+//	@Column(name = "xurl", length = JpaObject.length_255B)
+//	private String url = "";
 
 	public static final String picId_FIELDNAME = "picId";
 	@FieldDescribe("信息图片URL")
@@ -128,13 +128,13 @@ public class HotPictureInfo extends SliceJpaObject {
 		this.title = title;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
+//	public String getUrl() {
+//		return url;
+//	}
+//
+//	public void setUrl(String url) {
+//		this.url = url;
+//	}
 
 	public String getCreator() {
 		return creator;

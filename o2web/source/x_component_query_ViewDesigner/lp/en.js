@@ -96,7 +96,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "value": "Value",
         "columnValue": "Column Value",
         "contain": "Contain",
-        "from": "from"
+        "from": "from",
+        "in": "contain"
     },
     "delete_filterItem_title": "Confirm Delete Filter Condition",
     "delete_filterItem": "Are you sure you want to delete the current filter?",
@@ -303,6 +304,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "currentIdentity":"Current Identity",
         "currentPersonDirectUnit":"The current person's direct organization",
         "currentPersonAllUnit":"All organizations where the current person belongs",
+        "currentPersonGroupList": "The current person's group",
+        "currentPersonRoleList": "Roles owned by the current person",
         "to":"to",
         "input":"input",
         "selectable":"Optional",

@@ -41,7 +41,7 @@ public class StackTraceTask implements Job {
 			}
 			Process p = processBuilder.start();
 			String resp = IOUtils.toString(p.getErrorStream(), DefaultCharset.charset_utf_8);
-			LOGGER.print("schedule stack trace to {}.{}", file, resp);
+			LOGGER.print("schedule stack trace to {}, {}.", file, resp);
 			p.destroy();
 			clean(now);
 		} catch (Exception e) {

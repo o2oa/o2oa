@@ -64,8 +64,26 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.allowAdd}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}/>{{$.lp.no}}
+                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}  onclick="if (this.checked){
+                        $('text{$.pid}addToTr').setStyle('display', '');
+                    }"/>{{$.lp.yes}}
+                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}  onclick="if (this.checked){
+                        $('text{$.pid}addToTr').setStyle('display', 'none');
+                    }"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr id="text{$.pid}addToTr" style="display: text{(!$.addable || $.addable!=='no')?'':'none'};">
+                <td class="editTableTitle">{{$.lp.titleAddTo}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="addTo" value="first" text{($.addTo==='first')?'checked':''}/>{{$.lp.firstLine}}
+                    <input type="radio" name="addTo" value="last" text{($.addTo!=='first')?'checked':''}/>{{$.lp.lastLine}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowSort}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="sortable" value="yes" text{($.sortable!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="sortable" value="no" text{($.sortable==='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>

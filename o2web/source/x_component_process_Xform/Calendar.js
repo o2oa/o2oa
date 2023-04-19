@@ -232,6 +232,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
+
+                this.setRange( options );
                 /**
                  * @summary 日期弹出选择界面，只读情况下无此成员.
                  * @member {MWF.widget.Calendar}
@@ -268,6 +270,62 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
         }
         return d;
+    },
+    setRange: function( options ){
+        var r;
+        switch ( this.json.rangeType ) {
+            case "dateTime":
+                if (this.json.dateTimeRangeScript && this.json.dateTimeRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.dateTimeRangeScript.code, this);
+                    if (typeOf(r) === "array") options.datetimeRange = r;
+                }
+                break;
+            case "dateAndTime":
+                if (this.json.dateRangeScript && this.json.dateRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.dateRangeScript.code, this);
+                    if (typeOf(r) === "array") options.dateRange = r;
+                }
+                if (this.json.timeRangeScript && this.json.timeRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.timeRangeScript.code, this);
+                    if (typeOf(r) === "array") options.timeRange = r;
+                }
+                break;
+            case "other":
+                if (this.json.enableDate && this.json.enableDate.code) {
+                    options.enableDate = function (date) {
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableDate.code, this, {date: d});
+                    }.bind(this);
+                }
+                if (this.json.enableHours && this.json.enableHours.code) {
+                    options.enableHours = function (date) {
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableHours.code, this, {date: d});
+                    }.bind(this);
+                }
+                if (this.json.enableMinutes && this.json.enableMinutes.code) {
+                    options.enableMinutes = function (date, hour) {
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableMinutes.code, this, {date: d, hour: hour.toInt()});
+                    }.bind(this);
+                }
+                if (this.json.enableSeconds && this.json.enableSeconds.code) {
+                    options.enableSeconds = function (date, hour, minute) {
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: d, hour: hour.toInt(), minute: minute.toInt()});
+                    }.bind(this);
+                }
+                break;
+        }
+    },
+    getPureDate: function (date) {
+        var d;
+        switch (typeOf(date)) {
+            case "string": d = Date.parse(date); break;
+            case "date": d = date.clone(); break;
+            default: return null;
+        }
+        return d.clearTime();
     },
     unformatDate : function( dateStr ){
         var formatStr = this.json.format;
@@ -310,5 +368,28 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
         }
         return resultArr[0] + "-" + resultArr[1] + "-" + resultArr[2] + " " + resultArr[3]+":"+resultArr[4]+":"+resultArr[5];
+    },
+
+    getExcelData: function(){
+        return this.getData();
+    },
+    setExcelData: function(d){
+        var value = d.replace(/&#10;/g,""); //换行符&#10;
+        this.excelData = value;
+        var json = this.json;
+        if( value && (new Date(value).isValid()) ){
+            var format;
+            if (!json.format){
+                if (json.selectType==="datetime" || json.selectType==="time"){
+                    format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+                }else{
+                    format = Locale.get("Date").shortDate;
+                }
+            }else{
+                format = json.format;
+            }
+            value = Date.parse( value ).format( format );
+            this.setData(value, true);
+        }
     }
 });

@@ -1,9 +1,7 @@
 package com.x.processplatform.service.processing.processor.manual;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -14,34 +12,30 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.script.Bindings;
-import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.EmpowerLog;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.NumberTools;
-import com.x.base.core.project.utils.time.WorkTime;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -49,7 +43,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -65,7 +58,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualProcessor.class);
 
-    private static final String DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST = "manualTaskIdentityList";
+    // private static final String DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST =
+    // "manualTaskIdentityList";
 
     public ManualProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
         super(entityManagerContainer);
@@ -164,6 +158,7 @@ public class ManualProcessor extends AbstractManualProcessor {
         taskCompleted.setIdentity(identity);
         taskCompleted.setUnit(aeiObjects.business().organization().unit().getWithIdentity(taskCompleted.getIdentity()));
         taskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
+        taskCompleted.setJoinInquire(true);
         taskCompleted.setRouteName(route.getName());
         taskCompleted.setOpinion(route.getOpinion());
         Date now = new Date();
@@ -209,7 +204,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 
     private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
             throws Exception {
-        List<String> identities = new ArrayList<>();
         List<WorkLog> workLogs = Stream
                 .concat(Stream.concat(aeiObjects.getUpdateWorkLogs().stream(), aeiObjects.getCreateWorkLogs().stream()),
                         aeiObjects.getWorkLogs().stream())
@@ -217,26 +211,49 @@ public class ManualProcessor extends AbstractManualProcessor {
         WorkLogTree tree = new WorkLogTree(workLogs);
         Node node = tree.location(aeiObjects.getWork());
         if (null != node) {
-            calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, identities, tree, node);
+            calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, tree, node);
         }
     }
 
+//    private void calculateRouteTypeBackIdentityByTaskCompleted(AeiObjects aeiObjects, Manual manual,
+//            TaskIdentities taskIdentities, List<String> identities, WorkLogTree tree, Node node) throws Exception {
+//        for (Node n : tree.up(node)) {
+//            if (StringUtils.equals(manual.getId(), n.getWorkLog().getFromActivity())) {
+//                for (TaskCompleted t : aeiObjects.getTaskCompleteds()) {
+//                    if (StringUtils.equals(n.getWorkLog().getFromActivityToken(), t.getActivityToken())
+//                            && BooleanUtils.isTrue(t.getJoinInquire())) {
+//                        identities.add(t.getIdentity());
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//        identities = aeiObjects.business().organization().identity().list(identities);
+//        if (ListTools.isNotEmpty(identities)) {
+//            taskIdentities.addIdentities(identities);
+//        }
+//    }
+
     private void calculateRouteTypeBackIdentityByTaskCompleted(AeiObjects aeiObjects, Manual manual,
-            TaskIdentities taskIdentities, List<String> identities, WorkLogTree tree, Node node) throws Exception {
+            TaskIdentities taskIdentities, WorkLogTree tree, Node node) throws Exception {
         for (Node n : tree.up(node)) {
             if (StringUtils.equals(manual.getId(), n.getWorkLog().getFromActivity())) {
                 for (TaskCompleted t : aeiObjects.getTaskCompleteds()) {
                     if (StringUtils.equals(n.getWorkLog().getFromActivityToken(), t.getActivityToken())
                             && BooleanUtils.isTrue(t.getJoinInquire())) {
-                        identities.add(t.getIdentity());
+                        String identity = aeiObjects.business().organization().identity().get(t.getIdentity());
+                        if (StringUtils.isNotEmpty(identity)) {
+                            TaskIdentity taskIdentity = new TaskIdentity();
+                            taskIdentity.setIdentity(identity);
+                            if (StringUtils.isNotEmpty(t.getEmpowerFromIdentity())) {
+                                taskIdentity.setFromIdentity(t.getEmpowerFromIdentity());
+                            }
+                            taskIdentities.add(taskIdentity);
+                        }
                     }
                 }
                 break;
             }
-        }
-        identities = aeiObjects.business().organization().identity().list(identities);
-        if (ListTools.isNotEmpty(identities)) {
-            taskIdentities.addIdentities(identities);
         }
     }
 
@@ -250,37 +267,35 @@ public class ManualProcessor extends AbstractManualProcessor {
      */
     private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, Manual manual,
             TaskIdentities taskIdentities) throws Exception {
-        if (taskIdentities.isEmpty()) {
-            String identity = null;
-            if (!ifManualAssignTaskIdentity(manual)) {
-                identity = aeiObjects.business().organization().identity()
-                        .get(aeiObjects.getWork().getCreatorIdentity());
-            }
-            if (StringUtils.isEmpty(identity)
-                    && StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
-                identity = aeiObjects.business().organization().identity()
-                        .get(aeiObjects.getProcess().getMaintenanceIdentity());
-            }
-            if (StringUtils.isEmpty(identity)
-                    && StringUtils.isNotBlank(aeiObjects.getApplication().getMaintenanceIdentity())) {
-                identity = aeiObjects.business().organization().identity()
-                        .get(aeiObjects.getApplication().getMaintenanceIdentity());
-            }
-            if (StringUtils.isEmpty(identity)) {
-                identity = aeiObjects.business().organization().identity()
-                        .get(aeiObjects.getWork().getCreatorIdentity());
-            }
-            if (StringUtils.isEmpty(identity)
-                    && StringUtils.isNotBlank(Config.processPlatform().getMaintenanceIdentity())) {
-                identity = aeiObjects.business().organization().identity()
-                        .get(Config.processPlatform().getMaintenanceIdentity());
-            }
-            if (StringUtils.isEmpty(identity)) {
-                throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
-                        aeiObjects.getActivity().getName(), aeiObjects.getActivity().getId());
-            }
-            taskIdentities.addIdentity(identity);
+        if (!taskIdentities.isEmpty()) {
+            return;
         }
+        String identity = null;
+        if (!ifManualAssignTaskIdentity(manual)) {
+            identity = aeiObjects.business().organization().identity().get(aeiObjects.getWork().getCreatorIdentity());
+        }
+        if (StringUtils.isEmpty(identity) && StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
+            identity = aeiObjects.business().organization().identity()
+                    .get(aeiObjects.getProcess().getMaintenanceIdentity());
+        }
+        if (StringUtils.isEmpty(identity)
+                && StringUtils.isNotBlank(aeiObjects.getApplication().getMaintenanceIdentity())) {
+            identity = aeiObjects.business().organization().identity()
+                    .get(aeiObjects.getApplication().getMaintenanceIdentity());
+        }
+        if (StringUtils.isEmpty(identity)) {
+            identity = aeiObjects.business().organization().identity().get(aeiObjects.getWork().getCreatorIdentity());
+        }
+        if (StringUtils.isEmpty(identity)
+                && StringUtils.isNotBlank(Config.processPlatform().getMaintenanceIdentity())) {
+            identity = aeiObjects.business().organization().identity()
+                    .get(Config.processPlatform().getMaintenanceIdentity());
+        }
+        if (StringUtils.isEmpty(identity)) {
+            throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
+                    aeiObjects.getActivity().getName(), aeiObjects.getActivity().getId());
+        }
+        taskIdentities.addIdentity(identity);
     }
 
     /**
@@ -307,9 +322,8 @@ public class ManualProcessor extends AbstractManualProcessor {
             return true;
         } else {
             if (StringUtils.isNotEmpty(manual.getTaskScriptText())) {
-                String clean = manual.getTaskScriptText().replaceAll("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*", "");
-                clean = StringUtils.trimToEmpty(clean);
-                if (StringUtils.isNotBlank(clean)) {
+                Matcher matcher = StringTools.EMPTY_SCRIPT_CODE_REGEX.matcher(manual.getTaskScriptText());
+                if (StringUtils.isNotBlank(StringUtils.trimToEmpty(matcher.replaceAll("")))) {
                     return true;
                 }
             }
@@ -330,7 +344,9 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
                 && BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
             List<String> values = taskIdentities.identities();
+
             values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+
             taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
                     aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
                     aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values));
@@ -357,10 +373,10 @@ public class ManualProcessor extends AbstractManualProcessor {
         for (WorkLog o : list) {
             // choice, agent, invoke, service, delay, embed, split, parallel 继续向上查找manual
             ActivityType activityType = o.getFromActivityType();
-            if (Objects.equals(ActivityType.begin, activityType)
-                    || Objects.equals(ActivityType.cancel, activityType)
+            if (Objects.equals(ActivityType.begin, activityType) || Objects.equals(ActivityType.cancel, activityType)
                     || Objects.equals(ActivityType.end, activityType)
                     || Objects.equals(ActivityType.merge, activityType)) {
+                // nothing
             } else if (Objects.equals(ActivityType.manual, activityType)) {
                 return Optional.of(o);
             }
@@ -376,19 +392,24 @@ public class ManualProcessor extends AbstractManualProcessor {
     @Override
     protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
         List<Work> results = new ArrayList<>();
-        ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
+        // ManualTaskIdentityMatrix matrix =
+        // executingManualTaskIdentityMatrix(aeiObjects, manual);
+        ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
         List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                 aeiObjects.getWork().getActivityToken());
-        executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
-
+        executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, matrix, taskCompleteds);
         // 发送ProcessingSignal
         aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
                 Objects.toString(manual.getManualMode(), ""), matrix.flat()));
         if (matrix.isEmpty() && (!taskCompleteds.isEmpty())) {
             results.add(aeiObjects.getWork());
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
+            // aeiObjects.business().organization().identity().listObject(null)
+
         } else {
             switch (manual.getManualMode()) {
                 case parallel:
@@ -411,62 +432,55 @@ public class ManualProcessor extends AbstractManualProcessor {
         return results;
     }
 
-//	/**
-//	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
-//	 * 
-//	 * @param aeiObjects
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
-//			throws Exception {
-//		List<TaskCompleted> taskCompleteds = aeiObjects
-//				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-//		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
-//		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
-//				.collect(Collectors.toList());
-//		return taskCompleteds;
-//	}
+//    @SuppressWarnings("unchecked")
+//    @Deprecated(forRemoval = true, since = "8.0")
+//    private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
+//            throws Exception {
+//        ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+//        List<String> exists = matrix.flat();
+//        matrix.remove(ListUtils.subtract(exists, aeiObjects.business().organization().identity().list(exists)));
+//        if (matrix.isEmpty()) {
+//            List<String> identities = new ArrayList<>();
+//            // 兼容7.2.0之前的版本
+//            List<String> deprecatedIdentities = new ArrayList<>();
+//            if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
+//                deprecatedIdentities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
+//                        DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
+//                identities.addAll(deprecatedIdentities);
+//                identities = aeiObjects.business().organization().identity().list(identities);
+//            }
+//            if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
+//                    aeiObjects.getWork().getActivityToken()).isEmpty()) {
+//                identities = calculateTaskIdentities(aeiObjects, manual);
+//                LOGGER.info("工作设置的处理人 {} 已经全部无效, 且没有已办, 重新计算当前环节所有处理人进行处理, 标题:{}, id:{}, 强制设置的处理人:{}.",
+//                        () -> StringUtils.join(deprecatedIdentities), aeiObjects.getWork()::getTitle,
+//                        aeiObjects.getWork()::getId, identities::toString);
+//            }
+//            matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
+//        }
+//        // 重新绑定到对象上.
+//        aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
+//        return matrix;
+//    }
 
-    @SuppressWarnings("unchecked")
-    @Deprecated(forRemoval = true, since = "8.0")
-    private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
-            throws Exception {
-        ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
-        List<String> exists = matrix.flat();
-        matrix.remove(ListUtils.subtract(exists, aeiObjects.business().organization().identity().list(exists)));
-        if (matrix.isEmpty()) {
-            List<String> identities = new ArrayList<>();
-            // 兼容7.2.0之前的版本
-            List<String> deprecatedIdentities = new ArrayList<>();
-            if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
-                deprecatedIdentities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
-                        DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
-                identities.addAll(deprecatedIdentities);
-                identities = aeiObjects.business().organization().identity().list(identities);
-            }
-            if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
-                    aeiObjects.getWork().getActivityToken()).isEmpty()) {
-                identities = calculateTaskIdentities(aeiObjects, manual);
-                LOGGER.info("工作设置的处理人 {} 已经全部无效, 且没有已办, 重新计算当前环节所有处理人进行处理, 标题:{}, id:{}, 强制设置的处理人:{}.",
-                        () -> StringUtils.join(deprecatedIdentities), aeiObjects.getWork()::getTitle,
-                        aeiObjects.getWork()::getId, identities::toString);
-            }
-            matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
-        }
-        // 重新绑定到对象上.
-        aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
-        return matrix;
-    }
-
-    private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, ManualTaskIdentityMatrix matrix,
-            List<TaskCompleted> taskCompleteds) throws Exception {
+    /**
+     * 将已办人员从办理身份矩阵中剔除,如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
+     * 
+     * @param aeiObjects
+     * @param manual
+     * @param matrix
+     * @param taskCompleteds
+     * @throws Exception
+     */
+    private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual,
+            ManualTaskIdentityMatrix matrix, List<TaskCompleted> taskCompleteds) throws Exception {
         if (!matrix.isEmpty()) {
             List<String> identities = matrix.flat();
-            List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
-                    String.class, true, true);
             taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
-            if (!identities.isEmpty()) {
+            // 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
+            if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson()) && (!identities.isEmpty())) {
+                List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
+                        String.class, true, true);
                 aeiObjects.business().organization().person().listPairIdentity(identities).stream().forEach(p -> {
                     if (people.contains(p.getPerson())) {
                         matrix.completed(p.getIdentity());
@@ -606,10 +620,10 @@ public class ManualProcessor extends AbstractManualProcessor {
      * @throws Exception
      */
     private Optional<String> chooseMaxCountOrLatest(Triple<List<TaskCompleted>, List<Route>, Manual> triple) {
-        if (!Objects.equals(ManualMode.parallel, triple.getRight().getManualMode())) {
-            return triple.getLeft().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
-                    .findFirst().map(TaskCompleted::getRouteName);
-        }
+//        if (!Objects.equals(ManualMode.parallel, triple.getRight().getManualMode())) {
+//            return triple.getLeft().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
+//                    .findFirst().map(TaskCompleted::getRouteName);
+//        }
         return triple.getLeft().stream().collect(Collectors.groupingBy(TaskCompleted::getRouteName)).entrySet().stream()
                 .max((o1, o2) -> {
                     int c = o1.getValue().size() - o2.getValue().size();
@@ -628,9 +642,11 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
@@ -641,9 +657,11 @@ public class ManualProcessor extends AbstractManualProcessor {
         // 是否有优先路由
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.flat());
         }
@@ -653,9 +671,11 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
@@ -671,8 +691,7 @@ public class ManualProcessor extends AbstractManualProcessor {
      */
     private boolean soleDirect(AeiObjects aeiObjects, List<TaskCompleted> taskCompleteds) throws Exception {
         final List<String> soleRouteNames = aeiObjects.getRoutes().stream()
-                .filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
-                .map(Route::getName).collect(Collectors.toList());
+                .filter(r -> BooleanUtils.isTrue(r.getSoleDirect())).map(Route::getName).collect(Collectors.toList());
         if (!soleRouteNames.isEmpty()) {
             Optional<TaskCompleted> taskCompleted = taskCompleteds.stream()
                     .filter(t -> soleRouteNames.contains(t.getRouteName())).findFirst();
@@ -698,8 +717,8 @@ public class ManualProcessor extends AbstractManualProcessor {
                         // 路由名称发生变化.
                         LOGGER.warn(
                                 "update a task whose route name does not match, id:{}, route name:{}, expected route name:{}.",
-                                t::getId,
-                                () -> StringUtils.join(t.getRouteNameList()), () -> StringUtils.join(routeNameSet));
+                                t::getId, () -> StringUtils.join(t.getRouteNameList()),
+                                () -> StringUtils.join(routeNameSet));
                         try {
                             aeiObjects.getUpdateTasks().add(t.updateRoute(aeiObjects.getRoutes()));
                             identities.remove(t.getIdentity());
@@ -712,7 +731,14 @@ public class ManualProcessor extends AbstractManualProcessor {
                 });
         identities.stream().forEach(o -> {
             try {
-                aeiObjects.createTask(this.createTask(aeiObjects, manual, o));
+                Task task = Tasks.createTask(aeiObjects, manual, o);
+                aeiObjects.createTask(task);
+                // 将用户可能已经存在的同一环节已办全部标记为不参与流转
+                aeiObjects.getJoinInquireTaskCompletedsWithActivityToken(task.getActivityToken()).stream()
+                        .filter(p -> StringUtils.equalsIgnoreCase(p.getPerson(), task.getPerson())).forEach(tc -> {
+                            tc.setJoinInquire(false);
+                            aeiObjects.getUpdateTaskCompleteds().add(tc);
+                        });
             } catch (Exception e) {
                 LOGGER.error(e);
             }
@@ -724,166 +750,167 @@ public class ManualProcessor extends AbstractManualProcessor {
         // nothing
     }
 
-    private void calculateExpire(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
-        if (null != manual.getTaskExpireType()) {
-            switch (manual.getTaskExpireType()) {
-                case never:
-                    this.expireNever(task);
-                    break;
-                case appoint:
-                    this.expireAppoint(manual, task);
-                    break;
-                case script:
-                    this.expireScript(aeiObjects, manual, task);
-                    break;
-                default:
-                    break;
-            }
-        }
-        // 如果work有截至时间
-        if (null != aeiObjects.getWork().getExpireTime()) {
-            if (null == task.getExpireTime()) {
-                task.setExpireTime(aeiObjects.getWork().getExpireTime());
-            } else {
-                if (task.getExpireTime().after(aeiObjects.getWork().getExpireTime())) {
-                    task.setExpireTime(aeiObjects.getWork().getExpireTime());
-                }
-            }
-        }
-        // 已经有过期时间了,那么设置催办时间
-        if (null != task.getExpireTime()) {
-            task.setUrgeTime(DateUtils.addHours(task.getExpireTime(), -2));
-        } else {
-            task.setExpired(false);
-            task.setUrgeTime(null);
-            task.setUrged(false);
-        }
-    }
+//    private void calculateExpire(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
+//        if (null != manual.getTaskExpireType()) {
+//            switch (manual.getTaskExpireType()) {
+//                case never:
+//                    this.expireNever(task);
+//                    break;
+//                case appoint:
+//                    this.expireAppoint(manual, task);
+//                    break;
+//                case script:
+//                    this.expireScript(aeiObjects, manual, task);
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//        // 如果work有截至时间
+//        if (null != aeiObjects.getWork().getExpireTime()) {
+//            if (null == task.getExpireTime()) {
+//                task.setExpireTime(aeiObjects.getWork().getExpireTime());
+//            } else {
+//                if (task.getExpireTime().after(aeiObjects.getWork().getExpireTime())) {
+//                    task.setExpireTime(aeiObjects.getWork().getExpireTime());
+//                }
+//            }
+//        }
+//        // 已经有过期时间了,那么设置催办时间
+//        if (null != task.getExpireTime()) {
+//            task.setUrgeTime(DateUtils.addHours(task.getExpireTime(), -2));
+//        } else {
+//            task.setExpired(false);
+//            task.setUrgeTime(null);
+//            task.setUrged(false);
+//        }
+//    }
 
-    // 从不过期
-    private void expireNever(Task task) {
-        task.setExpireTime(null);
-    }
+//    // 从不过期
+//    private void expireNever(Task task) {
+//        task.setExpireTime(null);
+//    }
+//
+//    private void expireAppoint(Manual manual, Task task) throws Exception {
+//        if (BooleanUtils.isTrue(manual.getTaskExpireWorkTime())) {
+//            this.expireAppointWorkTime(task, manual);
+//        } else {
+//            this.expireAppointNaturalDay(task, manual);
+//        }
+//    }
+//
+//    private void expireAppointWorkTime(Task task, Manual manual) throws Exception {
+//        Integer m = 0;
+//        WorkTime wt = Config.workTime();
+//        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
+//            m += manual.getTaskExpireDay() * wt.minutesOfWorkDay();
+//        }
+//        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireHour(), 0))) {
+//            m += manual.getTaskExpireHour() * 60;
+//        }
+//        if (m > 0) {
+//            Date expire = wt.forwardMinutes(new Date(), m);
+//            task.setExpireTime(expire);
+//        } else {
+//            task.setExpireTime(null);
+//        }
+//    }
 
-    private void expireAppoint(Manual manual, Task task) throws Exception {
-        if (BooleanUtils.isTrue(manual.getTaskExpireWorkTime())) {
-            this.expireAppointWorkTime(task, manual);
-        } else {
-            this.expireAppointNaturalDay(task, manual);
-        }
-    }
+//    private void expireAppointNaturalDay(Task task, Manual manual) {
+//        Integer m = 0;
+//        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
+//            m += manual.getTaskExpireDay() * 60 * 24;
+//        }
+//        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireHour(), 0))) {
+//            m += manual.getTaskExpireHour() * 60;
+//        }
+//        if (m > 0) {
+//            Calendar cl = Calendar.getInstance();
+//            cl.add(Calendar.MINUTE, m);
+//            task.setExpireTime(cl.getTime());
+//        } else {
+//            task.setExpireTime(null);
+//        }
+//    }
 
-    private void expireAppointWorkTime(Task task, Manual manual) throws Exception {
-        Integer m = 0;
-        WorkTime wt = Config.workTime();
-        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
-            m += manual.getTaskExpireDay() * wt.minutesOfWorkDay();
-        }
-        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireHour(), 0))) {
-            m += manual.getTaskExpireHour() * 60;
-        }
-        if (m > 0) {
-            Date expire = wt.forwardMinutes(new Date(), m);
-            task.setExpireTime(expire);
-        } else {
-            task.setExpireTime(null);
-        }
-    }
+//    private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
+//        ExpireScriptResult expire = new ExpireScriptResult();
+//        ScriptContext scriptContext = aeiObjects.scriptContext();
+//        CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+//                manual, Business.EVENT_MANUALTASKEXPIRE);
+//        scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
+//        JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
+//            if (null != o) {
+//                expire.setDate(o.getDate());
+//                expire.setHour(o.getHour());
+//                expire.setWorkHour(o.getWorkHour());
+//            }
+//        });
+//        if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {
+//            Integer m = 0;
+//            m += expire.getWorkHour() * 60;
+//            if (m > 0) {
+//                task.setExpireTime(Config.workTime().forwardMinutes(new Date(), m));
+//            } else {
+//                task.setExpireTime(null);
+//            }
+//        } else if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getHour(), 0))) {
+//            Integer m = 0;
+//            m += expire.getHour() * 60;
+//            if (m > 0) {
+//                Calendar cl = Calendar.getInstance();
+//                cl.add(Calendar.MINUTE, m);
+//                task.setExpireTime(cl.getTime());
+//            } else {
+//                task.setExpireTime(null);
+//            }
+//        } else if (null != expire.getDate()) {
+//            task.setExpireTime(expire.getDate());
+//        } else {
+//            task.setExpireTime(null);
+//        }
+//    }
 
-    private void expireAppointNaturalDay(Task task, Manual manual) {
-        Integer m = 0;
-        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
-            m += manual.getTaskExpireDay() * 60 * 24;
-        }
-        if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireHour(), 0))) {
-            m += manual.getTaskExpireHour() * 60;
-        }
-        if (m > 0) {
-            Calendar cl = Calendar.getInstance();
-            cl.add(Calendar.MINUTE, m);
-            task.setExpireTime(cl.getTime());
-        } else {
-            task.setExpireTime(null);
-        }
-    }
+//    private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
+//        String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
+//        String person = aeiObjects.business().organization().person().getWithIdentity(identity);
+//        String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
+//        Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
+//                aeiObjects.getRoutes(), manual.getAllowRapid());
+//        // 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
+//        if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
+//            task.setFirst(false);
+//        } else {
+//            task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
+//        }
+//        this.calculateExpire(aeiObjects, manual, task);
+//        if (StringUtils.isNotEmpty(fromIdentity)) {
+//            aeiObjects.business().organization().empowerLog()
+//                    .log(this.createEmpowerLog(aeiObjects.getWork(), fromIdentity, identity));
+//            String fromPerson = aeiObjects.business().organization().person().getWithIdentity(fromIdentity);
+//            String fromUnit = aeiObjects.business().organization().unit().getWithIdentity(fromIdentity);
+//            TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
+//            empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
+//            empowerTaskCompleted.setJoinInquire(false);
+//            empowerTaskCompleted.setIdentity(fromIdentity);
+//            empowerTaskCompleted.setUnit(fromUnit);
+//            empowerTaskCompleted.setPerson(fromPerson);
+//            empowerTaskCompleted.setEmpowerToIdentity(identity);
+//            aeiObjects.createTaskCompleted(empowerTaskCompleted);
+//            Read empowerRead = new Read(aeiObjects.getWork(), fromIdentity, fromUnit, fromPerson);
+//            aeiObjects.createRead(empowerRead);
+//        }
+//        return task;
+//    }
 
-    private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
-        ExpireScriptResult expire = new ExpireScriptResult();
-        ScriptContext scriptContext = aeiObjects.scriptContext();
-        CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-                manual, Business.EVENT_MANUALTASKEXPIRE);
-        scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
-        JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
-            if (null != o) {
-                expire.setDate(o.getDate());
-                expire.setHour(o.getHour());
-                expire.setWorkHour(o.getWorkHour());
-            }
-        });
-        if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {
-            Integer m = 0;
-            m += expire.getWorkHour() * 60;
-            if (m > 0) {
-                task.setExpireTime(Config.workTime().forwardMinutes(new Date(), m));
-            } else {
-                task.setExpireTime(null);
-            }
-        } else if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getHour(), 0))) {
-            Integer m = 0;
-            m += expire.getHour() * 60;
-            if (m > 0) {
-                Calendar cl = Calendar.getInstance();
-                cl.add(Calendar.MINUTE, m);
-                task.setExpireTime(cl.getTime());
-            } else {
-                task.setExpireTime(null);
-            }
-        } else if (null != expire.getDate()) {
-            task.setExpireTime(expire.getDate());
-        } else {
-            task.setExpireTime(null);
-        }
-    }
-
-    private Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-        String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
-        String person = aeiObjects.business().organization().person().getWithIdentity(identity);
-        String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
-        Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
-                aeiObjects.getRoutes(), manual.getAllowRapid());
-        // 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
-        if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
-            task.setFirst(false);
-        } else {
-            task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
-        }
-        this.calculateExpire(aeiObjects, manual, task);
-        if (StringUtils.isNotEmpty(fromIdentity)) {
-            aeiObjects.business().organization().empowerLog()
-                    .log(this.createEmpowerLog(aeiObjects.getWork(), fromIdentity, identity));
-            String fromPerson = aeiObjects.business().organization().person().getWithIdentity(fromIdentity);
-            String fromUnit = aeiObjects.business().organization().unit().getWithIdentity(fromIdentity);
-            TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
-            empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
-            empowerTaskCompleted.setIdentity(fromIdentity);
-            empowerTaskCompleted.setUnit(fromUnit);
-            empowerTaskCompleted.setPerson(fromPerson);
-            empowerTaskCompleted.setEmpowerToIdentity(identity);
-            aeiObjects.createTaskCompleted(empowerTaskCompleted);
-            Read empowerRead = new Read(aeiObjects.getWork(), fromIdentity, fromUnit, fromPerson);
-            aeiObjects.createRead(empowerRead);
-        }
-        return task;
-    }
-
-    private EmpowerLog createEmpowerLog(Work work, String fromIdentity, String toIdentity) {
-        return new EmpowerLog().setApplication(work.getApplication()).setApplicationAlias(work.getApplicationAlias())
-                .setApplicationName(work.getApplicationName()).setProcess(work.getProcess())
-                .setProcessAlias(work.getProcessAlias()).setProcessName(work.getProcessName()).setTitle(work.getTitle())
-                .setWork(work.getId()).setJob(work.getJob()).setFromIdentity(fromIdentity).setToIdentity(toIdentity)
-                .setActivity(work.getActivity()).setActivityAlias(work.getActivityAlias())
-                .setActivityName(work.getActivityName()).setEmpowerTime(new Date());
-    }
+//    private EmpowerLog createEmpowerLog(Work work, String fromIdentity, String toIdentity) {
+//        return new EmpowerLog().setApplication(work.getApplication()).setApplicationAlias(work.getApplicationAlias())
+//                .setApplicationName(work.getApplicationName()).setProcess(work.getProcess())
+//                .setProcessAlias(work.getProcessAlias()).setProcessName(work.getProcessName()).setTitle(work.getTitle())
+//                .setWork(work.getId()).setJob(work.getJob()).setFromIdentity(fromIdentity).setToIdentity(toIdentity)
+//                .setActivity(work.getActivity()).setActivityAlias(work.getActivityAlias())
+//                .setActivityName(work.getActivityName()).setEmpowerTime(new Date());
+//    }
 
     private List<String> arrivingSameJobActivityExistIdentities(AeiObjects aeiObjects, Manual manual) throws Exception {
         List<String> exists = new ArrayList<>();
@@ -894,42 +921,60 @@ public class ManualProcessor extends AbstractManualProcessor {
         return exists;
     }
 
-    public class ExpireScriptResult {
-        Integer hour;
-        Integer workHour;
-        Date date;
+//    public class ExpireScriptResult {
+//        Integer hour;
+//        Integer workHour;
+//        Date date;
+//
+//        public Integer getHour() {
+//            return hour;
+//        }
+//
+//        public void setHour(Integer hour) {
+//            this.hour = hour;
+//        }
+//
+//        public Integer getWorkHour() {
+//            return workHour;
+//        }
+//
+//        public void setWorkHour(Integer workHour) {
+//            this.workHour = workHour;
+//        }
+//
+//        public Date getDate() {
+//            return date;
+//        }
+//
+//        public void setDate(Date date) {
+//            this.date = date;
+//        }
+//
+//        public void setDate(String str) {
+//            try {
+//                this.date = DateTools.parse(str);
+//            } catch (Exception e) {
+//                LOGGER.error(e);
+//            }
+//        }
+//
+//    }
 
-        public Integer getHour() {
-            return hour;
+    private void uncompletedTaskToRead(AeiObjects aeiObjects, Manual manual, List<Task> tasks) {
+        if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
+            tasks.stream().forEach(o -> {
+                try {
+                    String identity = aeiObjects.business().organization().identity().get(o.getIdentity());
+                    String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
+                    String person = aeiObjects.business().organization().person().getWithIdentity(identity);
+                    if (StringUtils.isNotEmpty(identity) && StringUtils.isNotEmpty(unit)
+                            && StringUtils.isNotEmpty(person)) {
+                        aeiObjects.getCreateReads().add(new Read(aeiObjects.getWork(), identity, unit, person));
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
         }
-
-        public void setHour(Integer hour) {
-            this.hour = hour;
-        }
-
-        public Integer getWorkHour() {
-            return workHour;
-        }
-
-        public void setWorkHour(Integer workHour) {
-            this.workHour = workHour;
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-
-        public void setDate(String str) {
-            try {
-                this.date = DateTools.parse(str);
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        }
-
     }
 }

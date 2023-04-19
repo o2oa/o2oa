@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>7.3</version>
+	<version>8.0</version>
 	<packaging>pom</packaging>
 	<description>O2OA企业应用开发平台 OpenSource OA Platform</description>
 	<url>https://github.com/o2oa/o2oa</url>
@@ -13,7 +13,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
 	<developers>
 		<developer>
 			<name>o2oa</name>
@@ -21,14 +20,12 @@
 			<organization>o2oa.net</organization>
 		</developer>
 	</developers>
-
 	<scm>
 		<tag>o2oa</tag>
 		<url>https://github.com/o2oa/o2oa</url>
 		<connection>scm:git:https://github.com/o2oa/o2oa.git</connection>
 		<developerConnection>scm:git:https://github.com/o2oa/o2oa.git</developerConnection>
 	</scm>
-
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -210,10 +207,6 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml-schemas</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -431,6 +424,10 @@
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -565,7 +562,6 @@
 						</execution>
 					</executions>
 				</plugin>
-
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -772,7 +768,6 @@
 				<artifactId>cxf-rt-ws-addr</artifactId>
 				<version>3.5.2</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.fasterxml.woodstox</groupId>
 				<artifactId>woodstox-core</artifactId>
@@ -783,32 +778,25 @@
 				<artifactId>stax2-api</artifactId>
 				<version>4.2.1</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.neethi</groupId>
 				<artifactId>neethi</artifactId>
 				<version>3.1.1</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
-				<version>4.1.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi-ooxml-schemas</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-scratchpad</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.opensagres.xdocreport</groupId>
@@ -1029,132 +1017,117 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>7.3</version>
-			</dependency>
-			<dependency>
-				<groupId>net.o2oa</groupId>
-				<artifactId>x_report_core_entity</artifactId>
-				<version>7.3</version>
-			</dependency>
-			<dependency>
-				<groupId>net.o2oa</groupId>
-				<artifactId>x_strategydeploy_core_entity</artifactId>
-				<version>7.3</version>
-			</dependency>
-			<dependency>
-				<groupId>net.o2oa</groupId>
-				<artifactId>x_strategydeploy_assemble_control</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>7.3</version>
+				<version>8.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
@@ -1221,6 +1194,11 @@
 				<artifactId>jsoup</artifactId>
 				<version>1.15.3</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.jsqlparser</groupId>
+				<artifactId>jsqlparser</artifactId>
+				<version>4.6</version>
+			</dependency>
 			<!-- tika needs -->
 			<dependency>
 				<groupId>com.zaxxer</groupId>
@@ -1229,7 +1207,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<!--	中心仓库发布地址-->
 	<!--distributionManagement>
 		<snapshotRepository>
@@ -1241,7 +1218,6 @@
 			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement-->
-
 	<!--repositories>
 		<repository>
 			<id>nexus-o2oa</id>

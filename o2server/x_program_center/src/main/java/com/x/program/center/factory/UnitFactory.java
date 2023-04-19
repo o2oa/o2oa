@@ -26,6 +26,20 @@ public class UnitFactory extends AbstractFactory {
 		super(business);
 	}
 
+	public Unit getWithAndFxIdObject(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Unit.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+		Root<Unit> root = cq.from(Unit.class);
+		Predicate p = cb.equal(root.get(Unit_.andFxId), id);
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+		if (os.isEmpty()) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
 	public Unit getWithDingdingIdObject(String dingdingId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

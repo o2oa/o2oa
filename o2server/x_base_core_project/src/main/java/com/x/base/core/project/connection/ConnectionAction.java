@@ -8,11 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -124,7 +120,7 @@ public class ConnectionAction {
 		} catch (Exception e) {
 			throw new ExceptionGetBinary(e, connection);
 		}
-		addHeads(connection, heads);
+		addHeadsNoContentType(connection, heads);
 		connection.setRequestMethod(method);
 		connection.setUseCaches(false);
 		connection.setDoOutput(false);
@@ -492,6 +488,25 @@ public class ConnectionAction {
 		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
 		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
 		map.put(CONTENT_TYPE, CONTENT_TYPE_VALUE);
+		if (ListTools.isNotEmpty(heads)) {
+			String value;
+			for (NameValuePair o : heads) {
+				value = Objects.toString(o.getValue(), "");
+				if (StringUtils.isNotEmpty(o.getName()) && StringUtils.isNotEmpty(value)) {
+					map.put(o.getName(), value);
+				}
+			}
+		}
+		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
+	}
+
+	private static void addHeadsNoContentType(HttpURLConnection connection, List<NameValuePair> heads) throws Exception {
+		Map<String, String> map = new TreeMap<>();
+		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
+		map.put(ACCESS_CONTROL_ALLOW_HEADERS,
+				ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
+		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
 		if (ListTools.isNotEmpty(heads)) {
 			String value;
 			for (NameValuePair o : heads) {

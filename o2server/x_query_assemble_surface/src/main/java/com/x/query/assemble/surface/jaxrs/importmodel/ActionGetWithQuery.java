@@ -27,9 +27,6 @@ class ActionGetWithQuery extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
 			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
 			CacheKey cacheKey = new CacheKey(this.getClass(), flag, queryFlag);
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			ImportModel model = null;

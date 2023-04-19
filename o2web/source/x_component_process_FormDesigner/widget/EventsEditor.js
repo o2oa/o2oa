@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
@@ -12,6 +14,8 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 		this.setOptions(options);
 		this.node = $(node);
         this.app = designer;
+
+        debugger;
 		
 		this.path = "../x_component_process_FormDesigner/widget/$EventsEditor/";
 		this.cssPath = "../x_component_process_FormDesigner/widget/$EventsEditor/"+this.options.style+"/css.wcss";
@@ -43,9 +47,12 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 	},
 
 	deleteItem: function(item){
+
 		this.items.erase(item);
 
+		var data;
 		if (this.data[item.event]){
+			data = Object.clone( this.data[item.event] );
 			this.data[item.event].code = "";
 			this.data[item.event].html = "";
 			
@@ -53,6 +60,8 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 		}
 
         item.deleteScriptDesignerItem();
+
+		this.fireEvent("change", [item.event, null, data, item.event+" [delete]"]);
 		
 		if (item.container){
 			item.container.destroy();
@@ -60,9 +69,12 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 	},
 	addItem: function(item){
 		this.data[item.event] = item.data;
+
+		this.fireEvent("change", [item.event, Object.clone(item.data)]);
+
 		this.items.push(item);
 	},
-	addEvent: function(){
+	addEventItem: function(){
 		var item = new MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item(this);
 		item.load("", "");
 	}
@@ -79,6 +91,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		}else{
 			this.event = event;
 			this.data = data;
+			this.oldData = Object.clone(data);
 			this.createContainer();
 			this.createActions();
 		}
@@ -189,21 +202,34 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		} 
 		if (this.editor.currentEditItem!=this){
 			if (!this.codeEditor){
+				var moduleType = this.editor.module.type;
+				if( moduleType === "Datatable" ){
+					if( this.editor.app && this.editor.app.currentDesignerMode ){
+						moduleType = moduleType + this.editor.app.currentDesignerMode;
+					}
+				}
 				this.codeEditor = new MWF.widget.ScriptArea(this.codeNode, {
 					"style": "event",
-					"api": "../api/MWF.xApplication.process.Xform."+this.editor.module.type+".html#event:"+this.event,
+					"isbind": false,
+					"api": "../api/MWF.xApplication.process.Xform."+moduleType+".html#event:"+this.event,
 					"title": "on"+this.event+" (S)",
 					"maxObj": this.editor.options.maxObj,
 					"onChange": function(){
 						var json = this.codeEditor.toJson();
 						this.data.code = json.code;
 						this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
+
 						this.checkIcon();
 					}.bind(this),
                     "onSave": function(){
                         var json = this.codeEditor.toJson();
                         this.data.code = json.code;
                         this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
+
                         this.editor.app.saveForm();
                     }.bind(this)
 				});
@@ -229,6 +255,9 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 			var json = this.codeEditor.toJson();
 			this.data.code = json.code;
 			this.data.html = json.html;
+
+			this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
+
 			this.checkIcon();
 		}
 		if (!this.morph){
@@ -263,7 +292,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		}).inject(this.actionNode);
 		
 		addAction.addEvent("click", function(e){
-			this.editor.addEvent();
+			this.editor.addEventItem();
 		}.bind(this));
 		
 	},

@@ -168,5 +168,10 @@
     "icon": "smartbi.png",
     "text": MWF.APPPOD.LP.modules.SmartBI,
     "className": "SmartBI"
+  },
+  "htmledit": {
+    "icon": "htmleditor.png",
+    "text": MWF.APPPOD.LP.modules.htmledit,
+    "className": "Htmleditor"
   }
 }

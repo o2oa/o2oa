@@ -29,11 +29,13 @@
             </div>
             <div data-o2-element="allContentNode" class="st_appListArea">
                 {{each $.data.app}}
+				{{if ($.processList && $.processList.length)}}
                     <div class="st_appListItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
                         <div class="st_appItemIcon" data-o2-events="o2load:loadItemIcon:{{$.id}};click:clickitem"></div>
                         <div class="st_appItemText" title="{{$.name}}">{{$.name}}</div>
                         <div class="st_appItemCount">{{$.processList.length}}</div>
                     </div>
+				{{end if}}
                 {{end each}}
 
                 {{each $.data.column}}

@@ -26,6 +26,8 @@ public class AppStyle extends ConfigObject {
 		this.indexPortal = "";
 		this.simpleMode = false;
 		this.systemMessageSwitch = true;
+		this.systemMessageCanClick = true;
+		this.appExitAlert = "";
 		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
 
 	}
@@ -100,9 +102,9 @@ public class AppStyle extends ConfigObject {
 		if (!this.nativeAppList.contains(NativeApp.nativeAttendance())) {
 			this.nativeAppList.add(NativeApp.nativeAttendance());
 		}
-		if (!this.nativeAppList.contains(NativeApp.nativeO2ai())) {
-			this.nativeAppList.add(NativeApp.nativeO2ai());
-		}
+//		if (!this.nativeAppList.contains(NativeApp.nativeO2ai())) {
+//			this.nativeAppList.add(NativeApp.nativeO2ai());
+//		}
 		if (!this.nativeAppList.contains(NativeApp.nativeCalendar())) {
 			this.nativeAppList.add(NativeApp.nativeCalendar());
 		}
@@ -123,6 +125,11 @@ public class AppStyle extends ConfigObject {
 
 	@FieldDescribe(("移动App消息列表中是否显示系统通知"))
 	private Boolean systemMessageSwitch;
+	@FieldDescribe(("移动App系统通知是否可点击打开"))
+	private Boolean systemMessageCanClick;
+
+	@FieldDescribe("app退出提示")
+	private String appExitAlert;
 
 	@FieldDescribe("移动App通讯录权限视图")
 	private String contactPermissionView;
@@ -132,6 +139,23 @@ public class AppStyle extends ConfigObject {
 
 	@FieldDescribe("图片设置.")
 	private TreeSet<Image> images = new TreeSet<>();
+
+
+	public Boolean getSystemMessageCanClick() {
+		return systemMessageCanClick;
+	}
+
+	public void setSystemMessageCanClick(Boolean systemMessageCanClick) {
+		this.systemMessageCanClick = systemMessageCanClick;
+	}
+
+	public String getAppExitAlert() {
+		return appExitAlert;
+	}
+
+	public void setAppExitAlert(String appExitAlert) {
+		this.appExitAlert = appExitAlert;
+	}
 
 	public void setIndexType(String indexType) {
 		this.indexType = indexType;
@@ -469,19 +493,19 @@ public class AppStyle extends ConfigObject {
 			o.getiOS().setVcname("");
 			return o;
 		}
-
-		public static NativeApp nativeO2ai() {
-			NativeApp o = new NativeApp();
-			o.setId(10);
-			o.setKey("o2ai");
-			o.setName("语音助手");
-			o.setEnable(true);
-			o.getiOS().setCategory("native");
-			o.getiOS().setSubcategory("coding");
-			o.getiOS().setStoryboard("checkin");
-			o.getiOS().setVcname("");
-			return o;
-		}
+//
+//		public static NativeApp nativeO2ai() {
+//			NativeApp o = new NativeApp();
+//			o.setId(10);
+//			o.setKey("o2ai");
+//			o.setName("语音助手");
+//			o.setEnable(true);
+//			o.getiOS().setCategory("native");
+//			o.getiOS().setSubcategory("coding");
+//			o.getiOS().setStoryboard("checkin");
+//			o.getiOS().setVcname("");
+//			return o;
+//		}
 
 		public static NativeApp nativeCalendar() {
 			NativeApp o = new NativeApp();

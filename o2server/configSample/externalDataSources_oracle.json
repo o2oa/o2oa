@@ -3,6 +3,7 @@
 		"url":"jdbc:oracle:thin:@//127.0.0.1:1521/orcl",
 		"username" : "X",
 		"password" :"password",
+		"schema" : "X",
 		"includes": [],
 		"excludes": [],
 		"enable" : true

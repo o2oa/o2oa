@@ -38,7 +38,13 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
          * @memberOf MWF.xApplication.process.Xform.Application#
          */
         this.node.empty();
-        this.loadApplication();
+        if( !o2.api ){
+            MWF.require("MWF.framework", function () {
+                this.loadApplication();
+            }.bind(this));
+        }else{
+            this.loadApplication();
+        }
     },
     /**
      * @summary 重新加载嵌入对象
@@ -58,15 +64,21 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         if(this.component){
             try{
                 this.component.close();
-            }catch (e) {}
+                if(this.node)this.node.empty();
+            }catch (e) {
+                console.log(e);
+                if(this.node)this.node.empty();
+            }
             this.component = null;
         }
         if( this.iframe ){
             this.iframe.destroy();
+            if(this.node)this.node.empty();
             this.iframe = null;
         }
     },
     loadApplication: function ( ) {
+        this.clean();
         if(this.node){
             this.node.empty();
             this.node.setStyles({
@@ -74,11 +86,10 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 "background-color": "#eee"
             });
         }
-        this.clean();
         var status = this.getComponentStatus() || {};
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
-            if( componentPath.indexOf("@url:") === 0 ){
+            if( componentPath && componentPath.indexOf("@url:") === 0 ){
                 this.loadIframe( componentPath.substring(5, componentPath.length ) );
             }else{
                 this.loadComponent( componentPath, status, options );
@@ -127,6 +138,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      */
     loadComponent: function ( path, status, options ) {
         var clazz = MWF.xApplication;
+        if( o2.typeOf(path) !== "string" )return;
         path.split(".").each(function (a) {
             clazz[a] = clazz[a] || {};
             clazz = clazz[a];
@@ -157,8 +169,20 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 this.fireEvent("queryLoadApplication", this.component);
                 this.component.load();
                 this.component.setEventTarget(this.form.app);
+                var _self = this;
+                this.component.refresh = function () {
+                    if( layout.inBrowser ){
+                        window.location.reload();
+                    }else{
+                        _self.form.app.refresh();
+                    }
+                };
             }else{
-                this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
+                if( MWF.xApplication.process && MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.LP ){
+                    this.form.app.notice(MWF.xApplication.process.Xform.LP.applicationNotFound+":"+path, "error");
+                }else{
+                    this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
+                }
             }
         }.bind(this);
 
@@ -194,11 +218,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             if (this.json.componentSelected && this.json.componentSelected!=="none"){
                 path = this.json.componentSelected;
             }else{
-                path = ""
+                path = "";
             }
         }
         Promise.resolve(path).then(function (p) {
-            callback(p);
+            callback(p || "");
         })
     },
     /**

@@ -1,402 +1,762 @@
-MWF.xApplication.HotArticle = MWF.xApplication.HotArticle || {};
-MWF.require("MWF.widget.O2Identity", null, false);
-//MWF.xDesktop.requireApp("HotArticle", "Access", null, false);
-//MWF.xDesktop.requireApp("HotArticle", "Actions.RestActions", null, false);
-MWF.xDesktop.requireApp("Template", "Explorer", null, false);
-
-MWF.xApplication.HotArticle.options = {
-    multitask: false,
-    executable: true
-};
+MWF.xApplication.HotArticle.options.multitask = false;
+MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
+MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.xApplication.HotArticle.Main = new Class({
-    Extends: MWF.xApplication.Common.Main,
-    Implements: [Options, Events],
-    options: {
-        "style": "default",
-        "name": "HotArticle",
-        "icon": "icon.png",
-        "width": "1220",
-        "height": "700",
-        "isResize": true,
-        "isMax": true,
-        "title": MWF.xApplication.HotArticle.LP.title
-    },
-    onQueryLoad: function () {
-        this.lp = MWF.xApplication.HotArticle.LP;
-    },
-    loadApplication: function (callback) {
-        this.userName = layout.desktop.session.user.distinguishedName;
+	Extends: MWF.xApplication.Common.Main,
+	Implements: [Options, Events],
+	options: {
+		"style1": "default",
+		"style": "default",
+		"name": "HotArticle",
+		"mvcStyle": "style.css",
+		"icon": "icon.png",
+		"title": MWF.xApplication.HotArticle.LP.title,
+		"key" : ""
+	},
+	onQueryLoad: function(){
+		this.lp = MWF.xApplication.HotArticle.LP;
+		this.action = o2.Actions.load("x_hotpic_assemble_control");
+	},
+	loadApplication: function(callback){
+		var url = this.path+this.options.style+"/view/view.html";
+		this.content.loadHtml(url, {"bind": {"lp": this.lp,"data":{}}, "module": this}, function(){
+			this.setLayout();
+			this.loadList("all");
+			if (callback) callback();
+		}.bind(this));
+	},
+	loadList: function(type){
 
-        this.restActions = MWF.Actions.get("x_hotpic_assemble_control"); //new MWF.xApplication.HotArticle.Actions.RestActions();
+		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
+		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
+		this.currentMenu = this[type+"MenuNode"];
+		this._loadListContent(type);
+	},
+	_loadListContent: function(type){
 
-        this.path = "../x_component_HotArticle/$Main/" + this.options.style + "/";
-        this.createNode();
-        this.loadApplicationContent();
-    },
-    loadController: function (callback) {
+		this.mainNode.empty();
 
-        //this.access = new MWF.xApplication.HotArticle.Access( this.restActions, this.lp );
+		list = new MWF.xApplication.HotArticle[type.capitalize() +"List"](this.mainNode,this, {
+			"onLoadData": function (){
+				this.hideSkeleton();
+			},
+			"type" : type,
+			"key" : this.options.key
+		});
+		this.currentList = list;
+	},
+	setMenuItemStyleDefault: function(node){
+		node.removeClass("mainColor_bg_opacity");
+		node.getFirst().removeClass("mainColor_color");
+		node.getLast().removeClass("mainColor_color");
+	},
+	setMenuItemStyleCurrent: function(node){
+		node.addClass("mainColor_bg_opacity");
+		node.getFirst().addClass("mainColor_color");
+		node.getLast().addClass("mainColor_color");
+	},
+	setLayout: function(){
 
-        if (callback)callback();
-    },
-    reload : function(){
-        this.clearContent();
-        if( this.explorer ){
-            this.openSetting( this.explorer.currentNaviItem.retrieve("index") )
-        }else{
-            this.loadApplicationLayout();
-        }
-    },
-    isAdmin : function(){
-      return this.access.isAdmin();
-    },
-    createNode: function () {
-        this.content.setStyle("overflow", "hidden");
-        this.node = new Element("div", {
-            "styles": this.css.node
-        }).inject(this.content);
-    },
-    loadApplicationContent: function () {
-        this.loadController(function () {
-            this.loadApplicationLayout();
-        }.bind(this))
-    },
-    loadApplicationLayout: function () {
-        this.contentContainerNode = new Element("div.contentContainerNode", {
-            "styles": this.css.contentContainerNode
-        }).inject(this.node);
-        this.createTopNode();
-        this.createContainerNode();
-
-    },
-    createTopNode: function () {
-        this.topContainerNode = new Element("div.topContainerNode", {
-            "styles": this.css.topContainerNode
-        }).inject(this.contentContainerNode);
-
-        this.topNode = new Element("div.topNode", {
-            "styles": this.css.topNode
-        }).inject(this.topContainerNode);
-        this.topNode.addClass("mainColor_bg")
-
-        this.topIconNode = new Element("div", {
-            "styles": this.css.topIconNode
-        }).inject(this.topNode);
-
-        this.topTextNode = new Element("div", {
-            "styles": this.css.topTextNode,
-            "text": this.options.title
-        }).inject(this.topNode);
-
-        this.topContentNode = new Element("div", {
-            "styles": this.css.topContentNode
-        }).inject(this.topNode);
-
-        //this.searchDiv = new Element("div.searchDiv",{
-        //    "styles" : this.css.searchDiv
-        //}).inject(this.topNode)
-        //this.searchInput = new Element("input.searchInput",{
-        //    "styles" : this.css.searchInput,
-        //    "value" : this.lp.searchKey,
-        //    "title" : this.lp.searchTitle
-        //}).inject(this.searchDiv)
-        //var _self = this;
-        //this.searchInput.addEvents({
-        //    "focus": function(){
-        //        if (this.value==_self.lp.searchKey) this.set("value", "");
-        //    },
-        //    "blur": function(){if (!this.value) this.set("value", _self.lp.searchKey);},
-        //    "keydown": function(e){
-        //        if (e.code==13){
-        //            this.search();
-        //            e.preventDefault();
-        //        }
-        //    }.bind(this)
-        //});
-        //
-        //this.searchAction = new Element("div.searchAction",{
-        //    "styles" : this.css.searchAction
-        //}).inject(this.searchDiv);
-        //this.searchAction.addEvents({
-        //    "click": function(){ this.search(); }.bind(this),
-        //    "mouseover": function(e){
-        //        this.searchAction.setStyles( this.css.searchAction_over2 );
-        //        e.stopPropagation();
-        //    }.bind(this),
-        //    "mouseout": function(){ this.searchAction.setStyles( this.css.searchAction ) }.bind(this)
-        //});
-        //this.searchDiv.addEvents( {
-        //    "mouseover" : function(){
-        //        this.searchInput.setStyles( this.css.searchInput_over )
-        //        this.searchAction.setStyles( this.css.searchAction_over )
-        //    }.bind(this),
-        //    "mouseout" : function(){
-        //        this.searchInput.setStyles( this.css.searchInput )
-        //        this.searchAction.setStyles( this.css.searchAction )
-        //    }.bind(this)
-        //} )
-
-
-
-    },
-    createContainerNode: function () {
-        this.createContent();
-    },
-    createContent: function () {
-
-        this.middleNode = new Element("div.middleNode", {
-            "styles": this.css.middleNode
-        }).inject(this.contentContainerNode);
-
-
-        //MWF.require("MWF.widget.ScrollBar", function () {
-        //    this.scrollBar = new MWF.widget.ScrollBar(this.contentContainerNode, {
-        //        "indent": false,
-        //        "style": "xApp_TaskList",
-        //        "where": "before",
-        //        "distance": 30,
-        //        "friction": 4,
-        //        "axis": {"x": false, "y": true},
-        //        "onScroll": function (y) {
-        //        }
-        //    });
-        //}.bind(this));
-
-        this.contentNode = new Element("div.contentNode", {
-            "styles": this.css.contentNode
-        }).inject(this.middleNode);
-
-        this.createView();
-
-        this.setContentSizeFun = this.setContentSize.bind(this);
-        this.addEvent("resize", this.setContentSizeFun );
-        this.setContentSize();
-
-    },
-    setContentSize: function () {
-       var topSize = this.topNode ? this.topNode.getSize() : {"x": 0, "y": 0};
-        //var topSize = {"x": 0, "y": 0};
-        var nodeSize = this.node.getSize();
-        var pt = this.viewContainerNode.getStyle("padding-top").toFloat();
-        var pb = this.viewContainerNode.getStyle("padding-bottom").toFloat();
-
-        var height = nodeSize.y - topSize.y - pt - pb;
-        this.viewContainerNode.setStyle("height", "" + height + "px");
-    },
-    createView: function () {
-        var viewContainerNode = this.viewContainerNode = new Element("div.viewContainerNode", {
-            "styles": this.css.viewContainerNode
-        }).inject(this.contentNode);
-
-        var view = new MWF.xApplication.HotArticle.Main.View(viewContainerNode, this, this, {
-            templateUrl: this.path + "listItem.json",
-            "scrollEnable" : true
-        }, {
-            lp: this.lp
-        });
-        view.load();
-    },
-    clearContent: function () {
-        if (this.explorer)this.explorer.destroy();
-        this.explorer = null;
-        if(this.setContentSizeFun)this.removeEvent("resize", this.setContentSizeFun );
-        if(this.scrollBar && this.scrollBar.scrollVAreaNode)this.scrollBar.scrollVAreaNode.destroy();
-        if( this.scrollBar )delete this.scrollBar;
-        if (this.contentContainerNode) {
-            this.contentContainerNode.destroy();
-            //this.middleNode.destroy();
-            //this.contentNode.destroy();
-        }
-    },
-    openCategory : function( d ){
-        var appId = "HotArticleCategory"+ d.id;
-        if (this.desktop.apps[appId]){
-            this.desktop.apps[appId].setCurrent();
-        }else {
-            this.desktop.openApplication(null, "HotArticleCategory", {
-                "categoryId": d.id,
-                "appId": appId
-            });
-        }
-
-    },
-    recordStatus: function () {
-        var status = {};
-        if( this.explorer ){
-            status = {
-                setting : true,
-                index : this.explorer.currentNaviItem.retrieve("index")
-            };
-        }
-        return status;
-    }
+	},
+	recordStatus: function(){
+		// return {"navi": this.currentList.options.type};
+	}
 });
 
-MWF.xApplication.HotArticle.Main.View = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexView,
-    _createDocument: function (data, index) {
-            return new MWF.xApplication.HotArticle.Main.Document(this.viewNode, data, this.explorer, this, null, index);
-    },
-    _getCurrentPageData: function(callback, count, pageNum){
-        if(!count)count=9;
-        if(!pageNum){
-            if( this.pageNum ){
-                pageNum = this.pageNum = this.pageNum+1;
-            }else{
-                pageNum = this.pageNum = 1;
-            }
-        }else{
-            this.pageNum = pageNum;
-        }
-        this.getPictureUrlHost();
+MWF.xApplication.HotArticle.List = new Class({
+	Implements: [Options, Events],
+	options: {
+		"type": "all",
+		"defaultViewType" : "list",
+		"key" : ""
 
-        var filter = this.filterData || {};
-        //filter.withTopSubject = false;
-        this.actions.listHotPicFilterPage( pageNum, count, filter, function(json){
-            if( !json.data )json.data = [];
-            if( !json.count )json.count=0;
-            if( callback )callback(json);
-        }.bind(this))
-    },
-    _removeDocument: function (documentData, all) {
-        this.actions.removeHotPic(documentData.id, function(json){
-            this.pageNum = 0;
-            this.reload();
-            this.app.notice(this.app.lp.deleteDocumentOK, "success");
-        }.bind(this));
-    },
-    _create: function () {
+	},
+	initialize: function (node,app, options) {
+		this.setOptions(options);
+		this.app = app;
+		this.container = node;
+		this.lp = this.app.lp;
 
-    },
-    _openDocument: function (documentData) {
+		this.action = app.action;
+		this.type = this.options.type;
+		var url = this.app.path + this.app.options.style + "/view/content.html";
+		this.container.loadHtml(url, {"bind": {"lp": this.lp,"data":{"type":this.type}}, "module": this}, function(){
+			this.content = this.listContentNode;
+			this.bottomNode = this.listBottomNode;
+			this.pageNode = this.pageNumberAreaNode;
+			this.init();
+			this.load();
 
-    },
-    _queryCreateViewNode: function () {
+		}.bind(this));
 
-    },
-    _postCreateViewNode: function (viewNode) {
+	},
+	showSkeleton: function(){
 
-    },
-    _queryCreateViewHead: function () {
 
-    },
-    _postCreateViewHead: function (headNode) {
+		if (this.skeletonNode) this.skeletonNode.inject(this.listContentNode);
+	},
+	hideSkeleton: function(){
 
-    },
-    getPictureUrlHost: function() {
-        var addressObj = layout.serviceAddressList["x_hotpic_assemble_control"];
-        this.pictureUrlHost = "http://"+addressObj.host +  ( addressObj.port != 80 ? (":"+ addressObj.port +"/") : "/" );
-    }
+		if (this.skeletonNode) this.skeletonNode.dispose();
+	},
 
+	inputFilter: function(e){
+		if (e.keyCode==13) this.doFilter();
+	},
+	doFilter: function(){
+		var key = this.searchKeyNode.get("value");
+		this.searchKeyNode.set("value","");
+
+		this.app.options.key = key;
+		this.app.loadList("all");
+
+	},
+
+	loadListTitle : function (){
+		this.listTitleNode.empty();
+		this.listTitleNode.loadHtml(this.titleTempleteUrl, {"bind": {"lp": this.lp}, "module": this}, function(){
+			this.currentSortNode = this.sortUpdateTimeNode;
+
+			this.currentSortKey = "name";
+		}.bind(this));
+	},
+
+	selectAllFile : function (e){
+
+		if (e.currentTarget.get("disabled").toString()!="true"){
+			var itemNode = e.currentTarget.getParent(".listItem");
+			var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+
+			if (itemNode){
+				if (itemNode.hasClass("mainColor_bg_opacity")){
+					itemNode.removeClass("mainColor_bg_opacity");
+					iconNode.removeClass("iconfont-workCompleted");
+					iconNode.removeClass("selectFlagIcon_select");
+					iconNode.removeClass("mainColor_color");
+
+
+					this.listContentNode.getElements(this.toolbar.options.viewType === "list"?"tr":".listItem").each(function (tr){
+						tr.removeClass("mainColor_bg_opacity");
+						var ss = tr.getElement(".selectFlagIcon");
+						tr.getElement(".selectFlag").hide();
+						ss.removeClass("iconfont-workCompleted");
+						ss.removeClass("selectFlagIcon_select");
+						ss.removeClass("mainColor_color");
+
+					})
+
+					this.selectedList = [];
+
+				}else{
+					itemNode.addClass("mainColor_bg_opacity");
+					iconNode.addClass("iconfont-workCompleted");
+					iconNode.addClass("selectFlagIcon_select");
+					iconNode.addClass("mainColor_color");
+					this.listContentNode.getElements(this.toolbar.options.viewType === "list"?"tr":".listItem").each(function (tr){
+						tr.getElement(".selectFlag").show();
+						tr.addClass("mainColor_bg_opacity");
+						var ss = tr.getElement(".selectFlagIcon");
+
+						ss.addClass("iconfont-workCompleted");
+						ss.addClass("selectFlagIcon_select");
+						ss.addClass("mainColor_color");
+
+					})
+					this.selectedList = this.dataList;
+				}
+			}
+		}
+		this._setToolBar();
+	},
+	loadItems: function(data){
+
+		this.dataList = data;
+
+		this.content.loadHtml(this.listTempleteUrl, {"bind": {"lp": this.lp, "type": this.options.type, "data": data}, "module": this}, function(){
+			this.node = this.content.getFirst();
+
+		}.bind(this));
+	},
+	init: function(){
+		this.size = 20;
+		this.page = 1;
+
+		if(this.options.key!==""){
+			var keyContainer = new Element("div.ft_filterItem").inject(this.pathNode);
+			new Element("div",{"class":"ft_filterItemTitle mainColor_color","text":"关键字："}).inject(keyContainer);
+			new Element("div",{"class":"ft_filterItemName","text":this.options.key}).inject(keyContainer);
+			var iconNode = new Element("icon",{"class":"iconfont-off ft_filterItemDel"}).inject(keyContainer);
+
+			iconNode.addEvent("click",function (ev){
+				ev.target.getParent().hide();
+				this.app.options.key = "";
+				this.app.loadList(this.options.type);
+			}.bind(this))
+		}
+
+
+	},
+	_initTempate: function (){
+		this.titleTempleteUrl = this.app.path+this.app.options.style+"/view/all/"+this.options.defaultViewType+"_title.html";
+		this.listTempleteUrl = this.app.path+this.app.options.style+"/view/all/" +this.options.defaultViewType + ".html";
+
+	},
+	load: function(){
+
+
+		var _self = this;
+
+		this._initToolBar();
+		this._initTempate();
+		this.loadListTitle();
+
+		this.loadToolBar(this.toolbarItems.unSelect);
+		this.selectedList = [];
+		this.loadData().then(function(data){
+			_self.hide();
+			_self.loadItems(data);
+		});
+	},
+	_initToolBar : function (){
+
+		this.toolbarItems = {
+			"unSelect":[
+				["rename", "delete"]
+			],
+			"selected":[
+				["rename", "delete"]
+			],
+			"mulSelect":[
+				["delete"]
+			]
+		}
+
+	},
+	loadToolBar : function (availableTool){
+
+		this.toolBarNode.empty();
+		this.toolbar = new MWF.xApplication.HotArticle.Toolbar(this.toolBarNode, this, {
+			viewType : this.options.defaultViewType,
+			type : this.type,
+			availableTool : availableTool
+		});
+		this.toolbar.load();
+	},
+	refresh: function(){
+		this.hide();
+		this.load();
+	},
+	hide: function(){
+		if (this.node) this.node.destroy();
+	},
+	loadData: function(){
+		var _self = this;
+
+		var data = {}
+		if(this.options.key!==""){
+			data.title = this.options.key;
+		}
+		return this.action.HotPictureInfoAction.listForPage(this.page,this.size,data).then(function(json){
+
+			_self.fireEvent("loadData");
+			_self.total = json.count;
+			_self.loadPage();
+			return _self._fixData(json.data);
+		});
+
+	},
+	_fixData : function (dataList){
+		dataList.each(function (data){
+
+			if(data.application === "BBS"){
+				data.applicationName = "论坛";
+			}
+
+			if(data.application === "CMS"){
+				data.applicationName = "信息发布";
+			}
+		}.bind(this));
+		return dataList;
+	},
+
+	overTaskItem: function(e){
+		e.currentTarget.addClass("listItem_over");
+
+		var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+		if (iconNode.hasClass("selectFlagIcon_select")){
+
+		}else{
+			e.currentTarget.getElement(".selectFlag").show();
+		}
+	},
+	outTaskItem: function(e){
+		e.currentTarget.removeClass("listItem_over");
+		var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+
+		if (iconNode.hasClass("selectFlagIcon_select")){
+
+		}else{
+			e.currentTarget.getElement(".selectFlag").hide();
+		}
+	},
+	open: function(id,e){
+		var data ;
+		for(var i = 0 ; i < this.dataList.length;i++){
+			if(this.dataList[i].id === id){
+				data = this.dataList[i];
+				break ;
+			}
+		}
+
+		if( data.application == "BBS" ){
+			var appId = "ForumDocument"+data.infoId;
+			if (this.app.desktop.apps[appId]){
+				this.app.desktop.apps[appId].setCurrent();
+			}else {
+				this.app.desktop.openApplication(null, "ForumDocument", {
+					"id" : data.infoId,
+					"appId": appId,
+					"isEdited" : false,
+					"isNew" : false
+				});
+			}
+		}else{
+			var appId = "cms.Document"+data.infoId;
+			if (this.app.desktop.apps[appId]){
+				this.app.desktop.apps[appId].setCurrent();
+			}else {
+				this.app.desktop.openApplication(null, "cms.Document", {
+					"documentId" : data.infoId,
+					"appId": appId,
+					"readonly" : true
+				});
+			}
+		}
+
+
+	},
+
+	selectFile: function(id,e, dataList){
+		e.stopPropagation()
+		var data ;
+		for(var i = 0 ; i < this.dataList.length;i++){
+			if(this.dataList[i].id === id){
+				data = this.dataList[i];
+				break ;
+			}
+		}
+
+		if (e.currentTarget.get("disabled").toString()!="true"){
+			var itemNode = e.currentTarget.getParent(".listItem");
+			var iconNode = e.currentTarget.getElement(".selectFlagIcon");
+
+			if (itemNode){
+				if (itemNode.hasClass("mainColor_bg_opacity")){
+					itemNode.removeClass("mainColor_bg_opacity");
+					iconNode.removeClass("iconfont-workCompleted");
+					iconNode.removeClass("selectFlagIcon_select");
+					iconNode.removeClass("mainColor_color");
+					this.unselectedFile(data);
+				}else{
+					itemNode.addClass("mainColor_bg_opacity");
+					iconNode.addClass("iconfont-workCompleted");
+					iconNode.addClass("selectFlagIcon_select");
+					iconNode.addClass("mainColor_color");
+					this.selectedFile(data);
+				}
+			}
+		}
+
+		this._setToolBar();
+
+	},
+	_setToolBar : function (){
+		if(this.selectedList.length === 0 ){
+
+
+
+			this.loadToolBar(this.toolbarItems.unSelect);
+		} else if (this.selectedList.length === 1){
+
+
+
+			this.loadToolBar(this.toolbarItems.selected);
+
+		}else{
+
+
+
+			this.loadToolBar(this.toolbarItems.mulSelect);
+
+		}
+	},
+	selectedFile: function(data){
+
+		if (!this.selectedList) this.selectedList = [];
+		var idx = this.selectedList.findIndex(function(t){
+			return t.id == data.id;
+		});
+		if (idx===-1) this.selectedList.push(data);
+	},
+	unselectedFile: function(data){
+		// delete data._;
+		if (!this.selectedList) this.selectedList = [];
+		var idx = this.selectedList.findIndex(function(t){
+			return t.id == data.id;
+		});
+		if (idx!==-1) this.selectedList.splice(idx, 1);
+	},
+	loadPage: function(){
+		var totalCount = this.total;
+
+		var pages = totalCount/this.size;
+
+		var pageCount = pages.toInt();
+		if (pages !== pageCount) pageCount = pageCount+1;
+		this.pageCount = pageCount;
+		var size = this.bottomNode.getSize();
+		var maxPageSize = 500;//size.x*0.8;
+		maxPageSize = maxPageSize - 80*2-24*2-10*3;
+		var maxPageCount = (maxPageSize/34).toInt();
+
+		this.loadPageNode(pageCount, maxPageCount);
+	},
+	loadPageNode: function(pageCount, maxPageCount){
+		var pageStart = 1;
+		var pageEnd = pageCount;
+		if (pageCount>maxPageCount){
+			var halfCount = (maxPageCount/2).toInt();
+			pageStart = Math.max(this.page-halfCount, 1);
+			pageEnd = pageStart+maxPageCount-1;
+			pageEnd = Math.min(pageEnd, pageCount);
+			pageStart = pageEnd - maxPageCount+1;
+		}
+		this.pageNode.empty();
+		var _self = this;
+		for (var i=pageStart; i<=pageEnd; i++){
+			var node = new Element("div.pageItem", {
+				"text": i,
+				"events": { "click": function(){_self.gotoPage(this.get("text"));} }
+			}).inject(this.pageNode);
+			if (i==this.page) node.addClass("mainColor_bg");
+		}
+	},
+	nextPage: function(){
+		this.page++;
+		if (this.page>this.pageCount) this.page = this.pageCount;
+		this.gotoPage(this.page);
+	},
+	prevPage: function(){
+		this.page--;
+		if (this.page<1) this.page = 1;
+		this.gotoPage(this.page);
+	},
+	firstPage: function(){
+		this.gotoPage(1);
+	},
+	lastPage: function(){
+		this.gotoPage(this.pageCount);
+	},
+	gotoPage: function(page){
+		this.page = page;
+		this.hide();
+		this.showSkeleton();
+		this.load();
+	},
+});
+MWF.xApplication.HotArticle.AllList = new Class({
+	Extends: MWF.xApplication.HotArticle.List
 });
 
-MWF.xApplication.HotArticle.Main.Document = new Class({
-    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
-    mouseoverDocument : function(itemNode, ev){
-        var removeNode = itemNode.getElements("[styles='removeNode']")[0];
-        if( removeNode )removeNode.setStyle("opacity",1)
-    },
-    mouseoutDocument : function(itemNode, ev){
-        var removeNode = itemNode.getElements("[styles='removeNode']")[0];
-        if( removeNode )removeNode.setStyle("opacity",0)
-    },
-    _queryCreateDocumentNode: function (itemData) {
-    },
-    _postCreateDocumentNode: function (itemNode, itemData) {
-        //var iconNode = itemNode.getElements("[item='icon']")[0];
-        //MWF.getJSON( this.view.pictureUrlHost + iconNode.get("picUrl"), function( json ){
-        //    iconNode.set("src", json.data.value);
-        //} )
-    },
-    getRemovePermission: function( d ){
-        if( this.app.userName == d.creator ){
-            return true;
-        }
-        //if( d.application == "BBS" && MWF.AC.isBBSManager() ){
-        //    return true;
-        //}
-        //if( d.application == "CMS" && MWF.AC.isCMSManager() ){
-        //    return true;
-        //}
-        if( MWF.AC.isHotPictureManager() ){
-            return true;
-        }
-        return false;
-    },
-    open: function(  ){
-        var data = this.data;
-        if( data.application == "BBS" ){
-            var appId = "ForumDocument"+data.infoId;
-            if (this.app.desktop.apps[appId]){
-                this.app.desktop.apps[appId].setCurrent();
-            }else {
-                this.app.desktop.openApplication(null, "ForumDocument", {
-                    "id" : data.infoId,
-                    "appId": appId,
-                    "isEdited" : false,
-                    "isNew" : false
-                });
-            }
-        }else{
-            var appId = "cms.Document"+data.infoId;
-            if (this.app.desktop.apps[appId]){
-                this.app.desktop.apps[appId].setCurrent();
-            }else {
-                this.app.desktop.openApplication(null, "cms.Document", {
-                    "documentId" : data.infoId,
-                    "appId": appId,
-                    "readonly" : true
-                });
-            }
-        }
-    }
+MWF.xApplication.HotArticle.CMSList = new Class({
+	Extends: MWF.xApplication.HotArticle.AllList,
+	loadData: function(){
+		var _self = this;
+		var data = {}
+		if(this.options.key!==""){
+			data.title = this.options.key;
+			data.application = "CMS";
+		}
+		return this.action.HotPictureInfoAction.listForPage(this.page,this.size,data).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.count;
+			_self.loadPage();
+			return _self._fixData(json.data);
+		});
+
+
+	}
 });
 
+MWF.xApplication.HotArticle.BBSList = new Class({
+	Extends: MWF.xApplication.HotArticle.AllList,
+	loadData: function(){
+		var _self = this;
+		var data = {}
+		if(this.options.key!==""){
+			data.title = this.options.key;
+			data.application = "BBS";
+		}
+		return this.action.HotPictureInfoAction.listForPage(this.page,this.size,data).then(function(json){
+			_self.fireEvent("loadData");
+			_self.total = json.count;
+			_self.loadPage();
+			return _self._fixData(json.data);
+		});
 
-var getDateDiff = function (publishTime) {
-    if(!publishTime)return "";
-    var dateTimeStamp = Date.parse(publishTime.replace(/-/gi, "/"));
-    var minute = 1000 * 60;
-    var hour = minute * 60;
-    var day = hour * 24;
-    var halfamonth = day * 15;
-    var month = day * 30;
-    var year = month * 12;
-    var now = new Date().getTime();
-    var diffValue = now - dateTimeStamp;
-    if (diffValue < 0) {
-        //若日期不符则弹出窗口告之
-        //alert("结束日期不能小于开始日期！");
-    }
-    var yesterday = new Date().decrement('day', 1);
-    var beforYesterday = new Date().decrement('day', 2);
-    var yearC = diffValue / year;
-    var monthC = diffValue / month;
-    var weekC = diffValue / (7 * day);
-    var dayC = diffValue / day;
-    var hourC = diffValue / hour;
-    var minC = diffValue / minute;
-    if (yesterday.getFullYear() == dateTimeStamp.getFullYear() && yesterday.getMonth() == dateTimeStamp.getMonth() && yesterday.getDate() == dateTimeStamp.getDate()) {
-        result = MWF.xApplication.HotArticle.LP.yesterday + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
-    } else if (beforYesterday.getFullYear() == dateTimeStamp.getFullYear() && beforYesterday.getMonth() == dateTimeStamp.getMonth() && beforYesterday.getDate() == dateTimeStamp.getDate()) {
-        result = MWF.xApplication.HotArticle.LP.twoDaysAgo + " " + dateTimeStamp.getHours() + ":" + dateTimeStamp.getMinutes();
-    } else if (yearC > 1) {
-        result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
-    } else if (monthC >= 1) {
-        //result= parseInt(monthC) + "个月前";
-        // s.getFullYear()+"年";
-        result = dateTimeStamp.getFullYear() + "-" + (dateTimeStamp.getMonth() + 1) + "-" + dateTimeStamp.getDate();
-    } else if (weekC >= 1) {
-        result = parseInt(weekC) + MWF.xApplication.HotArticle.LP.weekAgo;
-    } else if (dayC >= 1) {
-        result = parseInt(dayC) + MWF.xApplication.HotArticle.LP.dayAgo;
-    } else if (hourC >= 1) {
-        result = parseInt(hourC) +  MWF.xApplication.HotArticle.LP.hourAgo;
-    } else if (minC >= 1) {
-        result = parseInt(minC) +  MWF.xApplication.HotArticle.LP.minuteAgo;
-    } else
-        result = MWF.xApplication.HotArticle.LP.publishJustNow;
-    return result;
-};
+
+	}
+});
+
+MWF.xApplication.HotArticle.Toolbar = new Class({
+	Extends: MWF.widget.Common,
+	Implements: [Options, Events],
+	options: {
+		"style": "default",
+		"viewType" : "list",
+		"type" : "all"
+	},
+	initialize : function( container, explorer, options ) {
+
+		this.container = container;
+		this.explorer = explorer;
+		this.app = explorer.app;
+		this.lp = explorer.app.lp;
+
+		this.action = explorer.action;
+
+		this.setOptions(options);
+
+		this._initTools();
+		this.type = this.options.type;
+
+		this.availableTool = this.options.availableTool;
+
+
+	},
+	_initTools : function (){
+		this.tools = {
+			rename : {
+				action : "rename",
+				text : "修改标题",
+				icon : "iconfont-edit"
+			},
+			delete : {
+				action : "delete",
+				text : "删除",
+				icon : "iconfont-delete"
+			},
+		}
+	},
+	load : function(){
+
+		this.node = new Element("div").inject( this.container );
+
+		this.availableTool.each( function( group ){
+			var toolgroupNode = new Element("div.toolgroupNode").inject( this.node );
+			var length = group.length;
+			group.each( function( t, i ){
+				var className;
+				if( length == 1 ){
+					className = "toolItemNode_single";
+				}else{
+					if( i == 0 ){
+						className = "toolItemNode_left";
+					}else if( i + 1 == length ){
+						className = "toolItemNode_right";
+					}else{
+						className = "toolItemNode_center";
+					}
+				}
+
+				var tool = this.tools[ t ];
+
+				var toolNode = new Element( "div", {
+					class : className,
+					style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
+					events : {
+						click : function( ev ){ this[tool.action]( ev ) }.bind(this)
+					}
+				}).inject( toolgroupNode );
+
+				var iconNode = new Element("icon",{"class":"o2Drive " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
+				var textNode = new Element("span").inject(toolNode);
+				textNode.set("text",tool.text);
+
+
+			}.bind(this))
+		}.bind(this));
+
+		this.loadRightNode()
+	},
+	rename : function(){
+
+		var _self = this;
+		if (this.explorer.selectedList && this.explorer.selectedList.length){
+			var data = this.explorer.selectedList[0];
+			var form = new MWF.xApplication.HotArticle.ReNameForm(this.explorer, data, {
+			}, {
+				app: this.app
+			});
+			form.edit()
+		}else {
+			this.app.notice("请先选择文件","error");
+			return;
+		}
+
+	},
+	delete : function (e){
+
+		if (this.explorer.selectedList && this.explorer.selectedList.length){
+			var _self = this;
+			var dataList = this.explorer.selectedList;
+
+			this.app.confirm("warn", e, "删除文件确认", "是否删除选中的"+dataList.length+"个文件？删除的文件不能恢复。", 350, 120, function () {
+				var count = 0;
+				dataList.each( function(data){
+					_self.action.HotPictureInfoAction.delete( data.id , function(){
+						count++;
+						if( dataList.length == count ){
+							_self.app.notice("成功删除"+count+"个文件。");
+							_self.explorer.refresh();
+						}
+					});
+				}.bind(this));
+				this.close();
+			}, function () {
+				this.close();
+			});
+		}else {
+			this.app.notice("请先选择文件","error");
+			return;
+		}
+
+
+
+	},
+
+	loadRightNode : function(){
+		this.toolabrRightNode = new Element("div.toolabrRightNode",{
+			"style": "float:right"
+		}).inject(this.node);
+
+		this.loadListType();
+
+	},
+	getListType : function(){
+		return this.viewType || this.options.viewType
+	},
+	loadListType : function(){
+
+		this.listViewTypeNode = new Element("div", {
+			"style" : "font-size:18px;float:left;margin-right:6px",
+			"class" : this.options.viewType == "list" ? "mainColor_color" : "",
+			events : {
+				click : function(){
+					this.viewType = "list";
+
+					this.explorer.options.defaultViewType = this.viewType;
+					this.explorer.refresh();
+				}.bind(this)
+			}
+		}).inject(this.toolabrRightNode);
+		new Element("icon",{"class":"iconfont-list"}).inject(this.listViewTypeNode);
+
+		this.tileViewTypeNode = new Element("div", {
+			"style" : "font-size:18px;float:left",
+			"class" : this.options.viewType !== "list" ? "mainColor_color" : "",
+			events : {
+				click : function(){
+					this.viewType = "tile";
+
+					this.explorer.options.defaultViewType = this.viewType;
+					this.explorer.refresh();
+				}.bind(this)
+			}
+		}).inject(this.toolabrRightNode);
+		new Element("icon",{"class":"iconfont-grid"}).inject(this.tileViewTypeNode);
+	}
+});
+
+MWF.xApplication.HotArticle.ReNameForm = new Class({
+	Extends: MPopupForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "attendanceV2",
+		"width": 700,
+		//"height": 300,
+		"height": "200",
+		"hasTop": true,
+		"hasIcon": false,
+		"draggable": true,
+		"title" : "修改标题",
+		"id" : ""
+	},
+	_createTableContent: function () {
+
+		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+			"<tr>" +
+			"    <td styles='formTableValue14' item='title' ></td></tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+
+		this.form = new MForm(this.formTableArea, this.data || {}, {
+			isEdited: true,
+			style : "minder",
+			hasColon : true,
+			itemTemplate: {
+				title: { text : "标题", notEmpty : true }
+			}
+		}, this.app);
+		this.form.load();
+
+	},
+	_createBottomContent: function () {
+
+		if (this.isNew || this.isEdited) {
+
+			this.okActionNode = new Element("button.inputOkButton", {
+				"styles": this.css.inputOkButton,
+				"text": "确定"
+			}).inject(this.formBottomNode);
+
+			this.okActionNode.addEvent("click", function (e) {
+				this.save(e);
+			}.bind(this));
+		}
+
+		this.cancelActionNode = new Element("button.inputCancelButton", {
+			"styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
+			"text": "关闭"
+		}).inject(this.formBottomNode);
+
+		this.cancelActionNode.addEvent("click", function (e) {
+			this.close(e);
+		}.bind(this));
+
+	},
+	save: function(){
+
+		var data = this.form.getResult(true,null,true,false,true);
+
+		if( data ){
+			this.app.action.HotPictureInfoAction.changeTitle({
+				"id" : data.id,
+				"application" : data.application,
+				"infoId" : data.infoId,
+				"title" : data.title,
+				"summary" : data.summary,
+				"picId" : data.picId,
+				"creator" : data.creator,
+				"createTime" : data.createTime,
+				"updateTime" : data.updateTime
+			}).then(function (){
+				this.app.notice("修改成功");
+				this.explorer.refresh();
+				this.close();
+			}.bind(this));
+		}
+	}
+});
 
 

@@ -84,8 +84,10 @@ public class Config {
 	public static final String PATH_CONFIG_PUBLICKEY = "config/public.key";
 	public static final String PATH_CONFIG_PRIVATEKEY = "config/private.key";
 	public static final String PATH_CONFIG_PROCESSPLATFORM = "config/processPlatform.json";
+	public static final String PATH_CONFIG_CMS = "config/cms.json";
 	public static final String PATH_CONFIG_QUERY = "config/query.json";
 	public static final String PATH_CONFIG_DINGDING = "config/dingding.json";
+	public static final String PATH_CONFIG_ANDFX = "config/andFx.json";
 	public static final String PATH_CONFIG_WELINK = "config/weLink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
@@ -965,6 +967,19 @@ public class Config {
 		return instance().pushConfig;
 	}
 
+	private Cms cms;
+
+	public static synchronized Cms cms() throws Exception {
+		if (null == instance().cms) {
+			Cms obj = BaseTools.readConfigObject(PATH_CONFIG_CMS, Cms.class);
+			if (null == obj) {
+				obj = Cms.defaultInstance();
+			}
+			instance().cms = obj;
+		}
+		return instance().cms;
+	}
+
 	private ProcessPlatform processPlatform;
 
 	public static synchronized ProcessPlatform processPlatform() throws Exception {
@@ -1002,6 +1017,19 @@ public class Config {
 			instance().dingding = obj;
 		}
 		return instance().dingding;
+	}
+
+	private AndFx andFx;
+
+	public static synchronized AndFx andFx() throws Exception {
+		if (null == instance().andFx) {
+			AndFx obj = BaseTools.readConfigObject(PATH_CONFIG_ANDFX, AndFx.class);
+			if (null == obj) {
+				obj = AndFx.defaultInstance();
+			}
+			instance().andFx = obj;
+		}
+		return instance().andFx;
 	}
 
 	private WeLink weLink;

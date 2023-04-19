@@ -276,10 +276,10 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      */
 	addOption: function(text, value){
         if (this.combox){
-            var list = this.getOptions();
+            var list = this.combox.options.list || [];
             list.push({
 				"text": text,
-				"value": value
+                "value": value
 			});
             this.combox.setOptions({"list": list});
         }
@@ -310,5 +310,16 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
     resetData: function(){
         //this._setBusinessData(this.getValue());
         this.setData(this.getValue());
+    },
+
+    getExcelData: function(){
+        var value = this.getData();
+        return o2.typeOf(value) === "array" ? value.join(", ") : value;
+    },
+    setExcelData: function(data){
+        var arr = this.stringToArray(data);
+        this.excelData = arr;
+        var value = arr.length === 0  ? arr[0] : arr;
+        this.setData(value, true);
     }
 }); 

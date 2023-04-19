@@ -28,5 +28,5 @@ MWF.xApplication.appstore.LP = {
     "offlineInstall": "离线安装",
     "offlineInstallInfo": "您可以点击此处进行离线安装应用包",
 
-    "configDocUrl": "https://www.yuque.com/o2oa/course/vwgpbg"
+    "configDocUrl": "https://www.o2oa.net/cms/serverdeployment/112.html"
 }

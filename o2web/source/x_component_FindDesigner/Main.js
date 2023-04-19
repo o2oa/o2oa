@@ -1220,7 +1220,18 @@ debugger;
 					m = o2.Actions.load("x_portal_assemble_designer").ScriptAction.get;
 					break;
 				case "service":
-					m = (node.pattern.appId==="invoke") ? o2.Actions.load("x_program_center").InvokeAction.get : o2.Actions.load("x_program_center").AgentAction.get;
+					switch (node.pattern.appId) {
+						case "invoke":
+							m = o2.Actions.load("x_program_center").InvokeAction.get;
+							break;
+						case "script":
+							m = o2.Actions.load("x_program_center").ScriptAction.get;
+							break;
+						default:
+							m = o2.Actions.load("x_program_center").AgentAction.get;
+							break;
+					}
+					// m = (node.pattern.appId==="invoke") ? o2.Actions.load("x_program_center").InvokeAction.get : o2.Actions.load("x_program_center").AgentAction.get;
 					break;
 			}
 			this.openPatternScriptWithData(m, node);
@@ -1578,7 +1589,19 @@ debugger;
 							m = o2.Actions.load("x_portal_assemble_designer").ScriptAction.edit;
 							break;
 						case "service":
-							m = (pattern.appId==="invoke") ? o2.Actions.load("x_program_center").InvokeAction.edit : o2.Actions.load("x_program_center").AgentAction.edit;
+
+							switch (pattern.appId) {
+								case "invoke":
+									m = o2.Actions.load("x_program_center").InvokeAction.edit;
+									break;
+								case "script":
+									m = o2.Actions.load("x_program_center").ScriptAction.edit;
+									break;
+								default:
+									m = o2.Actions.load("x_program_center").AgentAction.edit;
+									break;
+							}
+							//m = (pattern.appId==="invoke") ? o2.Actions.load("x_program_center").InvokeAction.edit : o2.Actions.load("x_program_center").AgentAction.edit;
 							break;
 					}
 					data.text = this.editor.getValue();
@@ -1741,7 +1764,7 @@ debugger;
 							var options = {
 								"appId": "process.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application": {"id": pattern.appId},
 							};
 							layout.openApplication(null, "process.ScriptDesigner", options);
 							break;
@@ -1749,7 +1772,7 @@ debugger;
 							var options = {
 								"appId": "cms.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application":  {"id": pattern.appId},
 							};
 							layout.openApplication(null, "cms.ScriptDesigner", options);
 							break;
@@ -1757,17 +1780,23 @@ debugger;
 							var options = {
 								"appId": "portal.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application":  {"id": pattern.appId},
 							};
 							layout.openApplication(null, "portal.ScriptDesigner", options);
 							break;
 						case "service":
-							if (pattern.appId==="invoke"){
+							if (pattern.appId==="invoke") {
 								var options = {
-									"appId": "service.InvokeDesigner"+pattern.designerId,
+									"appId": "service.InvokeDesigner" + pattern.designerId,
 									"id": pattern.designerId,
 								};
 								layout.openApplication(null, "service.InvokeDesigner", options);
+							}else if(pattern.appId==="script"){
+								var options = {
+									"appId": "service.ScriptDesigner" + pattern.designerId,
+									"id": pattern.designerId,
+								};
+								layout.openApplication(null, "service.ScriptDesigner", options);
 							}else{
 								var options = {
 									"appId": "service.AgentDesigner"+pattern.designerId,
@@ -1845,7 +1874,7 @@ debugger;
 					var options = {
 						"appId": "query.ViewDesigner"+pattern.designerId,
 						"id": pattern.designerId,
-						"application": pattern.appId,
+						"application": {"id": pattern.appId },
 						"onPostViewLoad": function(){
 							_self.checkSelectDesignerElement_view(this, pattern, 0);
 						}
@@ -1857,7 +1886,7 @@ debugger;
 					var options = {
 						"appId": "query.StatementDesigner"+pattern.designerId,
 						"id": pattern.designerId,
-						"application": pattern.appId
+						"application": { "id": pattern.appId }
 					};
 					layout.openApplication(null, "query.StatementDesigner", options);
 					break;
@@ -2108,8 +2137,10 @@ debugger;
 
 			"listInvoke": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/invoke"),
 			"listAgent": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/agent"),
+			"listScript": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/script/list"),
 			"getInvoke": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/invoke/{flag}"),
 			"getAgent": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/agent/{flag}"),
+			"getScript": o2.filterUrl(serviceHost+"/x_program_center/jaxrs/script/{flag}"),
 
 			"findAction": o2.filterUrl(findHost+"/x_query_service_processing/jaxrs/design/search")
 		};

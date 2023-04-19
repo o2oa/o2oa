@@ -208,20 +208,27 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         }
     },
     __getOptionsText: function(options, values){
-        debugger;
         if (!!this.json.props.multiple){
             var text = [];
             values.forEach(function(v){
-                text = text.concat(this.__getOptionsTextValue(options, v));
+                if( typeOf( v ) === "array" ){
+                    text = text.concat(this.__getOptionsTextValue(options, v));
+                }else{
+                    text = text.concat(this.__getLastOptionsTextValue(options, v));
+                }
             }.bind(this));
-            return text.join(",")
+            return text.join(",");
         }else{
-            return this.__getOptionsTextValue(options, values).join(",");
+            if( typeOf( values ) === "array" ){
+                return this.__getOptionsTextValue(options, values).join(",");
+            }else{
+                return this.__getLastOptionsTextValue(options, values)
+            }
         }
     },
     __getOptionsTextValue: function(options, values, prefix, prefixLabel){
         var text = [];
-        var v = values.join("/");
+        var v = typeOf( values ) === "string" ? values : values.join("/");
         options.forEach(function(op){
             var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
             var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
@@ -238,5 +245,117 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
         }else{
             return text;
         }
-    }
+    },
+    __getLastOptionsTextValue: function (options, value) {
+        var text;
+        for( var i=0; i<options.length; i++ ){
+            var op = options[i];
+            if( op[this.json.props.children] && op[this.json.props.children].length ){
+                text = this.__getLastOptionsTextValue( op[this.json.props.children], value );
+                if( text )return text;
+            }else{
+                var opValue = op[this.json.props.value];
+                var opLabel = op[this.json.props.label];
+                if( opValue === value ){
+                    text = opLabel;
+                }
+            }
+        }
+        return text;
+    },
+
+        getDataByText: function(text){
+            this._loadOptions();
+            var opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    return this._getDataByText(options, text);
+                }.bind(this));
+            }else{
+                return this._getDataByText(opt, text);
+            }
+        },
+        _getDataByText: function(options, text){
+            if (!!this.json.props.multiple){
+                var values;
+                var texts = typeOf( text ) === "array" ? text : [text];
+                texts.forEach(function(t){
+                    if( typeOf( t ) === "array" && t.length > 1 ){
+                        values = values.concat(this._getEachDataByText(options, t));
+                    }else{
+                        values = values.concat(this._getLastDataByText(options, typeOf( t ) === "array" ? (t[0] || "") : t));
+                    }
+                }.bind(this));
+                return values;
+            }else{
+                if( typeOf( text ) === "array" && text.length > 1 ){
+                    return this._getEachDataByText(options, text);
+                }else{
+                    return this._getLastDataByText(options, typeOf( text ) === "array" ? (text[0] || "") : text);
+                }
+            }
+        },
+        _getEachDataByText: function(options, texts, prefix, prefixLabel){
+            var value = [];
+            var t = typeOf( texts ) === "string" ? texts : texts.join("/");
+            options.forEach(function(op){
+                var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
+                var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
+                if (opLabel === t) {
+                    value.push(opValue);
+                }else if (t.startsWith(opLabel) && op[this.json.props.children] && op[this.json.props.children].length){
+                    value = value.concat(this._getEachDataByText(op[this.json.props.children], texts, opValue, opLabel));
+                }
+            }.bind(this));
+            if (!this.json.showAllLevels){
+                return value.map(function(t){
+                    return typeOf( t ) === "array" ? t.getLast() : t;
+                });
+            }else{
+                return value;
+            }
+        },
+        _getLastDataByText: function (options, text) {
+            var value;
+            for( var i=0; i<options.length; i++ ){
+                var op = options[i];
+                if( op[this.json.props.children] && op[this.json.props.children].length ){
+                    value = this._getLastDataByText( op[this.json.props.children], text );
+                    if( value )return value;
+                }else{
+                    var opValue = op[this.json.props.value];
+                    var opLabel = op[this.json.props.label];
+                    if( opLabel === text ){
+                        value = opValue;
+                    }
+                }
+            }
+            return value;
+        },
+
+        getExcelData: function(){
+            var data = this.json[this.json.$id];
+            if( !data )return "";
+            var text, opt = this.json.options;
+            if( !opt )return "";
+            if( o2.typeOf(opt.then)==="function" ){
+                return Promise.resolve(opt).then(function(options){
+                    text = this.__getOptionsText(options, data);
+                    return typeOf(text) === "array" ? text.join(", ") : (text || "");
+                }.bind(this));
+            }else{
+                text = this.__getOptionsText(opt, data);
+                return typeOf(text) === "array" ? text.join(", ") : (text || "");
+            }
+        },
+        setExcelData: function(d){
+            var arr = this.stringToArray(d);
+            this.excelData = arr;
+            arr = arr.map(function (a) {
+                return a.contains("/") ? a.split("/") : a;
+            });
+            var data = this.getDataByText( arr );
+            this.setData(data);
+        }
 }); 

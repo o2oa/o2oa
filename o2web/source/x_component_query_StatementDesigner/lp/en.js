@@ -16,19 +16,24 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "selectTable": "Select Data Table",
     "save_success": "The query configuration was saved successfully!",
     "inputStatementName": "Please enter the query configuration name",
-    "inputStatementData": "Please edit the JPQL query statement",
+    "inputStatementData": "Please edit the statement",
     "saveStatementNotice": "Please save!",
+    "cannotDisabledViewNotice": "View not enabled",
     "noViewNotice": "The view has not been created, please create the view!",
     "previewNotSelectStatementNotice": "Only when the statement type is ‘Select’ can it be previewed",
     "field": "Field",
     "fileldSelectNote": "-Insert a field after select-",
 
     "statementFormat": "How to create a statement:",
-    "statementJpql": "Write JPQL",
-    "statementScript": "Write Script",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL Script",
+    "nativeSql": "SQL",
+    "nativeSqlScript": "SQL Script",
 
     "statementCategory": "Access Object Type",
     "scriptTitle": "Create JPQL by script",
+    "sqlScriptTitle": "Create SQL by script",
+    "countMethod": "Count Statement",
 
     "jpqlType": "JPQL Type",
     "jpqlFromResult": "Query start entry",
@@ -41,19 +46,42 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "queryStatement": "Query Statement",
     "countStatement": "Count Statement",
 
+    "currentPerson":"currentPerson",
+    "currentIdentity":"Current Identity",
+    "currentPersonDirectUnit":"The current person's direct organization",
+    "currentPersonAllUnit":"All organizations where the current person belongs",
+    "currentPersonGroupList": "The current person's group",
+    "currentPersonRoleList": "Roles owned by the current person",
+    "defaultCondition": "Automatic assignment condition:",
+
+    "ignore": "Ignore",
+    "auto": "Auto",
+    "assign": "Assign",
+
     "mastInputParameter": "Please enter a parameter",
     "pathExecption": "The path is written as \"table alias. Field name\", the format is incorrect",
+    "modifyViewFilterNote": "The statement format has changed, please modify the filter conditions",
 
     "systemTable":"System Table",
     "customTable":"self-built table",
-    "taskInstance":"Process Task",
-    "taskCompletedInstance": "Process TaskCompleted",
-    "readInstance":"Process Read",
-    "readedInstance":"Process Readed",
-    "workInstance":"Process Work",
-    "workCompletedInstance":"Process workCompleted",
-    "reviewInstance":"Process Review",
-    "documentInstance":"CMS Document",
+
+    "taskInstance": "To do (Task)",
+    "taskCompletedInstance": "TaskCompleted (TaskCompleted)",
+    "readInstance": "Reading (Read)",
+    "readedInstance": "Read (ReadCompleted)",
+    "workInstance": "Process instance (Work)",
+    "workCompletedInstance": "Completed process instance (WorkCompleted)",
+    "reviewInstance": "Readable (Review)",
+    "documentInstance": "Content Management Document (Document)",
+
+    "taskInstanceSql": "To do (PP_C_TASK)",
+    "taskCompletedInstanceSql": "TaskCompleted (PP_C_TASKCOMPLETED)",
+    "readInstanceSql": "Reading (PP_C_READ)",
+    "readedInstanceSql": "Read (PP_C_READCOMPLETED)",
+    "workInstanceSql": "Process instance (PP_C_WORK)",
+    "workCompletedInstanceSql": "Completed process instance (PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "Readable (PP_C_REVIEW)",
+    "documentInstanceSql": "Content Management Document (CMS_DOCUMENT)",
 
     "propertyTemplate": {
 
@@ -72,8 +100,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "hidden": "Hidden",
         "orderNumber":"Order Number",
 
-        "parameter":"Parameter",
-        "parameterNote":"Note: The parameter corresponds to the where condition in the query statement and the total number statement like \":field\", fill in \"field\".",
+        "parameter":"Parameter","parameterNote":"Note: Corresponds to the parameters in the query statement and total statement;\nFor example, where condition of \":field\", fill in \"field\";\nFor example, where condition of \"?1\", Fill in \"?1\".",
         "pathNote":"Note: The path is written as \"table alias. field name\", such as: o.title",
         "userInput":"User Input",
 
@@ -81,6 +108,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "exportWidth": "Width",
         "exportEnable": "Allow export",
         "isTime": "Time Type",
-        "isNumber": "Number Type"
+        "isNumber": "Number Type",
+        "viewEnable": "Enable View"
     }
 });

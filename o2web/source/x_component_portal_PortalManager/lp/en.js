@@ -22,6 +22,7 @@ MWF.xApplication.portal.PortalManager.LP = {
     "scriptConfig": "Script",
     "fileConfig": "Resource",
     "applicationConfig": "Attributes",
+    "dataConfig": "Dictionary",
 
     "findDesigner": "FindCode",
 
@@ -81,6 +82,17 @@ MWF.xApplication.portal.PortalManager.LP = {
     //     "deleteView": "是否确定要删除当前数据源？"
     //
     // },
+    "dictionary": {
+        "create": "Create Data Dictionary",
+        "search": "Search Data Dictionary",
+        "searchText": "Please enter a keyword",
+
+        "noDictionaryNoticeText": "This application does not have a data dictionary yet, you can click here to create a new data dictionary",
+        "noDictionaryNoCreateNoticeText": "This application does not have a data dictionary now",
+        "loaded": "Data dictionary loaded",
+        "deleteFormTitle": "Confirm Delete Data Dictionary",
+        "deleteForm": "Are you sure you want to delete the current data dictionary?"
+    },
     "script": {
         "create": "Create Script",
         "search": "Search Script",

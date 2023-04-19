@@ -132,8 +132,8 @@ public class Main {
             nodeAgent.start();
         }
 
-//        SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
-//        Scheduler scheduler = schedulerBuilder.start();
+        //启动定时任务
+        (new SchedulerBuilder()).start();
 
         if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
             startAll();
@@ -567,7 +567,7 @@ public class Main {
 
     /**
      * 从Main.class所在的目录开始递归向上,找到version.o2所在目录,就是程序根目录.
-     * 
+     *
      * @return
      * @throws IOException
      * @throws URISyntaxException

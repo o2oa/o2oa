@@ -124,8 +124,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
          * @event MWF.xApplication.process.Xform.Org#unselectItem
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        /**
+         * 人员选择框事件：在人员选择框点取消时执行。this.target指向人员选择框。
+         * @event MWF.xApplication.process.Xform.Org#close
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         "selectorEvents" : ["queryLoadSelector","postLoadSelector","queryLoadContent","postLoadContent","queryLoadCategory","postLoadCategory",
-            "selectCategory", "unselectCategory","queryLoadItem","postLoadItem","selectItem", "unselectItem","change","expand","collapse"],
+            "selectCategory", "unselectCategory","queryLoadItem","postLoadItem","selectItem", "unselectItem","change","expand","collapse","cancel"],
         "readonly": true
     },
 
@@ -196,7 +201,16 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect( ev );
+                    if( this.json.isInput ){
+                        if( this.combox ){
+                            if (!this.combox.editItem) this.combox.intoEdit(ev);
+                            window.setTimeout( function () {
+                                this.combox.input.node.focus();
+                            }.bind(this), 300)
+                        }
+                    }else{
+                        this.clickSelect( ev );
+                    }
                 }.bind(this)
             });
         }
@@ -1410,6 +1424,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.checkDescription();
 
+        this.fieldModuleLoaded = true;
+
         //if (this.readonly) this.loadOrgWidget(values, this.node)
         //this.node.set("text", value);
     },
@@ -1457,7 +1473,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                             data: data,
                             item: this
                         }])
-                    }}
+                    }, "styles": this.json.itemStyles || "" };
 
                 var widget;
                 switch (flag.toLowerCase()){
@@ -1505,7 +1521,32 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }else{
             if( callback )callback( data );
         }
-    }
+    },
+
+
+        getExcelData: function(){
+            var text, value = this.getData();
+            if (o2.typeOf(value) === "array") {
+                var textArray = [];
+                value.each(function (item) {
+                    if (o2.typeOf(item) === "object") {
+                        textArray.push(item.distinguishedName);
+                    } else {
+                        textArray.push(item);
+                    }
+                }.bind(this));
+                text = textArray.join(", \n");
+            } else if (o2.typeOf(value) === "object") {
+                text = value.distinguishedName;
+            } else {
+                text = value;
+            }
+            return text;
+        },
+        setExcelData: function(data){
+            this.excelData = data;
+            this.setData(data, true);
+        }
 
 });
 
@@ -1997,7 +2038,8 @@ MWF.APPOrg.UnitOptions = new Class({
             "units": selectUnits,
             "unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
             "storeRange" : this.json.storeRange,
-            "expandSubEnable" : (this.json.unitExpandSubEnable=="no") ? false : true
+            "expandSubEnable" : (this.json.unitExpandSubEnable==="no") ? false : true,
+            "firstLevelSelectable":this.json.firstLevelSelectable==="yes"
         };
     },
     getSearchOptions : function(){

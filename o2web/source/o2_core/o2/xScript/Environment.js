@@ -814,7 +814,7 @@ MWF.xScript.Environment = function(ev){
 
 
     //dict
-    this.Dict = MWF.xScript.createDict((_form.businessData.work || _form.businessData.workCompleted).application);
+    this.Dict = MWF.xScript.createDict((_form.businessData.work || _form.businessData.workCompleted).application, "process");
 
     //unit
     var orgActions = null;
@@ -1044,6 +1044,20 @@ MWF.xScript.Environment = function(ev){
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
             // return v;
         },
+
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
+
         //获取人员--返回人员的对象数组
         getPerson: function(name, async, findCN){
             getOrgActions();
@@ -1061,9 +1075,6 @@ MWF.xScript.Environment = function(ev){
 
             var promise = orgActions.listPerson(data, cb, null, !!async);
             return (!!async) ? promise : v;
-            // var v = null;
-            // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
-            // return (v && v.length===1) ? v[0] : v;
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
@@ -1917,9 +1928,39 @@ MWF.xScript.Environment = function(ev){
     };
 
     this.statement = {
-        "execute": function (statement, callback, async) {
-            var parameter = this.parseParameter(statement.parameter);
-            var filterList = this.parseFilter(statement.filter, parameter);
+        execute: function (obj, callback, async) {
+            if( obj.format ){
+                return this._execute(obj, callback, async, obj.format);
+            }else{
+                if( this.needCheckFormat(obj) ){
+                    var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, null, null, async);
+                    Promise.resolve(p).then(function (json) {
+                        return this._execute(obj, callback, async, json.data.format);
+                    }.bind(this));
+                }else{
+                    return this._execute(obj, callback, async, "");
+                }
+
+            }
+        },
+        needCheckFormat: function(s){
+            if( s.format )return false;
+            if( typeOf(s.parameter) === "object" ){
+                for( var p in s.parameter ){
+                    if( typeOf( s.parameter[p] ) === "date" )return true;
+                }
+            }
+            if( typeOf(s.filter) === "array" ){
+                for( var i=0; i< s.filter.length; i++){
+                    var fType = s.filter[i].formatType;
+                    if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
+                }
+            }
+            return false;
+        },
+        _execute: function(statement, callback, async, format){
+            var parameter = this.parseParameter(statement.parameter, format);
+            var filterList = this.parseFilter(statement.filter, parameter, format);
             var obj = {
                 "filterList": filterList,
                 "parameter" : parameter
@@ -1931,7 +1972,7 @@ MWF.xScript.Environment = function(ev){
                     return json;
                 }, null, async);
         },
-        parseFilter : function( filter, parameter ){
+        parseFilter : function( filter, parameter , format){
             if( typeOf(filter) !== "array" )return [];
             if( !parameter )parameter = {};
             var filterList = [];
@@ -1952,15 +1993,21 @@ MWF.xScript.Environment = function(ev){
                     if( value.substr(value.length-1,1) !== "%" )value = value+"%";
                     parameter[ parameterName ] = value; //"%"+value+"%";
                 }else{
-                    if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
-                        value = "{ts '"+value+"'}"
-                    }else if( d.formatType === "dateValue" ){
-                        value = "{d '"+value+"'}"
-                    }else if( d.formatType === "timeValue" ){
-                        value = "{t '"+value+"'}"
-                    } else if (d.formatType === "numberValue"){
-                        value = parseFloat(value);
-                    }
+                     if( ["sql", "sqlScript"].contains(format) ) {
+                            if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }else{
+                            if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                                value = "{ts '" + value + "'}"
+                            } else if (d.formatType === "dateValue") {
+                                value = "{d '" + value + "'}"
+                            } else if (d.formatType === "timeValue") {
+                                value = "{t '" + value + "'}"
+                            } else if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }
                     parameter[ parameterName ] = value;
                 }
                 d.value = parameterName;
@@ -1969,19 +2016,23 @@ MWF.xScript.Environment = function(ev){
             }.bind(this));
             return filterList;
         },
-        parseParameter : function( obj ){
-            if( typeOf(obj) !== "object" )return {};
-            var parameter = {};
-            //传入的参数
-            for( var p in obj ){
-                var value = obj[p];
-                if( typeOf( value ) === "date" ){
-                    value = "{ts '"+value.format("db")+"'}"
+            parseParameter : function( obj, format ){
+                if( typeOf(obj) !== "object" )return {};
+                var parameter = {};
+                //传入的参数
+                for( var p in obj ){
+                    var value = obj[p];
+                    if( typeOf( value ) === "date" ){
+                        if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
+                    }
+                    parameter[ p ] = value;
                 }
-                parameter[ p ] = value;
-            }
-            return parameter;
-        },
+                return parameter;
+            },
         "select": function (statement, callback, options) {
             if (statement.name) {
                 // var parameter = this.parseParameter(statement.parameter);
@@ -2105,7 +2156,8 @@ MWF.xScript.Environment = function(ev){
     // }
 
     /**
-     * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
      * @module include
      * @o2cn 脚本引用
@@ -2119,11 +2171,11 @@ MWF.xScript.Environment = function(ev){
      *
      * //如果需要引用其他应用的脚本配置，将options设置为Object或者Object Array;
      * this.include({
-     *       //type: 应用类型。可以为 portal  process  cms。
+     *       //type: 应用类型。可以为 portal  process  cms  service。
      *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
      *       type : "portal",
-     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
      *       name : "initScript" // 脚本配置的名称、别名或id
      * })
      * this.include([  //也可以对象和字符串混合数组
@@ -2134,6 +2186,33 @@ MWF.xScript.Environment = function(ev){
      *  },
      *  "initScript2"
      * ])
+     *
+     * //引用服务管理中的脚本
+     * this.include({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用流程管理中的脚本
+     * this.include({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用内容管理中的脚本
+     * this.include({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用门户管理中的脚本
+     * this.include({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
      * </code></pre>
      * @param {Function} [callback] 加载后执行的回调方法
      * @param {Boolean} [async] 是否异步加载
@@ -2178,9 +2257,17 @@ MWF.xScript.Environment = function(ev){
             options = { name : options };
         }
         var name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "process";
+        var type;
+        if( options.type === "service" ){
+            type = options.type;
+        }else{
+            type = ( options.type && options.application ) ?  options.type : "process";
+        }
         var application = options.application || _form.json.application;
         var key = type +"-" + application + "-"  + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
         if (includedScripts.indexOf( key )> -1){
             if (callback) callback.apply(this);
             return;
@@ -2233,9 +2320,17 @@ MWF.xScript.Environment = function(ev){
                         scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                     }
                     break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
             }
 
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+            var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
 
@@ -2253,6 +2348,8 @@ MWF.xScript.Environment = function(ev){
                             includedScripts.push(type + "-" + json.data.application + "-" + flag);
                             if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
                             if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                        }else if (type === "service") {
+                            includedScripts.push(type + "-" + flag);
                         }
                     });
                     includedScripts = includedScripts.concat(json.data.importedList);
@@ -2262,7 +2359,13 @@ MWF.xScript.Environment = function(ev){
                 } else {
                     if (callback) callback.apply(this);
                 }
-            }.bind(this), null, !!async);
+            }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
         }
     };
     this.include = function( optionsOrName , callback, async){
@@ -3393,14 +3496,41 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
          * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
+         * @param {Object} [options] - 打开工作时传入的选项。
+         * @param {Function} [callback] - 打开工作时的回调方法，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）。
          * @example
          this.form.openJob(jobId, true);
+         * @example
+         this.form.openJob(jobId, true, {}, function(handel){
+            //handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+         });
          */
-        "openJob": function(id, choice, options){
-            var workData = null;
+        "openJob": function(id, choice, options, callback){
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
+
+            if( !layout.inBrowser && o2.typeOf(callback) === "function" ){
+                if( !options )options = {};
+                var queryLoad = options.onQueryLoad;
+                options.onQueryLoad = function () {
+                    if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
+                    callback(this);
+                }
+            };
+
+            runCallback = function ( handel ) {
+                if( o2.typeOf(callback) === "function" ) {
+                    if (layout.inBrowser) {
+                        callback(handel);
+                    } else if (options && options.appId) {
+                        if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
+                            callback(layout.desktop.apps[options.appId], true);
+                        }
+                    }
+                }
+            };
 
             if (workData){
                 var len = workData.workList.length + workData.workCompletedList.length;
@@ -3429,7 +3559,10 @@ MWF.xScript.Environment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   runCallback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -3455,7 +3588,10 @@ MWF.xScript.Environment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    runCallback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -3479,10 +3615,14 @@ MWF.xScript.Environment = function(ev){
                     }else{
                         if (workData.workList.length){
                             var work =  workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
+                            handel = this.openWork(work.id, null, work.title, options);
+                            runCallback( handel );
+                            return handel;
                         }else{
                             var work =  workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                            handel = this.openWork(null, work.id, work.title, options);
+                            runCallback( handel );
+                            return handel;
                         }
                     }
                 }
@@ -3605,10 +3745,14 @@ MWF.xScript.Environment = function(ev){
          * @method openApplication
          * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
-         * @param {Object} [options] - 打开的component的相关参数
+         * @param {Object} [options] - 打开的component的相关参数，对应该应用源码Main.js中的的options。
+         * @param {Object} [status] - 打开的component的状态，对应用户的操作后的状态。<b>请按照下面的方式获取该参数：</b>双击桌面模式的应用，在打开应用的浏览器地址上可以查到对应的status。
          * @example
          //打开会议管理
          this.form.openApplication("Meeting");
+         * @example
+         //打开会议管理的周视图
+         this.form.openApplication("Meeting", null, {"action":"toWeek" });
          * @example
          //打开一个流转中的流程实例。与 this.form.openWork(id, "", "work title");效果相同
          this.form.openApplication("process.Work", {
@@ -3619,8 +3763,8 @@ MWF.xScript.Environment = function(ev){
             "appId": "process.Work"+id  //给新打开的component实例一个唯一名称
         });
          */
-        "openApplication":function(name, options){
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication":function(name, options, status){
+            return layout.desktop.openApplication(null, name, options, status);
         },
 
         /**创建一条内容管理文档。
@@ -3634,7 +3778,7 @@ MWF.xScript.Environment = function(ev){
          *   "column" : column, //（string）可选，内容管理应用（栏目）的名称、别名或ID
          *   "category" : category, //（string）可选，要创建的文档所属的分类的名称、别名或ID
          *   "data" : data, //（json object）可选，创建文档时默认的业务数据
-         *   "identity" : identity, //（string）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         *   "identity" : identity, //（string | Array）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          *   "callback" : callback, //（funcation）可选，文档创建后的回调函数。
          *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
          *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
@@ -3644,7 +3788,7 @@ MWF.xScript.Environment = function(ev){
          * }</code></pre>
          * @param {String} [category] - 要创建的文档所属的分类的名称、别名或ID
          * @param {Object} [data] - 创建文档时默认的业务数据
-         * @param {String} [identity] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {String} [identity | Array] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback] - 文档创建后的回调函数
          * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false
          * @param {Boolean} [latest] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
@@ -3725,7 +3869,7 @@ MWF.xScript.Environment = function(ev){
          * @param {String} app  - 流程应用的名称、别名或ID。
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
-         * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
+         * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
@@ -3897,7 +4041,7 @@ MWF.xScript.Environment = function(ev){
     this.Table = MWF.xScript.createTable();
 };
 
-MWF.xScript.createTable = function(){
+if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
     return function(name){
         this.name = name;
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
@@ -3948,7 +4092,7 @@ var getArrayJSONData = function(jData, p, _form){
         //if(p) if(p.getKey()) if(_forms[p.getKey()]) if(_forms[p.getKey()].render) _forms[p.getKey()].render();
     }, "", p, _form);
 };
-MWF.xScript.JSONData = function(data, callback, key, parent, _form){
+if ( !MWF.xScript.JSONData )MWF.xScript.JSONData = function(data, callback, key, parent, _form){
     var getter = function(data, callback, k, _self){
         return function(){
             var t = typeOf(data[k]);
@@ -4250,316 +4394,359 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
 // var dictLoaded = {};
 if( !MWF.xScript.dictLoaded )MWF.xScript.dictLoaded = {};
 
-MWF.xScript.addDictToCache = function ( options, path, json ) {
-    if( !path )path = "root";
-    if( path.indexOf("root") !== 0 )path = "root." + path ;
+if( !MWF.xScript.createDict ){
+    MWF.xScript.addDictToCache = function ( options, path, json ) {
+        if( !path )path = "root";
+        if( path.indexOf("root") !== 0 )path = "root." + path ;
 
-    var type = options.appType || "process";
-    var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
-
-    var appFlagList = [];
-    if( options.application )appFlagList.push( options.application );
-    if( options.appId )appFlagList.push( options.appId );
-    if( options.appName )appFlagList.push( options.appName );
-    if( options.appAlias )appFlagList.push( options.appAlias );
-
-    var dictFlagList = [];
-    if( options.id )dictFlagList.push( options.id );
-    if( options.name )dictFlagList.push( options.name );
-    if( options.alias )dictFlagList.push( options.alias );
-
-    var cache = {};
-    cache[path] = json;
-
-    for( var i=0; i<appFlagList.length; i++ ){
-        for( var j=0; j<dictFlagList.length; j++ ){
-            var k = dictFlagList[j] + type + appFlagList[i] + enableAnonymous;
-            if( !MWF.xScript.dictLoaded[k] ){
-                MWF.xScript.dictLoaded[k] = cache; //指向同一个对象
-                // MWF.xScript.dictLoaded[k][path] = json; //指向不同的对象
-            }else if( i===0 && j===0 ){
-                MWF.xScript.setDictToCache( k, path ,json );
-                var arr = path.split(/\./g);
-                var p;
-                var cache = MWF.xScript.dictLoaded[k];
-                for( var l=0 ; l<arr.length; l++ ){
-                    p = l === 0 ? arr[0] : ( p + "." + arr[l] );
-                    if( cache[ p ] )break;
-                }
-                if( p ){
-                    var mathP = p+".";
-                    Object.keys( cache ).each( function( path, idx){
-                        if( path.indexOf( mathP ) === 0 )delete cache[path];
-                    })
-                }
-            }
-        }
-    }
-};
-
-MWF.xScript.getMatchedDict = function(key, path){
-    if( !path )path = "root";
-    if( path.indexOf("root") !== 0 )path = "root." + path ;
-
-    var arr = path.split(/\./g);
-    if( MWF.xScript.dictLoaded[key] ){
-        var dicts = MWF.xScript.dictLoaded[key];
-        var list = Array.clone(arr);
-        var p;
-        var dict;
-        for( var i=0 ; i<arr.length; i++ ){
-            p = i === 0 ? arr[0] : ( p + "." + arr[i] );
-            list.shift();
-            if( dicts[ p ] ){
-                dict = dicts[ p ];
-                break;
-            }
-        }
-        return {
-            dict : dict,
-            unmatchedPathList : list
-        }
-    }
-    return {
-        dict : null,
-        unmatchedPathList : list
-    }
-};
-
-MWF.xScript.insertDictToCache = function(key, path, json){
-    var p = path;
-    if( !p )p = "root";
-    if( p.indexOf("root") !== 0 )p = "root." + p ;
-
-    if( MWF.xScript.dictLoaded[key] ){
-        var matchedDict = MWF.xScript.getMatchedDict( key, path );
-        var dict = matchedDict.dict;
-        var list = matchedDict.unmatchedPathList;
-        if( !dict ) {
-            MWF.xScript.dictLoaded[key][p] = json;
-        }else if( !list || list.length === 0 ){
-            MWF.xScript.dictLoaded[key][p] = json;
-        }else{
-            for( var j=0; j<list.length-1; j++ ){
-                if( !dict[ list[j] ] ){
-                    dict[ list[j] ] = {};
-                }
-                dict = dict[ list[j] ];
-            }
-            var lastPath = list[list.length-1];
-            if( !dict[lastPath] ){
-                dict[lastPath] = json;
-            }else if( typeOf( dict[lastPath] ) === "array" ){
-                dict[lastPath].push( json );
-            }
-        }
-    }else{
-        MWF.xScript.dictLoaded[key] = {};
-        MWF.xScript.dictLoaded[key][p] = json;
-    }
-};
-
-
-MWF.xScript.setDictToCache = function(key, path, json){
-    var p = path;
-    if( !p )p = "root";
-    if( p.indexOf("root") !== 0 )p = "root." + p ;
-
-    if( MWF.xScript.dictLoaded[key] ){
-        var matchedDict = MWF.xScript.getMatchedDict( key, path );
-        var dict = matchedDict.dict;
-        var list = matchedDict.unmatchedPathList;
-        if( !dict ){
-            MWF.xScript.dictLoaded[key][p] = json;
-        }else if( !list || list.length === 0 ){
-            MWF.xScript.dictLoaded[key][p] = json;
-        }else{
-            for( var j=0; j<list.length-1; j++ ){
-                if( !dict[ list[j] ] ){
-                    dict[ list[j] ] = {};
-                }
-                dict = dict[ list[j] ];
-            }
-            dict[list[list.length-1]] = json;
-        }
-    }else{
-        MWF.xScript.dictLoaded[key] = {};
-        MWF.xScript.dictLoaded[key][p] = json;
-    }
-};
-
-MWF.xScript.getDictFromCache = function( key, path ){
-    var matchedDict = MWF.xScript.getMatchedDict( key, path );
-    var dict = matchedDict.dict;
-    var list = matchedDict.unmatchedPathList;
-    if( dict ){
-        for( var j=0; j<list.length; j++ ){
-            dict = dict[ list[j] ];
-            if( !dict )return null;
-        }
-        return dict;
-    }
-    return null;
-};
-
-MWF.xScript.deleteDictToCache = function(key, path){
-    var matchedDict = MWF.xScript.getMatchedDict( key, path );
-    var dict = matchedDict.dict;
-    var list = matchedDict.unmatchedPathList;
-
-    if( dict){
-        for( var j=0; j<list.length-1; j++ ){
-            dict = dict[ list[j] ];
-            if( !dict )return;
-        }
-        if( list.length ){
-            delete dict[list[list.length-1]];
-        }
-    }
-};
-
-
-MWF.xScript.createDict = function(application){
-    //optionsOrName : {
-    //  type : "", //默认为process, 可以为  process  cms
-    //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
-    //  name : "", // 数据字典名称/别名/id
-    //  anonymous : false //允许在未登录的情况下读取CMS的数据字典， 该参数名也可以是 enableAnonymous
-    //}
-    //或者name: "" // 数据字典名称/别名/id
-    return function(optionsOrName){
-        var options = optionsOrName;
-        if( typeOf( options ) == "string" ){
-            options = { name : options };
-        }
-        var name = this.name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "process";
-        var applicationId = options.application || application;
+        var type = options.appType || "process";
         var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
-        var opt = {
-            "appType" : type,
-            "name" : name,
-            "appId" : applicationId,
-            "enableAnonymous" : enableAnonymous
-        };
+        var appFlagList = [];
+        if( options.application )appFlagList.push( options.application );
+        if( options.appId )appFlagList.push( options.appId );
+        if( options.appName )appFlagList.push( options.appName );
+        if( options.appAlias )appFlagList.push( options.appAlias );
 
-        var key = name+type+applicationId+enableAnonymous;
-        // if (!dictLoaded[key]) dictLoaded[key] = {};
-        // this.dictData = dictLoaded[key];
+        var dictFlagList = [];
+        if( options.id )dictFlagList.push( options.id );
+        if( options.name )dictFlagList.push( options.name );
+        if( options.alias )dictFlagList.push( options.alias );
 
-        //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-        if( type == "cms" ){
-            var action = MWF.Actions.get("x_cms_assemble_control");
-        }else{
-            var action = MWF.Actions.get("x_processplatform_assemble_surface");
-        }
+        var cache = {};
+        cache[path] = json;
 
-        var encodePath = function( path ){
-            var arr = path.split(/\./g);
-            var ar = arr.map(function(v){
-                return encodeURIComponent(v);
-            });
-            return ar.join("/");
-        };
-
-        this.get = function(path, success, failure, async, refresh){
-            var value = null;
-
-            if (success===true) async=true;
-            if (failure===true) async=true;
-
-            if (!refresh ){
-                var data = MWF.xScript.getDictFromCache( key, path );
-                if( data ){
-                    if (success && o2.typeOf(success)=="function") success( data );
-                    if( !!async ){
-                        return Promise.resolve( data );
-                    }else{
-                        return data;
+        for( var i=0; i<appFlagList.length; i++ ){
+            for( var j=0; j<dictFlagList.length; j++ ){
+                var k = dictFlagList[j] + type + appFlagList[i] + enableAnonymous;
+                if( !MWF.xScript.dictLoaded[k] ){
+                    MWF.xScript.dictLoaded[k] = cache; //指向同一个对象
+                    // MWF.xScript.dictLoaded[k][path] = json; //指向不同的对象
+                }else if( i===0 && j===0 ){
+                    MWF.xScript.setDictToCache( k, path ,json );
+                    var arr = path.split(/\./g);
+                    var p;
+                    var cache = MWF.xScript.dictLoaded[k];
+                    for( var l=0 ; l<arr.length; l++ ){
+                        p = l === 0 ? arr[0] : ( p + "." + arr[l] );
+                        if( cache[ p ] )break;
+                    }
+                    if( p ){
+                        var mathP = p+".";
+                        Object.keys( cache ).each( function( path, idx){
+                            if( path.indexOf( mathP ) === 0 )delete cache[path];
+                        })
                     }
                 }
             }
+        }
+    };
 
-            // var cb = function(json){
-            //     value = json.data;
-            //     MWF.xScript.addDictToCache(opt, path, value);
-            //     if (success && o2.typeOf(success)=="function") value = success(json.data);
-            //     return value;
-            // }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+    MWF.xScript.getMatchedDict = function(key, path){
+        if( !path )path = "root";
+        if( path.indexOf("root") !== 0 )path = "root." + path ;
 
-            var cb = function(json){
-                value = json.data;
-                MWF.xScript.addDictToCache(opt, path, value);
-                if (success && o2.typeOf(success)=="function") value = success(json.data);
-                return value;
+        var arr = path.split(/\./g);
+        if( MWF.xScript.dictLoaded[key] ){
+            var dicts = MWF.xScript.dictLoaded[key];
+            var list = Array.clone(arr);
+            var p;
+            var dict;
+            for( var i=0 ; i<arr.length; i++ ){
+                p = i === 0 ? arr[0] : ( p + "." + arr[i] );
+                list.shift();
+                if( dicts[ p ] ){
+                    dict = dicts[ p ];
+                    break;
+                }
+            }
+            return {
+                dict : dict,
+                unmatchedPathList : list
+            }
+        }
+        return {
+            dict : null,
+            unmatchedPathList : list
+        }
+    };
+
+    MWF.xScript.insertDictToCache = function(key, path, json){
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
+        if( MWF.xScript.dictLoaded[key] ){
+            var matchedDict = MWF.xScript.getMatchedDict( key, path );
+            var dict = matchedDict.dict;
+            var list = matchedDict.unmatchedPathList;
+            if( !dict ) {
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else{
+                for( var j=0; j<list.length-1; j++ ){
+                    if( !dict[ list[j] ] ){
+                        dict[ list[j] ] = {};
+                    }
+                    dict = dict[ list[j] ];
+                }
+                var lastPath = list[list.length-1];
+                if( !dict[lastPath] ){
+                    dict[lastPath] = json;
+                }else if( typeOf( dict[lastPath] ) === "array" ){
+                    dict[lastPath].push( json );
+                }
+            }
+        }else{
+            MWF.xScript.dictLoaded[key] = {};
+            MWF.xScript.dictLoaded[key][p] = json;
+        }
+    };
+
+
+    MWF.xScript.setDictToCache = function(key, path, json){
+        var p = path;
+        if( !p )p = "root";
+        if( p.indexOf("root") !== 0 )p = "root." + p ;
+
+        if( MWF.xScript.dictLoaded[key] ){
+            var matchedDict = MWF.xScript.getMatchedDict( key, path );
+            var dict = matchedDict.dict;
+            var list = matchedDict.unmatchedPathList;
+            if( !dict ){
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else if( !list || list.length === 0 ){
+                MWF.xScript.dictLoaded[key][p] = json;
+            }else{
+                for( var j=0; j<list.length-1; j++ ){
+                    if( !dict[ list[j] ] ){
+                        dict[ list[j] ] = {};
+                    }
+                    dict = dict[ list[j] ];
+                }
+                dict[list[list.length-1]] = json;
+            }
+        }else{
+            MWF.xScript.dictLoaded[key] = {};
+            MWF.xScript.dictLoaded[key][p] = json;
+        }
+    };
+
+    MWF.xScript.getDictFromCache = function( key, path ){
+        var matchedDict = MWF.xScript.getMatchedDict( key, path );
+        var dict = matchedDict.dict;
+        var list = matchedDict.unmatchedPathList;
+        if( dict ){
+            for( var j=0; j<list.length; j++ ){
+                dict = dict[ list[j] ];
+                if( !dict )return null;
+            }
+            return dict;
+        }
+        return null;
+    };
+
+    MWF.xScript.deleteDictToCache = function(key, path){
+        var matchedDict = MWF.xScript.getMatchedDict( key, path );
+        var dict = matchedDict.dict;
+        var list = matchedDict.unmatchedPathList;
+
+        if( dict){
+            for( var j=0; j<list.length-1; j++ ){
+                dict = dict[ list[j] ];
+                if( !dict )return;
+            }
+            if( list.length ){
+                delete dict[list[list.length-1]];
+            }
+        }
+    };
+
+
+    MWF.xScript.createDict = function(application, appType){
+        //optionsOrName : {
+        //  type : "", //默认为process, 可以为  process  cms  portal
+        //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+        //  name : "", // 数据字典名称/别名/id
+        //  anonymous : false //允许在未登录的情况下读取CMS的数据字典， 该参数名也可以是 enableAnonymous
+        //}
+        //或者name: "" // 数据字典名称/别名/id
+        return function(optionsOrName){
+            var options = optionsOrName;
+            if( typeOf( options ) == "string" ){
+                options = {
+                    name : options,
+                    type: appType,
+                    application: application
+                };
+            }
+            var name = this.name = options.name;
+            var type;
+            if( options.type === "service"){
+                type = options.type;
+            }else{
+                type = ( options.type && options.application ) ?  options.type : "process";
+            }
+            var applicationId = options.application || application;
+            var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
+
+            var opt = {
+                "appType" : type,
+                "name" : name,
+                "appId" : applicationId,
+                "enableAnonymous" : enableAnonymous
             };
 
-            var promise;
-            if (path){
+            var key = name+type+applicationId+enableAnonymous;
+            // if (!dictLoaded[key]) dictLoaded[key] = {};
+            // this.dictData = dictLoaded[key];
+
+            //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+            var action;
+            if( type === "cms" ) {
+                action = MWF.Actions.get("x_cms_assemble_control");
+            }else if( type === "portal" ){
+                action = MWF.Actions.get("x_portal_assemble_surface");
+            }else if( type === "service" ){
+                key = name+type+enableAnonymous;
+                action = MWF.Actions.get("x_program_center");
+            }else{
+                action = MWF.Actions.get("x_processplatform_assemble_surface");
+            }
+
+            var encodePath = function( path ){
+                var arr = path.split(/\./g);
+                var ar = arr.map(function(v){
+                    return encodeURIComponent(v);
+                });
+                return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
+            };
+
+            this.get = function(path, success, failure, async, refresh){
+                var value = null;
+
+                if (success===true) async=true;
+                if (failure===true) async=true;
+
+                if (!refresh ){
+                    var data = MWF.xScript.getDictFromCache( key, path );
+                    if( data ){
+                        if (success && o2.typeOf(success)=="function") success( data );
+                        if( !!async ){
+                            return Promise.resolve( data );
+                        }else{
+                            return data;
+                        }
+                    }
+                }
+
+                // var cb = function(json){
+                //     value = json.data;
+                //     MWF.xScript.addDictToCache(opt, path, value);
+                //     if (success && o2.typeOf(success)=="function") value = success(json.data);
+                //     return value;
+                // }.ag().catch(function(xhr, text, error){ if (failure && o2.typeOf(failure)=="function") return failure(xhr, text, error); });
+
+                var cb = function(json){
+                    value = json.data;
+                    MWF.xScript.addDictToCache(opt, path, value);
+                    if (success && o2.typeOf(success)=="function") value = success(json.data);
+                    return value;
+                };
+
+                var promise;
+                if( type === "service" ){
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action.getDictData(encodeURIComponent(this.name), p, cb, null, !!async, false);
+                    }else{
+                        promise = action.getDictRoot(this.name, cb, null, !!async, false);
+                    }
+                }else{
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                    }else{
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    }
+                }
+                return (!!async) ? promise : value;
+
+                // if (path){
+                //     var p = encodePath( path );
+                //     //var p = path.replace(/\./g, "/");
+                //     action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+                //         value = json.data;
+                //         // this.dictData[path] = value;
+                //         MWF.xScript.addDictToCache(opt, path, value);
+                //         if (success) success(json.data);
+                //     }.bind(this), function(xhr, text, error){
+                //         if (failure) failure(xhr, text, error);
+                //     }, !!async);
+                // }else{
+                //     action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+                //         value = json.data;
+                //         // this.dictData["root"] = value;
+                //         MWF.xScript.addDictToCache(opt, path, value);
+                //         if (success) success(json.data);
+                //     }.bind(this), function(xhr, text, error){
+                //         if (failure) failure(xhr, text, error);
+                //     }, !!async);
+                // }
+
+                //return value;
+            };
+
+            this.set = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
-            }else{
-                promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
-            }
-            return (!!async) ? promise : value;
-
-            // if (path){
-            //     var p = encodePath( path );
-            //     //var p = path.replace(/\./g, "/");
-            //     action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
-            //         value = json.data;
-            //         // this.dictData[path] = value;
-            //         MWF.xScript.addDictToCache(opt, path, value);
-            //         if (success) success(json.data);
-            //     }.bind(this), function(xhr, text, error){
-            //         if (failure) failure(xhr, text, error);
-            //     }, !!async);
-            // }else{
-            //     action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
-            //         value = json.data;
-            //         // this.dictData["root"] = value;
-            //         MWF.xScript.addDictToCache(opt, path, value);
-            //         if (success) success(json.data);
-            //     }.bind(this), function(xhr, text, error){
-            //         if (failure) failure(xhr, text, error);
-            //     }, !!async);
-            // }
-
-            //return value;
-        };
-
-        this.set = function(path, value, success, failure){
-            var p = encodePath( path );
-            //var p = path.replace(/\./g, "/");
-            return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-                MWF.xScript.setDictToCache(key, path, value);
-                if (success) return success(json.data);
-            }, function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            }, false, false);
-        };
-        this.add = function(path, value, success, failure){
-            var p = encodePath( path );
-            //var p = path.replace(/\./g, "/");
-            return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-                MWF.xScript.insertDictToCache(key, path, value);
-                if (success) return success(json.data);
-            }, function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            }, false, false);
-        };
-        this["delete"] = function(path, success, failure){
-            var p = encodePath( path );
-            //var p = path.replace(/\./g, "/");
-            return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
-                MWF.xScript.deleteDictToCache(key, path);
-                if (success) return success(json.data);
-            }, function(xhr, text, error){
-                if (failure) return failure(xhr, text, error);
-            }, false, false);
-        };
-        this.destory = this["delete"];
-    }
-};
+                var successCallback = function(json){
+                    MWF.xScript.setDictToCache(key, path, value);
+                    if (success) return success(json.data);
+                };
+                var failureCallback = function(xhr, text, error){
+                    if (failure) return failure(xhr, text, error);
+                };
+                if( type === "service" ){
+                    return action.setDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
+            };
+            this.add = function(path, value, success, failure){
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                var successCallback = function(json){
+                    MWF.xScript.insertDictToCache(key, path, value);
+                    if (success) return success(json.data);
+                };
+                var failureCallback = function(xhr, text, error){
+                    if (failure) return failure(xhr, text, error);
+                };
+                if( type === "service" ) {
+                    return action.addDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
+            };
+            this["delete"] = function(path, success, failure){
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                var successCallback = function(json){
+                    MWF.xScript.deleteDictToCache(key, path);
+                    if (success) return success(json.data);
+                };
+                var failureCallback = function(xhr, text, error){
+                    if (failure) return failure(xhr, text, error);
+                };
+                if( type === "service" ) {
+                    return action.deleteDictData(encodeURIComponent(this.name), p, successCallback, failureCallback, false, false);
+                }else{
+                    return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, successCallback, failureCallback, false, false);
+                }
+            };
+            this.destory = this["delete"];
+        }
+    };
+}

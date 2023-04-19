@@ -40,6 +40,7 @@ MWF.xApplication.AppCenter.LP = {
     "applicationDictList": "数据字典",
     "scriptList": "脚本",
     "fileList": "资源文件",
+    "dictList": "数据字典",
 
     "serviceModuleList":"服务管理",
     "invokeList":"接口",

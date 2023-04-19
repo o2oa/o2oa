@@ -40,6 +40,7 @@ MWF.xApplication.AppCenter.LP = {
     "applicationDictList": "Dictionary",
     "scriptList": "Script",
     "fileList": "File",
+    "dictList": "Dictionary",
 
     "serviceModuleList":"Service",
     "invokeList":"Invoke",

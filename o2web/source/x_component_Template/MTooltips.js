@@ -17,6 +17,7 @@ var MTooltips = new Class({
             y : 0
         },
         isFitToContainer : true, //当position x 不为 auto， y 不为 auto 的时候，自动设置偏移量，使tooltip不超过容器的可见范围
+        isParentOffset: false, //如果容器position不是absoulte 或 relative，计算到祖先absoulte 或 relative的偏移量
         event : "mouseenter", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
         hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
         displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
@@ -274,6 +275,14 @@ var MTooltips = new Class({
                 if( this.app ){
                     this.hideFun_resize = this.hide.bind(this);
                     this.app.addEvent( "resize" , this.hideFun_resize );
+                }
+            }else{
+                if( this.app && this.status === "display" ){
+                    this.setCoondinatesFun_resize = function(){
+                        if( this.timer_setCoondinates )clearTimeout(this.timer_setCoondinates);
+                        this.timer_setCoondinates = setTimeout( this.setCoondinates.bind(this), 300 )
+                    }.bind(this);
+                    this.app.addEvent( "resize" , this.setCoondinatesFun_resize );
                 }
             }
         }else{
@@ -640,6 +649,12 @@ var MTooltips = new Class({
             }
         }
 
+        if( this.options.isParentOffset ){
+            var pOffset = this.getParentOffset();
+            t = (t || top) + pOffset.y;
+            left = left + pOffset.x;
+        }
+
         var obj = {
             "left" : left,
             "top" : t || top
@@ -870,6 +885,12 @@ var MTooltips = new Class({
             }
         }
 
+        if( this.options.isParentOffset ){
+            var pOffset = this.getParentOffset();
+            top = top + pOffset.y;
+            l = (l || left) + pOffset.x;
+        }
+
         var obj = {
             "left" : l || left,
             "top" : top
@@ -883,6 +904,17 @@ var MTooltips = new Class({
         });
 
         this.fireEvent( "postSetCoondinates", [arrowX, arrowY, obj] );
+    },
+    getParentOffset: function(){
+        var parentNode = this.container;
+        while( parentNode && parentNode.tagName !== "BODY" && !["absolute", "relatvie", "fixed"].contains(parentNode.getStyle("position")) ){
+            parentNode = parentNode.getParent();
+        }
+        if( parentNode !== this.container ){
+            return this.container.getPosition(parentNode);
+        }else{
+            return {x: 0, y: 0}
+        }
     },
     setPosition : function(){
         if( this.options.axis == "x" ){
@@ -911,6 +943,13 @@ var MTooltips = new Class({
         }else if( this.positionX === "middle" ){
             top = targetCoondinates.top + (targetCoondinates.height/2) - ( nodeSize.y / 2 )
         }
+
+        // if( this.options.isParentOffset ){
+        //     var pOffset = this.getParentOffset();
+        //     top = top + pOffset.y;
+        //     left = left + pOffset.x;
+        // }
+
         node.setStyles({
             "left" : left,
             "top" : top
@@ -936,6 +975,13 @@ var MTooltips = new Class({
         }else if( this.positionX === "center" ){
             left = targetCoondinates.left + (targetCoondinates.width/2) - ( nodeSize.x / 2 )
         }
+
+        // if( this.options.isParentOffset ){
+        //     var pOffset = this.getParentOffset();
+        //     top = top + pOffset.y;
+        //     left = left + pOffset.x;
+        // }
+
         node.setStyles({
             "left" : left,
             "top" : top
@@ -945,8 +991,9 @@ var MTooltips = new Class({
         //if( this.options.event == "click" && this.node ){
         //    this.container.removeEvent("mousedown",this.hideFun );
         //}
-        if( this.options.event == "click" && this.app && this.hideFun_resize ){
-            this.app.removeEvent("resize",this.hideFun_resize );
+        if( this.options.event == "click" && this.app ){
+            if(this.hideFun_resize)this.app.removeEvent("resize",this.hideFun_resize );
+            if(this.setCoondinatesFun_resize)this.app.removeEvent("resize",this.setCoondinatesFun_resize );
         }
 
         if( this.targetClickFun )this.target.removeEvent( "click", this.targetClickFun );

@@ -30,14 +30,20 @@ o2.xDesktop.Default = new Class({
             if (layout.userLayout.scale>5) layout.userLayout.scale = 5;
         }
         if (layout.userLayout.scale){
-            var s = (1/layout.userLayout.scale)*100;
-            var p = s+"%";
-            document.id(document.documentElement).setStyles({
-                "transform": "scale("+layout.userLayout.scale+")",
-                "transform-origin": "0 0",
-                "width": p,
-                "height":p
-            });
+            // var s = (1/layout.userLayout.scale)*100;
+            // var p = s+"%";
+            // document.id(document.documentElement).setStyles({
+            //     "transform": "scale("+layout.userLayout.scale+")",
+            //     "transform-origin": "0 0",
+            //     "width": p,
+            //     "height":p
+            // });
+
+            document.body.style.zoom = layout.userLayout.scale;
+            // if (layout.desktop){
+            //     if (layout.desktop.setSize) layout.desktop.setSize();
+            // }
+
             this.fireEvent("resize");
             this.setZoomValue();
         }
@@ -638,7 +644,13 @@ o2.xDesktop.Default = new Class({
         var key = this.searchInputNode.get("value");
         if (key){
             if (this.apps["ftsearch"]){
-                this.apps["ftsearch"].doSearch( key );
+                var app = this.apps["ftsearch"];
+                if( app.window ){
+                    app.setCurrent();
+                    app.doSearch( key );
+                }else{
+                    app.close();
+                }
             }
             layout.openApplication(null,"ftsearch", {"query": key});
 
@@ -1055,11 +1067,11 @@ o2.xDesktop.Default.StartMenu = new Class({
         this.layout.menuData = this.menuData;
     },
     setScroll: function(){
-        o2.require("o2.widget.ScrollBar", function(){
-            this.appScrollBar = new o2.widget.ScrollBar(this.appScrollNode, {
-                "style":"xDesktop_Message", "where": "before", "indent": false, "distance": 100, "friction": 6,	"axis": {"x": false, "y": true}
-            });
-        }.bind(this));
+        // o2.require("o2.widget.ScrollBar", function(){
+        //     this.appScrollBar = new o2.widget.ScrollBar(this.appScrollNode, {
+        //         "style":"xDesktop_Message", "where": "before", "indent": false, "distance": 100, "friction": 6,	"axis": {"x": false, "y": true}
+        //     });
+        // }.bind(this));
     },
     loadTitle: function(){
         this.lnkTitleNode.set("text", o2.LP.desktop.lnkAppTitle);
@@ -1677,7 +1689,7 @@ o2.xDesktop.Default.StartMenu = new Class({
                 this.isShow = true;
                 this.isMorph = false;
                 this.layout.desktopNode.addEvent("mousedown", this.hideMessage);
-                this.setScroll();
+                // this.setScroll();
                 this.fireEvent("show");
             }.bind(this));
         }
@@ -1829,14 +1841,14 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             });
 
             id = this.data.id;
-            var d = this.menu.layoutJson.find(function(i){ return (i.id === id); });
-            if (!d) d = this.menu.componentJson.find(function(i){ return (i.id === id); });
+            if (this.menu.layoutJson) var d = this.menu.layoutJson.find(function(i){ return (i.id === id); });
+            if (!d && this.menu.componentJson) d = this.menu.componentJson.find(function(i){ return (i.id === id); });
 
             o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
                 "onSuccess": function(){
                     if (o.LP && o.LP.title) {
                         this.textNode.set("text", o.LP.title);
-                        d.title = o.LP.title;
+                        if (d) d.title = o.LP.title;
                     }else{
                         this.textNode.set("text", this.data.title || this.data.name);
                     }
@@ -1868,9 +1880,12 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         this.makeLnk();
     },
     addLnk: function(dragTargetLnk, dragPosition){
+        debugger;
+
         lnkdata = {
             "name": this.data.path,
             "title": this.data.title,
+            "appName": this.data.name,
             "iconData": this.data.iconData || null,
             "icon": this.iconData || null,
             "appType": null,
@@ -2003,11 +2018,14 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         var ey = y+2;
 
         var overItem = null;
+        var thisItem = this;
         this.menu.items.each(function(item){
             if (!item.isDrag){
                 if (item.iconAreaNode.isInPointInRect(x,y,ex,ey)){
-                    item.dragOver();
-                    overItem = item;
+                    if (thisItem.data.type!=="group"){
+                        item.dragOver();
+                        overItem = item;
+                    }
                 }else{
                     item.dragOut();
                 }
@@ -2625,7 +2643,7 @@ o2.xDesktop.Default.StartMenu.QueryItem = new Class({
         this.iconNode.setStyle("background-image", "url("+icon+")");
         this.icon = icon;
     },
-    addLnk: function(){
+    addLnk: function(dragTargetLnk, dragPosition){
         lnkdata = {
             "name": "query.Query",
             "title": this.data.name,
@@ -2838,6 +2856,7 @@ o2.xDesktop.Default.Lnk = new Class({
         this.load(targetLnk, position);
     },
     load: function(targetLnk, position){
+        debugger;
         this.node = new Element("div.layout_menu_lnk_item");
         if (targetLnk){
             if (!position) position = "before";
@@ -3050,7 +3069,7 @@ o2.xDesktop.Default.Lnk = new Class({
             }else if (this.data.iconPath){
                 icon = this.data.iconPath;
             }else {
-                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.title, function(json){
+                o2.Actions.load("x_component_assemble_control").ComponentAction.get(this.data.appName || this.data.title, function(json){
                     if (json.data && json.data.iconData){
                         icon = "data:image/png;base64,"+json.data.iconData+"";
                     }else if (json.data && json.data.iconPath){

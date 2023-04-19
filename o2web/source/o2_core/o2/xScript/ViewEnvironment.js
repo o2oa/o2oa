@@ -37,7 +37,15 @@
  *    "logic":"and",
  *    "path":"$work.title",
  *    "comparison":"like",
- *    "value":"7月",
+ *    "value":"关于",
+ *    "formatType":"textValue"
+ * }
+ * @example
+ *  {
+ *    "logic":"and",
+ *    "path":"month",
+ *    "comparison":"in",
+ *    "value":"一月,二月,三月",
  *    "formatType":"textValue"
  * }
  */
@@ -45,7 +53,9 @@
 /**
  * StatementFilter 查询视图的过滤条件
  * @typedef {Object} StatementFilter
- * @property {String} path - 要过滤的data数据的路径，形式为查询语句中的"表别名.字段名"，如"o.title"。
+ * @property {String} path - 要过滤的data数据的路径。
+ * 如果语句格式是JPQL,形式为查询语句中的"表别名.字段名"，如"o.title"。
+ * 在v8.0以后，系统增加了原生SQL，则使用数据库的字段名，如"xtitle"。
  * @property {String} comparison - 比较运算符，可选值：<br/>
  * <div style='padding-left:150px;'>
  * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
@@ -70,7 +80,7 @@
  * 如果是dateValue数据类型，则提供日期格式的字符串，格式如“YYYY-MM-DD”。如果是timeValue数据类型，则提供时间格式的字符串，格式如“HH:MM:SS”。
  * @example
  *{
- *    "path":"o.title",
+ *    "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
  *    "comparison":"like",
  *    "value":"关于",
  *    "formatType":"textValue"
@@ -79,17 +89,20 @@
 
 /**
  * StatementParameter  查询视图的过滤条件值参数，对查询语句where语句的形如":person"的参数部分进行赋值<br/>
+ * 在v8.0以后，系统还新增了问号加数字的传值参数，如"?1"，用法和 ":field"一致。
  * 有以下规则：<br/>
- * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。<br/>
+ * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。v8.0以后系统自动解析，不需要再传这类参数。<br/>
  * 2、如果对比的是日期，需要传入 Date 类型。<br/>
  * 3、如果运算符用的是 like, noLike，模糊查询，值为 "%{value}%"。
+ * 4、
  * @typedef {Object} StatementParameter
  * @example
  * {
- *    "person" : "",
- *    "startTime" : (new Date("2020-01-01")),
- *    "applicationName" : "%test%",
- *    "processName" : "test流程" //其他写确定的值
+ *    "person" : "", //v8.0以后系统自动解析，不需要再传这类参数。
+ *    "startTime" : (new Date("2020-01-01")), //日期格式
+ *    "applicationName" : "%test%", //like或notlike
+ *    "processName" : "test流程", //其他写确定的值
+ *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
  * }
  */
 
@@ -253,7 +266,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //dict
     /**
-     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
+     * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
+     * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
      * @module Dict
      * @o2cn 数据字典
      * @o2category web
@@ -264,14 +278,43 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </code></pre>
      * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
      * <pre><code class='language-js'>var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *     //type: 应用类型。可以为process  cms  portal service。
+     *     //在流程和内容管理中如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //为了兼容老版本，在门户中使用需要指定type，否则默认值为process
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //数据字典所在的流程、门户、CMS的名称、别名、id, 默认为当前应用，服务管理中忽略该参数
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false，该参数名也可以是 enableAnonymous
+     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为cms的时候改参数才有效，默认为false，该参数名也可以是 enableAnonymous
      * });
+     *
+     * //引用服务管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "service",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用流程管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用内容管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用门户管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
      * </code></pre>
      * @return {Object} Dict对象
      * @o2syntax
@@ -1415,6 +1458,45 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
 
         //人员
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        /**
+         根据人员标识获取对应的人员对象，附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+         * @method getPersonData
+         * @o2membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+         * @o2syntax
+         * //同步执行，返回人员对象。
+         * var person = this.org.getPersonData( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPersonData( name, true);
+         * promise.then(function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.getPersonData( name, function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         */
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
         //获取人员--返回人员的对象数组
         /**
          根据人员标识获取对应的人员对象或数组：person对象或数组
@@ -2966,7 +3048,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * this.view.lookup(view, callback, async);
          *
          * //返回Promise对象后处理
-         * var promise = this.view.lookup( name );
+         * var promise = this.view.lookup( view );
          * promise.then(function(data){
          *     //data 为返回的数据。
          * })
@@ -3225,17 +3307,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "pageSize" : 20, //（number）可选，每页的数据条数，默认为20
          *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
          *       {
-         *           "path":"o.title",
+         *           "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *           "comparison":"like",
          *           "value":"关于",
          *           "formatType":"textValue"
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *       "processName" : "test流程" //其他写确定的值
+         *       "processName" : "test流程", //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          * }
          * </code></pre>
@@ -3260,17 +3343,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "mode" : "all",
          *  "filter": [
          *      {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"7月",
          *      "formatType":"textValue"
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *     "processName" : "test流程" //其他写确定的值
+         *     "processName" : "test流程", //其他写确定的值
+         *     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *   }
          * }, function(json){
          *  var count = json.count; //总数语句执行后返回的数字
@@ -3284,17 +3368,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "mode" : "all",
          *  "filter": [
          *      {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"7月",
          *      "formatType":"textValue"
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *     "processName" : "test流程" //其他写确定的值
+         *     "processName" : "test流程", //其他写确定的值
+         *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *   }
          * });
          * promise.then(function(json){
@@ -3303,70 +3388,110 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *   //......
          * })
          */
-        "execute": function (statement, callback, async) {
-            var parameter = this.parseParameter(statement.parameter);
-            var filterList = this.parseFilter(statement.filter, parameter);
-            var obj = {
-                "filterList": filterList,
-                "parameter" : parameter
-            };
-            return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-                statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
-                function (json) {
-                    if (callback) callback(json);
-                    return json;
-                }, null, async);
-        },
-        parseFilter : function( filter, parameter ){
-            if( typeOf(filter) !== "array" )return [];
-            if( !parameter )parameter = {};
-            var filterList = [];
-            ( filter || [] ).each( function (d) {
-                //var parameterName = d.path.replace(/\./g, "_");
-                var pName = d.path.replace(/\./g, "_");
-
-                var parameterName = pName;
-                var suffix = 1;
-                while( parameter[parameterName] ){
-                    parameterName = pName + "_" + suffix;
-                    suffix++;
-                }
-                var value = d.value;
-                if( d.comparison === "like" || d.comparison === "notLike" ){
-                    if( value.substr(0, 1) !== "%" )value = "%"+value;
-                    if( value.substr(value.length-1,1) !== "%" )value = value+"%";
-                    parameter[ parameterName ] = value; //"%"+value+"%";
+        execute: function (obj, callback, async) {
+                if( obj.format ){
+                    return this._execute(obj, callback, async, obj.format);
                 }else{
-                    if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
-                        value = "{ts '"+value+"'}"
-                    }else if( d.formatType === "dateValue" ){
-                        value = "{d '"+value+"'}"
-                    }else if( d.formatType === "timeValue" ){
-                        value = "{t '"+value+"'}"
-                    } else if (d.formatType === "numberValue"){
-                        value = parseFloat(value);
+                    if( this.needCheckFormat(obj) ){
+                        var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, null, null, async);
+                        Promise.resolve(p).then(function (json) {
+                            return this._execute(obj, callback, async, json.data.format);
+                        }.bind(this));
+                    }else{
+                        return this._execute(obj, callback, async, "");
                     }
-                    parameter[ parameterName ] = value;
-                }
-                d.value = parameterName;
 
-                filterList.push( d );
-            }.bind(this));
-            return filterList;
-        },
-        parseParameter : function( obj ){
-            if( typeOf(obj) !== "object" )return {};
-            var parameter = {};
-            //传入的参数
-            for( var p in obj ){
-                var value = obj[p];
-                if( typeOf( value ) === "date" ){
-                    value = "{ts '"+value.format("db")+"'}"
                 }
-                parameter[ p ] = value;
-            }
-            return parameter;
-        },
+            },
+            needCheckFormat: function(s){
+                if( s.format )return false;
+                if( typeOf(s.parameter) === "object" ){
+                    for( var p in s.parameter ){
+                        if( typeOf( s.parameter[p] ) === "date" )return true;
+                    }
+                }
+                if( typeOf(s.filter) === "array" ){
+                    for( var i=0; i< s.filter.length; i++){
+                        var fType = s.filter[i].formatType;
+                        if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].contains( fType ) )return true;
+                    }
+                }
+                return false;
+            },
+            _execute: function(statement, callback, async, format){
+                var parameter = this.parseParameter(statement.parameter, format);
+                var filterList = this.parseFilter(statement.filter, parameter, format);
+                var obj = {
+                    "filterList": filterList,
+                    "parameter" : parameter
+                };
+                return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                    statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
+                    function (json) {
+                        if (callback) callback(json);
+                        return json;
+                    }, null, async);
+            },
+            parseFilter: function (filter, parameter, format) {
+                if (typeOf(filter) !== "array") return [];
+                if( !parameter )parameter = {};
+                var filterList = [];
+                (filter || []).each(function (d) {
+                    //var parameterName = d.path.replace(/\./g, "_");
+                    var pName = d.path.replace(/\./g, "_");
+
+                    var parameterName = pName;
+                    var suffix = 1;
+                    while( parameter[parameterName] ){
+                        parameterName = pName + "_" + suffix;
+                        suffix++;
+                    }
+                    var value = d.value;
+                    if (d.comparison === "like" || d.comparison === "notLike") {
+                        if (value.substr(0, 1) !== "%") value = "%" + value;
+                        if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
+                        parameter[parameterName] = value; //"%"+value+"%";
+                    } else {
+                         if( ["sql", "sqlScript"].contains(format) ) {
+                            if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }else{
+                            if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                                value = "{ts '" + value + "'}"
+                            } else if (d.formatType === "dateValue") {
+                                value = "{d '" + value + "'}"
+                            } else if (d.formatType === "timeValue") {
+                                value = "{t '" + value + "'}"
+                            } else if (d.formatType === "numberValue") {
+                                value = parseFloat(value);
+                            }
+                        }
+                        parameter[parameterName] = value;
+                    }
+                    d.value = parameterName;
+
+                    filterList.push(d);
+                }.bind(this));
+                return filterList;
+            },
+            parseParameter : function( obj, format ){
+                if( typeOf(obj) !== "object" )return {};
+                var parameter = {};
+                //传入的参数
+                for( var p in obj ){
+                    var value = obj[p];
+                    if( typeOf( value ) === "date" ){
+                        if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
+                    }
+                    parameter[ p ] = value;
+                }
+                return parameter;
+            },
 
         /**
          * 如果查询的类型是"select"，并且配置了查询视图，可以通过本方法进行数据选择。
@@ -3385,17 +3510,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "caption" : "标题", //（String）可选，选择框的标题
          *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
          *       {
-         *           "path":"o.title",
+         *           "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *           "comparison":"like",
          *           "value":"关于",
          *           "formatType":"textValue"
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *       "processName" : "test流程" //其他写确定的值
+         *       "processName" : "test流程", //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          * }
          * </code></pre>
@@ -3612,9 +3738,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
             options = { name: options };
         }
         var name = options.name;
-        var type = (options.type && options.application) ? options.type : "portal";
+        var type;
+        if( options.type === "service" ){
+            type = options.type;
+        }else{
+            type = (options.type && options.application) ? options.type : "portal";
+        }
         var application = options.application || _form.json.application;
         var key = type + "-" + application + "-" + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
         if (includedScripts.indexOf(key) > -1) {
             if (callback) callback.apply(this);
             return;
@@ -3667,8 +3801,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                     }
                     break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
             }
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+
+            var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
 
@@ -3686,6 +3829,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             includedScripts.push( type + "-" + json.data.application + "-" + flag );
                             if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
                             if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                        }else if (type === "service") {
+                            includedScripts.push(type + "-" + flag);
                         }
                     });
 
@@ -3695,7 +3840,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 } else {
                     if (callback) callback.apply(this);
                 }
-            }.bind(this), null, !!async);
+            }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
         }
     };
     this.include = function( optionsOrName , callback, async){
@@ -3893,6 +4044,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
 
     /**
+     * 重新加载查询视图。
+     * @method reload
+     * @methodOf module:queryStatement
+     * @static
+     * @o2syntax
+     * this.queryStatement.reload( callback );
+     */
+
+
+    /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
      * @o2cn 视图
@@ -3932,7 +4093,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *    "table": "", //自建表的id
          *    "entityClassName": "com.x.processplatform.core.entity.content.Task", //系统表表名
          *    "entityCategory": "official", //表类型 official(系统表) 或 dynamic(自建表)
-         *    "format": "jpql", //语句类型,jpql 或者 script(脚本)
+         *    "format": "jpql", //语句类型,jpql 或者 script(脚本) , v8.0后还有 sql, sqlScript
          *    "type": "select", //select/update/delete
          *    "data": "SELECT o FROM Task o where o.person = :person", //查询语句
          *    "countData": "SELECT count(o.id) FROM Task o where o.person = :person", //总数语句
@@ -4126,7 +4287,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * 如果传入非空数组的时候，参数如下：
          * <pre><code class='language-js'>[
          *    {
-         *      "path":"o.title",
+         *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *      "comparison":"like",
          *      "value":"关于",
          *      "formatType":"textValue"
@@ -4138,10 +4299,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)。
          * //那么可能的参数如下：
          * {
-         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *    "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-         *    "processName" : "test流程" //其他写确定的值
+         *    "processName" : "test流程", //其他写确定的值
+         *    "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          * }
          * </code></pre>
          * @param {Function} [callback] 过滤完成并重新加载数据后的回调方法。
@@ -4202,7 +4364,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     "showActionbar": false, //可选，是否显示操作条
          *     "filter": [  //可选，增加查询语句where子句的过滤条件
          *       {
-         *         "path": "o.title",
+         *         "path": "o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
          *         "title": "标题",
          *         "type": "filter",
          *         "comparison": "like",
@@ -4212,10 +4374,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     ],
          *     //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
          *     "parameter" : { //可选，对查询语句where语句的形如":person"的参数部分进行赋值
-         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
+         *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
          *     }
          *   })
          * </code></pre>
@@ -4230,9 +4393,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @static
          * @o2syntax
-         * this.queryView.reload();
+         * this.queryView.reload( callback );
          */
-        "reload" : function () { _form.reload(); },
+        "reload" : function ( callback ) { _form.reload( callback ); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
@@ -4366,11 +4529,32 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.openJob
          */
-        "openJob": function (id, choice, options) {
-            var workData = null;
+        "openJob": function (id, choice, options, callback) {
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
+
+            if( !layout.inBrowser && o2.typeOf(callback) === "function" ){
+                if( !options )options = {};
+                var queryLoad = options.onQueryLoad;
+                options.onQueryLoad = function () {
+                    if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
+                    callback(this);
+                }
+            };
+
+            runCallback = function ( handel ) {
+                if( o2.typeOf(callback) === "function" ) {
+                    if (layout.inBrowser) {
+                        callback(handel);
+                    } else if (options && options.appId) {
+                        if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
+                            callback(layout.desktop.apps[options.appId], true);
+                        }
+                    }
+                }
+            };
 
             if (workData) {
                 var len = workData.workList.length + workData.workCompletedList.length;
@@ -4399,7 +4583,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   runCallback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4425,7 +4612,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    runCallback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4449,10 +4639,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     } else {
                         if (workData.workList.length) {
                             var work = workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
+                            handel = this.openWork(work.id, null, work.title, options);
+                            runCallback(handel);
+                            return handel;
                         } else {
                             var work = workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                            handel = this.openWork(null, work.id, work.title, options);
+                            runCallback(handel);
+                            return handel;
                         }
                     }
                 }
@@ -4547,8 +4741,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.openApplication
          */
-        "openApplication": function (name, options) {
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication": function (name, options, status) {
+            return layout.desktop.openApplication(null, name, options, status);
         },
 
         /**创建一个内容管理文档。
@@ -4760,14 +4954,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    "genderType": "m",                                  //性别
      *    "icon": "...",                                      //头像
      *    "signature": "",                                    //个人签名
-     *    "name": "胡起",                                     //姓名
-     *    "employee": "huqi",                                 //员工号
-     *    "unique": "huqi",                                   //唯一标识
-     *    "distinguishedName": "xx@huqi@P",                   //人员全称
+     *    "name": "张三",                                     //姓名
+     *    "employee": "zhansan",                                 //员工号
+     *    "unique": "zhansan",                                   //唯一标识
+     *    "distinguishedName": "xx@zhansan@P",                   //人员全称
      *    "superior": "",                                     //上级人员id
      *    "changePasswordTime": "2017-03-13",                 //修改密码时间
      *    "lastLoginTime": "2019-01-02",                      //最后登录时间
-     *    "mail": "huqi@zoneland.net",                        //邮件地址
+     *    "mail": "zhansan@zoneland.net",                        //邮件地址
      *    "weixin": "",                                       //微信号
      *    "qq": "",                                           //QQ
      *    "mobile": "18057190078",                            //手机号码
@@ -4816,7 +5010,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     /**
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
-     * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
+     * 通过访问以下地址来查询服务列表：http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)
      * @module Actions
      * @o2cn 服务调用
      * @o2category web
@@ -4831,11 +5025,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getHost
      * @methodOf module:Actions
      * @static
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
      *如:<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.getHost( root );
      */
@@ -4845,7 +5039,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method load
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)。
      * 如:
      *<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
@@ -4922,7 +5116,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * <caption>
      *     <b>样例1:</b>
      *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
-     *     可以通过对应服务的查询页面，http://server:20020/x_processplatform_assemble_surface/jest/index.html<br/>
+     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html(v7.2之前版本需要带端口20020)<br/>
      *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
      *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
      *     该服务有以下信息：<br/>
@@ -5002,11 +5196,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @deprecated
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html(v7.2之前版本需要加端口20030)。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务根的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.get( root );
      * actions[ methodName ]( arguements );
@@ -5481,7 +5675,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     this.Table = MWF.xScript.createTable();
 };
 
-MWF.xScript.createTable = function(){
+if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
     return function(name){
         this.name = name;
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
@@ -5695,7 +5889,7 @@ if( !MWF.xScript.createDict ){
     };
 
 
-    MWF.xScript.createDict = function(application){
+    MWF.xScript.createDict = function(application, appType){
         //optionsOrName : {
         //  type : "", //默认为process, 可以为  process  cms
         //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
@@ -5706,10 +5900,19 @@ if( !MWF.xScript.createDict ){
         return function(optionsOrName){
             var options = optionsOrName;
             if( typeOf( options ) == "string" ){
-                options = { name : options };
+                options = {
+                    name : options,
+                    type: appType,
+                    application: application
+                };
             }
             var name = this.name = options.name;
-            var type = ( options.type && options.application ) ?  options.type : "process";
+            var type;
+            if( options.type === "service"){
+                type = options.type;
+            }else{
+                type = ( options.type && options.application ) ?  options.type : "process";
+            }
             var applicationId = options.application || application;
             var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
@@ -5725,10 +5928,16 @@ if( !MWF.xScript.createDict ){
             // this.dictData = dictLoaded[key];
 
             //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-            if( type == "cms" ){
-                var action = MWF.Actions.get("x_cms_assemble_control");
-            }else{
-                var action = MWF.Actions.get("x_processplatform_assemble_surface");
+            var action;
+            if (type === "cms") {
+                action = MWF.Actions.get("x_cms_assemble_control");
+            } else if( type === "portal" ){
+                action = MWF.Actions.get("x_portal_assemble_surface");
+            }else if( type === "service" ){
+                key = name+type+enableAnonymous;
+                action = MWF.Actions.get("x_program_center");
+            } else {
+                action = MWF.Actions.get("x_processplatform_assemble_surface");
             }
 
             var encodePath = function( path ){
@@ -5736,7 +5945,7 @@ if( !MWF.xScript.createDict ){
                 var ar = arr.map(function(v){
                     return encodeURIComponent(v);
                 });
-                return ar.join("/");
+                return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
             };
 
             this.get = function(path, success, failure, async, refresh){
@@ -5772,12 +5981,20 @@ if( !MWF.xScript.createDict ){
                 };
 
                 var promise;
-                if (path){
-                    var p = encodePath( path );
-                    //var p = path.replace(/\./g, "/");
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                if( type === "service" ){
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action.getDictData(encodeURIComponent(this.name), p, cb, null, !!async, false);
+                    }else{
+                        promise = action.getDictRoot(this.name, cb, null, !!async, false);
+                    }
                 }else{
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                    }else{
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    }
                 }
                 return (!!async) ? promise : value;
 
@@ -5809,32 +6026,50 @@ if( !MWF.xScript.createDict ){
             this.set = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.setDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ){
+                    return action.setDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this.add = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.insertDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.addDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this["delete"] = function(path, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                var successCallback = function(json){
                     MWF.xScript.deleteDictToCache(key, path);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.deleteDictData(encodeURIComponent(this.name), p, successCallback, failureCallback, false, false);
+                }else{
+                    return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, successCallback, failureCallback, false, false);
+                }
             };
             this.destory = this["delete"];
         }

@@ -120,6 +120,7 @@ MWF.xApplication.Attendance.LP = {
 	"registerBiaduNotice": "工作场所设置使用了百度地图开放平台的服务，你可以注册百度开发者认证来提高地图的并发量。认证完成后，请将密钥填至下方的输入框。",
 	"openRegisterUrl": "点击此打开认证通道",
 	"secretKey": "秘钥",
+	"mustSelectMonth": "选择日期则需要同时选择月份",
 
 	"index" : {
 		"attendanceCalendar":"考勤日历",

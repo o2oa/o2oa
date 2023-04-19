@@ -671,29 +671,6 @@ public class DocumentAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "从Excel文件导入文档数据.", action = ActionPersistImportDataExcel.class)
-    @POST
-    @Path("import/category/{categoryId}")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public void persist_importDocumentFormExcel(@Suspended final AsyncResponse asyncResponse,
-            @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("分类ID") @PathParam("categoryId") String categoryId,
-            @JaxrsParameterDescribe("作为参数的JSON字符串") @FormDataParam("json_data") String json_data,
-            @JaxrsParameterDescribe("文件内容") @FormDataParam(FILE_FIELD) final byte[] bytes,
-            @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-        ActionResult<ActionPersistImportDataExcel.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionPersistImportDataExcel().execute(request, effectivePerson, categoryId, bytes, json_data,
-                    disposition);
-        } catch (Exception e) {
-            logger.error(e, effectivePerson, request, null);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
-
     @JaxrsMethodDescribe(value = "保存信息发布文档信息对象.", action = ActionPersistSaveDocument.class)
     @POST
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

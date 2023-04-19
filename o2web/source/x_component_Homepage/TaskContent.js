@@ -355,9 +355,11 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
         var numberNode = new Element("div.o2_homepage_task_item_number", {"text": idxShow, "title":idx}).inject(cell);
 
         //var subject = "<span>["+d.processName+"]</span> "+(d.title || this.app.lp.noSubject);
+        var unit = o2.name.cn(d.unit);
         var subject = "["+d.processName+"] "+o2.txt(d.title || this.app.lp.noSubject);
+
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_subject");
-        new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":subject}).inject(cell);
+        new Element("div.o2_homepage_task_item_subject", {"html": subject, "title":"("+unit+") "+subject}).inject(cell);
 
         cell = row.insertCell(-1).addClass("o2_homepage_task_item_cell_activity");
         new Element("div.o2_homepage_task_item_activity", {"text": d.activityName, "title": this.app.lp.currentActivity + ": " + d.activityName}).inject(cell);
@@ -412,6 +414,7 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
     open: function(e, d){
         //     this._getJobByTask(function(data){
         var options = {
+            "taskId": d.id,
             "workId": d.work, "appId": "process.Work"+d.work,
             "onAfterProcess": this.reloadTasks.bind(this),
             "onAfterReset": this.reloadTasks.bind(this),

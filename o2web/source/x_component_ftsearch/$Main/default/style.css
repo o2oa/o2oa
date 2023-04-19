@@ -250,12 +250,12 @@ ul {
     width: 100%;
     height: 100%;
     margin: 0px auto;
-    background-color: #F0F0F0;
+    background-color: #fff;
 }
 
 .ftsearch-top{
     background-color: #ffffff;
-    padding: 15px 20px;
+    padding: 15px 20px 0px 20px;
     /*margin-bottom: 10px;*/
     overflow: hidden;
 }
@@ -289,7 +289,7 @@ ul {
 }
 
 .docContent-ftsearch{
-    height: calc( 100% - 90px );
+    height: calc( 100% - 140px );
     background:#ffffff;
     padding:0 20px 20px 20px;
     overflow:auto;
@@ -337,7 +337,10 @@ ul {
 }
 .index-pagingNode{
     overflow:hidden;
-    width: 100%;
+    background: #fff;
+    height: 60px;
+    min-width: 1010px;
+    max-width: 1400px;
 }
 .listNoData-ftsearch{
     max-width: 750px;
@@ -382,6 +385,152 @@ ul {
 }
 .listItem-infor-content{
     padding-right: 20px;
+}
+
+.index-filter{
+    min-height: 50px;
+    border-bottom: 2px solid #4A90E2;
+}
+.index-filterNoDoc{
+    border-bottom: 0;
+}
+.filterArea{
+    overflow: hidden;
+    line-height: 40px;
+    /*border-top: 1px solid #dddddd;*/
+    /*border-bottom: 1px solid #dddddd;*/
+    /*background: #f0f2f5;*/
+    margin-bottom: 10px;
+}
+.filterArea-title{
+    float: left;
+    width: 80px;
+    line-height: 30px;
+    white-space: nowrap;
+    color: #666;
+    /*background-color: #f0f2f5;*/
+}
+.filterArea-content{
+    background: #fff; overflow: hidden;margin-left: 100px; padding-top: 7px; margin-right: 40px;
+}
+.filterItem{
+    float: left;
+    white-space: nowrap;
+    /*border: 1px solid #ccc;*/
+    margin-right: 10px;
+    margin-top: 5px;
+}
+.filterItem-content{
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 26px;
+    height: 26px;
+    padding: 0 6px;
+    color: #666666;
+    background: #ffffff;
+    /*border-top-left-radius: 8px;*/
+    /*border-top-right-radius: 8px;*/
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    overflow: hidden;
+}
+.filterItem-content-over{
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 26px;
+    height: 26px;
+    padding: 0 6px;
+    color: #666666;
+    background: #ffffff;
+    /*border-top-left-radius: 8px;*/
+    /*border-top-right-radius: 8px;*/
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 0;
+    overflow: hidden;
+    z-index: 15;
+    position: relative;
+}
+.filterItem-content-selected{
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 26px;
+    height: 26px;
+    padding: 0 6px;
+    color: #666666;
+    background: #f3f3f3;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+.filterItem-content-selected-over{
+    background: #fff !important;
+}
+.filterItem-value-selected{
+    display: inline-block;
+}
+
+.filterItem-subitemWrap{
+    overflow:hidden;
+    padding:5px 0px;
+}
+.filterItem-subitem{
+    float: left;
+    white-space: nowrap;
+    padding: 5px 10px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 26px;
+    height: 26px;
+    color: #333;
+    background: #ffffff;
+    border-radius: 26px;
+}
+
+
+.filter-multi-button{
+    float:right;
+    font-size: 14px;
+    color:#999;
+    margin:7px 5px;
+    padding: 3px 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.filter-buttonArea{
+    margin-top:10px;
+    margin-bottom:10px;
+    text-align: center;
+}
+.filter-okButton{
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    background: #4A90E2;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size:14px;
+    width: 80px;
+    display: inline-block;
+}
+.filter-cancelButton{
+    margin-left: 30px;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    color: #666666;
+    background: #F0F0F0;
+    border-radius: 20px;
+    font-size:14px;
+    width: 80px;
+    display: inline-block;
 }
 
 

@@ -437,7 +437,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			ops.each(function(op){
 				if (op.selected){
 					var v = op.get("value");
-					if (v) value.push(v);
+					value.push(v || "");
 				}
 			});
 			if (!value.length) return null;
@@ -504,6 +504,22 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		this.fieldModuleLoaded = true;
 		this.fireEvent("setData", [data]);
 		if (fireChange && old!==data) this.fireEvent("change");
-	}
+	},
+
+		getExcelData: function(){
+			var value = this.getData();
+			var options = this.getOptionsObj();
+			var idx = options.valueList.indexOf( value );
+			var text = idx > -1 ? options.textList[ idx ] : "";
+			return text;
+		},
+		setExcelData: function(d){
+			var value = d.replace(/&#10;/g,""); //换行符&#10;
+			this.excelData = value;
+			var options = this.getOptionsObj();
+			var idx = options.textList.indexOf( value );
+			value = idx > -1 ? options.valueList[ idx ] : "";
+			this.setData(value, true);
+		}
 	
 }); 

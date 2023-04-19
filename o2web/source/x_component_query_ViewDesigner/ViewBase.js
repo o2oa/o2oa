@@ -344,7 +344,7 @@ MWF.xApplication.query.ViewDesigner.ViewBase = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+            this.addColumnNode.scrollIntoView(false);
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
@@ -732,8 +732,8 @@ MWF.xApplication.query.ViewDesigner.ViewBase.Column = new Class({
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         // new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
         try{
-            this.node.scrollIntoView(true);
-            this.listNode.scrollIntoView(true);
+            this.node.scrollIntoView(false);
+            this.listNode.scrollIntoView(false);
         }catch (e) {
 
         }

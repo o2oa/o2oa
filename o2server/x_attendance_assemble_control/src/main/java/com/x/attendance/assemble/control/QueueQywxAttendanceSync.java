@@ -70,7 +70,7 @@ public class QueueQywxAttendanceSync extends AbstractQueue<DingdingQywxSyncRecor
         deleteQywxAttendance(fromDate, toDate);
         //人员查询地址
         String uri = "person/list/(0)/next/50";
-        String qywxuri = "https://qyapi.weixin.qq.com/cgi-bin/checkin/getcheckindata?access_token="+ Config.qiyeweixin().attendanceAccessToken();
+        String qywxuri = Config.qiyeweixin().getApiAddress() + "/cgi-bin/checkin/getcheckindata?access_token="+ Config.qiyeweixin().attendanceAccessToken();
         int saveNumber = 0;
         while (hasNextPerson) {
             List<Person> list = ThisApplication.context().applications().getQuery(false, app, uri).getDataAsList(Person.class);

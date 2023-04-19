@@ -4,33 +4,23 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
-import com.x.portal.assemble.designer.factory.FileFactory;
-import com.x.portal.assemble.designer.factory.PageFactory;
-import com.x.portal.assemble.designer.factory.PortalFactory;
-import com.x.portal.assemble.designer.factory.ScriptFactory;
-import com.x.portal.assemble.designer.factory.TemplatePageFactory;
-import com.x.portal.assemble.designer.factory.WidgetFactory;
+import com.x.portal.assemble.designer.factory.*;
 import com.x.portal.core.entity.Portal;
 
+/**
+ * @author sword
+ */
 public class Business {
 
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
 	}
-
-//	public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
-//		if (effectivePerson.isManager()
-//				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
-//			return true;
-//		}
-//		return false;
-//	}
 
 	private Organization organization;
 
@@ -76,7 +66,7 @@ public class Business {
 		}
 		return script;
 	}
-	
+
 	private FileFactory file;
 
 	public FileFactory file() throws Exception {
@@ -93,6 +83,24 @@ public class Business {
 			this.templatePage = new TemplatePageFactory(this);
 		}
 		return templatePage;
+	}
+
+	private ApplicationDictFactory applicationDict;
+
+	public ApplicationDictFactory applicationDict() throws Exception {
+		if (null == this.applicationDict) {
+			this.applicationDict = new ApplicationDictFactory(this);
+		}
+		return applicationDict;
+	}
+
+	private ApplicationDictItemFactory applicationDictItem;
+
+	public ApplicationDictItemFactory applicationDictItem() throws Exception {
+		if (null == this.applicationDictItem) {
+			this.applicationDictItem = new ApplicationDictItemFactory(this);
+		}
+		return applicationDictItem;
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Portal o) throws Exception {

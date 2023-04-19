@@ -25,6 +25,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.viewEnable}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="viewEnable" text{($.viewEnable!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="viewEnable" text{($.viewEnable===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.orderNumber}}:</td>
                 <td class="editTableValue"><input type="text" name="orderNumber" value="text{$.orderNumber}" class="editTableInput"/></td>
             </tr>

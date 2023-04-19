@@ -128,5 +128,18 @@
     "read": true,
     "edit" : true,
     "control": "allowCancelTop"
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "downloadAll.png",
+    "img_over": "downloadAll_over.png",
+    "title": "{{$.lp.downloadAllTitle}}",
+    "action": "downloadAll",
+    "text": "{{$.lp.downloadAll}}",
+    "id": "action_downloadAll",
+    "control": "",
+    "condition": "",
+    "read": true,
+    "edit" : true
   }
 ]

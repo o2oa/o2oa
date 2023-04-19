@@ -161,6 +161,19 @@ class V2GetMobile extends BaseAction {
                                 });
                     }
                     break;
+                case WorkCompletedProperties.RelatedScript.TYPE_SERVICE:
+                    com.x.program.center.core.entity.Script cs = business.centerService().script().pick(entry.getKey());
+                    if (null != cs) {
+                        business.centerService().script()
+                                .listScriptNestedWithFlag(entry.getKey())
+                                .forEach(o -> {
+                                    map.put(o.getId(),
+                                            new RelatedScript(o.getId(), o.getName(), o.getAlias(), o.getText(),
+                                                    WorkCompletedProperties.RelatedScript.TYPE_SERVICE));
+                                    list.add(o.getId() + o.getUpdateTime().getTime());
+                                });
+                    }
+                    break;
                 default:
                     break;
             }

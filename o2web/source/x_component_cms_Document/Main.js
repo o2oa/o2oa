@@ -3,16 +3,16 @@ MWF.xApplication.cms.Document = MWF.xApplication.cms.Document || {};
 MWF.xApplication.cms.Document.options = MWF.xApplication.cms.Document.options || Object.clone(o2.xApplication.Common.options);
 MWF.xApplication.cms.Document.options.multitask = true;
 MWF.xApplication.cms.Document.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "cms.Document",
-		"icon": "icon.png",
-		"width": "1200",
-		"height": "680",
-		"title": "",
+    options: {
+        "style": "default",
+        "name": "cms.Document",
+        "icon": "icon.png",
+        "width": "1200",
+        "height": "680",
+        "title": "",
         "documentId": "",
         "isControl": false,
         "readonly": true,
@@ -25,10 +25,10 @@ MWF.xApplication.cms.Document.Main = new Class({
         "readFormId" : null, //强制的阅读表单，优先于表单的readFormId
         "editFormId" : null, //强制的编辑表单，优先于表单的formId
         "useProcessForm": false //表单ID参数是流程的
-	},
-	onQueryLoad: function(){
-        if (!this.options.title) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
-		this.lp = MWF.xApplication.cms.Document.LP;
+    },
+    onQueryLoad: function(){
+        if (!this.options.title && !layout.mobile) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
+        this.lp = MWF.xApplication.cms.Document.LP;
         if (this.status){
             this.options.documentId = this.status.documentId;
             this.options.readonly = (this.status.readonly==="true" || this.status.readonly===true) ? true : false;
@@ -54,8 +54,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
         }
-	},
-	loadApplication: function(callback){
+    },
+    loadApplication: function(callback){
 
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);
 
@@ -63,20 +63,20 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.mask = new MWF.widget.Mask({"style": "desktop"});
 
             this.formNode = new Element("div", {"styles": {"min-height": "100%"}}).inject(this.node);
-           // MWF.xDesktop.requireApp("cms.Document", "Actions.RestActions", function(){
-                this.action = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Document.Actions.RestActions();
-                if (!this.options.isRefresh){
-                    this.maxSize(function(){
-                        this.mask.loadNode(this.content);
-                        // this.loadDocument();
-                        this.loadDocumentV2();
-                    }.bind(this));
-                }else{
+            // MWF.xDesktop.requireApp("cms.Document", "Actions.RestActions", function(){
+            this.action = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Document.Actions.RestActions();
+            if (!this.options.isRefresh){
+                this.maxSize(function(){
                     this.mask.loadNode(this.content);
                     // this.loadDocument();
                     this.loadDocumentV2();
-                }
-                if (callback) callback();
+                }.bind(this));
+            }else{
+                this.mask.loadNode(this.content);
+                // this.loadDocument();
+                this.loadDocumentV2();
+            }
+            if (callback) callback();
             //}.bind(this));
 
         }.bind(this));
@@ -112,8 +112,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         }
     },
     reload: function(){
-	    this.fireEvent("queryReload");
-	    this.fireAppEvent("queryReload");
+        this.fireEvent("queryReload");
+        this.fireAppEvent("queryReload");
         this.formNode.empty();
         if (this.appForm){
             MWF.release(this.appForm);
@@ -127,7 +127,7 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
 
     loadDocumentV2 : function( callback ){
-	    debugger;
+        debugger;
 
         this.loadFormFlag = false;
         this.loadDocumentFlag = false;
@@ -316,7 +316,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         // if( this.options.anonymousAccess || this.options.anonymous ){
         //     formMethod =  layout.mobile ? "getFormAnonymousV2Mobile" : "getFormAnonymousV2";
         // }else{
-            formMethod = layout.mobile ? "getFormV2Mobile": "getFormV2";
+        formMethod = layout.mobile ? "getFormV2Mobile": "getFormV2";
         // }
         MWF.Actions.get("x_processplatform_assemble_surface")[formMethod](
             formId,
@@ -388,6 +388,9 @@ MWF.xApplication.cms.Document.Main = new Class({
         data.document.subject = data.document.title;
 
         this.data =  data.data;
+        this.extend = {
+            "isCommend" : data.isCommend
+        };
 
         this.attachmentList = data.attachmentList || [];
         this.attachmentList.each(function(att){
@@ -732,6 +735,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         form.create();
     },
     openDocument: function(){
+        debugger;
         if (this.form){
             // MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
             MWF.xDesktop.requireApp("cms.Xform", "$all", function(){
@@ -748,6 +752,7 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.appForm.businessData = {
                     "data": this.data,
                     "document": this.document,
+                    "extend" : this.extend,
                     "work": this.data.$work || {}, //兼用流程发布到内容管理
                     "control": this.control,
                     "attachmentList": this.attachmentList,
@@ -765,7 +770,24 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.appForm.formDataText = this.formDataText;
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
-                this.appForm.load();
+
+                if( this.$events && this.$events.queryLoadForm ){
+                    this.appForm.addEvent( "queryLoad", function () {
+                        this.fireEvent("queryLoadForm", [this]);
+                    }.bind(this));
+                }
+
+                this.appForm.load(function(){
+                    if (window.o2android && window.o2android.postMessage) {
+                        layout.appForm = this.appForm;
+                    } else if (window.o2android && window.o2android.cmsFormLoaded){
+                        layout.appForm = this.appForm;
+                    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded){
+                        layout.appForm = this.appForm;
+                    }
+
+                    this.fireEvent("postLoadForm", [this]);
+                }.bind(this));
             }.bind(this));
         }
     },

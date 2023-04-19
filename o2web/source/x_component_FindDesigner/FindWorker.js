@@ -182,8 +182,10 @@ _worker._getDesinger_query = function(id){
 _worker._getDesinger_service = function(id){
     var promiseArr = [];
     if (_worker.findData.filterOption.designerTypes.indexOf("script")!=-1){    //所有脚本
-        if (id=="invoke"){
+        if (id=="invoke") {
             promiseArr.push(_worker._getDesingerModule(id, _worker.findData.actions.listInvoke, null, "service", "script"));
+        }else if (id=="script"){
+            promiseArr.push(_worker._getDesingerModule(id, _worker.findData.actions.listScript, null, "service", "script"));
         }else{
             promiseArr.push(_worker._getDesingerModule(id, _worker.findData.actions.listAgent, null, "service", "script"));
         }
@@ -218,10 +220,17 @@ _worker._parseFindModule = function(moduleList){
                 });
                 this.filterOptionList.push(filterOption);
 
-                var filterOption = JSON.parse(_worker.filterOptionTemplete);
+                filterOption = JSON.parse(_worker.filterOptionTemplete);
                 filterOption.moduleList.push({
                     "moduleType": module.moduleType,
                     "moduleAppList": [{"appId": "agent"}]
+                });
+                this.filterOptionList.push(filterOption);
+
+                filterOption = JSON.parse(_worker.filterOptionTemplete);
+                filterOption.moduleList.push({
+                    "moduleType": module.moduleType,
+                    "moduleAppList": [{"appId": "script"}]
                 });
                 this.filterOptionList.push(filterOption);
 

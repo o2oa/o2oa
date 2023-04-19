@@ -381,8 +381,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"grab": "抢办",
 		"grabInfo": "谁先打开待办就由谁处理",
 		"readForUntreated": "给未处理待办的人发待阅",
-		"mergeTask": "合并待办",
-		"mergeTaskInfo": "（ 如果选“是”，同一身份在此节点上的待办会被合并 ）",
+		"mergeTask": "合并分支待办",
+		"mergeTaskInfo": "（ 如果选“是”，当流程拆分状态下，同一身份在此活动上的多个待办会被合并为一个 ）",
+
+        "mergeTaskProcess": "合并待办处理",
+        "mergeTaskProcessInfo": "（ 如果选“是”，当同一人员的不同身份在此活动中产生多个待办时，只需要处理一次 ）",
+
 		"activityGroup": "活动组",
 		"opinionGroup": "意见组",
 		"taskPerson": "处理人",
@@ -508,6 +512,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"unitType": "组织类型",
 		"exclude": "排除",
 		"excludeInfo": "通过编写脚本排除组织、身份、个人和群组的选择范围",
+		"firstLevelSelectable": "允许选择第一层",
 		"dataStructure": "数据保存",
 		"complete": "完整",
 		"simple": "精简",
@@ -547,6 +552,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataPath": "通过数据路径",
 		"byDataScript": "通过数据脚本",
 		"publishTableConfig": "数据表发布配置",
-		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。"
+		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。",
+		"orgIdPlaceholder" : "如：departmentLeader"
 	}
 };

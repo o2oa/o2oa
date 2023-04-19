@@ -69,10 +69,15 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		this.importNode = this.content.getElement(".o2_process_AppExp_import");
 		this.findNode = this.content.getElement(".o2_process_AppExp_find");
 
+		this.searchNode = this.content.getElement(".o2_process_AppExp_search");
+		this.searchInput = this.content.getElement(".o2_process_AppExp_searchInput");
+		this.searchButton = this.content.getElement(".o2_process_AppExp_searchButton");
+
 		this.categoryAreaNode = this.content.getElement(".o2_process_AppExp_category");
 		this.contentArea = this.content.getElement(".o2_process_AppExp_contentArea");
 		this.contentNode = this.content.getElement(".o2_process_AppExp_contentNode");
 		this.bottomNode = this.content.getElement(".o2_process_AppExp_bottom");
+
 		if (this.importNode){
 			this.importNode.addEvent("click", function(e){
 				this.importApplicationNew(e);
@@ -84,6 +89,41 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 				this.openFindDesigner();
 			}.bind(this));
 		}
+
+		if(this.searchInput){
+			this.searchInput.addEvents({
+				focus: function(){
+					this.searchNode.addClass("mainColor_border");
+					this.searchButton.addClass("mainColor_color");
+				}.bind(this),
+				blur: function () {
+					this.searchNode.removeClass("mainColor_border");
+					this.searchButton.removeClass("mainColor_color");
+				}.bind(this),
+				keydown: function (e) {
+					if( (e.keyCode || e.code) === 13 ){
+						this.searchApp();
+					}
+				}.bind(this)
+			});
+		}
+
+		if(this.searchButton){
+			this.searchButton.addEvent("click", function (e) {
+				this.searchApp();
+			}.bind(this));
+		}
+
+	},
+	searchApp: function(){
+		var key = this.searchInput && this.searchInput.get("value");
+		this.applicationList.each(function (app) {
+			if( !key || app.node.getElement(".o2_process_AppExp_item_titleName").get("text").contains( key )){
+				app.node.show();
+			}else{
+				app.node.hide();
+			}
+		}.bind(this));
 	},
 	openFindDesigner: function(){
 		var options = {
@@ -491,7 +531,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		var name = "";
 		if (item){name = item.retrieve("categoryName", "")};
 		this.restActions.listApplicationSummary(name, function(json){
-
+			this.applicationList = [];
 			this.contentNode.empty();
 			if (json.data.length){
 				this.getApplicationDimension();
@@ -520,6 +560,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	createApplicationItem: function(appData, where){
 		var application = new MWF.xApplication.process.ApplicationExplorer.Application(this, appData, where);
 		application.load();
+		this.applicationList.push(application);
 	},
 	checkDeleteApplication: function(){
 		if (this.deleteElements.length){

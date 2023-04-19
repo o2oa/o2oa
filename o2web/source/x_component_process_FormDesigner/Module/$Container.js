@@ -211,7 +211,7 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         //newNode.set("id", newModuleJson.id);
 
 
-        this.copySubModule().move(e);
+        this.copySubModule().move(e, "copy");
 
         //newTool.load(newModuleJson, newNode, this.form);
         //

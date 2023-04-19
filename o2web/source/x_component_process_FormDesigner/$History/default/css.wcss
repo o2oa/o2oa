@@ -1,0 +1,47 @@
+{
+	"itemNode":{
+		"background": "no-repeat 7px center",
+		"background-size": "12px 12px",
+		"color": "#333",
+		"padding": "5px 5px 5px 26px",
+		"cursor": "pointer"
+	},
+	"itemNode_table": {
+		"background": "no-repeat 5px center",
+		"background-size": "14px 14px",
+		"color": "#333",
+		"padding": "5px 5px 5px 26px",
+		"cursor": "pointer"
+	},
+	"itemNode_undo": {
+		"opacity": "0.5"
+	},
+	"itemNode_redo": {
+		"opacity": "1"
+	},
+	"itemNode_property": {
+		"background": "no-repeat 7px center",
+		"background-size": "12px 12px",
+		"color": "#333",
+		"padding": "5px 5px 5px 26px",
+		"cursor": "default",
+		"opacity": "0.7"
+	},
+	"itemNode_property_undo": {
+		"opacity": "0.5"
+	},
+	"itemNode_property_redo": {
+		"opacity": "0.7"
+	},
+	"subItemNode": {
+		"color": "#333",
+		"cursor": "pointer",
+		"padding": "5px 5px 5px 26px"
+	},
+	"subItemNode_undo": {
+		"opacity": "0.5"
+	},
+	"subItemNode_redo": {
+		"opacity": "1"
+	}
+}

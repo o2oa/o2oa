@@ -88,7 +88,6 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 							Date now = new Date();
 							o.setStartTime(now);
 							o.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-							o.setViewed(false);
 							o.setWorkCompleted(workCompleted.getId());
 							o.setCreatorIdentity(workCompleted.getCreatorIdentity());
 							o.setCreatorPerson(workCompleted.getCreatorPerson());

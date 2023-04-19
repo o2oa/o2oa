@@ -128,8 +128,8 @@ o2.widget.JsonParse = new Class({
 				var node = treeNode.appendChild(o);
 				break;
             case "number":
-                jsonStr += tab+title+"\""+v+"\",\n";
-                o.text = p + " : \""+v+"\"";
+                jsonStr += tab+title+""+v+",\n";
+                o.text = p + " : "+v+"";
                 o.icon = "string.png";
                 var node = treeNode.appendChild(o);
                 break;

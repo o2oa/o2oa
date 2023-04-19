@@ -28,9 +28,9 @@ MWF.xApplication.Attendance.MyDetail = new Class({
     loadTab : function(){
 
         this.tabNode = new Element("div",{"styles" : this.css.tabNode }).inject(this.node);
-        this.detailArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
+        this.detailArea = new Element("div",{"styles" : this.app.css.tabPageContainer }).inject(this.tabNode);
         //this.selfHolidayArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode)
-        this.detailStaticArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
+        this.detailStaticArea = new Element("div",{"styles" : this.app.css.tabPageContainer }).inject(this.tabNode);
         //this.selfHolidayStaticArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode)
 
         MWF.require("MWF.widget.Tab", function(){
@@ -252,7 +252,11 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                                 if( typeOf( result.isLackOfTime ) == "string" )result.isLackOfTime = this.getBoolean( result.isLackOfTime );
 
                                 if( result.date && result.date !="" ){
-                                    result.q_date =  year + "-" + month + "-" + result.date;
+                                    if( !result.cycleMonth ){
+                                        this.app.notice( this.lp.mustSelectMonth, "error");
+                                        return;
+                                    }
+                                    result.q_date =  result.cycleYear + "-" + result.cycleMonth + "-" + result.date;
                                 }
                                 this.loadView( result );
                             }.bind(this)
@@ -472,11 +476,14 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
     //    var selector = new MWF.O2Selector(this.app.content, options);
     //},
     loadContentNode: function(){
-        this.elementContentNode = new Element("div", {
+        this.elementContentNode = new Element("div.elementContentNode", {
             "styles": this.css.elementContentNode
         }).inject(this.node);
         this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
-
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.fileterNode)this.fileterNode.scrollTo(scroll.x);
+        }.bind(this));
     },
     loadView : function( filterData ){
         this.elementContentNode.empty();
@@ -581,7 +588,11 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
         this.cycleMonth = new MDomItem( td, {
             "name" : "cycleMonth",
             "type" : "select",
-            "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+            "selectValue" :["01","02","03","04","05","06","07","08","09","10","11","12"],
+            "defaultValue" : function(){
+                var month = (new Date().getMonth() + 1 ).toString();
+                return  month.length == 1 ? "0"+month : month;
+            },
             "event" : {
                 "change" : function(){ if(_self.dateSelecterTd)_self.createDateSelectTd() }
             }

@@ -16,10 +16,11 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
     },
     "modules": {
         "reader": "读者",
+        "commend": "点赞",
         "author": "作者",
         "log": "阅读记录",
         "comment": "评论",
-
+        "logCommend" : "点赞记录",
         "group_cms": "内容管理组件"
     },
     "formStyle":{
@@ -86,6 +87,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "setTop": "置顶",
         "setTopTitle": "对文档置顶",
         "cancelTop": "取消置顶",
-        "cancelTopTitle": "取消对文档的置顶"
+        "cancelTopTitle": "取消对文档的置顶",
+        "downloadAll": "一键下载",
+        "downloadAllTitle": "一键下载"
     }
 });

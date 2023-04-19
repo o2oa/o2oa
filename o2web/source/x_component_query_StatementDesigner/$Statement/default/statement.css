@@ -26,6 +26,7 @@
     line-height: 30px;
     float: left;
     margin-right: 10px;
+    user-select: text;
 }
 .o2_statement_statementDesignerSelectTable {
     width: 80px;
@@ -68,6 +69,37 @@
     border: 1px solid #cccccc;
     background: #ffffff;
 }
+.o2_statement_statementDesignerSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+
+.o2_statement_statementRunDefaultNode {
+    /*overflow: auto;*/
+    /*float: left;*/
+    background: #ffffff;
+}
+
 .o2_statement_statementRunNode {
     margin-top: 10px;
     padding: 0px;
@@ -75,25 +107,52 @@
     background: #f3f3f3;
     border-bottom: 1px solid #cccccc;
 }
-.o2_statement_statementRunTitleNode{
-    height: 26px;
-    line-height: 26px;
-    color: #ffffff;
-    padding: 0 10px;
-    font-size: 14px;
-    text-align: center;
-    background-color: #505050;
-}
 .o2_statement_statementRunContentNode {
     overflow: hidden;
 }
-.o2_statement_statementRunJsonNode {
+.o2_statement_statementRunLeftNode{
     height: 100%;
-    width: 40%;
-    overflow: auto;
+    width: 47%;
+    /*overflow: auto;*/
     float: left;
     background: #ffffff;
 }
+.o2_statement_statementRunTitleNode{
+    height: 30px;
+    line-height: 30px;
+    color: #333;
+    padding: 0 10px;
+    font-size: 14px;
+    text-align: center;
+    background-color: #eeeeee;
+}
+.o2_statement_statementRunFilterNode{
+    height: calc( 50% - 50px );
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+}
+.o2_statement_statementRunJsonNode {
+    height: calc( 50% - 50px );
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+}
+.o2_statement_statementRunInputNode{
+    border-top: 1px solid #999;
+    padding-top: 5px;
+    height: 40px;
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+}
+/*.o2_statement_statementRunJsonNode {*/
+/*    height: 100%;*/
+/*    width: 40%;*/
+/*    overflow: hidden;*/
+/*    float: left;*/
+/*    background: #ffffff;*/
+/*}*/
 .o2_statement_statementRunActionNode {
     height: 100%;
     width: 8%;
@@ -103,7 +162,7 @@
 }
 .o2_statement_statementRunResultNode {
     height: 100%;
-    width: 52%;
+    width: 45%;
     overflow: auto;
     float: left;
     background: #ffffff;
@@ -127,4 +186,12 @@
     height: 3px;
     background-color: #505050;
     cursor: row-resize;
+}
+.o2_statement_help{
+    float: right;
+    height: 16px;
+    width: 16px;
+    margin-top:7px;
+    cursor: pointer;
+    background: url("../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png") center center no-repeat;
 }

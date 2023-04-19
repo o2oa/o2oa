@@ -40,18 +40,26 @@
         <div data-o2-advanced="yes">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableValue"  colspan="2"><b>{{$.lp.readForUntreated}}：</b>
+                    <td class="editTableValue"  colspan="2"><b>{{$.lp.readForUntreated}}: </b>
                         <input class="editTableRadio" name="manualUncompletedTaskToRead" text{($.manualUncompletedTaskToRead)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                         <input class="editTableRadio" name="manualUncompletedTaskToRead" text{(!$.manualUncompletedTaskToRead)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">{{$.lp.mergeTask}}:</td>
-                    <td class="editTableValue">
+					<td class="editTableValue" colspan="2"><b>{{$.lp.mergeTask}}: </b>
                         <input class="editTableRadio" name="manualMergeSameJobActivity" text{($.manualMergeSameJobActivity)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                         <input class="editTableRadio" name="manualMergeSameJobActivity" text{(!$.manualMergeSameJobActivity)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                         <div style="color: #999999">{{$.lp.mergeTaskInfo}}</div>
                     </td>
                 </tr>
+
+				<tr>
+					<td class="editTableValue" colspan="2"><b>{{$.lp.mergeTaskProcess}}: </b>
+						<input class="editTableRadio" name="processingTaskOnceUnderSamePerson" text{($.processingTaskOnceUnderSamePerson!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+						<input class="editTableRadio" name="processingTaskOnceUnderSamePerson" text{($.processingTaskOnceUnderSamePerson===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+						<div style="color: #999999">{{$.lp.mergeTaskProcessInfo}}</div>
+					</td>
+				</tr>
+
                 <tr>
                     <td class="editTableTitle">{{$.lp.activityGroup}}:</td>
                     <td class="editTableValue"><input type="text" name="group" value="text{$.group}" class="editTableInput"/></td>

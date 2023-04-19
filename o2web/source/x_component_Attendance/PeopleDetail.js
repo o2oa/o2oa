@@ -112,6 +112,7 @@ MWF.xApplication.Attendance.PeopleDetail.Explorer = new Class({
     load: function(){
         this.loadFilter();
         this.loadContentNode();
+        this.loadView({}, true);
         this.setNodeScroll();
     },
     loadFilter: function(){
@@ -449,13 +450,18 @@ MWF.xApplication.Attendance.PeopleDetail.Explorer = new Class({
         }).inject(this.node);
         this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
 
+        this.elementContentNode.addEvent("scroll", function () {
+            var scroll = this.elementContentNode.getScroll();
+            if(this.fileterNode)this.fileterNode.scrollTo(scroll.x);
+        }.bind(this));
+
     },
-    loadView : function( filterData ){
+    loadView : function( filterData, onlyShowTitle ){
         this.elementContentNode.empty();
         if( this.view )delete this.view;
         this.view = new MWF.xApplication.Attendance.PeopleDetail.View(this.elementContentNode, this.app,this );
         this.view.filterData = filterData;
-        this.view.load();
+        this.view.load( onlyShowTitle );
         this.setContentSize();
     },
     setContentSize: function(){
@@ -545,7 +551,7 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
                             var month = (new Date().getMonth() + 1 ).toString();
                             return  month.length == 1 ? "0"+month : month;
                         },
-                        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"]
+                        "selectValue" :["01","02","03","04","05","06","07","08","09","10","11","12"]
                     },
                     action : { "value" : lp.query, type : "button", className : "filterButton", clazz:"mainColor_bg", event : {
                         click : function(){

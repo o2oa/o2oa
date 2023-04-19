@@ -16,19 +16,23 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "selectTable": "选择数据表",
     "save_success": "查询配置保存成功！",
     "inputStatementName": "请输入查询配置名称",
-    "inputStatementData": "请先编辑JPQL查询语句",
     "saveStatementNotice" : "请先保存！",
+    "cannotDisabledViewNotice": "视图未启用",
     "noViewNotice" : "未创建视图，请先创建视图！",
     "previewNotSelectStatementNotice" : "只有语句类型为‘Select’才可以预览",
     "field" : "字段",
     "fileldSelectNote" : "-选择后在语句中插入字段-",
 
-    "statementFormat": "如何创建语句：",
-    "statementJpql": "直接编写JPQL创建语句",
-    "statementScript": "通过脚本创建语句",
+    "statementFormat": "语句格式：",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL脚本",
+    "nativeSql": "原生SQL",
+    "nativeSqlScript": "原生SQL脚本",
 
     "statementCategory": "访问对象类型",
     "scriptTitle": "通过脚本创建JPQL",
+    "sqlScriptTitle": "通过脚本创建SQL",
+    "countMethod": "总数语句",
 
     "jpqlType": "JPQL类型",
     "jpqlFromResult": "查询开始条目",
@@ -41,19 +45,43 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "queryStatement": "查询语句",
     "countStatement": "总数语句",
 
+    "currentPerson":"当前人",
+    "currentIdentity":"当前身份",
+    "currentPersonDirectUnit":"当前人所在直接组织",
+    "currentPersonAllUnit":"当前人所在所有组织",
+    "currentPersonGroupList": "当前人所在群组",
+    "currentPersonRoleList": "当前人所拥有角色",
+    "defaultCondition": "自动赋值条件：",
+
+    "ignore": "忽略",
+    "auto": "自动",
+    "assign": "指定",
+
     "mastInputParameter" : "请输入参数",
     "pathExecption" : "路径的写法是\"表别名.字段名\",格式不正确",
 
+    "modifyViewFilterNote": "语句格式已经改变，请修改视图的过滤条件",
+
     "systemTable":"系统表",
     "customTable":"自建数据表",
-    "taskInstance":"待办(Task)",
+
+    "taskInstance": "待办(Task)",
     "taskCompletedInstance": "已办(TaskCompleted)",
-    "readInstance":"待阅(Read)",
-    "readedInstance":"已阅(ReadCompleted)",
-    "workInstance":"流程实例(Work)",
-    "workCompletedInstance":"已完成流程实例(WorkCompleted)",
-    "reviewInstance":"可阅读(Review)",
-    "documentInstance":"内容管理文档(Document)",
+    "readInstance": "待阅(Read)",
+    "readedInstance": "已阅(ReadCompleted)",
+    "workInstance": "流程实例(Work)",
+    "workCompletedInstance": "已完成流程实例(WorkCompleted)",
+    "reviewInstance": "可阅读(Review)",
+    "documentInstance": "内容管理文档(Document)",
+
+    "taskInstanceSql":"待办(PP_C_TASK)",
+    "taskCompletedInstanceSql": "已办(PP_C_TASKCOMPLETED)",
+    "readInstanceSql":"待阅(PP_C_READ)",
+    "readedInstanceSql":"已阅(PP_C_READCOMPLETED)",
+    "workInstanceSql":"流程实例(PP_C_WORK)",
+    "workCompletedInstanceSql":"已完成流程实例(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql":"可阅读(PP_C_REVIEW)",
+    "documentInstanceSql":"内容管理文档(CMS_DOCUMENT)",
 
     "propertyTemplate": {
         // "statementFormat": "如何创建语句：",
@@ -88,7 +116,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         // "documentInstance":"内容管理文档",
 
         "parameter":"参数",
-        "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
+        "parameterNote":"注：对应查询语句和总数语句中的参数；\n如\":field\"的where条件，填写\"field\"；\n如\"?1\"的where条件，填写\"?1\"。",
         "pathNote":"注：路径的写法是\"表别名.字段名\"，如：o.title",
         "userInput":"用户输入",
 
@@ -96,7 +124,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "exportWidth": "宽度",
         "exportEnable": "允许导出",
         "isTime": "时间类型",
-        "isNumber": "数字类型"
+        "isNumber": "数字类型",
+        "viewEnable": "启用视图"
 
     }
 });

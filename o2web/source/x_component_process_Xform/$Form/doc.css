@@ -64,7 +64,7 @@ body.document-editor table thead th:first-of-type {
     background: #ffffff;
     /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
     letter-spacing:-0.01cm;
     position: relative;
@@ -82,7 +82,7 @@ body.document-editor table thead th:first-of-type {
 .o2_editorPlugin_doc_fileno {
     overflow: hidden;
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
     text-align: center;
     margin-top: 2.04cm;
@@ -90,7 +90,7 @@ body.document-editor table thead th:first-of-type {
 .o2_editorPlugin_doc_filenoup {
     overflow: hidden;
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
     margin-top: 2.04cm;
 }
@@ -114,7 +114,7 @@ body.document-editor table thead th:first-of-type {
 .o2_editorPlugin_doc_emptyLine {
     overflow: hidden;
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
     top: 0;
     left:0;
@@ -140,13 +140,13 @@ body.document-editor table thead th:first-of-type {
 }
 .o2_editorPlugin_doc_mainSend {
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
     margin-top: 1.02cm;
 }
 .o2_editorPlugin_doc_file {
     font-size: 16pt;
-    font-family: "仿宋", serif;
+    font-family: "仿宋_GB2312", serif;
     line-height: 1.02cm;
 }
 .o2_editorPlugin_doc_filenoup {
@@ -174,7 +174,7 @@ body.document-editor table thead th:first-of-type {
 
 }
 .o2_editorPlugin_doc_filenoup_signerContent{
-    font-family: "楷体", serif;
+    font-family: "楷体_GB2312", serif;
 }
 .o2_editorPlugin_doc_filenoup_signerContent_td {
     max-width: 4cm;

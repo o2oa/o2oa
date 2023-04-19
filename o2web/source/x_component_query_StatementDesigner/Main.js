@@ -191,7 +191,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         });
     },
     loadStatementList: function(){
-        this.actions.listStatement(this.application.id, function (json) {
+        this.actions.listStatement(this.application.id, {},function (json) {
             json.data.each(function(statement){
                 this.createListStatementItem(statement);
             }.bind(this));
@@ -545,7 +545,6 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     preview : function(){
         this.statement.preview();
     },
-
     saveStatement: function(){
         this.statement.save(function(){
             var name = this.statement.data.name;
@@ -556,20 +555,21 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
     },
 
     statementHelp: function(){
-        var content = new Element("div", {"styles": {"margin": "20px"}});
-        content.set("html", this.lp.tableHelp);
-        o2.DL.open({
-            "title": "table help",
-            "content": content,
-            "width": 500,
-            "height": 300,
-            "buttonList": [
-                {
-                    "text": "ok",
-                    "action": function(){this.close();}
-                }
-            ]
-        });
+	    window.open("../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html", "o2statement")
+        // var content = new Element("div", {"styles": {"margin": "20px"}});
+        // content.set("html", this.lp.tableHelp);
+        // o2.DL.open({
+        //     "title": "table help",
+        //     "content": content,
+        //     "width": 500,
+        //     "height": 300,
+        //     "buttonList": [
+        //         {
+        //             "text": "ok",
+        //             "action": function(){this.close();}
+        //         }
+        //     ]
+        // });
     },
     recordStatus: function(){
         //if (this.tab){

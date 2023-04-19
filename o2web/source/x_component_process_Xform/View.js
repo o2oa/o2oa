@@ -34,11 +34,17 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 打开视图中的一条记录后执行。
-         * @event MWF.xApplication.process.Xform.View#openDocument
+         * 取消选中视图中的一条记录后执行。
+         * @since V8.0
+         * @event MWF.xApplication.process.Xform.View#unselect
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+        /**
+         * 打开视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.View#openDocument，可以通过this.event得到打开的文档参数
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
     },
 
     _loadUserInterface: function(){
@@ -63,27 +69,27 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
      * @example
      * this.form.get("fieldId").reload()
      */
-    reload: function(){
+    reload: function( callback ){
         if (this.view){
             if (this.view.loadViewRes && this.view.loadViewRes.res) if (this.view.loadViewRes.res.isRunning()) this.view.loadViewRes.res.cancel();
             if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
-        this.loadView();
+        this.loadView( callback );
     },
     /**
      * @summary 当视图被设置为延迟加载（未立即载入），通过active方法激活
      * @example
      * this.form.get("fieldId").active()
      */
-    active: function(){
+    active: function( callback ){
         if (this.view){
-            if (!this.view.loadingAreaNode) this.view.loadView();
+            if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
-            this.loadView();
+            this.loadView( callback );
         }
     },
-    loadView: function(){
+    loadView: function( callback ){
         if (!this.json.queryView || !this.json.queryView.name || !this.json.queryView.appName) return "";
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
@@ -121,17 +127,20 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
                 }.bind(this),
                 "onLoadView": function(){
                     this.fireEvent("loadView");
+                    if(callback)callback();
                 }.bind(this),
                 "onSelect": function(item){
-                    debugger;
                     this.fireEvent("select", [item]);
+                }.bind(this),
+                "onUnselect": function(item){
+                    this.fireEvent("unselect", [item]);
                 }.bind(this),
                 "onOpenDocument": function(options, item){
                     this.openOptions = {
                         "options": options,
                         "item": item
                     };
-                    this.fireEvent("openDocument");
+                    this.fireEvent("openDocument", [this.openOptions]);
                     this.openOptions = null;
                 }.bind(this)
             }, this.form.app, this.form.Macro);

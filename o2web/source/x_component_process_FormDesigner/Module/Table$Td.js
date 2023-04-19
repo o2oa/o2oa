@@ -407,7 +407,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				cellNumber = cellNumber-colspan;
 			}.bind(this));
 		}
-		
+
+		var moduleList = [];
 		for (var n=1; n<=rows; n++){
 			var newTr = new Element("tr").inject(tr, position);
 			for (var m=1; m<=cellNumber; m++){
@@ -416,6 +417,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				this.form.getTemplateData("Table$Td", function(data){
 					var moduleData = Object.clone(data);
 					var tdContainer = new MWF.FCTable$Td(this.form);
+					moduleList.push(tdContainer);
                     tdContainer.table = this.table;
 					tdContainer.load(moduleData, cell, this.parentContainer);
 					this.parentContainer.containers.push(tdContainer);
@@ -426,6 +428,15 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		}
 		this.unSelected();
 		this.selected();
+
+		// moduleList.sort(function (a, b) {
+		// 	if( a.node.cellIndex === b.node.cellIndex ){
+		// 		return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
+		// 	}else{
+		// 		return a.node.cellIndex - b.node.cellIndex
+		// 	}
+		// });
+		this.addHistoryLog( "insertRow", moduleList );
 	},
 	
 	insertCol: function(){
@@ -482,7 +493,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var colIndex = this.__getCellIndex(this.node);
-		
+
+		var moduleList = [];
 
 		for (var m=1; m<=cols; m++){
 			var insertTdObjs = this.__getInsertTableColTds(table, colIndex);
@@ -492,6 +504,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				this.form.getTemplateData("Table$Td", function(data){
 					var moduleData = Object.clone(data);
 					var tdContainer = new MWF.FCTable$Td(this.form);
+					moduleList.push(tdContainer);
                     tdContainer.table = this.table;
 					tdContainer.load(moduleData, obj.td, this.parentContainer);
 					this.parentContainer.containers.push(tdContainer);
@@ -501,12 +514,30 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		
 		this.unSelected();
 		this.selected();
+
+		this.addHistoryLog( "insertCol", moduleList );
 		
 	},
 	
 	deleteRow: function(e){
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteRowTitle, MWF.APPFD.LP.notice.deleteRow, 300, 120, function(){
+
+			var tr =  module.node.getParent("tr");
+			var table = tr.getParent("table");
+			if (table.rows.length<=1){
+				// this.parentContainer.destroy();
+				module.parentContainer.addHistoryLog("delete");
+			}else{
+				var moduleList = [];
+				var tds =tr.getElements("td");
+				tds.each(function(td){
+					var m = td.retrieve("module");
+					if(m)moduleList.push(m);
+				});
+				module.addHistoryLog("deleteRow", moduleList);
+			}
+
 			module._deleteRow();
 			this.close();
 		}, function(){
@@ -757,7 +788,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		var table = tr.getParent("table");
 		var rowIndex = tr.rowIndex;
 //		var currentRowspan = this.node.get("rowspan").toInt() || 1;
-		
+
 		var rowspanBeforeTds = table.getElements("td:rowspanBefore("+rowIndex+")");
 		var rowspanCurrentTds = tr.getElements("td:rowspan");
 		
@@ -800,6 +831,24 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 	deleteCol: function(e){
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteColTitle, MWF.APPFD.LP.notice.deleteCol, 300, 120, function(){
+
+			var tr = module.node.getParent("tr");
+			var table = tr.getParent("table");
+			var colIndex = module.__getCellIndex(module.node);
+			var currentRowspan = module.node.get("colspan").toInt() || 1;
+			if (tr.cells.length<=1 && currentRowspan<=1){
+				//this.parentContainer.destroy();
+				module.parentContainer.addHistoryLog("delete");
+			}else{
+				var moduleList = [];
+				var deleteTds = module.__getDeleteTableColTds(table, colIndex);
+				deleteTds.each(function(td){
+					var m = td.retrieve("module");
+					if(m)moduleList.push(m);
+				});
+				module.addHistoryLog("deleteCol", moduleList);
+			}
+
 			module._deleteCol();
 			this.close();
 		}, function(){
@@ -912,6 +961,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 	
 	splitCell: function(){
 
+		var fromLog = this.createHistoryLog();
+
 		var colspan = this.node.get("colspan").toInt() || 1;
 		var rowspan = this.node.get("rowspan").toInt() || 1;
 		
@@ -934,7 +985,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		this.selectedMulti();
 		
 		var startTds = this.__getTdsByIndex(table, rowIndex+1, rowspan-1, colIndex-1);
-		
+
+		var moduleList = [];
 		for (var i=1; i<=rowspan; i++){
 			if (i==1){
 				for (var j=2; j<=colspan; j++){
@@ -943,6 +995,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 					this.form.getTemplateData("Table$Td", function(data){
 						var moduleData = Object.clone(data);
 						var tdContainer = new MWF.FCTable$Td(this.form);
+						moduleList.push(tdContainer);
                         tdContainer.table = this.table;
 						tdContainer.load(moduleData, newTd, this.parentContainer);
 						this.parentContainer.containers.push(tdContainer);
@@ -964,6 +1017,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 					this.form.getTemplateData("Table$Td", function(data){
 						var moduleData = Object.clone(data);
 						var tdContainer = new MWF.FCTable$Td(this.form);
+						moduleList.push(tdContainer);
                         tdContainer.table = this.table;
 						tdContainer.load(moduleData, newTd, this.parentContainer);
 						this.parentContainer.containers.push(tdContainer);
@@ -973,6 +1027,16 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 			}
 		}
 		this.form._completeSelectMulti();
+
+		moduleList.push(this);
+		// moduleList.sort(function (a, b) {
+		// 	if( a.node.cellIndex === b.node.cellIndex ){
+		// 		return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
+		// 	}else{
+		// 		return a.node.cellIndex - b.node.cellIndex
+		// 	}
+		// });
+		this.addHistoryLog("splitCell", moduleList, fromLog);
 	}
 
 	//_showInjectAction : function( module ){

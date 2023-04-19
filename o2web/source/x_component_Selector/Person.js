@@ -442,13 +442,13 @@ MWF.xApplication.Selector.Person = new Class({
     setEvent: function(){
         if (this.titleActionNode){
             this.titleActionNode.addEvent("click", function(){
-                this.fireEvent("cancel");
+                this.fireEvent("cancel", this);
                 this.close();
             }.bind(this));
         }
         if (this.titleCancelActionNode){
             this.titleCancelActionNode.addEvent("click", function(){
-                this.fireEvent("cancel");
+                this.fireEvent("cancel", this);
                 this.close();
             }.bind(this));
         }
@@ -491,7 +491,7 @@ MWF.xApplication.Selector.Person = new Class({
             this.fireEvent("complete", [this.selectedItems]);
             if( this.options.closeOnclickOk !== false )this.close();
         }.bind(this));
-        this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel"); this.close();}.bind(this));
+        this.cancelActionNode.addEvent("click", function(){this.fireEvent("cancel", this); this.close();}.bind(this));
     },
     loadContent: function( contentNode, isHTML ){
 

@@ -79,23 +79,23 @@ public class Indexs {
     public static final String FIELD_CREATORPERSON = "creatorPerson";
     public static final String FIELD_CREATORUNIT = "creatorUnit";
     public static final String FIELD_CREATORUNITLEVELNAME = "creatorUnitLevelName";
-    public static final String FIELD_APPLICATION = "application";
-    public static final String FIELD_APPLICATIONNAME = "applicationName";
+    public static final String FIELD_APPLICATION = "processPlatform_string_application";
+    public static final String FIELD_APPLICATIONNAME = "processPlatform_string_applicationName";
     public static final String FIELD_APPLICATIONALIAS = "applicationAlias";
-    public static final String FIELD_PROCESS = "processName";
-    public static final String FIELD_PROCESSNAME = "processName";
-    public static final String FIELD_PROCESSALIAS = "processAlias";
+    public static final String FIELD_PROCESS = "processPlatform_string_process";
+    public static final String FIELD_PROCESSNAME = "processPlatform_string_processName";
+    public static final String FIELD_PROCESSALIAS = "processPlatform_string_processAlias";
+    public static final String FIELD_SERIAL = "processPlatform_string_serial";
     public static final String FIELD_JOB = "job";
-    public static final String FIELD_SERIAL = "serial";
     public static final String FIELD_EXPIRED = "expired";
     public static final String FIELD_EXPIRETIME = "expireTime";
-    public static final String FIELD_COMPLETED = "completed";
+    public static final String FIELD_COMPLETED = "processPlatform_boolean_completed";
 
     public static final String FIELD_APPID = "appId";
-    public static final String FIELD_APPNAME = "appName";
+    public static final String FIELD_APPNAME = "cms_string_appName";
     public static final String FIELD_APPALIAS = "appAlias";
     public static final String FIELD_CATEGORYID = "categoryId";
-    public static final String FIELD_CATEGORYNAME = "categoryName";
+    public static final String FIELD_CATEGORYNAME = "cms_string_categoryName";
     public static final String FIELD_CATEGORYALIAS = "categoryAlias";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_PUBLISHTIME = "publishTime";
@@ -139,7 +139,7 @@ public class Indexs {
     public static final String PREFIX_FIELD_PROCESSPLATFORM = "processPlatform_";
 
     public static final String FIELD_ROCESSPLATFORM_TASKPERSONNAMES = "taskPersonNames";
-    public static final String FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES = "preTaskPersonNames";
+    public static final String FIELD_ROCESSPLATFORM_PREVTASKPERSONNAMES = "prevTaskPersonNames";
 
     public static final String PREFIX_FIELD_PROCESSPLATFORM_STRING = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_STRING
             + "_";
@@ -459,24 +459,32 @@ public class Indexs {
 
     public static List<String> adjustFacetField(List<String> categories, List<String> filters) {
         List<String> list = FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
-        if (list.contains(FIELD_PROCESSNAME)) {
+        if (filters.contains(FIELD_PROCESSNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPLICATIONNAME, FIELD_PROCESSNAME,
                     FIELD_APPNAME, FIELD_CATEGORYNAME));
         }
-        if (list.contains(FIELD_APPLICATIONNAME)) {
+        if (filters.contains(FIELD_APPLICATIONNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPLICATIONNAME, FIELD_APPNAME,
                     FIELD_CATEGORYNAME));
         }
-        if (list.contains(FIELD_CATEGORYNAME)) {
+        if (filters.contains(FIELD_CATEGORYNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPNAME, FIELD_CATEGORYNAME,
                     FIELD_APPLICATIONNAME, FIELD_PROCESSNAME));
         }
-        if (list.contains(FIELD_APPNAME)) {
+        if (filters.contains(FIELD_APPNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPNAME, FIELD_APPLICATIONNAME,
                     FIELD_PROCESSNAME));
         }
-        if (!ListTools.contains(categories, Indexs.CATEGORY_PROCESSPLATFORM)) {
-            list.remove(Indexs.FIELD_COMPLETED);
+        if (filters.contains(FIELD_COMPLETED)) {
+            list.remove(FIELD_COMPLETED);
+        }
+        if (!ListTools.contains(categories, CATEGORY_PROCESSPLATFORM)) {
+            list.removeAll(Arrays.asList(
+                    FIELD_APPLICATIONNAME, FIELD_PROCESSNAME, FIELD_COMPLETED));
+        }
+        if (!ListTools.contains(categories, CATEGORY_CMS)) {
+            list.removeAll(Arrays.asList(
+                    FIELD_APPNAME, FIELD_CATEGORYNAME));
         }
         return list;
     }

@@ -69,12 +69,10 @@ MWF.xDesktop.getUserLayout = function(callback){
                 if (callback) callback();
             }else{
                 MWF.UD.getPublicData("defaultLayout", function(json) {
-                    if (json){
-                        layout.userLayout = json || {};
-                        if( !layout.userLayout.flatStyle )layout.userLayout.flatStyle = "blue";
-                        if( !layout.userLayout.apps )layout.userLayout.apps = {};
-                        if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
-                    }
+                    layout.userLayout = json || {};
+                    if( !layout.userLayout.flatStyle )layout.userLayout.flatStyle = "blue";
+                    if( !layout.userLayout.apps )layout.userLayout.apps = {};
+                    if (forceStatus) layout.userLayout.apps = Object.merge(layout.userLayout.apps, forceStatus.apps);
                     if (callback) callback();
                 }.bind(this));
             }
@@ -108,9 +106,11 @@ MWF.xDesktop.notice = function(type, where, content, target, offset, option){
     }
     new mBox.Notice(options);
 };
-MWF.xDesktop.loadPortal =  function(portalId){
+MWF.xDesktop.loadPortal =  function(portalId, parameters, isLoginPage){
     layout.openApplication(null, "portal.Portal", {
         "portalId": portalId,
+        "parameters": parameters,
+        "isLoginPage": isLoginPage,
         "onAfterModulesLoad": function(){
             var layoutNode = $("layout");
             if (layoutNode) layoutNode.setStyles({
@@ -448,9 +448,9 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
                 //this.serviceAddressList = json.data;
                 //this.centerServer = center;
                 var serviceAddressList = json.data;
-                if (layout.config.proxyApplicationEnable){
+                if (layout.config.proxyApplicationEnable || !layout.config.center){
                     Object.keys(serviceAddressList).forEach(function(k){
-                        if (k!=="x_message_assemble_communicate") serviceAddressList[k].port = window.location.port;
+                        if (k!=="x_message_assemble_communicate" || !layout.config.center) serviceAddressList[k].port = window.location.port;
                     })
                 }
                 if (callback) callback(serviceAddressList, center);

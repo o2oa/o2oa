@@ -509,7 +509,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
             }
             this.showNotValidationMode(this.node);
 
-            if (!this.node.isIntoView()) this.node.scrollIntoView();
+            if (!this.errNode.isIntoView()) this.errNode.scrollIntoView(false);
         }
     },
 
@@ -524,6 +524,22 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                 this.errNode = null;
             }
         }
-    }
+    },
+
+        getExcelData: function(){
+            var value = this.getData();
+            var options = this.getOptionsObj();
+            var idx = options.valueList.indexOf( value );
+            var text = idx > -1 ? options.textList[ idx ] : "";
+            return text;
+        },
+        setExcelData: function(d){
+            var value = d.replace(/&#10;/g,""); //换行符&#10;
+            this.excelData = value;
+            var options = this.getOptionsObj();
+            var idx = options.textList.indexOf( value );
+            value = idx > -1 ? options.valueList[ idx ] : ""
+            this.setData(value, true);
+        }
 	
 }); 

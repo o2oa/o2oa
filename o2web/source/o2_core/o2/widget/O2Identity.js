@@ -9,7 +9,8 @@ o2.widget.O2Identity = new Class({
 		"style": "default",
         "canRemove": false,
         "lazy": false,
-        "disableInfor" : false
+        "disableInfor" : false,
+        "styles": ""
 	},
 	initialize: function(data, container, options){
 
@@ -55,6 +56,9 @@ o2.widget.O2Identity = new Class({
 
         if (!this.options.lazy && !this.options.disableInfor) this.getPersonData();
         this.node = new Element("div", {"styles": style }).inject(this.container);
+        if( this.options.styles ){
+            this.node.setStyles( this.options.styles );
+        }
         this.setText();
 
         if (this.options.canRemove){
@@ -92,6 +96,9 @@ o2.widget.O2Identity = new Class({
                     //     this.style.identityNode_over_mobile : this.style.identityNode_over;
 
                     this.node.setStyles( this.style.identityNode_over ); //style_over
+                    if( this.options.styles ){
+                        this.node.setStyles( this.options.styles );
+                    }
                 }.bind(this),
                 "mouseout": function(){
 
@@ -99,6 +106,9 @@ o2.widget.O2Identity = new Class({
                     //     this.style.identityNode_mobile : this.style.identityNode;
 
                     this.node.setStyles( this.style.identityNode ); //style
+                    if( this.options.styles ){
+                        this.node.setStyles( this.options.styles );
+                    }
                 }.bind(this)
             });
         }
@@ -537,7 +547,14 @@ o2.widget.O2QueryView = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id, "application": this.data.query, "appId": appId};
+                var options = {
+                    "id": this.data.id,
+                    "application": {
+                        "id": this.data.query,
+                        "name": this.data.name || this.data.queryName || ""
+                    },
+                    "appId": appId
+                };
                 layout.desktop.openApplication(e, "query.ViewDesigner", options);
             }
         }
@@ -564,7 +581,13 @@ o2.widget.O2QueryStatement = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id, "application": this.data.query, "appId": appId};
+                var options = {
+                    "id": this.data.id,
+                    "application": {
+                        "id": this.data.query,
+                        "name": this.data.name || this.data.queryName || ""
+                    },
+                    "appId": appId};
                 layout.desktop.openApplication(e, "query.StatementDesigner", options);
             }
         }
@@ -591,7 +614,14 @@ o2.widget.O2QueryStat = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                var options = {
+                    "id": this.data.id,
+                    "application": {
+                        "id": this.data.query,
+                        "name": this.data.name || this.data.queryName
+                    },
+                    "appId": appId
+                };
                 layout.desktop.openApplication(e, "query.StatDesigner", options);
             }
         }
@@ -618,7 +648,13 @@ o2.widget.O2QueryTable = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                var options = {
+                    "id": this.data.id,
+                    "application": {
+                        "id": this.data.query,
+                        "name": this.data.name || this.data.queryName
+                    },
+                    "appId": appId};
                 layout.desktop.openApplication(e, "query.TableDesigner", options);
             }
         }
@@ -645,7 +681,13 @@ o2.widget.O2QueryImportModel = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                var options = {
+                    "id": this.data.id,
+                    "application": {
+                        "id": this.data.query,
+                        "name": this.data.name || this.data.queryName || ""
+                    },
+                    "appId": appId};
                 layout.desktop.openApplication(e, "query.ImporterDesigner", options);
             }
         }
@@ -731,7 +773,7 @@ o2.widget.O2Script = new Class({
         });
     },
     open : function (e) {
-        if( this.data.id && this.data.appId &&  this.data.appType){
+        if( this.data.id && this.data.appId && this.data.appType){
             var appName;
             if( this.data.appType === "cms" ){
                 appName = "cms.ScriptDesigner";
@@ -739,12 +781,21 @@ o2.widget.O2Script = new Class({
                 appName = "portal.ScriptDesigner";
             }else if( this.data.appType === "process" ) {
                 appName = "process.ScriptDesigner";
+            }else if( this.data.appType === "service" ) {
+                appName = "service.ScriptDesigner";
             }
             var appId = appName + this.data.id;
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                var options = {
+                    "id": this.data.id,
+                    "appId": appId,
+                    "application":{
+                        "name": this.data.appName || this.data.applicationName || "",
+                        "id": this.data.appId
+                    }
+                };
                 layout.desktop.openApplication(e, appName, options);
             }
         }
@@ -768,7 +819,14 @@ o2.widget.O2FormStyle = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                var options = {
+                    "id": this.data.id,
+                    "appId": appId,
+                    "application":{
+                        "name": this.data.appName || this.data.applicationName || "",
+                        "id": this.data.appId
+                    }
+                };
                 layout.desktop.openApplication(e, appName, options);
             }
         }
@@ -811,7 +869,13 @@ o2.widget.O2Dictionary = new Class({
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
-                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                var options = {
+                    "id": this.data.id,
+                    "appId": appId,
+                    "application":{
+                        "id": this.data.appId,
+                        "name": this.data.appName || this.data.applicationName || ""
+                    }};
                 layout.desktop.openApplication(e, appName, options);
             }
         }

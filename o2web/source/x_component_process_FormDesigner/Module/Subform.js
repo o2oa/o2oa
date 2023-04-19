@@ -188,6 +188,8 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
             if (this.queryGetFormDataFun) module.form.removeEvent("queryGetFormData", this.queryGetFormDataFun);
             if (this.postGetFormDataFun) module.form.removeEvent("postGetFormData", this.postGetFormDataFun);
 
+            module.addHistoryLog( "delete", null, null, null, null, module.getHtml() );
+
             module.destroy();
             module.form.selected();
 

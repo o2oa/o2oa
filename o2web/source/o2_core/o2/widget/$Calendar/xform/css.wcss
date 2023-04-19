@@ -43,7 +43,8 @@
 		"font-size": "12px"
 	},
 	"dateCurrentText": {
-		"cursor": "pointer"
+		"cursor": "pointer",
+		"color": "#FFFFFF"
 	},
 	"calendarContent": {
 		"width": "210px",
@@ -149,6 +150,14 @@
 	//	"background": "#FFF",
 		"border": "0px solid #FFF",
 		"color": "#000"
+	},
+	"disable_xform": {
+		"opacity": "0.3",
+		"cursor": "not-allowed"
+	},
+	"notdisable_xform": {
+		"opacity": "1",
+		"cursor": "pointer"
 	},
 	"dateBottom": {
 		"display": "none"

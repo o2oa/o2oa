@@ -752,7 +752,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.multiToolsJson = JSON.parse(jsonStr);
                 var json = Array.clone(this.multiToolsJson);
                 json.each(function (tool) {
-                    var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                    var flag;
+                    if( tool.system ){
+                        flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                    }else{
+                        flag = this._checkCustomMobileActionItem(tool, this.options.readonly)
+                    }
                     if (flag) tools.push(tool);
                 }.bind(this));
             }else{
@@ -905,6 +910,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     } else {
                         if (this[t.action]) this[t.action](e);
                     }
+                    // 关闭
+                    if (this.actionMoreArea) {
+                        this.actionMoreArea.setStyle("display", "none");
+                        document.body.unmask();
+                    }
                 }.bind(this));
             }
         }
@@ -991,6 +1001,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         this._runCustomAction(t.actionScript);
                     } else {
                         if (this[t.action]) this[t.action](e);
+                    }
+                     // 关闭
+                     if (this.actionMoreArea) {
+                        this.actionMoreArea.setStyle("display", "none");
+                        document.body.unmask();
                     }
                 }.bind(this));
                 this._setMobileBottonStyle(action);
@@ -1471,7 +1486,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     saveWork: function (callback, silent) {
 
+        if( this.disallowSaving )return;
+
         if (this.businessData.control["allowSave"]) {
+
+            if (!this.formSaveValidation()) {
+                if (callback) callback();
+                return false;
+            }
+
             this.fireEvent("beforeSave");
             this.fireEvent("beforeSaveWork");
 
@@ -1864,6 +1887,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.taskProcessedMessage));
             }
         }
+    },
+    formSaveValidation: function(){
+        var flag = true;
+        Object.each(this.forms, function (field, key) {
+            if( !field.json.id || field.json.id.indexOf("..") > 0 )return;
+            field.validationMode();
+            if (!field.saveValidation()) flag = false;
+        }.bind(this));
+        return flag;
     },
     formValidation: function (routeName, opinion, medias) {
         if (this.options.readonly) return true;

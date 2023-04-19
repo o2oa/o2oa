@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="js/sso.min.js"></script>
+    <script>
+        o2.addReady(function(){
+
+            var requestJson = function ( root, path, successCallback, failureCallback, errorCallback, method ) {
+                var locate = window.location;
+                var protocol = locate.protocol;
+                var addressObj, address;
+                if( root === "x_program_center" ){
+                    addressObj = layout.centerServer;
+                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+ "/x_program_center";
+                }else{
+                    addressObj = layout.serviceAddressList[root];
+                    address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+                }
+
+                var res = new Request.JSON({
+                    url: o2.filterUrl(address+ path),
+                    secure: false,
+                    method: method || "GET",
+                    noCache: true,
+                    withCredentials: true,
+                    onSuccess: function(responseJSON, responseText){
+                        if( successCallback )successCallback( responseJSON, responseText );
+                    }.bind(this),
+                    onFailure: function(xhr){
+                        if( failureCallback )failureCallback(xhr)
+                    }.bind(this),
+                    onError: function(text, error){
+                        if( errorCallback )errorCallback(text, error)
+                    }.bind(this)
+                });
+                res.send();
+            }
+
+            var who = function( unloginCallback, loginCallback, failureCallback){
+                requestJson(
+                    "x_organization_assemble_authentication",
+                    "/jaxrs/authentication",
+                    function(responseJSON, responseText){
+                        if( responseJSON.data.tokenType === "anonymous" ){
+                            unloginCallback()
+                        }else{
+                            loginCallback()
+                        }
+                    }.bind(this),
+                    function(xhr){
+                        failureCallback()
+                    }.bind(this),
+                    function(text, error){
+                        failureCallback()
+                    }.bind(this)
+                );
+            };
+
+            var login = function(){
+
+                var uri = new URI(window.location.toString());
+                var token = uri.getData("token");
+                var enterId = uri.getData("enterId");
+                // var redirect = uri.getData("redirect");
+
+                var loginCallback = function (token, enterId) {
+                    requestJson(
+                        "x_organization_assemble_authentication",
+                        "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId+"&date="+(new Date()).getTime(),
+                        function(responseJSON, responseText){
+                            var result = responseJSON.data.id;
+                            if(result){
+                                redirectTo();
+                            }else{
+                                $("ssoerror").set("html","单点失败！"+responseJSON.message + "<br/>地址：" + window.location).show();
+                            }
+                        }.bind(this),
+                        function(xhr){
+                            var json = JSON.parse(xhr.responseText);
+                            $("ssoerror").set("html", "单点登录失败: " + json.message + "<br/>" + (json.prompt || "") + "<br/>地址：" + window.location ).show();
+                        }.bind(this),
+                        function(text, error){
+                            $("ssoerror").set("html", text + "<br/>地址：" + window.location).show();
+                        }.bind(this)
+                    );
+                };
+
+                //调用
+                function feixinGetTokenFun() {
+                    var param = {
+                        backid: 'deliveryToken',
+                        backFunc: 'deliveryToken' //回调方法
+                    };
+                    if (window.WebContainer && window.WebContainer.feixinGetToken){ //Android
+                        window.WebContainer.feixinGetToken(JSON.stringify(param))
+                    } else if ( window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.feixinGetToken) {
+                        window.webkit.messageHandlers.feixinGetToken.postMessage(param)
+                    } else if (navigator && navigator.WebContainer && navigator.WebContainer.feixinGetToken) {
+                        navigator.WebContainer.feixinGetToken(JSON.stringify(param))
+                    } else {
+                        $("ssoerror").set("html","单点失败，无token api！" + "<br/>地址：" + window.location).show();
+                    }
+                }
+
+                //if ( enterId ){
+                    if( enterId && token ){
+                        loginCallback( token, enterId )
+                    }else{
+                        //回调方法
+                        window.deliveryToken = function(info){
+                            if( info ){
+                                loginCallback(info, enterId);
+                            }else{
+                                $("ssoerror").set("html","单点失败，通过API未获取到token！" + "<br/>地址：" + window.location).show();
+                            }
+                        }
+                        feixinGetTokenFun();
+                    }
+                // }else{
+                //     $("ssoerror").set("html","单点失败，enterId为空！" + "<br/>地址：" + window.location).show();
+                // }
+            };
+
+
+            function isMobile() {
+                debugger;
+                return o2.session.isMobile;
+                // let userAgentInfo = navigator.userAgent;
+                // let Agents = ['Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod'];
+                // let getArr = Agents.filter(function(i){
+                //     return userAgentInfo.indexOf(i) > -1;
+                // });
+                // return getArr.length ? true : false;
+            }
+
+            var gotoPage = function (uri) {
+                history.replaceState(null, "gotoPage", uri);
+                document.location.href = uri;
+            };
+
+            var redirectTo = function(){
+                var uri = new URI(window.location.toString());
+                var redirect = uri.getData("redirect");
+
+                if (redirect){
+                    gotoPage( redirect );
+                }else{
+                    if( isMobile() ){
+                        requestJson(
+                            "x_program_center",
+                            "/jaxrs/appstyle/index/portal",
+                            function(responseJSON, responseText){
+                                var data = responseJSON.data;
+                                if( data && data.value ){
+                                    // var url = "../x_desktop/portalmobile.html?id="+data.value;
+                                    // if( data.indexPage ){
+                                    //     url = url + "&page=" + loginPage.page;
+                                    // }
+                                    gotoPage( "../x_desktop/portalmobile.html?id="+data.value );
+                                }else{
+                                    gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter" );
+                                }
+                            }.bind(this),
+                            function(xhr){
+                                gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter");
+                            }.bind(this),
+                            function(text, error){
+                                gotoPage( "../x_desktop/appMobile.html?app=process.TaskCenter" );
+                            }.bind(this)
+                        );
+                    }else{
+                        gotoPage( "../x_desktop/index.html" );
+                    }
+                }
+            };
+
+            o2.JSON.get("res/config/config.json", function(config){
+                if (config.proxyCenterEnable){
+                    if (o2.typeOf(config.center)==="array"){
+                        config.center.forEach(function(c){
+                            c.port = window.location.port || 80;
+                        })
+                    }else{
+                        config.port = window.location.port || 80;
+                    }
+                }
+                layout.config = config;
+                getServiceAddress(config, function(){
+
+                    //debugger;
+
+                    //console.log(window.location);
+
+                    who( login, redirectTo, login)
+
+
+
+                });
+            });
+
+        });
+
+        function buttonLogin() {
+            who( login, redirectTo, login)
+        }
+    </script>
+</head>
+<body style="background: rgb(239, 239, 244);">
+<div id="ssoerror" style="text-align:center;line-height: 30px;word-break: break-all;display:none;">单点失败，请联系管理员！</div>
+<button onclick="buttonLogin()"></button>
+</body>
+</html>

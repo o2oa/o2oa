@@ -6,12 +6,12 @@
                 <!--<td class="editTableValue">text{$.id}</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">{{$.lp.name}}:</td>
-                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput" placeholder="{{$.lp.orgIdPlaceholder}}"/></td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.title}}:</td>
-                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput"/><div>{{$.lp.titleInfo}}</div></td>
+                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput" placeholder="{{$.lp.titleInfo}}"/></td>
             </tr>
         </table>
         <br/>
@@ -256,23 +256,27 @@
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'none');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');
+                                    $('text{$.pid}firstLevelSelectable1').setStyle('display', 'none');
                                 }
                                 " name="unitRange" value="all" text{(['unit', 'draftUnit', 'currentUnit'].indexOf($.unitRange)==-1)?'checked':''}/>{{$.lp.allUnit}}
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'none');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'block');
+                                    $('text{$.pid}firstLevelSelectable1').setStyle('display', 'block');
                                  }" name="unitRange" value="unit" text{($.unitRange.indexOf('unit')!=-1)?'checked':''}/>{{$.lp.specifyUnit}}<br/>
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'block');
                                     $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');
+                                    $('text{$.pid}firstLevelSelectable1').setStyle('display', 'block');
                                 }" name="unitRange" value="draftUnit" text{($.unitRange.indexOf('draftUnit')!=-1)?'checked':''}/>{{$.lp.draftUnit}}<br/>
                             <input type="radio" onclick="
                                 if (this.checked) {
                                     $('text{$.pid}unitRangeNextArea').setStyle('display', 'block');
-                                    $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');}
-                                " name="unitRange" value="currentUnit" text{($.unitRange.indexOf('currentUnit')!=-1)?'checked':''}/>{{$.lp.currentUnit}}<br/>
+                                    $('text{$.pid}unitRangeScriptValue').setStyle('display', 'none');
+                                    $('text{$.pid}firstLevelSelectable1').setStyle('display', 'block');
+                                }" name="unitRange" value="currentUnit" text{($.unitRange.indexOf('currentUnit')!=-1)?'checked':''}/>{{$.lp.currentUnit}}<br/>
 
                             <div id="text{$.pid}unitRangeNextArea" style="border-top: 1px solid #999; display: text{($.unitRange=='draftUnit' || $.unitRange=='currentUnit')?'block':'none'}; ">
                                 <input type="radio" name="unitRangeNext" value="direct" text{(['level', 'type'].indexOf($.unitRangeNext)==-1)?'checked':''}/>{{$.lp.inUnit}}<br/>
@@ -296,18 +300,40 @@
                     </tr>
                 </table>
 
-                <div id="text{$.pid}unitExpandSubEnable" style="border-bottom: 1px solid #999; ">
+                <div id="text{$.pid}unitExpandSubEnable">
                     <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle">{{$.lp.expandNext}}:</td>
                             <td class="editTableValue">
-                                <input type="radio" name="unitExpandSubEnable" value="yes" text{($.unitExpandSubEnable!='no')?'checked':''}/>{{$.lp.yes}}
-                                <input type="radio" name="unitExpandSubEnable" value="no" text{($.unitExpandSubEnable=='no')?'checked':''}/>{{$.lp.no}}
+                                <input type="radio" name="unitExpandSubEnable" value="yes" onclick="
+                                    if (this.checked) {
+                                        $('text{$.pid}firstLevelSelectable2').setStyle('display', 'block');
+                                    }" text{($.unitExpandSubEnable!='no')?'checked':''}/>{{$.lp.yes}}
+                                <input type="radio" name="unitExpandSubEnable" value="no" onclick="
+                                    if (this.checked) {
+                                        $('text{$.pid}firstLevelSelectable2').setStyle('display', 'none');
+                                    }" text{($.unitExpandSubEnable=='no')?'checked':''}/>{{$.lp.no}}
                             </td>
                         </tr>
                     </table>
                 </div>
+
+                <div id="text{$.pid}firstLevelSelectable1" style="display: text{(['unit','draftUnit','currentUnit'].contains($.unitRange))?'block':'none'};">
+                    <div id="text{$.pid}firstLevelSelectable2" style="display: text{($.unitExpandSubEnable!='no')?'block':'none'};">
+                        <table>
+                            <tr>
+                                <td class="editTableTitle">{{$.lp.firstLevelSelectable}}:</td>
+                                <td class="editTableValue">
+                                    <input type="radio" name="firstLevelSelectable" value="yes" text{($.firstLevelSelectable=='yes')?'checked':''}/>{{$.lp.yes}}
+                                    <input type="radio" name="firstLevelSelectable" value="no" text{($.firstLevelSelectable!='yes')?'checked':''}/>{{$.lp.no}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="border-bottom: 1px solid #999;"></div>
 
                 <div id="text{$.pid}unitRangeScriptValue" style="border-bottom: 1px solid #999; display: text{($.unitRange=='unit')?'block':'none'}; ">
                     <!--<div style="height: 24px; line-height:24px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">通过选择表单数据指定选择范围</div>-->

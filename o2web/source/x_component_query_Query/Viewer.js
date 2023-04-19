@@ -28,7 +28,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     initialize: function(container, json, options, app, parentMacro){
         //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select、unselect
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
         //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
 
@@ -68,12 +68,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
 
     },
-    loadView: function(){
+    loadView: function( callback ){
         if (this.viewJson){
-            this.reload();
+            this.reload( callback );
         }else{
             this.init(function(){
-                this.load();
+                this.load( callback );
             }.bind(this));
         }
     },
@@ -85,21 +85,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.getView(callback);
         }
     },
-    load: function(){
+    load: function( callback ){
         this.loadResource( function () {
             this._loadModuleEvents();
             if (this.fireEvent("queryLoad")){
-                this._loadUserInterface();
+                this._loadUserInterface( callback );
                 //this._loadStyles();
                 this._loadDomEvents();
             }
         }.bind(this))
     },
-    _loadUserInterface : function(){
+    _loadUserInterface : function( callback ){
         this.loadLayout();
         this.createActionbarNode();
         this.createSearchNode();
-        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
 
         if (this.options.resizeNode){
             this.setContentHeightFun = this.setContentHeight.bind(this);
@@ -391,7 +391,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
-                if (!column.allowOpen) this.openColumns.push(column.column);
+                if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             this.lookup(data, callback);
         }
@@ -868,7 +868,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     hide: function(){
         this.node.setStyle("display", "none");
     },
-    reload: function(){
+    reload: function( callback ){
         if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
@@ -882,7 +882,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.closeCustomSearch();
 
         this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback);
     },
     getFilter: function(){
         var filterData = [];
@@ -2211,7 +2211,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("select", [{
+        this.view.fireEvent("unselect", [{
             "selected": false,
             "item": this,
             "data": this.data
@@ -2257,7 +2257,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("select", [{
+        this.view.fireEvent("unselect", [{
             "selected": false,
             "item": this,
             "data": this.data

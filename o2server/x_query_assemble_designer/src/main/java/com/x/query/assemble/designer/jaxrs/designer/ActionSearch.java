@@ -130,7 +130,7 @@ class ActionSearch extends BaseAction {
 				if (ListTools.isNotEmpty(designerIdList)) {
 					woTables = emc.fetchIn(Table.class, WoTable.copier, Table.id_FIELDNAME, designerIdList);
 				} else if (ListTools.isNotEmpty(appIdList)) {
-					woTables = emc.fetchIn(Table.class, WoTable.copier, Table.query_FIELDNAME, appIdList);
+					woTables = emc.fetchIn(Table.class, WoTable.copier, Table.QUERY_FIELDNAME, appIdList);
 				} else {
 					woTables = emc.fetchAll(Table.class, WoTable.copier);
 				}
@@ -213,7 +213,7 @@ class ActionSearch extends BaseAction {
 					woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.id_FIELDNAME,
 							designerIdList);
 				} else if (ListTools.isNotEmpty(appIdList)) {
-					woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.query_FIELDNAME,
+					woStatements = emc.fetchIn(Statement.class, WoStatement.copier, Statement.QUERY_FIELDNAME,
 							appIdList);
 				} else {
 					woStatements = emc.fetchAll(Statement.class, WoStatement.copier);

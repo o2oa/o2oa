@@ -178,8 +178,8 @@ MWF.xApplication.process.Xform.LP = {
 
     "attachmentPermission": "设置附件权限",
     "attachmentPermissionInfo": "您正在为以下附件设置权限：",
-    "attachmentRead": "谁可以查看和下载此附件：(为空表示有权限阅读此文档的人都可以)",
-    "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以)",
+    "attachmentRead": "谁可以查看和下载此附件：(为空表示有权限阅读此文档的人都可以，不为空需同时选择编辑和设置权限)",
+    "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以，不为空需同时选择设置权限)",
     "attachmentController": "谁可以设置此附件的权限：(为空表示有权限编辑此文档的人都可以)",
 
     "attachmentOCRTitle": "纠正自动识别的图片中的文字",
@@ -408,6 +408,10 @@ MWF.xApplication.process.Xform.LP = {
     },
     "onlyoffice" : {
         "noInstall" : "请先安装onlyoffice应用",
+        "filetext" : "文件正文"
+    },
+    "officeonline" : {
+        "noInstall" : "请先安装officeonline应用",
         "filetext" : "文件正文"
     },
     "title": "标题",

@@ -333,9 +333,91 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
                     t = list.get(0);
                     break out;
                 default:
-                    throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
-                            + ", attribute:" + field.getName() + ", restrict attrubte:" + singularAttribute
+                    throw new IllegalStateException("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+                            + ", attribute:" + field.getName() + ", restrict attribute:" + singularAttribute
                             + ", restrict value:" + restrictValue + ".");
+            }
+        }
+        return t;
+    }
+
+    public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
+            Object firstValue, String secondAttribute, Object secondValue) throws Exception {
+        return this.restrictFlagEqualAndEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
+                this.entityManagerContainerFactory.getRestrictFlagFields(cls));
+    }
+
+    public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
+            Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
+        EntityManager em = this.get(cls);
+        if (StringUtils.isEmpty(flag)) {
+            return null;
+        }
+        T t = null;
+        out: for (Field field : fields) {
+            if (!JpaObjectTools.withinDefinedLength(flag, cls, field)) {
+                continue;
+            }
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(cls);
+            Root<T> root = cq.from(cls);
+            Predicate p = cb.equal(root.get(field.getName()), flag);
+            p = cb.and(p, cb.equal(root.get(firstAttribute), firstValue));
+            p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
+            cq.select(root).where(p);
+            List<T> list = em.createQuery(cq).setMaxResults(2).getResultList();
+            switch (list.size()) {
+                case 0:
+                    break;
+                case 1:
+                    t = list.get(0);
+                    break out;
+                default:
+                    throw new IllegalStateException("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+                            + ", attribute:" + field.getName() + ", first attribute:" + firstAttribute
+                            + ", first value:" + firstValue + ", second attribute:" + secondAttribute
+                            + ", second value:" + secondValue + ".");
+            }
+        }
+        return t;
+    }
+
+    public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
+            Object firstValue, String secondAttribute, Object secondValue) throws Exception {
+        return this.restrictFlagEqualAndNotEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
+                this.entityManagerContainerFactory.getRestrictFlagFields(cls));
+    }
+
+    public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
+            Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
+        EntityManager em = this.get(cls);
+        if (StringUtils.isEmpty(flag)) {
+            return null;
+        }
+        T t = null;
+        out: for (Field field : fields) {
+            if (!JpaObjectTools.withinDefinedLength(flag, cls, field)) {
+                continue;
+            }
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(cls);
+            Root<T> root = cq.from(cls);
+            Predicate p = cb.equal(root.get(field.getName()), flag);
+            p = cb.and(p, cb.equal(root.get(firstAttribute), firstValue));
+            p = cb.and(p, cb.notEqual(root.get(secondAttribute), secondValue));
+            cq.select(root).where(p);
+            List<T> list = em.createQuery(cq).setMaxResults(2).getResultList();
+            switch (list.size()) {
+                case 0:
+                    break;
+                case 1:
+                    t = list.get(0);
+                    break out;
+                default:
+                    throw new IllegalStateException("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+                            + ", attribute:" + field.getName() + ", first attribute:" + firstAttribute
+                            + ", first value:" + firstValue + ", second attribute:" + secondAttribute
+                            + ", second value:" + secondValue + ".");
             }
         }
         return t;
@@ -376,10 +458,10 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
         cq.select(root).where(cb.isMember(root.get(JpaObject.id_FIELDNAME), cb.literal(list)));
         List<T> os = em.createQuery(cq).getResultList();
         if (!ordered) {
-            return new ArrayList<T>(os);
+            return new ArrayList<>(os);
         }
         List<T> ordering = new ArrayList<>(os);
-        Collections.sort(ordering, new Comparator<T>() {
+        Collections.sort(ordering, new Comparator<>() {
             public int compare(T t1, T t2) {
                 return Integer.compare(list.indexOf(t1.getId()), list.indexOf(t2.getId()));
             }
@@ -1113,6 +1195,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
         Root<T> root = cq.from(cls);
         Predicate p = cb.or(root.get(firstAttribute).in(firstCollection),
                 root.get(secondAttribute).in(secondCollection),
+                cb.isMember(isMemberValue, root.get(isMemberAttribute)));
+        List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME)).where(p)).getResultList();
+        return new ArrayList<>(os);
+    }
+
+    public <T extends JpaObject, W> List<String> idsInOrIsMember(Class<T> cls, String inAttribute,
+            Collection<W> inCollection,
+            String isMemberAttribute, Object isMemberValue) throws Exception {
+        EntityManager em = this.get(cls);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<T> root = cq.from(cls);
+        Predicate p = cb.or(root.get(inAttribute).in(inCollection),
                 cb.isMember(isMemberValue, root.get(isMemberAttribute)));
         List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME)).where(p)).getResultList();
         return new ArrayList<>(os);

@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
+        "history": "历史",
+        "componentTree": "组件树",
 
 		"button":{
 			"ok": "确定",
@@ -62,14 +64,21 @@ MWF.xApplication.process.FormDesigner.LP = {
 			"copy": "复制",
 			"delete": "删除",
 			"add": "添加",
-			"script": "脚本",
+            "cut": "剪切",
+            "paste": "黏贴",
+            "open": "打开",
+            "script": "脚本",
+            "create": "创建",
+            "mergeCell": "合并单元格",
             "styleBrush": "格式刷",
             "insertTop" : "插入到顶部",
             "insertBottom" : "插入到底部",
             "insertBefore" : "插入到前面",
             "insertAfter" : "插入到后面",
             "injectNotice" : "按住Ctrl松开鼠标精确定位",
-            "selectedContainer": "选择父对象"
+            "selectedContainer": "选择父对象",
+            "property": "属性",
+            "batchModify": "批量修改"
 		},
 
         "actionbar": {
@@ -322,7 +331,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "yozoOffice" : "永中控件",
-        "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
         "SmartBI":"SmartBI报表",
@@ -455,6 +463,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "是否只读",
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
+        "itemStyle": "条目样式",
         "actionStyles": "按钮样式",
         "imageStyles": "图片样式",
         "compute": "计算",
@@ -499,6 +508,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalRow": "总计行",
         "sectionAmountCellStyle": "区段总计单元格样式",
         "showAllSection": "显示所有区段",
+
+        "rangeByDatetime": "日期时间范围",
+        "rangeByDateAndTime": "日期范围和时间范围",
+        "rangeByDate": "日期范围",
+        "rangeByTime": "时间范围",
+        "rangeByOhter": "其他",
+        "enableDate": "有效日期",
+        "enableHours": "有效小时范围",
+        "enableMinutes": "有效分钟范围",
+        "enableSeconds": "有效秒范围",
 
         "decimal": "小数点",
 
@@ -560,6 +579,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "specifyGroup": "指定群组",
         "exclude": "排除",
         "excludeInfo": "通过编写脚本排除组织、身份、个人和群组的选择范围",
+        "firstLevelSelectable": "允许选择第一层",
 
         "dateTime": "日期时间",
         "dateTime2": "日期时间",
@@ -620,7 +640,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "允许拖拽",
         "allowDrag": "判断节点能否被拖拽",
         "allowDrop": "拖拽时判定目标节点能否被放置",
-        "emptyText": "内容为空显示的脚本",
+        "emptyText": "内容为空显示的文本",
         "allowDragNote": "this.event为传入节点，'return true'表示允许拖拽",
         "allowDropNote": "this.event 可以获取数据 { draggingNode, dropNode, type }。type 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后。'return true'表示允许插入。",
         "loadFun": "加载子树数据脚本",
@@ -704,6 +724,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
         "allowEdit": "允许编辑",
+        "officeTool": "Office预览/编辑工具",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
@@ -776,6 +797,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tableStyle": "表格样式",
         "defaultData": "默认数据",
         "allowAdd": "允许添加",
+        "allowSort": "允许排序",
         "exportImport": "导出导入",
         "enabled": "启用",
         "disabled": "禁用",
@@ -1082,7 +1104,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectBoxTitle": "选择框标题",
         "query": "查询",
         "pathInfo": "注：路径的写法是\"表别名.字段名\"，如：o.title",
-        "parameterNote":"注：参数对应查询语句和总数语句中形如\":field\"的where条件，填写\"field\"。",
+        "parameterNote": "注：对应查询语句和总数语句中的参数；\n如\":field\"的where条件，填写\"field\"；\n如\"?1\"的where条件，填写\"?1\"。",
 
         "source": "数据源",
         "method": "方法",
@@ -1457,8 +1479,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "返回应用路径，如组织管理",
         "componentScript": "应用路径脚本",
         "applicationOptions": "应用options",
-        "applicationStatus": "应用status"
-
+        "applicationStatus": "应用status",
+        "titleAddTo": "标题行添加",
+        "firstLine": "首行",
+        "lastLine": "末行"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
@@ -1469,6 +1493,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     },
     "wpsoffice":{
         "nosetup":"请先安装WpsOffice应用",
+    },
+    "officeonline":{
+        "nosetup":"请先安装OfficeOnline应用",
     },
     "actionBar": {
         "close":"关闭",

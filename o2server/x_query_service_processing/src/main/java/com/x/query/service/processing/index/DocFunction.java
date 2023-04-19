@@ -176,7 +176,7 @@ public class DocFunction {
     public static final Function<Pair<Business, String>, Pair<String, Optional<Doc>>> wrapDocument = param -> {
         try {
             Document document = param.first().entityManagerContainer().find(param.second(), Document.class);
-            if (null != document) {
+            if ((null != document) && (!StringUtils.equals(document.getDocumentType(), Document.DOCUMENT_TYPE_DATA))) {
                 LOGGER.debug("DocFunction wrapDocument:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), document));
@@ -239,7 +239,7 @@ public class DocFunction {
                 list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
                         .map(OrganizationDefinition::name).distinct()
                         .collect(Collectors.toList()));
-        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES,
+        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_PREVTASKPERSONNAMES,
                 list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
                         .map(OrganizationDefinition::name).distinct()
                         .collect(Collectors.toList()));

@@ -249,8 +249,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.isShowAllSection = this.isAllSectionShow();
 
 			this.editModules = [];
-			this.node.setStyle("overflow-x", "auto");
-			this.node.setStyle("overflow-y", "hidden");
+
+			if( !layout.mobile ){
+				this.node.setStyle("overflow-x", "auto");
+				this.node.setStyle("overflow-y", "hidden");
+			}
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
@@ -262,6 +265,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.deleteable = this.json.deleteable !== "no";
 			this.addable = this.json.addable !== "no";
+			this.sortable = this.json.sortable !== "no";
 
 			//允许导入
 			this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
@@ -371,22 +375,35 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					var addLineAction = new Element("div", {
 						"styles": this.form.css.addLineAction,
 						"events": {
-							"click": function(e){ this._addLine(e.target, true); }.bind(this)
+							"click": function(e){
+								if( this.json.addTo === "first" ){
+									this._insertLineByIndex(e.target, 0);
+								}else{
+									this._addLine(e.target, true);
+								}
+							}.bind(this)
 						}
 					}).inject(actionTh);
 				}
-				var moveTh = new Element("th.mwf_moveaction").inject(this.titleTr, "bottom"); //总计列
+				var moveTh;
+				if( this.sortable ){
+					moveTh = new Element("th.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.titleTr, "bottom"); //总计列
+				}
 				if (this.json.border){
 					Array.each([actionTh,moveTh], function(th){
-						th.setStyles({
+						if(th)th.setStyles({
 							"border-bottom": this.json.border,
 							"border-right": this.json.border
 						})
 					}.bind(this));
 				}
 				if (this.json.titleStyles){
-					actionTh.setStyles(this.json.titleStyles);
-					moveTh.setStyles(this.json.titleStyles);
+					Object.each(this.json.titleStyles, function( value, key ){
+						if( key && key.toLowerCase() !== "width" ){
+							actionTh.setStyle(key, value);
+							if(moveTh)moveTh.setStyle(key, value);
+						}
+					});
 				}
 			}
 		},
@@ -430,10 +447,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.editable){
 				var eTd = new Element("td.mwf_editaction",{"styles": this.json.actionStyles || {}}).inject(this.templateNode, "top"); //操作列
-				var mTd = new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom"); //排序列
+				this.columnCount = this.columnCount+1;
+				var mTd;
+				if( this.sortable ){
+					mTd= new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom");
+					this.columnCount = this.columnCount+1;
+				} //排序列
 				if (this.json.border){
 					Array.each([eTd,mTd], function(td){
-						td.setStyles({
+						if(td)td.setStyles({
 							"border-bottom": this.json.border,
 							"border-right": this.json.border,
 							"background": "transparent"
@@ -441,10 +463,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					}.bind(this));
 				}
 				if (this.json.contentStyles){
-					eTd.setStyles(this.json.contentStyles);
-					mTd.setStyles(this.json.contentStyles);
+
+					Object.each(this.json.contentStyles, function( value, key ){
+						if( key && key.toLowerCase() !== "width" ){
+							eTd.setStyle(key, value);
+							if(mTd)mTd.setStyle(key, value);
+						}
+					});
+
+					// eTd.setStyles(this.json.contentStyles);
+					// if(mTd)mTd.setStyles(this.json.contentStyles);
 				}
-				this.columnCount = this.columnCount+2;
 			}
 
 			this.templateHtml = this.templateNode.get("html");
@@ -572,6 +601,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}.bind(this));
 			data.total = totalData;
 			return totalData;
+		},
+		isTotalNumberModule: function( id ){
+			return this.totalNumberModuleIds.contains(id)
 		},
 
 		isShowSectionKey: function(){
@@ -725,6 +757,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					"border-top": this.json.border,
 					"border-left": this.json.border
 				});
+			}
+			if( this.json.recoveryStyles ){
+				this.node.setStyles(this.json.recoveryStyles);
 			}
 			this.node.setStyles(this.json.styles);
 			this.table.setStyles(this.json.tableStyles);
@@ -1054,6 +1089,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data = this.getInputData();
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
+				this.newLineIndex = index;
 				this.setData(data);
 				line = this.getLine(index);
 				line.isNewAdd = true;
@@ -1198,7 +1234,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
-		_completeLineEdit: function( ev, fireChange ){
+		_completeLineEdit: function( ev, fireChange, ignoerSave ){
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
@@ -1218,7 +1254,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.changeEditMode(false);
 			this._loadTotal();
 			if( line.sectionLine )line.sectionLine._loadTotal();
-			if(line.attachmentChangeFlag){
+			if(line.attachmentChangeFlag && !ignoerSave){
 				this.form.saveFormData();
 				line.attachmentChangeFlag = false;
 			}
@@ -1628,6 +1664,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 				this.errNode = this.createErrorNode(text).inject(this.node, "after");
 				this.showNotValidationMode(this.node);
+
+				var parentNode = this.errNode;
+				while( parentNode && parentNode.offsetParent === null ){
+					parentNode = parentNode.getParent();
+				}
+
+				if (parentNode && !parentNode.isIntoView()) parentNode.scrollIntoView(false);
 			}
 		},
 		showNotValidationMode: function(node){
@@ -1738,6 +1781,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
+		saveValidation: function () {
+			return this.validationCurrentEditedLine();
+		},
+		validationCurrentEditedLine: function () {
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			if( !line.validation() )return false;
+			return true;
+		},
 		validation: function(routeName, opinion){
 			if (this.isEdit){
 				if (!this.editValidation()){
@@ -1745,6 +1797,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}
 			if (!this.validationConfig(routeName, opinion))  return false;
+
+			if( !this.validationCurrentEditedLine() )return false;
 
 			if (!this.json.validation) return true;
 			if (!this.json.validation.code) return true;
@@ -2138,6 +2192,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
+	},
+	isTotalNumberModule: function( id ){
+		return this.totalNumberModuleIds.contains(id)
 	}
 });
 
@@ -2326,7 +2383,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						}.bind(this))
 					}
 					//该字段是合集数值字段
-					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
+					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
@@ -2336,6 +2393,13 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	isTotalNumberModule: function(id){
+		if( this.sectionLine ){
+			return this.sectionLine.isTotalNumberModule(id)
+		}else{
+			return this.datatable.isTotalNumberModule(id)
+		}
 	},
 	getIndex: function(){
 		return this.options.index;
@@ -2453,7 +2517,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			this.createCancelEditAction(editActionTd);
 			this.checkActionDisplay();
 		}
-		this.createMoveAction(moveActionTd);
+		if( moveActionTd )this.createMoveAction(moveActionTd);
 
 	},
 	checkActionDisplay: function(){
@@ -2591,7 +2655,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		return this.validationFields() && this.validationCompleteLine();
+		if( !this.validationFields())return false;
+		if( !this.validationCompleteLine())return false;
+		return true;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -2614,13 +2680,14 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}
 		}
 		if (flag.toString()!=="true"){
-			this.notValidationMode(flag);
+			var isTr = !layout.mobile;
+			this.notValidationMode(flag, isTr);
 			return false;
 		}
 		return true;
 	},
-	createErrorNode: function(text){
-		var node;
+	createErrorNode: function(text, isTr){
+		var node, tr, td;
 		if( this.form.json.errorStyle ){
 			if( this.form.json.errorStyle.type === "notice" ){
 				if( !this.form.errorNoticing ){ //如果是弹出
@@ -2632,21 +2699,34 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					});
 				}
 			}else{
+				if( isTr ){
+					tr = new Element("tr");
+					td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
+				}
 				node = new Element("div",{
 					"styles" : this.form.json.errorStyle.node,
 					"text": text
 				});
+				if( td )node.inject(td);
 				if( this.form.json.errorStyle.close ){
 					var closeNode = new Element("div",{
 						"styles" : this.form.json.errorStyle.close ,
 						"events": {
-							"click" : function(){ this.destroy(); }.bind(node)
+							"click" : function(){
+								// (tr || node).destroy();
+								this.validationMode()
+							}.bind(this)
 						}
 					}).inject(node);
 				}
 			}
 		}else{
+			if( isTr ){
+				tr = new Element("tr");
+				td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
+			}
 			node = new Element("div");
+			if( td )node.inject(td);
 			var iconNode = new Element("div", {
 				"styles": {
 					"width": "20px",
@@ -2666,15 +2746,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				"text": text
 			}).inject(node);
 		}
-		return node;
+		return tr || node;
 	},
-	notValidationMode: function(text){
+	notValidationMode: function(text, isTr){
 		if (!this.isNotValidationMode){
 			this.isNotValidationMode = true;
 			this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
 			this.node.setStyle("border-color", "red");
 
-			this.errNode = this.createErrorNode(text);
+			this.errNode = this.createErrorNode(text, isTr);
 			//if (this.iconNode){
 			//    this.errNode.inject(this.iconNode, "after");
 			//}else{
@@ -2682,12 +2762,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			//}
 			this.showNotValidationMode(this.node);
 
-			var parentNode = this.node;
-			while( parentNode.offsetParent === null ){
+			var parentNode = this.errNode;
+			while( parentNode && parentNode && parentNode.offsetParent === null ){
 				parentNode = parentNode.getParent();
 			}
 
-			if (!parentNode.isIntoView()) parentNode.scrollIntoView();
+			if (!parentNode.isIntoView()) parentNode.scrollIntoView(false);
 		}
 	},
 	showNotValidationMode: function(node){
@@ -2734,6 +2814,350 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			this.data[key] = data[key];
 		}
 		return data;
+	}
+});
+
+MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
+	Extends: MWF.xApplication.process.Xform.DatatablePC,
+	initialize: function(mainDatatable){
+		this.mainDatatable = mainDatatable;
+		this.json = Object.clone( mainDatatable.json );
+		this.json.id = this.json.id + "_o2simula";
+
+		this.node = new Element("div", {
+			id: this.json.id
+		});
+		this.node.store("module", this);
+
+		this.form = mainDatatable.form;
+		this.field = false;
+		this.fieldModuleLoaded = false;
+	},
+	load: function(){
+
+		this.deleteFormData = function(data){
+			debugger;
+			delete data[this.id];
+			this._self.form.removeEvent("getData", this._self.deleteFormData);
+		}.bind({_self: this, id: this.json.id});
+		this.form.addEvent("getData", this.deleteFormData);
+
+		this._loadModuleEvents();
+		if (this.fireEvent("queryLoad")){
+			this._queryLoaded();
+			this._loadUserInterface();
+			this._afterLoaded();
+			this.fireEvent("afterLoad");
+			// this.fireEvent("load");
+		}
+	},
+	_loadUserInterface: function(){
+		// this.fireEvent("queryLoad");
+
+		this.editModules = [];
+
+		this.table = new Element("table").inject(this.node);
+		this.tBody = new Element("tbody").inject(this.table);
+
+		this.editable = true;
+
+		//是否多行同时编辑
+		this.multiEditMode = true;
+
+		this.data = {"data": [], "total":{}};
+		this._setValue(this.data);
+
+		this.lineList = [];
+
+		this.loadDatatable();
+	},
+	loadDatatable: function(){
+		this.loading = true;
+
+		//this._loadTitleTr();
+		//this._loadTemplate();
+		//this._loadTotalTr();
+
+		// this.templateNode = this.mainDatatable.templateNode;
+		// this.templateTr = this.mainDatatable.templateTr;
+		this.columnCount = this.mainDatatable.columnCount;
+		this.templateHtml = this.mainDatatable.templateHtml;
+
+		this.fireEvent("load");
+		this._loadDatatable(function(){
+			this.fieldModuleLoaded = true;
+			this.loading = false;
+			this.fireEvent("postLoad");
+		}.bind(this));
+	},
+	_loadDatatable: function(callback){
+		this._loadLineList(function(){
+			//this._loadTotal();
+			if(callback)callback();
+		}.bind(this));
+	},
+	_loadLine: function(container, data, index, isEdited, isNew){
+		var line = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(container, this, data, {
+			index : index,
+			indexText : (index+1).toString()
+		});
+		this.fireEvent("beforeLoadLine", [line]);
+		line.load();
+		this.fireEvent("afterLoadLine", [line]);
+		return line;
+	},
+	_addLine: function(ev, edited, d){
+
+		var data, index, line;
+
+		index = this.lineList.length;
+		data = this.data;
+
+		data.data.push(d||{});
+		this.newLineIndex = index;
+
+		this.setData( data );
+		line = this.getLine(index);
+		line.isNewAdd = true;
+
+		this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+
+		this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
+
+		return line;
+	},
+	// _delLine: function(line){
+	// 	this.fireEvent("deleteLine", [line]);
+	//
+	// 	//使用数据驱动
+	// 	var data = this.data;
+	// 	data.data.splice(line.options.index, 1);
+	//
+	// 	if(this.currentEditedLine === line)this.currentEditedLine = null;
+	// 	this.setData( data );
+	//
+	// 	// this.validationMode();
+	// 	this.fireEvent("afterDeleteLine");
+	//
+	// 	this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
+	// },
+	destroy: function(){
+		this.clearSubModules();
+		var id = this.json.id;
+		if (this.form.all[id]) delete this.form.all[id];
+		if (this.form.forms[id])delete this.form.forms[id];
+		// if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
+		// if( this.form.Macro.environment.data.hasOwnProperty(id) )delete this.form.Macro.environment.data[id];
+		this.node.destroy();
+	}
+});
+
+//Excel导入时候创建的组件
+MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
+	Implements: [Options, Events],
+	options: {
+		isNew: true,
+		isEdited : true, //是否正在编辑
+		isEditable : true, //能否被编辑
+		isDeleteable: true, //能否被删除
+	},
+	initialize: function (node, datatable, data, options) {
+
+		this.setOptions(options);
+
+		this.node = node;
+		this.datatable = datatable;
+		this.data = data;
+		this.form = this.datatable.form;
+
+		this.init()
+	},
+	init: function(){
+		this.modules = [];
+		this.all = {};
+		this.all_templateId = {};
+
+		this.fields = [];
+		this.allField = {};
+		this.allField_templateId = {};
+	},
+	load: function(){
+		// if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
+
+		this.loadModules();
+
+		// if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
+	},
+	loadModules: function(){
+		this.node.set("html", this.datatable.templateHtml);
+		var moduleNodes = this.form._getModuleNodes(this.node, true);
+
+		//合并状态或拆分状态
+		// var sectionKey = this.options.sectionKey || this.datatable.sectionBy;
+		moduleNodes.each(function (node) {
+			var mwfType = node.get("MWFtype");
+			if (mwfType === "form")return;
+
+			var _self = this;
+
+			var tJson = this.form._getDomjson(node);
+			if( tJson ){
+				var json = Object.clone(tJson);
+
+				if( !this.options.isEdited || !this.options.isEditable )json.isReadonly = true;
+
+				var templateJsonId = json.id;
+
+				var index = "0"; //this.options.index;
+
+				var id;
+				// if( this.datatable.isShowAllSection ){
+				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.id;
+				// }else if( sectionKey ){
+				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
+				// }else{
+					id = this.datatable.json.id + "..data.." + index + ".." + json.id;
+				// }
+
+				json.id = id;
+				node.set("id", id);
+
+				// if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+				// 	json.type = "AttachmentDg";
+				// 	json.ignoreSite = true;
+				// 	json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+				// }
+
+				if (this.form.all[id]) this.form.all[id] = null;
+				if (this.form.forms[id])this.form.forms[id] = null;
+
+				var hasData = this.data.hasOwnProperty(templateJsonId);
+
+				var module = this.form._loadModule(json, node, function () {
+
+					// this.field = false; //不希望保存数据
+					// this._getBusinessData = function(){
+					// 	return _self.data[templateJsonId];
+					// };
+					// this._setBusinessData = function () {};
+
+					if( _self.widget )this.widget = _self.widget;
+					this.parentLine = _self;
+					this.parentDatatable = _self.datatable;
+
+					//只读方法值在页面加载的时候或者new的时候计算一下
+					if( this.json.compute === "show" ){
+						var needComputeShow = false;
+						if( _self.datatable.loading ) {
+							needComputeShow = true;
+						}else if( _self.options.isNew && !_self.reloading ){
+							needComputeShow = true;
+						}
+						if( !needComputeShow ){
+							this.json.compute = "create"; //
+							if( this.options.moduleEvents && this.options.moduleEvents.length ){ //恢复compute
+								var eventName = ( this.options.moduleEvents || [] ).contains("afterLoad") ? "afterLoad" : "load";
+								var resetCompute = function () {
+									this.json.compute = "show";
+									this.removeEvent( eventName, resetCompute );
+								}.bind(this)
+								this.addEvent(eventName, resetCompute);
+							}
+						}
+					}
+
+				});
+				if(!module.parentLine)module.parentLine = this;
+				if(!module.parentDatatable)module.parentDatatable = this.datatable;
+
+				this.form.modules.push(module);
+
+				this.modules.push(module);
+				this.all[id] = module;
+				this.all_templateId[templateJsonId] = module;
+
+				if (module.field) {
+					if(this.options.isEdited) {
+						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
+							if( module.json.compute === "save" && module.getInputData ){
+								this.data[templateJsonId] = module.getInputData();
+							}else{
+								this.data[templateJsonId] = module.getData();
+							}
+						}
+					}
+					this.allField[id] = module;
+					this.allField_templateId[templateJsonId] = module;
+					this.fields.push( module );
+				}
+			}
+		}.bind(this));
+	},
+	clearSubModules: function () { //把module清除掉
+		for(var key in this.all){
+			var module = this.all[key];
+			//如果嵌套数据模板或者数据表格，还要清除掉下级
+			if(module.clearSubModules)module.clearSubModules();
+			this.form.modules.erase(module);
+			// if( this.form.businessData.data.hasOwnProperty(key) )delete this.form.businessData.data[key];
+			// if( this.form.Macro.environment.data.hasOwnProperty(key) )delete this.form.Macro.environment.data[key];
+			if (this.form.all[key]) delete this.form.all[key];
+			if (this.form.forms[key])delete this.form.forms[key];
+		}
+		this.node.destroy();
+		this.init();
+	},
+	getModule: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
+	get: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
+	// computeModuleData: function( when ){
+	// 	for( var key in this.allField_templateId){
+	// 		var module = this.allField_templateId[key];
+	// 		if( module.json.compute === when ){
+	// 			this.data[key] = module.getData();
+	// 		}
+	// 	}
+	// },
+	getData: function () {
+		var data = this.data;
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			// var id = key.split("..").getLast();
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
+				data[key] = module._getBusinessData();
+			}else{
+				data[key] = module.getData();
+			}
+		}
+		return data;
+	},
+	// validation: function(){
+	// 	if( !this.validationFields())return false;
+	// 	if( !this.validationCompleteLine())return false;
+	// 	return true;
+	// },
+	// validationFields: function(){
+	// 	var flag = true;
+	// 	this.fields.each(function(field, key){
+	// 		if (field.json.type!="sequence" && field.validationMode ){
+	// 			field.validationMode();
+	// 			if (!field.validation()) flag = false;
+	// 		}
+	// 	}.bind(this));
+	// 	return flag;
+	// },
+	validationCompleteLine: function(){
+		var flag = true;
+		if( !this.datatable.multiEditMode ){
+			if (this.datatable.json.validationCompleteLine && this.datatable.json.validationCompleteLine.code){
+				flag = this.form.Macro.exec(this.datatable.json.validationCompleteLine.code, this);
+				if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
+			}
+		}
+		return flag;
 	}
 });
 
@@ -2808,6 +3232,8 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var exportData = [];
 		this.columnJsonList.each(function (column) {
 
+			debugger;
+
 			var module;
 			if( column.mJson && column.available ){
 				module = line.all_templateId[column.mJson.id];
@@ -2815,64 +3241,11 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 			if ( !module ) {
 				exportData.push("");
 			}else{
-				var value = module.getData();
-				var text = "";
-
-				if( value ){
-					switch (column.mJson.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							if (o2.typeOf(value) === "array") {
-								var textArray = [];
-								value.each(function (item) {
-									if (o2.typeOf(item) === "object") {
-										textArray.push(item.distinguishedName);
-									} else {
-										textArray.push(item);
-									}
-								}.bind(this));
-								text = textArray.join(", \n");
-							} else if (o2.typeOf(value) === "object") {
-								text = value.distinguishedName;
-							} else {
-								text = value;
-							}
-							break;
-						case "Combox":
-						case "Address":
-							text = o2.typeOf(value) === "array" ? value.join(", ") : value;
-							break;
-						case "Checkbox":
-							var options = module.getOptionsObj();
-							var value = o2.typeOf(value) === "array" ? value : [value];
-							var arr = [];
-							value.each( function( a, i ){
-								var idx = options.valueList.indexOf( a );
-								arr.push( idx > -1 ? options.textList[ idx ] : "") ;
-							});
-							text = arr.join(", ");
-							break;
-						case "Radio":
-						case "Select":
-							var options = module.getOptionsObj();
-							var idx = options.textList.indexOf( value );
-							text = idx > -1 ? options.valueList[ idx ] : "";
-							break;
-						case "Textarea":
-							text = value;
-							break;
-						case "Calendar":
-							text = value;
-							break;
-						default:
-							text = value;
-							break;
-					}
-				} else if ( column.mJson.type === "Label" && module.node) {
+				var text;
+				if ( column.mJson.type === "Label" && module.node) {
 					text = module.node.get("text");
+				}else{
+					text = module.getExcelData();
 				}
 
 				if( !text && o2.typeOf(text) !== "number" ){
@@ -2884,10 +3257,97 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		}.bind(this));
 		return exportData;
 	},
+	// getLineExportData: function(line, index ){
+	// 	var exportData = [];
+	// 	this.columnJsonList.each(function (column) {
+	//
+	// 		var module;
+	// 		if( column.mJson && column.available ){
+	// 			module = line.all_templateId[column.mJson.id];
+	// 		}
+	// 		if ( !module ) {
+	// 			exportData.push("");
+	// 		}else{
+	// 			var value = module.getData();
+	// 			var text = "";
+	//
+	// 			if( value ){
+	// 				switch (column.mJson.type) {
+	// 					case "Org":
+	// 					case "Reader":
+	// 					case "Author":
+	// 					case "Personfield":
+	// 					case "Orgfield":
+	// 						if (o2.typeOf(value) === "array") {
+	// 							var textArray = [];
+	// 							value.each(function (item) {
+	// 								if (o2.typeOf(item) === "object") {
+	// 									textArray.push(item.distinguishedName);
+	// 								} else {
+	// 									textArray.push(item);
+	// 								}
+	// 							}.bind(this));
+	// 							text = textArray.join(", \n");
+	// 						} else if (o2.typeOf(value) === "object") {
+	// 							text = value.distinguishedName;
+	// 						} else {
+	// 							text = value;
+	// 						}
+	// 						break;
+	// 					case "Combox":
+	// 					case "Address":
+	// 						text = o2.typeOf(value) === "array" ? value.join(", ") : value;
+	// 						break;
+	// 					case "Checkbox":
+	// 						var options = module.getOptionsObj();
+	// 						var value = o2.typeOf(value) === "array" ? value : [value];
+	// 						var arr = [];
+	// 						value.each( function( a, i ){
+	// 							var idx = options.valueList.indexOf( a );
+	// 							arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+	// 						});
+	// 						text = arr.join(", ");
+	// 						break;
+	// 					case "Radio":
+	// 					case "Select":
+	// 						var options = module.getOptionsObj();
+	// 						var idx = options.textList.indexOf( value );
+	// 						text = idx > -1 ? options.valueList[ idx ] : "";
+	// 						break;
+	// 					case "Textarea":
+	// 						text = value;
+	// 						break;
+	// 					case "Calendar":
+	// 						text = value;
+	// 						break;
+	// 					case "Elautocomplete":
+	// 						text = value;
+	// 						break;
+	// 					case "Elcascader":
+	// 						if( typeOf(value) === "text" )
+	// 						break;
+	// 					default:
+	// 						text = value;
+	// 						break;
+	// 				}
+	// 			} else if ( column.mJson.type === "Label" && module.node) {
+	// 				text = module.node.get("text");
+	// 			}
+	//
+	// 			if( !text && o2.typeOf(text) !== "number" ){
+	// 				text = "";
+	// 			}
+	//
+	// 			exportData.push( text );
+	// 		}
+	// 	}.bind(this));
+	// 	return exportData;
+	// },
 	isAvaliableColumn : function(thJson, mJson){
 		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
 		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
-		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label",
+			"Elbutton","Elbutton","Elcarousel","Eldropdown","Elicon","Eltree"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
 		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},
@@ -3004,7 +3464,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	isAvaliableColumn : function(thJson, mJson){
 		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
 		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
-		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label",
+			"Elbutton","Elbutton","Elcarousel","Eldropdown","Elicon","Eltree"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
 		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},
@@ -3014,6 +3475,13 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var orgTitleArray = this.getOrgTitleArray();
 
 		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
+			debugger;
+			this.loadSimulateModule();
+			this.columnJsonList.each(function (c) {
+				c.module = this.importerLine.getModule(c.mJson.id)
+			}.bind(this));
+
+
 			if( !this.checkCount(data) )return;
 			var checkAndImport = function () {
 				if( !this.checkData( data ) ){
@@ -3036,61 +3504,96 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}.bind(this));
 	},
 	destroySimulateModule: function(){
-		if( !this.simelateModuleMap )return;
-		var keys = Object.keys(this.simelateModuleMap);
-		keys.each(function (key, i) {
-			var module = this.simelateModuleMap[key];
-			if( module ){
-				var id = module.json.id;
-				if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
-				delete this.simelateModuleMap[key];
-			}
-		}.bind(this))
-		this.simelateModuleMap = null;
-
-		if(this.simulateNode){
-			this.simulateNode.destroy();
-			this.simulateNode = null;
+		if( !this.importerDatatable ){
+			this.form.disallowSaving = false;
+			return;
 		}
+
+		this.importerDatatable.destroy();
+		this.importerDatatable = null;
+		this.form.disallowSaving = false;
+
+		// if( !this.importerLine ){
+		// 	this.form.disallowSaving = false;
+		// 	return;
+		// }
+		//
+		// this.importerLine.clearSubModules();
+		// this.importerLine = null;
+		//
+		// if(this.importerLineNode){
+		// 	this.importerLineNode.destroy();
+		// 	this.importerLineNode = null;
+		// }
+		// this.form.disallowSaving = false;
 	},
 	loadSimulateModule: function(){
-		if( this.simelateModuleMap ){
-			this.destroySimulateModule();
-		}
-		//加载模拟字段
-		this.simelateModuleMap = {};
-		this.simulateNode = new Element("div").inject(this.datatable.node);
-		this.simulateNode.hide();
-		this.simulateNode.set("html", this.datatable.templateHtml);
-		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
-		moduleNodes.each(function (node) {
-			if (node.get("MWFtype") !== "form") {
-				var _self = this;
+		this.form.disallowSaving = true;
+		this.importerDatatable = new MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale( this.datatable );
+		this.importerDatatable.load();
 
-				var tJson = this.form._getDomjson(node);
-				if( tJson && this.isAvaliableColumn(null, tJson) ){
-					var json = Object.clone(tJson);
+		this.importerLine = this.importerDatatable.addLine({});
 
-					var templateJsonId = json.id;
-
-					json.id = "dtSimulate_"+json.id;
-					node.set("id", json.id);
-
-					if (!MWF["APP" + json.type]) {
-						MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
-					}
-					var module = new MWF["APP" + json.type](node, json, this.form);
-
-					this.simelateModuleMap[templateJsonId] = module;
-
-					module.load();
-
-				}
-			}
-		}.bind(this));
+		// this.importerLineNode = new Element("tr");
+		// this.importerLine = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(this.importerLineNode, this.datatable, {});
+		// this.importerLine.load();
 	},
+	// destroySimulateModule: function(){
+	// 	if( !this.simelateModuleMap )return;
+	// 	var keys = Object.keys(this.simelateModuleMap);
+	// 	keys.each(function (key, i) {
+	// 		var module = this.simelateModuleMap[key];
+	// 		if( module ){
+	// 			var id = module.json.id;
+	// 			if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
+	// 			delete this.simelateModuleMap[key];
+	// 		}
+	// 	}.bind(this))
+	// 	this.simelateModuleMap = null;
+	//
+	// 	if(this.simulateNode){
+	// 		this.simulateNode.destroy();
+	// 		this.simulateNode = null;
+	// 	}
+	// },
+	// loadSimulateModule: function(){
+	// 	if( this.simelateModuleMap ){
+	// 		this.destroySimulateModule();
+	// 	}
+	// 	//加载模拟字段
+	// 	this.simelateModuleMap = {};
+	// 	this.simulateNode = new Element("div").inject(this.datatable.node);
+	// 	this.simulateNode.hide();
+	// 	this.simulateNode.set("html", this.datatable.templateHtml);
+	// 	var moduleNodes = this.form._getModuleNodes(this.simulateNode);
+	// 	moduleNodes.each(function (node) {
+	// 		if (node.get("MWFtype") !== "form") {
+	// 			var _self = this;
+	//
+	// 			var tJson = this.form._getDomjson(node);
+	// 			if( tJson && this.isAvaliableColumn(null, tJson) ){
+	// 				var json = Object.clone(tJson);
+	//
+	// 				var templateJsonId = json.id;
+	//
+	// 				json.id = "dtSimulate_"+json.id;
+	// 				node.set("id", json.id);
+	//
+	// 				if (!MWF["APP" + json.type]) {
+	// 					MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
+	// 				}
+	// 				var module = new MWF["APP" + json.type](node, json, this.form);
+	//
+	// 				this.simelateModuleMap[templateJsonId] = module;
+	//
+	// 				module.load();
+	//
+	// 			}
+	// 		}
+	// 	}.bind(this));
+	// },
 	getColumnList: function(){
-		this.loadSimulateModule();
+		// this.loadSimulateModule();
 
 		this.columnJsonList = [];
 
@@ -3114,8 +3617,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					"mJson" : mJson,
 					"field": mJson.id,
 					"index": idx,
-					"module": this.simelateModuleMap[mJson.id]
-				})
+					// "module": this.importerLine.getModule(mJson.id)
+					// "module": this.simelateModuleMap[mJson.id]
+				});
 				idx++;
 			}
 		}.bind(this));
@@ -3177,49 +3681,52 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 								}.bind(this));
 							}
 							break;
-						case "Combox":
-						case "Address":
-							arr = this.stringToArray(d);
-							value = arr.length === 0  ? arr[0] : arr;
-							break;
-						case "Checkbox":
-							arr = this.stringToArray(d);
-							var options = module.getOptionsObj();
-							arr.each( function( a, i ){
-								var idx = options.textList.indexOf( a );
-								arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-							});
-							value = arr.length === 1  ? arr[0] : arr;
-							break;
-						case "Radio":
-						case "Select":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							var options = module.getOptionsObj();
-							var idx = options.textList.indexOf( value );
-							value = idx > -1 ? options.valueList[ idx ] : value;
-							break;
-						case "Textarea":
-							value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-							break;
-						case "Calendar":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							if( value && (new Date(value).isValid()) ){
-								var format;
-								if (!json.format){
-									if (json.selectType==="datetime" || json.selectType==="time"){
-										format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-									}else{
-										format = Locale.get("Date").shortDate;
-									}
-								}else{
-									format = json.format;
-								}
-								value = Date.parse( value ).format( format );
-							}
-							break;
 						default:
-							value = d.replace(/&#10;/g,""); //换行符&#10;
+							value = d; //换行符&#10;
 							break;
+						// case "Combox":
+						// case "Address":
+						// 	arr = this.stringToArray(d);
+						// 	value = arr.length === 0  ? arr[0] : arr;
+						// 	break;
+						// case "Checkbox":
+						// 	arr = this.stringToArray(d);
+						// 	var options = module.getOptionsObj();
+						// 	arr.each( function( a, i ){
+						// 		var idx = options.textList.indexOf( a );
+						// 		arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+						// 	});
+						// 	value = arr.length === 1  ? arr[0] : arr;
+						// 	break;
+						// case "Radio":
+						// case "Select":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	var options = module.getOptionsObj();
+						// 	var idx = options.textList.indexOf( value );
+						// 	value = idx > -1 ? options.valueList[ idx ] : value;
+						// 	break;
+						// case "Textarea":
+						// 	value = d.replace(/&#10;/g,"\n"); //换行符&#10;
+						// 	break;
+						// case "Calendar":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	if( value && (new Date(value).isValid()) ){
+						// 		var format;
+						// 		if (!json.format){
+						// 			if (json.selectType==="datetime" || json.selectType==="time"){
+						// 				format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+						// 			}else{
+						// 				format = Locale.get("Date").shortDate;
+						// 			}
+						// 		}else{
+						// 			format = json.format;
+						// 		}
+						// 		value = Date.parse( value ).format( format );
+						// 	}
+						// 	break;
+						// default:
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	break;
 					}
 				}
 
@@ -3239,7 +3746,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	},
 	importData: function(idata){
 
-		var data = this.parseImportedData(idata);
+		var data = this.parsedData; //this.parseImportedData(idata);
 
 		this.datatable.fireEvent("import", [data] );
 
@@ -3359,6 +3866,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var excelUtil = new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable );
 
 		var parsedData = this.parseImportedData(idata, true);
+		this.parsedData = parsedData;
 
 		idata.each( function(lineData, lineIndex){
 
@@ -3397,12 +3905,15 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 							}.bind(this));
 							break;
 						case "Number":
+						case "Elnumber":
 							if (isNaN(d)){
 								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
 								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
 							}
 							break;
 						case "Calendar":
+						case "Eldate":
+						case "Eldatetime":
 							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
 								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
 								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
@@ -3420,13 +3931,14 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						}
 					}
 					if(!hasError){
-						module.setData(parsedD); 
-						module.validationMode();
-						if (!module.validation() && module.errNode){
-							errorTextList.push(colInfor + module.errNode.get("text"));
-							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-							module.errNode.destroy();
+						debugger;
+						module.setExcelData(parsedD);
+						var result = module.validationExcel();
+						if ( result && result.length ){
+							errorTextList.push(colInfor + result.join("\n") );
+							errorTextListExcel.push( colInforExcel + result.join("\n"));
 						}
+						parsedLineData[json.id] = module.getData();
 					}
 				}
 			}.bind(this));

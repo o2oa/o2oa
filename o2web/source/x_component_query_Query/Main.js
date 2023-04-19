@@ -328,7 +328,7 @@ MWF.xApplication.query.Query.Main = new Class({
                         return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
                     });
                     json.data.each(function (statement) {
-                        if (statement.display !== false ) {
+                        if (statement.display !== false && statement.viewEnable !== false ) {
                             var item = this.createStatementNaviItem(statement);
                             this.statementItems.push(item);
                             if (statement.id === this.options.statementId) {

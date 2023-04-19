@@ -1879,7 +1879,7 @@ if (!window.o2) {
         _json.get = function (url, callback, async, nocache) {
             var loadAsync = (async !== false);
             var noJsonCache = (nocache === true);
-            if (url.indexOf("config.json")){
+            if (url.indexOf("config.json") > -1){
                 noJsonCache = true;
             }
 
@@ -2749,14 +2749,20 @@ if (!window.o2) {
             if (!layout) layout = {};
             if (layout && !layout.userLayout) layout.userLayout = {};
             layout.userLayout.scale = scale;
-            var s = (1 / layout.userLayout.scale) * 100;
-            var p = s + "%";
-            document.id(document.documentElement).setStyles({
-                "transform": "scale(" + layout.userLayout.scale + ")",
-                "transform-origin": "0 0",
-                "width": p,
-                "height": p
-            });
+            // var s = (1 / layout.userLayout.scale) * 100;
+            // var p = s + "%";
+            // document.id(document.documentElement).setStyles({
+            //     "transform": "scale(" + layout.userLayout.scale + ")",
+            //     "transform-origin": "0 0",
+            //     "width": p,
+            //     "height": p
+            // });
+            document.body.style.zoom = scale;
+            if (layout.desktop){
+                if (layout.desktop.resizeHeight) layout.desktop.resizeHeight();
+            }
+
+
         };
 
         if (String.implement) String.implement({

@@ -1,8 +1,10 @@
+
 @font-face {
     font-family: "o2WorkApplication"; /* Project id 3538045 */
-    src: url('../x_component_process_Application/$Main/default/fonts/iconfont.woff2?t=1661153841763') format('woff2'),
-    url('../x_component_process_Application/$Main/default/fonts/iconfont.woff?t=1661153841763') format('woff'),
-    url('../x_component_process_Application/$Main/default/fonts/iconfont.ttf?t=1661153841763') format('truetype');
+    src: url('../x_component_process_Application/$Main/default/fonts/iconfont.woff2?t=1678685748483') format('woff2'),
+    url('../x_component_process_Application/$Main/default/fonts/iconfont.woff?t=1678685748483') format('woff'),
+    url('../x_component_process_Application/$Main/default/fonts/iconfont.ttf?t=1678685748483') format('truetype'),
+    url('../x_component_process_Application/$Main/default/fonts/iconfont.svg?t=1678685748483#o2WorkApplication') format('svg');
 }
 .o2WorkApplication {
     font-family: "o2WorkApplication" !important;
@@ -13,6 +15,14 @@
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-delete:before {
+    content: "\e619";
+}
+
+.icon-icon__chakan:before {
+    content: "\e609";
 }
 
 .icon-xuanzhong:before {
@@ -488,3 +498,10 @@ common
     cursor: pointer;
 }
 
+.operateicon{
+    color : #999999;
+    margin-right: 5px;
+}
+.operateicon:hover{
+    color :#4A90E2
+}

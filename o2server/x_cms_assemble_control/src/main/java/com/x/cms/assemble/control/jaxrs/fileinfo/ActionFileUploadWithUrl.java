@@ -3,6 +3,9 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 import java.util.Date;
 import java.util.UUID;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -54,9 +57,21 @@ public class ActionFileUploadWithUrl extends BaseAction {
 		if(StringUtils.isEmpty(wi.getSite())){
 			throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getSite());
 		}
+
+		Document document = documentQueryService.get( wi.getDocId() );
+		if (null == document) {
+			throw new ExceptionDocumentNotExists(wi.getDocId());
+		}
+
+		AppInfo appInfo = appInfoServiceAdv.get(document.getAppId());
+		CategoryInfo categoryInfo = categoryInfoServiceAdv.get(document.getCategoryId());
+
 		String person = effectivePerson.getDistinguishedName();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			if(!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, document)){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			if(StringUtils.isNotEmpty(wi.getPerson()) && business.isManager(effectivePerson)){
 				Person p = business.organization().person().getObject(wi.getPerson());
 				if(p!=null){
@@ -65,17 +80,14 @@ public class ActionFileUploadWithUrl extends BaseAction {
 			}
 		}
 
-		Document document = documentQueryService.get( wi.getDocId() );
-		if (null == document) {
-			throw new ExceptionDocumentNotExists(wi.getDocId());
-		}
-
 		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
 		FileInfo attachment = this.concreteAttachment( mapping, document, wi.getFileName(), person, wi.getSite() );
 		byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
 		if(bytes==null || bytes.length==0){
 			throw new Exception("can not down file from url!");
 		}
+
+		this.verifyConstraint(bytes.length, wi.getFileName(), null);
 
 		attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 		logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());

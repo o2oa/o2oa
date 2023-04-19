@@ -72,7 +72,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			// this.readCompletedCountNode.set("text", json.data.readCompleted);
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 			// this.pageData = Object.assign(this.pageData, {"draft": json.size});
 			// this.draftCountNode.set("text", json.size);
 		}.bind(this));
@@ -288,9 +288,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.getStartData().then(function(data){
 			var map = {};
 			data[0].each(function (d) {
-				var type = d.applicationCategory || "未分类";
-				if( !map[type] )map[type] = [];
-				map[type].push(d);
+                if (d.processList && d.processList.length){
+                    var type = d.applicationCategory || "未分类";
+                    if( !map[type] )map[type] = [];
+                    map[type].push(d);
+                }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
@@ -562,6 +564,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	recordProcessData: function(data){
 		debugger;
+		if( data._ )delete data._ ;
 		MWF.UD.getDataJson("taskCenter_startTop", function(json){
 			if (!json || !json.length) json = [];
 			var recordProcess = null;
@@ -581,11 +584,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
 				recordProcess.count = (recordProcess.count || 0)+1;
-				recordProcess.applicationName = data.applicationName;
+				recordProcess.applicationName = data.applicationName || "";
 			}else{
 				if (json.length<10){
 					data.count = 1;
@@ -865,6 +869,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
+            "taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)

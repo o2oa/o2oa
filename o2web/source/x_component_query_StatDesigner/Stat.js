@@ -209,6 +209,21 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
         }
     },
 
+    preview: function(){
+        if( this.isNewView ){
+            this.designer.notice( this.designer.lp.saveViewNotice, "error" );
+            return;
+        }
+        this.saveSilence( function () {
+            var url = "../x_desktop/app.html?app=query.Query&status=";
+            url += JSON.stringify({
+                id : this.data.application,
+                statId : this.data.id
+            });
+            window.open(o2.filterUrl(url),"_blank");
+        }.bind(this));
+    },
+
     addColumn: function(){
 
         MWF.require("MWF.widget.UUID", function(){
@@ -237,7 +252,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+            this.addColumnNode.scrollIntoView(false);
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();

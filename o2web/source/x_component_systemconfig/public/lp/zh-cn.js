@@ -4,6 +4,10 @@ o2.xApplication.systemconfig.LP = {
     "default": "默认",
     "permissionDenied": "当前用户权限不足，您必须使用管理员帐号访问系统配置",
 
+    "yes": "是",
+    "no": "否",
+    "uploadInfo": "将文件拖到此处，或点击上传",
+
     "baseConfig": "基础配置",
     "systemInfo": "系统信息",
     "uiConfig": "界面配置",
@@ -440,7 +444,7 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
         "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
             "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
-            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/><br>" +
+            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为1分钟）<br/><br>" +
             "生成token后，外部系统可以直接通过访问以下地址，实现与O2OA的单点认证：<br/>" +
             "http://servername/x_desktop/sso.html?client={<span style='color: blue'>client</span>}&xtoken={<span style='color: blue'>token</span>}&redirect={<span style='color: blue'>redirect</span>}<br/>" +
             "<span style='color: blue'>client</span>表示使用的鉴权名称；<br/>" +
@@ -794,7 +798,7 @@ o2.xApplication.systemconfig.LP = {
         "attachmentConfigInfo": "在此处可以配置系统中允许上传附件的大小和类型",
 
         "fileSize": "附件大小限制",
-        "fileSizeInfo": "以M为单位，默认为0，表示不限制",
+        "fileSizeInfo": "以M为单位，最大2048M",
         "fileTypeIncludes": "允许上传的附件类型",
         "fileTypeIncludesInfo": "设置允许上传的附件类型，设置扩展名，用半角逗号分隔",
         "fileTypeExcludes": "禁止上传的附件类型",
@@ -986,10 +990,14 @@ o2.xApplication.systemconfig.LP = {
 
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
+        "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",
 
 
         "contactPermissionView": "移动App通讯录权限视图",
         "contactPermissionViewInfo": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
+
+        "appExitAlert": "app退出提示",
+        "appExitAlertInfo": "app退出的时候弹出窗口的提示语，为空就不弹窗",
 
         "nativeAppList": "应用列表",
         "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
@@ -1200,6 +1208,7 @@ o2.xApplication.systemconfig.LP = {
         "addStorageNode": "添加存储节点",
         "editStorageNode": "编辑存储节点",
         "inputStorageNodeKey": "请输入存储节点标识",
+        "inputStorageNodeName": "请输入存储节点名称",
 
         "external": {
             "protocol": "协议",
@@ -1410,7 +1419,8 @@ o2.xApplication.systemconfig.LP = {
             "mail": "邮件",
             "jdbc": "JDBC",
             "table": "数据表",
-            "hadoop": "Hadoop"
+            "hadoop": "Hadoop",
+            "andfx": "移动办公消息"
         },
         "consumerInfoTitle": "消息通道配置",
         "consumerInfo": "O2OA系统提供多种消息通道，您可以在此处设置各类消息需要通过什么方式发送",

@@ -50,9 +50,16 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
     parseData: function () {
         this.json = this.data;
-        if (!this.json.type) this.json.type = "select";
+        // if (!this.json.type) this.json.type = "select";
         if (!this.json.format) this.json.format = "jpql";
         if (!this.json.entityCategory) this.json.entityCategory = "official";
+        if (!this.json.countMethod){
+            if( this.json.countData || this.json.countScriptText ){
+                this.json.countMethod = "assign";
+            }else{
+                this.json.countMethod = "auto";
+            }
+        }
         if (!this.json.entityClassName) this.json.entityClassName = ""; //"com.x.processplatform.core.entity.content.Task";
     },
     autoSave: function () {
@@ -161,31 +168,83 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     hideProperty: function () {
         if (this.property) this.property.hide();
     },
-    loadJpqlTab: function (callback) {
+    loadStatementTab: function (callback) {
         var _self = this;
         MWF.require("MWF.widget.Tab", null, false);
 
-        this.jpqlTab = new MWF.widget.Tab(this.jpqlTabNode, {"style": "script"});
-        this.jpqlTab.load();
+        this.statementTab = new MWF.widget.Tab(this.statementTabNode, {"style": "script"});
+        this.statementTab.load();
 
-        this.tabJpqlNode = Element("div");
-        this.jpqlTabPageNode.inject(this.tabJpqlNode);
+        this.tabQueryNode = Element("div");
+        this.queryTabPageNode.inject(this.tabQueryNode);
+        this.queryPage = this.statementTab.addTab(this.tabQueryNode, this.designer.lp.queryStatement);
+        this.queryPage.addEvent("postShow", function(){
+            switch (this.json.format) {
+                case "script":
+                    if( this.jpqlScriptEditor ){
+                        this.jpqlScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.jpqlScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                case "sql":
+                    if(this.sqlEditor)this.sqlEditor.resize();
+                    break;
+                case "sqlScript":
+                    if( this.sqlScriptEditor ){
+                        this.sqlScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.sqlScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                default:
+                    if(this.jpqlEditor)this.jpqlEditor.resize();
+            }
+        }.bind(this))
 
-        this.tabCountJpqlNode = Element("div");
-        this.countJpqlTabPageNode.inject(this.tabCountJpqlNode);
+        this.tabCountNode = Element("div");
+        this.countTabPageNode.inject(this.tabCountNode);
+        this.countPage = this.statementTab.addTab(this.tabCountNode, this.designer.lp.countStatement);
+        this.countPage.addEvent("postShow", function(){
+            switch (this.json.format) {
+                case "script":
+                    if( this.jpqlCountScriptEditor ){
+                        this.jpqlCountScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.jpqlCountScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                case "sql":
+                    if( this.sqlCountEditor )this.sqlCountEditor.resize();
+                    break;
+                case "sqlScript":
+                    if( this.sqlCountScriptEditor ){
+                        this.sqlCountScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.sqlCountScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                default:
+                    if( this.jpqlCountEditor )this.jpqlCountEditor.resize();
+            }
+        }.bind(this))
 
-        this.jpqlPage = this.jpqlTab.addTab(this.tabJpqlNode, this.designer.lp.queryStatement);
-        this.countJpqlPage = this.jpqlTab.addTab(this.tabCountJpqlNode, this.designer.lp.countStatement);
+        // this.tabSqlNode = Element("div");
+        // this.sqlTabPageNode.inject(this.tabSqlNode);
+        //
+        // this.tabCountSqlNode = Element("div");
+        // this.countSqlTabPageNode.inject(this.tabCountSqlNode);
 
-        this.jpqlPage.showTabIm();
 
-        // this.jpqlPage.addEvent("postShow", function(){
+        this.queryPage.showTabIm();
+
+        if( ["auto", "ignore"].contains(this.json.countMethod) ){
+            this.countPage.disableTab();
+        }
+
+        // this.queryPage.addEvent("postShow", function(){
         //     if( this.view ){
         //         this.view.setContentHeight();
         //         this.view.selected();
         //     }
         // }.bind(this));
-        // this.countJpqlPage.addEvent("postShow", function(){
+        // this.countPage.addEvent("postShow", function(){
         //     this.selected();
         // }.bind(this));
     },
@@ -223,36 +282,66 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.runPage.addEvent("postShow", function () {
             this.selected();
         }.bind(this));
+
+        if( this.options.viewEnable === false ){
+            this.viewPage.disableTab();
+        }
+
     },
     loadStatement: function () {
         //this.statementDesignerNode = new Element("div", {"styles": this.css.statementDesignerNode}).inject(this.areaNode);
         this.loadStatementHtml(function () {
             this.designerArea = this.areaNode.getElement(".o2_statement_statementDesignerNode");
 
-            this.jpqlTabPageNode = this.areaNode.getElement(".o2_statement_statementJpqlTabPageNode");
+            this.statementTabNode = this.areaNode.getElement(".o2_statement_statementTabNode");
+
+            this.queryTabPageNode = this.areaNode.getElement(".o2_statement_statementQueryTabPageNode");
 
             this.jpqlArea = this.areaNode.getElement(".o2_statement_statementDesignerJpql");
-            this.scriptArea = this.areaNode.getElement(".o2_statement_statementDesignerScript");
+            this.jpqlScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerScript");
+            this.jpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerJpqlLine");
+
+            this.sqlArea = this.areaNode.getElement(".o2_statement_statementDesignerSql");
+            this.sqlScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerSqlScript");
+            this.sqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerSqlLine");
+
+            this.countTabPageNode = this.areaNode.getElement(".o2_statement_statementCountTabPageNode");
+
+            this.jpqlCountArea = this.areaNode.getElement(".o2_statement_statementDesignerCountJpql");
+            this.jpqlCountScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerCountScript");
+            this.jpqlCountEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountJpqlLine");
+
+            this.sqlCountArea = this.areaNode.getElement(".o2_statement_statementDesignerCountSql");
+            this.sqlCountScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerCountSqlScript");
+            this.sqlCountEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountSqlLine");
 
             this.formatTypeArea = this.areaNode.getElement(".o2_statement_statementDesignerFormatContent");
+            this.formatTypeArea.getElements("input").each(function (input) {
+                input.set("name", input.get("name") + "_" +this.json.id);
+            }.bind(this));
             this.entityCategorySelect = this.areaNode.getElement(".o2_statement_statementDesignerCategoryContent").getElement("select");
 
             this.dynamicTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_dynamic");
+
             this.officialTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_official");
+            this.jpqlOfficalTable = this.areaNode.getElement(".o2_statement_statementDesignerOfficialTable_JPQL");
+            this.sqlOfficalTable = this.areaNode.getElement(".o2_statement_statementDesignerOfficialTable_SQL");
+
             this.customTableArea = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_custom");
 
             this.dynamicTableSelect = this.areaNode.getElement(".o2_statement_statementDesignerSelectTable");
-            this.officialTableSelect = this.officialTableArea.getElement("select");
+            this.officialTableSelectJPQL = this.jpqlOfficalTable.getElement("select");
+            this.officialTableSelectSQL = this.sqlOfficalTable.getElement("select");
 
             this.fieldSelect = this.areaNode.getElement(".o2_statement_statementDesignerTableArea_field").getElement("select");
-            this.loadFieldSelect();
 
             this.dynamicTableContent = this.areaNode.getElement(".o2_statement_statementDesignerTableContent");
 
-            this.jpqlTabNode = this.areaNode.getElement(".o2_statement_statementJpqlTabNode");
+            // this.statementTypeSelect = this.areaNode.getElement(".o2_statement_statementDesignerTypeContent").getElement("select");
+            // this.loadStatementTypeSelect();
 
-            this.jpqlTypeSelect = this.areaNode.getElement(".o2_statement_statementDesignerTypeContent").getElement("select");
-            this.loadJpqlTypeSelect();
+            this.countMethodSelect = this.areaNode.getElement(".o2_statement_statementDesignerCountMethodContent").getElement("select");
+            this.loadCountMethodSelect();
 
             // this.jpqlSelectEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_select");
             // this.jpqlUpdateEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_update");
@@ -262,14 +351,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             // this.jpqlSelectEditor_fromContent= this.jpqlSelectEditor.getElement(".o2_statement_statementDesignerJpql_jpql_fromContent");
             // this.jpqlSelectEditor_whereContent= this.jpqlSelectEditor.getElement(".o2_statement_statementDesignerJpql_jpql_whereContent");
 
-            this.jpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerJpqlLine");
 
-
-            this.countJpqlTabPageNode = this.areaNode.getElement(".o2_statement_statementCountJpqlTabPageNode");
-            this.countJpqlArea = this.areaNode.getElement(".o2_statement_statementDesignerCountJpql");
-            this.countScriptArea = this.areaNode.getElement(".o2_statement_statementDesignerCountScript");
-            this.countJpqlEditorNode = this.areaNode.getElement(".o2_statement_statementDesignerCountJpqlLine");
-            this.loadJpqlTab();
+            this.loadStatementTab();
 
             this.resizeNode = this.areaNode.getElement(".o2_statement_resizeNode");
 
@@ -278,18 +361,52 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
             // this.runTitleNode = this.areaNode.getElement(".o2_statement_statementRunTitleNode");
             this.runContentNode = this.areaNode.getElement(".o2_statement_statementRunContentNode");
-            this.runJsonNode = this.runContentNode.getFirst();
-            this.runActionNode = this.runJsonNode.getNext();
-            this.runResultNode = this.runContentNode.getLast();
+
+            this.runJsonNode = this.runContentNode.getElement(".o2_statement_statementRunJsonNode");
+            this.runFilterNode = this.runContentNode.getElement(".o2_statement_statementRunFilterNode");
+            this.runPageNoInput = this.runContentNode.getElement(".o2_statement_statementRunPageNoInput");
+            this.runPageSizeInput = this.runContentNode.getElement(".o2_statement_statementRunPageSizeInput");
+
+
+            this.runActionNode = this.runContentNode.getElement(".o2_statement_statementRunActionNode");
+            this.runResultNode = this.runContentNode.getElement(".o2_statement_statementRunResultNode");
+            // this.runDefaultNode = this.runContentNode.getElement(".o2_statement_statementRunDefaultContent");
             this.setRunnerSize();
             this.designer.addEvent("resize", this.setRunnerSize.bind(this));
-            if (this.json.format == "script") {
-                this.loadStatementScriptEditor();
-                this.loadStatementCountScriptEditor();
-            } else {
-                this.loadStatementEditor();
-                this.loadStatementCountEditor();
+            debugger;
+
+            this.loadFieldSelect();
+
+            switch (this.json.format) {
+                case "script":
+                    this.jpqlOfficalTable.show();
+                    this.sqlOfficalTable.hide();
+
+                    this.loadJpqlScriptEditor();
+                    this.loadJpqlCountScriptEditor();
+                    break;
+                case "sql":
+                    this.jpqlOfficalTable.hide();
+                    this.sqlOfficalTable.show();
+
+                    this.loadSqlEditor();
+                    this.loadSqlCountEditor();
+                    break;
+                case "sqlScript":
+                    this.jpqlOfficalTable.hide();
+                    this.sqlOfficalTable.show();
+
+                    this.loadSqlScriptEditor();
+                    this.loadSqlCountScriptEditor();
+                    break;
+                default:
+                    this.jpqlOfficalTable.show();
+                    this.sqlOfficalTable.hide();
+
+                    this.loadJpqlEditor();
+                    this.loadJpqlCountEditor();
             }
+            // this.loadDefaultCondition();
             this.loadStatementRunner();
 
             this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
@@ -297,50 +414,86 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
             this.loadTab();
 
+            if( this.json.table ){
+                o2.Actions.load("x_query_assemble_designer").TableAction.get( this.json.table, function(json){
+                    this.json.tableObj = json.data;
+                    this.setDynamicTableName();
+                }.bind(this), function(){
+                    return true;
+                });
+            }
+
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
     },
-    loadJpqlTypeSelect : function(){
-      this.jpqlTypeSelect.empty();
-      var optionList = [{text:"SELECT", value:"select"}];
-        if( this.data.entityCategory === "dynamic" || (this.data.description && this.data.description.indexOf("update")>-1)){
-          optionList = optionList.concat([
-              {text:"UPDATE", value:"update"},
-              {text:"DELETE", value:"delete"}
-           ])
-      }
-
-      var flag = true;
-        optionList.each( function ( field ) {
-            var option = new Element("option", {
-                "text": field.text,
-                "value": field.value
-            }).inject(this.jpqlTypeSelect);
-            if( this.json.type === field.value ){
-                flag = false;
-                option.selected = true;
+    // loadDefaultCondition: function(){
+    //     var lp = ["currentPerson","currentIdentity","currentPersonDirectUnit","currentPersonAllUnit","currentPersonGroupList","currentPersonRoleList"];
+    //     ["person","identityList","unitList","unitAllList","groupList","roleList"].each(function (key, i) {
+    //         var div = new Element("div", {
+    //             style: "float:left;margin-right:10px;"
+    //         }).inject(this.runDefaultNode);
+    //         new Element("input", {
+    //             type: "checkbox",
+    //             value: "@"+key,
+    //             name: this.json.id + "defaultConditoin",
+    //             id: this.json.id + "defaultConditoin" + key
+    //         }).inject(div);
+    //         new Element("label", {
+    //             for: this.json.id + "defaultConditoin" + key,
+    //             text: this.designer.lp[lp[i]]
+    //         }).inject(div);
+    //     }.bind(this));
+    // },
+    loadCountMethodSelect: function(){
+        this.countMethodSelect.getElements("option").each(function(o){
+            if( this.json.countMethod === o.value ){
+                o.selected = true;
             }
         }.bind(this));
-        if( flag ){
-            this.jpqlTypeSelect.options[0].selected = true;
-            this.json.type = this.jpqlTypeSelect.options[0].value;
-            this.jpqlTypeSelect.fireEvent("change");
-        }
     },
+    // loadStatementTypeSelect : function(){
+    //   this.statementTypeSelect.empty();
+    //   var optionList = [{text:"SELECT", value:"select"}];
+    //     if( this.data.entityCategory === "dynamic" || (this.data.description && this.data.description.indexOf("update")>-1)){
+    //       optionList = optionList.concat([
+    //           {text:"UPDATE", value:"update"},
+    //           {text:"DELETE", value:"delete"}
+    //        ])
+    //   }
+    //
+    //   var flag = true;
+    //     optionList.each( function ( field ) {
+    //         var option = new Element("option", {
+    //             "text": field.text,
+    //             "value": field.value
+    //         }).inject(this.statementTypeSelect);
+    //         if( this.json.type === field.value ){
+    //             flag = false;
+    //             option.selected = true;
+    //         }
+    //     }.bind(this));
+    //     if( flag ){
+    //         this.statementTypeSelect.options[0].selected = true;
+    //         this.json.type = this.statementTypeSelect.options[0].value;
+    //     }
+    // },
     loadFieldSelect : function(){
         this.fieldSelect.empty();
         var d = this.data;
         var className = d.entityCategory === "dynamic" ? d.table : d.entityClassName;
         if( !className )return;
+        var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
         o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
             className,
             d.entityCategory,
             function(json){
+                json = Object.clone(json);
                 var option = new Element("option", { "text": this.designer.lp.fileldSelectNote, "value": "" }).inject(this.fieldSelect);
                 option.store("type", d.entityCategory);
                 option.store("tableName", className );
                 (json.data||[]).each( function ( field ) {
+                    if( pre )field.name = pre + field.name;
                     var option = new Element("option", {
                         "text": field.name + ( field.description ? ("-" + field.description) : "" ),
                         "value": field.name
@@ -348,7 +501,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     option.store("field", field);
                     option.store("type", d.entityCategory );
                     option.store("tableName", className );
-                }.bind(this))
+                }.bind(this));
             }.bind(this)
         )
     },
@@ -397,24 +550,38 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         this.designerArea.setStyle("height", ""+designAreaHeight+"px");
 
-        debugger;
-
         var editorHeight = designAreaHeight - 98;
 
         if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
-        if(this.countJpqlEditorNode)this.countJpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
-        if(this.scriptArea)this.scriptArea.setStyle( "height", ""+editorHeight+"px" );
-        if(this.countScriptArea)this.countScriptArea.setStyle( "height", ""+editorHeight+"px" );
+        if(this.jpqlCountEditorNode)this.jpqlCountEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        if(this.jpqlScriptArea)this.jpqlScriptArea.setStyle( "height", ""+editorHeight+"px" );
+        if(this.jpqlCountScriptArea)this.jpqlCountScriptArea.setStyle( "height", ""+editorHeight+"px" );
 
-        if( this.editor )this.editor.resize();
-        if( this.countEditor )this.countEditor.resize();
-        if( this.scriptEditor ){
-            this.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
-            this.scriptEditor.resizeContentNodeSize();
+        if(this.sqlEditorNode)this.sqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        if(this.sqlCountEditorNode)this.sqlCountEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        if(this.sqlScriptArea)this.sqlScriptArea.setStyle( "height", ""+editorHeight+"px" );
+        if(this.sqlCountScriptArea)this.sqlCountScriptArea.setStyle( "height", ""+editorHeight+"px" );
+
+        if( this.jpqlEditor )this.jpqlEditor.resize();
+        if( this.jpqlCountEditor )this.jpqlCountEditor.resize();
+        if( this.jpqlScriptEditor ){
+            this.jpqlScriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.jpqlScriptEditor.resizeContentNodeSize();
         }
-        if( this.countScriptEditor ){
-            this.countScriptEditor.container.setStyle("height", ""+editorHeight+"px");
-            this.countScriptEditor.resizeContentNodeSize();
+        if( this.jpqlCountScriptEditor ){
+            this.jpqlCountScriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.jpqlCountScriptEditor.resizeContentNodeSize();
+        }
+
+        if( this.sqlEditor )this.sqlEditor.resize();
+        if( this.sqlCountEditor )this.sqlCountEditor.resize();
+        if( this.sqlScriptEditor ){
+            this.sqlScriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.sqlScriptEditor.resizeContentNodeSize();
+        }
+        if( this.sqlCountScriptEditor ){
+            this.sqlCountScriptEditor.container.setStyle("height", ""+editorHeight+"px");
+            this.sqlCountScriptEditor.resizeContentNodeSize();
         }
 
         // this.tabNode.setStyle("height", ""+runAreaHeight+"px");
@@ -424,40 +591,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.view.setContentHeight()
         }
     },
-    loadStatementScriptEditor: function () {
-        if (!this.scriptEditor) {
-            debugger;
-            o2.require("o2.widget.ScriptArea", function () {
-                this.scriptEditor = new o2.widget.ScriptArea(this.scriptArea, {
-                    "isbind": false,
-                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
-                    "maxObj": this.designer.designNode,
-                    "title": this.designer.lp.scriptTitle,
-                    "type": "service",
-                    "onChange": function () {
-                        this.json.scriptText = this.scriptEditor.toJson().code;
-                    }.bind(this)
-                });
-                this.scriptEditor.load({"code": this.json.scriptText})
-            }.bind(this), false);
-        }
+    getEditorHeight: function(){
+        var size = this.areaNode.getSize();
+        var height = size.y;
+        var designAreaHeight = this.designerAreaPercent*height - 52;
+        return designAreaHeight - 98;
     },
-    loadStatementCountScriptEditor: function () {
-        if (!this.countScriptEditor) {
-            debugger;
-            o2.require("o2.widget.ScriptArea", function () {
-                this.countScriptEditor = new o2.widget.ScriptArea(this.countScriptArea, {
-                    "isbind": false,
-                    "maxObj": this.designer.designNode,
-                    "title": this.designer.lp.scriptTitle,
-                    "onChange": function () {
-                        this.json.countScriptText = this.countScriptEditor.toJson().code;
-                    }.bind(this)
-                });
-                this.countScriptEditor.load({"code": this.json.countScriptText})
-            }.bind(this), false);
-        }
-    },
+
     setRunnerSize: function () {
         debugger;
         var size = this.areaNode.getSize();
@@ -481,177 +621,345 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         this.runContentNode.setStyle("height", "" + y + "px");
     },
-    loadStatementEditor: function () {
-        if (!this.editor) {
+
+    loadJpqlEditor: function () {
+        if (!this.jpqlEditor) {
             var value;
             if( !this.json.data ){
                 var table = "table";
-                switch (this.json.type) {
-                    case "update":
-                        value = "UPDATE " + table + " o SET ";
-                        break;
-                    case "delete":
-                        value = "DELETE " + table + " o WHERE ";
-                        break;
-                    default:
+                // switch (this.json.type) {
+                //     case "update":
+                //         value = "UPDATE " + table + " o SET ";
+                //         break;
+                //     case "delete":
+                //         value = "DELETE " + table + " o WHERE ";
+                //         break;
+                //     default:
                         value = "SELECT o FROM " + table + " o";
-                }
+                // }
                 this.json.data = value;
             }
             if( this.jpqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
                 var postShowFun = function() {
-                    this._loadStatementEditor();
-                    this.jpqlPage.removeEvent("postShow", postShowFun);
+                    this._loadJpqlEditor();
+                    this.queryPage.removeEvent("postShow", postShowFun);
                 }.bind(this);
-                this.jpqlPage.addEvent("postShow", postShowFun);
+                this.queryPage.addEvent("postShow", postShowFun);
             }else{
-                this._loadStatementEditor();
+                this._loadJpqlEditor();
             }
+        }else{
+            this.jpqlEditor.resize();
         }
     },
-    _loadStatementEditor: function () {
-        if (!this.editor) {
+    _loadJpqlEditor: function () {
+        if (!this.jpqlEditor) {
             o2.require("o2.widget.JavascriptEditor", function () {
-                this.editor = new o2.widget.JavascriptEditor(this.jpqlEditorNode, {
+                this.jpqlEditor = new o2.widget.JavascriptEditor(this.jpqlEditorNode, {
                     "title": "JPQL",
                     "option": {"mode": "sql"}
                 });
-                this.editor.load(function () {
-                    // if (this.json.data) {
-                        this.editor.editor.setValue(this.json.data);
-                    // } else {
-                    //     var table = "table";
-                    //     switch (this.json.type) {
-                    //         case "update":
-                    //             this.editor.editor.setValue("UPDATE " + table + " o SET ");
-                    //             break;
-                    //         case "delete":
-                    //             this.editor.editor.setValue("DELETE " + table + " o WHERE ");
-                    //             break;
-                    //         default:
-                    //             this.editor.editor.setValue("SELECT o FROM " + table + " o");
-                    //     }
-                    // }
-                    // this.json.data = this.editor.editor.getValue();
-
-                    this.editor.addEditorEvent("change", function () {
-                        debugger;
-                        this.data.data = this.editor.getValue();
-                        this.checkJpqlType();
+                this.jpqlEditor.load(function () {
+                    this.jpqlEditor.editor.setValue(this.json.data);
+                    this.jpqlEditor.addEditorEvent("change", function () {
+                        this.data.data = this.jpqlEditor.getValue();
+                        // this.checkStatementType();
                     }.bind(this));
-
-                    // this.editor.editor.on("change", function(){
-                    //     this.data.data = this.editor.getValue();
-                    //     this.checkJpqlType();
-                    // }.bind(this));
                 }.bind(this));
             }.bind(this), false);
         }
-
     },
-    loadStatementCountEditor: function () {
-        if (!this.countEditor) {
+
+    loadJpqlCountEditor: function () {
+        if (!this.jpqlCountEditor) {
             if( !this.json.countData )this.json.countData = "SELECT count(o.id) FROM table o";
-            if( this.countJpqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
+            if( this.jpqlCountEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
                 var postShowFun = function() {
-                    this._loadStatementCountEditor();
-                    this.countJpqlPage.removeEvent("postShow", postShowFun);
+                    this._loadJpqlCountEditor();
+                    this.countPage.removeEvent("postShow", postShowFun);
                 }.bind(this);
-                this.countJpqlPage.addEvent("postShow", postShowFun);
+                this.countPage.addEvent("postShow", postShowFun);
             }else{
-                this._loadStatementCountEditor();
+                this._loadJpqlCountEditor();
             }
+        }else{
+            this.jpqlCountEditor.resize();
         }
     },
-    _loadStatementCountEditor : function(){
+    _loadJpqlCountEditor : function(){
         o2.require("o2.widget.JavascriptEditor", function () {
-            this.countEditor = new o2.widget.JavascriptEditor(this.countJpqlEditorNode, {
+            this.jpqlCountEditor = new o2.widget.JavascriptEditor(this.jpqlCountEditorNode, {
                 "title": "JPQL",
                 "option": {"mode": "sql"}
             });
-            this.countEditor.load(function () {
-                // if (this.json.countData) {
-                    this.countEditor.editor.setValue(this.json.countData);
-                // } else {
-                //     var table = "table";
-                //     this.countEditor.editor.setValue("SELECT count(o.id) FROM " + table + " o");
-                // }
-                // this.json.countData = this.countEditor.editor.getValue();
+            this.jpqlCountEditor.load(function () {
+                this.jpqlCountEditor.editor.setValue(this.json.countData);
 
-                this.countEditor.addEditorEvent("change", function () {
-                    this.data.countData = this.countEditor.getValue();
+                this.jpqlCountEditor.addEditorEvent("change", function () {
+                    this.data.countData = this.jpqlCountEditor.getValue();
                 }.bind(this));
-
-                // this.editor.editor.on("change", function(){
-                //     this.data.data = this.editor.getValue();
-                //     this.checkJpqlType();
-                // }.bind(this));
             }.bind(this));
         }.bind(this), false);
     },
-    setSatementTable: function () {
-        if (!this.json.type) this.json.type = "select";
-        this.changeType(this.json.type, true);
-        if( this.editor && this.editor.editor){
-            if (this.json.data) {
-                this.editor.editor.setValue(this.json.data);
-            } else {
-                var table = (this.json.tableObj) ? this.json.tableObj.name : "table";
-                switch (this.json.type) {
-                    case "update":
-                        this.editor.editor.setValue("UPDATE " + table + " o SET ");
-                        break;
-                    case "delete":
-                        this.editor.editor.setValue("DELETE " + table + " o WHERE ");
-                        break;
-                    default:
-                        this.editor.editor.setValue("SELECT o FROM " + table + " o");
-                }
+
+    loadSqlEditor: function () {
+        if (!this.sqlEditor) {
+            var value;
+            if( !this.json.sql ){
+                var table = "table";
+                // switch (this.json.type) {
+                //     case "update":
+                //         value = "UPDATE " + table + " SET ";
+                //         break;
+                //     case "delete":
+                //         value = "DELETE FROM " + table + " WHERE ";
+                //         break;
+                //     default:
+                        value = "SELECT * FROM " + table + "";
+                // }
+                this.json.sql = value;
             }
+            if( this.sqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
+                var postShowFun = function() {
+                    this._loadSqlEditor();
+                    this.queryPage.removeEvent("postShow", postShowFun);
+                }.bind(this);
+                this.queryPage.addEvent("postShow", postShowFun);
+            }else{
+                this._loadSqlEditor();
+            }
+        }else{
+            this.sqlEditor.resize();
+        }
+    },
+    _loadSqlEditor: function () {
+        if (!this.sqlEditor) {
+            o2.require("o2.widget.JavascriptEditor", function () {
+                this.sqlEditor = new o2.widget.JavascriptEditor(this.sqlEditorNode, {
+                    "title": "SQL",
+                    "option": {"mode": "sql"}
+                });
+                this.sqlEditor.load(function () {
+                    this.sqlEditor.editor.setValue(this.json.sql);
+
+                    this.sqlEditor.addEditorEvent("change", function () {
+                        this.data.sql = this.sqlEditor.getValue();
+                        // this.checkStatementType();
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this), false);
         }
     },
 
-    checkJpqlType: function () {
-        var str = this.json.data;
-        this.json.data = str;
-        var jpql_select = /^select/i;
-        var jpql_update = /^update/i;
-        var jpql_delete = /^delete/i;
-        if (jpql_select.test(str)) return this.changeType("select");
-        if (jpql_update.test(str)) return this.changeType("update");
-        if (jpql_delete.test(str)) return this.changeType("delete");
-    },
-    changeType: function (type, force) {
-        if (this.json.type != type) this.json.type = type;
-        if (type != this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].value || force) {
-            for (var i = 0; i < this.jpqlTypeSelect.options.length; i++) {
-                if (this.jpqlTypeSelect.options[i].value == type) {
-                    this.jpqlTypeSelect.options[i].set("selected", true);
-                    break;
-                }
+    loadSqlCountEditor: function () {
+        if (!this.sqlCountEditor) {
+            if( !this.json.sqlCount )this.json.sqlCount = "SELECT count(id) FROM table";
+            if( this.sqlCountEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
+                var postShowFun = function() {
+                    this._loadSqlCountEditor();
+                    this.countPage.removeEvent("postShow", postShowFun);
+                }.bind(this);
+                this.countPage.addEvent("postShow", postShowFun);
+            }else{
+                this._loadSqlCountEditor();
             }
+        }else{
+            // this.sqlCountEditorNode.setStyle( "height", ""+editorHeight+"px" );
+            this.sqlCountEditor.resize();
         }
     },
+    _loadSqlCountEditor : function(){
+        o2.require("o2.widget.JavascriptEditor", function () {
+            this.sqlCountEditor = new o2.widget.JavascriptEditor(this.sqlCountEditorNode, {
+                "title": "SQL",
+                "option": {"mode": "sql"}
+            });
+            this.sqlCountEditor.load(function () {
+                this.sqlCountEditor.editor.setValue(this.json.sqlCount);
+                this.sqlCountEditor.addEditorEvent("change", function () {
+                    this.data.sqlCount = this.sqlCountEditor.getValue();
+                }.bind(this));
+            }.bind(this));
+        }.bind(this), false);
+    },
+
+    loadJpqlScriptEditor: function () {
+        if (!this.jpqlScriptEditor) {
+            debugger;
+            o2.require("o2.widget.ScriptArea", function () {
+                this.jpqlScriptEditor = new o2.widget.ScriptArea(this.jpqlScriptArea, {
+                    "isbind": false,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
+                    "maxObj": this.designer.designNode,
+                    "title": this.designer.lp.scriptTitle,
+                    "type": "service",
+                    "onChange": function () {
+                        this.json.scriptText = this.jpqlScriptEditor.toJson().code;
+                    }.bind(this)
+                });
+                this.jpqlScriptEditor.load({"code": this.json.scriptText})
+            }.bind(this), false);
+        }
+    },
+    loadJpqlCountScriptEditor: function () {
+        if (!this.jpqlCountScriptEditor) {
+            debugger;
+            o2.require("o2.widget.ScriptArea", function () {
+                this.jpqlCountScriptEditor = new o2.widget.ScriptArea(this.jpqlCountScriptArea, {
+                    "isbind": false,
+                    "maxObj": this.designer.designNode,
+                    "title": this.designer.lp.scriptTitle,
+                    "onChange": function () {
+                        this.json.countScriptText = this.jpqlCountScriptEditor.toJson().code;
+                    }.bind(this)
+                });
+                this.jpqlCountScriptEditor.load({"code": this.json.countScriptText})
+            }.bind(this), false);
+        }
+    },
+
+    loadSqlScriptEditor: function () {
+        if (!this.sqlScriptEditor) {
+            debugger;
+            o2.require("o2.widget.ScriptArea", function () {
+                this.sqlScriptEditor = new o2.widget.ScriptArea(this.sqlScriptArea, {
+                    "isbind": false,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
+                    "maxObj": this.designer.designNode,
+                    "title": this.designer.lp.sqlScriptTitle,
+                    "type": "service",
+                    "onChange": function () {
+                        this.json.sqlScriptText = this.sqlScriptEditor.toJson().code;
+                    }.bind(this)
+                });
+                this.sqlScriptEditor.load({"code": this.json.sqlScriptText})
+            }.bind(this), false);
+        }
+    },
+    loadSqlCountScriptEditor: function () {
+        if (!this.sqlCountScriptEditor) {
+            o2.require("o2.widget.ScriptArea", function () {
+                this.sqlCountScriptEditor = new o2.widget.ScriptArea(this.sqlCountScriptArea, {
+                    "isbind": false,
+                    "maxObj": this.designer.designNode,
+                    "title": this.designer.lp.sqlScriptTitle,
+                    "onChange": function () {
+                        this.json.sqlCountScriptText = this.sqlCountScriptEditor.toJson().code;
+                    }.bind(this)
+                });
+                this.sqlCountScriptEditor.load({"code": this.json.sqlCountScriptText})
+            }.bind(this), false);
+        }
+    },
+
+    // setSatementTable: function () {
+    //     if (!this.json.type) this.json.type = "select";
+    //     this.changeType(this.json.type, true);
+    // },
+
+    // checkStatementType: function () {
+    //     var str = this.json.data;
+    //     this.json.data = str;
+    //     var jpql_select = /^select/i;
+    //     var jpql_update = /^update/i;
+    //     var jpql_delete = /^delete/i;
+    //     if (jpql_select.test(str)) return this.changeType("select");
+    //     if (jpql_update.test(str)) return this.changeType("update");
+    //     if (jpql_delete.test(str)) return this.changeType("delete");
+    // },
+    // changeType: function (type, force) {
+    //     if (this.json.type != type) this.json.type = type;
+    //     if (type != this.statementTypeSelect.options[this.statementTypeSelect.selectedIndex].value || force) {
+    //         for (var i = 0; i < this.statementTypeSelect.options.length; i++) {
+    //             if (this.statementTypeSelect.options[i].value == type) {
+    //                 this.statementTypeSelect.options[i].set("selected", true);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // },
     loadStatementHtml: function (callback) {
         this.areaNode.loadAll({
             "css": this.path + this.options.style + "/statement.css",
             "html": this.path + "statementDesigner.html"
         }, {
-            "bind": {"lp": this.designer.lp, "data": this.data}
+            "bind": {"lp": this.designer.lp, "data": this.data},
+            "module": this
         }, function () {
             if (callback) callback();
         }.bind(this));
     },
+    addFilterSample: function(){
+        var filterList = this.filterListEditor.editor.getValue();
+        filterList = JSON.parse( filterList );
+        filterList.push({
+            "path": ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o.title",
+            "comparison":"like",
+            "value": ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o_title",
+            "formatType":"textValue"
+        });
+        this.filterListEditor.editor.setValue( JSON.stringify(filterList, null, 4) );
+
+        var parameter = this.jsonEditor.editor.getValue();
+        parameter = JSON.parse( parameter );
+        parameter[ ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o_title" ] = "%关于%";
+        this.jsonEditor.editor.setValue( JSON.stringify(parameter, null, 4) );
+
+    },
     loadStatementRunner: function () {
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {
-                "title": "JPQL",
+                "title": "parameter",
                 "option": {"mode": "json"}
             });
             this.jsonEditor.load(function () {
-                this.jsonEditor.editor.setValue(this.data.testParameters || "{}");
+                debugger;
+                var json = JSON.parse( this.data.testParameters || "{}" );
+                if( json.parameter )json = json.parameter;
+                this.jsonEditor.editor.setValue( JSON.stringify(json, null, 4) );
+            }.bind(this));
+
+            this.filterListEditor = new o2.widget.JavascriptEditor(this.runFilterNode, {
+                "title": "filterList",
+                "option": {"mode": "json"}
+            });
+            this.filterListEditor.load(function () {
+                var json = JSON.parse( this.data.testParameters || "{}" );
+                json = json.filterList || [];
+                this.filterListEditor.editor.setValue( JSON.stringify(json, null, 4) );
             }.bind(this));
         }.bind(this), false);
+    },
+    getSQLTableByEntity: function(entityClassName){
+        switch (entityClassName) {
+            case "com.x.processplatform.core.entity.content.Task":
+                return "PP_C_TASK";
+            case "com.x.processplatform.core.entity.content.TaskCompleted":
+                return "PP_C_TASKCOMPLETED";
+            case "com.x.processplatform.core.entity.content.Read":
+                return "PP_C_READ";
+            case "com.x.processplatform.core.entity.content.ReadCompleted":
+                return "PP_C_READCOMPLETED";
+            case "com.x.processplatform.core.entity.content.Work":
+                return "PP_C_WORK";
+            case "com.x.processplatform.core.entity.content.WorkCompleted":
+                return "PP_C_WORKCOMPLETED";
+            case "com.x.processplatform.core.entity.content.Review":
+                return "PP_C_REVIEW";
+            case "com.x.cms.core.entity.Document":
+                return "CMS_DOCUMENT";
+        }
+    },
+    setDynamicTableName: function(){
+        var name = this.json.tableObj && this.json.tableObj.name;
+        if( name ){
+            if( ["sql", "sqlScript"].contains(this.json.format) ){
+                name = "QRY_DYN_" + name.toUpperCase();
+            }
+            this.dynamicTableContent.set("text", name);
+        }else{
+            this.dynamicTableContent.set("text", "");
+        }
     },
     setEvent: function () {
         this.designerArea.addEvent("click", function (e) {
@@ -659,27 +967,80 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             e.stopPropagation();
         }.bind(this));
         this.formatTypeArea.getElements("input").addEvent("click", function (e) {
+            debugger;
             if (e.target.checked) {
                 var v = e.target.get("value");
-                if (v === "script") {
-                    this.scriptArea.show();
-                    this.jpqlArea.hide();
-                    this.loadStatementScriptEditor();
+                switch (v) {
+                    case "sql":
+                        this.jpqlOfficalTable.hide();
+                        this.sqlOfficalTable.show();
 
-                    this.countScriptArea.show();
-                    this.countJpqlArea.hide();
-                    this.loadStatementCountScriptEditor();
-                } else {
-                    this.scriptArea.hide();
-                    this.jpqlArea.show();
-                    this.loadStatementEditor();
+                        this.jpqlArea.hide();
+                        this.jpqlScriptArea.hide();
+                        this.sqlArea.show();
+                        this.sqlScriptArea.hide();
+                        this.loadSqlEditor();
 
-                    this.countScriptArea.hide();
-                    this.countJpqlArea.show();
-                    this.loadStatementCountEditor();
+                        this.jpqlCountArea.hide();
+                        this.jpqlCountScriptArea.hide();
+                        this.sqlCountArea.show();
+                        this.sqlCountScriptArea.hide();
+                        this.loadSqlCountEditor();
+                        break;
+                    case "sqlScript":
+                        this.jpqlOfficalTable.hide();
+                        this.sqlOfficalTable.show();
+
+                        this.jpqlArea.hide();
+                        this.jpqlScriptArea.hide();
+                        this.sqlArea.hide();
+                        this.sqlScriptArea.show();
+                        this.loadSqlScriptEditor();
+
+                        this.jpqlCountArea.hide();
+                        this.jpqlCountScriptArea.hide();
+                        this.sqlCountArea.hide();
+                        this.sqlCountScriptArea.show();
+                        this.loadSqlCountScriptEditor();
+                        break;
+                    case "script":
+                        this.jpqlOfficalTable.show();
+                        this.sqlOfficalTable.hide();
+
+                        this.jpqlArea.hide();
+                        this.jpqlScriptArea.show();
+                        this.sqlArea.hide();
+                        this.sqlScriptArea.hide();
+                        this.loadJpqlScriptEditor();
+
+                        this.jpqlCountArea.hide();
+                        this.jpqlCountScriptArea.show();
+                        this.sqlCountArea.hide();
+                        this.sqlCountScriptArea.hide();
+                        this.loadJpqlCountScriptEditor();
+                        break;
+                    default:
+                        this.jpqlOfficalTable.show();
+                        this.sqlOfficalTable.hide();
+
+                        this.jpqlArea.show();
+                        this.jpqlScriptArea.hide();
+                        this.sqlArea.hide();
+                        this.sqlScriptArea.hide();
+                        this.loadJpqlEditor();
+
+                        this.jpqlCountArea.show();
+                        this.jpqlCountScriptArea.hide();
+                        this.sqlCountArea.hide();
+                        this.sqlCountScriptArea.hide();
+                        this.loadJpqlCountEditor();
                 }
                 this.json.format = v;
+                this.setDynamicTableName();
             }
+            this.loadFieldSelect();
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.changeStatementType();
+            this.checkViewFilter();
         }.bind(this));
         this.entityCategorySelect.addEvent("change", function (e) {
             var entityCategory = e.target.options[e.target.selectedIndex].value;
@@ -701,12 +1062,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     break;
             }
             this.json.entityCategory = entityCategory;
-            this.loadJpqlTypeSelect();
+            // this.loadStatementTypeSelect();
             this.loadFieldSelect();
             if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
         }.bind(this));
         //@todo change table
-        this.officialTableSelect.addEvent("change", function (e) {
+        this.officialTableSelectJPQL.addEvent("change", function (e) {
             debugger;
             var entityClassName = e.target.options[e.target.selectedIndex].value;
             this.json.entityClassName = entityClassName;
@@ -720,52 +1081,61 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
             if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
 
-            //     var className = e.target.options[e.target.selectedIndex].value;
-            //     if (this.json.type=="select"){
-            //         this.json.data
-            //         /(select)*(where|)/g
-            //     }
-            // }.bind(this));
+        }.bind(this));
 
-            // this.jpqlTypeSelect.addEvent("change", function(){
-            //     var type = e.target.options[e.target.selectedIndex].value;
-            //     switch (entityCategory) {
-            //         case "update":
-            //             this.jpqlSelectEditor.hide();
-            //             this.jpqlUpdateEditor.show();
-            //             this.jpqlDeleteEditor.hide();
-            //             this.loadJpqlUpdateEditor();
-            //             break;
-            //         case "delete":
-            //             this.jpqlSelectEditor.hide();
-            //             this.jpqlUpdateEditor.hide();
-            //             this.jpqlDeleteEditor.show();
-            //             break;
-            //         default:
-            //             this.jpqlSelectEditor.show();
-            //             this.jpqlUpdateEditor.hide();
-            //             this.jpqlDeleteEditor.hide();
-            //             break;
-            //     }
+        this.officialTableSelectSQL.addEvent("change", function (e) {
+            debugger;
+            var entityClassName = e.target.options[e.target.selectedIndex].value;
+            this.json.entityClassName = entityClassName;
+            if( entityClassName ){
+                this.changeEditorEntityClassName( this.getSQLTableByEntity(entityClassName) );
+            }
+            this.loadFieldSelect();
+
+            this.json.table = "";
+            this.json.tableObj = null;
+
+            if(this.view && this.view.property && this.view.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
+
         }.bind(this));
 
         this.runActionNode.getFirst().addEvent("click", this.runStatement.bind(this));
 
         this.dynamicTableSelect.addEvent("click", this.selectTable.bind(this));
-        this.jpqlTypeSelect.addEvent("change", function () {
-            var t = this.jpqlTypeSelect.options[this.jpqlTypeSelect.selectedIndex].value;
-            if (t != this.json.type) {
-                this.json.type = t;
-            }
-            if (t != "select") {
-                this.jpqlPage.showTabIm();
-                this.countJpqlPage.disableTab();
+        // this.statementTypeSelect.addEvent("change", function () {
+        //     var t = this.statementTypeSelect.options[this.statementTypeSelect.selectedIndex].value;
+        //     if (t != this.json.type) {
+        //         this.json.type = t;
+        //     }
+        //     if (t !== "select") {
+        //         this.queryPage.showTabIm();
+        //         this.countPage.disableTab();
+        //
+        //         this.runPage.showTabIm();
+        //         this.viewPage.disableTab();
+        //     } else {
+        //         if( this.json.countMethod === "assign" )this.countPage.enableTab(true);
+        //         this.viewPage.enableTab(true);
+        //     }
+        // }.bind(this));
 
-                this.runPage.showTabIm();
-                this.viewPage.disableTab();
-            } else {
-                this.countJpqlPage.enableTab(true);
-                this.viewPage.enableTab(true);
+        this.countMethodSelect.addEvent("change", function () {
+            this.json.countMethod = this.countMethodSelect.options[this.countMethodSelect.selectedIndex].value;
+            switch (this.json.countMethod) {
+                case "auto":
+                case "ignore":
+                    // if (this.json.type === "select") {
+                        this.queryPage.showTabIm();
+                        this.countPage.disableTab();
+                    // }
+                    break;
+                // case "assign":
+                //     break;
+                default:
+                    // if (this.json.type === "select") {
+                        this.countPage.enableTab();
+                    // }
+                    break;
             }
         }.bind(this));
 
@@ -775,60 +1145,103 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             var field = option.retrieve("field");
             if( !field )return;
             var text = field.name;
-            if( this.countJpqlPage && this.countJpqlPage.isShow && !this.countJpqlPage.disabled ){
-                if( this.data.format === "script" && this.countScriptEditor.jsEditor ){
-                    this.countScriptEditor.jsEditor.insertValue( text );
-                }else if(this.countEditor){
-                    this.countEditor.insertValue( text );
+            if( this.countPage && this.countPage.isShow && !this.countPage.disabled ) {
+                if (this.data.format === "script" && this.jpqlCountScriptEditor.jsEditor) {
+                    this.jpqlCountScriptEditor.jsEditor.insertValue(text);
+                } else if (this.data.format === "sqlScript" && this.sqlCountScriptEditor.jsEditor) {
+                    this.sqlCountScriptEditor.jsEditor.insertValue(text);
+                } else if (this.data.format === "sql" && this.sqlCountEditor) {
+                    this.sqlCountEditor.insertValue(text);
+                } else if (this.jpqlCountEditor) {
+                    this.jpqlCountEditor.insertValue(text);
                 }
             }else{
-                if( this.data.format === "script" && this.scriptEditor.jsEditor ){
-                    this.scriptEditor.jsEditor.insertValue( text );
-                }else if( this.editor ){
-                    this.editor.insertValue( text );
+                if( this.data.format === "script" && this.jpqlScriptEditor.jsEditor ){
+                    this.jpqlScriptEditor.jsEditor.insertValue( text );
+                }else if( this.data.format === "sqlScript" && this.sqlScriptEditor.jsEditor ){
+                    this.sqlScriptEditor.jsEditor.insertValue( text );
+                }else if( this.data.format === "sql" && this.sqlEditor ){
+                    this.sqlEditor.insertValue( text );
+                }else if( this.jpqlEditor ) {
+                    this.jpqlEditor.insertValue(text);
                 }
             }
-        }.bind(this))
+        }.bind(this));
     },
     changeEditorEntityClassName : function( entityClassName ){
-        if (this.json.format == "jpql") {
-            if (this.editor) {
-                var re = /(.*from\s*)/ig;
-                if (this.json.type == "update") re = /(.*update\s*)/ig;
 
-                //if (this.json.type=="select" && this.editor){
-                var v = this.json.data;
+        debugger;
 
-                var re2 = /(\s+)/ig;
+        var re, v, replaceClassName;
+        if (this.json.format === "jpql") {
+
+            replaceClassName = function (re, v) {
+                if( !re )re = /(.*from\s*)/ig;
+                //var re2 = /(\s+)/ig;
                 var arr = re.exec(v);
                 if (arr && arr[0]) {
-                    var left = arr[0]
+                    var left = arr[0];
                     v = v.substring(left.length, v.length);
                     //var ar = re2.exec(v);
                     var right = v.substring(v.indexOf(" "), v.length);
-                    this.json.data = left + entityClassName + right;
-                    this.editor.editor.setValue(this.json.data);
+                    return left + entityClassName + right;
                 }
+                return "";
+            };
 
-                //}
+            if (this.jpqlEditor) {
+                // if (this.json.type === "update") re = /(.*update\s*)/ig;
+                v = replaceClassName( re, this.json.data);
+                if (v) {
+                    this.json.data = v;
+                    this.jpqlEditor.editor.setValue(this.json.data);
+                }
             }
 
-            if( this.countEditor ){
-                var re = /(.*from\s*)/ig;
-                var v = this.json.countData;
+            if( this.jpqlCountEditor ){
+                v = replaceClassName( re, this.json.countData);
+                if (v) {
+                    this.json.countData = v;
+                    this.jpqlCountEditor.editor.setValue(this.json.countData);
+                }
+            }
+        }else if (this.json.format === "sql") {
 
-                var re2 = /(\s+)/ig;
+            replaceClassName = function (re, v) {
+                if( !re )re = /(.*from\s*)/ig;
+                //var re2 = /(\s+)/ig;
                 var arr = re.exec(v);
                 if (arr && arr[0]) {
-                    var left = arr[0]
+                    var left = arr[0];
                     v = v.substring(left.length, v.length);
                     //var ar = re2.exec(v);
-                    var right = v.substring(v.indexOf(" "), v.length);
-                    this.json.countData = left + entityClassName + right;
-                    this.countEditor.editor.setValue(this.json.countData);
+                    var right;
+                    if( v.indexOf(" ") > -1 ){
+                        right = v.substring(v.indexOf(" "), v.length);
+                    }else{
+                        right = "";
+                    }
+                    return left + entityClassName + right;
+                }
+                return "";
+            };
+
+            if (this.sqlEditor) {
+                // if (this.json.type === "update") re = /(.*update\s*)/ig;
+                v = replaceClassName( re, this.json.sql);
+                if (v) {
+                    this.json.sql = v;
+                    this.sqlEditor.editor.setValue(this.json.sql);
                 }
             }
 
+            if( this.sqlCountEditor ){
+                v = replaceClassName( re, this.json.sqlCount);
+                if (v) {
+                    this.json.sqlCount = v;
+                    this.sqlCountEditor.editor.setValue(this.json.sqlCount);
+                }
+            }
         }
     },
 
@@ -842,12 +1255,20 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 if (items.length) {
                     var id = items[0].data.id;
                     var name = items[0].data.name;
-                    this.dynamicTableContent.set("text", name);
                     this.json.table = name;
                     this.json.tableObj = items[0].data;
+                    if( name ){
+                        this.json.tableObj.nativeTableName = "QRY_DYN_" + name.toUpperCase();
+                    }
 
-                    this.officialTableSelect.options[0].set("selected", true);
+                    this.officialTableSelectJPQL.options[0].set("selected", true);
+                    this.officialTableSelectSQL.options[0].set("selected", true);
                     this.json.entityClassName = "";
+
+                    if( name && ["sql", "sqlScript"].contains(this.json.format) ){
+                        name = "QRY_DYN_" + name.toUpperCase();
+                    }
+                    this.dynamicTableContent.set("text", name);
 
                     this.changeEditorEntityClassName( name );
                     this.loadFieldSelect();
@@ -863,7 +1284,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
 
     runStatement: function () {
-        debugger;
         // if (!this.json.data){
         //     this.designer.notice(this.designer.lp.inputStatementData, "error");
         //     return false;
@@ -873,7 +1293,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // this.runMask.loadNode(this.node);
 
         this.saveSilence(function () {
-            debugger;
             this.execute(function (json) {
                 this.executeData = json;
                 o2.require("o2.widget.JsonParse", function () {
@@ -883,75 +1302,27 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 }.bind(this));
                 if (this.view) {
                     var flag = true;
-                    if (this.data.type !== "select") flag = false;
+                    // if (this.data.type !== "select") flag = false;
+                    if( this.data.viewEnable === false )flag = false;
                     if (this.data.format === "script" && !this.data.scriptText) flag = false;
-                    if (this.data.format !== "script" && !this.data.data) flag = false;
+                    if (this.data.format === "jpql" && !this.data.data) flag = false;
+                    if (this.data.format === "sql" && !this.data.sql) flag = false;
+                    if (this.data.format === "sqlScript" && !this.data.sqlScriptText) flag = false;
                     if (flag) this.view.loadViewData();
                 }
                 this.setColumnDataPath(json);
                 // this.runMask.hide();
             }.bind(this), function () {
                 // if (this.runMask) this.runMask.hide();
-            }.bind(this))
-
-            // var json = this.jsonEditor.editor.getValue();
-            // var o = JSON.parse(json);
-            //
-            // var mode = "data";
-            // if( this.data.type === "select" ){
-            //     if( this.data.format === "script" ){
-            //         if( this.data.scriptText && this.data.countScriptText ){
-            //             mode = "all"
-            //         }else if( this.data.scriptText && !this.data.countScriptText ){
-            //             mode = "data"
-            //         }else if( !this.data.scriptText && this.data.countScriptText ){
-            //             mode = "count"
-            //         }else{
-            //             this.designer.notice(this.designer.lp.inputStatementData, "error");
-            //             return false;
-            //         }
-            //     }else{
-            //         if( this.data.data && this.data.countData ){
-            //             mode = "all"
-            //         }else if( this.data.data && !this.data.countData ){
-            //             mode = "data"
-            //         }else if( !this.data.data && this.data.countData ){
-            //             mode = "count"
-            //         }else{
-            //             this.designer.notice(this.designer.lp.inputStatementData, "error");
-            //             return false;
-            //         }
-            //     }
-            // }
-            // o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50 , o, function(json){
-            //     o2.require("o2.widget.JsonParse", function(){
-            //         this.runResultNode.empty();
-            //         var jsonResult = new o2.widget.JsonParse(json, this.runResultNode);
-            //         jsonResult.load();
-            //     }.bind(this));
-            //     this.runMask.hide();
-            // }.bind(this), function(xhr, text, error){
-            //     debugger;
-            //     if (this.runMask) this.runMask.hide();
-            //     var errorText = error;
-            //     if (xhr){
-            //         var json = JSON.decode(xhr.responseText);
-            //         if (json){
-            //             errorText = json.message.trim() || "request json error";
-            //         }else{
-            //             errorText = "request json error: "+xhr.responseText;
-            //         }
-            //     }
-            //     errorText = errorText.replace(/\</g, "&lt;");
-            //     errorText = errorText.replace(/\</g, "&gt;");
-            //     MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
-            // }.bind(this))
+            }.bind(this));
         }.bind(this));
     },
     setColumnDataPath: function (json) {
-        if (this.data.type !== "select") return;
+        // if (this.data.type !== "select") return;
         if (this.data.format === "script" && !this.data.scriptText) return;
-        if (this.data.format !== "script" && !this.data.data) return;
+        if (this.data.format === "jpql" && !this.data.data) return;
+        if (this.data.format === "sql" && !this.data.sql) return;
+        if (this.data.format === "sqlScript" && !this.data.sqlScriptText) return;
         this.columnDataPathList = [];
         debugger;
         var addPath = function (value, key) {
@@ -986,40 +1357,80 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     getColumnDataPath: function () {
         return this.columnDataPathList || [];
     },
+    checkViewFilter: function(){
+        if( this.json.viewEnable === false )return true;
+
+        var noteFlag = false;
+        if (typeOf(this.viewJson) === "object" && this.viewJson.data && this.viewJson.data.customFilterList) {
+            this.viewJson.data.customFilterList.each(function (item) {
+                if (item.path) {
+                    if (["sql", "sqlScript"].contains(this.data.format) && item.path.contains(".")) {
+                        noteFlag = true;
+                    }
+                    if (!["sql", "sqlScript"].contains(this.data.format) && !item.path.contains(".")) {
+                        noteFlag = true;
+                    }
+                }
+            }.bind(this));
+            if (noteFlag) this.designer.notice(MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info");
+        }
+        return !noteFlag;
+    },
     execute: function (success, failure) {
-        var json = this.jsonEditor.editor.getValue();
-        var o = JSON.parse(json);
+        var json = this.jsonEditor.editor.getValue() || "{}";
+        var parameter = JSON.parse(json);
+
+        var filter = this.filterListEditor.editor.getValue() || "[]";
+        var filterList = JSON.parse(filter);
+
+        var pageNo = this.runPageNoInput.get("value").toInt();
+        var pageSize = this.runPageSizeInput.get("value").toInt();
 
         var mode = "data";
-        if (this.data.type === "select") {
-            if (this.data.format === "script") {
-                if (this.data.scriptText && this.data.countScriptText) {
-                    mode = "all"
-                } else if (this.data.scriptText && !this.data.countScriptText) {
-                    mode = "data"
-                } else if (!this.data.scriptText && this.data.countScriptText) {
-                    mode = "count"
-                } else {
-                    this.designer.notice(this.designer.lp.inputStatementData, "error");
-                    return false;
+        // if (this.data.type === "select") {
+            var getMode = function (queryName, countName) {
+                switch (this.data.countMethod) {
+                    case "ignore":
+                        return this.data[queryName] ? "data" : false;
+                    case "auto":
+                        return this.data[queryName] ? "all" : false;
+                    default:
+                        if (this.data[queryName] && this.data[countName]) {
+                            return "all";
+                        } else if (this.data[queryName] && !this.data[countName]) {
+                            return "data";
+                        } else if (!this.data[queryName] && this.data[countName]) {
+                            return "count";
+                        } else {
+                            return false;
+                        }
                 }
-            } else {
-                if (this.data.data && this.data.countData) {
-                    mode = "all"
-                } else if (this.data.data && !this.data.countData) {
-                    mode = "data"
-                } else if (!this.data.data && this.data.countData) {
-                    mode = "count"
-                } else {
-                    this.designer.notice(this.designer.lp.inputStatementData, "error");
-                    return false;
-                }
+            }.bind(this);
+            switch (this.data.format) {
+                case "script":
+                    mode = getMode("scriptText", "countScriptText");
+                    break;
+                case "sqlScript":
+                    mode = getMode("sqlScriptText", "sqlCountScriptText");
+                    break;
+                case "sql":
+                    mode = getMode("sql", "sqlCount");
+                    break;
+                default:
+                    mode = getMode("data", "countData");
+                    break;
+            // }
+            if( !mode ){
+                this.designer.notice(this.designer.lp.inputStatementData, "error");
+                return false;
             }
         }
-        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50, o, function (json) {
+        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, pageNo || 1, pageSize || 50, {
+            parameter: parameter,
+            filterList: filterList
+        }, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
-            debugger;
             if (failure) failure();
             var errorText = error;
             if (xhr) {
@@ -1037,9 +1448,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
 
     save: function (callback) {
-        debugger;
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
+            return false;
+        }
+
+        if( !this.checkViewFilter() ){
             return false;
         }
 
@@ -1048,12 +1462,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if(!this.viewJson.pageSize)this.viewJson.pageSize = "20";
             this.data.view = JSON.stringify(this.viewJson);
         }
-        //if( !this.data.tableType ){
-        //    this.data.tableType = "dynamic";
-        //}
-        if (this.editor) this.data.data = this.editor.editor.getValue();
-        if (this.scriptEditor) this.data.scriptText = this.scriptEditor.toJson().code;
-        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+        // if (this.jpqlEditor) this.data.data = this.jpqlEditor.editor.getValue();
+        // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
+
+        var textJson = {};
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue() || "{}");
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue() || "[]");
+        this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -1065,7 +1480,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             if (callback) callback();
         }.bind(this));
     },
-    _setEditStyle: function () {
+    _setEditStyle: function (name, input, oldValue) {
+        if( name === "viewEnable" && this.viewPage ){
+            if (this.data.viewEnable === false ) {
+                this.viewPage.disableTab();
+            } else {
+                this.viewPage.enableTab(true);
+            }
+        }
     },
 
     saveSilence: function (callback) {
@@ -1080,9 +1502,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.data.view = JSON.stringify(this.viewJson);
         }
 
-        if (this.editor) this.data.data = this.editor.editor.getValue();
-        if (this.scriptEditor) this.data.scriptText = this.scriptEditor.toJson().code;
-        if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+        // if (this.jpqlEditor) this.data.data = this.jpqlEditor.editor.getValue();
+        // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
+
+        // if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+
+        var textJson = {};
+        if (this.jsonEditor) textJson.parameter = JSON.parse(this.jsonEditor.editor.getValue() || "{}");
+        if (this.filterListEditor) textJson.filterList = JSON.parse(this.filterListEditor.editor.getValue() || "[]");
+        this.data.testParameters = JSON.stringify(textJson);
 
         this.designer.actions.saveStatement(this.data, function (json) {
             //this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -1110,7 +1538,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
     },
     setViewSize: function () {
-        debugger;
         var size = this.areaNode.getSize();
         var designerSize = this.designerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
@@ -1132,14 +1559,18 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // this.runContentNode.setStyle("height", ""+y+"px");
     },
     preview: function () {
+        if( this.json.viewEnable === false ){
+            this.designer.notice(this.designer.lp.cannotDisabledViewNotice, "error");
+            return;
+        }
         if (this.isNewStatement) {
             this.designer.notice(this.designer.lp.saveStatementNotice, "error");
             return;
         }
-        if (this.data.type !== "select") {
-            this.designer.notice(this.designer.lp.previewNotSelectStatementNotice, "error");
-            return;
-        }
+        // if (this.data.type !== "select") {
+        //     this.designer.notice(this.designer.lp.previewNotSelectStatementNotice, "error");
+        //     return;
+        // }
         if (!this.data.view) {
             this.designer.notice(this.designer.lp.noViewNotice, "error");
 
@@ -1318,7 +1749,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
 
     loadViewData: function () {
-        debugger;
         if (this.data.id) {
             // this.statement.saveSilence(function () {
             this.viewContentBodyNode.empty();
@@ -1431,8 +1861,6 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
     },
     addColumn: function () {
 
-        debugger;
-
         MWF.require("MWF.widget.UUID", function () {
             var id = (new MWF.widget.UUID).id;
             var json = {
@@ -1455,7 +1883,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+            this.addColumnNode.scrollIntoView(false);
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
@@ -1847,8 +2275,8 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         // }).toElement(this.listNode);
 
         try{
-            this.node.scrollIntoView(true);
-            this.listNode.scrollIntoView(true);
+            this.node.scrollIntoView(false);
+            this.listNode.scrollIntoView(false);
         }catch (e) {
 
         }
@@ -1944,7 +2372,7 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
         this.node.setStyles(this.css.toolbarWarpNode_selected);
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         try {
-            this.node.scrollIntoView(true);
+            this.node.scrollIntoView(false);
         }catch (e) {
 
         }
@@ -1994,7 +2422,7 @@ MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
         this.node.setStyles(this.css.pagingWarpNode_selected);
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         try {
-            this.node.scrollIntoView(true);
+            this.node.scrollIntoView(false);
         }catch (e) {
 
         }

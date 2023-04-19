@@ -96,7 +96,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "value" : "值",
         "columnValue" : "列值",
         "contain" : "包含",
-        "from" : "从"
+        "from" : "从",
+        "in": "包含"
     },
     "delete_filterItem_title": "删除过滤条件确认",
     "delete_filterItem": "您确定要删除当前过滤条件吗？",
@@ -311,6 +312,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "currentIdentity":"当前身份",
         "currentPersonDirectUnit":"当前人所在直接组织",
         "currentPersonAllUnit":"当前人所在所有组织",
+        "currentPersonGroupList": "当前人所在群组",
+        "currentPersonRoleList": "当前人所拥有角色",
         "to":"到",
         "input":"输入",
         "selectable":"可选",

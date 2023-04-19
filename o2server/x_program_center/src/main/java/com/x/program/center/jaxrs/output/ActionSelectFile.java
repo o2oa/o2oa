@@ -14,7 +14,7 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 class ActionSelectFile extends BaseAction {
 
-	private static String extension = ".xapp";
+	private static final String extension = ".xapp";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

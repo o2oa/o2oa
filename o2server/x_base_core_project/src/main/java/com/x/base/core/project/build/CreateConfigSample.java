@@ -58,6 +58,7 @@ public class CreateConfigSample {
 		classes.add(Portal.class);
 		classes.add(ProcessPlatform.class);
 		classes.add(Qiyeweixin.class);
+		classes.add(AndFx.class);
 		classes.add(Query.class);
 		classes.add(Token.class);
 		classes.add(TernaryManagement.class);
@@ -65,6 +66,7 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(General.class);
+		classes.add(Cms.class);
 
 		Collections.sort(classes, (c1, c2) -> c1.getCanonicalName().compareTo(c2.getCanonicalName()));
 		for (Class<?> cls : classes) {

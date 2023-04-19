@@ -26,14 +26,25 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     load: function(){
         this.getOrgAction(function(){
             if (this.app.desktop.session.user.distinguishedName){
-                this.orgAction.getPerson(function(json){
-                    this.identitys = json.data.woIdentityList || [];
+                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.listAvailableIdentityWithProcess(this.data.id, function(json){
+                    this.identitys = json.data || [];
                     if (this.identitys.length){
+
                         if (this.options.identity){
+                            var identityList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
                             this.identitys = this.identitys.filter(function(id){
-                                var dn = (typeOf(this.options.identity)==="string") ? this.options.identity : this.options.identity.distinguishedName;
-                                return id.distinguishedName===dn;
+                                for( var i=0; i<identityList.length; i++ ){
+                                    var identity = identityList[i] || "";
+                                    var dn = (typeOf(identity)==="string") ? identity : identity.distinguishedName;
+                                    id.index = i;
+                                    if( id.distinguishedName===dn )return true;
+                                }
+                                return false;
                             }.bind(this));
+
+                            this.identitys.sort(function(a, b){
+                                return a.index - b.index
+                            });
                         }
 
                         if (this.identitys.length){
@@ -96,12 +107,23 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 
                                 this.fireEvent("selectId");
                             }
+                        }else{
+                            var dns = [];
+                            var iList = typeOf( this.options.identity ) === "array" ? this.options.identity : [this.options.identity];
+                            for( var i=0; i<iList.length; i++ ){
+                                var identity = iList[i] || "";
+                                var dn = (typeOf(identity)==="string") ? identity : identity.distinguishedName;
+                                if(dn)dns.push(dn);
+                            }
+
+                            var t = this.lp.identityNotInRange.replace("{name}", dns.join("、"));
+                            this.app.notice(t, "error");
                         }
                     }else{
                         var t = this.lp.noIdentitys.replace("{name}", this.app.desktop.session.user.name);
                         this.app.notice(t, "error");
                     }
-                }.bind(this), null, this.app.desktop.session.user.distinguishedName)
+                }.bind(this))
             }
         }.bind(this));
     },
@@ -255,7 +277,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
             "identity": identity
         };
         if( this.options.workData ){
-            data.data = this.options.workData
+            data.data = this.options.workData;
+            if (data.data.title || data.data.subject) data.title = data.data.title || data.data.subject;
         }
 
         if (!data.identity){

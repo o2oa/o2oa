@@ -16,6 +16,18 @@
 		"code": "",
 		"html": ""
 	  },
+		"beforeModulesLoad" : {
+			"code": "",
+			"html": ""
+		},
+		"modulesLoad" : {
+			"code": "",
+			"html": ""
+		},
+		"afterModulesLoad" : {
+			"code": "",
+			"html": ""
+		},
 		"click": {
 			"code": "",
 			"html": ""

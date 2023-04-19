@@ -2,8 +2,8 @@ MWF.xScript = MWF.xScript || {};
 MWF.xScript.Actions = MWF.xScript.Actions || {};
 MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 var invoke = function(serviceName){
-    return function(data, success, failure, async){
-        return this.action.invoke({"name": serviceName,"data": data, "async": async, "success": success,"failure": failure});
+    return function(data, success, failure, async, parameter){
+        return this.action.invoke({"name": serviceName, "parameter": parameter, "data": data, "async": async, "success": success,"failure": failure});
     }
 };
 
@@ -28,6 +28,7 @@ MWF.xScript.Actions.UnitActions = new Class({
 
     //人员--------
     personHasRole: invoke("personHasRole"),
+    getPerson: invoke("getPerson"),
     listPerson: invoke("listPerson"),
     listPersonSubDirect: invoke("listPersonSubDirect"),
     listPersonSubNested: invoke("listPersonSubested"),

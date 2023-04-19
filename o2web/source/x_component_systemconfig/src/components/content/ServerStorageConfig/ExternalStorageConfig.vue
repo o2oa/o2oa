@@ -247,8 +247,12 @@ const editStorageNode = (key)=>{
   const data = (o2.typeOf(key)==='string') ? storageData.value.store[key] : key;
   openEditDlg(data, externalEditorArea, (dlg)=>{
     if (currentNodeData.value.hasOwnProperty('key') && !currentNodeData.value.key){
-      component.notice(lp._storageServer.editStorageNode, 'error');
-      component.notice(lp._storageServer.editStorageNode, "error", e.target, {x: 'left', y: 'top'}, {x: 0, y: 50});
+      // component.notice(lp._storageServer.inputStorageNodeKey, 'error');
+      component.notice(lp._storageServer.inputStorageNodeKey, "error", externalEditorArea.value);
+      currentNodeData.value.key = ' ';
+    }else if (!currentNodeData.value.name){
+      component.notice(lp._storageServer.inputStorageNodeName, 'error', externalEditorArea.value);
+
     }else{
       storageData.value.store[currentNodeData.value.key || key] = {
         protocol: currentNodeData.value.protocol,

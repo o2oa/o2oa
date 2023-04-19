@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.config.ProcessPlatform;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -331,6 +338,106 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} else {
 				throw new ExceptionAttachmentInvalid(fileName);
 			}
+		}
+	}
+
+	protected byte[] read(EffectivePerson effectivePerson, StorageMapping mapping, Work work, WorkCompleted workCompleted,
+						Attachment attachment) throws Exception {
+		byte[] bytes = null;
+		if (work != null) {
+			Optional<ProcessPlatform.WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
+					.getWorkAttachmentDownloadEvents()
+					.bind(work.getApplication(), work.getProcess(), work.getActivity());
+			if (event.isPresent()) {
+				bytes = this.extensionService(effectivePerson, attachment, event.get());
+			}
+		} else if (workCompleted != null) {
+			Optional<ProcessPlatform.WorkCompletedExtensionEvent> event = Config.processPlatform().getExtensionEvents()
+					.getWorkCompletedAttachmentDownloadEvents()
+					.bind(workCompleted.getApplication(), workCompleted.getProcess());
+			if (event.isPresent()) {
+				bytes = this.extensionService(effectivePerson, attachment, event.get());
+			}
+		}
+		if (bytes == null) {
+			bytes = attachment.readContent(mapping);
+		}
+		return bytes;
+	}
+
+	protected byte[] extensionService(EffectivePerson effectivePerson, Attachment attachment, ProcessPlatform.WorkExtensionEvent event)
+			throws Exception {
+		byte[] bytes = null;
+		Req req = new Req();
+		req.setPerson(effectivePerson.getDistinguishedName());
+		req.setAttachment(attachment.getId());
+		req.setFileName(attachment.getName());
+		if (StringUtils.isNotEmpty(event.getCustom())) {
+			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
+		} else {
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
+			req.setFileBase64(Base64.encodeBase64String(attachment.readContent(mapping)));
+			bytes = CipherConnectionAction.postBinary(effectivePerson.getDebugger(), event.getUrl(), req);
+		}
+		return bytes;
+	}
+
+	protected byte[] extensionService(EffectivePerson effectivePerson, Attachment attachment,
+									ProcessPlatform.WorkCompletedExtensionEvent event) throws Exception {
+		byte[] bytes = null;
+		Req req = new Req();
+		req.setPerson(effectivePerson.getDistinguishedName());
+		req.setAttachment(attachment.getId());
+		req.setFileName(attachment.getName());
+		if (StringUtils.isNotEmpty(event.getCustom())) {
+			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
+		} else {
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					attachment.getStorage());
+			req.setFileBase64(Base64.encodeBase64String(attachment.readContent(mapping)));
+			bytes = CipherConnectionAction.postBinary(effectivePerson.getDebugger(), event.getUrl(), req);
+		}
+		return bytes;
+	}
+
+	public static class Req {
+
+		private String person;
+		private String attachment;
+		private String fileName;
+		private String fileBase64;
+
+		public String getPerson() {
+			return person;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+		public String getAttachment() {
+			return attachment;
+		}
+
+		public void setAttachment(String attachment) {
+			this.attachment = attachment;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
+
+		public String getFileBase64() {
+			return fileBase64;
+		}
+
+		public void setFileBase64(String fileBase64) {
+			this.fileBase64 = fileBase64;
 		}
 	}
 }

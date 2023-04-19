@@ -3,9 +3,12 @@ package com.x.program.center.jaxrs.invoke;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.http.TokenType;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -71,6 +74,22 @@ class ActionExecuteToken extends BaseAction {
 				if (StringUtils.isEmpty(person)) {
 					throw new ExceptionPersonNotExist(credential);
 				}
+				List<String> roles = business.organization().role().listWithPerson(person);
+				TokenType tokenType = TokenType.user;
+				if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager))) {
+					tokenType = TokenType.manager;
+				} else if (roles
+						.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
+					tokenType = TokenType.systemManager;
+				} else if (roles
+						.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
+					tokenType = TokenType.securityManager;
+				} else if (roles
+						.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
+					tokenType = TokenType.auditManager;
+				}
+				effectivePerson = new EffectivePerson(person, tokenType,
+						Config.token().getCipher(), Config.person().getEncryptType());
 			}
 		}
 		return executeInvoke(request, effectivePerson, jsonElement, cacheCategory, invoke);

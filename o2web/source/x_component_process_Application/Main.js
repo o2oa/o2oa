@@ -1,4 +1,4 @@
-MWF.xApplication.process.Application.options.multitask = false;
+MWF.xApplication.process.Application.options.multitask = true;
 o2.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
@@ -20,7 +20,7 @@ MWF.xApplication.process.Application.Main = new Class({
 		this.lp = MWF.xApplication.process.Application.LP;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
 		if (this.status) {
-			this.options.id = this.status.id;
+			if(this.status.id)this.options.id = this.status.id;
 			if(this.status.navi){
 				this.options.navi = this.status.navi;
 			}
@@ -29,18 +29,22 @@ MWF.xApplication.process.Application.Main = new Class({
 	},
 	loadApplication: function(callback){
 		this.initAcl(function (){
-			this.action.ApplicationAction.get(this.options.id).then(function (json){
-				if (json.data){
-					this.setTitle(this.lp.title+"-"+json.data.name);
-					this.application = json.data;
-					var url = this.path+this.options.style+"/view/view.html";
-					this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
-						this.setLayout();
-						this.loadList(this.options.navi);
-						if (callback) callback();
-					}.bind(this));
-				}
+			this.loadProcessList(function (){
+
+				this.action.ApplicationAction.get(this.options.id).then(function (json){
+					if (json.data){
+						this.setTitle(this.lp.title+"-"+json.data.name);
+						this.application = json.data;
+						var url = this.path+this.options.style+"/view/view.html";
+						this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
+							this.setLayout();
+							this.loadList(this.options.navi);
+							if (callback) callback();
+						}.bind(this));
+					}
+				}.bind(this));
 			}.bind(this));
+
 		}.bind(this));
 	},
 	loadApplicationIcon : function (e){
@@ -67,6 +71,12 @@ MWF.xApplication.process.Application.Main = new Class({
 
 				if(callback) callback();
 			}.bind(this));
+		}.bind(this));
+	},
+	loadProcessList : function (callback){
+		this.action.ProcessAction.listWithPersonWithApplication(this.options.id).then(function (json){
+			this.processList = json.data;
+			if(callback) callback();
 		}.bind(this));
 	},
 	createCountData: function(){
@@ -101,7 +111,7 @@ MWF.xApplication.process.Application.Main = new Class({
 			this.countData.readCompleted = json.data.readCompleted;
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {"applicationList":[this.application.id]}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 		}.bind(this));
 	},
 	loadList: function(type,ev,data){
@@ -295,15 +305,15 @@ MWF.xApplication.process.Application.List = new Class({
 
 	loadFilter: function () {
 		var lp = this.lp;
-		debugger
+
 		this.fileterNode = new Element("div.fileterNode", {
 			"styles": this.css.fileterNode
 		}).inject(this.searchNode);
 
 		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
 			"<tr>" +
-			"    <td styles='filterTableTitle' lable='key'></td>" +
-			"    <td styles='filterTableValue' item='key'></td>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
 			"    <td styles='filterTableTitle' lable='activityName'></td>" +
 			"    <td styles='filterTableValue' item='activityName'></td>" +
 			"    <td styles='filterTableTitle' lable='creatorUnitList'></td>" +
@@ -329,7 +339,7 @@ MWF.xApplication.process.Application.List = new Class({
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
-				key: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				activityName: {text: lp.activity, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
 					text: lp.process,
@@ -405,6 +415,12 @@ MWF.xApplication.process.Application.List = new Class({
 
 								}
 							}
+							result.applicationList = this.filterList.applicationList;
+
+							if(result.credentialList) {
+								result.creatorPersonList = result.credentialList;
+							}
+
 							this.filterList = result;
 							this.refresh();
 						}.bind(this)
@@ -527,7 +543,12 @@ MWF.xApplication.process.Application.List = new Class({
 		this._initTempate();
 		this.loadListTitle();
 
-		this.loadToolBar(this.toolbarItems.unSelect);
+		if(this.toolbarItems.unSelect.length>0){
+			this.loadToolBar(this.toolbarItems.unSelect);
+		}else {
+			this.loadToolBar(this.toolbarItems.default,true);
+		}
+
 		this.selectedList = [];
 		this.loadData().then(function(data){
 			_self.hide();
@@ -538,6 +559,9 @@ MWF.xApplication.process.Application.List = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+
+			],
 			"unSelect":[
 
 			],
@@ -550,12 +574,13 @@ MWF.xApplication.process.Application.List = new Class({
 		}
 
 	},
-	loadToolBar : function (availableTool){
+	loadToolBar : function (availableTool,disabled){
 
 		this.toolBarNode.empty();
 		this.toolbar = new MWF.xApplication.process.Application.Toolbar(this.toolBarNode, this, {
 			viewType : this.options.defaultViewType,
 			type : this.type,
+			disabled : !!disabled,
 			availableTool : availableTool
 		});
 		this.toolbar.load();
@@ -698,7 +723,13 @@ MWF.xApplication.process.Application.List = new Class({
 	},
 	_setToolBar : function (){
 		if(this.selectedList.length === 0 ){
-			this.loadToolBar(this.toolbarItems.unSelect);
+
+			if(this.toolbarItems.unSelect.length>0){
+				this.loadToolBar(this.toolbarItems.unSelect);
+			}else {
+				this.loadToolBar(this.toolbarItems.default,true);
+			}
+
 		} else if (this.selectedList.length === 1){
 			this.loadToolBar(this.toolbarItems.selected);
 		}else{
@@ -744,6 +775,126 @@ MWF.xApplication.process.Application.AllList = new Class({
 		}.bind(this));
 
 	},
+	loadFilter: function () {
+		var lp = this.lp;
+
+		this.fileterNode = new Element("div.fileterNode", {
+			"styles": this.css.fileterNode
+		}).inject(this.searchNode);
+
+		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
+			"<tr>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
+			"    <td styles='filterTableTitle' lable='creatorUnitList'></td>" +
+			"    <td styles='filterTableValue' item='creatorUnitList'></td>" +
+			"    <td styles='filterTableTitle' lable='credentialList'></td>" +
+			"    <td styles='filterTableValue' item='credentialList'></td>" +
+			"    <td styles='filterTableValue'></td>" +
+			"</tr>" +
+			"<tr style='height: 45px;'>" +
+
+			"    <td styles='filterTableTitle' lable='processName'></td>" +
+			"    <td styles='filterTableValue' item='processName'></td>" +
+			"    <td styles='filterTableTitle' lable='startTime'></td>" +
+			"    <td styles='filterTableValue' item='startTime'></td>" +
+			"    <td styles='filterTableTitle' lable='endTime'></td>" +
+			"    <td styles='filterTableValue' item='endTime'></td>" +
+			"    <td styles='filterTableValue' style='width: 150px'><div style='float:left' item='action'></div><div item='reset'></div></td>" +
+			"</tr>" +
+			"</table>";
+		this.fileterNode.set("html", html);
+
+		var selectValue = [""];
+		var selectText = [""];
+
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
+		this.form = new MForm(this.fileterNode, {}, {
+			style: "attendance",
+			isEdited: true,
+			itemTemplate: {
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				processName: {
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
+					"style": {"min-width": "150px"},
+
+				},
+				credentialList: {
+					"text": lp.creator,
+					"type": "org",
+					"orgType": "identity",
+					"orgOptions": {"resultType": "person"},
+					"style": {"min-width": "150px"},
+					"orgWidgetOptions": {"disableInfor": true}
+				},
+				creatorUnitList: {
+					"text": lp.createunit,
+					"type": "org",
+					"orgType": "unit",
+					"orgOptions": {"resultType": "person"},
+					"style": {"min-width": "150px"},
+					"orgWidgetOptions": {"disableInfor": true}
+				},
+				startTime: {
+					text: lp.begin,
+					"tType": "date",
+					"style": {"min-width":"150px"}
+				},
+				endTime: {
+					text: lp.end,
+					"tType": "date",
+					"style": {"min-width":"150px"}
+				},
+				action: {
+					"value": this.lp.query, type: "button", className: "filterButton", event: {
+						click: function () {
+							var result = this.form.getResult(false, null, false, false, false);
+							for (var key in result) {
+								if (!result[key]) {
+									delete result[key];
+								} else if (key === "activityName" && result[key].length > 0) {
+									//result[key] = result[key][0].split("@")[1];
+									result["activityNameList"] = [result[key]];
+									delete result[key];
+								}else if (key === "processName" && result[key] !== "") {
+									//result[key] = result[key][0].split("@")[1];
+									result["processList"] = [result[key]];
+									delete result[key];
+								}else if (key === "endTime" && result[key] !== "") {
+									result[key] = result[key] + " 23:59:59"
+
+								}
+							}
+							result.applicationList = this.filterList.applicationList;
+
+							if(result.credentialList) {
+								result.creatorPersonList = result.credentialList;
+							}
+
+							this.filterList = result;
+							this.refresh();
+						}.bind(this)
+					}
+				},
+				reset: {
+					"value": this.lp.reset, type: "button", className: "filterButtonGrey", event: {
+						click: function () {
+							this.form.reset();
+							this._initFilter();
+							this.refresh();
+						}.bind(this)
+					}
+				},
+			}
+		}, this.app, this.css);
+		this.form.load();
+	},
 	_fixData : function (dataList){
 		dataList.each(function (data){
 			data.creatorPersonName = data.creatorPerson.split("@")[0];
@@ -776,7 +927,10 @@ MWF.xApplication.process.Application.TaskDoneList = new Class({
 	Extends: MWF.xApplication.process.Application.List,
 	loadData: function(){
 		var _self = this;
-		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList||{}).then(function(json){
+		this.filterList = this.filterList||{};
+		this.filterList.latest = true;
+
+		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
 			return _self._fixData(json.data);
@@ -820,6 +974,9 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 	},
 	_fixData : function (dataList){
+		dataList.each(function(d){
+			if(d.title === "") d.title = this.lp.unnamed;
+		}.bind(this));
 		return dataList;
 	},
 	loadFilter: function () {
@@ -830,8 +987,8 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 		var html = "<table bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
 			"<tr style='height: 45px;'>" +
-			"    <td styles='filterTableTitle' lable='key'></td>" +
-			"    <td styles='filterTableValue' item='key'></td>" +
+			"    <td styles='filterTableTitle' lable='title'></td>" +
+			"    <td styles='filterTableValue' item='title'></td>" +
 			"    <td styles='filterTableTitle' lable='processName'></td>" +
 			"    <td styles='filterTableValue' item='processName'></td>" +
 			"    <td styles='filterTableTitle' lable='startTime'></td>" +
@@ -843,39 +1000,25 @@ MWF.xApplication.process.Application.DraftList = new Class({
 			"</table>";
 		this.fileterNode.set("html", html);
 
+		var selectValue = [""];
+		var selectText = [""];
 
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
 		this.form = new MForm(this.fileterNode, {}, {
 			style: "attendance",
 			isEdited: true,
 			itemTemplate: {
-				key: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
+				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
-					text: lp.process,
-					"type": "text",
-
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
 					"style": {"min-width": "150px"},
-					"event": {
 
-						"click": function (item, ev){
-							var v = item.getValue();
-							o2.xDesktop.requireApp("Selector", "package", function(){
-								var options = {
-									"type": "Process",
-									"values": v!==""?[item.getValue().split("|")[1]] : [],
-									"count": 1,
-									"onComplete": function (items) {
-										var arr = [];
-										var arr2 = [];
-										items.each(function (data) {
-											arr.push(data.data);
-											arr2.push(items[0].data.name+"|"+items[0].data.id);
-										});
-										item.setValue(arr2.join(","));
-									}.bind(this)
-								};
-								new o2.O2Selector(this.app.desktop.node, options);
-							}.bind(this),false);
-						}.bind(this)}
 				},
 				startTime: {
 					text: lp.begin,
@@ -900,7 +1043,7 @@ MWF.xApplication.process.Application.DraftList = new Class({
 									delete result[key];
 								}else if (key === "processName" && result[key] !== "") {
 									//result[key] = result[key][0].split("@")[1];
-									result["processList"] = [result[key].split("|")[1]];
+									result["processList"] = [result[key]];
 									delete result[key];
 								}else if (key === "endTime" && result[key] !== "") {
 									result[key] = result[key] + " 23:59:59"
@@ -950,6 +1093,11 @@ MWF.xApplication.process.Application.WorkList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delWork","jump","sendRead"],
+				["processing","endWork","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -970,6 +1118,52 @@ MWF.xApplication.process.Application.WorkList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkAction"][flag === "soft"?"typeAbandoned":"delete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.WorkCompletedList = new Class({
@@ -987,6 +1181,11 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delCompletedWork"],
+				["rollback","sendRead","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -999,7 +1198,6 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 				["sendRead","addReview"]
 			]
 		}
-
 	},
 	open : function (id){
 		debugger
@@ -1009,6 +1207,52 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkCompletedForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkCompletedAction"][flag === "soft"?"typeAbandonedWorkCompleted":"manageDelete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.SnapList = new Class({
@@ -1025,7 +1269,12 @@ MWF.xApplication.process.Application.SnapList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delSnap"],
+				["restore"]
+			],
 			"unSelect":[
+
 			],
 			"selected":[
 				["delSnap"],
@@ -1046,6 +1295,19 @@ MWF.xApplication.process.Application.SnapList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	delete : function(id,e){
+		var _self = this;
+		this.app.confirm("warn", e, "删除确认", "删除后不能恢复。", 350, 120, function () {
+
+			_self.action.SnapAction.delete( id , function(){
+				_self.app.notice("成功删除");
+				_self.refresh();
+			});
+			this.close();
+		}, function () {
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.DictList = new Class({
@@ -1090,6 +1352,8 @@ MWF.xApplication.process.Application.SerialList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+			],
 			"unSelect":[
 				["addSerial"]
 			],
@@ -1110,7 +1374,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 	options: {
 		"style": "default",
 		"viewType" : "list",
-		"type" : "all"
+		"type" : "all",
+		"disabled" : false
 	},
 	initialize : function( container, explorer, options ) {
 
@@ -1144,8 +1409,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			},
 			delCompletedWork : {
 				action : "delCompletedWork",
-					text : this.lp.actionList.delete,
-					icon : "icon-upload"
+				text : this.lp.actionList.delete,
+				icon : "icon-upload"
 			},
 			processing :{
 				action : "processing",
@@ -1232,14 +1497,22 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 				}
 
 				var tool = this.tools[ t ];
+				var toolNode;
 
-				var toolNode = new Element( "div", {
-					class : className,
-					style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
-					events : {
-						click : function( ev ){ this[tool.action]( ev ) }.bind(this)
-					}
-				}).inject( toolgroupNode );
+				if(this.options.disabled){
+					toolNode = new Element( "div", {
+						class : className,
+						style : "height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: rgb(123 177 240);font-size: 13px;color: #FFFFFF;font-weight: 400;",
+					}).inject( toolgroupNode );
+				}else {
+					toolNode = new Element( "div", {
+						class : className,
+						style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
+						events : {
+							click : function( ev ){ this[tool.action]( ev ) }.bind(this)
+						}
+					}).inject( toolgroupNode );
+				}
 
 				//var iconNode = new Element("icon",{"class":"o2WorkApplication " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
 				var textNode = new Element("span").inject(toolNode);
@@ -3346,7 +3619,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				action: {
 					"value": "修改", type: "button", className: "filterButton", event: {
 						click: function (e) {
-							var result = this.form.getResult(false, null, false, true, false);
+							var result = this.form.getResult(false, null, false, false, false);
 
 							var fieldName = result["fieldName"];
 							var fieldType = result["fieldType"];

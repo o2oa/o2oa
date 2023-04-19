@@ -368,8 +368,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"grab": "grab",
 		"grabInfo": "Whoever opens the task first will handle it",
 		"readForUntreated": "Send read to untreated person",
+
 		"mergeTask": "Merge Task",
 		"mergeTaskInfo": "(If you choose \"Yes\", the task on this activity with the same identity will be merged)",
+
+        "mergeTaskProcess": "Merge Task Processing",
+        "mergeTaskProcessInfo": "(If you select \"Yes\", when the same person's different identities generate multiple to-dos in this activity, they only need to be processed once)",
+
 		"activityGroup": "Activity Group",
 		"opinionGroup": "Opinion Group",
 		"taskPerson": "Task",
@@ -494,6 +499,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"unitType": "Unit Type",
 		"exclude": "Exclude",
 		"excludeInfo": "Exclude the selection of unit, identity, person, and group by scripts",
+		"firstLevelSelectable": "Allowed select the first",
 		"dataStructure": "data Structure",
 		"complete": "Complete",
 		"simple": "Simple",
@@ -533,7 +539,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataPath": "By DataPath",
 		"byDataScript": "By DataScript",
 		"publishTableConfig": "Data table publishing configuration",
-		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1)."
+		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1).",
+		"orgIdPlaceholder" : "Such as: departmentLeader"
 	}
 
 };

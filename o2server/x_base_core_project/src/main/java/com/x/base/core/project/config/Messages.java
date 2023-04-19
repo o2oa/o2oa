@@ -253,6 +253,7 @@ public class Messages extends ConfigObject {
 		o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree(JdbcConsumer.defaultInstance()));
 //		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree(TableConsumer.defaultInstance()));
 		o.consumers.put("hadoop_demo", XGsonBuilder.instance().toJsonTree(HadoopConsumer.defaultInstance()));
+		o.consumers.put("andfx_demo", XGsonBuilder.instance().toJsonTree(new Message.AndFxConsumer()));
 		o.loaders = new LinkedHashMap<>();
 		o.filters = new LinkedHashMap<>();
 		return o;

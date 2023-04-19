@@ -144,7 +144,7 @@
                         <td class="editTableTitle">{{$.lp.path}}:</td>
                         <td class="editTableValue">
                             <input type="text" class="editTableInput pathInput_vf"/>
-							<div style="color: #999">{{$.lp.pathInfo}}</div>
+							<div style="color: #999" class="pathNote_vf">{{$.lp.pathInfo}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -200,12 +200,12 @@
                 <table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <td class="editTableTitle"></td>
                     <td class="editTableValue">
-                        <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked onclick="if (this.checked){
+                        <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked  data-notAutoHistory onclick="if (this.checked){
                                 debugger;
                                 this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').hide();
                                 this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').setStyle('display','');
                             }"/>通过路径添加默认条件<br>
-                        <input type="radio" class="restrictParameterInput_form_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                        <input type="radio" class="restrictParameterInput_form_vf" value="custom" name="text{$.id}viewFilterType" data-notAutoHistory onclick="if (this.checked){
                                 debugger;
                                 this.getParent('.inputAreaNode_vf').getElements('tr.parameterInputTr').setStyle('display','');
                                 this.getParent('.inputAreaNode_vf').getElements('tr.filterListInputTr').hide();

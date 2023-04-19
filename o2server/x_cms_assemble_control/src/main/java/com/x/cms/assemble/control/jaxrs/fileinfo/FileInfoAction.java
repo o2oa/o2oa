@@ -17,6 +17,11 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.commons.lang3.BooleanUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -411,6 +416,83 @@ public class FileInfoAction extends StandardJaxrsAction{
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionFileUpdateContent().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取指定附件的在线编辑信息.", action = ActionOnlineInfo.class)
+	@GET
+	@Path("{id}/online/info")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getOnlineInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+		ActionResult<ActionOnlineInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionOnlineInfo().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "上传表单html转换为指定格式并存到临时文件中，通过downloadTransfer接口下载.", action = ActionUploadForm.class)
+	@POST
+	@Path("upload/doc/{docId}/save/as/{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void uploadWorkInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   @JaxrsParameterDescribe("文档ID") @PathParam("docId") String docId,
+							   @JaxrsParameterDescribe("另存为格式：(0)表示不转换|pdf表示转为pdf|word表示转为word") @PathParam("flag") String flag,
+							   JsonElement jsonElement) {
+		ActionResult<ActionUploadForm.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadForm().execute(effectivePerson, docId, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "下载转换后临时存储的附件.", action = ActionDownloadTransfer.class)
+	@GET
+	@Path("download/transfer/flag/{flag}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadTransfer(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("*转换后附件id") @PathParam("flag") String flag,
+								 @JaxrsParameterDescribe("是否直接下载(true|false)") @QueryParam("stream") Boolean stream) {
+		ActionResult<ActionDownloadTransfer.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadTransfer().execute(effectivePerson, flag, BooleanUtils.isTrue(stream));
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "批量下载指定文档的附件并压缩.", action = ActionBatchDownload.class)
+	@GET
+	@Path("batch/download/doc/{docId}/site/{site}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void batchDownload(@Suspended final AsyncResponse asyncResponse,
+								 @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("*文档ID") @PathParam("docId") String docId,
+								 @JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
+								 @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
+								 @JaxrsParameterDescribe("通过uploadWorkInfo上传返回的表单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
+		ActionResult<ActionBatchDownload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionBatchDownload().execute(effectivePerson, docId, site, fileName, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

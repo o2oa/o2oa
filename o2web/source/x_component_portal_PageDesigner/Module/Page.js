@@ -74,12 +74,21 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         this.selectedModules = [];
         this.container.empty();
 
+        this.widgetList = null;
+        if(this.options.parentpageIdList)this.options.parentpageIdList = null;
+
         if (this.treeNode){
             this.domTree.empty();
             this.domTree.node.destroy();
             this.domTree = null;
             this.treeNode = null;
 		}
+
+		if( this.history ){
+			this.history.destroy();
+			this.history = null;
+		}
+
         this.currentSelectedModule = null;
         this.propertyMultiTd = null;
 
@@ -134,6 +143,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
             this.designer.addEvent("queryClose", function(){
                 if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
             }.bind(this));
+
+			this.loadHistory();
 
             this.fireEvent("postLoad");
         }.bind(this));
@@ -192,6 +203,47 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
             }.bind(this), 60000);
         }
     },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.FormDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.History(this, this.designer.currentHistoryNode);
+			this.history.load();
+		}.bind(this));
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": "form",
+			"moduleType": "form",
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": [
+				{
+					"name": name,
+					"compareName": compareName,
+					"fromValue": oldValue,
+					"toValue": newValue || this.json[name]
+				}
+			]
+		};
+		this.history.checkProperty(log, this);
+	},
+	checkMultiPropertyHistory: function(name, oldValueList, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "form",
+			"changeList": modules.map(function (module, i) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValueList[i],
+					"toValue": newValue || module.json[name]
+				}
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
@@ -476,17 +528,19 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	
 	
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();	
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
     hideProperty: function(){
@@ -951,26 +1005,39 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         return css;
     },
     reloadCss: function(){
-        cssText = (this.json.css) ? this.json.css.code : "";
+        var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
 
-        var styleNode = $("style"+this.json.id);
+        var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
             cssText = this.parseCSS(cssText);
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
             var id = this.json.id.replace(/\-/g, "");
+            var prefix = ".css" + id + " ";
+
             while ((match = rex.exec(cssText)) !== null) {
-                var prefix = ".css" + id + " ";
-                var rule = prefix + match[0];
-                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                rex.lastIndex = rex.lastIndex + prefix.length;
+            var rulesStr = match[0];
+				if (rulesStr.indexOf(",")!=-1){
+					var rules = rulesStr.split(/\s*,\s*/g);
+					rules = rules.map(function(r){
+						return prefix + r;
+					});
+					var rule = rules.join(", ");
+					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+					rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+				}else{
+                    var rule = prefix + match[0];
+                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    rex.lastIndex = rex.lastIndex + prefix.length;
+                }
             }
 
             var styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
-            styleNode.id="style"+this.json.id;
+            styleNode.id="design_style"+this.json.id;
             styleNode.inject(this.container, "before");
 
             if(styleNode.styleSheet){

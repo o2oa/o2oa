@@ -28,6 +28,7 @@ MWF.xApplication.process.ApplicationExplorer.LP = {
 	"createApplication_cancel_title": "Cancel confirmation of create",
 	"createApplication_cancel": "Are you sure you want to cancel the new application?",
 	"createApplicationSuccess": "Application is created!",
+	"searchAppPlacholder": "Enter the name to search for the application",
 
 	"application": {
 		"export": "Export",

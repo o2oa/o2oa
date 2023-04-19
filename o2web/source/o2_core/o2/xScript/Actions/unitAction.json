@@ -31,6 +31,7 @@
   "personHasRole": {"uri": "/jaxrs/person/has/role", "method": "POST"}, //人员所有角色
 
   //data: {"personList": []}
+  "getPerson": {"uri": "/jaxrs/person/{flag}", "method": "GET"}, //查询人员对象
   "listPerson": {"uri": "/jaxrs/person/list/object", "method": "POST"}, //查询人员对象
   "listPersonSubDirect": {"uri": "/jaxrs/person/list/person/sub/direct/object", "method": "POST"}, //查询人员的直接下级人员
   "listPersonSubNested": {"uri": "/jaxrs/person/list/person/sub/nested/object", "method": "POST"}, //查询人员的嵌套下级人员

@@ -396,9 +396,15 @@ bind.org = {
         nameFlag = (library.typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
+    //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+    getPersonData: function(name){
+        var v = this.oPerson.getExt(name);
+        var v_json = (!v) ? null: JSON.parse(v.toString());
+        return v_json;
+    },
     //获取人员--返回人员的对象数组
-    getPerson: function(name){
-        var v = this.oPerson.listObject(getNameFlag(name));
+    getPerson: function(name, findCN){
+        var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         // if (!v || !v.length) v = null;
         // return (v && v.length===1) ? v[0] : v;
@@ -537,8 +543,8 @@ bind.org = {
 
     //组织**********
     //获取组织
-    getUnit: function(name){
-        var v = this.oUnit.listObject(getNameFlag(name));
+    getUnit: function(name, findCN){
+        var v = this.oUnit.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         return (v_json && v_json.length===1) ? v_json[0] : v_json;
         // if (!v || !v.length) v = null;
@@ -750,7 +756,22 @@ bind.cmsActions = new bind.Action("x_cms_assemble_control", {
     "getScript": {"uri": "/jaxrs/script/{flag}/appInfo/{appInfoFlag}", "method": "POST"},
 });
 bind.portalActions = new bind.Action("x_portal_assemble_surface", {
-    "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{ }","method": "POST"}
+    "getDictionary": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}"},
+    "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/data"},
+    "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "DELETE"},
+    "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{name}","method": "POST"}
+});
+bind.serviceActions = new bind.Action("x_program_center", {
+    "getDictionary": {"uri": "/jaxrs/dict/{id}"},
+    "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/data"},
+    "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "DELETE"},
+    "getScript":  {"uri": "/jaxrs/script/name/{name}","method": "POST"}
 });
 
 //include 引用脚本
@@ -768,8 +789,13 @@ bind.include = function( optionsOrName , callback ){
         options = { name : options };
     }
     var name = options.name;
-    var type = ( options.type && options.application ) ?  options.type : "process";
-    var application = options.application
+    var type;
+    if( options.type === "service" ){
+        type = options.type;
+    }else{
+        type  = ( options.type && options.application ) ?  options.type : "process";
+    }
+    var application = type === "service" ? "service" : options.application;
 
     if (!name || !type || !application){
         console.log("include", new _Error("can not find script. missing script name or application"));
@@ -810,6 +836,14 @@ bind.include = function( optionsOrName , callback ){
                 }
             }.bind(this));
             break;
+        case "service" :
+            bind.serviceActions.getScript(name, {"importedList":includedScripts[application]}, function(json){
+                if (json.data){
+                    includedScripts[application] = includedScripts[application].concat(json.data.importedList);
+                    scriptData = json.data;
+                }
+            }.bind(this));
+            break;
     }
     includedScripts[application].push(name);
     if (scriptData && scriptData.text){
@@ -831,15 +865,25 @@ bind.Dict = function(optionsOrName){
         options = { name : options };
     }
     var name = this.name = options.name;
-    var type = ( options.type && options.application ) ?  options.type : "process";
+    var type;
+    if( options.type === "service"){
+        type = options.type;
+    }else{
+        type = ( options.type && options.application ) ?  options.type : "process";
+    }
     var applicationId = options.application;
     var enableAnonymous = options.enableAnonymous || false;
 
     //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+    var action;
     if( type == "cms" ){
-        var action = bind.cmsActions;
+        action = bind.cmsActions;
+    }else if( type == "service" ){
+        action = bind.serviceActions;
+    }else if( type == "portal" ){
+        action = bind.portalActions;
     }else{
-        var action = bind.processActions;
+        action = bind.processActions;
     }
 
     var encodePath = function( path ){
@@ -847,26 +891,45 @@ bind.Dict = function(optionsOrName){
         var ar = arr.map(function(v){
             return encodeURIComponent(v);
         });
-        return ar.join("/");
+        return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
     };
 
     this.get = function(path, success, failure){
         var value = null;
-        if (path){
-            var p = encodePath( path );
-            action[(enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData"](encodeURIComponent(this.name), applicationId, p, function(json){
-                value = json.data;
-                if (success) success(json.data);
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            });
+        if( type === "service" ){
+            if (path){
+                var p = encodePath( path );
+                action.getDictData(encodeURIComponent(this.name), p, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                });
+            }else{
+                action.getDictRoot(encodeURIComponent(this.name), function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false);
+            }
         }else{
-            action[(enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot"](encodeURIComponent(this.name), applicationId, function(json){
-                value = json.data;
-                if (success) success(json.data);
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+            if (path){
+                var p = encodePath( path );
+                action[(enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData"](encodeURIComponent(this.name), applicationId, p, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                });
+            }else{
+                action[(enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot"](encodeURIComponent(this.name), applicationId, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false);
+            }
         }
 
         return value;
@@ -875,29 +938,54 @@ bind.Dict = function(optionsOrName){
     this.set = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ){
+            action.setDictData(encodeURIComponent(this.name), p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
     };
     this.add = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ) {
+            action.addDictData(encodeURIComponent(this.name), p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
+
     };
     this["delete"] = function(path, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ) {
+            action.deleteDictData(encodeURIComponent(this.name), p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
     };
     this.destory = this["delete"];
 };
@@ -942,9 +1030,41 @@ bind.Table = function(name){
 }
 
 bind.statement = {
-    "execute": function (statement, callback) {
-        var parameter = this.parseParameter(statement.parameter);
-        var filterList = this.parseFilter(statement.filter, parameter);
+        execute: function (obj, callback) {
+        if( obj.format ){
+            return this._execute(obj, callback, obj.format);
+        }else{
+            if( this.needCheckFormat(obj) ){
+                var value;
+                var _self = this;
+                bind.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, function(json){
+                    value = _self._execute(obj, callback, json.data.format);
+                });
+                return value;
+            }else{
+                return this._execute(obj, callback, "");
+            }
+
+        }
+    },
+    needCheckFormat: function(s){
+        if( s.format )return false;
+        if( typeOf(s.parameter) === "object" ){
+            for( var p in s.parameter ){
+                if( typeOf( s.parameter[p] ) === "date" )return true;
+            }
+        }
+        if( typeOf(s.filter) === "array" ){
+            for( var i=0; i< s.filter.length; i++){
+                var fType = s.filter[i].formatType;
+                if( ["dateTimeValue", "datetimeValue", "dateValue", "timeValue"].indexOf( fType ) > -1 )return true;
+            }
+        }
+        return false;
+    },
+    _execute: function (statement, callback, format) {
+        var parameter = this.parseParameter(statement.parameter, format);
+        var filterList = this.parseFilter(statement.filter, parameter, format);
         var obj = {
             "filterList": filterList,
             "parameter" : parameter
@@ -959,23 +1079,41 @@ bind.statement = {
         );
         return value;
     },
-    parseFilter : function( filter, parameter ){
+    parseFilter : function( filter, parameter, format ){
         if( typeOf(filter) !== "array" )return [];
+        if( !parameter )parameter = {};
         var filterList = [];
         ( filter || [] ).each( function (d) {
-            var parameterName = d.path.replace(/\./g, "_");
+            //var parameterName = d.path.replace(/\./g, "_");
+            var pName = d.path.replace(/\./g, "_");
+
+            var parameterName = pName;
+            var suffix = 1;
+            while( parameter[parameterName] ){
+                parameterName = pName + "_" + suffix;
+                suffix++;
+            }
+
             var value = d.value;
             if( d.comparison === "like" || d.comparison === "notLike" ){
                 if( value.substr(0, 1) !== "%" )value = "%"+value;
                 if( value.substr(value.length-1,1) !== "%" )value = value+"%";
                 parameter[ parameterName ] = value; //"%"+value+"%";
             }else{
-                if( d.formatType === "dateTimeValue" || d.formatType === "datetimeValue"){
-                    value = "{ts '"+value+"'}"
-                }else if( d.formatType === "dateValue" ){
-                    value = "{d '"+value+"'}"
-                }else if( d.formatType === "timeValue" ){
-                    value = "{t '"+value+"'}"
+                if( ["sql", "sqlScript"].contains(format) ) {
+                    if (d.formatType === "numberValue") {
+                        value = parseFloat(value);
+                    }
+                }else{
+                    if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                        value = "{ts '" + value + "'}"
+                    } else if (d.formatType === "dateValue") {
+                        value = "{d '" + value + "'}"
+                    } else if (d.formatType === "timeValue") {
+                        value = "{t '" + value + "'}"
+                    } else if (d.formatType === "numberValue") {
+                        value = parseFloat(value);
+                    }
                 }
                 parameter[ parameterName ] = value;
             }
@@ -985,14 +1123,18 @@ bind.statement = {
         });
         return filterList;
     },
-    parseParameter : function( obj ){
+    parseParameter : function( obj, format ){
         if( typeOf(obj) !== "object" )return {};
         var parameter = {};
         //传入的参数
         for( var p in obj ){
             var value = obj[p];
             if( typeOf( value ) === "date" ){
-                value = "{ts '"+value.format("db")+"'}"
+                if( ["sql", "sqlScript"].contains(format) ){
+                            value = value.format("db");
+                        }else{
+                            value = "{ts '"+value.format("db")+"'}"
+                        }
             }
             parameter[ p ] = value;
         }

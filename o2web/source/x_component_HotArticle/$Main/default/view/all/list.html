@@ -1,0 +1,40 @@
+<div>
+    {{if $.data.length}}
+    <table>
+        <colgroup>
+            <col width="4%" style="min-width: 50px;">
+            <col width="47%">
+            <col width="22%">
+            <col width="23%">
+        </colgroup>
+        <tbody>
+        {{each $.data}}
+        <tr class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+            <td>
+                <div class="selectFlag" style="display: none">
+                    <div class="selectFlagArea" style="cursor: pointer"data-o2-events="click:selectFile:{{$.id}}">
+                        <div class="selectFlagIcon"></div>
+                    </div>
+                </div>
+            </td>
+            <td style="text-align: left;">
+                <div class="listItemTitle" style="display: flex" data-o2-events="click:open:{{$.id}}">
+                    {{$.title}}
+                </div>
+            </td>
+            <td style="text-align: left;"><span>{{$.applicationName}}</span></td>
+            <td style="text-align: left;"><span>{{$.updateTime}}</span></td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{$.lp.noFile}}
+        </div>
+    </div>
+    {{end if}}
+</div>

@@ -1010,7 +1010,7 @@
    * @example
    * o2m.util.device.scan({
    * onSuccess : function(result) {
-   *     { 'text': '扫码内容'}
+   *     // result返回结果：{ 'text': '扫码内容'}
    *  },
    *  onFail : function(err) {}
    *});
@@ -1188,6 +1188,51 @@
     _util_post(body, onFail);
   };
   this.o2m.util.navigation.openOtherApp = _o2m_u_navigation_openOtherApp;
+
+
+  //o2m.util.navigation.openWindow 新窗口打开网页 门户
+  this.o2m.util.navigation.openWindowSuccess = function (result) {
+    console.log("util navigation openWindow back, result:" + result);
+  };
+  var _o2m_u_navigation_openWindow = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.openWindowSuccess = onSuccess;
+    }
+    var url = c && c.url ? c.url : "";
+    var body = {
+      type: "navigation.openWindow",
+      callback: "o2m.util.navigation.openWindowSuccess",
+      data: {
+        url: url
+      }
+    };
+    _util_post(body, onFail);
+  };
+  
+  /**
+   * 新窗口打开网页
+   * @method openWindow
+   * @memberOf o2m
+   * @o2membercategory util.navigation
+   * @static
+   * @param {Object} obj  openWindow需要传入对象
+   * <pre><code class='language-js'>{
+   *  url : 'https://www.o2oa.net',  // 打开的网址
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.navigation.openWindow({
+   * url : 'https://www.o2oa.net',
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.navigation.openWindow = _o2m_u_navigation_openWindow;
+   
 
 
 

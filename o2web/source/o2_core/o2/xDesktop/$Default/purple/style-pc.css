@@ -439,7 +439,7 @@
 }
 .layout_start_content_appScrollContent {
     padding-right: 20px;
-    overflow: hidden;
+    overflow: auto;
 }
 .layout_start_content_appContent {
     overflow: hidden;

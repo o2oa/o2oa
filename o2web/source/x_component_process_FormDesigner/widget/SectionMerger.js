@@ -197,6 +197,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			this.loadMaplist();
 			this.loadScriptArea();
 			this.checkShow( this.data );
+			this.fireEvent("postLoad");
 		}.bind(this), true);
 	},
 	checkShow: function(d){
@@ -393,7 +394,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 						var oldData = this.data[name];
 						this.property.changeJsonDate(name, maplist.toJson());
 						this.property.changeStyle(name, oldData);
-						this.property.changeData(name);
+						this.property.changeData(name, null, oldData);
 					}.bind(this),
 					"onDelete": function(key){
 						debugger;
@@ -424,6 +425,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			MWF.require("MWF.widget.ScriptArea", function(){
 				var scriptArea = new MWF.widget.ScriptArea(node, {
 					"title": title,
+					"isbind": false,
 					"mode": mode || "javascript",
 					//"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
 					"maxObj": this.designer.formContentNode || this.designer.pageContentNode,
@@ -433,8 +435,10 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 							this.data[name] = {"code": "", "html": ""};
 							if (this.module.form.scriptDesigner) this.module.form.scriptDesigner.addScriptItem(this.data[name], "code", this.data, name);
 						}
+						var oldValue = this.data[name].code;
 						var json = scriptArea.toJson();
 						this.data[name].code = json.code;
+						this.property.checkHistory(name+".code", oldValue, this.data[name].code);
 						//this.data[name].html = json.html;
 					}.bind(this),
 					"onSave": function(){

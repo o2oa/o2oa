@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "repetitionsId": "Element ID is not unique",
     "notNullId": "Element ID cannot be empty",
+    "history": "History",
+    "componentTree": "Component Tree",
 
     "button":{
         "ok": "OK",
@@ -62,13 +64,21 @@ MWF.xApplication.process.FormDesigner.LP = {
         "copy": "Copy",
         "delete": "Delete",
         "add": "Add",
+        "cut": "Cut",
+        "paste": "Paste",
+        "open": "Open",
         "script": "Script",
+        "create": "Create",
+        "mergeCell": "Merge Cells",
         "styleBrush": "StyleBrush",
         "insertTop": "Insert Top",
         "insertBottom": "Insert to the bottom",
         "insertBefore": "InsertBefore",
         "insertAfter": "Insert After",
-        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning"
+        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
+        "selectedContainer": "Select Parent",
+        "property": "Property",
+        "batchModify": "Batch modify "
     },
 
     "actionbar": {
@@ -138,7 +148,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "modify": "Modify",
         "when": "When ",
         "as": "",
-
         "inputDecisionName": "Please enter the name of the decision",
         "inputValue": "Please enter a value",
         "inputPrompt": "Please enter the prompt content",
@@ -324,7 +333,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "Htmleditor",
         "office": "Office",
         "yozoOffice" : "yozoOffice",
-        "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
         "SmartBI":"SmartBI",
@@ -348,6 +356,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_cascader": "Cascader",
         "el_number": "Number",
         "el_switch": "Switch",
+        "el_slider": "Slider",
         "el_time": "Time",
         "el_date": "Date",
         "el_datetime": "Datetime",
@@ -456,6 +465,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "Readonly",
         "AIInput": "AI Input",
         "inputStyle": "Input Style",
+        "itemStyle": "Item Style",
         "actionStyles": "Button Styles",
         "imageStyles": "Picture Style",
         "compute": "Compute",
@@ -500,6 +510,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalRow": "Total Row",
         "sectionAmountCellStyle": "section total cell style",
         "showAllSection": "Show All Sections",
+
+        "rangeByDatetime": "Datetime range",
+         "rangeByDateAndTime": "Date range and time range",
+         "rangeByDate": "Date Range",
+         "rangeByTime": "Time Range",
+         "rangeByOhter": "Other",
+         "enableDate": "Effective Date",
+         "enableHours": "Enable Hours Range",
+         "enableMinutes": "Effective minutes range",
+         "enableSeconds": "Enabled seconds range",
 
         "decimal": "Decimal",
 
@@ -561,6 +581,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "specifyGroup": "Specify Group",
         "exclude": "Exclude",
         "excludeInfo": "Exclude the selection of unit, identity, person, and group by scripts",
+        "firstLevelSelectable": "Allowed select the first",
 
         "dateTime": "DateTime",
         "dateTime2": "DateTime",
@@ -621,7 +642,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "Dragging allowed",
         "allowDrag": "Judging whether the node can be dragged",
         "allowDrop": "Determine whether the target node can be dropped while dragging",
-        "emptyText": "Script with empty content",
+        "emptyText": "Text with empty content",
         "allowDragNote": "this.event is the incoming node,'return true' means dragging is allowed",
         "allowDropNote": "this.event can get data {draggingNode, dropNode, type }. There are three cases for the type parameter:'prev','inner' and'next', which respectively indicate to be placed in front of the target node, inserted into the target node and Placed after the target node.'return true' means inserting is allowed.",
         "loadFun": "Method of loading subtree data",
@@ -655,6 +676,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "commonIdea": "Common opinions",
 
         "addressStyle": "Address Style",
+
+        "location": "location",
+         "right": "right",
+         "left": "left",
+         "relocate": "Relocate",
 
         "image": "Image",
         "selectSrc": "Select Resources",
@@ -700,6 +726,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
         "allowEdit": "Allow Edit",
+        "officeTool": "Office Tool",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
@@ -711,6 +738,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "openAtt": "Open",
         "previewFirst": "Preview First",
         "previewAttachmentNote": "The following file formats can be previewed directly: zip, pdf, ofd, png, jpg, bmp, jpeg, gif, js, css, java, json, xml, php, html, htm, xhtml, log, md, txt. The following formats need to install liberoffice: doc, docx, xls, xlsx, ppt, pptx. Directly open attachments that are not in the above formats.",
+
         "actionBar": "Action Bar",
         "hideEditButton": "Hide Edit Buttons",
         "hideReadButton": "Hide Read Buttons",
@@ -739,12 +767,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "cellpadding": "cellpadding",
         "cellspacing": "cellspacing",
 
+        "containStyle": "Container Style",
+         "containAttribute": "Container Attribute",
         "titleCellStyle": "Title Cell Style",
         "contentCellStyle": "Content Cell Style",
         "layoutCellStyle": "Layout Cell Style",
-
-        "containStyle": "Contain Style",
-        "containAttribute": "Contain Attribute",
 
         "contentTitleCellStyle": "Content Title Cell Style",
         "contentLineStyle": "Content Line Style",
@@ -772,6 +799,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tableStyle": "Table Style",
         "defaultData": "Default Data",
         "allowAdd": "Allow Add",
+        "allowSort": "Allow Sort",
         "exportImport": "Export Import",
         "enabled": "Enable",
         "disabled": "Disable",
@@ -779,10 +807,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "onlyImport": "Import Only",
         "exportInfo": "Note: Serial numbers, image, writingBoard, attachment and hidden columns cannot be imported or exported.",
         "buttonLocation": "Button Location",
-        "centerTop": "centerTop",
-        "centerBottom": "centerBottom",
+        "centertop": "centerTop",
+        "centerbottom": "centerBottom",
         "importText": "Import Button Text",
         "importExcel": "Import Excel",
+        "exportExcel": "Export Excel",
         "importButtonStyle": "Import Button Style",
         "exportFileName": "Export Filename",
         "actionCellStyles": "Action Cell Styles",
@@ -846,6 +875,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "number": "Number",
         "datetime": "Datetime",
         "boolean": "Boolean",
+        "resultType": "Result type",
         "asDefaultFilter": "As default filter",
         "asCustomFilter": "As custom filter",
         "logic": "logic",
@@ -991,9 +1021,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "config": "Config",
         "copiesSecretPriority": "Copies Secret And Priority",
         "isShow": "Whether to show",
-        "showScript": "Show Script",
         "copies": "Copies",
         "auto": "Auto",
+        "showScript": "Show Script",
         "bindValue": "Bind Value",
         "bindValueScript": "Bind Value Script",
         "secret": "Secret",
@@ -1030,8 +1060,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tinymceInfo": "For more attribute help, please see",
         "tinymceInfo2": "Return TinyMCE's Config object for editor initialization",
         "tinymceInfo3": "queryLoad,postLoad, load and afterLoad events are O2 platform events, other events are Tinymce editor events, please see",
-        "Base64Encode ":" Image Base64 Encode",
-        "ImagePreview ":" View larger images",
+        "base64Encode ":" Image Base64 Encode",
+        "imagePreview ":" View larger images",
 
         "ieOnly": "Only available in IE browser",
         "keepHistory": "Whether to keep the historical version",
@@ -1450,7 +1480,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "Return application path, such as organization management",
         "componentScript": "Apply Path Script",
         "applicationOptions": "Application Options",
-        "applicationStatus": "Application Status"
+        "applicationStatus": "Application Status",
+        "titleAddTo": "Title Line Add",
+        "firstLine": "First Line",
+        "lastLine": "last line"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",
@@ -1461,6 +1494,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     },
     "wpsoffice":{
         "nosetup":"please install wpsOffice APP first",
+    },
+    "officeonline":{
+        "nosetup":"please install OfficeOnline APP first",
     },
     "actionBar": {
         "close":"Close",

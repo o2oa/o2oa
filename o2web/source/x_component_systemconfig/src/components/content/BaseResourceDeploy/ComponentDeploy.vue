@@ -9,9 +9,9 @@
         <BaseIcon :value="componentItem"/>
       </div>
       <div>
-        <button class="grayColor_bg" v-if="componentItem.visible" @click="openApplication(componentItem)">{{lp._component.open}}</button>
-        <button class="grayColor_bg" @click="()=>{editComponent(componentItem, index)}">{{lp._component.edit}}</button>
-        <button class="grayColor_bg" v-if="componentItem.type!=='system'" @click="(e)=>{uninstallApplication(e, componentItem)}">{{lp._component.uninstall}}</button>
+        <button class="grayColor_bg" @mouseover="highlighting" @mouseout="unhighlighting" v-if="componentItem.visible" @click="openApplication(componentItem)">{{lp._component.open}}</button>
+        <button class="grayColor_bg" @mouseover="highlighting" @mouseout="unhighlighting" @click="()=>{editComponent(componentItem, index)}">{{lp._component.edit}}</button>
+        <button class="grayColor_bg" @mouseover="highlighting" @mouseout="unhighlighting" v-if="componentItem.type!=='system'" @click="(e)=>{uninstallApplication(e, componentItem)}">{{lp._component.uninstall}}</button>
       </div>
     </div>
 
@@ -72,7 +72,14 @@ getConfigData('general').then((data)=>{
   general.value = data;
 });
 
-
+function highlighting(e){
+  e.currentTarget.addClass('mainColor_bg');
+  e.currentTarget.removeClass('grayColor_bg');
+}
+function unhighlighting(e){
+  e.currentTarget.removeClass('mainColor_bg');
+  e.currentTarget.addClass('grayColor_bg');
+}
 function openApplication(cmpt){
   if (cmpt.visible) o2.api.page.openApplication(cmpt.path);
 }

@@ -6,6 +6,7 @@
   "sequence": "yes",
   "section": "no",
   "sectionBy": "person",
+  "impexpType": "none",
   "importActionText": "导入Excel",
   "exportActionText": "导出Excel",
   "sectionByScript": {

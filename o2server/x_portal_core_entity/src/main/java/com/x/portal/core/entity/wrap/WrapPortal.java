@@ -7,6 +7,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.portal.core.entity.Portal;
 
 public class WrapPortal extends Portal {
@@ -23,6 +24,7 @@ public class WrapPortal extends Portal {
 	private List<WrapScript> scriptList = new ArrayList<>();
 	private List<WrapFile> fileList = new ArrayList<>();
 	private List<WrapWidget> widgetList = new ArrayList<>();
+	private List<WrapApplicationDict> applicationDictList = new ArrayList<>();
 
 	public List<String> listPageId() throws Exception {
 		return ListTools.extractProperty(this.getPageList(), JpaObject.id_FIELDNAME, String.class, true, true);
@@ -38,6 +40,10 @@ public class WrapPortal extends Portal {
 
 	public List<String> listWidgetId() throws Exception {
 		return ListTools.extractProperty(this.getWidgetList(), JpaObject.id_FIELDNAME, String.class, true, true);
+	}
+
+	public List<WrapApplicationDict> getApplicationDictList() {
+		return applicationDictList;
 	}
 
 	public List<WrapPage> getPageList() {
@@ -70,6 +76,15 @@ public class WrapPortal extends Portal {
 
 	public void setFileList(List<WrapFile> fileList) {
 		this.fileList = fileList;
+	}
+
+	public void setApplicationDictList(List<WrapApplicationDict> applicationDictList) {
+		this.applicationDictList = applicationDictList;
+	}
+
+	public List<String> listApplicationDictId() throws Exception {
+		return ListTools.extractProperty(this.getApplicationDictList(), JpaObject.id_FIELDNAME, String.class, true,
+				true);
 	}
 
 }

@@ -72,12 +72,20 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selectedModules = [];
         this.container.empty();
 
+        this.subformModuleList = null;
+        this.subformList = null;
+		if(this.options.parentformIdList)this.options.parentformIdList = null;
+
         if (this.treeNode){
             this.domTree.empty();
             this.domTree.node.destroy();
             this.domTree = null;
             this.treeNode = null;
         }
+        if( this.history ){
+        	this.history.destroy();
+			this.history = null;
+		}
         this.currentSelectedModule = null;
         this.propertyMultiTd = null;
 
@@ -178,6 +186,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.designer.addEvent("queryClose", function(){
 			if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
 		}.bind(this));
+
+		this.loadHistory();
 
 		this.designer.fireEvent("postFormLoad");
 	},
@@ -344,6 +354,88 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }.bind(this), 60000);
         }
     },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.FormDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.History(this, this.designer.currentHistoryNode);
+			this.history.load();
+		}.bind(this));
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": "form",
+			"moduleType": "form",
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": [
+				{
+					"name": name,
+					"compareName": compareName,
+					"fromValue": oldValue,
+					"toValue": newValue || this.json[name]
+				}
+			]
+		};
+		this.history.checkProperty(log, this);
+	},
+	checkMultiPropertyHistory: function(name, oldValueList, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "form",
+			"changeList": modules.map(function (module, i) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValueList[i],
+					"toValue": newValue || module.json[name]
+				};
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
+	// addHistoryLog: function(operation, to, from ){
+	// 	if( !this.form.history )return null;
+	// 	var log = {
+	// 		"operation": operation,
+	// 		"type": "form",
+	// 		"moduleType": "form",
+	// 		"moduleId": "form"
+	// 	};
+	// 	if( to ){
+	// 		log.toList = this.createHistoryLogList( to );
+	// 	}else{
+	// 		to = this.createHistoryLog();
+	// 		log.toList = [to];
+	// 	}
+	//
+	// 	if( from ){
+	// 		log.fromList = o2.typeOf(fromList) === "array" ? fromList : [from];
+	// 	}
+	// 	this.form.history.add( log, this);
+	// },
+	// createHistoryLogList: function( moduleList ){
+	// 	if( !this.form.history )return null;
+	// 	var logList = [];
+	// 	if(moduleList){
+	// 		var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+	// 		list.each(function (module) {
+	// 			logList.push( module.createHistoryLog() );
+	// 		}.bind(this));
+	// 	}
+	// 	return logList;
+	// },
+	// createHistoryLog: function ( module ) {
+	// 	if( !this.form.history )return null;
+	// 	if( !module )module = this;
+	// 	var obj = {
+	// 		"json": Object.clone(module.json),
+	// 		"jsonObject": module.data.json,
+	// 		"html": module.node.outerHTML
+	// 	};
+	// 	return obj;
+	// },
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
@@ -1324,7 +1416,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
 
-        var styleNode = $("style"+this.json.id);
+        var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
             cssText = this.parseCSS(cssText);
@@ -1357,7 +1449,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
             var styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
-            styleNode.id="style"+this.json.id;
+            styleNode.id="design_style"+this.json.id;
             styleNode.inject(this.container, "before");
 
             if(styleNode.styleSheet){
@@ -1483,7 +1575,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 		}.bind(this));
 		return object;
+	},
+
+	//脚本附签上的脚本编辑器
+	addScriptJsEditor: function (propertyName, jsEditor) {
+		if( !this.scriptJsEditors )this.scriptJsEditors = {};
+		this.scriptJsEditors[propertyName] = jsEditor;
+	},
+	getScriptJsEditor: function (propertyName) {
+		if( !this.scriptJsEditors ){
+			return null;
+		}else{
+			return this.scriptJsEditors[propertyName];
+		}
 	}
+
 	// getAllFieldModuleNameList: function(){
     	// var moduleNameList = [];
     	// Object.each(this.json.moduleList, function(o, k){

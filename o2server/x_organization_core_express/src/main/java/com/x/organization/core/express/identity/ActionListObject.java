@@ -7,17 +7,21 @@ import java.util.List;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.Identity;
+import com.x.base.core.project.organization.WoIdentity;
 
 class ActionListObject extends BaseAction {
 
-	public static List<? extends Identity> execute(AbstractContext context, Collection<String> collection) throws Exception {
+	public static List<? extends Identity> execute(AbstractContext context, Collection<String> collection, Boolean referenceFlag) throws Exception {
 		Wi wi = new Wi();
 		if (null != collection) {
 			wi.getIdentityList().addAll(collection);
+			wi.setReferenceFlag(referenceFlag);
 		}
 		List<Wo> wos = context.applications().postQuery(applicationClass, "identity/list/object", wi)
 				.getDataAsList(Wo.class);
+
 		return wos;
 	}
 
@@ -25,6 +29,9 @@ class ActionListObject extends BaseAction {
 
 		@FieldDescribe("身份")
 		private List<String> identityList = new ArrayList<>();
+
+		@FieldDescribe("是否关联查询身份所属对象信息：组织、角色、群组")
+		private Boolean referenceFlag;
 
 		public List<String> getIdentityList() {
 			return identityList;
@@ -34,9 +41,16 @@ class ActionListObject extends BaseAction {
 			this.identityList = identityList;
 		}
 
+		public Boolean getReferenceFlag() {
+			return referenceFlag;
+		}
+
+		public void setReferenceFlag(Boolean referenceFlag) {
+			this.referenceFlag = referenceFlag;
+		}
 	}
 
-	public static class Wo extends Identity {
+	public static class Wo extends WoIdentity {
 
 	}
 }

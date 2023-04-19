@@ -346,7 +346,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
     openTab: function () {
         var tab = "task";
         if (this.options.navi) tab = this.options.navi;
-        if (this.status) tab = this.status.navi;
+        if (this.status && this.status.navi) tab = this.status.navi;
         switch (tab) {
             case "task":
                 this.showTask();
@@ -1142,20 +1142,21 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
                         }
                     }
                 }
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
             }
             if (recordProcess) {
                 recordProcess.lastStartTime = new Date();
                 recordProcess.count = (recordProcess.count || 0)+1;
-                recordProcess.applicationName = this.applicationData.name;
+                recordProcess.applicationName = this.applicationData.name || "";
             }else{
                 if (json.length<10){
                     this.data.count = 1;
-                    this.data.applicationName = this.applicationData.name;
+                    this.data.applicationName = this.applicationData.name || "";
                     json.push(this.data);
                 }else{
                     json.splice(earlyProcessIdx, 1);
                     this.data.count = 1;
-                    this.data.applicationName = this.applicationData.name;
+                    this.data.applicationName = this.applicationData.name || "";
                     json.push(this.data);
                 }
             }
@@ -1465,7 +1466,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         if (pro.name.indexOf(key)!==-1){
                             var data = Object.clone(pro);
                             data.applicationName = app.name;
-                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this.app, "starter": this}, {"name": app}, proListNode);
+                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this.app, "starter": this}, {"name": app.applicationName || app.appName || app.name }, proListNode);
                         }
                     }.bind(this));
                 }.bind(this));
@@ -1496,7 +1497,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                 this.allApplicationStarter.selected();
 
                 json_process.data.each(function (app) {
-                    new MWF.xApplication.process.TaskCenter.Application(app, this);
+                    if (app.processList && app.processList.length) new MWF.xApplication.process.TaskCenter.Application(app, this);
                 }.bind(this));
 
                 json_column.data.each(function (column) {
@@ -1588,7 +1589,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
                         var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
                         app.processList.each(function(process){
-                            new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+                            new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
                         }.bind(this));
                     }.bind(this));
                 }.bind(this));

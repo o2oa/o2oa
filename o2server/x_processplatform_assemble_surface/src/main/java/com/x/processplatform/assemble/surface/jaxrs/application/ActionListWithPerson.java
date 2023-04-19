@@ -97,19 +97,6 @@ class ActionListWithPerson extends BaseAction {
 
     }
 
-    /**
-     * 从可见的application中获取一份ids<br/>
-     * 从可启动的process中获取一份ids <br/>
-     * 两份ids的交集,这样避免列示只有application没有可以启动process的应用
-     */
-//    private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
-//            List<String> identities, List<String> units, List<String> groups) throws Exception {
-//        // return this.listFromProcess(business, effectivePerson, roles, identities,
-//        // units, groups);
-//        return listFromApplication(business, effectivePerson, roles,
-//                identities, units);
-//    }
-
     private List<String> listFromApplication(Business business, EffectivePerson effectivePerson, List<String> roles,
             List<String> identities, List<String> units) throws Exception {
         EntityManager em = business.entityManagerContainer().get(Application.class);
@@ -121,7 +108,8 @@ class ActionListWithPerson extends BaseAction {
             Predicate p = cb.and(cb.isEmpty(root.get(Application_.availableIdentityList)),
                     cb.isEmpty(root.get(Application_.availableUnitList)));
             p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Application_.controllerList)));
-            p = cb.or(p, cb.equal(root.get(Application_.creatorPerson), effectivePerson.getDistinguishedName()));
+            // p = cb.or(p, cb.equal(root.get(Application_.creatorPerson),
+            // effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Application_.availableIdentityList).in(identities));
             }
@@ -151,7 +139,7 @@ class ActionListWithPerson extends BaseAction {
                     cb.isEmpty(root.get(Process_.startableUnitList)),
                     cb.isEmpty(root.get(Process_.startableGroupList)));
             p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
-            p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
+           // p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
             }

@@ -11,7 +11,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     initialize: function (container, json, options, app, parentMacro) {
         //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
+        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select、unselect
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
         //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
 
@@ -53,7 +53,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
 
     },
     init: function (callback) {
-        if (this.json.view) {
+        if (this.json.view && this.json.format) {
             this.viewJson = JSON.decode(this.json.view);
             this.statementJson = this.json;
             this.statementJson.viewJson = this.viewJson;
@@ -180,14 +180,20 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 if (value.substr(value.length - 1, 1) !== "%") value = value + "%";
                 this.parameter[parameterName] = value; //"%"+value+"%";
             } else {
-                if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
-                    value = "{ts '" + value + "'}"
-                } else if (d.formatType === "dateValue") {
-                    value = "{d '" + value + "'}"
-                } else if (d.formatType === "timeValue") {
-                    value = "{t '" + value + "'}"
-                } else if (d.formatType === "numberValue"){
-                    value = parseFloat(value);
+                if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                    if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
+                    }
+                }else{
+                    if (d.formatType === "dateTimeValue" || d.formatType === "datetimeValue") {
+                        value = "{ts '" + value + "'}"
+                    } else if (d.formatType === "dateValue") {
+                        value = "{d '" + value + "'}"
+                    } else if (d.formatType === "timeValue") {
+                        value = "{t '" + value + "'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
+                    }
                 }
                 this.parameter[parameterName] = value;
             }
@@ -209,76 +215,97 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 value = parameter[f.parameter];
                 delete parameter[f.parameter];
             }
-            if (typeOf(value) === "date") {
-                value = value.format("db");
-            }
             if (f.valueType === "script") {
                 value = this.Macro.exec(f.valueScript ? f.valueScript.code : "", this);
-            } else {
-                var user = layout.user;
-                switch (f.value) {
-                    case "@person":
-                        value = user.distinguishedName;
-                        break;
-                    case "@identityList":
-                        value = user.identityList.map(function (d) {
-                            return d.distinguishedName;
-                        });
-                        break;
-                    case "@unitList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
-                            value = json.unitList;
-                        }, null, false);
-                        break;
-                    case "@unitAllList":
-                        o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
-                            value = json.unitList;
-                        }, null, false);
-                        break;
-                    case "@year":
-                        value = (new Date().getFullYear()).toString();
-                        break;
-                    case "@season":
-                        var m = new Date().format("%m");
-                        if (["01", "02", "03"].contains(m)) {
-                            value = "1"
-                        } else if (["04", "05", "06"].contains(m)) {
-                            value = "2"
-                        } else if (["07", "08", "09"].contains(m)) {
-                            value = "3"
-                        } else {
-                            value = "4"
-                        }
-                        break;
-                    case "@month":
-                        value = new Date().format("%Y-%m");
-                        break;
-                    case "@time":
-                        value = new Date().format("db");
-                        break;
-                    case "@date":
-                        value = new Date().format("%Y-%m-%d");
-                        break;
-                    default:
-                }
             }
-            if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
-                value = "{ts '" + value + "'}"
-            } else if (f.formatType === "dateValue") {
-                value = "{d '" + value + "'}"
-            } else if (f.formatType === "timeValue") {
-                value = "{t '" + value + "'}"
-            }
+            value = this.parseParameterValue( f, value );
+
             this.parameter[f.parameter] = value;
         }.bind(this));
         //传入的参数
         for (var p in parameter) {
             var value = parameter[p];
-            if (typeOf(value) === "date") {
-                value = "{ts '" + value.format("db") + "'}"
+            var configs = (this.json.parameterList || []).filter( function(d){ return d.parameter === p; } );
+            if( configs.length > 0 ){
+                value = this.parseParameterValue(configs[0], value);
+            }else{
+                if (typeOf(value) === "date") {
+                    if( ["sql", "sqlScript"].contains(this.statementJson.format) ){
+                        value = value.format("db");
+                    }else{
+                        value = "{ts '" + value.format("db") + "'}"
+                    }
+                }
             }
             this.parameter[p] = value;
         }
+    },
+    parseParameterValue: function( f, value ){
+        // var user = layout.user;
+        if (typeOf(value) === "date") {
+            value = value.format("db");
+        }
+        switch (value) {
+            case "@person":
+                // value = user.distinguishedName;
+                value = "";
+                break;
+            case "@identityList":
+                // value = user.identityList.map(function (d) {
+                //     return d.distinguishedName;
+                // });
+                value = "";
+                break;
+            case "@unitList":
+                // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithPerson({"personList": [user.distinguishedName]}, function (json) {
+                //     value = json.unitList;
+                // }, null, false);
+                value = "";
+                break;
+            case "@unitAllList":
+                // o2.Actions.load("x_organization_assemble_express").UnitAction.listWithIdentitySupNested({"personList": [user.distinguishedName]}, function (json) {
+                //     value = json.unitList;
+                // }, null, false);
+                value = "";
+                break;
+            case "@year":
+                value = (new Date().getFullYear()).toString();
+                break;
+            case "@season":
+                var m = new Date().format("%m");
+                if (["01", "02", "03"].contains(m)) {
+                    value = "1"
+                } else if (["04", "05", "06"].contains(m)) {
+                    value = "2"
+                } else if (["07", "08", "09"].contains(m)) {
+                    value = "3"
+                } else {
+                    value = "4"
+                }
+                break;
+            case "@month":
+                value = new Date().format("%Y-%m");
+                break;
+            case "@time":
+                value = new Date().format("db");
+                break;
+            case "@date":
+                value = new Date().format("%Y-%m-%d");
+                break;
+            default:
+        }
+        if( !["sql", "sqlScript"].contains(this.statementJson.format) ) {
+            if( typeOf(value) === "string" && value.substr(0, 1) !== "{" ){
+                if (f.formatType === "dateTimeValue" || f.formatType === "datetimeValue") {
+                    value = "{ts '" + value + "'}"
+                } else if (f.formatType === "dateValue") {
+                    value = "{d '" + value + "'}"
+                } else if (f.formatType === "timeValue") {
+                    value = "{t '" + value + "'}"
+                }
+            }
+        }
+        return value;
     },
     loadCurrentPageData: function (callback, async, type) {
         //是否需要在翻页的时候清空之前的items ?
@@ -595,17 +622,154 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }
     },
 
-
-    // getExportTotalCount: function(){
-    //     return this.count || 0;
-    // },
+    getExportTotalCount: function(){
+        return this.count || 100000;
+    },
     // getExportMaxCount: function(){
     //     return 2000;
     // },
     exportView: function(){
+        var _self = this;
+        var total = this.getExportTotalCount();
 
-        // var excelName = this.statementJson.name + "(" + start + "-" + end + ").xlsx";
+        var lp = this.lp.viewExport;
+        var node = this.exportExcelDlgNode = new Element("div");
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+            "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
+            "   <input class='end' value='"+ ( this.exportExcelEnd || total ) +"' ><span>"+lp.item+"</span>" +
+            "</div>";
+        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
+        node.set("html", html);
+        var check = function () {
+            if(this.value.length == 1){
+                this.value = this.value.replace(/[^1-9]/g,'');
+            }else{
+                this.value = this.value.replace(/\D/g,'');
+            }
+            if( this.value.toInt() > total ){
+                this.value = total;
+            }
+        }
+        node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
 
+
+        var dlg = o2.DL.open({
+            "title": this.lp.exportExcel,
+            "style": "user",
+            "isResize": false,
+            "content": node,
+            "width": 600,
+            "height" : 260,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function (d, e) {
+                        var start = node.getElement(".start").get("value");
+                        var end = node.getElement(".end").get("value");
+                        if( !start || !end ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        start = Math.max(start.toInt(), 1);
+                        end = end.toInt();
+                        if( end < start ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        debugger;
+                        this.exportExcelStart = start;
+                        this.exportExcelEnd = end;
+                        this._exportView(start, end);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        });
+    },
+    // exportView: function(){
+    //     var excelName = this.statementJson.name;
+    //
+    //     var p = this.currentPage;
+    //     var d = {
+    //         "filterList": this.filterList,
+    //         "parameter": this.parameter
+    //     };
+    //
+    //     this.createLoadding();
+    //
+    //     debugger;
+    //
+    //     var exportArray = [];
+    //
+    //     var titleArray = [];
+    //     var colWidthArr = [];
+    //     var dateIndexArray = [];
+    //     var numberIndexArray = [];
+    //     var idx = 0;
+    //     Object.each(this.entries, function (c, k) {
+    //         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
+    //             titleArray.push(c.displayName);
+    //             colWidthArr.push(c.exportWidth || 200);
+    //             if( c.isTime )dateIndexArray.push(idx);
+    //             if( c.isNumber )numberIndexArray.push(idx);
+    //             idx++;
+    //         }
+    //     }.bind(this));
+    //     exportArray.push(titleArray);
+    //
+    //     o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+    //         this.options.statementId || this.options.statementName || this.options.statementAlias ||
+    //         this.json.statementId || this.json.statementName || this.json.statementAlias,
+    //         "data", 1, 100000, d, function (json) {
+    //
+    //             json.data.each(function (d, i) {
+    //                 var dataArray = [];
+    //                 Object.each(this.entries, function (c, k) {
+    //                     if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
+    //                         var text = this.getExportText(c, k, d);
+    //                         // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
+    //                         //     text = parseFloat(text);
+    //                         // }
+    //                         dataArray.push( text );
+    //                     }
+    //                 }.bind(this));
+    //                 //exportRow事件
+    //                 var argu = {"index":i, "source": d, "data":dataArray};
+    //                 this.fireEvent("exportRow", [argu]);
+    //                 exportArray.push( argu.data || dataArray );
+    //             }.bind(this));
+    //
+    //             //export事件
+    //             var arg = {
+    //                 data : exportArray,
+    //                 colWidthArray : colWidthArr,
+    //                 title : excelName
+    //             };
+    //             this.fireEvent("export", [arg]);
+    //
+    //             if (this.loadingAreaNode) {
+    //                 this.loadingAreaNode.destroy();
+    //                 this.loadingAreaNode = null;
+    //             }
+    //
+    //             new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+    //                 arg.data || exportArray,
+    //                 arg.title || excelName,
+    //                 arg.colWidthArray || colWidthArr,
+    //                 dateIndexArray,  //日期格式列下标
+    //                 numberIndexArray  //数字格式列下标
+    //             );
+    //
+    //         }.bind(this));
+    // },
+    _exportView: function(start, end){
         var excelName = this.statementJson.name;
 
         var p = this.currentPage;
@@ -615,8 +779,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         };
 
         this.createLoadding();
-
-        debugger;
 
         var exportArray = [];
 
@@ -636,12 +798,11 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }.bind(this));
         exportArray.push(titleArray);
 
-        o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            this.options.statementId || this.options.statementName || this.options.statementAlias ||
-            this.json.statementId || this.json.statementName || this.json.statementAlias,
-            "data", 1, 100000, d, function (json) {
-
-                json.data.each(function (d, i) {
+        this.loadExportData(start, end, d, function (dataList) {
+            var index = 0;
+            dataList.each(function (data, j) {
+                data.each(function (d, i) {
+                    index = index + 1;
                     var dataArray = [];
                     Object.each(this.entries, function (c, k) {
                         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
@@ -653,33 +814,87 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                         }
                     }.bind(this));
                     //exportRow事件
-                    var argu = {"index":i, "source": d, "data":dataArray};
+                    var argu = {"index":index, "source": d, "data":dataArray};
                     this.fireEvent("exportRow", [argu]);
                     exportArray.push( argu.data || dataArray );
                 }.bind(this));
-
-                //export事件
-                var arg = {
-                    data : exportArray,
-                    colWidthArray : colWidthArr,
-                    title : excelName
-                };
-                this.fireEvent("export", [arg]);
-
-                if (this.loadingAreaNode) {
-                    this.loadingAreaNode.destroy();
-                    this.loadingAreaNode = null;
-                }
-
-                new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
-                    arg.data || exportArray,
-                    arg.title || excelName,
-                    arg.colWidthArray || colWidthArr,
-                    dateIndexArray,  //日期格式列下标
-                    numberIndexArray  //数字格式列下标
-                );
-
             }.bind(this));
+
+            //export事件
+            var arg = {
+                data : exportArray,
+                colWidthArray : colWidthArr,
+                title : excelName
+            };
+            this.fireEvent("export", [arg]);
+
+            if (this.loadingAreaNode) {
+                this.loadingAreaNode.destroy();
+                this.loadingAreaNode = null;
+            }
+
+            new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+                arg.data || exportArray,
+                arg.title || excelName,
+                arg.colWidthArray || colWidthArr,
+                dateIndexArray,  //日期格式列下标
+                numberIndexArray  //数字格式列下标
+            );
+
+        }.bind(this))
+    },
+    loadExportData: function(start, end, body, callback){
+        start = start - 1;
+        var differ = end - start;
+        var count;
+        // if( differ < 10 ){
+        //    count = 10;
+        // }else if( differ < 100 ){
+        //     count = 100;
+        // }else if( differ < 1000 ){
+        //     count = 1000;
+        // }else{
+        //     count = 10000; bai boi bai boy buy boy
+        // }
+        if( differ < 10000 ){
+            count = differ;
+        }else{
+            count = 10000;
+        }
+        var page = Math.floor( start / count ) + 1;
+        var startIndex = start % count;
+        var endIndex = end % count;
+        var loaded = (page - 1)*count;
+        var list = [];
+        do{
+            var promise = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                this.options.statementId || this.options.statementName || this.options.statementAlias ||
+                this.json.statementId || this.json.statementName || this.json.statementAlias,
+                "data", page, count, body);
+            list.push(promise);
+            loaded = loaded + count;
+            page = page + 1;
+        }while( end > loaded );
+        var result = [];
+        Promise.all( list ).then(function (arr) {
+            arr.each(function (json, i) {
+                var data = json.data;
+                var length = json.data.length;
+                if( i === 0 && i === list.length - 1 ){
+                    data.splice( 0, startIndex );
+                    if( length > endIndex && endIndex > 0 ){
+                        data.splice( endIndex - startIndex , length - endIndex );
+                    }
+                }else if( i === 0 ){
+                    data.splice( 0, startIndex );
+                }else if( i=== list.length - 1 ){
+                    if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
+                }
+                result.push(data);
+            });
+            if( callback )callback(result);
+        });
+
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");
@@ -708,7 +923,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }
 
         try{
-            if (code && code.trim()) obj = this.view.Macro.exec(code, {
+            if (code && code.trim()) obj = this.Macro.exec(code, {
                 "value": obj,
                 "data": data,
                 "entry": c,
@@ -927,6 +1142,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
@@ -957,6 +1177,11 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("unselect", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");

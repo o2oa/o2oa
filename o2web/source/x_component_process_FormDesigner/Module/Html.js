@@ -70,6 +70,7 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 		if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
 
 		this.textarea.set("value", this.json.text);
+        this.textarea.removeAttribute('disabled');
 		if (this.property){
 			var editNode = this.property.propertyNode.getElement(".MWF_editHtmlText");
 			if (editNode) editNode.set("value", this.textarea.get("value"));
@@ -78,12 +79,12 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 	},
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
+		this.node.store("module", this);
 		this.node.setStyles(this.css.moduleNode);
 		this.textarea = this.node.getFirst("textarea");
 		this.textarea.set("value", this.json.text);
 	},
 	_setTextareaHeight: function(){
-
 		this.textarea.setStyle("height", "18px");
 		var scroll = this.textarea.getScrollSize();
 		var size = this.textarea.getSize();
@@ -113,21 +114,23 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 				// if (editNode) editNode.set("value", this.textarea.get("value"));
 			}.bind(this),
 			"change": function(){
+				this.checkPropertyHistory("text", this.json.text, this.textarea.get("value"));
 				this.json.text = this.textarea.get("value");
 			}.bind(this),
 			"blur": function(){
+				this.checkPropertyHistory("text", this.json.text, this.textarea.get("value"));
 				this.json.text = this.textarea.get("value");
 			}.bind(this)
 		});
 
-		this.node.addEvents({
-			"mouseenter": function () {
-				this.textarea.disabled = false;
-			}.bind(this),
-			"mouseleave": function () {
-				this.textarea.disabled = true;
-			}.bind(this)
-		})
+		// this.node.addEvents({
+		// 	"mouseenter": function () {
+		// 		this.textarea.disabled = false;
+		// 	}.bind(this),
+		// 	"mouseleave": function () {
+		// 		this.textarea.disabled = true;
+		// 	}.bind(this)
+		// })
 	},
 	_setEditStyle_custom: function(name){
 		if (name=="text"){

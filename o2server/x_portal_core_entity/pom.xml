@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>7.3</version>
+		<version>8.0</version>
 	</parent>
 	<artifactId>x_portal_core_entity</artifactId>
 	<packaging>jar</packaging>
@@ -15,6 +15,10 @@
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_base_core_project</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.o2oa</groupId>
+			<artifactId>x_general_core_entity</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

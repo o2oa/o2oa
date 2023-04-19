@@ -151,7 +151,7 @@ MWF.xApplication.process.Xform.Elnumber = MWF.APPElnumber =  new Class(
     // },
     _createElementHtml: function(){
         var html = "<el-input-number";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         if (o2.typeOf(this.json.max)==="number") html += " :max=\"max\"";
         if (o2.typeOf(this.json.min)==="number") html += " :min=\"min\"";
         html += " :step=\"step\"";

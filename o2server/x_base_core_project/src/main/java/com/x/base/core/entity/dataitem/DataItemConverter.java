@@ -1,6 +1,7 @@
 package com.x.base.core.entity.dataitem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,12 +18,14 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -32,9 +35,13 @@ public class DataItemConverter<T extends DataItem> {
 
 	public static final int STRING_VALUE_MAX_LENGTH = JpaObject.length_255B;
 
+	private static final Gson gson = XGsonBuilder.instance();
+
+	private static final int MAX_PATH_DEPTH = 8;
+
 	private Class<T> clz;
 
-	private static Logger logger = LoggerFactory.getLogger(DataItemConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataItemConverter.class);
 
 	public DataItemConverter(Class<T> clz) {
 		this.clz = clz;
@@ -42,9 +49,10 @@ public class DataItemConverter<T extends DataItem> {
 
 	public List<T> disassemble(JsonElement root, String... prefixPaths) throws Exception {
 		List<String> paths = new ArrayList<>();
-		for (String str : prefixPaths) {
-			paths.add(str);
-		}
+		paths.addAll(Arrays.asList(prefixPaths));
+//		for (String str : prefixPaths) {
+//			paths.add(str);
+//		}
 		List<T> list = this.disassemble(root, paths, new ArrayList<T>());
 		/**
 		 * 20170905 通过 javascripting 转换的Map将 array -> {0:"xxxxx"}
@@ -87,30 +95,51 @@ public class DataItemConverter<T extends DataItem> {
 				t.value(jsonPrimitive.getAsString());
 			}
 		} else if (root.isJsonArray()) {
-			t.setItemType(ItemType.a);
-			t.setItemPrimitiveType(ItemPrimitiveType.u);
-			t.setItemStringValueType(ItemStringValueType.u);
-			int i = 0;
-			for (JsonElement o : root.getAsJsonArray()) {
-				List<String> ps = new ArrayList<>(paths);
-				ps.add(Integer.toString(i++));
-				this.disassemble(o, ps, list);
+			if (paths.size() < MAX_PATH_DEPTH) {
+				t.setItemType(ItemType.a);
+				t.setItemPrimitiveType(ItemPrimitiveType.u);
+				t.setItemStringValueType(ItemStringValueType.u);
+				int i = 0;
+				for (JsonElement o : root.getAsJsonArray()) {
+					List<String> ps = new ArrayList<>(paths);
+					ps.add(Integer.toString(i++));
+					this.disassemble(o, ps, list);
+				}
+			} else {
+				disassembleMaxPathDepthToJsonElement(t, root);
 			}
 		} else if (root.isJsonNull()) {
 			t.setItemType(ItemType.n);
 			t.setItemPrimitiveType(ItemPrimitiveType.u);
 			t.setItemStringValueType(ItemStringValueType.u);
 		} else if (root.isJsonObject()) {
-			t.setItemType(ItemType.o);
-			t.setItemPrimitiveType(ItemPrimitiveType.u);
-			t.setItemStringValueType(ItemStringValueType.u);
-			for (Entry<String, JsonElement> entry : root.getAsJsonObject().entrySet()) {
-				List<String> ps = new ArrayList<String>(paths);
-				ps.add(entry.getKey());
-				this.disassemble(entry.getValue(), ps, list);
+			if (paths.size() < MAX_PATH_DEPTH) {
+				t.setItemType(ItemType.o);
+				t.setItemPrimitiveType(ItemPrimitiveType.u);
+				t.setItemStringValueType(ItemStringValueType.u);
+				for (Entry<String, JsonElement> entry : root.getAsJsonObject().entrySet()) {
+					List<String> ps = new ArrayList<>(paths);
+					ps.add(entry.getKey());
+					this.disassemble(entry.getValue(), ps, list);
+				}
+			} else {
+				disassembleMaxPathDepthToJsonElement(t, root);
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 将8层以上的对象或者Array直接以jsonElement的toString进行保存,不再进行递归解析
+	 * 
+	 * @param t
+	 * @param root
+	 */
+	private void disassembleMaxPathDepthToJsonElement(T t, JsonElement root) {
+		t.setItemType(ItemType.j);
+		t.setItemPrimitiveType(ItemPrimitiveType.u);
+		t.setItemStringValueType(ItemStringValueType.u);
+		t.setStringValue(root.toString());
 	}
 
 	public JsonElement assemble(List<T> list) {
@@ -118,21 +147,16 @@ public class DataItemConverter<T extends DataItem> {
 	}
 
 	public JsonElement assemble(List<T> list, Integer retract) {
-		try {
-			JsonElement root = null;
-			List<T> sorted = new ArrayList<>(list);
-			this.sort(sorted);
-			for (T t : sorted) {
-				root = this.assemble(sorted, t, retract, root);
-			}
-			return root;
-		} catch (Exception e) {
-			logger.error(e);
+		JsonElement root = null;
+		List<T> sorted = new ArrayList<>(list);
+		this.sort(sorted);
+		for (T t : sorted) {
+			root = this.assemble(t, retract, root);
 		}
-		return null;
+		return root;
 	}
 
-	private JsonElement assemble(List<T> list, T t, Integer retract, JsonElement root) throws Exception {
+	private JsonElement assemble(T t, Integer retract, JsonElement root) {
 		JsonElement jsonElement = null;
 		if (t.getItemType().equals(ItemType.p)) {
 			if (t.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
@@ -148,6 +172,8 @@ public class DataItemConverter<T extends DataItem> {
 			jsonElement = new JsonArray();
 		} else if (t.getItemType().equals(ItemType.n)) {
 			jsonElement = JsonNull.INSTANCE;
+		} else if (t.getItemType().equals(ItemType.j)) {
+			jsonElement = gson.fromJson(t.getStringValue(), JsonElement.class);
 		}
 		if (root == null) {
 			return jsonElement;
@@ -169,11 +195,7 @@ public class DataItemConverter<T extends DataItem> {
 		if (!StringUtils.isNumeric(name)) {
 			o.getAsJsonObject().add(name, jsonElement);
 		} else {
-			try {
-				o.getAsJsonArray().add(jsonElement);
-			} catch (Exception e) {
-				throw new Exception(e.getMessage() + ": name:" + name + ", jsonElement:" + jsonElement + ".", e);
-			}
+			o.getAsJsonArray().add(jsonElement);
 		}
 		return root;
 	}
@@ -302,6 +324,8 @@ public class DataItemConverter<T extends DataItem> {
 					return Objects.equals(t1.getBooleanValue(), t2.getBooleanValue());
 				}
 			}
+		} else if (Objects.equals(t1.getItemType(), ItemType.j)) {
+			return Objects.equals(t1.getStringValue(), t2.getStringValue());
 		}
 		return true;
 	}
@@ -392,12 +416,24 @@ public class DataItemConverter<T extends DataItem> {
 						return Objects.equals(this.item.getBooleanValue(), other.item.getBooleanValue());
 					}
 				}
+			} else if (Objects.equals(this.item.getItemType(), ItemType.j)) {
+				return Objects.equals(this.item.getStringValue(), other.item.getStringValue());
 			}
 			return true;
 		}
 	}
 
+	/**
+	 * 提取DataItem纯文本辅助类
+	 * 
+	 * @author ray
+	 *
+	 */
 	public static class ItemText {
+
+		private ItemText() {
+			// nothing
+		}
 
 		private static final Predicate<DataItem> NUMBERPREDICATE = o -> Objects.equals(ItemType.p, o.getItemType())
 				&& Objects.equals(ItemPrimitiveType.n, o.getItemPrimitiveType());
@@ -435,6 +471,18 @@ public class DataItemConverter<T extends DataItem> {
 			return value;
 		};
 
+		/**
+		 * 提取DataItem中的文本,拼接成String
+		 * 
+		 * @param items
+		 * @param escapeNumber
+		 * @param escapeBoolean
+		 * @param escapeId
+		 * @param simplifyDistinguishedName
+		 * @param htmlToText
+		 * @param split
+		 * @return
+		 */
 		public static String text(List<? extends DataItem> items, boolean escapeNumber, boolean escapeBoolean,
 				boolean escapeId, boolean simplifyDistinguishedName, boolean htmlToText, String split) {
 

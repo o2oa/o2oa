@@ -441,21 +441,21 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean beforeExecuted;
 
-	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
-	@FieldDescribe("预期的处理人")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ manualTaskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ manualTaskIdentityList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualTaskIdentityList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> manualTaskIdentityList;
+//	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
+//	@FieldDescribe("预期的处理人")
+//	@PersistentCollection(fetch = FetchType.EAGER)
+//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+//			+ manualTaskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+//					+ manualTaskIdentityList_FIELDNAME + JoinIndexNameSuffix))
+//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualTaskIdentityList_FIELDNAME)
+//	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
+//	@CheckPersist(allowEmpty = true)
+//	private List<String> manualTaskIdentityList;
 
-	public static final String manualTaskIdentityText_FIELDNAME = "manualTaskIdentityText";
+	public static final String MANUALTASKIDENTITYTEXT_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + manualTaskIdentityText_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + MANUALTASKIDENTITYTEXT_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String manualTaskIdentityText;
 
@@ -1322,12 +1322,12 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.workCreateType = workCreateType;
 	}
 
-	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
-		this.manualTaskIdentityList = manualTaskIdentityList;
-	}
-
-	public List<String> getManualTaskIdentityList() {
-		return manualTaskIdentityList;
-	}
+//	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
+//		this.manualTaskIdentityList = manualTaskIdentityList;
+//	}
+//
+//	public List<String> getManualTaskIdentityList() {
+//		return manualTaskIdentityList;
+//	}
 
 }
