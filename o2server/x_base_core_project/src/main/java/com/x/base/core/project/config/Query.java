@@ -42,6 +42,30 @@ public class Query extends ConfigObject {
     public static final Boolean DEFAULT_EXTRACTIMAGE = false;
     public static final String DEFAULT_TESSLANGUAGE = "chi_sim";
     public static final Integer DEFAULT_PLANQUERYBATCHSIZE = 500;
+    public static final Boolean DEFAULT_STATEMENTDELETEENABLE = false;
+    public static final Boolean DEFAULT_STATEMENTUPDATEENABLE = false;
+    public static final Boolean DEFAULT_STATEMENTINSERTENABLE = false;
+
+    @FieldDescribe("statement语句是否允许执行delete.")
+    private Boolean statementDeleteEnable = DEFAULT_STATEMENTDELETEENABLE;
+
+    @FieldDescribe("statement语句是否允许执行update.")
+    private Boolean statementUpdateEnable = DEFAULT_STATEMENTUPDATEENABLE;
+
+    @FieldDescribe("statement语句是否允许执行insert.")
+    private Boolean statementInsertEnable = DEFAULT_STATEMENTINSERTENABLE;
+
+    public Boolean getStatementDeleteEnable() {
+        return BooleanUtils.isTrue(statementDeleteEnable);
+    }
+
+    public Boolean getStatementUpdateEnable() {
+        return BooleanUtils.isTrue(statementUpdateEnable);
+    }
+
+    public Boolean getStatementInsertEnable() {
+        return BooleanUtils.isTrue(statementInsertEnable);
+    }
 
     public Integer getPlanQueryBatchSize() {
         return (this.planQueryBatchSize == null || planQueryBatchSize < 1) ? DEFAULT_PLANQUERYBATCHSIZE
