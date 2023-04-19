@@ -7,7 +7,7 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
         this.json = json;
         this.form = form;
         this.documentId = "";
-        this.mode = "edit";
+        this.mode = "write";
         this.appToken = "x_cms_assemble_control";
         this.workId = this.form.businessData.document.id;
     },
