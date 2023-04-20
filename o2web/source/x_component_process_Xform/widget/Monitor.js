@@ -8,7 +8,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     options: {
         "style": "default"
     },
-    initialize: function(container, worklog, processid, options){
+    initialize: function(container, worklog, recordList, processid, options){
         this.setOptions(options);
 
         this.path = "../x_component_process_Xform/widget/$Monitor/";
@@ -17,8 +17,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         this.container = $(container);
         this.worklog = worklog;
+        this.recordList = recordList;
         this.processid = processid;
 
+        debugger;
 
         this.load();
     },
@@ -209,7 +211,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     showPlayLog: function(activity,log){
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
-        this.playLogNode = this.createWorkLogNode([log]);
+        this.playLogNode = this.createWorkLogNode([log], activity);
         this.playLogNode.setStyle("display", "block");
         var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
         this.playLogNode.setPosition({"x": p.x, "y": p.y});
@@ -353,6 +355,11 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             activity.worklogs.push(log);
             if (!activitys[log.fromActivity]) activitys[log.fromActivity] = activity
         }.bind(this));
+        if (this.recordList){
+            this.recordList.each(function (){
+
+            }.bind(this));
+        }
 
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
@@ -461,7 +468,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     },
     showWorklog: function(activity, offset, psize){
         this.hideCurrentWorklog();
-        if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs);
+        if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
         this.currentWorklogNode.setStyle("display", "block");
@@ -476,44 +483,67 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
     },
 
-    createWorkLogNode: function(worklogs){
+    createWorkLogNode: function(worklogs, activity){
         var node = new Element("div", {"styles": this.css.workLogNode});
-        worklogs.each(function(log, idx){
-            var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
-            if ((idx % 2)==0){
-                workNode.setStyle("background-color", "#FFF");
-            }else{
-                workNode.setStyle("background-color", "#EEE");
-            }
 
-            if (log.taskCompletedList.length+log.taskList.length<1){
-                if (log.connected){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
-                    html += "<div style='text-align: right'>"+log.arrivedTime+"</div>";
-                    taskNode.set("html", html);
+        if (this.recordList){
+            debugger;
+            var logs = this.recordList.filter(function(r){
+                return r.fromActivity === activity.data.id;
+            });
+            logs.each(function(log, idx){
+                var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
+                if ((idx % 2)==0){
+                    workNode.setStyle("background-color", "#FFF");
                 }else{
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
-                    taskNode.set("html", html);
+                    workNode.setStyle("background-color", "#EEE");
                 }
-            }else{
-                log.taskCompletedList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
-                    html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
-                    html += "<div style='text-align: right'>"+task.completedTime+"</div>";
-                    taskNode.set("html", html);
-                }.bind(this));
 
-                log.taskList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
-                    taskNode.set("html", html);
-                }.bind(this));
-            }
+                var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                var html = "<div style='font-weight: bold'>"+log.person.substring(0, log.person.indexOf("@"))+": </div>";
+                html += "<div style='margin-left: 10px'>["+(log.properties.routeName || "")+"] "+o2.txt(log.properties.opinion)+"</div>";
+                html += "<div style='text-align: right'>"+log.recordTime+"</div>";
+                taskNode.set("html", html);
 
-        }.bind(this));
+            }.bind(this));
+        }else{
+            worklogs.each(function(log, idx){
+                var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
+                if ((idx % 2)==0){
+                    workNode.setStyle("background-color", "#FFF");
+                }else{
+                    workNode.setStyle("background-color", "#EEE");
+                }
+
+                if (log.taskCompletedList.length+log.taskList.length<1){
+                    if (log.connected){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
+                        html += "<div style='text-align: right'>"+log.arrivedTime+"</div>";
+                        taskNode.set("html", html);
+                    }else{
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold; color: red'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
+                        taskNode.set("html", html);
+                    }
+                }else{
+                    log.taskCompletedList.each(function(task){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
+                        html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
+                        html += "<div style='text-align: right'>"+task.completedTime+"</div>";
+                        taskNode.set("html", html);
+                    }.bind(this));
+
+                    log.taskList.each(function(task){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
+                        taskNode.set("html", html);
+                    }.bind(this));
+                }
+
+            }.bind(this));
+        }
         node.inject(this.paperNode);
         return node;
     }

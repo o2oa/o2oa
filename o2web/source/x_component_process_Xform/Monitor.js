@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.Monitor = MWF.APPMonitor =  new Class(
             /**
              * @summary 流程图对象，是一个 MWF.xApplication.process.Xform.widget.Monitor 类实例
              */
-            this.monitor = new MWF.xApplication.process.Xform.widget.Monitor(this.node, this.form.businessData.workLogList, process,{
+            this.monitor = new MWF.xApplication.process.Xform.widget.Monitor(this.node, this.form.businessData.workLogList, this.form.businessData.recordList, process,{
                 "onPostLoad" : function(){
                     this.fireEvent("postLoad");
                 }.bind(this)
