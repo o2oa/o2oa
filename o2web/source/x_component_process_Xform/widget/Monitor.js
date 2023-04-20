@@ -487,7 +487,6 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var node = new Element("div", {"styles": this.css.workLogNode});
 
         if (this.recordList){
-debugger;
             var logs = this.recordList.filter(function(r){
                 return r.fromActivity === activity.data.id;
             });
