@@ -20,8 +20,6 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.recordList = recordList;
         this.processid = processid;
 
-        debugger;
-
         this.load();
     },
     load: function(){
@@ -356,8 +354,10 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             if (!activitys[log.fromActivity]) activitys[log.fromActivity] = activity
         }.bind(this));
         if (this.recordList){
-            this.recordList.each(function (){
-
+            this.recordList.each(function (r, i){
+                var activity = activitys[r.fromActivity];
+                if (!activity.recordCount) activity.recordCount = 0
+                activity.recordCount++;
             }.bind(this));
         }
 
@@ -369,13 +369,13 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this));
     },
     writePassCount: function(activity){
-        if (activity.passedCount){
+        if (activity.passedCount || activity.recordCount){
             var x = activity.point.x+activity.width;
             var y = activity.point.y;
             var shap = this.paper.circle(x, y, 9);
             shap.attr(this.css.activityPassedCount);
 
-            text = this.paper.text(x, y, activity.passedCount);
+            text = this.paper.text(x, y, activity.recordCount || activity.passedCount);
             text.attr(this.css.activityPassedCountText);
 
             activity.countSet = this.paper.set();
@@ -487,7 +487,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         var node = new Element("div", {"styles": this.css.workLogNode});
 
         if (this.recordList){
-            debugger;
+debugger;
             var logs = this.recordList.filter(function(r){
                 return r.fromActivity === activity.data.id;
             });
@@ -499,12 +499,57 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                     workNode.setStyle("background-color", "#EEE");
                 }
 
-                var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                var html = "<div style='font-weight: bold'>"+log.person.substring(0, log.person.indexOf("@"))+": </div>";
-                html += "<div style='margin-left: 10px'>["+(log.properties.routeName || "")+"] "+o2.txt(log.properties.opinion)+"</div>";
-                html += "<div style='text-align: right'>"+log.recordTime+"</div>";
-                taskNode.set("html", html);
+                var router, opinion, arrivedActivitys, arrivedUsers;
+                arrivedActivitys = log.properties.nextManualList.map(function(o){
+                    return o.activityName;
+                }).join(",");
+                arrivedUsers = (log.properties.nextManualTaskIdentityList && log.properties.nextManualTaskIdentityList.length) ? o2.name.cns(log.properties.nextManualTaskIdentityList).join(",") : "";
 
+                switch (log.type) {
+                    case "empower":
+                        router = MWF.xApplication.process.Xform.LP.empower;
+                        var empowerTo = (log.properties.nextManualTaskIdentityList && log.properties.nextManualTaskIdentityList.length) ? o2.name.cns(log.properties.nextManualTaskIdentityList).join(",") : "";
+                        opinion = MWF.xApplication.process.Xform.LP.empowerTo + empowerTo;
+                        break;
+                    case "retract":
+                        router = MWF.xApplication.process.Xform.LP.retract;
+                        opinion = MWF.xApplication.process.Xform.LP.retract;
+                        break;
+                    case "reroute":
+                        router = log.properties.routeName || MWF.xApplication.process.Xform.LP.reroute;
+                        opinion = log.properties.opinion || MWF.xApplication.process.Xform.LP.rerouteTo+": "+arrivedActivitys;
+                        break;
+                    case "rollback":
+                        router = log.properties.routeName || MWF.xApplication.process.Xform.LP.rollback;
+                        opinion = log.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+log.arrivedActivityName;
+                        break;
+                    case "reset":
+                        var resetUser = log.properties.nextManualTaskIdentityList.erase(log.identity);
+                        resetUserText = o2.name.cns(resetUser).join(",");
+                        router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                        opinion = log.properties.opinion || ""
+                        break;
+                    case "appendTask":
+                    case "back":
+                    case "addSplit":
+                    case "urge":
+                    case "expire":
+                    case "read":
+                    default:
+                        router = log.properties.routeName || "";
+                        opinion = log.properties.opinion || "";
+                }
+                if (log.type==="currentTask"){
+                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                    var html = "<div style='font-weight: bold; color: red'>"+log.person.substring(0, log.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
+                    taskNode.set("html", html);
+                }else{
+                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                    var html = "<div style='font-weight: bold'>"+log.person.substring(0, log.person.indexOf("@"))+": </div>";
+                    html += "<div style='margin-left: 10px'>["+router+"] "+o2.txt(opinion)+"</div>";
+                    html += "<div style='text-align: right'>"+log.recordTime+"</div>";
+                    taskNode.set("html", html);
+                }
             }.bind(this));
         }else{
             worklogs.each(function(log, idx){
