@@ -161,7 +161,7 @@ public class MeetingConfigProperties extends JsonProperties {
 	}
 
 	public OnlineConfig getOnlineConfig() {
-		return onlineConfig;
+		return onlineConfig == null ? new OnlineConfig() : onlineConfig;
 	}
 
 	public void setOnlineConfig(OnlineConfig onlineConfig) {

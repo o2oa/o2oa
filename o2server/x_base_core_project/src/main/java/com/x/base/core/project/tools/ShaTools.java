@@ -82,9 +82,10 @@ public class ShaTools {
     }
 
     public static void main(String[] args) throws Exception{
-        Map<String, String> map = new HashMap<>();
-        map.put("roomName", "测试会议0413001");
+        Map<String, Object> map = new HashMap<>();
+        map.put("roomName", "测试会议0419001");
         map.put("verifyMode", "1");
+        map.put("maxUserCount", 300);
         String url = "https://117.133.7.109:8443/api/v1/room/addRoomInfo";
         String key = "4QY08Kyh";
         String secret = "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G";
