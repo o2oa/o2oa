@@ -1263,7 +1263,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 				this.designer.notice(MWF.APPFD.LP.version["resumeSuccess"]);
-				this.reload(JSON.decode(MWF.decodeJsonString(formData.data)));
+                var data = JSON.decode(MWF.decodeJsonString(formData.data));
+                data.isNewForm = false;
+				this.reload(data);
 				this.dlg.close();
 			//}.bind(this), null, false);
 		}.bind(this), null, false);
