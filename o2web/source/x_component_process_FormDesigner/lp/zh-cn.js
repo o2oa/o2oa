@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
+        "notNumberId": "元素标识符不能为纯数字",
+        "notDoubleDotId": "元素标识符不能包含连续的两个点号",
         "history": "历史",
         "componentTree": "组件树",
 

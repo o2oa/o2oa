@@ -2428,6 +2428,9 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent, _form){
                 }},
 
             "add": {"value": function(newKey, newValue, overwrite, noreset){
+                    if( newKey.test(/^\d+$/) ){
+                        throw new Error("Field name '"+newKey+"' cannot contain only numbers" );
+                    }
                     if (arguments.length<2 || newKey.indexOf("..")===-1){
                         var flag = true;
                         var type = typeOf(data);
