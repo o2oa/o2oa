@@ -377,9 +377,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 				}
 
 				textSize = this.textNode.getSize();
+				height = this.node.getSize().y - this.getOffsetY();
 				paddingtop = (height.toFloat() - textSize.y) / 2;
 				this.textNode.setStyle("padding-top", paddingtop+"px");
-				height = this.node.getSize().y - this.getOffsetY();
 				if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
 				if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 			}else{
@@ -429,9 +429,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 				}
 
 				textSize = this.textNode.getSize();
+				height = this.node.getSize().y - this.getOffsetY();
 				paddingtop = (height.toFloat() - textSize.y) / 2;
 				this.textNode.setStyle("padding-top", paddingtop+"px");
-				height = this.node.getSize().y - this.getOffsetY();
 				if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
 				if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 			}

@@ -1952,9 +1952,9 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 			}
 
 			var textSize = this.textNode.getSize();
+            height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
 			var paddingtop = (height.toFloat() - textSize.y) / 2;
 			this.textNode.setStyle("padding-top", paddingtop+"px");
-			height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
 			if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
 			if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 		}
