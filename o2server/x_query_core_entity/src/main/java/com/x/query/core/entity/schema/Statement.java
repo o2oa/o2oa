@@ -67,6 +67,7 @@ public class Statement extends SliceJpaObject {
     public static final String COUNTMETHOD_IGNORE = "ignore";
     public static final String COUNTMETHOD_AUTO = "auto";
     public static final String COUNTMETHOD_ASSIGN = "assign";
+    public static final Float VALUE_FV_8_0 = 8.0f;
 
     @Override
     public String getId() {
@@ -140,6 +141,12 @@ public class Statement extends SliceJpaObject {
 //    @Index(name = TABLE + IndexNameMiddle + TYPE_FIELDNAME)
 //    @CheckPersist(allowEmpty = false)
 //    private String type;
+
+    public static final String FV_FIELDNAME = "fv";
+    @FieldDescribe("功能版本号.")
+    @Column(name = ColumnNamePrefix + FV_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private Float fv;
 
     public static final String EXECUTEPERSONLIST_FIELDNAME = "executePersonList";
     @FieldDescribe("可执行的用户.")
@@ -552,6 +559,14 @@ public class Statement extends SliceJpaObject {
 
     public void setViewEnable(Boolean viewEnable) {
         this.viewEnable = viewEnable;
+    }
+
+    public Float getFv() {
+        return fv;
+    }
+
+    public void setFv(Float fv) {
+        this.fv = fv;
     }
 
 }
