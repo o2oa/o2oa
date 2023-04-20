@@ -98,8 +98,13 @@ public class Executor {
             if (executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 appendSelectRange(runtime, query);
                 List<?> os = query.getResultList();
-                return jpqlResultToMap((net.sf.jsqlparser.statement.select.Select) executeTarget.getParsedStatement(),
-                        os);
+                Float fv = statement.getFv();
+                if ((null != fv) && (fv >= Statement.VALUE_FV_8_0)) {
+                    return jpqlResultToMap(
+                            (net.sf.jsqlparser.statement.select.Select) executeTarget.getParsedStatement(),
+                            os);
+                }
+                return os;
             } else {
                 emc.beginTransaction(cls);
                 Object data = Integer.valueOf(query.executeUpdate());
@@ -109,6 +114,13 @@ public class Executor {
         }
     }
 
+    /**
+     * 在8.0.0以上版本jpql的输出值通过jsqlparser转换成字段属性该方法通过fv字段进行判断
+     * 
+     * @param select
+     * @param list
+     * @return
+     */
     private static Object jpqlResultToMap(net.sf.jsqlparser.statement.select.Select select,
             List<?> list) {
         if (ListTools.isEmpty(list)) {
@@ -165,6 +177,9 @@ public class Executor {
         name = StringUtils.trimToEmpty(name);
         while (name.startsWith("(") && name.endsWith(")")) {
             name = name.substring(1, name.length() - 1);
+        }
+        if (StringUtils.containsAny(name, "(", ")")) {
+            return name;
         }
         return StringUtils.contains(name, ".") ? StringUtils.substringAfterLast(name, ".") : name;
     }
