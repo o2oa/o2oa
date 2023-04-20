@@ -1914,18 +1914,19 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 			this.node.empty();
 
 			var height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
+			var lineheight = this.node.getStyle("line-height") || "28px";
             this.wrapNode = new Element("div", {
                 "styles": {
                     "position":"relative",
                     "display":"inline-block",
-                    "height": height,
-                    "line-height": height
+                    "height": height
                 }
             }).inject(this.node);
 
 			this.textNode = new Element("div", {"styles": {
 				"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
-				"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
+				"padding-right": (this.json.suffixIcon) ? "20px" : "0px",
+				"line-height": lineheight
 			}, "text": text}).inject(this.wrapNode);
 
 			var  textHeight = (this.node.offsetParent === null) ? "28" : this.textNode.getSize().y;
@@ -1935,7 +1936,7 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 					"top": "0px",
 					"left": "0px",
 					"width": "20px",
-					"height": ""+ textHeight +"px",
+					"height": ""+ height +"px",
 					"background": "url("+this.json.prefixIcon+") center center no-repeat"
 				}}).inject(this.textNode, "before");
 			}
@@ -1945,10 +1946,17 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 					"top": "0px",
 					"right": "0px",
 					"width": "20px",
-					"height": ""+textHeight+"px",
+					"height": ""+height+"px",
 					"background": "url("+this.json.suffixIcon+") center center no-repeat"
 				}}).inject(this.textNode, "before");
 			}
+
+			var textSize = this.textNode.getSize();
+            height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
+			var paddingtop = (height.toFloat() - textSize.y) / 2;
+			this.textNode.setStyle("padding-top", paddingtop+"px");
+			if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
+			if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 		}
 	},
 	getOffsetY: function(){
