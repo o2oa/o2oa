@@ -329,49 +329,59 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		return (this.node.getStyle("padding-top") || 0).toInt()
 			+ (this.node.getStyle("padding-bottom") || 0).toInt()
 			+ (this.node.getStyle("border-top") || 0).toInt()
-			+ (this.node.getStyle("border-bottom") || 0).toInt()
+			+ (this.node.getStyle("border-bottom") || 0).toInt();
 	},
 	setPrefixOrSuffix: function(){
 		if (this.json.prefixIcon || this.json.suffixIcon){
+
+			var paddingtop, textSize;
+			var height = this.node.getSize().y - this.getOffsetY();
+			var lineheight = this.node.getStyle("line-height") || "28px";
+
 			if (!this.textNode){
 				var text = this.node.get("text");
 				this.node.empty();
-
-				var height = this.node.getSize().y - this.getOffsetY();
 				this.wrapNode = new Element("div", {
 					"styles": {
 						"position":"relative",
 						"display":"inline-block",
-						"height": height,
-						"line-height": height
+						"height": height+"px"
 					}
 				}).inject(this.node);
 
 				this.textNode = new Element("div", {"styles": {
 						"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
-						"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
+						"padding-right": (this.json.suffixIcon) ? "20px" : "0px",
+						"line-height": lineheight
 					}, "text": text}).inject(this.wrapNode);
 
 				if (this.json.prefixIcon){
 					this.prefixNode = new Element("div", {"styles": {
-							"position": "absolute",
-							"top": "0px",
-							"left": "0px",
-							"width": "20px",
-							"height": ""+this.textNode.getSize().y+"px",
-							"background": "url("+this.json.prefixIcon+") center center no-repeat"
-						}}).inject(this.textNode, "before");
+						"position": "absolute",
+						"top": "0px",
+						"left": "0px",
+						"width": "20px",
+						"height": ""+height+"px",
+						"background": "url("+this.json.prefixIcon+") center center no-repeat"
+					}}).inject(this.textNode, "before");
 				}
 				if (this.json.suffixIcon){
 					this.suffixNode = new Element("div", {"styles": {
-							"position": "absolute",
-							"top": "0px",
-							"right": "0px",
-							"width": "20px",
-							"height": ""+this.textNode.getSize().y+"px",
-							"background": "url("+this.json.suffixIcon+") center center no-repeat"
-						}}).inject(this.textNode, "before");
+						"position": "absolute",
+						"top": "0px",
+						"right": "0px",
+						"width": "20px",
+						"height": ""+height+"px",
+						"background": "url("+this.json.suffixIcon+") center center no-repeat"
+					}}).inject(this.textNode, "before");
 				}
+
+				textSize = this.textNode.getSize();
+				height = this.node.getSize().y - this.getOffsetY();
+				paddingtop = (height.toFloat() - textSize.y) / 2;
+				this.textNode.setStyle("padding-top", paddingtop+"px");
+				if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
+				if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 			}else{
 				if (this.json.prefixIcon){
 					if (!this.prefixNode){
@@ -380,7 +390,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 								"top": "0px",
 								"left": "0px",
 								"width": "20px",
-								"height": ""+this.textNode.getSize().y+"px",
+								"height": ""+height+"px",
 								"background": "url("+this.json.prefixIcon+") center center no-repeat"
 							}}).inject(this.textNode, "before");
 						this.textNode.setStyle("padding-left", "20px");
@@ -402,7 +412,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 								"top": "0px",
 								"right": "0px",
 								"width": "20px",
-								"height": ""+this.textNode.getSize().y+"px",
+								"height": ""+height+"px",
 								"background": "url("+this.json.suffixIcon+") center center no-repeat"
 							}}).inject(this.textNode, "before");
 						this.textNode.setStyle("padding-right", "20px");
@@ -417,6 +427,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 					}
 					this.textNode.setStyle("padding-right", "0");
 				}
+
+				textSize = this.textNode.getSize();
+				height = this.node.getSize().y - this.getOffsetY();
+				paddingtop = (height.toFloat() - textSize.y) / 2;
+				this.textNode.setStyle("padding-top", paddingtop+"px");
+				if(this.prefixNode)this.prefixNode.setStyle("height", height+"px");
+				if(this.suffixNode)this.suffixNode.setStyle("height", height+"px");
 			}
 
 		}else{
