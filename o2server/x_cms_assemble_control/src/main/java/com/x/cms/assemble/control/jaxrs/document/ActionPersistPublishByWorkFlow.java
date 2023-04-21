@@ -261,6 +261,9 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
 							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
+							if(attachment.getOrderNumber()!=null) {
+								fileInfo.setSeqNumber(attachment.getOrderNumber());
+							}
 							fileInfo.setName(attachment.getName());
 							emc.check(document, CheckPersistType.all);
 							emc.persist(fileInfo, CheckPersistType.all);
