@@ -29,6 +29,30 @@ export default content({
       return time;
     }
   },
+  formatResultClass(record) {
+    let span = "";
+    if (record.fieldWork) {
+      span = "color-fieldWork";
+    } else {
+      const result = record.checkInResult;
+      if (result === 'PreCheckIn') {
+        span = "";
+      } else if (result === 'NotSigned') {
+        span =   "color-nosign";
+      }  else if (result === 'Normal') {
+        span =   "color-normal";
+      } else if (result === 'Early') {
+        span =    "color-early";
+      } else if (result === 'Late') {
+        span =    "color-late";
+      } else if (result === 'SeriousLate') {
+        span =    "color-serilate";
+      } else { 
+        span = "" ;
+      }
+    }
+    return span;
+  },
   formatResult(record) {
     // 外勤打卡的颜色 #f7b55e
     let span = "";

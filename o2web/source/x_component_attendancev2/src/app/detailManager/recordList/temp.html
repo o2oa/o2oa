@@ -17,8 +17,7 @@
                   <td>{{$m.formatDutyType(r.value.checkInType)}}</td>
                   <td>{{$m.formatTime(r.value.recordDate)}}</td>
                   <td>
-                    <span class="color-fieldWork" oo-if="r.value.fieldWork">{{$m.formatResult(r.value)}}</span>  
-                    <span  oo-else>{{$m.formatResult(r.value)}}</span> 
+                    <span class="{{this.formatResultClass(r.value)}}" >{{$m.formatResult(r.value)}}</span>  
                   </td>
               </tr>
           </table>

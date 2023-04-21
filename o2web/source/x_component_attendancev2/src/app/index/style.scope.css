@@ -1,3 +1,22 @@
+/* 变量  */
+:root {
+  /* 考勤颜色变量 */
+  /* 正常 */
+  --att-record-status-normal-color: #4A90E2;
+  /* 迟到 */
+  --att-record-status-early-color: #8B572A;
+  /* 迟到 */
+  --att-record-status-late-color: #F5A623;
+  /* 严重迟到 */
+  --att-record-status-serilate-color: #FF8080;
+  /* 未打卡 */
+  --att-record-status-nosign-color: #fb4747;
+  /* 外勤 */
+  --att-record-status-fieldwork-color: #E233FF;
+  /* 申诉 */
+  --att-record-status-appeal-color: #4FB2E3;
+}
+
 /* common */
 .margin-top {
   margin-top: 10px;
@@ -26,7 +45,31 @@
 }
 /* 外勤 */
 .color-fieldWork {
-  color: #f7b55e;
+  color: var(--att-record-status-fieldwork-color);
+}
+/* 正常 */
+.color-normal {
+  color: var(--att-record-status-normal-color);
+}
+/* 早退 */
+.color-early {
+  color:var(--att-record-status-early-color);
+}
+/* 迟到 */
+.color-late {
+  color: var(--att-record-status-late-color);
+}
+/* 严重迟到 */
+.color-serilate {
+  color: var(--att-record-status-serilate-color);
+}
+/* 未打卡 */
+.color-nosign {
+  color: var(--att-record-status-nosign-color);
+}
+/* 申诉 */
+.color-appeal {
+  color: var(--att-record-status-appeal-color);
 }
 /* 节假日 */
 .color-holiday {

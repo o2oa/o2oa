@@ -20,7 +20,7 @@
                 <td>{{g.value.recordDateString}}</td>
                 <td>{{ g.value.record.checkInType == 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
                 <td>{{ g.value.recordDate }}</td>
-                <td>{{  $m.formatRecordResult(g.value.record) }}</td>
+                <td class="{{this.formatRecordResultClass(g.value.record)}}">{{  $m.formatRecordResult(g.value.record) }}</td>
                 <td>{{  $m.formatAppealStatus(g.value) }}</td>
                  
                 <td>

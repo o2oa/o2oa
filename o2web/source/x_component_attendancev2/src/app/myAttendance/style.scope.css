@@ -72,31 +72,35 @@
   height: 8px;
   border-radius: 8px;
   margin-right: 5px;
-  background-color: #4A90E2;
+  background-color: var(--att-record-status-normal-color);
 }
 /* 正常 */
 .record-status-normal {
-  background-color: #4A90E2!important;
+  background-color: var(--att-record-status-normal-color)!important;
 }
 /* 早退 */
 .record-status-early {
-  background-color: #8B572A!important;
+  background-color:var(--att-record-status-early-color)!important;
 }
 /* 迟到 */
 .record-status-late {
-  background-color: #F5A623!important;
+  background-color: var(--att-record-status-late-color)!important;
 }
 /* 严重迟到 */
 .record-status-serilate {
-  background-color: #FF8080!important;
+  background-color: var(--att-record-status-serilate-color)!important;
 }
 /* 未打卡 */
 .record-status-nosign {
-  background-color: #fb4747!important;
+  background-color: var(--att-record-status-nosign-color)!important;
+}
+/* 外勤打卡 */
+.record-status-fieldwork {
+  background-color: var(--att-record-status-fieldwork-color)!important;
 }
 /* 申诉 */
 .record-status-appeal {
-  background-color: #4FB2E3!important;
+  background-color: var(--att-record-status-appeal-color)!important;
 }
 
 

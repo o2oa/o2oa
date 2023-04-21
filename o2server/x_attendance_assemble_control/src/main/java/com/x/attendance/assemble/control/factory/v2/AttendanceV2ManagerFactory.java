@@ -191,11 +191,22 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2CheckInRecord> cq = cb.createQuery(AttendanceV2CheckInRecord.class);
         Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
-        Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
-        if (StringUtils.isNotEmpty(recordDateString)) {
-            p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+        Predicate p = null;
+        if (StringUtils.isNotEmpty(userId)) {
+            p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
         }
-        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+        if (StringUtils.isNotEmpty(recordDateString)) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+            }
+        }
+        if (p == null) {
+            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+        } else {
+            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+        }
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();
     }
@@ -213,11 +224,23 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
-        Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
-        if (StringUtils.isNotEmpty(recordDateString)) {
-            p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+        Predicate p = null;
+        if (StringUtils.isNotEmpty(userId)) {
+            p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
         }
-        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+        if (StringUtils.isNotEmpty(recordDateString)) {
+            if (p == null) {
+                p = cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString);
+            } else {
+                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+            }
+        }
+        if (p == null) {
+            cq.select(cb.count(root));
+        } else {
+            cq.select(cb.count(root)).where(p);
+        }
+        return em.createQuery(cq).getSingleResult();
     }
 
 

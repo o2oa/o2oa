@@ -46,6 +46,30 @@ export default content({
       this.bind.pagerData.totalCount = count;
     }
   },
+  formatRecordResultClass(record) {
+    let span = "";
+    if (record.fieldWork) {
+      span = "color-fieldWork";
+    } else {
+      const result = record.checkInResult;
+      if (result === 'PreCheckIn') {
+        span = "";
+      } else if (result === 'NotSigned') {
+        span =   "color-nosign";
+      }  else if (result === 'Normal') {
+        span =   "color-normal";
+      } else if (result === 'Early') {
+        span =    "color-early";
+      } else if (result === 'Late') {
+        span =    "color-late";
+      } else if (result === 'SeriousLate') {
+        span =    "color-serilate";
+      } else { 
+        span = "" ;
+      }
+    }
+    return span;
+  },
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
@@ -64,8 +88,6 @@ export default content({
         span =   lp.appeal.late;
       } else if (result === 'SeriousLate') {
         span =   lp.appeal.seriousLate;
-      } else if (result === 'Absenteeism') {
-        span =   lp.appeal.absenteeism;
       } else { 
         span = "" ;
       }
