@@ -32,9 +32,6 @@ class ActionCreate extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<Wo> result = new ActionResult<>();
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            if (emc.duplicateWithFlags(Script.class, wi.getId())) {
-                throw new ExceptionEntityExist(wi.getId());
-            }
             Business business = new Business(emc);
             Application application = emc.find(wi.getApplication(), Application.class);
             if (null == application) {
@@ -43,6 +40,9 @@ class ActionCreate extends BaseAction {
             if (!business.editable(effectivePerson, application)) {
                 throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
                         application.getName(), application.getId());
+            }
+            if (emc.duplicateWithFlags(Script.class, wi.getId())) {
+                throw new ExceptionEntityExist(wi.getId());
             }
             emc.beginTransaction(Script.class);
             Script script = new Script();

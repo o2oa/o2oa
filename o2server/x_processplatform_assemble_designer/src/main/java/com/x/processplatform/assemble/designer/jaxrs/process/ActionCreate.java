@@ -51,11 +51,11 @@ class ActionCreate extends BaseAction {
                 throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
                         application.getName(), application.getId());
             }
-            List<JpaObject> jpaObjects = new ArrayList<>();
-            Process process = new Process();
             if (emc.duplicateWithFlags(Process.class, wrapIn.getId())) {
                 throw new ExceptionEntityExist(wrapIn.getId());
             }
+            List<JpaObject> jpaObjects = new ArrayList<>();
+            Process process = new Process();
             WrapProcess.inCopier.copy(wrapIn, process);
             process.setCreatorPerson(effectivePerson.getDistinguishedName());
             process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
