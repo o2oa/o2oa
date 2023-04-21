@@ -31,7 +31,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteRouteTitle": "删除路由确认",
 		"deleteActivityTitle": "删除活动确认",
 		"deleteActivity": "删除活动将同时删除关联此活动的所有路由，您确定要删除选中的活动吗？",
-		"saveRouteOrgNoName" : "名称和标题不能为空",
+		"saveRouteOrgNoName" : "标识和标题不能为空",
+		"saveRouteOrgNumberId" : "标识不能为纯数字",
+		"saveRouteOrgDoubleDotId" : "标识不能包含连续两个点号",
 		"processCopyError": "活动粘贴失败，请重新复制后重试"
 	},
 	"menu": {
