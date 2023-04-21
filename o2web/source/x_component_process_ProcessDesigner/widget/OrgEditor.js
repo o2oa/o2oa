@@ -48,12 +48,23 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
 
         this.upNode = new Element("div", { "styles": this.css.upNode, "text" : this.lp.orgEditor.addOption }).inject(this.node);
         this.upNode.addEvent("click", function( ev ){
+            debugger;
             if( this.currentItem ){
-                if( !this.currentItem.data.title || !this.currentItem.data.name ){
+                var d = this.currentItem.getData();
+
+                if( !d.title || !d.name || d.name === "未命名" ){
                     MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgNoName, ev.target);
                     return;
                 }
-                var d = this.currentItem.getData;
+                if( d.name.test(/^\d+$/) ){
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgNumberId, ev.target);
+                    return;
+                }
+                if( d.name.indexOf("..") > -1 ){
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgDoubleDotId, ev.target);
+                    return;
+                }
+
                 if( this.checkName(d.name, d.id ) ){
                     this.currentItem.save();
                     this.currentItem.unSelectItem();
@@ -69,11 +80,19 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
                 }
 
             }else if( this.defaultProperty ){
-                if( !this.defaultData.title || !this.defaultData.name ){
+                var d = this.defaultData;
+                if( !d.title || !d.name || d.name === "未命名"){
                     MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgNoName, ev.target);
                     return;
                 }
-                var d = this.defaultData;
+                if( d.name.test(/^\d+$/) ){
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgNumberId, ev.target);
+                    return;
+                }
+                if( d.name.indexOf("..") > -1 ){
+                    MWF.xDesktop.notice("error", {"y":"top", "x": "left"}, this.lp.notice.saveRouteOrgDoubleDotId, ev.target);
+                    return;
+                }
                 if( this.checkName(d.name, d.id ) ) {
                     this.data.push(this.defaultData);
                     this.createSelectedItem(this.defaultData);
