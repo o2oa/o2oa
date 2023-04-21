@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.scriptversion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -18,41 +19,34 @@ import com.x.processplatform.core.entity.element.ScriptVersion;
 
 class ActionListWithScript extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String scriptId) throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String scriptId) throws Exception {
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+        ActionResult<List<Wo>> result = new ActionResult<>();
+        List<Wo> wos = new ArrayList<>();
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            Script script = emc.find(scriptId, Script.class);
+            if (null != script) {
+                Application application = emc.find(script.getApplication(), Application.class);
+                if (null == application) {
+                    throw new ExceptionEntityNotExist(script.getApplication(), Application.class);
+                }
+                if (!business.editable(effectivePerson, application)) {
+                    throw new ExceptionAccessDenied(effectivePerson);
+                }
+                wos = emc.fetchEqual(ScriptVersion.class, Wo.copier, ScriptVersion.script_FIELDNAME,
+                        script.getId());
+            }
+            result.setData(wos);
+            return result;
+        }
+    }
 
-			ActionResult<List<Wo>> result = new ActionResult<>();
+    public static class Wo extends ScriptVersion {
 
-			Business business = new Business(emc);
-			Script script = emc.find(scriptId, Script.class);
+        private static final long serialVersionUID = -2398096870126935605L;
+        static WrapCopier<ScriptVersion, Wo> copier = WrapCopierFactory.wo(ScriptVersion.class, Wo.class,
+                JpaObject.singularAttributeField(ScriptVersion.class, true, true), null);
 
-			if (null == script) {
-				throw new ExceptionEntityNotExist(scriptId, Script.class);
-			}
-
-			Application application = emc.find(script.getApplication(), Application.class);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(script.getApplication(), Application.class);
-			}
-			if (!business.editable(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
-			List<Wo> wos = emc.fetchEqual(ScriptVersion.class, Wo.copier, ScriptVersion.script_FIELDNAME,
-					script.getId());
-
-			result.setData(wos);
-			return result;
-
-		}
-	}
-
-	public static class Wo extends ScriptVersion {
-
-		private static final long serialVersionUID = -2398096870126935605L;
-		static WrapCopier<ScriptVersion, Wo> copier = WrapCopierFactory.wo(ScriptVersion.class, Wo.class,
-				JpaObject.singularAttributeField(ScriptVersion.class, true, true), null);
-
-	}
+    }
 }
