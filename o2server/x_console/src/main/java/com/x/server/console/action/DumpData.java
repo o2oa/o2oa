@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -199,7 +199,7 @@ public class DumpData {
             List<T> list = null;
             int count = 0;
             int loop = 1;
-            final Set<String> idCheckSet = new LinkedHashSet<>();
+            final Set<String> idCheckSet = new HashSet<>();
             int btach = (int) Math.ceil((total + 0.0) / containerEntity.dumpSize());
             do {
                 list = list(em, cls, id, containerEntity.dumpSize());

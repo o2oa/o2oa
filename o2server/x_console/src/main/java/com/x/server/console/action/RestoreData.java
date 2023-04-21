@@ -8,9 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -146,7 +150,7 @@ public class RestoreData {
             }
         }
 
-        private long restore(Class<?> cls, boolean attachStorage, Path xml) throws Exception {
+        private long restore(Class<? extends JpaObject> cls, boolean attachStorage, Path xml) throws Exception {
             EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
                     xml.getFileName().toString(), PersistenceXmlHelper.properties(cls.getName(), false));
             EntityManager em = emf.createEntityManager();
@@ -276,11 +280,12 @@ public class RestoreData {
             return jsonElement.getAsJsonArray();
         }
 
-        private <T> void clean(Class<T> cls, EntityManager em, StorageMappings storageMappings,
+        private <T extends JpaObject> void clean(Class<T> cls, EntityManager em, StorageMappings storageMappings,
                 ContainerEntity containerEntity) throws Exception {
+            duplicateIdEntityToSingleBeforeClean(cls, em, containerEntity);
             List<T> list = null;
             do {
-                list = list(cls, em, containerEntity);
+                list = batchListExistEntity(cls, em, containerEntity);
                 if (ListTools.isNotEmpty(list)) {
                     em.getTransaction().begin();
                     remove(cls, em, storageMappings, list);
@@ -288,6 +293,60 @@ public class RestoreData {
                     em.clear();
                 }
             } while (ListTools.isNotEmpty(list));
+        }
+
+        private <T extends JpaObject> void duplicateIdEntityToSingleBeforeClean(Class<T> cls, EntityManager em,
+                ContainerEntity containerEntity)
+                throws Exception {
+            String latestId = null;
+            Set<String> idCheckSet = new HashSet<>();
+            Set<String> duplicateSet = new HashSet<>();
+            List<String> list = null;
+            do {
+                list = loopIds(cls, em, containerEntity, latestId);
+                if (ListTools.isNotEmpty(list)) {
+                    for (String id : list) {
+                        if (!idCheckSet.add(id)) {
+                            duplicateSet.add(id);
+                        }
+                    }
+                    latestId = list.get(list.size() - 1);
+                }
+            } while (ListTools.isNotEmpty(list));
+            if (!duplicateSet.isEmpty()) {
+                cleanDuplicateIdEntity(cls, em, duplicateSet);
+            }
+        }
+
+        private <T extends JpaObject> void cleanDuplicateIdEntity(Class<T> cls, EntityManager em,
+                Collection<String> ids) {
+            for (String id : ids) {
+                LOGGER.info("clear duplicate id entity, class:{}, id:{}.", cls.getName(), id);
+                cleanDuplicateIdEntity(cls, em, id);
+            }
+        }
+
+        private <T extends JpaObject> void cleanDuplicateIdEntity(Class<T> cls, EntityManager em, String id) {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(cls);
+            Root<T> root = cq.from(cls);
+            Predicate p = cb.equal(root.get(JpaObject.id_FIELDNAME), id);
+            cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.createTime_FIELDNAME)));
+            List<T> os = em.createQuery(cq).getResultList();
+            if (!os.isEmpty()) {
+                T t = os.get(os.size() - 1);
+                em.detach(t);
+                em.getTransaction().begin();
+                Query query = em.createQuery("DELETE FROM " + cls.getName() + " o WHERE o.id = :id");
+                query.setParameter(JpaObject.id_FIELDNAME, id);
+                query.executeUpdate();
+                em.getTransaction().commit();
+                em.clear();
+                em.getTransaction().begin();
+                em.persist(t);
+                em.getTransaction().commit();
+                em.clear();
+            }
         }
 
         private <T> void remove(Class<T> cls, EntityManager em, StorageMappings storageMappings, List<T> list)
@@ -306,7 +365,8 @@ public class RestoreData {
             }
         }
 
-        private <T> List<T> list(Class<T> cls, EntityManager em, ContainerEntity containerEntity) throws Exception {
+        private <T> List<T> batchListExistEntity(Class<T> cls, EntityManager em, ContainerEntity containerEntity)
+                throws Exception {
             List<T> list;
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(cls);
@@ -318,6 +378,30 @@ public class RestoreData {
                         ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
             }
             list = em.createQuery(cq.select(root).where(p)).setMaxResults(containerEntity.dumpSize()).getResultList();
+            return list;
+        }
+
+        private <T extends JpaObject> List<String> loopIds(Class<T> cls, EntityManager em,
+                ContainerEntity containerEntity,
+                String latestId)
+                throws Exception {
+            List<String> list;
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<String> cq = cb.createQuery(String.class);
+            Root<T> root = cq.from(cls);
+            javax.persistence.criteria.Path<String> idPath = root.get(JpaObject.id_FIELDNAME);
+            Predicate p = cb.conjunction();
+            if (null != latestId) {
+                p = cb.greaterThan(idPath, latestId);
+            }
+            if (StringUtils.equals(cls.getName(), "com.x.query.core.entity.Item")
+                    && (StringUtils.isNotBlank(Config.dumpRestoreData().getItemCategory()))) {
+                p = cb.and(p, cb.equal(root.get(DataItem.itemCategory_FIELDNAME),
+                        ItemCategory.valueOf(Config.dumpRestoreData().getItemCategory())));
+            }
+            list = em.createQuery(cq.select(idPath).where(p).orderBy(cb.asc(idPath)))
+                    .setMaxResults(containerEntity.dumpSize())
+                    .getResultList();
             return list;
         }
     }
