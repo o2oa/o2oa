@@ -81,7 +81,7 @@ class ActionEdit extends BaseAction {
 			updateSplit(business, wrap.getSplitList(), process);
 			emc.commit();
 			cacheNotify();
-			/* 保存历史版本 */
+			// 保存历史版本
 			ThisApplication.processVersionQueue.send(new ProcessVersion(process.getId(), jsonElement));
 			Wo wo = new Wo();
 			wo.setId(process.getId());
