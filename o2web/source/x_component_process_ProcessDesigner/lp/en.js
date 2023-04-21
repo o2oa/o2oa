@@ -32,6 +32,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteActivityTitle": "Delete Activity Confirmation",
 		"deleteActivity": "Deleting an activity will also delete all routes associated with this activity. Are you sure you want to delete the selected activity?",
 		"saveRouteOrgNoName": "Name and title cannot be empty",
+		"saveRouteOrgNumberId" : "Identifier cannot be a pure number",
+		"saveRouteOrgDoubleDotId" : "The ID cannot contain two consecutive dots",
 		"processCopyError": "Activity paste failed, please copy again and try again"
 	},
 	"menu": {
