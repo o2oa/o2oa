@@ -187,6 +187,21 @@ function appealInfoActionListByPaging(...args) {
   );
 }
 
+/**
+ * 原始记录分页查询
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function recordActionListByPaging(...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "RecordAction",
+    "listByPaging",
+    args
+  );
+}
+
 
 /**
  * 申诉API
@@ -257,4 +272,5 @@ export {
   personAction,
   leaveActionListByPaging,
   leaveAction,
+  recordActionListByPaging,
 };

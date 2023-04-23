@@ -73,6 +73,11 @@ export default content({
                   id: '2-2',
                   title: lp.menu.detailFilter,
                   action: "detailManager"
+                }, 
+                {
+                  id: '2-3',
+                  title: lp.menu.recordList,
+                  action: "recordManager"
                 }
               ]
             },

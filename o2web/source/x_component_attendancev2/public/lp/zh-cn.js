@@ -10,6 +10,7 @@ MWF.xApplication.attendancev2.LP = {
     statistic: "考勤统计",
     detailStatisticFilter: "汇总统计",
     detailFilter: "每日统计",
+    recordList: "原始记录",
     // 管理配置
     config: "配置",
     shiftManager: "班次管理",
@@ -36,6 +37,8 @@ MWF.xApplication.attendancev2.LP = {
   onDutySimple: "上班",
   offDuty: "下班打卡",
   offDutySimple: "下班",
+  yes: "是",
+  no: "否",
   until: "至",
   day: {
     Sunday: "周日",
@@ -50,7 +53,6 @@ MWF.xApplication.attendancev2.LP = {
   hour: "小时",
   classifierDay: "天",
   times: "次",
-
   // 组件
   components: {
     chooseTimePlaceholder: "请选择时间",
@@ -291,6 +293,24 @@ MWF.xApplication.attendancev2.LP = {
     startProcess: "发起申诉",
     openJob: "查看申诉",
     startProcessNoConfigError: "没有配置申诉流程，无法启动流程！",
+  },
+
+  // 原始打卡记录
+  recordManagerTitle: "原始记录",
+  record: {
+    name: "姓名",
+    group: "考勤组",
+    shift: "班次",
+    dutyTime: "考勤时间",
+    checkInType: "考勤类型",
+    recordDate: "打卡时间",
+    sourceType: "数据来源",
+    checkInResult: "打卡结果",
+    fieldWork: "是否外勤打卡",
+    sourceTypeUser: "用户打卡",
+    sourceTypeAuto: "系统生成",
+    sourceTypeFast: "极速打卡",
+    sourceTypeImport: "数据导入",
   },
 
 

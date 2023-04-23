@@ -192,7 +192,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @FieldDescribe("考勤组的考勤类型，自由工时的时候打卡处理方式不同，不需要打卡时间")
     @Column(length = length_16B, name = ColumnNamePrefix
             + groupCheckType_FIELDNAME)
-    private String groupCheckType; ;
+    private String groupCheckType;
 
     public static final String shiftId_FIELDNAME = "shiftId";
     @FieldDescribe("对应的班次id.")
