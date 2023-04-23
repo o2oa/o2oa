@@ -205,24 +205,31 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
 
                 // if( typeOf(callback) === "function" )callback();
 
+            }.bind(this), function () {
+                this.data = {};
+                this.docList = [];
+                this.docTotal = 0;
+                this.loadFilter([], function () {
+                    filterLoaded = true;
+                    afterLoadFun();
+                });
+                this.loadDocList(null, function () {
+                    docLoaded = true;
+                    afterLoadFun();
+                });
             }.bind(this));
         }else{
             this.data = {};
             this.docList = [];
             this.docTotal = 0;
-            // this.docTotalNode.set("text", "");
             this.loadFilter([], function () {
                 filterLoaded = true;
                 afterLoadFun();
             });
-            // this.loadSelectedCondition();
-            // this.loadCondition( []);
             this.loadDocList(null, function () {
                 docLoaded = true;
                 afterLoadFun();
             });
-            // this.loadDocPagination();
-            // if( typeOf(callback) === "function" )callback();
         }
     },
     orderFacet: function(facetList){
