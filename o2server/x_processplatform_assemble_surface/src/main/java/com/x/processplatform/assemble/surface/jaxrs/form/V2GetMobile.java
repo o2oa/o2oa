@@ -62,7 +62,7 @@ class V2GetMobile extends BaseAction {
             CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties,
                     list);
             CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
-                    .getRelatedScriptFuture(form.getApplication(), properties, list);
+                    .getRelatedScriptFuture(properties, list);
             wo.setRelatedFormMap(
                     getRelatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
             wo.setRelatedScriptMap(
@@ -102,7 +102,7 @@ class V2GetMobile extends BaseAction {
         }, ThisApplication.threadPool());
     }
 
-    private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(String applicationId,
+    private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(
             FormProperties properties,
             final List<String> list) {
         return CompletableFuture.supplyAsync(() -> {
@@ -111,7 +111,7 @@ class V2GetMobile extends BaseAction {
                     && (properties.getMobileRelatedScriptMap().size() > 0)) {
                 try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                     Business business = new Business(emc);
-                    map = convertScript(business, applicationId, properties, list);
+                    map = convertScript(business, properties, list);
                 } catch (Exception e) {
                     LOGGER.error(e);
                 }
@@ -120,58 +120,52 @@ class V2GetMobile extends BaseAction {
         }, ThisApplication.threadPool());
     }
 
-    private Map<String, RelatedScript> convertScript(Business business, String applicationId, FormProperties properties,
+    private Map<String, RelatedScript> convertScript(Business business, FormProperties properties,
             final List<String> list)
             throws Exception {
         Map<String, RelatedScript> map = new TreeMap<>();
         for (Entry<String, String> entry : properties.getMobileRelatedScriptMap().entrySet()) {
             switch (entry.getValue()) {
                 case WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM:
-                    business.script().listScriptNestedWithApplicationWithUniqueName(applicationId, entry.getKey())
-                            .forEach(o -> {
-                                map.put(o.getId(),
-                                        new RelatedScript(o.getId(), o.getName(), o.getAlias(), o.getText(),
-                                                WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM));
-                                list.add(o.getId() + o.getUpdateTime().getTime());
-                            });
+                    com.x.processplatform.core.entity.element.Script processPlatformScript = business.script()
+                            .pick(entry.getKey());
+                    if (null != processPlatformScript) {
+                        map.put(processPlatformScript.getId(),
+                                new RelatedScript(processPlatformScript.getId(), processPlatformScript.getName(),
+                                        processPlatformScript.getAlias(),
+                                        processPlatformScriptLoad(business, processPlatformScript),
+                                        WorkCompletedProperties.RelatedScript.TYPE_PROCESSPLATFORM));
+                        list.add(processPlatformScript.getId() + processPlatformScript.getUpdateTime().getTime());
+                    }
                     break;
                 case WorkCompletedProperties.RelatedScript.TYPE_CMS:
                     com.x.cms.core.entity.element.Script cmsScript = business.cms().script().pick(entry.getKey());
                     if (null != cmsScript) {
-                        business.cms().script()
-                                .listScriptNestedWithAppInfoWithUniqueName(cmsScript.getAppId(), entry.getKey())
-                                .forEach(o -> {
-                                    map.put(o.getId(),
-                                            new RelatedScript(o.getId(), o.getName(), o.getAlias(), o.getText(),
-                                                    WorkCompletedProperties.RelatedScript.TYPE_CMS));
-                                    list.add(o.getId() + o.getUpdateTime().getTime());
-                                });
+                        map.put(cmsScript.getId(),
+                                new RelatedScript(cmsScript.getId(), cmsScript.getName(), cmsScript.getAlias(),
+                                        cmsScriptLoad(business, cmsScript),
+                                        WorkCompletedProperties.RelatedScript.TYPE_CMS));
+                        list.add(cmsScript.getId() + cmsScript.getUpdateTime().getTime());
                     }
                     break;
                 case WorkCompletedProperties.RelatedScript.TYPE_PORTAL:
                     com.x.portal.core.entity.Script portalScript = business.portal().script().pick(entry.getKey());
                     if (null != portalScript) {
-                        business.portal().script()
-                                .listScriptNestedWithPortalWithFlag(portalScript.getPortal(), entry.getKey())
-                                .forEach(o -> {
-                                    map.put(o.getId(),
-                                            new RelatedScript(o.getId(), o.getName(), o.getAlias(), o.getText(),
-                                                    WorkCompletedProperties.RelatedScript.TYPE_PORTAL));
-                                    list.add(o.getId() + o.getUpdateTime().getTime());
-                                });
+                        map.put(portalScript.getId(),
+                                new RelatedScript(portalScript.getId(), portalScript.getName(), portalScript.getAlias(),
+                                        portalScriptLoad(business, portalScript),
+                                        WorkCompletedProperties.RelatedScript.TYPE_PORTAL));
+                        list.add(portalScript.getId() + portalScript.getUpdateTime().getTime());
                     }
                     break;
                 case WorkCompletedProperties.RelatedScript.TYPE_SERVICE:
                     com.x.program.center.core.entity.Script cs = business.centerService().script().pick(entry.getKey());
                     if (null != cs) {
-                        business.centerService().script()
-                                .listScriptNestedWithFlag(entry.getKey())
-                                .forEach(o -> {
-                                    map.put(o.getId(),
-                                            new RelatedScript(o.getId(), o.getName(), o.getAlias(), o.getText(),
-                                                    WorkCompletedProperties.RelatedScript.TYPE_SERVICE));
-                                    list.add(o.getId() + o.getUpdateTime().getTime());
-                                });
+                        map.put(cs.getId(),
+                                new RelatedScript(cs.getId(), cs.getName(), cs.getAlias(),
+                                        serviceScriptLoad(business, cs),
+                                        WorkCompletedProperties.RelatedScript.TYPE_SERVICE));
+                        list.add(cs.getId() + cs.getUpdateTime().getTime());
                     }
                     break;
                 default:
