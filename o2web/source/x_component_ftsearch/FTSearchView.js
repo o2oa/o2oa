@@ -177,6 +177,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                 });
 
                 this.docTotal =  json.data.count;
+                if( o2.typeOf(this.docTotal) !== "number" )this.docTotal = 0;
 
                 this.loadDocList(this.docList, function () {
                     docLoaded = true;
@@ -287,7 +288,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
     },
     loadDocPagination: function(text){
         this.docPaginationNode.empty();
-        if( this.docTotal > 0 ){
+        if( o2.typeOf(this.docTotal) === "number" && this.docTotal > 0 ){
             this.docPaging = new o2.widget.Paging(this.docPaginationNode, {
                 style: "blue_round",
                 countPerPage: this.pageSize,
