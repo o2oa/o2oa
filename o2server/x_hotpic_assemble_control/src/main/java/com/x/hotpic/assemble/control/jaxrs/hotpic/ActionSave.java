@@ -1,5 +1,6 @@
 package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -44,9 +45,13 @@ public class ActionSave extends BaseAction {
 				}
 			}
 			emc.beginTransaction(HotPictureInfo.class);
+			String summary = wi.getSummary();
+			if (StringTools.utf8Length(wi.getSummary()) > 255) {
+				summary = StringTools.utf8SubString(wi.getSummary(), 255 - 3) + "...";
+			}
 			if (hotPictureInfo!=null){
 				hotPictureInfo.setPicId(wi.getPicId());
-				hotPictureInfo.setSummary(wi.getSummary());
+				hotPictureInfo.setSummary(summary);
 				hotPictureInfo.setTitle(wi.getTitle());
 				emc.check(hotPictureInfo, CheckPersistType.all);
 			}else{
@@ -55,7 +60,7 @@ public class ActionSave extends BaseAction {
 				hotPictureInfo.setApplication(wi.getApplication());
 				hotPictureInfo.setCreator(wi.getCreator());
 				hotPictureInfo.setPicId(wi.getPicId());
-				hotPictureInfo.setSummary(wi.getSummary());
+				hotPictureInfo.setSummary(summary);
 				hotPictureInfo.setTitle(wi.getTitle());
 				emc.persist(hotPictureInfo, CheckPersistType.all);
 			}
