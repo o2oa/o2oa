@@ -31,8 +31,8 @@ export default content({
   loadDataEvent() {
     this.component.dispatchEvent("refresh-data");
   },
-  // 计算用，缺少一个计算
-  numberCalc(totalCount) {
+  // 计算用，传入参数无用 刷新页面用
+  numberCalc() {
     let totalPage = parseInt(
       this.bind.totalCount / this.bind.size
     );
@@ -57,7 +57,7 @@ export default content({
         if (end > totalPage) {
           end = totalPage;
         }
-        for (let index = start; index < end - start + 1; index++) {
+        for (let index = start; index < end + 1; index++) {
           pageList.push(`${index}`);
         }
       }

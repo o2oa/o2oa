@@ -39,6 +39,8 @@ MWF.xApplication.attendancev2.LP = {
   offDutySimple: "下班",
   yes: "是",
   no: "否",
+  firstPage: "第一页",
+  lastPage: "最后一页",
   until: "至",
   day: {
     Sunday: "周日",

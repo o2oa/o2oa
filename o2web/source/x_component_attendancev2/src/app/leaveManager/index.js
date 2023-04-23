@@ -24,6 +24,7 @@ export default content({
       pagerData: {
         page: 1,
         totalCount: 0,
+        totalPage: 1,
         size: 15, // 每页条目数
       },
     };
