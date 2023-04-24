@@ -107,8 +107,12 @@ public class Query extends ConfigObject {
     public static class Index extends ConfigObject {
 
         public static Index defaultInstance() {
-            return new Index();
+            Index o = new Index();
+            o.enable = true;
+            return o;
         }
+
+        public static final Boolean DEFAULT_ENABLE = true;
 
         public static final String FIELD_HIGHLIGHTING = "highlighting";
         public static final String READERS_SYMBOL_ALL = "ALL";
@@ -210,6 +214,10 @@ public class Query extends ConfigObject {
         public static final String DEFAULT_CREATORPERSONUNKNOWN = UNKNOWN;
         public static final String DEFAULT_CREATORPERSONCIPHER = "系统服务";
 
+        @FieldDescribe("是否启用.")
+        @Schema(description = "是否启用.")
+        private Boolean enable;
+
         @FieldDescribe("索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
         @Schema(description = "索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
         private String mode;
@@ -250,16 +258,16 @@ public class Query extends ConfigObject {
         @Schema(description = "附件索引阈值(兆),超过此值的附件不进行索引.")
         private Integer attachmentMaxSize;
 
-        @FieldDescribe("是否对流转中工作进行索引.")
-        @Schema(description = "是否对流转中工作进行索引.")
+        @FieldDescribe("是否对流转中工作的附件进行索引.")
+        @Schema(description = "是否对流转中工作的附件进行索引.")
         private Boolean workIndexAttachment;
 
-        @FieldDescribe("是否对已完成工作进行索引.")
-        @Schema(description = "是否对已完成工作进行索引.")
+        @FieldDescribe("是否对已完成工作的附件进行索引.")
+        @Schema(description = "是否对已完成工作的附件进行索引.")
         private Boolean workCompletedIndexAttachment;
 
-        @FieldDescribe("是否对内容管理文档进行索引.")
-        @Schema(description = "是否对内容管理文档进行索引.")
+        @FieldDescribe("是否对内容管理文档的附件进行索引.")
+        @Schema(description = "是否对内容管理文档的附件进行索引.")
         private Boolean documentIndexAttachment;
 
         @FieldDescribe("是否启用流转中工作低频索引.")
@@ -290,16 +298,16 @@ public class Query extends ConfigObject {
         @Schema(description = "已完成工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCOMPLETEDCRON)
         private String lowFreqWorkCompletedCron;
 
-        @FieldDescribe("流转中工作低频索引批量获取大小.")
-        @Schema(description = "流转中工作低频索引批量获取大小.")
+        @FieldDescribe("已完成工作低频索引批量获取大小.")
+        @Schema(description = "已完成工作低频索引批量获取大小.")
         private Integer lowFreqWorkCompletedBatchSize;
 
-        @FieldDescribe("流转中工作低频索引单次最大处理数量.")
-        @Schema(description = "流转中工作低频索引单次最大处理数量.")
+        @FieldDescribe("已完成工作低频索引单次最大处理数量.")
+        @Schema(description = "已完成工作低频索引单次最大处理数量.")
         private Integer lowFreqWorkCompletedMaxCount;
 
-        @FieldDescribe("流转中工作低频索引单次最大处理时长(分钟).")
-        @Schema(description = "流转中工作低频索引单次最大处理时长(分钟).")
+        @FieldDescribe("已完成工作低频索引单次最大处理时长(分钟).")
+        @Schema(description = "已完成工作低频索引单次最大处理时长(分钟).")
         private Integer lowFreqWorkCompletedMaxMinutes;
 
         @FieldDescribe("是否启用内容管理文档低频索引.")
@@ -470,6 +478,10 @@ public class Query extends ConfigObject {
         @FieldDescribe("creatorPerson值为cipher时的替换值.")
         @Schema(description = "creatorPerson值为cipher时的替换值.")
         private String creatorPersonCipher;
+
+        public Boolean getEnable() {
+            return BooleanUtils.isNotFalse(this.enable);
+        }
 
         public String getCreatorUnitUnknown() {
             return StringUtils.isEmpty(this.creatorUnitUnknown) ? DEFAULT_CREATORUNITUNKNOWN
