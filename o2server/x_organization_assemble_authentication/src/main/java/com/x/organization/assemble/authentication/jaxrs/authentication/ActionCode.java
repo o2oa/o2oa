@@ -9,6 +9,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
+import com.x.organization.assemble.authentication.ThisApplication;
 import com.x.organization.core.entity.Person;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.BooleanUtils;
@@ -24,8 +25,11 @@ class ActionCode extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
-				throw new ExceptionDisableCollect();
+			String customSms = ThisApplication.context().applications().findApplicationName(CUSTOM_SMS_APPLICATION);
+			if(StringUtils.isBlank(customSms) || Config.customConfig(CUSTOM_SMS_CONFIG_NAME) == null){
+				if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
+					throw new ExceptionDisableCollect();
+				}
 			}
 			Wo wo = new Wo();
 			wo.setValue(true);
