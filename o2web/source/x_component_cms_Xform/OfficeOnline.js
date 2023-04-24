@@ -63,8 +63,8 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
 
             this.fileName = this.document.name;
             var extension = this.document.extension;
-            var host = o2.Actions.getHost( "x_officeonline_assemble_control" );
-            var WOPISrc = host +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
+
+            var WOPISrc = this.WOPISrc +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
 
             console.log(WOPISrc);
 

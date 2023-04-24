@@ -173,8 +173,16 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
                 "view" : "/p/PowerPointFrame.aspx?PowerPointView=ReadingView",
                 "write" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
             }
-        }
-        if (callback) callback();
+        };
+        this.action.ConfigAction.getCallBackUrl().then(function (json){
+            this.WOPISrc = json.data.value;
+
+            if(this.WOPISrc === ""){
+                this.WOPISrc = o2.Actions.getHost( "x_officeonline_assemble_control" );
+            }
+
+            if (callback) callback();
+        }.bind(this));
     },
     getEditor: function (callback) {
         var action = o2.Actions.load(this.appToken);
@@ -184,8 +192,8 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
 
             this.fileName = this.document.name;
             var extension = this.document.extension;
-            var host = o2.Actions.getHost( "x_officeonline_assemble_control" );
-            var WOPISrc = host +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
+
+            var WOPISrc = this.WOPISrc +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
 
             console.log(WOPISrc);
 
