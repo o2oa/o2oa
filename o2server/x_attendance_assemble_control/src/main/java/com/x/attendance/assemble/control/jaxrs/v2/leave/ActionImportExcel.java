@@ -1,7 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leave;
 
-import com.google.gson.JsonParser;
 import com.x.attendance.assemble.control.ThisApplication;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -10,18 +10,14 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.general.core.entity.GeneralFile;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
@@ -55,45 +51,45 @@ public class ActionImportExcel extends BaseAction {
             int lastRow = sheet.getLastRowNum();
             for (int i = firstRow; i <= lastRow; i++) {
                 Row row = sheet.getRow(i);
-                String person = getCellStringValue(row.getCell(0)); // 第一条是person
+                String person = AttendanceV2Helper.getExcelCellStringValue(row.getCell(0)); // 第一条是person
                 if (StringUtils.isEmpty(person)) {
-                    setError(row, "用户标识不能为空");
+                    setExcelCellError(row, "用户标识不能为空");
                     continue;
                 }
-                String type = getCellStringValue(row.getCell(1)); // 第二条是请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他
+                String type = AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)); // 第二条是请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他
                 if (StringUtils.isEmpty(type)) {
-                    setError(row, "请假类型不能为空");
+                    setExcelCellError(row, "请假类型不能为空");
                     continue;
                 }
-                String start = getCellStringValue(row.getCell(2)); // 开始时间：yyyy-MM-dd HH:mm:ss
+                String start = AttendanceV2Helper.getExcelCellStringValue(row.getCell(2)); // 开始时间：yyyy-MM-dd HH:mm:ss
                 if (StringUtils.isEmpty(start)) {
-                    setError(row, "开始时间不能为空");
+                    setExcelCellError(row, "开始时间不能为空");
                     continue;
                 }
                 Date startDate;
                 try {
                     startDate = DateTools.parse(start, DateTools.format_yyyyMMddHHmmss);
                 } catch (Exception e){
-                    setError(row, "开始时间格式不正确");
+                    setExcelCellError(row, "开始时间格式不正确");
                     continue;
                 }
-                String end = getCellStringValue(row.getCell(3)); // 结束时间：yyyy-MM-dd HH:mm:ss
+                String end = AttendanceV2Helper.getExcelCellStringValue(row.getCell(3)); // 结束时间：yyyy-MM-dd HH:mm:ss
                 if (StringUtils.isEmpty(end)) {
-                    setError(row, "结束时间不能为空");
+                    setExcelCellError(row, "结束时间不能为空");
                     continue;
                 }
                 Date endDate;
                 try {
                     endDate = DateTools.parse(end, DateTools.format_yyyyMMddHHmmss);
                 } catch (Exception e){
-                    setError(row, "结束时间格式不正确");
+                    setExcelCellError(row, "结束时间格式不正确");
                     continue;
                 }
-                String desc = getCellStringValue(row.getCell(4)); // 请假说明
+                String desc = AttendanceV2Helper.getExcelCellStringValue(row.getCell(4)); // 请假说明
                 if (StringUtils.isEmpty(desc)) {
                     desc = "";
                 }
-                String job = getCellStringValue(row.getCell(5)); // 流程的jobId,可为空
+                String job = AttendanceV2Helper.getExcelCellStringValue(row.getCell(5)); // 流程的jobId,可为空
                 if (StringUtils.isEmpty(job)) {
                     job = "";
                 }
@@ -113,7 +109,7 @@ public class ActionImportExcel extends BaseAction {
                         LOGGER.info("保持数据结果：" + postResult.getValue());
                     }
                 }catch (Exception e) {
-                    setError(row, e.getLocalizedMessage());
+                    setExcelCellError(row, e.getLocalizedMessage());
                 }
             }
             ActionResult<Wo> result = new ActionResult<>();
@@ -130,35 +126,8 @@ public class ActionImportExcel extends BaseAction {
         }
     }
 
-    private void setError(Row row, String error) {
-        Cell cell = CellUtil.getCell(row, 7);
-        cell.setCellValue(error);
-    }
-
-    private String getCellStringValue(Cell cell) {
-        if (null != cell) {
-            switch (cell.getCellType()) {
-                case BLANK:
-                    return "";
-                case BOOLEAN:
-                    return BooleanUtils.toString(cell.getBooleanCellValue(), "true", "false", "false");
-                case ERROR:
-                    return "";
-                case FORMULA:
-                    return "";
-                case NUMERIC:
-                    Double d = cell.getNumericCellValue();
-                    Long l = d.longValue();
-                    if (l.doubleValue() == d) {
-                        return l.toString();
-                    } else {
-                        return d.toString();
-                    }
-                default:
-                    return cell.getStringCellValue();
-            }
-        }
-        return "";
+    private void setExcelCellError(Row row, String error) {
+        AttendanceV2Helper.setExcelCellError(row, error, 7);
     }
 
     private String saveAttachment(byte[] bytes, String attachmentName, EffectivePerson effectivePerson)

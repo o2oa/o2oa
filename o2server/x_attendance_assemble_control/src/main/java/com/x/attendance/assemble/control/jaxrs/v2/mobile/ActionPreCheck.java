@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
@@ -60,10 +61,10 @@ public class ActionPreCheck extends BaseAction {
                 String shiftId = group.getWorkDateProperties().shiftIdWithDate(nowDate);
                 // 是否特殊工作日
                 if (StringUtils.isEmpty(shiftId)) {
-                    shiftId = specialWorkDayShift(emc, today, group);
+                    shiftId = AttendanceV2Helper.specialWorkDayShift(emc, today, group);
                 }
                 // 是否特殊节假日 清空shiftid
-                if (StringUtils.isNotEmpty(shiftId) && isSpecialRestDay(emc, today, group)) {
+                if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(emc, today, group)) {
                     shiftId = null;
                 }
                 if (StringUtils.isNotEmpty(shiftId)) {
@@ -124,113 +125,8 @@ public class ActionPreCheck extends BaseAction {
         return result;
     }
 
-    /**
-     * 是否特殊节假日
-     * @param emc
-     * @param date
-     * @param group
-     * @return
-     * @throws Exception
-     */
-    private boolean isSpecialRestDay(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
-        boolean isRestDay = false;
-        // 考勤配置 节假日工作日
-        AttendanceV2Config config = null;
-        List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
-        if (configs != null && !configs.isEmpty()) {
-            config = configs.get(0);
-            // 节假日
-            if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
-                if (config.getHolidayList().contains(date)) {
-                    isRestDay = true;
-                }
-            }
 
-        }
-        // 考勤组的无需打卡日
-        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
-//            if (group.getNoNeedCheckInDateList().contains(date)) {
-//                isRestDay = true;// 无需打卡就是休息日
-//            }
-            for (String d : group.getNoNeedCheckInDateList()) { // 包含日期 ｜ 是否循环
-                String[] dArray = d.split("\\|");
-                if (dArray.length < 2) {
-                    // 格式不正确
-                    continue;
-                }
-                if (dArray[0].equals(date)) {
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-            }
 
-        }
-       return isRestDay;
-    }
-
-    /**
-     * 是否特殊工作日 并返回工作日的班次id
-     * @param emc
-     * @param date
-     * @param group
-     * @return
-     * @throws Exception
-     */
-    private String specialWorkDayShift(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
-        String shiftId = null;
-        // 考勤配置 节假日工作日
-        AttendanceV2Config config = null;
-        List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
-        if (configs != null && !configs.isEmpty()) {
-            config = configs.get(0);
-            // 工作日
-            if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
-                if (config.getWorkDayList().contains(date)) {
-                    shiftId = group.getShiftId();
-                }
-            }
-        }
-       
-        // 考勤组的必须打卡日
-        if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
-            for (String d : group.getRequiredCheckInDateList()) { // 包含日期 ｜ 班次id ｜ 是否循环
-                String[] dArray = d.split("\\|");
-                if (dArray.length < 3) {
-                    // 格式不正确
-                    continue;
-                }
-                if (dArray[0].equals(date)) {
-                    shiftId = dArray[1];
-                    break;
-                }
-                if (dArray[2].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    shiftId = dArray[1];
-                    break;
-                }
-                if (dArray[2].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    shiftId = dArray[1];
-                    break;
-                }
-                if (dArray[2].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    shiftId = dArray[1];
-                    break;
-                }
-            }
-        }
-        return shiftId;
-    }
 
     /**
      * 处理超过时间的打卡记录 标记为未打卡

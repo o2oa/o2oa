@@ -5,6 +5,7 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
+import { lpFormat } from "../../utils/common";
 
 export default content({
   template,
@@ -151,4 +152,81 @@ export default content({
     }
     return "";
   },
+
+   // excel导入请假数据
+   importExcel() {
+    if (!this.uploadFileAreaNode) {
+			this._createUploadNode();
+		}
+		this.fileUploadNode.click();
+  },
+  // 创建上传控件
+  _createUploadNode() {
+    this.uploadFileAreaNode = new Element("div");
+		const html = "<input name=\"file\" type=\"file\" multiple/>";
+		this.uploadFileAreaNode.set("html", html);
+		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+    this.fileUploadNode.addEvent("change", function() {
+      this._uploadExcel();
+    }.bind(this));
+  },
+  async _uploadExcel() {
+    const files = this.fileUploadNode.files;
+    if (files.length) {
+      const file = files.item(0);
+      const fileExt = file.name.substring(file.name.lastIndexOf("."));
+      console.debug("文件名", file.name, fileExt);
+      if (fileExt.toLowerCase() !== ".xls" && fileExt.toLowerCase() !== ".xlsx") {
+        o2.api.page.notice(lp.leave.importExcelFileError, 'error');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', file.name);
+      var _self = this;
+      o2.Actions.load("x_attendance_assemble_control").RecordAction.input(formData, "", function(json){
+        if (json && json.data) {
+          _self.downloadConfirm(json.data)
+        }
+      }); 
+    }
+  },
+  downloadConfirm(result) {
+    if (result) {
+      var _self = this;
+      o2.api.page.confirm(
+        "info",
+        lp.alert,
+        lpFormat(lp,  "record.importExcelFileSuccess", {number: result.errorRows}),
+        300,
+        100,
+        function () {
+          _self.downloadImportResult(result.flag);
+          this.close();
+        },
+        function () {
+          this.close();
+        }
+      );
+    }
+    this.search();
+  },
+  // 下载导入结果
+  downloadImportResult(resultFlag) {
+    if (resultFlag) {
+      const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
+      let url =  dAction.getAddress() + dAction.actions.getResult.uri;
+      url = url.replace("{flag}", encodeURIComponent(resultFlag));
+      console.debug(url);
+      window.open(o2.filterUrl(url));
+    }
+  },
+  // 下载excel模板
+  excelTemplateDownload() {
+    const dAction = o2.Actions.load("x_attendance_assemble_control").RecordAction.action;
+    let url =  dAction.getAddress() + dAction.actions.template.uri;
+    console.debug(url);
+    window.open(o2.filterUrl(url));
+  }
+
 });

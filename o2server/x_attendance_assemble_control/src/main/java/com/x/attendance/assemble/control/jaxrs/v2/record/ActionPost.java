@@ -2,12 +2,15 @@ package com.x.attendance.assemble.control.jaxrs.v2.record;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.group.ActionCreateUpdate;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2Shift;
+import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -19,7 +22,10 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by fancyLou on 2023/4/17.
@@ -65,7 +71,39 @@ public class ActionPost extends BaseAction {
                 if (p == null || StringUtils.isEmpty(p.getDistinguishedName())) {
                     throw new ExceptionNotExistObject("人员(" + wi.getUserId() + ")");
                 }
+                // 查询当前用户的考勤组
+                List<AttendanceV2Group> groups = business.getAttendanceV2ManagerFactory().listGroupWithPerson(p.getDistinguishedName());
+                if (groups == null || groups.isEmpty()) {
+                   throw new ExceptionNotExistObject("没有对应的考勤组");
+                }
                 record = Wi.copier.copy(wi);
+                AttendanceV2Group group = groups.get(0);
+                record.setGroupId(group.getId());
+                record.setGroupName(group.getGroupName());
+                record.setGroupCheckType(group.getCheckType());
+                // 固定班制
+                if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
+                    String recordDateString = DateTools.format( record.getRecordDate(), DateTools.format_yyyyMMdd);
+                    // 正常的班次id
+                    String shiftId = group.getWorkDateProperties().shiftIdWithDate(record.getRecordDate());
+                    // 是否特殊工作日
+                    if (StringUtils.isEmpty(shiftId)) {
+                        shiftId = AttendanceV2Helper.specialWorkDayShift(emc, recordDateString, group);
+                    }
+                    // 是否特殊节假日 清空shiftid
+                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(emc, recordDateString, group)) {
+                        shiftId = null;
+                    }
+                    if (StringUtils.isNotEmpty(shiftId)) {
+                        AttendanceV2Shift shift = emc.find(shiftId, AttendanceV2Shift.class);
+                        if (shift != null) {
+                            List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
+                            if (timeList!= null && !timeList.isEmpty()) {
+
+                            }
+                        }
+                    }
+                }
             } else { // 修改
                 Wi.copier.copy(wi, record);
             }

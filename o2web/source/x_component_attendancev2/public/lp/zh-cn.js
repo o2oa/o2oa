@@ -313,6 +313,7 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeAuto: "系统生成",
     sourceTypeFast: "极速打卡",
     sourceTypeImport: "数据导入",
+    importExcelFileSuccess: "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
   },
 
 
