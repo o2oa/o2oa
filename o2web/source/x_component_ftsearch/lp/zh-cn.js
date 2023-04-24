@@ -5,6 +5,7 @@ MWF.xApplication.ftsearch.LP = {
     "searchInfor": "为您找到相关结果约{count}个，耗时{time}秒",
 
     "location": "您的位置:",
+    "searchDisable": "搜索未启用",
 
     "cms": "内容管理",
     "processPlatform": "流程管理",
