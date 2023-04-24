@@ -161,6 +161,14 @@ public class ActionListNextWithFilter extends BaseAction {
 									}
 								}
 							}
+							// 申诉后 审核人不存在了 补充回去
+							String currentProcessor = "";
+							if (woAppealInfos != null && !woAppealInfos.isEmpty()) {
+								if (woAppealInfos.get(0).getAppealAuditInfo() != null) {
+									currentProcessor = woAppealInfos.get(0).getAppealAuditInfo().getCurrentProcessor();
+								}
+							}
+							detail.setAppealProcessor(currentProcessor);
 							detail.setAppealInfos(woAppealInfos);
 						}
 					}

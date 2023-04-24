@@ -297,12 +297,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		}
 	},
 	_setEditStyle_custom: function(name){
+		debugger;
 		if (name=="name"){
 			if (!this.json.name){
 				this.node.set("text", "DataTitle");
 			}else{
 				this.node.set("text", this.json.name);
 			}
+			this.textNode = null;
+			this.setPrefixOrSuffix();
 		}
 		if( name=="isShow" ){
 			this._switchShow( true );
@@ -329,93 +332,81 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		return (this.node.getStyle("padding-top") || 0).toInt()
 			+ (this.node.getStyle("padding-bottom") || 0).toInt()
 			+ (this.node.getStyle("border-top") || 0).toInt()
-			+ (this.node.getStyle("border-bottom") || 0).toInt()
+			+ (this.node.getStyle("border-bottom") || 0).toInt();
 	},
 	setPrefixOrSuffix: function(){
 		if (this.json.prefixIcon || this.json.suffixIcon){
+
+			var lineheight = this.node.getStyle("line-height") || "28px";
+
 			if (!this.textNode){
 				var text = this.node.get("text");
 				this.node.empty();
-
-				var height = this.node.getSize().y - this.getOffsetY();
 				this.wrapNode = new Element("div", {
 					"styles": {
-						"position":"relative",
-						"display":"inline-block",
-						"height": height,
-						"line-height": height
+						"display": "flex",
+						"align-items": "center",
+						"justify-content": "center"
 					}
 				}).inject(this.node);
 
-				this.textNode = new Element("div", {"styles": {
-						"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
-						"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
-					}, "text": text}).inject(this.wrapNode);
-
 				if (this.json.prefixIcon){
 					this.prefixNode = new Element("div", {"styles": {
-							"position": "absolute",
-							"top": "0px",
-							"left": "0px",
-							"width": "20px",
-							"height": ""+this.textNode.getSize().y+"px",
-							"background": "url("+this.json.prefixIcon+") center center no-repeat"
-						}}).inject(this.textNode, "before");
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.prefixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
 				}
+
+				this.textNode = new Element("div", {"styles": {
+						"line-height": lineheight,
+						"vertical-align": "top",
+						"padding": "1px"
+					}, "text": text}).inject(this.wrapNode);
+
 				if (this.json.suffixIcon){
 					this.suffixNode = new Element("div", {"styles": {
-							"position": "absolute",
-							"top": "0px",
-							"right": "0px",
-							"width": "20px",
-							"height": ""+this.textNode.getSize().y+"px",
-							"background": "url("+this.json.suffixIcon+") center center no-repeat"
-						}}).inject(this.textNode, "before");
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.suffixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
 				}
 			}else{
 				if (this.json.prefixIcon){
 					if (!this.prefixNode){
 						this.prefixNode = new Element("div", {"styles": {
-								"position": "absolute",
-								"top": "0px",
-								"left": "0px",
 								"width": "20px",
-								"height": ""+this.textNode.getSize().y+"px",
+								"min-width": "20px",
+								"height": lineheight,
 								"background": "url("+this.json.prefixIcon+") center center no-repeat"
 							}}).inject(this.textNode, "before");
-						this.textNode.setStyle("padding-left", "20px");
 					}else{
 						this.prefixNode.setStyle("background", "url("+this.json.prefixIcon+") center center no-repeat");
-						this.textNode.setStyle("padding-left", "20px");
 					}
 				}else{
 					if (this.prefixNode){
 						this.prefixNode.destroy();
 						this.prefixNode = null;
 					}
-					this.textNode.setStyle("padding-left", "0");
 				}
 				if (this.json.suffixIcon){
 					if (!this.suffixNode){
 						this.suffixNode = new Element("div", {"styles": {
-								"position": "absolute",
-								"top": "0px",
-								"right": "0px",
 								"width": "20px",
-								"height": ""+this.textNode.getSize().y+"px",
+								"min-width": "20px",
+								"height": lineheight,
 								"background": "url("+this.json.suffixIcon+") center center no-repeat"
-							}}).inject(this.textNode, "before");
-						this.textNode.setStyle("padding-right", "20px");
+							}}).inject(this.textNode, "after");
 					}else{
 						this.suffixNode.setStyle("background", "url("+this.json.suffixIcon+") center center no-repeat");
-						this.textNode.setStyle("padding-right", "20px");
 					}
 				}else{
 					if (this.suffixNode){
 						this.suffixNode.destroy();
 						this.suffixNode = null;
 					}
-					this.textNode.setStyle("padding-right", "0");
 				}
 			}
 

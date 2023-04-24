@@ -1913,41 +1913,37 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 			var text = this.node.get("text");
 			this.node.empty();
 
-			var height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
+			var lineheight = this.node.getStyle("line-height") || "28px";
             this.wrapNode = new Element("div", {
                 "styles": {
-                    "position":"relative",
-                    "display":"inline-block",
-                    "height": height,
-                    "line-height": height
+					"display": "flex",
+					"align-items": "center",
+					"justify-content": "center"
                 }
             }).inject(this.node);
 
-			this.textNode = new Element("div", {"styles": {
-				"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
-				"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
-			}, "text": text}).inject(this.wrapNode);
-
-			var  textHeight = (this.node.offsetParent === null) ? "28" : this.textNode.getSize().y;
 			if (this.json.prefixIcon){
 				this.prefixNode = new Element("div", {"styles": {
-					"position": "absolute",
-					"top": "0px",
-					"left": "0px",
 					"width": "20px",
-					"height": ""+ textHeight +"px",
+					"min-width": "20px",
+					"height": lineheight,
 					"background": "url("+this.json.prefixIcon+") center center no-repeat"
-				}}).inject(this.textNode, "before");
+				}}).inject(this.wrapNode);
 			}
+
+			this.textNode = new Element("div", {"styles": {
+					"line-height": lineheight,
+					"vertical-align": "top",
+					"padding": "1px"
+				}, "text": text}).inject(this.wrapNode);
+
 			if (this.json.suffixIcon){
 				this.suffixNode = new Element("div", {"styles": {
-					"position": "absolute",
-					"top": "0px",
-					"right": "0px",
 					"width": "20px",
-					"height": ""+textHeight+"px",
+					"min-width": "20px",
+					"height": lineheight,
 					"background": "url("+this.json.suffixIcon+") center center no-repeat"
-				}}).inject(this.textNode, "before");
+				}}).inject(this.wrapNode);
 			}
 		}
 	},
