@@ -5,6 +5,7 @@ MWF.xApplication.ftsearch.LP = {
 	"searchInfor": "Find about {count} of relevant results for you, which takes {time} seconds",
 
 	"location": "Your location:",
+	"searchDisable": "Search Disabled",
 
 	"cms": "CMS",
 	"processPlatform": "Process Management",
