@@ -63,27 +63,27 @@ public class AttendanceV2Config extends SliceJpaObject {
      */
 
 
-    public static final String holidayList_FIELDNAME = "holidayList";
-    @FieldDescribe("节假日")
-    @PersistentCollection(fetch = FetchType.EAGER)
-    @OrderColumn(name = ORDERCOLUMNCOLUMN)
-    @ContainerTable(name = TABLE + ContainerTableNameMiddle
-            + holidayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + holidayList_FIELDNAME + JoinIndexNameSuffix))
-    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + holidayList_FIELDNAME)
-    @ElementIndex(name = TABLE + holidayList_FIELDNAME + ElementIndexNameSuffix)
-    private List<String> holidayList;
-
-
-
-    public static final String workDayList_FIELDNAME = "workDayList";
-    @FieldDescribe("工作日")
-    @PersistentCollection(fetch = FetchType.EAGER)
-    @OrderColumn(name = ORDERCOLUMNCOLUMN)
-    @ContainerTable(name = TABLE + ContainerTableNameMiddle
-            + workDayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + workDayList_FIELDNAME + JoinIndexNameSuffix))
-    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + workDayList_FIELDNAME)
-    @ElementIndex(name = TABLE + workDayList_FIELDNAME + ElementIndexNameSuffix)
-    private List<String> workDayList;
+//    public static final String holidayList_FIELDNAME = "holidayList";
+//    @FieldDescribe("节假日")
+//    @PersistentCollection(fetch = FetchType.EAGER)
+//    @OrderColumn(name = ORDERCOLUMNCOLUMN)
+//    @ContainerTable(name = TABLE + ContainerTableNameMiddle
+//            + holidayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + holidayList_FIELDNAME + JoinIndexNameSuffix))
+//    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + holidayList_FIELDNAME)
+//    @ElementIndex(name = TABLE + holidayList_FIELDNAME + ElementIndexNameSuffix)
+//    private List<String> holidayList;
+//
+//
+//
+//    public static final String workDayList_FIELDNAME = "workDayList";
+//    @FieldDescribe("工作日")
+//    @PersistentCollection(fetch = FetchType.EAGER)
+//    @OrderColumn(name = ORDERCOLUMNCOLUMN)
+//    @ContainerTable(name = TABLE + ContainerTableNameMiddle
+//            + workDayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + workDayList_FIELDNAME + JoinIndexNameSuffix))
+//    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + workDayList_FIELDNAME)
+//    @ElementIndex(name = TABLE + workDayList_FIELDNAME + ElementIndexNameSuffix)
+//    private List<String> workDayList;
 
 
     public static final String appealEnable_FIELDNAME = "appealEnable";
@@ -216,19 +216,4 @@ public class AttendanceV2Config extends SliceJpaObject {
         this.processName = processName;
     }
 
-    public List<String> getHolidayList() {
-        return holidayList;
-    }
-
-    public void setHolidayList(List<String> holidayList) {
-        this.holidayList = holidayList;
-    }
-
-    public List<String> getWorkDayList() {
-        return workDayList;
-    }
-
-    public void setWorkDayList(List<String> workDayList) {
-        this.workDayList = workDayList;
-    }
 }

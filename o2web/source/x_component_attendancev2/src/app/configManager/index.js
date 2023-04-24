@@ -36,8 +36,8 @@ export default content({
   beforeRender() {},
   afterRender() {
     this.loadConfig();
-    this.loadHolidayDateSelector();
-    this.loadWorkdayDateSelector();
+    // this.loadHolidayDateSelector();
+    // this.loadWorkdayDateSelector();
   },
   // 获取配置对象
   async loadConfig() {

@@ -5,6 +5,7 @@ import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
@@ -50,18 +51,16 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 AttendanceV2Group group = groups.get(0);
                 String shiftId = null;
                 AttendanceV2Shift shift = null;
-                // 考勤配置 工作日
                 AttendanceV2Config config = null;
                 List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
                 if (configs != null && !configs.isEmpty()) {
                     config = configs.get(0);
-                    // 工作日
-                    if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
-                        if (config.getWorkDayList().contains(model.getDate())) {
-                            isWorkDay = true;
-                            shiftId = group.getShiftId();
-                        }
-                    }
+                }
+                // 工作日
+                Date myDate = DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd);
+                if (Config.workTime() != null && Config.workTime().inDefinedWorkday(myDate)) {
+                    shiftId = group.getShiftId();
+                    isWorkDay = true;
                 }
                 // 考勤组的必须打卡日
                 if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
@@ -99,7 +98,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     if (StringUtils.isEmpty(shiftId)) {
                         shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
                     }
-                    if (StringUtils.isNotEmpty(shiftId) && isRestDay(configs, model.getDate(), group)) {
+                    if (StringUtils.isNotEmpty(shiftId) && isRestDay(  model.getDate(), group)) {
                         shiftId = null; // 特殊节假日 清空
                     }
                     if (StringUtils.isNotEmpty(shiftId)) {
@@ -140,7 +139,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         isWorkDay = dayList.contains(day);
                     }
                     // 特殊节假日
-                    if (isWorkDay && isRestDay(configs, model.getDate(), group)) {
+                    if (isWorkDay && isRestDay(  model.getDate(), group)) {
                         isWorkDay = false;
                     }
                 }
@@ -303,28 +302,18 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
     /**
      * 是否休息日
      *
-     * @param configs
      * @param date
      * @param group
      * @return
      */
-    private boolean isRestDay(List<AttendanceV2Config> configs, String date, AttendanceV2Group group) throws Exception {
+    private boolean isRestDay(String date, AttendanceV2Group group) throws Exception {
         boolean isRestDay = false;
-        if (configs != null && !configs.isEmpty()) {
-            AttendanceV2Config config = configs.get(0);
-            // 节假日
-            if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
-                if (config.getHolidayList().contains(date)) {
-                    isRestDay = true;
-                }
-            }
-
+        Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
+        if (Config.workTime() != null && Config.workTime().inDefinedHoliday(myDate)) {
+            isRestDay = true;
         }
         // 考勤组的无需打卡日
         if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
-//            if (group.getNoNeedCheckInDateList().contains(date)) {
-//                isRestDay = true; // 无需打卡就是休息日
-//            }
             for (String d : group.getNoNeedCheckInDateList()) { // 包含日期 ｜ 是否循环
                 String[] dArray = d.split("\\|");
                 if (dArray.length < 2) {
