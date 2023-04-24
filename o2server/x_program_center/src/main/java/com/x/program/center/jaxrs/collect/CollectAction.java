@@ -162,7 +162,7 @@ public class CollectAction extends StandardJaxrsAction {
 		ActionResult<ActionValidateDirect.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionValidateDirect().execute(jsonElement);
+			result = new ActionValidateDirect().execute(jsonElement, effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
