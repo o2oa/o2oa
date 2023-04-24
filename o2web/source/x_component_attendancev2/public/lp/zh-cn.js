@@ -51,7 +51,7 @@ MWF.xApplication.attendancev2.LP = {
     Friday: "周五",
     Saturday: "周六",
   },
-  minute: "小时",
+  minute: "分钟",
   hour: "小时",
   classifierDay: "天",
   times: "次",
