@@ -286,6 +286,10 @@ o2.xDesktop.Default = new Class({
                 this.zoomValueNode.hide()
             }
 
+            if(layout.config.searchEnable===false && this.searchBoxNode){
+                this.searchBoxNode.getParent().hide();
+            }
+
             this.sliderNode.getLast().set("title", o2.LP.desktop.returnZoom);
 
             this.node.loadCss(skinCss);
