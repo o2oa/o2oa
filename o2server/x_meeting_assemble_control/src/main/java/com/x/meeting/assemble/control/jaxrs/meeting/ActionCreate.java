@@ -1,5 +1,9 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.assemble.control.service.OnlineMeeting;
+import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -31,18 +35,40 @@ class ActionCreate extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Room room = emc.find(wi.getRoom(), Room.class);
-			if (null == room) {
-				throw new ExceptionRoomNotExist(wi.getRoom());
-			}
-			if (room.getAvailable() == false) {
-				throw new ExceptionRoomNotAvailable(room.getName());
-			}
 			Meeting meeting = Wi.copier.copy(wi);
-			emc.beginTransaction(Meeting.class);
+			Room room = null;
+			if(StringUtils.isBlank(meeting.getSubject())){
+				throw new ExceptionCustomError("会议标题不能为空！");
+			}
+
+			if(Meeting.MODE_ONLINE.equals(meeting.getMode())){
+				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
+					MeetingConfigProperties config = business.getConfig();
+					if(BooleanUtils.isTrue(config.getEnableOnline())){
+						boolean flag = HstService.createMeeting(meeting, config);
+						if(!flag){
+							throw new ExceptionCustomError("创建线上会议失败，请联系管理员！");
+						}
+					}else{
+						throw new ExceptionCustomError("会议号和会议链接不能为空！");
+					}
+				}
+			}else {
+				room = emc.find(wi.getRoom(), Room.class);
+				if (null == room) {
+					throw new ExceptionRoomNotExist(wi.getRoom());
+				}
+				if (room.getAvailable() == false) {
+					throw new ExceptionRoomNotAvailable(room.getName());
+				}
+				meeting.setAuditor(room.getAuditor());
+				meeting.setRoom(room.getId());
+				if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(), "")) {
+					throw new ExceptionRoomNotAvailable(room.getName());
+				}
+			}
+
 			meeting.setManualCompleted(false);
-			meeting.setAuditor(room.getAuditor());
-			meeting.setRoom(room.getId());
 			String applicant = effectivePerson.getDistinguishedName();
 			/** 如果是后台调用,通过流程来触发会议 */
 			if (effectivePerson.isCipher() && StringUtils.isNotEmpty(wi.getApplicant())) {
@@ -72,12 +98,9 @@ class ActionCreate extends BaseAction {
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
 			meeting.setRejectPersonList(this.convertToPerson(business, meeting.getRejectPersonList()));
 			meeting.getInvitePersonList().remove(meeting.getApplicant());
-			// ListTools.subtractWithProperty(meeting, "invitePersonList",
-			// meeting.getApplicant());
-			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(), "")) {
-				throw new ExceptionRoomNotAvailable(room.getName());
-			}
+
 			business.estimateConfirmStatus(meeting);
+			emc.beginTransaction(Meeting.class);
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {

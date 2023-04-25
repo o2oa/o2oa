@@ -51,6 +51,7 @@ public class Meeting extends SliceJpaObject {
 
 	private static final long serialVersionUID = 8117315785915863335L;
 	private static final String TABLE = PersistenceProperties.Meeting.table;
+	public static final String MODE_ONLINE = "线上会议";
 
 	@Override
 	public String getId() {

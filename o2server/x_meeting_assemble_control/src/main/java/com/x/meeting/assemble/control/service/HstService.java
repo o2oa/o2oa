@@ -7,6 +7,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ShaTools;
+import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.MeetingConfigProperties;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,11 +26,10 @@ public class HstService {
     private static final String CREATE_MEETING_API = "/api/v1/room/addRoomInfo";
     public static final String MEETING_WEB_URL = "/launch/toEnterMeeting.do?roomID=";
 
-    public static String createMeeting(String roomName, MeetingConfigProperties config){
-        String roomId = "";
+    public static boolean createMeeting(Meeting meeting, MeetingConfigProperties config){
         try {
             Map<String, Object> map = new HashMap<>(3);
-            map.put("roomName", roomName);
+            map.put("roomName", meeting.getSubject());
             map.put("verifyMode", "1");
             map.put("maxUserCount", 300);
             String url = config.getOnlineConfig().getHstUrl() + CREATE_MEETING_API;
@@ -40,15 +40,18 @@ public class HstService {
             if(StringUtils.isNotBlank(res)){
                 ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
                 if(SUCCESS_CODE.equals(resObj.getCode())){
-                    roomId = resObj.getData(HstMeeting.class).getRoomId();
+                    String roomId = resObj.getData(HstMeeting.class).getRoomId();
+                    meeting.setRoomId(roomId);
+                    meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId);
+                    return true;
                 }else{
-                    LOGGER.warn("好视通创建会议：{}，失败：{}", roomName, res);
+                    LOGGER.warn("好视通创建会议：{}，失败：{}", meeting.getSubject(), res);
                 }
             }
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return roomId;
+        return false;
     }
 
     public static class ResObj{
