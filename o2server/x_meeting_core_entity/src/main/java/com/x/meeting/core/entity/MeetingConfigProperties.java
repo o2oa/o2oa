@@ -15,6 +15,8 @@ public class MeetingConfigProperties extends JsonProperties {
 
 	private static final long serialVersionUID = -271015360526750885L;
 
+	public static final String ONLINE_PROJECT_HST = "好视通";
+
 	@FieldDescribe("会议申请流程")
 	private Map<String, String> process;
 
@@ -54,6 +56,8 @@ public class MeetingConfigProperties extends JsonProperties {
 	@FieldDescribe("是否启用线上会议")
 	private Boolean enableOnline = false;
 
+	@FieldDescribe("线上会议配置(json对象：{'onlineProduct':'线上会议产品,如好视通'," +
+			"'hstUrl':'好视通服务地址','hstKey':'好视通服务接口KEY','hstSecret':'好视通服务接口SECRET','hstUserSync':'是否启用O2到好视通人员同步'}")
 	private OnlineConfig onlineConfig = new OnlineConfig();
 
 	public Map<String, String> getProcess() {
@@ -177,10 +181,13 @@ public class MeetingConfigProperties extends JsonProperties {
 		private String hstUrl = "";
 
 		@FieldDescribe("好视通服务接口KEY")
-		private String hstKey = "";
+		private String hstKey = "4QY08Kyh";
 
 		@FieldDescribe("好视通服务接口SECRET")
-		private String hstSecret = "";
+		private String hstSecret = "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G";
+
+		@FieldDescribe("是否启用O2到好视通人员同步")
+		private Boolean hstUserSync = false;
 
 		public String getOnlineProduct() {
 			return onlineProduct;
@@ -212,6 +219,14 @@ public class MeetingConfigProperties extends JsonProperties {
 
 		public void setHstSecret(String hstSecret) {
 			this.hstSecret = hstSecret;
+		}
+
+		public Boolean getHstUserSync() {
+			return hstUserSync;
+		}
+
+		public void setHstUserSync(Boolean hstUserSync) {
+			this.hstUserSync = hstUserSync;
 		}
 	}
 }

@@ -15,6 +15,8 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.core.entity.MeetingConfig;
 import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author sword
@@ -32,6 +34,16 @@ public class ActionSaveConfig extends BaseAction {
 			}
 
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			if(BooleanUtils.isTrue(wi.getEnableOnline())){
+				if(StringUtils.isBlank(wi.getOnlineConfig().getOnlineProduct())){
+					throw new ExceptionCustomError("请配置线上会议产品");
+				}
+				if(wi.getOnlineConfig().getOnlineProduct().equals(Wi.ONLINE_PROJECT_HST)){
+					if(StringUtils.isBlank(wi.getOnlineConfig().getHstUrl())){
+						throw new ExceptionCustomError("请配置好视通服务地址");
+					}
+				}
+			}
 			MeetingConfig meetingConfig = emc.firstEqual(MeetingConfig.class, MeetingConfig.name_FIELDNAME, MeetingConfig.DEFINITION_MEETING_CONFIG);
 			emc.beginTransaction(MeetingConfig.class);
 			if(meetingConfig!=null){
