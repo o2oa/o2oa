@@ -170,6 +170,8 @@ MWF.xApplication.Meeting.LP = {
     "meeting Url": "meeting link",
     "meeting Number": "meeting number",
     "netMeetingAbb": "Net",
+    "yes": "Yes",
+    "no": "No",
 
     "week": "Week",
     "weeks": {
@@ -248,6 +250,8 @@ MWF.xApplication.Meeting.LP = {
         "mobileCreateEnable": "Whether the mobile terminal can create a new meeting",
         "mobileCreateEnableOptions": ["Yes","No"],
         "meetingType":"Meeting Type (one per line)",
+        "enableOnline": "Enable online meeting",
+        "onlineConfig": "Online meeting configuration",
 
         "apiAddress": "web conferencing api address",
         "key": "key",
@@ -260,5 +264,6 @@ MWF.xApplication.Meeting.LP = {
     "processStartedMessage": "You started a new job:",
     "needSignInPerson": "Checked in",
     "printQrcode": "Print QR Code for Sign-in",
-    "weeklyViewTitle": "{month}, week {week}"
+    "weeklyViewTitle": "{month}, week {week}",
+    "onlineConfigNotJson": "The online meeting configuration is not in the correct JSON format"
 };

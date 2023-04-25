@@ -782,6 +782,13 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "   <td styles='formTableValue'><div item='mode'></div></td></tr>";
         }
 
+        if( this.app.isOnlineAvailable() ){
+            html += "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingUrl +":</td>" +
+                "    <td styles='formTableValue' item='url'></td></tr>" +
+                "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingNumber +":</td>" +
+                "    <td styles='formTableValue' item='number'></td></tr>";
+        }
+
         html += "<tr><td styles='formTableTitle' width='100'>"+this.lp.beginDate+":</td>" +
             "    <td styles='formTableValue' item='dateInput'></td>" +
             "</tr>" +
@@ -792,13 +799,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "       <div style='float:left; "+ ( isEditing ? "margin:5px;" : "margin:0px 5px;") + "'>"+ this.lp.to+ "</div>"+
             "       <div item='endTimeInput' style='float:left'></div>"+
             "   </td></tr>";
-
-            if( this.app.isOnlineAvailable() ){
-                html += "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingUrl +":</td>" +
-                "    <td styles='formTableValue' item='url'></td></tr>" +
-                "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingNumber +":</td>" +
-                "    <td styles='formTableValue' item='number'></td></tr>";
-            }
 
         html += "<tr style='display:"+(data.mode !== "online" ? "" : "" )+";'><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
             "    <td styles='formTableValue' item='meetingRoom'></td></tr>" +

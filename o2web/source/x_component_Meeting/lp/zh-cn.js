@@ -170,6 +170,8 @@ MWF.xApplication.Meeting.LP = {
     "meetingUrl": "会议链接",
     "meetingNumber": "会议号",
     "netMeetingAbb": "网",
+    "yes": "是",
+    "no": "否",
 
     "week" : "周",
     "weeks": {
@@ -248,6 +250,8 @@ MWF.xApplication.Meeting.LP = {
         "mobileCreateEnable" : "移动端是否能新建会议",
         "mobileCreateEnableOptions" : ["是","否"],
         "meetingType":"会议类型（每行一种）",
+        "enableOnline":"启用线上会议",
+        "onlineConfig": "线上会议配置",
 
         "apiAddress":"网络会议api地址",
         "key":"key",
@@ -260,5 +264,6 @@ MWF.xApplication.Meeting.LP = {
     "processStartedMessage": "您启动了一个新的工作：",
     "needSignInPerson" : "签到人员",
     "printQrcode": "打印签到二维码",
-    "weeklyViewTitle" : "{month}，第{week}周"
+    "weeklyViewTitle" : "{month}，第{week}周",
+    "onlineConfigNotJson": "线上会议配置未配置成正确的JSON格式"
 };

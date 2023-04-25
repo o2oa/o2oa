@@ -557,6 +557,16 @@
         "opacity": "0",
         "overflow": "auto"
     },
+    "configNode_admin": {
+        "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+        "background": "#F8F8F8",
+        "width": "430px",
+        "position": "absolute",
+        "right": "0px",
+        "top": "50px",
+        "opacity": "0",
+        "overflow": "auto"
+    },
     "configContentNode": {
         "margin": "20px",
         "overflow": "hidden"
