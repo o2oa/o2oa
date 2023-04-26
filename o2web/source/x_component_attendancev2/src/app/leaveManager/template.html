@@ -27,7 +27,7 @@
               <th>{{$.lp.leave.leaveType}}</th>
               <th>{{$.lp.leave.startTime}}</th>
               <th>{{$.lp.leave.endTime}}</th>
-              <th>{{$.lp.leave.leaveDays}}</th>
+              <!-- <th>{{$.lp.leave.leaveDays}}</th> -->
               <th>{{$.lp.leave.desc}}</th>
               <th style="width: 10%;">{{$.lp.operate}}</th>
           </thead>
@@ -36,10 +36,10 @@
               <td>{{d.value.leaveType}}</td>
               <td>{{d.value.startTime}}</td>
               <td>{{d.value.endTime}}</td>
-              <td>{{d.value.leaveDayNumber}}</td>
+              <!-- <td>{{d.value.leaveDayNumber}}</td> -->
               <td>{{d.value.description}}</td>
-              <td>
-                  <span class="operator_link" @click="this.openJob(d.value.jobId)" oo-if="d.value.jobId">{{$.lp.leave.openProcess}}</span>
+              <td> 
+                  <span class="operator_link" @click="this.clickDeleteData(d.value.id)">{{$.lp.delete}}</span>
               </td>
           </tr>
       </table>

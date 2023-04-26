@@ -75,6 +75,25 @@ public class RecordAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据人员和日期删除打卡记录.", action = ActionDeleteByDateAndPeople.class)
+    @GET
+    @Path("delete/people/{people}/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteByDate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                    @JaxrsParameterDescribe("人员 DN") @PathParam("people") String people,
+                       @JaxrsParameterDescribe("日期 yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<ActionDeleteByDateAndPeople.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDeleteByDateAndPeople().execute( effectivePerson, people, date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 //
 //
 //    @JaxrsMethodDescribe(value = "创建或更新打卡记录.", action = ActionPost.class)

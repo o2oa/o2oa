@@ -267,6 +267,7 @@ MWF.xApplication.attendancev2.LP = {
     importExcel: "导入Excel",
     importExcelFileError: "只能导入Excel文件！",
     importExcelFileSuccess: "导入完成，点击确定下载查看导入结果！",
+    deleteConfirm: "确定要删除这条请假数据吗？",
   },
 
   // 申诉

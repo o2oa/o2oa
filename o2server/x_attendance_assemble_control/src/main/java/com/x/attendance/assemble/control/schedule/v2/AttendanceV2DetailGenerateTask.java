@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.schedule.v2;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
-import com.x.attendance.assemble.control.jaxrs.v2.ExceptionParticipateConflict;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -39,16 +38,21 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
             List<AttendanceV2Group> list = emc.listAll(AttendanceV2Group.class);
             if (list != null && !list.isEmpty()) {
                 for (AttendanceV2Group group : list) {
-                    List<String> trueList = calTruePersonFromMixList(business, group.getId(), list, group.getParticipateList(), group.getUnParticipateList());
-                    group.setTrueParticipantList(trueList);
-                    emc.beginTransaction(AttendanceV2Group.class);
-                    emc.persist(group, CheckPersistType.all);
-                    emc.commit();
+                    try {
+                        // 处理部门人员重新搜索计算
+                        List<String> trueList = calTruePersonFromMixList(business, group.getParticipateList(), group.getUnParticipateList());
+                        group.setTrueParticipantList(trueList);
+                        emc.beginTransaction(AttendanceV2Group.class);
+                        emc.persist(group, CheckPersistType.all);
+                        emc.commit();
+                    } catch (Exception e) {
+                        logger.error(e);
+                    }
                     // 开始处理第二步 因为这个定时任务是凌晨3点执行，这里处理的是前一天的数据
                     Date yesterday = DateTools.addDay(new Date(), -1);
                     String yesterdayString = DateTools.format(yesterday, DateTools.format_yyyyMMdd);
-                    logger.info("开始处理考勤组【{}】，考勤人员数：{}", group.getGroupName(), ""+trueList.size());
-                    for (String person : trueList) {
+                    logger.info("开始处理考勤组【{}】，考勤人员数：{}", group.getGroupName(), ""+group.getTrueParticipantList().size());
+                    for (String person : group.getTrueParticipantList()) {
                         ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, yesterdayString));
                     }
                 }
@@ -61,7 +65,7 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
 
 
     // 重新计算考勤组 考勤人员
-    private List<String> calTruePersonFromMixList( Business business, String groupId, List<AttendanceV2Group> groups, List<String> participateList, List<String> unParticipateList) throws Exception {
+    private List<String> calTruePersonFromMixList( Business business, List<String> participateList, List<String> unParticipateList) throws Exception {
         // 处理考勤组
         List<String> peopleList = new ArrayList<>();
         for (String p : participateList) {
@@ -85,25 +89,7 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
         }
         // 去重复
         HashSet<String> peopleSet = new HashSet<>(peopleList);
-        // 判断是否和其它考勤组内的成员冲突
-        List<String> conflictPersonInOtherGroup = new ArrayList<>();
-        if (groups != null && !groups.isEmpty()) {
-            for (String person : peopleSet) {
-                for (AttendanceV2Group oldG : groups) {
-                    // 自己不用处理
-                    if (oldG.getId().equals(groupId)) {
-                        continue;
-                    }
-                    if (oldG.getTrueParticipantList().contains(person)) {
-                        conflictPersonInOtherGroup.add(person);
-                        break;
-                    }
-                }
-            }
-        }
-        if (!conflictPersonInOtherGroup.isEmpty()) {
-            throw new ExceptionParticipateConflict(conflictPersonInOtherGroup);
-        }
+
         if (logger.isDebugEnabled()) {
             logger.debug("最终考勤组人员数：" + peopleSet.size());
         }

@@ -1,17 +1,21 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leave;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.general.core.entity.GeneralFile;
@@ -44,16 +48,27 @@ public class ActionImportExcel extends BaseAction {
         LOGGER.info("开始导入请假数据。。。。。。。。。。");
         try (InputStream is = new ByteArrayInputStream(bytes);
              XSSFWorkbook workbook = new XSSFWorkbook(is);
-             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+             ByteArrayOutputStream os = new ByteArrayOutputStream();
+             EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if (!business.isManager(effectivePerson)) {
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
+
             Sheet sheet = workbook.getSheetAt(0); // 第一个sheet
             // 固定模版
-            int firstRow = sheet.getFirstRowNum() + 1 ; // 第一行是标题跳过
+            int firstRow = sheet.getFirstRowNum() + 1; // 第一行是标题跳过
             int lastRow = sheet.getLastRowNum();
             for (int i = firstRow; i <= lastRow; i++) {
                 Row row = sheet.getRow(i);
                 String person = AttendanceV2Helper.getExcelCellStringValue(row.getCell(0)); // 第一条是person
                 if (StringUtils.isEmpty(person)) {
                     setExcelCellError(row, "用户标识不能为空");
+                    continue;
+                }
+                Person mPerson = business.organization().person().getObject(person, true);
+                if (mPerson == null) {
+                    setExcelCellError(row, "用户标识找不到对应的人员");
                     continue;
                 }
                 String type = AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)); // 第二条是请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他
@@ -69,7 +84,7 @@ public class ActionImportExcel extends BaseAction {
                 Date startDate;
                 try {
                     startDate = DateTools.parse(start, DateTools.format_yyyyMMddHHmmss);
-                } catch (Exception e){
+                } catch (Exception e) {
                     setExcelCellError(row, "开始时间格式不正确");
                     continue;
                 }
@@ -81,7 +96,7 @@ public class ActionImportExcel extends BaseAction {
                 Date endDate;
                 try {
                     endDate = DateTools.parse(end, DateTools.format_yyyyMMddHHmmss);
-                } catch (Exception e){
+                } catch (Exception e) {
                     setExcelCellError(row, "结束时间格式不正确");
                     continue;
                 }
@@ -94,7 +109,7 @@ public class ActionImportExcel extends BaseAction {
                     job = "";
                 }
                 ActionPost.Wi wi = new ActionPost.Wi();
-                wi.setPerson(person);
+                wi.setPerson(mPerson.getDistinguishedName());
                 wi.setLeaveType(type);
                 wi.setStartTime(startDate);
                 wi.setEndTime(endDate);
@@ -108,7 +123,7 @@ public class ActionImportExcel extends BaseAction {
                     if (postResult != null) {
                         LOGGER.info("保持数据结果：" + postResult.getValue());
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     setExcelCellError(row, e.getLocalizedMessage());
                 }
             }
@@ -120,7 +135,7 @@ public class ActionImportExcel extends BaseAction {
             wo.setFlag(flag);
             result.setData(wo);
             return result;
-        }finally {
+        } finally {
             lock.unlock();
             LOGGER.info("导入结束。。。。。。。。。。。。");
         }

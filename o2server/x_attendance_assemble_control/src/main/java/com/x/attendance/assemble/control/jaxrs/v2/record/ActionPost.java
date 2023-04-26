@@ -88,10 +88,10 @@ public class ActionPost extends BaseAction {
                     String shiftId = group.getWorkDateProperties().shiftIdWithDate(record.getRecordDate());
                     // 是否特殊工作日
                     if (StringUtils.isEmpty(shiftId)) {
-                        shiftId = AttendanceV2Helper.specialWorkDayShift(emc, recordDateString, group);
+                        shiftId = AttendanceV2Helper.specialWorkDayShift(recordDateString, group);
                     }
                     // 是否特殊节假日 清空shiftid
-                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(emc, recordDateString, group)) {
+                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(recordDateString, group)) {
                         shiftId = null;
                     }
                     if (StringUtils.isNotEmpty(shiftId)) {

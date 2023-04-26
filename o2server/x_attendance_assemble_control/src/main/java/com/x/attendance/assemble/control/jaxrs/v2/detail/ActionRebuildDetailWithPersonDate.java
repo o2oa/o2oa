@@ -1,9 +1,14 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -21,12 +26,18 @@ public class ActionRebuildDetailWithPersonDate extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionRebuildDetailWithPersonDate.class);
 
 
-    ActionResult<Wo> execute(String person, String date) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String person, String date) throws Exception {
         if (StringUtils.isEmpty(person)) {
             throw new ExceptionEmptyParameter("person");
         }
         if (StringUtils.isEmpty(date)) {
             throw new ExceptionEmptyParameter("date");
+        }
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if (!business.isManager(effectivePerson)) {
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
         }
         Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
         Date today = new Date();

@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.schedule.v2;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -98,7 +99,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     if (StringUtils.isEmpty(shiftId)) {
                         shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
                     }
-                    if (StringUtils.isNotEmpty(shiftId) && isRestDay(  model.getDate(), group)) {
+                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay( model.getDate(), group)) {
                         shiftId = null; // 特殊节假日 清空
                     }
                     if (StringUtils.isNotEmpty(shiftId)) {
@@ -139,7 +140,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         isWorkDay = dayList.contains(day);
                     }
                     // 特殊节假日
-                    if (isWorkDay && isRestDay(  model.getDate(), group)) {
+                    if (isWorkDay && AttendanceV2Helper.isSpecialRestDay(  model.getDate(), group)) {
                         isWorkDay = false;
                     }
                 }
@@ -299,47 +300,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         }
     }
 
-    /**
-     * 是否休息日
-     *
-     * @param date
-     * @param group
-     * @return
-     */
-    private boolean isRestDay(String date, AttendanceV2Group group) throws Exception {
-        boolean isRestDay = false;
-        Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
-        if (Config.workTime() != null && Config.workTime().inDefinedHoliday(myDate)) {
-            isRestDay = true;
-        }
-        // 考勤组的无需打卡日
-        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
-            for (String d : group.getNoNeedCheckInDateList()) { // 包含日期 ｜ 是否循环
-                String[] dArray = d.split("\\|");
-                if (dArray.length < 2) {
-                    // 格式不正确
-                    continue;
-                }
-                if (dArray[0].equals(date)) {
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-                if (dArray[1].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
-                    isRestDay = true;// 无需打卡就是休息日
-                    break;
-                }
-            }
-        }
-        return isRestDay;
-    }
+
 
     /**
      * 如果开启了是否开启补卡申请功能 生成对应的异常打卡申请数据

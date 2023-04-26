@@ -61,10 +61,10 @@ public class ActionPreCheck extends BaseAction {
                 String shiftId = group.getWorkDateProperties().shiftIdWithDate(nowDate);
                 // 是否特殊工作日
                 if (StringUtils.isEmpty(shiftId)) {
-                    shiftId = AttendanceV2Helper.specialWorkDayShift(emc, today, group);
+                    shiftId = AttendanceV2Helper.specialWorkDayShift(today, group);
                 }
                 // 是否特殊节假日 清空shiftid
-                if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(emc, today, group)) {
+                if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(today, group)) {
                     shiftId = null;
                 }
                 if (StringUtils.isNotEmpty(shiftId)) {

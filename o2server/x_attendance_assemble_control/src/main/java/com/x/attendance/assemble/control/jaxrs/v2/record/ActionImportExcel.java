@@ -13,6 +13,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -54,6 +55,12 @@ public class ActionImportExcel extends BaseAction {
              ByteArrayOutputStream os = new ByteArrayOutputStream();
              EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
+
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
+
+
             Sheet sheet = workbook.getSheetAt(0); // 第一个sheet
             // 固定模版
             int firstRow = sheet.getFirstRowNum() + 1; // 第一行是标题跳过
@@ -168,10 +175,10 @@ public class ActionImportExcel extends BaseAction {
             String shiftId = group.getWorkDateProperties().shiftIdWithDate(recordDate);
             // 是否特殊工作日
             if (StringUtils.isEmpty(shiftId)) {
-                shiftId = AttendanceV2Helper.specialWorkDayShift(emc, date, group);
+                shiftId = AttendanceV2Helper.specialWorkDayShift(date, group);
             }
             // 是否特殊节假日 清空shiftid
-            if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(emc, date, group)) {
+            if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(date, group)) {
                 shiftId = null;
             }
             if (StringUtils.isNotEmpty(shiftId)) {
@@ -329,25 +336,7 @@ public class ActionImportExcel extends BaseAction {
         emc.commit();
     }
 
-    /**
-     * 先删除老的记录
-     * @param personDn
-     * @param date yyyy-MM-dd
-     * @param emc
-     * @param business
-     * @throws Exception
-     */
-    private void deleteOldRecords(String personDn, String date, EntityManagerContainer emc, Business business) throws Exception {
-        // 查询是否有存在的数据
-        List<AttendanceV2CheckInRecord> oldRecordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(personDn, date);
-        List<String> deleteIds = new ArrayList<>();
-        for (AttendanceV2CheckInRecord record : oldRecordList) {
-            deleteIds.add(record.getId());
-        }
-        emc.beginTransaction(AttendanceV2CheckInRecord.class);
-        emc.delete(AttendanceV2CheckInRecord.class, deleteIds);
-        emc.commit();
-    }
+
 
     public static class Wo extends GsonPropertyObject {
 

@@ -43,7 +43,7 @@ public class DetailAction extends StandardJaxrsAction {
         ActionResult<ActionRebuildDetailWithPersonDate.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionRebuildDetailWithPersonDate().execute(person, date);
+            result = new ActionRebuildDetailWithPersonDate().execute(effectivePerson, person, date);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

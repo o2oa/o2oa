@@ -30,24 +30,7 @@ export default content({
     };
   },
   beforeRender() {
-    // 前一天 当天没有数据
-    // const today = new Date();
-    // let year = today.getFullYear();
-    // let m =  today.getMonth(); 
-    // let before = today.getDate() - 1;
-    // if (before < 1) {
-    //   before = 1;
-    //   m = m - 1;
-    //   if (m < 0) {
-    //     m = 0;
-    //     year -= 1;
-    //   }
-    // }
-    // const month = (m + 1) > 9 ? `${m + 1}`:`0${(m + 1)}`;
-    // const day = (before) > 9 ? `${before}`:`0${before}`;
-    // const chooseDate = `${year}-${month}-${day}`;
-    // this.bind.form.startDate = chooseDate;
-    // this.bind.form.endDate = chooseDate;
+    
   },
   afterRender() {
     this.search();
@@ -91,11 +74,28 @@ export default content({
     }
     return person;
   },
-  // 打开工作
-  openJob(jobId) {
-    if (jobId) {
-      o2.api.page.openJob(jobId);
-    }
+  //  删除
+  clickDeleteData(id) {
+    var _self = this; 
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      lp.leave.deleteConfirm,
+      300,
+      100,
+      function () {
+        _self.deleteLeave(id);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  async deleteLeave(id) {
+    const json = await leaveAction("delete", id);
+    console.debug(json);
+    this.search();
   },
   // excel导入请假数据
   importExcel() {

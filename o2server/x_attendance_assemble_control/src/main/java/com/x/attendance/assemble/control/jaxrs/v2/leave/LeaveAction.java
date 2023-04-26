@@ -54,6 +54,22 @@ public class LeaveAction extends StandardJaxrsAction {
 
 
 
+    @JaxrsMethodDescribe(value = "删除请假数据信息.", action = ActionDelete.class)
+    @GET
+    @Path("delete/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void  delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("请假数据Id") @PathParam("id") String id) {
+        ActionResult<ActionDelete.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDelete().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 
     @JaxrsMethodDescribe(value = "分页查询请假数据列表.", action =  ActionListByPage.class)
     @POST

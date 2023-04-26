@@ -160,7 +160,7 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
     /**
      * 查询打卡记录
      * @param person distinguishName
-     * @param date 2023-02-20
+     * @param date yyyy-MM-dd
      * @return
      * @throws Exception
      */

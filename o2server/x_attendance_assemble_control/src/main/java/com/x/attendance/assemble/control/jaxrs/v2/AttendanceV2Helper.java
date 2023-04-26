@@ -1,8 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2;
 
-import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.attendance.entity.v2.AttendanceV2Group;
-import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
@@ -11,9 +9,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellUtil;
 
 import java.util.Date;
-import java.util.List;
 
 /**
+ * 新版考勤 部分共用业务逻辑工具类
  * Created by fancyLou on 2023/4/24.
  * Copyright © 2023 O2. All rights reserved.
  */
@@ -22,13 +20,12 @@ public class AttendanceV2Helper {
 
     /**
      * 是否特殊节假日
-     * @param emc
      * @param date yyyy-MM-dd
      * @param group
      * @return
      * @throws Exception
      */
-    public static boolean isSpecialRestDay(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
+    public static boolean isSpecialRestDay( String date, AttendanceV2Group group) throws Exception {
         boolean isRestDay = false;
         // 考勤配置 节假日工作日
         Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
@@ -69,13 +66,12 @@ public class AttendanceV2Helper {
 
     /**
      * 是否特殊工作日 并返回工作日的班次id
-     * @param emc
      * @param date yyyy-MM-dd
      * @param group
      * @return
      * @throws Exception
      */
-    public static String specialWorkDayShift(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
+    public static String specialWorkDayShift(String date, AttendanceV2Group group) throws Exception {
         String shiftId = null;
         // 工作日
         Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
