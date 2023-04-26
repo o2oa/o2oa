@@ -165,13 +165,14 @@ MWF.xApplication.Meeting.LP = {
     "hostUnit": "承办部门",
     "meetingType":"会议类型",
     "meetingMode":"会议方式",
-    "meetingModeSelectText": ["线下会议","网络会议"],
+    "meetingModeSelectText": ["线下会议","线上会议"],
     "meetingModeSelectValue": ["offline","online"],
     "meetingUrl": "会议链接",
     "meetingNumber": "会议号",
     "netMeetingAbb": "网",
     "yes": "是",
     "no": "否",
+    "other": "其他",
 
     "week" : "周",
     "weeks": {
@@ -251,6 +252,7 @@ MWF.xApplication.Meeting.LP = {
         "mobileCreateEnableOptions" : ["是","否"],
         "meetingType":"会议类型（每行一种）",
         "enableOnline":"启用线上会议",
+        "onlineProduct": "线上会议产品",
         "onlineConfig": "线上会议配置",
 
         "apiAddress":"网络会议api地址",

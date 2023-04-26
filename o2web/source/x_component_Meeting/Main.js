@@ -880,14 +880,17 @@ MWF.xApplication.Meeting.Config = new Class({
 
                 "<div class='line'></div>"+
                 "<div class='configTitle'>"+this.lp.config.enableOnline +"</div>" +
-                "<div><select name='configSelectEnableOnline'>"+
-                "<option value='true' "+((d.enableOnline) ? "selected" : "")+">"+this.lp.yes+"</option>"+
-                "<option value='false' "+((!d.enableOnline) ? "selected" : "")+">"+this.lp.no+"</option>"+
-                "</select></div>"+
+                "<div item='enableOnline'></div>"+
 
-                "<div class='line'></div>"+
-                "<div class='configTitle'>"+this.lp.config.onlineConfig +"</div>" +
-                "<div class='onlineConfig' style='width: 100%;height:160px;'></div>";
+                "<div class='onlineArea' style='display:"+( d.enableOnline ? "" : "none" )+"'>"+
+                "   <div class='configTitle' style='margin-top:15px;'>"+this.lp.config.onlineProduct +"</div>" +
+                "   <div item='onlineProduct'></div>"+
+
+                "   <div class='onlineConfigArea' style='display: "+( d.onlineProduct === "好视通" ? "" : "none" )+"'>"+
+                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.onlineConfig +"</div>" +
+                "       <div item='onlineConfig' style='width: 100%;height:160px;'></div>"+
+                "   </div>"+
+                "</div>";
 
                 // "<div class='line'></div>"+
                 // "<div class='configTitle'>"+this.lp.config.apiAddress +"</div>" +
@@ -927,7 +930,39 @@ MWF.xApplication.Meeting.Config = new Class({
             } , null, this.app );
             this.mobileCreateEnable.load();
 
-            this.loadScriptEditor();
+            this.enableOnlineNode = this.contentNode.getElement("[item='enableOnline']");
+            this.enableOnline = new MDomItem(this.enableOnlineNode, {
+                name : "enableOnline", type : "select", selectValue : ["true","false"], selectText : [this.lp.yes, this.lp.no],
+                value : ( d.enableOnline || false ).toString(),
+                event: {
+                    change: function (item, ev) {
+                        var value = item.getValue();
+                        this.contentNode.getElement("div.onlineArea").setStyle("display", value === "true" ? "" : "none");
+                        if( this.onlineProduct.getValue() === "好视通" && value === "true" && !this.scriptEditor )this.loadScriptEditor();
+                        this.setSize();
+                    }.bind(this)
+                }
+            } , null, this.app );
+            this.enableOnline.load();
+
+            this.onlineProductNode = this.contentNode.getElement("[item='onlineProduct']");
+            this.onlineProduct = new MDomItem(this.onlineProductNode, {
+                name : "onlineProduct", type : "select", selectValue : ["其他","好视通"], selectText : [this.lp.other,"好视通"],
+                value : d.onlineProduct || "其他",
+                event: {
+                    change: function (item, ev ) {
+                        var value = item.getValue();
+                        this.contentNode.getElement("div.onlineConfigArea").setStyle("display", value === "好视通" ? "" : "none");
+                        if( value === "好视通" && this.enableOnline.getValue() === "true" &&  !this.scriptEditor )this.loadScriptEditor();
+                        this.setSize();
+                    }.bind(this)
+                }
+            } , null, this.app );
+            this.onlineProduct.load();
+
+            if( d.onlineProduct === "好视通" && d.enableOnline ){
+                this.loadScriptEditor();
+            }
 
         }
 
@@ -949,7 +984,6 @@ MWF.xApplication.Meeting.Config = new Class({
         var json;
         if( !this.configData.onlineConfig ){
             json = {
-                'onlineProduct':'线上会议产品,如好视通',
                 'hstUrl':'好视通服务地址',
                 'hstKey':'好视通服务接口KEY',
                 'hstSecret':'好视通服务接口SECRET',
@@ -964,7 +998,7 @@ MWF.xApplication.Meeting.Config = new Class({
             value = JSON.stringify(json, null, "\t");
         }catch (e) {}
 
-        var node = this.contentNode.getElement('div.onlineConfig');
+        var node = this.contentNode.getElement('div[item="onlineConfig"]');
         if( value ){
             this.scriptEditor = new MWF.widget.JavascriptEditor(node, {
                 "forceType": "ace",
@@ -972,14 +1006,6 @@ MWF.xApplication.Meeting.Config = new Class({
             });
             this.scriptEditor.load(function(){
                 this.scriptEditor.setValue(value);
-                // this.scriptEditor.editor.setReadOnly(true);
-                // this.addEvent("afterResize", function () {
-                //     this.resizeScript();
-                // }.bind(this));
-                // this.addEvent("queryClose", function () {
-                //     this.scriptEditor.destroy();
-                // }.bind(this));
-                // this.resizeScript();
             }.bind(this));
         }
     },
@@ -1073,28 +1099,28 @@ MWF.xApplication.Meeting.Config = new Class({
                 weekBeginValue = weekBeginSelect.options[weekBeginSelect.selectedIndex].get("value");
             }
 
-            var enableOnlineSelect = this.contentNode.getElement("select[name='configSelectEnableOnline']");
-            var enableOnline = false;
-            if( enableOnlineSelect ){
-                enableOnline = enableOnlineSelect.options[enableOnlineSelect.selectedIndex].get("value") === "true";
-            }
-
             var viewer = null;
             if( this.meetingViewer ){
                 viewer = this.meetingViewer.getValue();
             }
 
-            var onlineConfig = this.scriptEditor.getValue();
-            try{
-                onlineConfig = JSON.parse( onlineConfig );
-            }catch (e) {
-                this.app.notice( this.app.lp.onlineConfigNotJson, "info" );
-                return;
-            }
-
             var typeList = [];
             var typeListInput = this.contentNode.getElement("textarea[name='typeList']");
             if(typeListInput)typeList = typeListInput.get("value").split("\n");
+
+            var onlineConfig;
+            if( this.scriptEditor ){
+                onlineConfig = this.scriptEditor.getValue();
+                try{
+                    onlineConfig = JSON.parse( onlineConfig );
+                }catch (e) {
+                    this.app.notice( this.app.lp.onlineConfigNotJson, "info" );
+                    return;
+                }
+                onlineConfig = JSON.parse(this.scriptEditor.getValue())
+            }else{
+                onlineConfig = this.configData.onlineConfig || {};
+            }
 
             var data = {
                 //"hideMenu": hideMenu,
@@ -1110,12 +1136,12 @@ MWF.xApplication.Meeting.Config = new Class({
                 "toDayViewName" : this.contentNode.getElement("input[name='toDayViewName']").get("value"),
                 "toListViewName" : this.contentNode.getElement("input[name='toListViewName']").get("value"),
                 "toRoomViewName" : this.contentNode.getElement("input[name='toRoomViewName']").get("value"),
-                "enableOnline": enableOnline,
-                "onlineConfig": JSON.parse(this.scriptEditor.getValue())
+                "enableOnline": this.enableOnline.getValue() === "true",
+                "onlineProduct": this.onlineProduct.getValue(),
+                "onlineConfig": onlineConfig
             };
 
             o2.Actions.load("x_meeting_assemble_control").ConfigAction.saveSystemConfig(data, function () {
-                debugger;
                 this.app.meetingConfig = Object.merge(this.app.meetingConfig, data);
             }.bind(this), null, false);
         }

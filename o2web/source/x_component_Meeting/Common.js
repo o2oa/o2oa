@@ -784,9 +784,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
         if( this.app.isOnlineAvailable() ){
             html += "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingUrl +":</td>" +
-                "    <td styles='formTableValue' item='url'></td></tr>" +
+                "    <td styles='formTableValue' item='roomLink'></td></tr>" +
                 "<tr style='display:"+(data.mode === "online" ? "" : "none" )+";'><td styles='formTableTitle'>"+ this.lp.meetingNumber +":</td>" +
-                "    <td styles='formTableValue' item='number'></td></tr>";
+                "    <td styles='formTableValue' item='roomId'></td></tr>";
         }
 
         html += "<tr><td styles='formTableTitle' width='100'>"+this.lp.beginDate+":</td>" +
@@ -973,8 +973,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             }.bind(this)
                         } },
                     subject: {},
-                    url: {},
-                    number: {},
+                    roomLink: {},
+                    roomId: {},
                     summary: {type: "textarea"},
                     hostPerson: { type : "org", orgType : "identity",  count: 1, "defaultValue": this.getIdentity()  },
                     hostUnit: { type : "org", orgType : "unit",  count: 1 },
@@ -1316,12 +1316,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     changeMode: function(){
         var mode = this.form.getItem("mode").getValue();
         if( mode === "online" ){
-            this.form.getItem("url").node.getParent("tr").setStyle("display", "");
-            this.form.getItem("number").node.getParent("tr").setStyle("display", "");
+            this.form.getItem("roomLink").node.getParent("tr").setStyle("display", "");
+            this.form.getItem("roomId").node.getParent("tr").setStyle("display", "");
             // this.meetingRoomArea.getParent("tr").setStyle("display", "none");
         }else{
-            this.form.getItem("url").node.getParent("tr").setStyle("display", "none");
-            this.form.getItem("number").node.getParent("tr").setStyle("display", "none");
+            this.form.getItem("roomLink").node.getParent("tr").setStyle("display", "none");
+            this.form.getItem("roomId").node.getParent("tr").setStyle("display", "none");
             // this.meetingRoomArea.getParent("tr").setStyle("display", "");
         }
         this.resetHeight("auto");
@@ -1621,7 +1621,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var errorText = "";
         if (!this.data.subject) errorText +=this.lp.meeting_input_subject_error;
         if( this.data.mode === "online" ){
-            if (!this.data.url && !this.data.number) errorText +=this.lp.meeting_input_url_number_error;
+            if (!this.data.roomLink && !this.data.roomId) errorText +=this.lp.meeting_input_url_number_error;
         }else{
             if (!this.data.room) errorText +=this.lp.meeting_input_room_error;
         }
@@ -1813,9 +1813,9 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
 
         if( this.data.mode === "online" ){
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.meetingUrl +":</td>" +
-                "    <td style='"+valueStyle+"' item='url'></td></tr>" +
+                "    <td style='"+valueStyle+"' item='roomLink'></td></tr>" +
                 "<tr><td style='"+titleStyle+"'>"+this.lp.meetingNumber +":</td>" +
-                "    <td style='"+valueStyle+"' item='number'></td></tr>";
+                "    <td style='"+valueStyle+"' item='roomId'></td></tr>";
         }
 
         if( this.data.room ){ //this.data.mode !== "online"
@@ -1867,8 +1867,8 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var description = (data.description || "")+(data.summary || "");
 
 
-        this.setItemValue(contentNode, "url",  data.url );
-        this.setItemValue(contentNode, "number",  data.number );
+        this.setItemValue(contentNode, "roomLink",  data.roomLink );
+        this.setItemValue(contentNode, "roomId",  data.roomId );
         this.setItemValue(contentNode, "type", (this.data.type || this.lp.meetingDetail));
         this.setItemValue(contentNode, "applicant",  this.lp.applyPerson  +":" + data.applicant.split("@")[0] );
         this.setItemValue(contentNode, "subject",  data.subject );

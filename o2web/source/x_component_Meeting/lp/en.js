@@ -172,6 +172,7 @@ MWF.xApplication.Meeting.LP = {
     "netMeetingAbb": "Net",
     "yes": "Yes",
     "no": "No",
+    "other": "Other",
 
     "week": "Week",
     "weeks": {
@@ -252,6 +253,7 @@ MWF.xApplication.Meeting.LP = {
         "meetingType":"Meeting Type (one per line)",
         "enableOnline": "Enable online meeting",
         "onlineConfig": "Online meeting configuration",
+        "onlineProduct": "Online meeting product",
 
         "apiAddress": "web conferencing api address",
         "key": "key",
