@@ -3,7 +3,7 @@ package com.x.processplatform.assemble.designer;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -63,11 +63,11 @@ public class FormVersionQueue extends AbstractQueue<FormVersion> {
         Root<FormVersion> root = cq.from(FormVersion.class);
         Predicate p = cb.equal(root.get(FormVersion_.form), formVersion.getForm());
         cq.select(root.get(FormVersion_.id)).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
-        Query query = em.createQuery(cq);
+        TypedQuery<String> query = em.createQuery(cq);
         if (count > 1) {
             query.setMaxResults(count - 1);
         }
-        return em.createQuery(cq).getResultList();
+        return query.getResultList();
     }
 
 }
