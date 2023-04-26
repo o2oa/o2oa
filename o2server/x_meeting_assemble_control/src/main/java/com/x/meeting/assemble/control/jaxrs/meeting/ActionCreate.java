@@ -37,10 +37,9 @@ class ActionCreate extends BaseAction {
 			Business business = new Business(emc);
 			Meeting meeting = Wi.copier.copy(wi);
 			Room room = null;
-			if(StringUtils.isBlank(meeting.getSubject())){
+			if(StringUtils.isBlank(wi.getSubject())){
 				throw new ExceptionCustomError("会议标题不能为空！");
 			}
-
 			if(Meeting.MODE_ONLINE.equals(meeting.getMode())){
 				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
 					MeetingConfigProperties config = business.getConfig();
@@ -53,7 +52,10 @@ class ActionCreate extends BaseAction {
 						throw new ExceptionCustomError("会议号和会议链接不能为空！");
 					}
 				}
-			}else {
+			}else if(StringUtils.isBlank(wi.getRoom())){
+				throw new ExceptionCustomError("会议室不能为空！");
+			}
+			if(StringUtils.isNotBlank(wi.getRoom())){
 				room = emc.find(wi.getRoom(), Room.class);
 				if (null == room) {
 					throw new ExceptionRoomNotExist(wi.getRoom());
