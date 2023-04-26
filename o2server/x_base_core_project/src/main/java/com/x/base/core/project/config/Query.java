@@ -252,7 +252,7 @@ public class Query extends ConfigObject {
         public static final Integer DEFAULT_SEARCHPAGESIZE = 20;
         public static final Integer DEFAULT_SEARCHMAXPAGESIZE = 5000;
 
-        public static final Integer DEFAULT_SEARCHMAXHITS = 1000000;
+        public static final Integer DEFAULT_SEARCHMAXHITS = 500000;
 
         public static final Integer DEFAULT_FACETMAXGROUPS = 100;
 
