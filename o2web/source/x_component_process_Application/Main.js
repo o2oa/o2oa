@@ -498,7 +498,7 @@ MWF.xApplication.process.Application.List = new Class({
 
 					})
 
-					this.selectedList = this.dataList;
+					this.selectedList.append(this.dataList);
 				}
 			}
 		}
