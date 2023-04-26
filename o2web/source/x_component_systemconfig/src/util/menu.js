@@ -28,6 +28,7 @@ function getMenuJson(){
                 {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
 
                 {'title': lp.messageConfig, 'component': 'ServerMessageConfig', 'icon': 'message' },
+                {'title': lp.queryIndexConfig, 'component': 'ServerQueryConfig', 'icon': 'search' },
                 {'title': lp.cacheConfig, 'component': 'ServerCacheConfig', 'icon': 'cache' },
                 // {'title': lp.clusterConfig, 'component': '', 'icon': 'servers' },
                 // {'title': lp.orgConfig, 'component': '', 'icon': 'org' },
