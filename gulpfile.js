@@ -1128,7 +1128,7 @@ function build_web_v_o2() {
             //.pipe(gulp.dest(dest))
             // .pipe(uglify())
             // .pipe(rename({ extname: '.min.js' }))
-            // .pipe(gulp.dest(dest))
+            .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
     }, function(){
         return gulp.src(src)
@@ -1136,8 +1136,6 @@ function build_web_v_o2() {
             .pipe(gutil.noop());
     });
 }
-
-
 
 async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
