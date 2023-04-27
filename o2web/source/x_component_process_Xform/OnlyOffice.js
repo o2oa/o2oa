@@ -144,7 +144,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }.bind(this),null, false);
     },
     getEditor: function (callback) {
-
+debugger
         if(this.data.appToken){
 
             this.action.OnlyofficeAction.appFileEdit({
