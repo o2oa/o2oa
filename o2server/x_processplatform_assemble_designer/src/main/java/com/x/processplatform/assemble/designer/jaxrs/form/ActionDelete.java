@@ -76,11 +76,15 @@ class ActionDelete extends BaseAction {
             // 先删除FormField
             List<String> formFieldIds = business.formField().listWithForm(form.getId());
             List<String> formVersionIds = emc.idsEqual(FormVersion.class, FormVersion.form_FIELDNAME, form.getId());
-            emc.beginTransaction(FormField.class);
+            if (!ListTools.isEmpty(formFieldIds)) {
+                emc.beginTransaction(FormField.class);
+                this.delete(business, FormField.class, formFieldIds);
+            }
+            if (!ListTools.isEmpty(formVersionIds)) {
+                emc.beginTransaction(FormVersion.class);
+                this.delete(business, FormVersion.class, formVersionIds);
+            }
             emc.beginTransaction(Form.class);
-            emc.beginTransaction(FormVersion.class);
-            this.delete(business, FormField.class, formFieldIds);
-            this.delete(business, FormVersion.class, formVersionIds);
             this.delete(business, Form.class, form.getId());
             emc.commit();
             CacheManager.notify(Form.class);
