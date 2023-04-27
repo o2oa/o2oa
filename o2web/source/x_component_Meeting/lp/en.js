@@ -175,6 +175,7 @@ MWF.xApplication.Meeting.LP = {
     "other": "Other",
     "createOnSave": "Automatically generated after saving",
     "copy": "Copy",
+    "noRoomBuilding": "Network meeting without meeting room",
 
     "week": "Week",
     "weeks": {

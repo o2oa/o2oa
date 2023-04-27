@@ -175,6 +175,7 @@ MWF.xApplication.Meeting.LP = {
     "other": "其他",
     "createOnSave": "保存后自动生成",
     "copy": "拷贝",
+    "noRoomBuilding": "网络会议\n(无会议室)",
 
     "week" : "周",
     "weeks": {

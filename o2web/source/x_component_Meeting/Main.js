@@ -123,7 +123,7 @@ MWF.xApplication.Meeting.Main = new Class({
         return !!this.meetingConfig.enableOnline;
     },
     isAutoCreateOnlineRoom: function(){
-        return this.meetingConfig.onlineProduct === "好视通"
+        return this.meetingConfig.enableOnline && this.meetingConfig.onlineProduct === "好视通"
     },
     isCopyEnable: function(){
         return Promise.resolve(false);
