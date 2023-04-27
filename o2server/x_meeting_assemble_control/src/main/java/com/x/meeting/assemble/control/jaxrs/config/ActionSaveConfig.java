@@ -35,10 +35,10 @@ public class ActionSaveConfig extends BaseAction {
 
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if(BooleanUtils.isTrue(wi.getEnableOnline())){
-				if(StringUtils.isBlank(wi.getOnlineConfig().getOnlineProduct())){
+				if(StringUtils.isBlank(wi.getOnlineProduct())){
 					throw new ExceptionCustomError("请配置线上会议产品");
 				}
-				if(wi.getOnlineConfig().getOnlineProduct().equals(Wi.ONLINE_PROJECT_HST)){
+				if(wi.getOnlineProduct().equals(Wi.ONLINE_PROJECT_HST)){
 					if(StringUtils.isBlank(wi.getOnlineConfig().getHstUrl())){
 						throw new ExceptionCustomError("请配置好视通服务地址");
 					}

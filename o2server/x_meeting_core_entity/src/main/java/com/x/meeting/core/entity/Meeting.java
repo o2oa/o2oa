@@ -51,7 +51,6 @@ public class Meeting extends SliceJpaObject {
 
 	private static final long serialVersionUID = 8117315785915863335L;
 	private static final String TABLE = PersistenceProperties.Meeting.table;
-	public static final String MODE_ONLINE = "线上会议";
 
 	@Override
 	public String getId() {
@@ -283,7 +282,7 @@ public class Meeting extends SliceJpaObject {
 	private String type;
 
 	public static final String mode_FIELDNAME = "mode";
-	@FieldDescribe("会议方式：线上会议|线下会议")
+	@FieldDescribe("会议方式：online|线上会议;offline|线下会议")
 	@Column(length = length_255B, name = ColumnNamePrefix + mode_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mode;

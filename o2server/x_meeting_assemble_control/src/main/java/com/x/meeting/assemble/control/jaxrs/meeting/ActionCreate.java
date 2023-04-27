@@ -2,7 +2,7 @@ package com.x.meeting.assemble.control.jaxrs.meeting;
 
 import com.x.meeting.assemble.control.service.HstService;
 import com.x.meeting.assemble.control.service.OnlineMeeting;
-import com.x.meeting.core.entity.MeetingConfigProperties;
+import com.x.meeting.core.entity.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,9 +22,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
-import com.x.meeting.core.entity.ConfirmStatus;
-import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.Room;
 
 class ActionCreate extends BaseAction {
 
@@ -40,7 +37,7 @@ class ActionCreate extends BaseAction {
 			if(StringUtils.isBlank(wi.getSubject())){
 				throw new ExceptionCustomError("会议标题不能为空！");
 			}
-			if(Meeting.MODE_ONLINE.equals(meeting.getMode())){
+			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
 				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
 					MeetingConfigProperties config = business.getConfig();
 					if(BooleanUtils.isTrue(config.getEnableOnline())){

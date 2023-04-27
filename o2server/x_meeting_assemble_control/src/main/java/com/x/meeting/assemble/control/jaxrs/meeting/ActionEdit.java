@@ -16,6 +16,7 @@ import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
+import com.x.meeting.core.entity.MeetingModeEnum;
 import com.x.meeting.core.entity.Room;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ class ActionEdit extends BaseAction {
 			if(StringUtils.isBlank(wi.getSubject())){
 				throw new ExceptionCustomError("会议标题不能为空！");
 			}
-			if(Meeting.MODE_ONLINE.equals(meeting.getMode())){
+			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
 				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
 					throw new ExceptionCustomError("会议号和会议链接不能为空！");
 				}
