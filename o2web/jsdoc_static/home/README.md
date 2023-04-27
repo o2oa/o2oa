@@ -6,7 +6,7 @@
 
 * O2OA 前端脚本运行在浏览器和移动端h5页面，基于您使用浏览器的Javascript引擎，使用Javascript语法。
 
-* O2OA 后端脚本运行在服务器上，基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。除本API的modules.server章节外，后端脚本还支持该文章所描述的特性：[https://www.o2oa.net/search.html?q=%E5%AE%9A%E6%97%B6%E4%BB%A3%E7%90%86%E5%92%8C%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%84%9A%E6%9C%AC%E7%BC%96%E5%86%99](https://www.o2oa.net/search.html?q=定时代理和接口的脚本编写)。
+* O2OA 后端脚本运行在服务器上，基于JDK8标准的Nashorn，遵循ECMAScript 5.1规范。除本API的modules.server章节外，后端脚本还支持该文章所描述的特性：[https://www.o2oa.net/cms/service/531.html](https://www.o2oa.net/cms/service/531.html)。
 
 * 本API是O2OA脚本的编写说明，您可以通过脚本访问和操作平台内的各种对象。
 
