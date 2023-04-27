@@ -978,6 +978,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "edit": "Edit",
         "printFile": "Print File",
         "viewTraces": "View Traces",
+        "viewTracesFullScreen": "View Traces Full Screen",
+        "viewTracesFullScreenInfo": "Full screen when viewing traces",
         "editScript": "Edit Script",
         "printScript": "Allow Print Script",
         "viewTracesScript": "Allow View Traces Script",
