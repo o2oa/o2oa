@@ -12,9 +12,6 @@
 		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectperson.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
-		//"position": "relative",
-		//"top": "-18px",
-		//"display": "inline-block",
 		"float": "right",
 		"cursor": "pointer" 
 	},
@@ -22,9 +19,6 @@
         "background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
         "width": "18px",
         "height": "18px",
-        //"position": "relative",
-        //"top": "-18px",
-        //"display": "inline-block",
         "float": "right",
         "cursor": "pointer"
     },
@@ -50,26 +44,18 @@
 	    "background": "url("+"/x_component_cms_Xform/$Form/default/icon/inputtext.png) center center no-repeat",
         "width": "18px",
         "height": "18px",
-        //"position": "relative",
-        //"top": "-18px",
-        //"display": "inline-block",
         "float": "right"
 	},
 	"numberIcon": {
 	    "background": "url("+"/x_component_cms_Xform/$Form/default/icon/number.png) center center no-repeat",
         "width": "18px",
         "height": "18px",
-        //"position": "relative",
-        //"top": "-18px",
-        //"display": "inline-block",
         "float": "right"
 	},
 	"calendarIcon": {
 		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/calendar.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
-		//"position": "relative",
-		//"display": "inline-block",
 		"float": "right",
 		"cursor": "pointer" 
 	},
@@ -77,8 +63,6 @@
 		"background": "url("+"/x_component_cms_Xform/$Form/default/icon/pull.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
-		//"position": "relative",
-		//"display": "inline-block",
 		"float": "right",
 		"cursor": "pointer"
 	},
@@ -138,7 +122,6 @@
     "overflow": "hidden",
     "line-height": "24px",
     "padding": "5px 10px",
-    //"border-bottom": "1px solid #CCC",
     "font-size": "14px",
     "background": "transparent"
   },
@@ -146,15 +129,12 @@
     "overflow": "hidden",
     "line-height": "24px",
     "padding": "5px 10px",
-    //"border-bottom": "1px solid #CCC",
     "font-size": "14px",
-    "background": "transparent" //,"#f6f6f6"
+    "background": "transparent"
   },
   "relatedlinkTextNode": {
     "margin-right": "10px",
     "overflow": "hidden"
-    //"float": "left",
-    //"margin-left": "28px"
   },
 
 	"datagridTitle": {
@@ -164,7 +144,6 @@
 		"overflow": "hidden",
 		"opacity": 1,
 		"background": "#C3CEEA"
-		//"background": "#efefef"
 	},
 	"gridLineActionCell": {
 		"width": "40px"
@@ -213,7 +192,6 @@
 		"position": "absolute"
 	},
 	"gridMoveLineDragNodeTr": {
-		//"background-color": "#f3f1ad"
 		"background-color": "#e4f6e9"
 	},
     "datagridTotalTr": {
@@ -222,6 +200,13 @@
         "line-height": "20px",
         "overflow": "hidden",
         "background": "#e1e6f3"
+    },
+    "datagridTotalTr_section": {
+      "height": "20px",
+      "cursor": "pointer",
+      "line-height": "20px",
+      "overflow": "hidden",
+      "background": "#fafafa"
     },
     "datagridTotalTd": {
         "font-weight": "bold"
@@ -261,9 +246,7 @@
         "color": "#FFF",
         "text-align": "center",
         "height": "100%",
-        //"line-height": "100%",
         "width": "100%",
-        //"margin": "0px auto",
         "float": "right"
     },
     "gridMobileActionNode": {
@@ -393,13 +376,71 @@
         "font-size": "14px",
         "color": "#999"
     },
+    "officeSpacerNode": {
+        "width": "100%",
+        "position": "absolute",
+        "display": "none",
+        "opacity": "0"
+    },
+    "officeAreaNode": {
+        "width": "100%",
+        "z-index": "100"
+    },
+    "officeMenuNode": {
+        "height": "30px",
+        "background-color": "#2a579a"
+    },
+    "officeMenuItemNode": {
+        "height": "22px",
+        "margin-top": "3px",
+        "margin-left": "5px",
+        "background": "transparent",
+        "border": "0px solid #DDDDDD",
+        "color": "#ffffff",
+        "cursor": "pointer",
+        "padding": "0px 5px",
+        "line-height": "30px",
+        "font-size": "14px",
+        "float": "left"
+    },
+     "modelNode": {
+        "border-radius": "3px",
+        "border": "1px solid #999999",
+        "box-shadow": "0px 0px 5px #666",
+        "padding": "5px",
+        "background-color": "#ffffff",
+        "position": "absolute"
+    },
+    "modelNodeTitle": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-weight": "bold",
+        "color": "#666666",
+        "float": "left"
+    },
+    "modelItemNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#a31515",
+        "float": "left",
+        "cursor": "pointer",
+        "margin-left": "10px"
+    },
+    "modelNodeContent": {
+        "margin-left": "10px"
+    },
     "attachmentPermissionNode": {
         "overflow": "hidden",
         "width": "500px",
-        "padding": "0px 40px",
+        "padding": "0px 40px"
+    },
+    "attachmentPermissionNode_mobile": {
+      "overflow": "hidden",
+      "padding": "0px 10px"
     },
     "attachmentPermissionNamesNode": {
-        "overflow": "hidden",
+        "overflow": "hidden"
     },
     "attachmentPermissionNamesTitleNode": {
         "font-size": "14px",
@@ -423,7 +464,7 @@
     "attachmentPermissionTitleNode": {
         "font-size": "14px",
         "color": "#666666",
-        "height": "26px",
+        "min-height": "26px",
         "line-height": "26px"
     },
     "attachmentPermissionInputNode": {
@@ -444,7 +485,6 @@
     },
     "attachmentOCRInputAreaNode": {
         "height": "242px",
-        //"width": "398px",
         "border": "1px solid #999999",
         "border-radius": "5px",
         "padding": "5px",
@@ -455,7 +495,7 @@
         "width": "490px",
         "border": "0px",
         "font-size": "14px",
-        "font-family": "'Microsoft YaHei','΢���ź�','SimSun','����'",
+        "font-family": "'Microsoft YaHei','Microsoft YaHei','SimSun','宋体'",
         "overflow": "auto"
     },
     "attachmentOCRImageAreaNode": {
@@ -547,6 +587,58 @@
     "height": "2px",
     "background-color": "#5c649c"
   },
+    "officeRecoverItemNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "margin-bottom": "10px",
+        "padding": "10px",
+        "cursor": "pointer",
+        "color": "#666666",
+        "font-weight": "bold",
+        "font-size": "14px",
+        "background-color": "#ffffff"
+    },
+    "officeRecoverItemNode_over": {
+        "background-color": "#eaf1f9"
+    },
+    "officeRecoverItemNode_current": {
+        "color": "#ffffff",
+        "background-color": "#6196d1"
+    },
+    "officeRecoverItemActionNode": {
+        "height": "30px",
+        "width": "50px",
+        "float": "right",
+        "overflow": "hidden",
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/open.png) no-repeat center center"
+    },
+    "officeRecoverItemActionNode_current": {
+        "background": "url("+"../x_component_process_Xform/$Form/default/icon/open_current.png) no-repeat center center"
+    },
+    "officeRecoverItemTitleNode": {
+        "margin-right": "50px",
+        "height": "30px"
+    },
+    "documentEditorNode": {
+        "background": "#f1f1f1",
+        "border": "1px solid #cccccc",
+        "overflow": "hidden",
+        "position": "relative"
+    },
+    "documentEditorNode_page": {
+        "width": "15.6cm",
+        "height": "22.5cm",
+        "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
+        "margin": "30px auto",
+        "border": "0px #D3D3D3 solid",
+        "border-radius": "5px",
+        "background": "#ffffff",
+        "box-shadow": "0 0 10px rgba(0, 0, 0, 0.1)",
+        "font-size": "16pt",
+        "font-family": "'仿宋_GB2312', serif",
+        "line-height": "1.02cm",
+        "letter-spacing": "-0.01cm"
+    },
   "html5ActionButtonDingdingMore": {
         "height": "3em",
         "float": "left",
@@ -694,5 +786,17 @@
   },
   "selectIdeaItemNode_over": {
     "background-color": "#e6ecf8"
-  }
+  },
+     "el-container-aside": {
+        "background-color": "#D3DCE6",
+        "width": "240px"
+     },
+     "el-container-header": {
+       "background-color": "#B3C0D1",
+       "height": "60px"
+     },
+     "el-container-footer": {
+         "background-color": "#B3C0D1",
+         "height": "60px"
+      }
 }
