@@ -144,7 +144,18 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }.bind(this),null, false);
     },
     getEditor: function (callback) {
-debugger
+
+        if (this.isReadonly()){
+            this.mode  = "view";
+        }else{
+            if (this.json.readScript && this.json.readScript.code){
+                var flag = this.form.Macro.exec(this.json.readScript.code, this);
+                if (flag){
+                    this.mode = "view";
+                }
+            }
+        }
+
         if(this.data.appToken){
 
             this.action.OnlyofficeAction.appFileEdit({
@@ -171,16 +182,7 @@ debugger
 
         this.fireEvent("beforeOpen");
 
-        if (this.isReadonly()){
-            this.mode  = "view";
-        }else{
-            if (this.json.readScript && this.json.readScript.code){
-                var flag = this.form.Macro.exec(this.json.readScript.code, this);
-                if (flag){
-                    this.mode = "view";
-                }
-            }
-        }
+
         var docEditor;
         var _self = this;
         var innerAlert = function (message) {
@@ -325,7 +327,12 @@ debugger
             "toolbarNoTabs": this.json.toolbarNoTabs,
             "trackChanges": this.json.trackChanges,
             "unit": this.json.unit,
-            "zoom": this.json.zoom
+            "zoom": this.json.zoom,
+            "review" : {
+                "trackChanges" : this.json.trackChanges,
+                "reviewDisplay" : this.json.reviewDisplay,
+                "showReviewChanges" : this.json.showReviewChanges
+            }
         }
         docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
         this.onlyOffice = docEditor;
