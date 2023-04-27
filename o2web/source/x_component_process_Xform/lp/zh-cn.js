@@ -278,7 +278,8 @@ MWF.xApplication.process.Xform.LP = {
         "nodiff": "目前还没有历史修改信息",
         "word": "字",
         "diff": "对比",
-        "diffTitle": "与上一版本对比"
+        "diffTitle": "与上一版本对比",
+        "showAll": "显示所有痕迹"
     },
     "subjectEmpty": "标题不能为空",
     "issuanceUnitEmpty": "发文单位不能为空",
