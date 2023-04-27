@@ -976,6 +976,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "edit": "编辑",
         "printFile": "打印正文",
         "viewTraces": "查看痕迹",
+        "viewTracesFullScreen": "痕迹全屏",
+        "viewTracesFullScreenInfo": "查看痕迹时全屏显示",
         "editScript": "编辑脚本",
         "printScript": "允许打印脚本",
         "viewTracesScript": "允许查看痕迹脚本",

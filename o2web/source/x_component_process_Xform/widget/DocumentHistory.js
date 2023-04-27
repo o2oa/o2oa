@@ -25,13 +25,15 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
                     this.documentEditor.options.pageShow = "single";
 
-                    this.documentEditor.resetData();
-
                     this.beginDiffHistory();
-
                     this.loadHistoryToolbar();
                     if (!layout.mobile) this.loadHistoryList();
-                    if (callback) callback();
+
+                    this.documentEditor.resetData(false, function(){
+                        this.documentEditor._readFiletext();
+                        if (callback) callback();
+                    }.bind(this));
+
                 }.bind(this));
             }else{
                 this.documentEditor.form.app.notice(MWF.xApplication.process.Xform.LP.documentHistory.nodiff, "info", this.documentEditor.node);
@@ -185,10 +187,65 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.createHistoryListItem(historyData);
         }.bind(this));
 
+        new Element("button.mainColor_bg", {
+            "styles": {
+                "padding": "5px 20px",
+                "border": "1px solid #cccccc",
+                "border-radius": "100px",
+                "margin": "20px auto",
+                "display": "block"
+            },
+            "text": MWF.xApplication.process.Xform.LP.documentHistory.showAll,
+            "events": {
+                "click": function(){
+                    this.showAllHistory();
+                }.bind(this)
+            }
+        }).inject(this.historyListContentAreaNode);
+
         // this.diffPatch.each(function(patchObj){
         //     this.createHistoryListItem(patchObj);
         // }.bind(this));
     },
+    showAllHistory(){
+        if (this.documentHistoryItems && this.documentHistoryItems.length){
+            this.documentHistoryItems.each(function(item){
+                if (item.histroyObj) item.histroyObj.hideCurrent();
+            });
+        }
+        var data = this.historyDataList[0];
+        this.documentEditor.resetData(false, function(){
+            o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+                var dmp = new diff_match_patch();
+                var text2 = this.documentEditor.getFiletextText(data.json.data);
+                var text1 = this.documentEditor.getFiletextText(this.documentEditor.data.filetext);
+
+                var d = dmp.diff_main(text2, text1);
+                dmp.diff_cleanupSemantic(d);
+                var ds = dmp.diff_prettyHtml(d);
+                //ds = ds.replace(/[\n\r]+/g, "<br>");
+                ds = ds.replace(/(?<!\>)(?:&para;)/g, '');
+                ds = ds.replace(/(\n\t\t\t)+/g, " | ")
+                    .replace(/(\n\t\t)+/g,"\n")
+                    .replace(/(\n\t)+/g,"\n")
+                    .replace(/\n+/g,"<br>")
+                    .replace(/\t+/g,"");
+                //ds = ds.replace(/(\n\t)+/g,"<table width=100% border=1 style='border-collapse: collapse'>");
+                //ds = ds.replace(/\n+/g, "<br>");
+                this.documentEditor.layout_filetext.set("html", ds);
+
+                var node = this.documentEditor.layout_filetext.querySelector('ins,del');
+                if (node){
+                    node.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                }
+                var node = this.documentEditor.layout_filetext.querySelector('ins,del');
+                if (node){
+                    node.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                }
+            }.bind(this));
+        }.bind(this));
+    },
+
     createHistoryListItem: function(historyData){
         if (!this.documentHistoryItems) this.documentHistoryItems = [];
         this.documentHistoryItems.push(new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, historyData));
@@ -246,7 +303,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                         var patchData = JSON.stringify({"patchs": patch, "v": "6"});
                         var currentData = {
                             "data": patchData,
-                            "json": {"patchs": patch, "data": data, "current": true},
+                            "json": {"patchs": patch, "data": data, "current": true, "v": "6"},
                             "person": layout.session.user.distinguishedName,
                             "activityName": this.documentEditor.form.businessData.activity.name,
                             "createTime" : (new Date()).format("db")
@@ -421,8 +478,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 this.options.inforTime = 0;
                 this.stop = false;
                 this.stopWhile = diff.id;
-                this.toolbar.childrenButton[3].disable();
-                this.toolbar.childrenButton[4].disable();
+                // this.toolbar.childrenButton[3].disable();
+                // this.toolbar.childrenButton[4].disable();
 
                 this.doAnimationAuto(diff.id);
 
@@ -436,8 +493,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.options.inforTime = 0;
             this.stop = false;
             this.stopWhile = diff.id;
-            this.toolbar.childrenButton[3].disable();
-            this.toolbar.childrenButton[4].disable();
+            // this.toolbar.childrenButton[3].disable();
+            // this.toolbar.childrenButton[4].disable();
 
             this.doAnimationAuto(diff.id);
         }
@@ -486,7 +543,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.documentEditor.resetData();
         this.toolbarNode.hide();
 
-
+        this.documentEditor._returnScreen();
     },
     active: function(callback){
         this.getHistroyDocumentList(function(){
@@ -519,7 +576,11 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     }
 
                     this.documentEditor.options.pageShow = "single";
-                    this.documentEditor.resetData();
+                    this.documentEditor.resetData(false, function (){
+                        this.documentEditor._readFiletext();
+                    }.bind(this));
+
+
 
                     if (callback) callback();
 
@@ -957,24 +1018,43 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             var dmp = new diff_match_patch();
             var text1 = this.documentEditor.getFiletextText(this.historyData.json.data);
             var i = this.history.documentHistoryItems.indexOf(this)-1;
-            var text2 = this.documentEditor.getFiletextText(this.history.documentHistoryItems[i].historyData.json.data);
-            // dmp.Diff_Timeout = parseFloat(document.getElementById('timeout').value);
-            // dmp.Diff_EditCost = parseFloat(document.getElementById('editcost').value);
+            if (i>=0){
+                var text2 = this.documentEditor.getFiletextText(this.history.documentHistoryItems[i].historyData.json.data);
+                // dmp.Diff_Timeout = parseFloat(document.getElementById('timeout').value);
+                // dmp.Diff_EditCost = parseFloat(document.getElementById('editcost').value);
 
-            var d = dmp.diff_main(text2, text1);
-            dmp.diff_cleanupSemantic(d);
-            var ds = dmp.diff_prettyHtml(d);
-            //ds = ds.replace(/[\n\r]+/g, "<br>");
-            ds = ds.replace(/(?<!\>)(?:&para;)/g, '');
-            ds = ds.replace(/(\n\t\t\t)+/g, " | ")
-                .replace(/(\n\t\t)+/g,"\n")
-                .replace(/(\n\t)+/g,"\n")
-                .replace(/\n+/g,"<br>")
-                .replace(/\t+/g,"");
-            //ds = ds.replace(/(\n\t)+/g,"<table width=100% border=1 style='border-collapse: collapse'>");
-            //ds = ds.replace(/\n+/g, "<br>");
-            this.documentEditor.layout_filetext.set("html", ds);
+                var d = dmp.diff_main(text2, text1);
+                dmp.diff_cleanupSemantic(d);
+                var ds = dmp.diff_prettyHtml(d);
+                //ds = ds.replace(/[\n\r]+/g, "<br>");
+                ds = ds.replace(/(?<!\>)(?:&para;)/g, '');
+                ds = ds.replace(/(\n\t\t\t)+/g, " | ")
+                    .replace(/(\n\t\t)+/g,"\n")
+                    .replace(/(\n\t)+/g,"\n")
+                    .replace(/\n+/g,"<br>")
+                    .replace(/\t+/g,"");
+                //ds = ds.replace(/(\n\t)+/g,"<table width=100% border=1 style='border-collapse: collapse'>");
+                //ds = ds.replace(/\n+/g, "<br>");
+                this.documentEditor.layout_filetext.set("html", ds);
+
+                var node = this.documentEditor.layout_filetext.querySelector('ins,del');
+                if (node){
+                    node.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                }
+            }else{
+                this.documentEditor.layout_filetext.set("html",this.historyData.json.data);
+            }
+
         }.bind(this));
+    },
+    diffCurrent: function(){
+        if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
+            this.history.documentHistoryItems.each(function(item){
+                if (item.histroyObj) item.histroyObj.hideCurrent();
+            });
+        }
+        this.histroyObj.showCurrent();
+        this.launch();
     },
     createTitleNode: function(){
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
@@ -983,14 +1063,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
                 this.actionNode = new Element("div", {"styles": this.css.historyListItemActionNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.diff, "title": MWF.xApplication.process.Xform.LP.documentHistory.diffTitle}).inject(this.node);
                 this.actionNode.addEvent("click", function(e){
-                    if (this.history.documentHistoryItems && this.history.documentHistoryItems.length){
-                        this.history.documentHistoryItems.each(function(item){
-                            if (item.histroyObj) item.histroyObj.hideCurrent();
-                        });
-                    }
-                    this.histroyObj.showCurrent();
-                    this.launch();
-                    e.stopPropagation();
+                    this.diffCurrent();
                 }.bind(this));
             }
         }
@@ -1000,9 +1073,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         if (this.historyData.json.data){
             var d = this.documentEditor.getFiletextText(this.historyData.json.data);
             var s = d.length+" "+MWF.xApplication.process.Xform.LP.documentHistory.word;
-            patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"] ("+s+")</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+            patchHtml = "<div style='font-weight: bold; min-height: 30px; word-break: break-all; padding: 5px 0;'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"] ("+s+")</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
         }else{
-            patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+            patchHtml = "<div style='font-weight: bold; min-height: 30px; word-break: break-all; padding: 5px 0;'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
         }
         this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
@@ -1023,9 +1096,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         this.histroyObj = histroyObj;
         this.node.addEvents({
             "click": function(){
-                if (_self.history.stop){
-                    _self.history.origina(_self.historyData.json.data, histroyObj);
-                }
+                // if (_self.history.stop){
+                //     _self.history.origina(_self.historyData.json.data, histroyObj);
+                // }
+                _self.diffCurrent();
             }
         });
     },
@@ -1040,9 +1114,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
 
                 tmp.destroy();
                 if (diff[0]==-1){
-                    infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red; word-break: break-all;'><del>"+infor+"</del></span>"
                 }else{
-                    infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue;word-break: break-all;'><ins>"+infor+"</ins></span>"
                 }
                 diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
                 diffNode.store("diff", diff);
@@ -1065,7 +1139,6 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         }.bind(this));
     },
     load: function(){
-        debugger;
         this.createTitleNode();
         var patchs = this.historyData.json.patchObj || null;
 
@@ -1075,6 +1148,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
                 patchs.each(function(patch){
                     this.createPatchNode(patch);
                 }.bind(this));
+            }else{
+                new Element("div", {"styles": this.css.historyListItemDiffNode, "text": MWF.xApplication.process.Xform.LP.documentHistory.original}).inject(this.diffsNode);
             }
         }else{
             var _self = this;
