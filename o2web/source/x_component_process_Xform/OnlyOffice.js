@@ -325,7 +325,12 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             "toolbarNoTabs": this.json.toolbarNoTabs,
             "trackChanges": this.json.trackChanges,
             "unit": this.json.unit,
-            "zoom": this.json.zoom
+            "zoom": this.json.zoom,
+            "review" : {
+                "trackChanges" : this.json.trackChanges,
+                "reviewDisplay" : this.json.reviewDisplay,
+                "showReviewChanges" : this.json.showReviewChanges
+            }
         }
         docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
         this.onlyOffice = docEditor;
