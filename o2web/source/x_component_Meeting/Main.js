@@ -122,6 +122,67 @@ MWF.xApplication.Meeting.Main = new Class({
     isOnlineAvailable: function(){
         return !!this.meetingConfig.enableOnline;
     },
+    isAutoCreateOnlineRoom: function(){
+        return this.meetingConfig.onlineProduct === "好视通"
+    },
+    isCopyEnable: function(){
+        return Promise.resolve(false);
+        // if( typeOf(this.copyEnable) === "boolean" )return Promise.resolve(this.copyEnable);
+        // var text = "";
+        // if (navigator.clipboard) {
+        //     return navigator.clipboard.writeText(text).then(function() {
+        //         this.copyEnable = true;
+        //         return this.copyEnable;
+        //     }.bind(this), function(err) {
+        //         this.copyEnable = false;
+        //         return this.copyEnable;
+        //     });
+        // }else{
+        //     var textArea = document.createElement("textarea");
+        //     textArea.value = text;
+        //     // Avoid scrolling to bottom
+        //     textArea.style.top = "0";
+        //     textArea.style.left = "0";
+        //     textArea.style.position = "fixed";
+        //     document.body.appendChild(textArea);
+        //     textArea.focus();
+        //     textArea.select();
+        //     try {
+        //         var successful = document.execCommand('copy');
+        //         this.copyEnable = successful;
+        //     } catch (err) {
+        //         this.copyEnable = false
+        //     }
+        //     document.body.removeChild(textArea);
+        //     return Promise.resolve(this.copyEnable);
+        // }
+    },
+    copyTextToClipboard: function(text) {
+        if (!navigator.clipboard) {
+            this.fallbackCopyTextToClipboard(text);
+            return;
+        }
+        navigator.clipboard.writeText(text);
+    },
+    fallbackCopyTextToClipboard: function(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+        } catch (err) {
+        }
+
+        document.body.removeChild(textArea);
+    },
     setEvent: function(){
         //this.topMenu.addEvent("mouseover", function(){this.showMenu();}.bind(this));
         //this.topMenu.addEvent("mouseout", function(){this.hideMenu();}.bind(this));
@@ -695,10 +756,7 @@ MWF.xApplication.Meeting.Config = new Class({
         this.configData = this.app.meetingConfig || {};
         this.process = null;
 
-
-        debugger;
-
-        o2.Actions.load("x_meeting_assemble_control").ConfigAction.getSystemConfig(function(json){
+        o2.Actions.load("x_meeting_assemble_control").ConfigAction.getConfigManage(function(json){
             var jsonData = json.data || {};
             if (jsonData.process){
                 this.configData.process = jsonData.process;

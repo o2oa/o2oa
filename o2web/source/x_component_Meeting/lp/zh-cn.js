@@ -173,6 +173,8 @@ MWF.xApplication.Meeting.LP = {
     "yes": "是",
     "no": "否",
     "other": "其他",
+    "createOnSave": "保存后自动生成",
+    "copy": "拷贝",
 
     "week" : "周",
     "weeks": {

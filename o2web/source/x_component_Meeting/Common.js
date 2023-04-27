@@ -740,7 +740,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var isEditing = this.isNew || (this.isEdited  && this.data.status == "wait" &&  isEditer);
 
         var startImmediatelyEnable = false;
-        if( editEnable ){
+        if( editEnable && this.data.room){ //&& this.data.mode !== "online"
             if( MWF.AC.isMeetingAdministrator() ){
                 startImmediatelyEnable = true;
             }else{
@@ -751,8 +751,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
 
         var finishImmediatelyEnable = false;
-        if( isEditer && !this.isEdited && !this.isNew && this.data.status == "processing" ){
+        if( isEditer && !this.isEdited && !this.isNew && this.data.status == "processing" && this.data.room){
             finishImmediatelyEnable = true;
+            //if( this.data.mode === "online" )finishImmediatelyEnable = false;
         }
 
         this.isEditer = isEditer;
@@ -973,8 +974,20 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             }.bind(this)
                         } },
                     subject: {},
-                    roomLink: {},
-                    roomId: {},
+                    roomLink: {
+                        type: this.app.isAutoCreateOnlineRoom() ? ( this.isNew ? "text" : "innerText" ) : "text",
+                        attr: {
+                            readonly: this.app.isAutoCreateOnlineRoom(),
+                            placeholder: this.app.isAutoCreateOnlineRoom() ? this.lp.createOnSave: ""
+                        }
+                    },
+                    roomId: {
+                        type: this.app.isAutoCreateOnlineRoom() ? ( this.isNew ? "text" : "innerText" ) : "text",
+                        attr: {
+                            readonly: this.app.isAutoCreateOnlineRoom(),
+                            placeholder: this.app.isAutoCreateOnlineRoom() ? this.lp.createOnSave: ""
+                        }
+                    },
                     summary: {type: "textarea"},
                     hostPerson: { type : "org", orgType : "identity",  count: 1, "defaultValue": this.getIdentity()  },
                     hostUnit: { type : "org", orgType : "unit",  count: 1 },
@@ -989,25 +1002,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     },
                     rejectAction : { type : "button", value : this.lp.reject, style : {"margin-left": "20px"}, className : "inputDenyButton",
                         event : {  click : function( it, ev ){ this.reject(ev) }.bind(this) }
-                    },
-                    // saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
-                    //     click : function(){ this.save();}.bind(this)
-                    // } },
-                    // removeAction : { type : "button", className : "inputCancelButton", value : this.lp.cancelMeeting , event : {
-                    //     click : function( item, ev ){ this.cancelMeeting(ev); }.bind(this)
-                    // } },
-                    // editAction : { type : "button", className : "inputOkButton", value : this.lp.editMeeting , event : {
-                    //     click : function(){ this.editMeeting(); }.bind(this)
-                    // } },
-                    // startImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.startMeetingImmediately , event : {
-                    //     click : function(){ this.startImmediately(); }.bind(this)
-                    // } },
-                    // finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.endMeetingImmediately , event : {
-                    //         click : function(){ this.finishImmediately(); }.bind(this)
-                    //     } },
-                    // cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
-                    //     click : function(){ this.close(); }.bind(this)
-                    // } }
+                    }
                 }
             }, this.app);
             this.form.load();
@@ -1019,10 +1014,20 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             }
             if( this.data.id )this.loadAttachment();
 
-            if( isEditer && !this.isNew && !this.isEdited ){
-                this.loadQrCode();
+            if(  isEditer && !this.isNew && !this.isEdited ){
+                if( data.mode !== "online" )this.loadQrCode();
             }else{
                 this.qrCodeArea.destroy();
+            }
+
+            if( this.data.mode === "online" ){
+                if( !isEditing ){
+                    this.loadRoomUrl_read();
+                }else if( this.app.isAutoCreateOnlineRoom() ){
+                    if( this.data.roomLink || this.data.roomId ){
+                        this.loadRoomUrl_read();
+                    }
+                }
             }
         }.bind(this), true);
     },
@@ -1174,6 +1179,38 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     },
     isShowCurrentUserDelPersonInfor : function () {
         return (!this.isEdited) && (this.data.inviteDelPersonList||[]).contains(this.userName) && !(this.data.invitePersonList||[]).contains(this.userName);
+    },
+    loadRoomUrl_read: function(){
+        var node;
+        if( this.data.roomLink ){
+            this.onlineRoomLink = this.data.roomLink;
+            node = this.formTableArea.getElement("[item='roomLink']");
+            node.empty();
+            new Element("span", { text: this.data.roomLink, name: "roomLink", style: "display:none;" }).inject( node );
+            new Element("a", {
+                style: "font-size:14px;",
+                href: this.data.roomLink,
+                text: this.data.roomLink,
+                target: "_blank"
+            }).inject( node );
+        }
+        if( this.data.roomId ){
+            this.onlineRoomId = this.data.roomId;
+            node = this.formTableArea.getElement("[item='roomId']");
+            node.empty();
+            new Element("span", { text: this.data.roomId, name: "roomId" }).inject( node );
+            this.app.isCopyEnable().then(function(flag){
+                if( flag ){
+                    new Element("div", {
+                        "text": this.lp.copy,
+                        "styles": this.app.css.inputDenyButton,
+                        "events": {
+                            "click": function (){ this.app.copyTextToClipboard(this.data.roomId) }.bind(this)
+                        }
+                    }).inject( node );
+                }
+            }.bind(this))
+        }
     },
     reloadinviteDelPerson: function(){
         if(!this.form)return;
@@ -1611,6 +1648,17 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.app.notice(this.lp.meeting_saveSuccess, "success");
             if (!this.attachmentNode){
                 this.loadAttachment();
+
+                if( this.data.mode === "online" ){
+                    o2.Actions.load("x_meeting_assemble_control").MeetingAction.get( this.data.id, function (json) {
+                        this.data.roomLink = json.data.roomLink;
+                        this.data.roomId = json.data.roomId;
+                        if( this.app.isAutoCreateOnlineRoom() ){
+                            this.loadRoomUrl_read();
+                        }
+                    }.bind(this))
+                }
+
                 this.resetHeight("auto", 30);
             }
         }.bind(this));
@@ -1621,7 +1669,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var errorText = "";
         if (!this.data.subject) errorText +=this.lp.meeting_input_subject_error;
         if( this.data.mode === "online" ){
-            if (!this.data.roomLink && !this.data.roomId) errorText +=this.lp.meeting_input_url_number_error;
+            if ( !this.app.isAutoCreateOnlineRoom() && !this.data.roomLink && !this.data.roomId ) errorText +=this.lp.meeting_input_url_number_error;
         }else{
             if (!this.data.room) errorText +=this.lp.meeting_input_room_error;
         }
@@ -1647,7 +1695,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }.bind(this));
     },
     getSaveData: function(){
+        debugger;
         this.data = this.form.getResult(false,null,false,false,true);
+
+        if( this.onlineRoomLink )this.data.roomLink = this.onlineRoomLink;
+        if( this.onlineRoomId )this.data.roomId = this.onlineRoomId; //在线会议室ID
+
         this.data.room = this.roomId;
         if( this.invitePersonList ){
             this.data.invitePersonList = this.invitePersonList;
@@ -1889,11 +1942,42 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             }
         }
 
+        if( this.data.mode === "online" )this.loadRoomLink();
+
         this.fireEvent("customContent", [contentNode, node]);
     },
     getString : function( str ){
         var s = "00" + str;
         return s.substr(s.length - 2, 2 );
+    },
+    loadRoomLink: function(){
+        var node;
+        if( this.data.roomLink ){
+            node = this.node.getElement("[item='roomLink']");
+            node.empty();
+            new Element("a", {
+                style: "font-size:14px;",
+                href: this.data.roomLink,
+                text: this.data.roomLink,
+                target: "_blank"
+            }).inject( node );
+        }
+        if( this.data.roomId ){
+            this.app.isCopyEnable().then(function(flag){
+                if( flag ){
+                    node = this.node.getElement("[item='roomId']");
+                    node.empty();
+                    new Element("span", { text: this.data.roomId, name: "roomId" }).inject( node );
+                    new Element("div", {
+                        "text": this.lp.copy,
+                        "styles": this.app.css.inputDenyButton,
+                        "events": {
+                            "click": function (){ this.app.copyTextToClipboard(this.data.roomId) }.bind(this)
+                        }
+                    }).inject( node );
+                }
+            }.bind(this))
+        }
     },
     loadRoom: function( callback ){
         var area = this.node.getElement("[item='meetingRoom']");

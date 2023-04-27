@@ -173,6 +173,8 @@ MWF.xApplication.Meeting.LP = {
     "yes": "Yes",
     "no": "No",
     "other": "Other",
+    "createOnSave": "Automatically generated after saving",
+    "copy": "Copy",
 
     "week": "Week",
     "weeks": {
