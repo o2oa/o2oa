@@ -3780,7 +3780,7 @@ MWF.xScript.Environment = function(ev){
          *   "data" : data, //（json object）可选，创建文档时默认的业务数据
          *   "identity" : identity, //（string | Array）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          *   "callback" : callback, //（funcation）可选，文档创建后的回调函数。
-         *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
+         *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
          *   "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
          *   "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
