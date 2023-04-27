@@ -145,6 +145,17 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     getEditor: function (callback) {
 
+        if (this.isReadonly()){
+            this.mode  = "view";
+        }else{
+            if (this.json.readScript && this.json.readScript.code){
+                var flag = this.form.Macro.exec(this.json.readScript.code, this);
+                if (flag){
+                    this.mode = "view";
+                }
+            }
+        }
+
         if(this.data.appToken){
 
             this.action.OnlyofficeAction.appFileEdit({
@@ -171,16 +182,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
 
         this.fireEvent("beforeOpen");
 
-        if (this.isReadonly()){
-            this.mode  = "view";
-        }else{
-            if (this.json.readScript && this.json.readScript.code){
-                var flag = this.form.Macro.exec(this.json.readScript.code, this);
-                if (flag){
-                    this.mode = "view";
-                }
-            }
-        }
+
         var docEditor;
         var _self = this;
         var innerAlert = function (message) {
