@@ -1178,8 +1178,8 @@ public class Business {
 		if(work==null){
 			WorkCompleted workCompleted = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
 			if(workCompleted!=null){
-				application = work.getApplication();
-				process = work.getProcess();
+				application = workCompleted.getApplication();
+				process = workCompleted.getProcess();
 			}
 		}else{
 			application = work.getApplication();
