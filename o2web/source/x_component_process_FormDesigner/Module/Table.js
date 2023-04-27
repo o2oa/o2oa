@@ -179,6 +179,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
                 if( this.hasOwnProperty("tmpCellspacing") ){
 					table.set("cellspacing", this.tmpCellspacing );
+					this.tmpCellspacing = null;
 				}
 				
 				e.stopPropagation();
