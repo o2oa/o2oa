@@ -1,11 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import com.x.meeting.assemble.control.service.HstService;
-import com.x.meeting.assemble.control.service.OnlineMeeting;
-import com.x.meeting.core.entity.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,6 +16,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.core.entity.*;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -37,6 +35,24 @@ class ActionCreate extends BaseAction {
 			if(StringUtils.isBlank(wi.getSubject())){
 				throw new ExceptionCustomError("会议标题不能为空！");
 			}
+
+			String applicant = effectivePerson.getDistinguishedName();
+			/** 如果是后台调用,通过流程来触发会议 */
+			if (effectivePerson.isCipher() && StringUtils.isNotEmpty(wi.getApplicant())) {
+				applicant = wi.getApplicant();
+			}
+			if (!Config.token().isInitialManager(applicant)) {
+				applicant = business.organization().person().get(applicant);
+			}
+			if (StringUtils.isEmpty(applicant)) {
+				throw new ExceptionPersonNotExist(applicant);
+			}
+			meeting.setApplicant(applicant);
+			if (meeting.getInviteMemberList() == null) {
+				meeting.setInviteMemberList(meeting.getInvitePersonList());
+			}
+			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
+
 			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
 				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
 					MeetingConfigProperties config = business.getConfig();
@@ -68,32 +84,7 @@ class ActionCreate extends BaseAction {
 			}
 
 			meeting.setManualCompleted(false);
-			String applicant = effectivePerson.getDistinguishedName();
-			/** 如果是后台调用,通过流程来触发会议 */
-			if (effectivePerson.isCipher() && StringUtils.isNotEmpty(wi.getApplicant())) {
-				applicant = wi.getApplicant();
-			}
-			if (!Config.token().isInitialManager(applicant)) {
-				applicant = business.organization().person().get(applicant);
-			}
-			if (StringUtils.isEmpty(applicant)) {
-				throw new ExceptionPersonNotExist(applicant);
-			}
-			meeting.setApplicant(applicant);
-			if (ListTools.isNotEmpty(meeting.getInviteMemberList())) {
-				for (String str : meeting.getInviteMemberList()) {
-					logger.debug(">>>>>>>> before convert invitePersonList:" + str);
-				}
-			}
-			if (meeting.getInviteMemberList() == null) {
-				meeting.setInviteMemberList(meeting.getInvitePersonList());
-			}
-			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
-			if (ListTools.isNotEmpty(meeting.getInvitePersonList())) {
-				for (String str : meeting.getInvitePersonList()) {
-					logger.debug("after convert invitePersonList:{}.", str::toString);
-				}
-			}
+
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
 			meeting.setRejectPersonList(this.convertToPerson(business, meeting.getRejectPersonList()));
 			meeting.getInvitePersonList().remove(meeting.getApplicant());
