@@ -3871,7 +3871,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Object} [data]   - 流程启动时默认的业务数据。
          * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
-         * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
+         * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当表单或页面在浏览器单独打开的时候改参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
          * @example
