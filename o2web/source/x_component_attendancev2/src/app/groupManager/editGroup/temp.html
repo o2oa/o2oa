@@ -227,17 +227,9 @@
                             <td>
                                 {{rDate.value.date}}
                             </td>
-                            <td>{{ ($.form.checkType === '1') ? ( (rDate.value.shift) ? rDate.value.shift.shiftName : $.lp.dateCycle.none ) : '自由工时' }}</td>
+                            <td>{{ ($.form.checkType === '1') ? ( (rDate.value.shift) ? rDate.value.shift.shiftName : $.lp.dateCycle.none ) : $.lp.groupForm.checkTypeFree }}</td>
                             <td>
-                                <!-- <div style=" position: relative;">
-                                    <div style="height: 39px; min-width: 48px; line-height: 39px;" id="{{ 'o2-required-date-' + rDate.value.date  }}" @click="this.showRequiredDateCycleSelector( rDate.value.date)">{{ (rDate.value.cycle) ? rDate.value.cycle.name : $.lp.dateCycle.none }}</div>
-                                    <div class="o2-selctor" style="display: none;" id="{{ 'o2-selector-' + rDate.value.date  }}">
-                                        <ul class="o2-selctor-ul ">
-                                            <li oo-each="$.dateCycleList" oo-item="cycle" class="{{ (rDate.value.cycle && cycle.value.value == rDate.value.cycle.value) ? 'lightColor_bg o2-selctor-li' : 'o2-selctor-li' }}" @click="this.chooseDateCycleItem(rDate.value.date, cycle.value)">{{ cycle.value.name }}</li>
-                                        </ul>
-                                    </div>
-                                   
-                                </div> -->
+                                
                                 <select name="{{ 'o2-selector-name-' + rDate.value.date  }}"  id="{{ 'o2-selector-' + rDate.value.date  }}" @change="chooseDateCycleItem2">
                                     <option oo-each="$.dateCycleList" oo-item="cycle" value="{{cycle.value.value}}"  .selected="(rDate.value.cycle && cycle.value.value === rDate.value.cycle.value)" >{{ cycle.value.name }} </option>
                                 </select>

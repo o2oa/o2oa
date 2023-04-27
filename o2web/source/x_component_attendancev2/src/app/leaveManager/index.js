@@ -1,5 +1,5 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp, o2, layout } from "@o2oa/component";
 import { leaveActionListByPaging, leaveAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
@@ -15,9 +15,9 @@ export default content({
       lp,
       // 搜索表单
       form: {
-        person: '',
-        startDate: '',
-        endDate: ''
+        person: "",
+        startDate: "",
+        endDate: "",
       },
       filterList: [],
       leaveList: [],
@@ -29,9 +29,6 @@ export default content({
       },
     };
   },
-  beforeRender() {
-    
-  },
   afterRender() {
     this.search();
   },
@@ -40,22 +37,22 @@ export default content({
     this.loadLeaveList();
   },
   loadData(e) {
-    if (
-      e &&
-      e.detail &&
-      e.detail.module &&
-      e.detail.module.bind
-    ) {
+    if (e && e.detail && e.detail.module && e.detail.module.bind) {
       this.bind.pagerData.page = e.detail.module.bind.page || 1;
       this.loadLeaveList();
     }
   },
   async loadLeaveList() {
     let form = this.bind.form;
-    if (this.bind.filterList && this.bind.filterList.length>0) {
-      form.person = this.bind.filterList[0];
+    if (this.bind.menu.id === "3-4") {
+      /// 管理员
+      if (this.bind.filterList && this.bind.filterList.length > 0) {
+        form.person = this.bind.filterList[0];
+      } else {
+        form.person = "";
+      }
     } else {
-      form.person = "";
+      form.person = layout.session.user.distinguishedName;
     }
     const json = await leaveActionListByPaging(
       this.bind.pagerData.page,
@@ -76,7 +73,7 @@ export default content({
   },
   //  删除
   clickDeleteData(id) {
-    var _self = this; 
+    var _self = this;
     o2.api.page.confirm(
       "warn",
       lp.alert,
@@ -100,19 +97,22 @@ export default content({
   // excel导入请假数据
   importExcel() {
     if (!this.uploadFileAreaNode) {
-			this._createUploadNode();
-		}
-		this.fileUploadNode.click();
+      this._createUploadNode();
+    }
+    this.fileUploadNode.click();
   },
   // 创建上传控件
   _createUploadNode() {
     this.uploadFileAreaNode = new Element("div");
-		const html = "<input name=\"file\" type=\"file\" multiple/>";
-		this.uploadFileAreaNode.set("html", html);
-		this.fileUploadNode = this.uploadFileAreaNode.getFirst();
-    this.fileUploadNode.addEvent("change", function() {
-      this._uploadExcel();
-    }.bind(this));
+    const html = '<input name="file" type="file" multiple/>';
+    this.uploadFileAreaNode.set("html", html);
+    this.fileUploadNode = this.uploadFileAreaNode.getFirst();
+    this.fileUploadNode.addEvent(
+      "change",
+      function () {
+        this._uploadExcel();
+      }.bind(this)
+    );
   },
   async _uploadExcel() {
     const files = this.fileUploadNode.files;
@@ -120,20 +120,26 @@ export default content({
       const file = files.item(0);
       const fileExt = file.name.substring(file.name.lastIndexOf("."));
       console.debug("文件名", file.name, fileExt);
-      if (fileExt.toLowerCase() !== ".xls" && fileExt.toLowerCase() !== ".xlsx") {
-        o2.api.page.notice(lp.leave.importExcelFileError, 'error');
+      if (
+        fileExt.toLowerCase() !== ".xls" &&
+        fileExt.toLowerCase() !== ".xlsx"
+      ) {
+        o2.api.page.notice(lp.leave.importExcelFileError, "error");
         return;
       }
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('fileName', file.name);
+      formData.append("file", file);
+      formData.append("fileName", file.name);
       var _self = this;
-      o2.Actions.load("x_attendance_assemble_control").LeaveAction.input(formData, "", function(json){
-        if (json && json.data) {
-          _self.downloadConfirm(json.data)
+      o2.Actions.load("x_attendance_assemble_control").LeaveAction.input(
+        formData,
+        "",
+        function (json) {
+          if (json && json.data) {
+            _self.downloadConfirm(json.data);
+          }
         }
-      }); // leaveAction("input", formData);
-      
+      ); // leaveAction("input", formData);
     }
   },
   downloadConfirm(result) {
@@ -160,8 +166,9 @@ export default content({
   // 下载导入结果
   downloadImportResult(resultFlag) {
     if (resultFlag) {
-      const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
-      let url =  dAction.getAddress() + dAction.actions.getResult.uri;
+      const dAction = o2.Actions.load("x_attendance_assemble_control")
+        .LeaveAction.action;
+      let url = dAction.getAddress() + dAction.actions.getResult.uri;
       url = url.replace("{flag}", encodeURIComponent(resultFlag));
       console.debug(url);
       window.open(o2.filterUrl(url));
@@ -169,9 +176,10 @@ export default content({
   },
   // 下载excel模板
   excelTemplateDownload() {
-    const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
-    let url =  dAction.getAddress() + dAction.actions.template.uri;
+    const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction
+      .action;
+    let url = dAction.getAddress() + dAction.actions.template.uri;
     console.debug(url);
     window.open(o2.filterUrl(url));
-  }
+  },
 });

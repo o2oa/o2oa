@@ -15,6 +15,8 @@
   --att-record-status-fieldwork-color: #E233FF;
   /* 申诉 */
   --att-record-status-appeal-color: #4FB2E3;
+  /* 外出请假 */
+  --att-record-status-leave-color: #78c06e;
 }
 
 /* common */
@@ -73,7 +75,7 @@
 }
 /* 节假日 */
 .color-holiday {
-  color: #78c06e;
+  color: var(--att-record-status-leave-color);
 }
 .o2-divider--horizontal {
   display: block;

@@ -6,6 +6,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
+import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -54,11 +55,20 @@ public class ActionListDetailWithDate extends BaseAction {
                     Wo wo = Wo.copier.copy(detail);
                     List<String> ids = detail.getRecordIdList();
                     if (ids != null && !ids.isEmpty()) {
-                        List<AttendanceV2CheckInRecord> recordList = new ArrayList<>();
+                        List<WoRecord> recordList = new ArrayList<>();
                         for (String id : ids) {
                             AttendanceV2CheckInRecord record = emc.find(id, AttendanceV2CheckInRecord.class);
                             if (record != null) {
-                                recordList.add(record);
+                                WoRecord woRecord = WoRecord.copier.copy(record);
+                                try {
+                                    if (StringUtils.isNotEmpty(woRecord.getLeaveDataId())) {
+                                        AttendanceV2LeaveData leaveData = emc.find(woRecord.getLeaveDataId(), AttendanceV2LeaveData.class);
+                                        if (leaveData != null) {
+                                            woRecord.setLeaveData(leaveData);
+                                        }
+                                    }
+                                } catch (Exception ignore) {}
+                                recordList.add(woRecord);
                             }
                         }
                         // 如果是休息日 只有在有打卡记录的时候才提供数据，否则是无效数据
@@ -66,6 +76,7 @@ public class ActionListDetailWithDate extends BaseAction {
                             List<AttendanceV2CheckInRecord> signList = recordList.stream().filter((r) -> (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)))
                                     .collect(Collectors.toList());
                             if (!signList.isEmpty()) {
+
                                 wo.setRecordList(recordList);
                             } else { // 空数组前端好处理
                                 wo.setRecordList(new ArrayList<>());
@@ -116,14 +127,30 @@ public class ActionListDetailWithDate extends BaseAction {
                 JpaObject.FieldsInvisible);
 
         @FieldDescribe("打卡记录")
-        private List<AttendanceV2CheckInRecord> recordList;
+        private List<WoRecord> recordList;
 
-        public List<AttendanceV2CheckInRecord> getRecordList() {
+        public List<WoRecord> getRecordList() {
             return recordList;
         }
 
-        public void setRecordList(List<AttendanceV2CheckInRecord> recordList) {
+        public void setRecordList(List<WoRecord> recordList) {
             this.recordList = recordList;
+        }
+    }
+
+    public static class WoRecord extends AttendanceV2CheckInRecord {
+        @FieldDescribe("外出请假记录")
+        private AttendanceV2LeaveData leaveData;
+
+        static WrapCopier<AttendanceV2CheckInRecord, WoRecord> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, WoRecord.class, null,
+                JpaObject.FieldsInvisible);
+
+        public AttendanceV2LeaveData getLeaveData() {
+            return leaveData;
+        }
+
+        public void setLeaveData(AttendanceV2LeaveData leaveData) {
+            this.leaveData = leaveData;
         }
     }
 }

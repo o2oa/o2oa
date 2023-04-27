@@ -497,6 +497,7 @@ export default content({
         let flag = false;
         let isBreak = false;
         let workDateProperties = {};
+        let baseShiftId = "";
         for (let key in this.bind.workDay) {
           const day = this.bind.workDay[key];
           if (day.checked && (!day.shiftSelected || isEmpty(day.shiftSelected.id))) {
@@ -509,6 +510,9 @@ export default content({
               shiftId: day.shiftSelected.id,
               checked: day.checked,
             };
+            if (baseShiftId === "") {
+              baseShiftId = day.shiftSelected.id;
+            }
           }
           if (!day.checked) {
             workDateProperties[key] = {
@@ -525,6 +529,7 @@ export default content({
           return ;
         }
         myForm.workDateProperties = workDateProperties;
+        myForm.shiftId = baseShiftId;
     } else if (myForm.checkType === "2") {
         // 工作日期 day
         if (this.bind.workDateList.length < 1) {

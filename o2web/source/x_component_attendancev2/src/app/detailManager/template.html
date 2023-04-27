@@ -23,7 +23,7 @@
                 <th>{{$.lp.detailTable.date}}</th>
                 <th>{{$.lp.detailTable.attendance}}</th>
                 <th>{{$.lp.detailTable.rest}}</th>
-                <th>{{$.lp.detailTable.leave}}</th>
+                <!-- <th>{{$.lp.detailTable.leave}}</th> -->
                 <th>{{$.lp.detailTable.workTimeDuration}}</th>
                 <th>{{$.lp.detailTable.lateTimes}}</th>
                 <th>{{$.lp.detailTable.lateTimeDuration}}</th>
@@ -42,7 +42,7 @@
                 <td class="{{ $m.dateClassName(d.value) }}">{{ $m.formatDate(d.value) }}</td>
                 <td>{{d.value.attendance}}</td>
                 <td>{{d.value.rest}}</td>
-                <td>{{d.value.leaveDays}}</td>
+                <!-- <td>{{d.value.leaveDays}}</td> -->
                 <td>{{ $m.formatWorkTimeDuration(d.value.workTimeDuration) }}</td>
                 <td>{{d.value.lateTimes}}</td>
                 <td>{{d.value.lateTimeDuration}}</td>

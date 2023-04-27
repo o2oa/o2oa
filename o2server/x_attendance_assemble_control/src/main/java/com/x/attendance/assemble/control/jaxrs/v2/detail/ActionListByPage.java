@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.my.ActionListDetailWithDate;
 import com.x.attendance.assemble.control.jaxrs.v2.workplace.ActionListWithWorkPlaceObject;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
@@ -49,11 +50,20 @@ public class ActionListByPage extends BaseAction {
                 for (Wo detail : wos) {
                     List<String> ids = detail.getRecordIdList();
                     if (ids != null && !ids.isEmpty()) {
-                        List<AttendanceV2CheckInRecord> recordList = new ArrayList<>();
+                        List<WoRecord> recordList = new ArrayList<>();
                         for (String id : ids) {
                             AttendanceV2CheckInRecord record = emc.find(id, AttendanceV2CheckInRecord.class);
                             if (record != null) {
-                                recordList.add(record);
+                                WoRecord woRecord = WoRecord.copier.copy(record);
+                                try {
+                                    if (StringUtils.isNotEmpty(woRecord.getLeaveDataId())) {
+                                        AttendanceV2LeaveData leaveData = emc.find(woRecord.getLeaveDataId(), AttendanceV2LeaveData.class);
+                                        if (leaveData != null) {
+                                            woRecord.setLeaveData(leaveData);
+                                        }
+                                    }
+                                } catch (Exception ignore) {}
+                                recordList.add(woRecord);
                             }
                         }
                         detail.setRecordList(recordList);
@@ -113,14 +123,30 @@ public class ActionListByPage extends BaseAction {
                 JpaObject.FieldsInvisible);
 
         @FieldDescribe("打卡记录")
-        private List<AttendanceV2CheckInRecord> recordList;
+        private List<WoRecord> recordList;
 
-        public List<AttendanceV2CheckInRecord> getRecordList() {
+        public List<WoRecord> getRecordList() {
             return recordList;
         }
 
-        public void setRecordList(List<AttendanceV2CheckInRecord> recordList) {
+        public void setRecordList(List<WoRecord> recordList) {
             this.recordList = recordList;
+        }
+    }
+
+    public static class WoRecord extends AttendanceV2CheckInRecord {
+        @FieldDescribe("外出请假记录")
+        private AttendanceV2LeaveData leaveData;
+
+        static WrapCopier<AttendanceV2CheckInRecord, WoRecord> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, WoRecord.class, null,
+                JpaObject.FieldsInvisible);
+
+        public AttendanceV2LeaveData getLeaveData() {
+            return leaveData;
+        }
+
+        public void setLeaveData(AttendanceV2LeaveData leaveData) {
+            this.leaveData = leaveData;
         }
     }
 }

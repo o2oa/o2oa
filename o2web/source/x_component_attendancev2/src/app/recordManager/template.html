@@ -31,7 +31,7 @@
                 <th>{{$.lp.record.recordDate}}</th>
                 <th>{{$.lp.record.sourceType}}</th>
                 <th>{{$.lp.record.checkInResult}}</th>
-                <th>{{$.lp.record.fieldWork}}</th>
+                <!-- <th>{{$.lp.record.fieldWork}}</th> -->
             </thead>
             <tr oo-each="$.recordList" oo-item="r">
                 <td>{{ $m.formatName(r.value.userId) }}</td>
@@ -41,8 +41,12 @@
                 <td>{{ r.value.checkInType === 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
                 <td>{{ $m.recordDateFormat(r.value) }}</td>
                 <td>{{ $m.sourceTypeFormat(r.value.sourceType) }}</td>
-                <td class="{{this.formatRecordResultClass(r.value)}}">{{ $m.formatRecordResult(r.value) }}</td>
-                <td>{{ r.value.fieldWork ? $.lp.yes : $.lp.no }}</td>
+                <td>
+                    <span class="{{this.formatRecordResultClass(r.value)}}">{{ $m.formatRecordResult(r.value) }}</span>
+                    <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
+                </td>
+                <!-- <td>{{ r.value.fieldWork ? $.lp.yes : $.lp.no }}</td> -->
             </tr>
         </table>
     </div>

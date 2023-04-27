@@ -18,6 +18,8 @@
                   <td>{{$m.formatTime(r.value.recordDate)}}</td>
                   <td>
                     <span class="{{this.formatResultClass(r.value)}}" >{{$m.formatResult(r.value)}}</span>  
+                    <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
                   </td>
               </tr>
           </table>

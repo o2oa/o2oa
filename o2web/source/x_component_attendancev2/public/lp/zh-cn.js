@@ -16,7 +16,7 @@ MWF.xApplication.attendancev2.LP = {
     shiftManager: "班次管理",
     groupmanager: "考勤组管理",
     addressmanger: "工作场所管理",
-    leavemanager: "请假记录管理",
+    leavemanager: "外出请假记录",
     configmanager: "配置管理",
   },
 
@@ -253,21 +253,20 @@ MWF.xApplication.attendancev2.LP = {
     exceptionAlertEnable: "是否启用异常打卡提醒 (次日将收到异常打卡消息)",
 
   },
-  // 请假数据
-  leaveManagerTitle: "请假记录管理",
+  // 请假外出记录
+  leaveManagerTitle: "外出请假记录",
   leave: {
     personName: "人员名称",
-    leaveType: "请假类型",
+    leaveType: "类型",
     startTime: "开始时间",
     endTime: "结束时间",
-    leaveDays: "请假天数",
-    desc: "请假说明",
-    openProcess: "查看流程",
+    leaveDays: "天数",
+    desc: "说明",
     excelTemplate: "Excel模版下载",
     importExcel: "导入Excel",
     importExcelFileError: "只能导入Excel文件！",
     importExcelFileSuccess: "导入完成，点击确定下载查看导入结果！",
-    deleteConfirm: "确定要删除这条请假数据吗？",
+    deleteConfirm: "确定要删除这条记录数据吗？",
   },
 
   // 申诉

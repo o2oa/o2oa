@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.record;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
+import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,6 +15,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -43,6 +45,16 @@ public class ActionListByPage extends BaseAction {
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory().listRecordByPage(adjustPage,
                     adjustPageSize, wi.getUserId(), wi.getRecordDateString());
             List<Wo> wos = Wo.copier.copy(list);
+            for (Wo wo : wos) {
+                try {
+                    if (StringUtils.isNotEmpty(wo.getLeaveDataId())) {
+                        AttendanceV2LeaveData leaveData = emc.find(wo.getLeaveDataId(), AttendanceV2LeaveData.class);
+                        if (leaveData != null) {
+                            wo.setLeaveData(leaveData);
+                        }
+                    }
+                } catch (Exception ignore) {}
+            }
             result.setData(wos);
             result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), wi.getRecordDateString()));
             return result;
@@ -78,6 +90,16 @@ public class ActionListByPage extends BaseAction {
 
     public static class Wo extends AttendanceV2CheckInRecord {
 
+        @FieldDescribe("外出请假记录")
+        private AttendanceV2LeaveData leaveData;
+
+        public AttendanceV2LeaveData getLeaveData() {
+            return leaveData;
+        }
+
+        public void setLeaveData(AttendanceV2LeaveData leaveData) {
+            this.leaveData = leaveData;
+        }
 
         static WrapCopier<AttendanceV2CheckInRecord, Wo> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, Wo.class, null,
                 JpaObject.FieldsInvisible);

@@ -9,14 +9,12 @@ export default content({
     return {
       lp,
       fTitle: lp.detailRecordList.title,
-      recordList: []
+      recordList: [],
     };
   },
-  afterRender() {
-     
-  },
+  afterRender() {},
   formatDutyType(dutyType) {
-    if (dutyType === 'OnDuty') {
+    if (dutyType === "OnDuty") {
       return lp.onDuty;
     } else {
       return lp.offDuty;
@@ -31,59 +29,49 @@ export default content({
   },
   formatResultClass(record) {
     let span = "";
-    if (record.fieldWork) {
-      span = "color-fieldWork";
+    const result = record.checkInResult;
+    if (result === "PreCheckIn") {
+      span = "";
+    } else if (result === "NotSigned") {
+      span = "color-nosign";
+    } else if (result === "Normal") {
+      span = "color-normal";
+    } else if (result === "Early") {
+      span = "color-early";
+    } else if (result === "Late") {
+      span = "color-late";
+    } else if (result === "SeriousLate") {
+      span = "color-serilate";
     } else {
-      const result = record.checkInResult;
-      if (result === 'PreCheckIn') {
-        span = "";
-      } else if (result === 'NotSigned') {
-        span =   "color-nosign";
-      }  else if (result === 'Normal') {
-        span =   "color-normal";
-      } else if (result === 'Early') {
-        span =    "color-early";
-      } else if (result === 'Late') {
-        span =    "color-late";
-      } else if (result === 'SeriousLate') {
-        span =    "color-serilate";
-      } else { 
-        span = "" ;
-      }
+      span = "";
     }
     return span;
   },
   formatResult(record) {
-    // 外勤打卡的颜色 #f7b55e
     let span = "";
-    if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+    const result = record.checkInResult;
+    if (result === "PreCheckIn") {
+      span = "";
+    } else if (result === "NotSigned") {
+      span = lp.appeal.notSigned;
+    } else if (result === "Normal") {
+      span = lp.appeal.normal;
+    } else if (result === "Early") {
+      span = lp.appeal.early;
+    } else if (result === "Late") {
+      span = lp.appeal.late;
+    } else if (result === "SeriousLate") {
+      span = lp.appeal.seriousLate;
+    } else if (result === "Absenteeism") {
+      span = lp.appeal.absenteeism;
     } else {
-      const result = record.checkInResult;
-      if (result === 'PreCheckIn') {
-        span = "";
-      } else if (result === 'NotSigned') {
-        span =  lp.appeal.notSigned;
-      }  else if (result === 'Normal') {
-        span =   lp.appeal.normal;
-      } else if (result === 'Early') {
-        span =   lp.appeal.early;
-      } else if (result === 'Late') {
-        span =   lp.appeal.late;
-      } else if (result === 'SeriousLate') {
-        span =   lp.appeal.seriousLate;
-      } else if (result === 'Absenteeism') {
-        span =   lp.appeal.absenteeism;
-      } else { 
-        span = "" ;
-      }
+      span = "";
     }
     return span;
-
   },
-  
+
   // 关闭当前窗口
   close() {
     this.$parent.closeRecordList();
-  }, 
+  },
 });
