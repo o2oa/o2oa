@@ -31,6 +31,10 @@
     "icon": "attendance.png",
     "color": "#FF8080"
   },
+  "attendancev2": {
+    "icon": "attendance.png",
+    "color": "#FF8080"
+  },
   "BAM": {
     "icon": "bam.png",
     "color": "#4A90E2"

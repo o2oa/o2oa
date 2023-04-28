@@ -37,7 +37,7 @@
                 <td>{{ $m.formatName(r.value.userId) }}</td>
                 <td>{{ r.value.groupName }}</td>
                 <td>{{ r.value.shiftName }}</td>
-                <td>{{ r.value.shiftId ? r.value.preDutyTime : '' }}</td>
+                <td>{{ r.value.shiftId ? r.value.recordDateString + ' ' + r.value.preDutyTime : '' }}</td>
                 <td>{{ r.value.checkInType === 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
                 <td>{{ $m.recordDateFormat(r.value) }}</td>
                 <td>{{ $m.sourceTypeFormat(r.value.sourceType) }}</td>

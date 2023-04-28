@@ -29,7 +29,7 @@ export default content({
               "yearOnly" : false,
               "defaultDate": null,
               "defaultView" : defaultView,
-              "target":  this.$parent.dom,
+              "target":  document.body,
               "onComplate": function(formateDate, date){
                   this.changeValue(date);
               }.bind(this),
