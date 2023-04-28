@@ -1064,6 +1064,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_subject){
             if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
                 this.layout_subject.set("contenteditable", control.subject);
+                this.layout_subject.addEvent("input", function(){
+                    var subject = this.getFiletextText(this.data.subject).replace(/[\n\t]/g, '');
+                    if (this.layout_subject.get('text')!==subject){
+                        this.layout_subject.set('html', this.data.subject)
+                    }
+                }.bind(this))
                 // this.layout_subject.addEvent("blur", function(){
                 //     this.getData();
                 // }.bind(this))
