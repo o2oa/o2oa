@@ -640,8 +640,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "width": "900",
-        "height": "780",
+        "width": 900,
+        "height": 780,
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
@@ -707,6 +707,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         if( this.isNew && !this.data.mode){
             this.data.mode = this.app.isAutoCreateOnlineRoom() ? "online" : "offline";
         }
+        debugger;
         if(this.isEdited || this.isNew){
             if( this.data.mode === "online" )this.options.height += 80;
         }else{
@@ -1370,7 +1371,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.form.getItem("roomId").node.getParent("tr").setStyle("display", "none");
             // this.meetingRoomArea.getParent("tr").setStyle("display", "");
         }
-        this.resetHeight("auto");
+        //this.resetHeight("auto");
     },
     clearRoom : function(){
         this.roomId = "";
@@ -1668,7 +1669,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     }.bind(this))
                 }
 
-                this.resetHeight("auto", 30);
+                //this.resetHeight("auto", 30);
             }
         }.bind(this));
     },
