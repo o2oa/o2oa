@@ -275,7 +275,6 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }).inject(this.node);
 
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
-        debugger
         this.document.editor.editorConfig.mode = this.mode;
 
         var lang = layout.session.user.language;

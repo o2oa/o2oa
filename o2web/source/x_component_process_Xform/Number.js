@@ -35,7 +35,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                     break;
             }
         }else{
-            debugger;
             if( this.isSectionMergeEdit() ){
                 switch (this.json.mergeTypeEdit) {
                     case "amount":

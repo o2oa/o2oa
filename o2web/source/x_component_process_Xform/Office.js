@@ -985,7 +985,6 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
         }
     },
     loadOfficeEdit: function(file){
-        debugger;
         if (Browser.name==="chrome"){
             this.loadOfficeEditChrome(file);
         }else if (Browser.name==="firefox") {

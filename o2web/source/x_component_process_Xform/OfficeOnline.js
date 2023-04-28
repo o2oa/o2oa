@@ -50,7 +50,6 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.action = o2.Actions.load("x_officeonline_assemble_control");
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
-            debugger
             if(this.data.documentId === ""){
 
                 if (this.json.officeType === "other" && this.json.templateType === "script"){

@@ -200,15 +200,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadModuleEvents();
             if (this.fireEvent("queryLoad")){
 				this._queryLoaded();
-                if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
-                    if( this.json.mergeTypeEdit === "script" ){
-                        this._loadMergeEditNodeByScript();
-                    }else{
-                        this._loadMergeEditNodeByDefault();
-                    }
-                }else{
-				    this._loadUserInterface();
-			    }
+                // if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+                //     if( this.json.mergeTypeEdit === "script" ){
+                //         this._loadMergeEditNodeByScript();
+                //     }else{
+                //         this._loadMergeEditNodeByDefault();
+                //     }
+                // }else{
+				//     this._loadUserInterface();
+			    // }
+				this._loadUserInterface();
                 this._loadStyles();
                 this._loadDomEvents();
                 //this._loadEvents();
@@ -222,7 +223,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
 				var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
 				this._setBusinessData( data );
-				this._loadUserInterface();
+				//this._loadUserInterface();
 			}
 		},
 		_loadMergeEditNodeByDefault: function(){
@@ -235,11 +236,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._setBusinessData({
 				data: businessData
 			});
-			this._loadUserInterface();
+			//this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
 			debugger;
+			//区段合并后编辑
+			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+				if( this.json.mergeTypeEdit === "script" ){
+					this._loadMergeEditNodeByScript();
+				}else{
+					this._loadMergeEditNodeByDefault();
+				}
+			}
 
 			//区段合并展现
 			this.isMergeRead = this.isSectionMergeRead();
@@ -983,7 +992,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var index = line.options.index;
 				var data = this.getInputData();
 				data.data[index] = d;
-				this.setData( data );
+				this.setData( data, false, true );
 			}
 		},
 		_addLine: function(ev, edited, d){
@@ -1018,7 +1027,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data.data.push(d||{});
 				this.newLineIndex = index;
 
-				this.setData( data );
+				this.setData( data , false, true);
 				line = this.getLine(index);
 				line.isNewAdd = true;
 			}
@@ -1061,7 +1070,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data = this.getInputData();
 				data.data.splice(index, 0, {});
 				this.newLineIndex = index;
-				this.setData(data);
+				this.setData(data, false, true);
 				line = this.getLine(index);
 				line.isNewAdd = true;
 			}
@@ -1099,7 +1108,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
 				this.newLineIndex = index;
-				this.setData(data);
+				this.setData(data, false, true);
 				line = this.getLine(index);
 				line.isNewAdd = true;
 			}
@@ -1168,7 +1177,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( this.isShowAllSection ){
 				_self.setAllSectionData(data);
 			}else{
-				_self.setData( data );
+				_self.setData( data , false, true);
 			}
 			this.validationMode();
 
@@ -1209,7 +1218,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data.data.splice(line.options.index, 1);
 
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
-				this.setData( data );
+				this.setData( data , false, true);
 			}
 
 			this.validationMode();
@@ -1300,7 +1309,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				curData = data.data[line.options.index];
 				data.data[line.options.index] = upData;
 				data.data[line.options.index - 1] = curData;
-				this.setData(data);
+				this.setData(data, false, true);
 			}
 			this.fireEvent("change", [{lines: this.lineList, "type":"move"}]);
 		},
@@ -1351,7 +1360,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		resetData: function(){
 			//var value = this.getDefaultValue() || {"data": [], "total":{}};
 			var value = this.getValue();
-			this.setData( value );
+			this.setData( value , false, true);
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -1383,19 +1392,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * })
 		 *  field.setData( promise );
 		 */
-		setData: function(data, fireChange){
+		setData: function(data, fireChange, noCheckMerge){
 			if (!data){
 				data = this._getValue();
 			}else{
 				//todo 计算total
 			}
-			this._setData(data, fireChange);
+			this._setData(data, fireChange, noCheckMerge);
 		},
-		_setData: function(data, fireChange){
+		_setData: function(data, fireChange, noCheckMerge){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 				// if (o2.typeOf(data)==="object") data = [data];
-				this.__setData(data, fireChange);
+				this.__setData(data, fireChange, noCheckMerge);
 				this.moduleValueAG = null;
 				return v;
 			}.bind(this), function(){
@@ -1408,7 +1417,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
-		__setData: function(data, fireChange){
+		__setData: function(data, fireChange, noCheckMerge){
             // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
             debugger;
             var old, unchangedlineMap;
@@ -1419,7 +1428,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
             }
 
             this._setBusinessData(data);
-            this.data = data;
+
+            if( noCheckMerge ){
+				this.data = data;
+			}else{
+				this.checkMerge(data);
+			}
 
             if (this.data){
                 this.clearSubModules( unchangedlineMap );
@@ -1431,6 +1445,29 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
             this.sectionlineList = [];
             this._loadDatatable( null, unchangedlineMap );
         },
+		checkMerge: function(data){
+			//区段合并后编辑
+			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+				if( this.json.mergeTypeEdit === "script" ){
+					this._loadMergeEditNodeByScript();
+				}else{
+					this._loadMergeEditNodeByDefault();
+				}
+			}
+			//区段合并展现
+			this.isMergeRead = this.isSectionMergeRead();
+			//启用区段且显示所有区段
+			this.sectionBy = this._getSectionBy();
+			this.isShowAllSection = this.isAllSectionShow();
+
+			if( this.isShowAllSection ){
+				this.data = this.getAllSectionData();
+			}else if( this.isMergeRead ){
+				this.data = this.getSectionMergeReadData();
+			}else{
+				this.data = data;
+			}
+		},
         getUnchangedLineMap: function( data ){
             var lineDataList = this.lineList.map(function (line) {
                 return JSON.stringify( line.data );
@@ -2309,11 +2346,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
             var json = module.json;
             var id, oldId = json.id, templateJsonId = json.originialId;
             if( this.datatable.isShowAllSection ){
-                id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.id;
+                id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.originialId;
             }else if( sectionKey ){
-                id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
+                id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.originialId;
             }else{
-                id = this.datatable.json.id + "..data.." + index + ".." + json.id;
+                id = this.datatable.json.id + "..data.." + index + ".." + json.originialId;
             }
             json.id = id;
             module.node.set("id", id);
@@ -2919,7 +2956,6 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 	load: function(){
 
 		this.deleteFormData = function(data){
-			debugger;
 			delete data[this.id];
 			this._self.form.removeEvent("getData", this._self.deleteFormData);
 		}.bind({_self: this, id: this.json.id});

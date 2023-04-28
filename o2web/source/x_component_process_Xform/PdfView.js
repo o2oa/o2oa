@@ -108,7 +108,6 @@ MWF.xApplication.process.Xform.PdfView = MWF.APPPdfView =  new Class({
         var data = {
             "documentId" : this.documentId
         };
-        debugger
         this._setBusinessData(data);
     },
     loadPdfView: function(){

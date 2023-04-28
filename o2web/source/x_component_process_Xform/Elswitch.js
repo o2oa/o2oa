@@ -52,7 +52,6 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
     //     this._loadNodeEdit();
     // },
     _appendVueData: function(){
-        debugger;
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();
 

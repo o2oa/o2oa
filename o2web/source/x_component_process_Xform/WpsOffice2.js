@@ -84,7 +84,6 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
             }
         }
 
-debugger
         this.fireEvent("beforeOpen");
 console.log("wps:" + this.mode);
         this.action.CustomAction.getFileUrl(this.documentId,{"permission":this.mode} ,function( json ){

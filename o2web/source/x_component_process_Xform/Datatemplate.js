@@ -215,7 +215,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
-			debugger;
 			this.loading = true;
 
 			//区段合并展现
@@ -247,7 +246,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//允许导出
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
-			debugger;
 			if( this.isShowAllSection ){
 				this.data = this.getAllSectionData()
 			}else if( this.isMergeRead ){
@@ -738,8 +736,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.form.notice(text,"info");
 				return false;
 			}
-
-			debugger;
 
 			//使用数据驱动
 			var data, index, newLine;

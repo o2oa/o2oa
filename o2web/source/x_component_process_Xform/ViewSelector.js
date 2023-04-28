@@ -396,7 +396,6 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                                     this.fireEvent("loadView");
                                 }.bind(this),
                                 "onSelect": function(item){
-                                    debugger;
                                     this.fireEvent("select", [item]);
                                 }.bind(this),
                                 "onOpenDocument": function(options, item){

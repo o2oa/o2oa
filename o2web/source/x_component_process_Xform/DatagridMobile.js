@@ -748,7 +748,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         this.currentEditLine = null;
         this.table.inject(tableDiv);
 
-        debugger;
+
         var titleThs = this.table.getElements("th");
         titleThs.each(function(th, i){
             var id = th.get("id");
@@ -1356,7 +1356,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class(
         return data;
     },
     getSequeceTrIndex: function(){
-        debugger;
         var indexList = [];
         this.table.getElements("th").each(function(th, idx) {
             var module = this.editModules[idx];
