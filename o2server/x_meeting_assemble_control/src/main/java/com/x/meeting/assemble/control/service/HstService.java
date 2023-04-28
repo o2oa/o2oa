@@ -8,6 +8,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.ShaTools;
 import com.x.base.core.project.tools.SslTools;
 import com.x.meeting.assemble.control.Business;
@@ -103,6 +104,19 @@ public class HstService {
                         userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
                         if(existUser(userId, config)) {
                             userList.add(userId + ",2");
+                        }
+                    }
+                }
+            }
+            if(ListTools.isNotEmpty(meeting.getInviteDelPersonList())){
+                for(String user : meeting.getInviteDelPersonList()){
+                    if(!user.equals(meeting.getApplicant()) && !user.equals(meeting.getHostPerson())) {
+                        person = business.organization().person().getObject(user);
+                        if(person != null) {
+                            userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
+                            if(existUser(userId, config)) {
+                                userList.add(userId + ",0");
+                            }
                         }
                     }
                 }

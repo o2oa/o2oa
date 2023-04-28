@@ -93,7 +93,7 @@ class ActionEdit extends BaseAction {
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 
 				if(modifyTime) {
-					for (String _s : wi.getInvitePersonList()) {
+					for (String _s : meeting.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
 				}else {
