@@ -152,4 +152,22 @@ public class RecordAction extends StandardJaxrsAction {
     }
 
 
+
+
+    @JaxrsMethodDescribe(value = "导入某一天的打卡记录.", action = ActionPostDailyRecord.class)
+    @POST
+    @Path("import/daily")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void inputDailyRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  JsonElement jsonElement) {
+        ActionResult<ActionPostDailyRecord.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionPostDailyRecord().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }

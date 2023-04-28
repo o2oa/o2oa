@@ -1,5 +1,5 @@
 MWF.xApplication.attendancev2.LP = {
-  title: "考勤管理V2",
+  title: "考勤管理2",
 
   menu: {
     // 我的
