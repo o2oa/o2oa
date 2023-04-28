@@ -1,0 +1,14 @@
+<div class="o-time-picker">
+  <div class="o-time-picker-input">
+    <span class="{{$.value ? 'input' : 'input placeholder'}}" >{{$.value ? $.showValue : $.lp.components.timeMinutesSelectorClosePlaceholder}}</span>
+    <div class="icon" @mouseenter="enterIcon" @mouseleave="leaveIcon" @click="clickIconClearValue"><i class="{{$.showClear ? 'o2icon-cancel-circle': 'o2icon-icon_arrow_down'}}"></i></div>
+  </div>
+  <div class="o-time-minutes-selctor" style="display: none;">
+    <ul class="o-time-minutes-selector-ul ">
+      <li oo-each="$.hourList" oo-item="hour" class="{{hour.value == $.chooseHour ? 'lightColor_bg o-time-minutes-selector-li':'o-time-minutes-selector-li'}}" @click="this.changeChooseHour(hour.value)">{{hour.value == '' ? $.lp.components.timeMinutesSelectorClosePlaceholder : hour.value + $.lp.components.timeMinutesSelectorHour}}</li>
+    </ul>
+    <ul class="o-time-minutes-selector-ul ">
+      <li oo-each="$.minuteList" oo-item="minute" class="{{minute.value == $.chooseMinute ? 'lightColor_bg o-time-minutes-selector-li':'o-time-minutes-selector-li'}}" @click="this.selected(minute.value)">{{minute.value == '' ? $.lp.components.timeMinutesSelectorClosePlaceholder : minute.value + $.lp.components.timeMinutesSelectorMinute}}</li>
+    </ul>
+  </div>
+</div>

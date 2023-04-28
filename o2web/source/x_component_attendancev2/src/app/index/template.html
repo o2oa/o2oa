@@ -1,0 +1,13 @@
+<div class="att" id="app-attendance-v2">
+  <div class="index_page_header_container">
+    <div class="index_page_header_title">{{$.lp.title}}</div>
+  </div>
+  <div class="index_page_content_container">
+    <div class="index_page_nav_container">
+       <my-menu oo-prop="$.menu"></my-menu>
+    </div>
+    <div class="index_page_route_container">
+      <app-container oo-prop:menu="$.menu.currentMenu"></app-container>
+    </div>
+  </div>
+</div>

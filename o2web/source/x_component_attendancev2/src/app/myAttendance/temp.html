@@ -1,0 +1,94 @@
+<div class="manager-box">
+  <div class="index_page_header_container">
+    <div class="index_page_header_title">{{$.lp.myAttendanceTitle}} <span style="margin-left: 20px; font-size:16px;">{{$.cycleDate}}</span></div>
+  </div>
+  <div style="padding: 20px;">
+    <div class="o2-h2">
+      {{$.lp.myAttendanceCalendar}}  
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="item-record-status record-status-normal"></div> <span>{{$.lp.appeal.normal}}</span>
+      </div>
+      <div class="legend-item">
+        <div class="item-record-status record-status-early"></div> <span>{{$.lp.appeal.early}}</span>
+      </div>
+      <div class="legend-item">
+        <div class="item-record-status record-status-late"></div> <span>{{$.lp.appeal.late}}</span>
+      </div>
+      <div class="legend-item">
+        <div class="item-record-status record-status-serilate"></div> <span>{{$.lp.appeal.seriousLate}}</span>
+      </div>
+      <div class="legend-item">
+        <div class="item-record-status record-status-nosign"></div> <span>{{$.lp.appeal.notSigned}}</span>
+      </div>
+      <div class="legend-item">
+        <div class="item-record-status record-status-appeal"></div> <span>{{$.lp.appeal.appeal}}</span>
+      </div>
+    </div>
+    <div class="my-cal-header">
+      <div class="my-cal-header-item" oo-each="$.dayList" oo-item="day">{{day.value.name}}</div>
+    </div>
+    <div class="my-cal-body">
+      <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
+        <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
+          <div class="item-cal-date">{{item.value.date}}</div>
+          <div class="item-record-parent" oo-if="item.value.detail">
+            <div class="item-record-child margin-left" oo-each="item.value.detail.recordList" oo-item="record">
+              <div class="{{this.formatRecordStatusClass(record.value)}}"></div>
+              <div>
+                {{ $m.formatRecord(record.value) }} 
+                <span class="color-fieldWork  margin-left " oo-if="record.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                <span class="color-holiday  margin-left" oo-if="record.value.leaveData">({{record.value.leaveData.leaveType}})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="o2-divider--horizontal"></div>
+    <div class="o2-h2" oo-if="$.statistic">
+      {{$.lp.myAttendanceStatistic}}
+    </div>
+    <div class="my-statistic-parent" oo-if="$.statistic">
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.averageWorkTimeDuration}}:</div>
+        <div class="my-statistic-value">{{$.statistic.averageWorkTimeDuration}} {{$.lp.hour}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.workTimeDuration}}:</div>
+        <div class="my-statistic-value"> {{ $m.formatWorkTimeDuration($.statistic.workTimeDuration) }}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.attendance}}:</div>
+        <div class="my-statistic-value"> {{$.statistic.attendance}} {{$.lp.classifierDay}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.rest}}:</div>
+        <div class="my-statistic-value"> {{$.statistic.rest}} {{$.lp.classifierDay}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.absenteeismDays}}:</div>
+        <div class="my-statistic-value">{{$.statistic.absenteeismDays}} {{$.lp.classifierDay}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.lateTimes}}:</div>
+        <div class="my-statistic-value">{{$.statistic.lateTimes}} {{$.lp.times}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.leaveEarlierTimes}}:</div>
+        <div class="my-statistic-value">{{$.statistic.leaveEarlierTimes}} {{$.lp.times}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.absenceTimes}}:</div>
+        <div class="my-statistic-value">{{$.statistic.absenceTimes}} {{$.lp.times}}</div>
+      </div>
+      <div class="margin-right flex">
+        <div class="my-statistic-label">{{$.lp.detailTable.fieldWorkTimes}}:</div>
+        <div class="my-statistic-value">{{$.statistic.fieldWorkTimes}} {{$.lp.times}}</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
