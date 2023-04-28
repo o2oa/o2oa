@@ -1,0 +1,51 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.leaveManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">{{ $m.search($.menu.id === '3-4') }}
+        <div class="form" oo-if="$.menu.id === '3-4'">
+            <!--人员组织选择  -->
+            <div style="margin-right: 10px;float: left;">
+                <o-org-person-selector
+                    oo-prop="{  'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['person']}"
+                    oo-model="filterList"></o-org-person-selector>
+            </div>
+            <div style="margin: 10px 0;float: left;">
+                <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
+            <div style="margin: 10px 0;float: left;">
+                <button class="light-border-button mainColor_border"
+                    @click="importExcel">{{$.lp.leave.importExcel}}</button>
+            </div>
+            <div style="float: right;margin: 10px;" @click="excelTemplateDownload">
+                <span class="primary_color operator_link_underline">{{$.lp.leave.excelTemplate}}</span>
+            </div>
+        </div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.leave.personName}}</th>
+                <th>{{$.lp.leave.leaveType}}</th>
+                <th>{{$.lp.leave.startTime}}</th>
+                <th>{{$.lp.leave.endTime}}</th>
+                <!-- <th>{{$.lp.leave.leaveDays}}</th> -->
+                <th>{{$.lp.leave.desc}}</th>
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.leaveList" oo-item="d">
+                <td>{{ $m.formatName(d.value.person)}}</td>
+                <td>{{d.value.leaveType}}</td>
+                <td>{{d.value.startTime}}</td>
+                <td>{{d.value.endTime}}</td>
+                <!-- <td>{{d.value.leaveDayNumber}}</td> -->
+                <td>{{d.value.description}}</td>
+                <td>
+                    <span class="operator_link" @click="this.clickDeleteData(d.value.id)" oo-if="$.menu.id === '3-4'">{{$.lp.delete}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$.pagerData" @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
+</div>

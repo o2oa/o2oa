@@ -1,0 +1,15 @@
+<div class="o-select">
+  <div class="o-select-input">
+    <span class="{{$.showValue != $.lp.components.selectPlaceholder ? 'input' : 'input placeholder'}}">{{ $.showValue }}</span>
+    <div class="icon" @mouseenter="enterIcon" @mouseleave="leaveIcon" @click="clickIconClearValue"><i
+        class="{{$.showClear ? 'o2icon-cancel-circle': 'o2icon-icon_arrow_down'}}"></i></div>
+  </div>
+  <div class="o-select-list" style="display: none;">
+    <ul class="o-select-list-ul ">
+      <li oo-each="$.itemList" oo-item="item"
+        class="{{ item.value[$.itemValueKey] == $.result[$.itemValueKey] ? 'lightColor_bg o-select-list-li':'o-select-list-li'}}"
+        @click="this.changeSelect(item.value)">{{ item.value[$.itemNameKey]  }}
+      </li>
+    </ul>
+  </div>
+</div>
