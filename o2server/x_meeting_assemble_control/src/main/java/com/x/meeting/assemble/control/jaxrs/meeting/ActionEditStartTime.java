@@ -13,8 +13,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
+import com.x.meeting.assemble.control.service.HstService;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
+import com.x.meeting.core.entity.MeetingConfigProperties;
 import com.x.meeting.core.entity.Room;
 
 class ActionEditStartTime extends BaseAction {
@@ -45,6 +47,11 @@ class ActionEditStartTime extends BaseAction {
 
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
+
+			MeetingConfigProperties config = business.getConfig();
+			if(config.onLineEnabled()){
+				HstService.reserveMeeting(meeting, config);
+			}
 
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 				for (String _s : meeting.getInvitePersonList()) {

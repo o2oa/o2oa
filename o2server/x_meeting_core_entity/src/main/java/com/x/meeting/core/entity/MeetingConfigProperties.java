@@ -2,6 +2,7 @@ package com.x.meeting.core.entity;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class MeetingConfigProperties extends JsonProperties {
 	private static final long serialVersionUID = -271015360526750885L;
 
 	public static final String ONLINE_PROJECT_HST = "好视通";
+	public static final String ONLINE_PROJECT_QT = "其他";
 
 	@FieldDescribe("会议申请流程")
 	private Map<String, String> process;
@@ -57,7 +59,7 @@ public class MeetingConfigProperties extends JsonProperties {
 	private Boolean enableOnline = false;
 
 	@FieldDescribe("线上会议产品，如：好视通")
-	private String onlineProduct = "其他";
+	private String onlineProduct = ONLINE_PROJECT_QT;
 
 	@FieldDescribe("线上会议配置(json对象：{" +
 			"'hstUrl':'好视通服务地址','hstKey':'好视通服务接口KEY','hstSecret':'好视通服务接口SECRET','hstUserSync':'是否启用O2到好视通人员同步'}")
@@ -183,6 +185,13 @@ public class MeetingConfigProperties extends JsonProperties {
 		this.onlineProduct = onlineProduct;
 	}
 
+	public boolean onLineEnabled(){
+		if(BooleanUtils.isTrue(enableOnline) && !ONLINE_PROJECT_QT.equals(onlineProduct)){
+			return true;
+		}
+		return false;
+	}
+
 	public static class OnlineConfig{
 
 		@FieldDescribe("好视通服务地址如：https://ip:8443")
@@ -196,6 +205,12 @@ public class MeetingConfigProperties extends JsonProperties {
 
 		@FieldDescribe("是否启用O2到好视通人员同步")
 		private Boolean hstUserSync = false;
+
+		@FieldDescribe("O2到好视通人员同步时间，默认在每天的2点和12点进行同步")
+		private String syncCron = "0 0 2,12 * * ?";
+
+		@FieldDescribe("O2与好视通映射的唯一ID字段")
+		private String o2ToHstUid = "employee";
 
 		public String getHstUrl() {
 			return hstUrl;
@@ -227,6 +242,22 @@ public class MeetingConfigProperties extends JsonProperties {
 
 		public void setHstUserSync(Boolean hstUserSync) {
 			this.hstUserSync = hstUserSync;
+		}
+
+		public String getSyncCron() {
+			return syncCron;
+		}
+
+		public void setSyncCron(String syncCron) {
+			this.syncCron = syncCron;
+		}
+
+		public String getO2ToHstUid() {
+			return o2ToHstUid;
+		}
+
+		public void setO2ToHstUid(String o2ToHstUid) {
+			this.o2ToHstUid = o2ToHstUid;
 		}
 	}
 }

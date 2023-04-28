@@ -56,7 +56,7 @@ class ActionCreate extends BaseAction {
 			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
 				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
 					MeetingConfigProperties config = business.getConfig();
-					if(BooleanUtils.isTrue(config.getEnableOnline())){
+					if(config.onLineEnabled()){
 						boolean flag = HstService.createMeeting(meeting, config);
 						if(!flag){
 							throw new ExceptionCustomError("创建线上会议失败，请联系管理员！");

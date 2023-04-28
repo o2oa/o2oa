@@ -14,10 +14,8 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
-import com.x.meeting.core.entity.ConfirmStatus;
-import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.MeetingModeEnum;
-import com.x.meeting.core.entity.Room;
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.core.entity.*;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,7 +52,7 @@ class ActionEdit extends BaseAction {
 				if (null == room) {
 					throw new ExceptionRoomNotExist(wi.getRoom());
 				}
-				if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
+				if (!business.room().checkIdle(meeting.getRoom(), wi.getStartTime(), wi.getCompletedTime(),
 						meeting.getId())) {
 					throw new ExceptionRoomNotAvailable(room.getName());
 				}
@@ -84,9 +82,17 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Meeting.class);
 			emc.check(meeting, CheckPersistType.all);
 			emc.commit();
+
+			MeetingConfigProperties config = business.getConfig();
+			if(config.onLineEnabled()){
+				HstService.appendMeetingUser(meeting, config);
+				if(modifyTime){
+					HstService.reserveMeeting(meeting, config);
+				}
+			}
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 
-				if(modifyTime) { //开始时间或者结束时间有修改过
+				if(modifyTime) {
 					for (String _s : wi.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}

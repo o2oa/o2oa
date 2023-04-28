@@ -15,10 +15,7 @@ import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.MeetingConfigProperties;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author sword
@@ -28,12 +25,20 @@ public class HstService {
     private static final Logger LOGGER = LoggerFactory.getLogger(HstService.class);
     private static final String SUCCESS_CODE = "0";
     private static final String CREATE_MEETING_API = "/api/v1/room/addRoomInfo";
+    private static final String DELETE_MEETING_API = "/api/v1/room/delRoomInfo";
     private static final String APPEND_MEETING_USER_API = "/api/v1/room/authUser";
     private static final String RESERVE_MEETING_API = "/api/v1/room/reservation";
+    private static final String FIXED_MEETING_API = "/api/v1/room/fixed";
     public static final String MEETING_WEB_URL = "/launch/toEnterMeeting.do?roomID=";
     public static final String CREATE_USER_API = "/api/v1/user/add";
     public static final String FIND_USER_API = "/api/v1/user/list";
 
+    /**
+     * 创建好视通在线会议
+     * @param meeting
+     * @param config
+     * @return
+     */
     public static boolean createMeeting(Meeting meeting, MeetingConfigProperties config){
         try {
             Map<String, Object> map = new HashMap<>(3);
@@ -45,6 +50,7 @@ public class HstService {
             List<NameValuePair> header = new ArrayList<>();
             header.add(new NameValuePair("Authorization", token));
             String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
+            LOGGER.info("创建好视通会议：{}，返回：{}", meeting.getSubject(), res);
             if(StringUtils.isNotBlank(res)){
                 ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
                 if(SUCCESS_CODE.equals(resObj.getCode())){
@@ -53,10 +59,8 @@ public class HstService {
                     meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId);
 
                     appendMeetingUser(meeting, config);
-//                    reserveMeeting(meeting, config);
+                    reserveMeeting(meeting, config);
                     return true;
-                }else{
-                    LOGGER.warn("好视通创建会议：{}，失败：{}", meeting.getSubject(), res);
                 }
             }
         } catch (Exception e) {
@@ -65,6 +69,14 @@ public class HstService {
         return false;
     }
 
+    /**
+     * 好视通会议用户授权
+     * 授权者名单格式：’用户名,权限值‘ 或 ’会议室ID,权限值‘ 多个用‘#’号隔开， 例：
+     * paul,0#Mike,1#king,2 ;权限值定义：2 参会人 3 管理员，4初始管理员；权限值为0时，表示取消该用户会议室权限；会议ID为0时，则授予全部会议室。
+     * @param meeting
+     * @param config
+     * @return
+     */
     public static boolean appendMeetingUser(Meeting meeting, MeetingConfigProperties config){
         if(StringUtils.isBlank(meeting.getRoomId())){
             return false;
@@ -89,7 +101,9 @@ public class HstService {
                     person = business.organization().person().getObject(user);
                     if(person != null) {
                         userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
-                        userList.add(userId + ",2");
+                        if(existUser(userId, config)) {
+                            userList.add(userId + ",2");
+                        }
                     }
                 }
             }
@@ -99,13 +113,11 @@ public class HstService {
             List<NameValuePair> header = new ArrayList<>();
             header.add(new NameValuePair("Authorization", token));
             String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
+            LOGGER.info("好视通会议用户授权 request:{}-----resp:{}",XGsonBuilder.toJson(map), res);
             if(StringUtils.isNotBlank(res)){
-                LOGGER.info("request:{}-----resp:{}",XGsonBuilder.toJson(map), res);
                 ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
                 if(SUCCESS_CODE.equals(resObj.getCode())){
                     return true;
-                }else{
-                    LOGGER.warn("给好视通会议室：{}授权用户失败：{}", meeting.getRoomId(), res);
                 }
             }
         } catch (Exception e) {
@@ -114,6 +126,12 @@ public class HstService {
         return false;
     }
 
+    /**
+     * 修改会议时间
+     * @param meeting
+     * @param config
+     * @return
+     */
     public static boolean reserveMeeting(Meeting meeting, MeetingConfigProperties config){
         if(StringUtils.isBlank(meeting.getRoomId())){
             return false;
@@ -124,20 +142,53 @@ public class HstService {
         try {
             Map<String, Object> map = new HashMap<>(3);
             map.put("roomId", meeting.getRoomId());
-            map.put("hopeStartTime", DateTools.format(meeting.getStartTime()));
-            map.put("hopeEndTime", DateTools.format(meeting.getCompletedTime()));
-            String url = config.getOnlineConfig().getHstUrl() + RESERVE_MEETING_API;
+
+            String url = config.getOnlineConfig().getHstUrl() + FIXED_MEETING_API;
+            if(!DateTools.beforeNowMinutesNullIsTrue(meeting.getStartTime(), -60)) {
+                map.put("hopeStartTime", DateTools.format(DateTools.getAdjustTimeDay(meeting.getStartTime(), 0, 0, -10, 0)));
+                map.put("hopeEndTime", DateTools.format(meeting.getCompletedTime()));
+                url = config.getOnlineConfig().getHstUrl() + RESERVE_MEETING_API;
+            }
             String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
             List<NameValuePair> header = new ArrayList<>();
             header.add(new NameValuePair("Authorization", token));
             String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
             if(StringUtils.isNotBlank(res)){
-                LOGGER.info("request:{}-----resp:{}",XGsonBuilder.toJson(map), res);
+                LOGGER.info("修改会议预约时间 request:{}-----resp:{}",XGsonBuilder.toJson(map), res);
                 ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
                 if(SUCCESS_CODE.equals(resObj.getCode())){
                     return true;
-                }else{
-                    LOGGER.warn("给好视通会议室：{}授权用户失败：{}", meeting.getRoomId(), res);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return false;
+    }
+
+    /**
+     * 取消会议
+     * @param meeting
+     * @param config
+     * @return
+     */
+    public static boolean deleteMeeting(Meeting meeting, MeetingConfigProperties config){
+        if(StringUtils.isBlank(meeting.getRoomId())){
+            return false;
+        }
+        try {
+            Map<String, Object> map = new HashMap<>(1);
+            map.put("roomId", meeting.getRoomId());
+            String url = config.getOnlineConfig().getHstUrl() + DELETE_MEETING_API;
+            String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
+            List<NameValuePair> header = new ArrayList<>();
+            header.add(new NameValuePair("Authorization", token));
+            String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
+            if(StringUtils.isNotBlank(res)){
+                LOGGER.info("取消会议:{}-----返回:{}",meeting.getRoomId(), res);
+                ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
+                if(SUCCESS_CODE.equals(resObj.getCode())){
+                    return true;
                 }
             }
         } catch (Exception e) {
@@ -172,13 +223,13 @@ public class HstService {
         return false;
     }
 
-    public static boolean existUser(String userId){
+    public static boolean existUser(String userId, MeetingConfigProperties config){
         try {
             Map<String, Object> map = new HashMap<>(2);
             map.put("searchKey", userId);
             map.put("searchType", "1");
-            String url = "https://117.133.7.109:8443" + FIND_USER_API;
-            String token = ShaTools.getToken("4QY08Kyh", "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G");
+            String url = config.getOnlineConfig().getHstUrl() + FIND_USER_API;
+            String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
             List<NameValuePair> header = new ArrayList<>();
             header.add(new NameValuePair("Authorization", token));
             String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
