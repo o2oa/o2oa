@@ -703,6 +703,15 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
         if( this.data.acceptPersonList && this.data.acceptPersonList.length )this.options.height += 40;
         if( this.data.rejectPersonList && this.data.rejectPersonList.length )this.options.height += 40;
+
+        if( this.isNew && !this.data.mode){
+            this.data.mode = this.app.isAutoCreateOnlineRoom() ? "online" : "offline";
+        }
+        if(this.isEdited || this.isNew){
+            if( this.data.mode === "online" )this.options.height += 80;
+        }else{
+            if( this.data.mode === "online" )this.options.height += 40;
+        }
         this.options.height = ""+this.options.height;
 
         var defaultDate, defaultBeginTime, date1, defaultEndTime;
@@ -734,10 +743,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
 
         var data = this.data;
-
-        if( this.isNew && !this.data.mode){
-            this.data.mode = this.app.isAutoCreateOnlineRoom() ? "online" : "offline";
-        }
 
         var isEditer = this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator();
         var editEnable = ( !this.isEdited && !this.isNew && this.data.status == "wait" &&  isEditer );
@@ -1018,8 +1023,8 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             }
             if( this.data.id )this.loadAttachment();
 
-            if(  isEditer && !this.isNew && !this.isEdited ){
-                if( data.mode !== "online" )this.loadQrCode();
+            if(  isEditer && !this.isNew && !this.isEdited && data.mode !== "online"){
+                this.loadQrCode();
             }else{
                 this.qrCodeArea.destroy();
             }
@@ -1972,7 +1977,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             node = this.node.getElement("[item='roomLink']");
             node.empty();
             new Element("a", {
-                style: "font-size:14px;",
+                style: "font-size:13px;",
                 href: this.data.roomLink,
                 text: this.data.roomLink,
                 target: "_blank"
