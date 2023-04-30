@@ -2288,7 +2288,7 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		if( this.isUnchangedAll ){
 			for( var i=0; i<data.data.length; i++ ){
 				var line = map[i.toString()];
-				if( !line ){
+				if( !line || line.options.index !== i ){
 					this.isUnchangedAll = false;
 					break;
 				}
