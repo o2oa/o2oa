@@ -310,25 +310,42 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.loadDatatable();
 		},
 		reload: function(){
+			debugger;
 			this.reloading = true;
-			var tr = this.titleTr;
 			var node;
-			if( tr ){
-				node = tr.getElement("th.mwf_addlineaction");
+			if( this.titleTr ){
+				node = this.titleTr.getElement("th.mwf_addlineaction");
 				if( node )node.destroy();
-				node = tr.getElement("th.mwf_moveaction");
+				node = this.titleTr.getElement("th.mwf_moveaction");
 				if( node )node.destroy();
 			}
 
-			tr = this.templateTr;
-			if( tr ){
-				node = tr.getElement("td.mwf_editaction");
+			if( this.templateTr ){
+				node = this.templateTr.getElement("td.mwf_editaction");
 				if( node )node.destroy();
-				node = tr.getElement("td.mwf_moveaction");
+				node = this.templateTr.getElement("td.mwf_moveaction");
 				if( node )node.destroy();
 			}
+
+			if( this.totalTr ){
+				this.totalTr.destroy();
+				this.totalTr = null;
+			}
+
+			this.editModules = [];
+
+			//是否有总计列
+			this.totalFlag = false;
+			this.totalColumns = [];
+			this.totalNumberModuleIds = [];
+
+			this.checkMerge( this.getValue() );
 
 			this.clearSubModules();
+
+			this.lineList = [];
+			this.sectionlineList = [];
+
 			this.loadDatatable();
 			this.reloading = false;
 		},
@@ -839,7 +856,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}.bind(this));
 		},
 		_loadSectionLineList_EditSection: function(callback, operation){
-			this.getAllSectionData();
 			var map = this.unchangedSectionLineMap || {};
 			debugger;
 			// Object.each(map, function (sline, idx) {
@@ -1509,7 +1525,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.setBusinessDataById(data);
 
 			if( operation ){
-				this.data = data;
+				this.data = this.isShowAllSection ? this.getAllSectionData() : data;
 			}else{
 				this.checkMerge(data);
 			}
@@ -2188,7 +2204,7 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		if( this.data.data &&  this.data.data.data ){
 			( this.data.data.data || [] ).each(function(d, idx){
 				if( !d )return;
-				var node = this._createLineNode( idx > 0 ? this.lineList[idx - 1].node : null  );
+				var node = this._createLineNode();
 				var isEdited = false, isNew = false;
 				if( this.options.isEdited ){
 					var dt = this.datatable;
@@ -2363,9 +2379,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		var hasUnchangedLine = Object.keys(map).length > 0;
 
 		if( !hasUnchangedLine ){
-			if( this.keyNode ){
-				this.keyNode.destroy();
-				this.keyNode = null;
+			if( this.sectionKeyNode ){
+				this.sectionKeyNode.destroy();
+				this.sectionKeyNode = null;
 			}
 		}
 
