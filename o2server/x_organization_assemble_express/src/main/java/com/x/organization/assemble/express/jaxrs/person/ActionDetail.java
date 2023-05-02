@@ -23,6 +23,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.PersonDetail;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Identity;
@@ -109,8 +110,31 @@ class ActionDetail extends BaseAction {
 
 		functions.stream().forEach(o -> o.apply(param));
 
-		return convert(param);
+		Wo wo = convert(param);
+		collate(fetchIdentity, fetchUnit, fetchUnitDuty, fetchGroup, fetchRole, fetchPersonAttribute, wo);
+		return wo;
+	}
 
+	private void collate(boolean fetchIdentity, boolean fetchUnit, boolean fetchUnitDuty, boolean fetchGroup,
+			boolean fetchRole, boolean fetchPersonAttribute, Wo wo) {
+		if (!fetchIdentity) {
+			wo.getIdentityList().clear();
+		}
+		if (!fetchUnit) {
+			wo.getUnitList().clear();
+		}
+		if (!fetchUnitDuty) {
+			wo.getUnitDutyList().clear();
+		}
+		if (!fetchGroup) {
+			wo.getGroupList().clear();
+		}
+		if (!fetchRole) {
+			wo.getRoleList().clear();
+		}
+		if (!fetchPersonAttribute) {
+			wo.getPersonAttributeList().clear();
+		}
 	}
 
 	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailIdentity(
@@ -174,7 +198,7 @@ class ActionDetail extends BaseAction {
 		try {
 			List<String> ids = param.first().entityManagerContainer().idsInOrIsMember(Role.class,
 					Role.groupList_FIELDNAME, param.sixth(), Role.personList_FIELDNAME, param.second().getId());
-			param.sixth().addAll(ids);
+			param.seventh().addAll(ids);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -368,86 +392,9 @@ class ActionDetail extends BaseAction {
 
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	public static class Wo extends PersonDetail {
 
 		private static final long serialVersionUID = -8456354949288335211L;
-
-		@FieldDescribe("用户")
-		private String distinguishedName = "";
-
-		@FieldDescribe("组织")
-		private List<String> unitList = new ArrayList<>();
-
-		@FieldDescribe("群组")
-		private List<String> groupList = new ArrayList<>();
-
-		@FieldDescribe("角色")
-		private List<String> roleList = new ArrayList<>();
-
-		@FieldDescribe("身份")
-		private List<String> identityList = new ArrayList<>();
-
-		@FieldDescribe("人员属性")
-		private List<String> personAttributeList = new ArrayList<>();
-
-		@FieldDescribe("组织职务")
-		private List<String> unitDutyList = new ArrayList<>();
-
-		public String getDistinguishedName() {
-			return distinguishedName;
-		}
-
-		public void setDistinguishedName(String distinguishedName) {
-			this.distinguishedName = distinguishedName;
-		}
-
-		public List<String> getUnitList() {
-			return unitList;
-		}
-
-		public void setUnitList(List<String> unitList) {
-			this.unitList = unitList;
-		}
-
-		public List<String> getGroupList() {
-			return groupList;
-		}
-
-		public void setGroupList(List<String> groupList) {
-			this.groupList = groupList;
-		}
-
-		public List<String> getRoleList() {
-			return roleList;
-		}
-
-		public void setRoleList(List<String> roleList) {
-			this.roleList = roleList;
-		}
-
-		public List<String> getPersonAttributeList() {
-			return personAttributeList;
-		}
-
-		public void setPersonAttributeList(List<String> personAttributeList) {
-			this.personAttributeList = personAttributeList;
-		}
-
-		public List<String> getUnitDutyList() {
-			return unitDutyList;
-		}
-
-		public void setUnitDutyList(List<String> unitDutyList) {
-			this.unitDutyList = unitDutyList;
-		}
-
-		public List<String> getIdentityList() {
-			return identityList;
-		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
 
 	}
 

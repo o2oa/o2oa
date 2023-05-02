@@ -718,7 +718,7 @@ public class PersonAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "分页查询用户信息.", action = ActionListFilterPaging.class)
+	@JaxrsMethodDescribe(value = "查询人员信息,返回身份,组织,组织职务,群组,角色,个人属性.", action = ActionDetail.class)
 	@POST
 	@Path("detail/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
