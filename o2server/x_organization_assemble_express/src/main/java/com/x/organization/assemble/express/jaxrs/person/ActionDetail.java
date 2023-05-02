@@ -70,13 +70,14 @@ class ActionDetail extends BaseAction {
 	}
 
 	private Wo detail(Business business, Person person, Wi wi) {
-		// identity,unit,unitDuty,group,role,personAttribute
 		boolean fetchIdentity = BooleanUtils.isNotFalse(wi.getFetchIdentity());
 		boolean fetchUnit = BooleanUtils.isNotFalse(wi.getFetchUnit());
 		boolean fetchUnitDuty = BooleanUtils.isNotFalse(wi.getFetchUnitDuty());
 		boolean fetchGroup = BooleanUtils.isNotFalse(wi.getFetchGroup());
 		boolean fetchRole = BooleanUtils.isNotFalse(wi.getFetchRole());
 		boolean fetchPersonAttribute = BooleanUtils.isNotFalse(wi.getFetchPersonAttribute());
+		// first business, second person, third identity, fourth unit, fifth unitDuty,
+		// sixth group, seventh role, eighth personAttribute
 		Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param = Octuple
 				.of(business, person, new ListOrderedSet<String>(), new ListOrderedSet<String>(),
 						new ListOrderedSet<String>(), new ListOrderedSet<String>(), new ListOrderedSet<String>(),
