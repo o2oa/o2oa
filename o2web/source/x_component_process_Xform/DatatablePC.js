@@ -402,7 +402,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						"styles": this.form.css.addLineAction,
 						"events": {
 							"click": function(e){
-								debugger;
 								if( this.json.addTo === "first" ){
 									this._insertLineByIndex(e.target, 0);
 								}else{
@@ -857,7 +856,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		_loadSectionLineList_EditSection: function(callback, operation){
 			var map = this.unchangedSectionLineMap || {};
-			debugger;
 			// Object.each(map, function (sline, idx) {
             //     sline.resetIndex( idx.toInt(), (idx.toInt()+1).toString() );
             // });
@@ -902,7 +900,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 
 		_loadSectionLineList: function(callback, operation){
-			debugger;
 			var map = this.unchangedSectionLineMap || {};
 			this.dataWithSectionKey.each(function(data, idx){
 				var sectionLine;
@@ -2198,7 +2195,6 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}else{
 			this.sectionKeyNode.hide();
 		}
-		debugger;
 		this._loadTotalTr();
 
 		if( this.data.data &&  this.data.data.data ){
@@ -2372,7 +2368,6 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		return Object.keys(map).length ? this : null;
 	},
 	clearSubModules: function(){
-		debugger;
 		if( this.isUnchangedAll )return;
 
 		var map = this.unchangedLineMap || {};
