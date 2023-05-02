@@ -1369,7 +1369,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
-		 * @summary 为数据表格赋值。
+		 * @summary 为数据表格赋值，如果需要设置所有区段数据请使用setAllSectionData方法。
 		 * @param data{DatatableData|Promise|Array} 必选，数组或Promise.
 		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
 		 * @example
@@ -1461,9 +1461,35 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.setAllSectionData( d, fireChange , operation);
 			}
 		},
+		/**
+		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
+		 * @param data{Object} 必选，对象.
+		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
+		 * @example
+		 *  this.form.get("fieldId").setAllSectionData({}); //赋空值
+		 * @example
+		 *  this.data['fieldId'].setAllSectionData({
+		 *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": { //区段1的key和data
+		 *			"data": [
+		 *				{
+		 *					"good": "yf",
+		 *					"number_2": 11,
+		 *					"prize": 1
+		 *				}
+		 *			]
+		 *		},
+		 *  	"83de86fc-60bc-4b4c-955c-1085915865a4": { //区段2的key和data
+		 *  		"data": [
+		 *  			{
+		 *  				"good": "yf",
+		 *  				"number_2": 11,
+		 *  				"prize": 10
+		 *  			}
+		 *  		]
+		 *  	}
+		 *  });
+		 */
 		setAllSectionData: function(data, fireChange, operation){
-			// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
-
 			// if( this.isSectionMergeEdit() ){
 			// 	//合并且编辑，不允许setAllSectionData
 			// 	throw new Error("The data table is in merge editing state, you can use the 'setData' method to set the data");
