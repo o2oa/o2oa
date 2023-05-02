@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.set.ListOrderedSet;
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.tuple.Nonuple;
 import com.x.base.core.project.bean.tuple.Octuple;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -32,389 +34,421 @@ import com.x.organization.core.entity.UnitDuty;
 
 class ActionDetail extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionDetail.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDetail.class);
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 
-        LOGGER.debug("execute:{}, flag:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> flag,
-                () -> jsonElement);
+		LOGGER.debug("execute:{}, flag:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> jsonElement);
 
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            Business business = new Business(emc);
-            ActionResult<Wo> result = new ActionResult<>();
-            CacheKey cacheKey = new CacheKey(this.getClass(), flag);
-            Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-            if (optional.isPresent()) {
-                result.setData((Wo) optional.get());
-            } else {
-                Wo wo = new Wo();
-                if (Config.token().isInitialManager(flag)) {
-                    // 如果是xadmin单独处理
-                    Config.token().initialManagerInstance().copyTo(wo, "password");
-                } else {
-                    Person person = business.person().pick(flag);
-                    if (null != person) {
-                        wo.setDistinguishedName(person.getDistinguishedName());
-                        detail(business, person, wi);
-                    }
-                    CacheManager.put(cacheCategory, cacheKey, wo);
-                }
-                result.setData(wo);
-            }
-            return result;
-        }
-    }
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			Business business = new Business(emc);
+			ActionResult<Wo> result = new ActionResult<>();
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, wi.getFetchIdentity(), wi.getFetchUnit(),
+					wi.getFetchUnitDuty(), wi.getFetchGroup(), wi.getFetchRole(), wi.getFetchPersonAttribute());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
+			} else {
+				Wo wo = new Wo();
+				if (Config.token().isInitialManager(flag)) {
+					// 如果是xadmin单独处理
+					wo.setDistinguishedName(Config.token().initialManagerInstance().getDistinguishedName());
+				} else {
+					Person person = business.person().pick(flag);
+					if (null != person) {
+						wo = detail(business, person, wi);
+					}
+					CacheManager.put(cacheCategory, cacheKey, wo);
+				}
+				result.setData(wo);
+			}
+			return result;
+		}
+	}
 
-    public Wo detail(Business business, Person person, Wi wi) {
-        // identity,unit,unitDuty,group,role,personAttribute
-        boolean fetchIdentity = BooleanUtils.isNotFalse(wi.getFetchIdentity());
-        boolean fetchUnit = BooleanUtils.isNotFalse(wi.getFetchUnit());
-        boolean fetchUnitDuty = BooleanUtils.isNotFalse(wi.getFetchUnitDuty());
-        boolean fetchGroup = BooleanUtils.isNotFalse(wi.getFetchGroup());
-        boolean fetchRole = BooleanUtils.isNotFalse(wi.getFetchRole());
-        boolean fetchPersonAttribute = BooleanUtils.isNotFalse(wi.getFetchPersonAttribute());
-        Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param = Octuple
-                .of(business, person, new ListOrderedSet<String>(), new ListOrderedSet<String>(),
-                        new ListOrderedSet<String>(),
-                        new ListOrderedSet<String>(), new ListOrderedSet<String>(), new ListOrderedSet<String>());
+	private Wo detail(Business business, Person person, Wi wi) {
+		// identity,unit,unitDuty,group,role,personAttribute
+		boolean fetchIdentity = BooleanUtils.isNotFalse(wi.getFetchIdentity());
+		boolean fetchUnit = BooleanUtils.isNotFalse(wi.getFetchUnit());
+		boolean fetchUnitDuty = BooleanUtils.isNotFalse(wi.getFetchUnitDuty());
+		boolean fetchGroup = BooleanUtils.isNotFalse(wi.getFetchGroup());
+		boolean fetchRole = BooleanUtils.isNotFalse(wi.getFetchRole());
+		boolean fetchPersonAttribute = BooleanUtils.isNotFalse(wi.getFetchPersonAttribute());
+		Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param = Octuple
+				.of(business, person, new ListOrderedSet<String>(), new ListOrderedSet<String>(),
+						new ListOrderedSet<String>(), new ListOrderedSet<String>(), new ListOrderedSet<String>(),
+						new ListOrderedSet<String>());
 
-        List<UnaryOperator<Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>>>> functions = new ArrayList<>();
+		List<UnaryOperator<Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>>>> functions = new ArrayList<>();
 
-        if (fetchIdentity || fetchUnit || fetchUnitDuty || fetchGroup || fetchRole) {
-            functions.add(this::functionIdentity);
-        }
+		if (fetchIdentity || fetchUnit || fetchUnitDuty || fetchGroup || fetchRole) {
+			functions.add(this::funcDetailIdentity);
+		}
 
-        if (fetchUnit || fetchUnitDuty || fetchGroup || fetchRole) {
-            functions.add(this::functionUnit);
-        }
+		if (fetchUnit || fetchUnitDuty || fetchGroup || fetchRole) {
+			functions.add(this::funcDetailUnit);
+		}
 
-        if (fetchUnitDuty || fetchGroup || fetchRole) {
-            functions.add(this::funcUnitDuty);
-        }
+		if (fetchUnitDuty || fetchGroup || fetchRole) {
+			functions.add(this::funcDetailUnitDuty);
+		}
 
-        if (fetchGroup || fetchRole) {
-            functions.add(this::functionGroup);
-        }
+		if (fetchGroup || fetchRole) {
+			functions.add(this::funcDetailGroup);
+		}
 
-        if (fetchRole) {
-            functions.add(this::functionRole);
-        }
+		if (fetchRole) {
+			functions.add(this::funcDetailRole);
+		}
 
-        if (fetchPersonAttribute) {
-            functions.add(this::functionPersonAttribute);
-        }
+		if (fetchPersonAttribute) {
+			functions.add(this::funcDetailPersonAttribute);
+		}
 
-        functions.stream().forEach(o -> o.apply(param));
+		functions.stream().forEach(o -> o.apply(param));
 
-        return convert(param);
+		return convert(param);
 
-    }
+	}
 
-    private Wo convert(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        Wo wo = new Wo();
-        wo.setDistinguishedName(param.second().getDistinguishedName());
-        param.third().stream().forEach(o -> {
-            Identity obj;
-            try {
-                obj = param.first().identity().pick(o);
-                if (null != obj) {
-                    wo.getIdentityList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        param.fourth().stream().forEach(o -> {
-            Unit obj;
-            try {
-                obj = param.first().unit().pick(o);
-                if (null != obj) {
-                    wo.getUnitList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        param.fifth().stream().forEach(o -> {
-            UnitDuty obj;
-            try {
-                obj = param.first().unitDuty().pick(o);
-                if (null != obj) {
-                    wo.getUnitDutyList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        param.sixth().stream().forEach(o -> {
-            Group obj;
-            try {
-                obj = param.first().group().pick(o);
-                if (null != obj) {
-                    wo.getGroupList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        param.seventh().stream().forEach(o -> {
-            Role obj;
-            try {
-                obj = param.first().role().pick(o);
-                if (null != obj) {
-                    wo.getRoleList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        param.eighth().stream().forEach(o -> {
-            PersonAttribute obj;
-            try {
-                obj = param.first().personAttribute().pick(o);
-                if (null != obj) {
-                    wo.getPersonAttributeList().add(obj.getDistinguishedName());
-                }
-            } catch (Exception e) {
-                LOGGER.error(e);
-            }
-        });
-        return wo;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailIdentity(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			List<String> ids = param.first().entityManagerContainer().idsEqual(Identity.class,
+					Identity.person_FIELDNAME, param.second().getId());
+			param.third().addAll(ids);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> functionIdentity(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            List<String> ids = param.first().entityManagerContainer().idsEqual(Identity.class,
-                    Identity.person_FIELDNAME,
-                    param.second().getId());
-            param.third().addAll(ids);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailUnit(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			for (String s : param.third()) {
+				Identity obj = param.first().identity().pick(s);
+				if (null != obj) {
+					param.fourth().add(obj.getUnit());
+					param.fourth().addAll(param.first().unit().listSupNested(obj.getUnit()));
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> functionUnit(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            for (String s : param.third()) {
-                Identity obj = param.first().identity().pick(s);
-                if (null != obj) {
-                    param.fourth().add(obj.getUnit());
-                    param.fourth().addAll(param.first().unit().listSupNested(obj.getUnit()));
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailUnitDuty(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			List<String> ids = param.first().entityManagerContainer().idsIn(UnitDuty.class,
+					UnitDuty.identityList_FIELDNAME, param.third());
+			param.fifth().addAll(ids);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcUnitDuty(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            List<String> ids = param.first().entityManagerContainer().idsIn(UnitDuty.class,
-                    UnitDuty.identityList_FIELDNAME, param.third());
-            param.fifth().addAll(ids);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailGroup(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			List<String> ids = param.first().entityManagerContainer().idsInOrInOrIsMember(Group.class,
+					Group.identityList_FIELDNAME, param.third(), Group.unitList_FIELDNAME, param.fourth(),
+					Group.personList_FIELDNAME, param.second().getId());
+			for (String s : ids) {
+				param.sixth().add(s);
+				param.sixth().addAll(param.first().group().listSupNested(s));
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> functionGroup(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            List<String> ids = param.first().entityManagerContainer().idsInOrInOrIsMember(Group.class,
-                    Group.identityList_FIELDNAME,
-                    param.third(), Group.unitList_FIELDNAME, param.fourth(), Group.personList_FIELDNAME,
-                    param.second().getId());
-            for (String s : ids) {
-                param.sixth().add(s);
-                param.sixth().addAll(param.first().group().listSupNested(s));
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailRole(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			List<String> ids = param.first().entityManagerContainer().idsInOrIsMember(Role.class,
+					Role.groupList_FIELDNAME, param.sixth(), Role.personList_FIELDNAME, param.second().getId());
+			param.sixth().addAll(ids);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> functionRole(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            List<String> ids = param.first().entityManagerContainer().idsInOrIsMember(Role.class,
-                    Role.groupList_FIELDNAME,
-                    param.sixth(), Role.personList_FIELDNAME,
-                    param.second().getId());
-            param.sixth().addAll(ids);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> funcDetailPersonAttribute(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		try {
+			List<String> ids = param.first().entityManagerContainer().idsEqual(PersonAttribute.class,
+					PersonAttribute.person_FIELDNAME, param.second().getId());
+			param.eighth().addAll(ids);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return param;
+	}
 
-    private Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> functionPersonAttribute(
-            Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
-        try {
-            List<String> ids = param.first().entityManagerContainer().idsEqual(PersonAttribute.class,
-                    PersonAttribute.person_FIELDNAME,
-                    param.second().getId());
-            param.eighth().addAll(ids);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return param;
-    }
+	private Wo convert(
+			Octuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>> param) {
+		Wo wo = new Wo();
+		wo.setDistinguishedName(param.second().getDistinguishedName());
+		Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> target = Nonuple
+				.of(param, wo);
+		Stream.<UnaryOperator<Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo>>>of(
+				this::funcConvertIdentity, this::funcConvertUnit, this::funcConvertUnitDuty, this::funcConvertGroup,
+				this::funcConvertRole, this::funcConvertPersonAttribute).forEach(o -> o.apply(target));
+		return wo;
+	}
 
-    public static class Wi extends GsonPropertyObject {
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertIdentity(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.third().stream().forEach(o -> {
+			Identity obj;
+			try {
+				obj = param.first().identity().pick(o);
+				if (null != obj) {
+					param.ninth().getIdentityList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        @FieldDescribe("是否获取身份.")
-        private Boolean fetchIdentity;
-        @FieldDescribe("是否获取组织.")
-        private Boolean fetchUnit;
-        @FieldDescribe("是否获取组织职务.")
-        private Boolean fetchUnitDuty;
-        @FieldDescribe("是否获取群组.")
-        private Boolean fetchGroup;
-        @FieldDescribe("是否获取角色.")
-        private Boolean fetchRole;
-        @FieldDescribe("是否获取个人属性.")
-        private Boolean fetchPersonAttribute;
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertUnit(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.fourth().stream().forEach(o -> {
+			Unit obj;
+			try {
+				obj = param.first().unit().pick(o);
+				if (null != obj) {
+					param.ninth().getUnitList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        public Boolean getFetchIdentity() {
-            return fetchIdentity;
-        }
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertUnitDuty(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.fifth().stream().forEach(o -> {
+			UnitDuty obj;
+			try {
+				obj = param.first().unitDuty().pick(o);
+				if (null != obj) {
+					param.ninth().getUnitDutyList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        public void setFetchIdentity(Boolean fetchIdentity) {
-            this.fetchIdentity = fetchIdentity;
-        }
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertGroup(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.sixth().stream().forEach(o -> {
+			Group obj;
+			try {
+				obj = param.first().group().pick(o);
+				if (null != obj) {
+					param.ninth().getGroupList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        public Boolean getFetchUnit() {
-            return fetchUnit;
-        }
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertRole(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.seventh().stream().forEach(o -> {
+			Role obj;
+			try {
+				obj = param.first().role().pick(o);
+				if (null != obj) {
+					param.ninth().getRoleList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        public void setFetchUnit(Boolean fetchUnit) {
-            this.fetchUnit = fetchUnit;
-        }
+	private Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> funcConvertPersonAttribute(
+			Nonuple<Business, Person, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, ListOrderedSet<String>, Wo> param) {
+		param.eighth().stream().forEach(o -> {
+			PersonAttribute obj;
+			try {
+				obj = param.first().personAttribute().pick(o);
+				if (null != obj) {
+					param.ninth().getPersonAttributeList().add(obj.getDistinguishedName());
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
+		return param;
+	}
 
-        public Boolean getFetchUnitDuty() {
-            return fetchUnitDuty;
-        }
+	public static class Wi extends GsonPropertyObject {
 
-        public void setFetchUnitDuty(Boolean fetchUnitDuty) {
-            this.fetchUnitDuty = fetchUnitDuty;
-        }
+		private static final long serialVersionUID = -1730556542374559293L;
 
-        public Boolean getFetchGroup() {
-            return fetchGroup;
-        }
+		@FieldDescribe("是否获取身份.")
+		private Boolean fetchIdentity;
+		@FieldDescribe("是否获取组织.")
+		private Boolean fetchUnit;
+		@FieldDescribe("是否获取组织职务.")
+		private Boolean fetchUnitDuty;
+		@FieldDescribe("是否获取群组.")
+		private Boolean fetchGroup;
+		@FieldDescribe("是否获取角色.")
+		private Boolean fetchRole;
+		@FieldDescribe("是否获取个人属性.")
+		private Boolean fetchPersonAttribute;
 
-        public void setFetchGroup(Boolean fetchGroup) {
-            this.fetchGroup = fetchGroup;
-        }
+		public Boolean getFetchIdentity() {
+			return fetchIdentity;
+		}
 
-        public Boolean getFetchRole() {
-            return fetchRole;
-        }
+		public void setFetchIdentity(Boolean fetchIdentity) {
+			this.fetchIdentity = fetchIdentity;
+		}
 
-        public void setFetchRole(Boolean fetchRole) {
-            this.fetchRole = fetchRole;
-        }
+		public Boolean getFetchUnit() {
+			return fetchUnit;
+		}
 
-        public Boolean getFetchPersonAttribute() {
-            return fetchPersonAttribute;
-        }
+		public void setFetchUnit(Boolean fetchUnit) {
+			this.fetchUnit = fetchUnit;
+		}
 
-        public void setFetchPersonAttribute(Boolean fetchPersonAttribute) {
-            this.fetchPersonAttribute = fetchPersonAttribute;
-        }
+		public Boolean getFetchUnitDuty() {
+			return fetchUnitDuty;
+		}
 
-    }
+		public void setFetchUnitDuty(Boolean fetchUnitDuty) {
+			this.fetchUnitDuty = fetchUnitDuty;
+		}
 
-    public static class Wo extends GsonPropertyObject {
+		public Boolean getFetchGroup() {
+			return fetchGroup;
+		}
 
-        private static final long serialVersionUID = -8456354949288335211L;
+		public void setFetchGroup(Boolean fetchGroup) {
+			this.fetchGroup = fetchGroup;
+		}
 
-        @FieldDescribe("用户")
-        private String distinguishedName = "";
+		public Boolean getFetchRole() {
+			return fetchRole;
+		}
 
-        @FieldDescribe("组织")
-        private List<String> unitList = new ArrayList<>();
+		public void setFetchRole(Boolean fetchRole) {
+			this.fetchRole = fetchRole;
+		}
 
-        @FieldDescribe("群组")
-        private List<String> groupList = new ArrayList<>();
+		public Boolean getFetchPersonAttribute() {
+			return fetchPersonAttribute;
+		}
 
-        @FieldDescribe("角色")
-        private List<String> roleList = new ArrayList<>();
+		public void setFetchPersonAttribute(Boolean fetchPersonAttribute) {
+			this.fetchPersonAttribute = fetchPersonAttribute;
+		}
 
-        @FieldDescribe("身份")
-        private List<String> identityList = new ArrayList<>();
+	}
 
-        @FieldDescribe("人员属性")
-        private List<String> personAttributeList = new ArrayList<>();
+	public static class Wo extends GsonPropertyObject {
 
-        @FieldDescribe("组织职务")
-        private List<String> unitDutyList = new ArrayList<>();
+		private static final long serialVersionUID = -8456354949288335211L;
 
-        public String getDistinguishedName() {
-            return distinguishedName;
-        }
+		@FieldDescribe("用户")
+		private String distinguishedName = "";
 
-        public void setDistinguishedName(String distinguishedName) {
-            this.distinguishedName = distinguishedName;
-        }
+		@FieldDescribe("组织")
+		private List<String> unitList = new ArrayList<>();
 
-        public List<String> getUnitList() {
-            return unitList;
-        }
+		@FieldDescribe("群组")
+		private List<String> groupList = new ArrayList<>();
 
-        public void setUnitList(List<String> unitList) {
-            this.unitList = unitList;
-        }
+		@FieldDescribe("角色")
+		private List<String> roleList = new ArrayList<>();
 
-        public List<String> getGroupList() {
-            return groupList;
-        }
+		@FieldDescribe("身份")
+		private List<String> identityList = new ArrayList<>();
 
-        public void setGroupList(List<String> groupList) {
-            this.groupList = groupList;
-        }
+		@FieldDescribe("人员属性")
+		private List<String> personAttributeList = new ArrayList<>();
 
-        public List<String> getRoleList() {
-            return roleList;
-        }
+		@FieldDescribe("组织职务")
+		private List<String> unitDutyList = new ArrayList<>();
 
-        public void setRoleList(List<String> roleList) {
-            this.roleList = roleList;
-        }
+		public String getDistinguishedName() {
+			return distinguishedName;
+		}
 
-        public List<String> getPersonAttributeList() {
-            return personAttributeList;
-        }
+		public void setDistinguishedName(String distinguishedName) {
+			this.distinguishedName = distinguishedName;
+		}
 
-        public void setPersonAttributeList(List<String> personAttributeList) {
-            this.personAttributeList = personAttributeList;
-        }
+		public List<String> getUnitList() {
+			return unitList;
+		}
 
-        public List<String> getUnitDutyList() {
-            return unitDutyList;
-        }
+		public void setUnitList(List<String> unitList) {
+			this.unitList = unitList;
+		}
 
-        public void setUnitDutyList(List<String> unitDutyList) {
-            this.unitDutyList = unitDutyList;
-        }
+		public List<String> getGroupList() {
+			return groupList;
+		}
 
-        public List<String> getIdentityList() {
-            return identityList;
-        }
+		public void setGroupList(List<String> groupList) {
+			this.groupList = groupList;
+		}
 
-        public void setIdentityList(List<String> identityList) {
-            this.identityList = identityList;
-        }
+		public List<String> getRoleList() {
+			return roleList;
+		}
 
-    }
+		public void setRoleList(List<String> roleList) {
+			this.roleList = roleList;
+		}
+
+		public List<String> getPersonAttributeList() {
+			return personAttributeList;
+		}
+
+		public void setPersonAttributeList(List<String> personAttributeList) {
+			this.personAttributeList = personAttributeList;
+		}
+
+		public List<String> getUnitDutyList() {
+			return unitDutyList;
+		}
+
+		public void setUnitDutyList(List<String> unitDutyList) {
+			this.unitDutyList = unitDutyList;
+		}
+
+		public List<String> getIdentityList() {
+			return identityList;
+		}
+
+		public void setIdentityList(List<String> identityList) {
+			this.identityList = identityList;
+		}
+
+	}
 
 }
