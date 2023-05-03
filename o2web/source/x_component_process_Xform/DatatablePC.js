@@ -309,6 +309,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.loadDatatable();
 		},
+		/*
+		 * @summary 重新加载数据表格。
+		 * @example
+		 * //下面的代码改变数据表格的权限，然后重新加载。仅在加载完成后有效。
+		 * var datatable = this.form.get("fieldId");
+		 * datatable.editable = false; //是否允许编辑，包括删除，添加，排序
+		 * datatable.deleteable = false;//是否允许删除
+		 * datatable.addable = false; //是否允许添加
+		 * datatable.sortable = false; //是否允许排序
+		 *  this.form.get("fieldId").reload(); //重新加载
+		 */
 		reload: function(){
 			debugger;
 			this.reloading = true;
