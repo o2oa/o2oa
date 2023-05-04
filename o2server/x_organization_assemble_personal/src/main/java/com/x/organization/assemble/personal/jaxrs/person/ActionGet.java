@@ -43,14 +43,16 @@ import com.x.organization.core.entity.UnitDuty_;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			CacheKey cacheKey = new CacheKey(this.getClass(),
-					effectivePerson.getDistinguishedName());
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());

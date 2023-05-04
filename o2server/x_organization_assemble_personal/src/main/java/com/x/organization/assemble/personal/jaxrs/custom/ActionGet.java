@@ -10,17 +10,19 @@ import com.x.organization.core.entity.Custom;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
-	ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<String> result = new ActionResult<>();
-			String wo = "";
-			Custom o = this.getWithName(emc, effectivePerson.getDistinguishedName(), name);
-			if (null != o) {
-				result.setData(o.getData());
-			}
-			return result;
-		}
-	}
+    ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
+
+        LOGGER.debug("execute:{}, name:{}.", effectivePerson::getDistinguishedName, () -> name);
+
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<String> result = new ActionResult<>();
+            Custom o = this.getWithName(emc, effectivePerson.getDistinguishedName(), name);
+            if (null != o) {
+                result.setData(o.getData());
+            }
+            return result;
+        }
+    }
 }

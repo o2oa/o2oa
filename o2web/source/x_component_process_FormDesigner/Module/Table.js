@@ -142,10 +142,20 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	
 	_setOtherNodeEvent: function(){
 		this.dragInfor = {};
+
+		var table = this.node.getElement("table");
 		this.tdDragSelect = new Drag(this.node, {
             "stopPropagation": true,
             "preventDefault": true,
 			"onStart": function(el, e){
+
+
+				var cellspacing = table.get("cellspacing");
+				if( !cellspacing || cellspacing.toInt() === 0 ){
+					this.tmpCellspacing = cellspacing || "0";
+					table.set("cellspacing", "1");
+				}
+
 				this.form._beginSelectMulti();
 				
 				var position = e.event.target.getPosition();
@@ -166,6 +176,11 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				this.form._completeSelectMulti();
 				this._createMultiSelectedActions();
                 this.showMultiProperty();
+
+                if( this.hasOwnProperty("tmpCellspacing") ){
+					table.set("cellspacing", this.tmpCellspacing );
+					this.tmpCellspacing = null;
+				}
 				
 				e.stopPropagation();
 				e.preventDefault();
