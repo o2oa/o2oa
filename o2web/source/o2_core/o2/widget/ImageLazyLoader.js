@@ -57,6 +57,9 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
             if (images.length){
                 for (var i=0; i<images.length; i++){
                     var image = images[i];
+                    var onerror = this.getAttributeValue(image, "onerror");
+
+
                     var src =  this.getAttributeValue(image, "src");
                     if( src.substr(0, 5) !== "data:" ){ //不是base64位
                         var size = this.getSize(image);

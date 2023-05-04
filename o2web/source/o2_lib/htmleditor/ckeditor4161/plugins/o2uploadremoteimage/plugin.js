@@ -77,7 +77,7 @@
 				return;
 			}
 
-			editor.filter.allow( 'img[alt,dir,id,lang,longdesc,!src,title,onerror,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)' );
+			editor.filter.allow( 'img[alt,dir,id,lang,longdesc,!src,title,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)' );
 			editor.filter.allow( 'img[data-cke-img-unique-id]' );
 
 			if( !editor.config.reference || !editor.config.referenceType )return;
@@ -168,7 +168,7 @@
 					imgString += 'data-height="' + height + 'px" ';
 					imgString += 'data-width="' + width + 'px" ';
 					imgString += 'style="max-width:100%; width:' + width + 'px" ';
-					imgString += 'onerror="MWF.xDesktop.setImageSrc()" ';
+					// imgString += 'onerror="MWF.xDesktop.setImageSrc()" ';
 					imgString += 'alt="' + (alt || fileName) + '" ';
 					imgString += 'data-prv="true" '; //editor.config.enablePreview ? 'data-prv="true" ' : 'data-prv="false" ';
 					imgString += '">';
