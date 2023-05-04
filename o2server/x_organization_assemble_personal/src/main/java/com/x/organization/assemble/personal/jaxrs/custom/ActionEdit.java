@@ -12,31 +12,34 @@ import com.x.organization.core.entity.Custom;
 
 class ActionEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name, String wi) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
-			Custom custom = this.getWithName(emc, effectivePerson.getDistinguishedName(), name);
-			emc.beginTransaction(Custom.class);
-			if (null != custom) {
-				custom.setData(wi);
-				emc.check(custom, CheckPersistType.all);
-			} else {
-				custom = new Custom();
-				custom.setPerson(effectivePerson.getDistinguishedName());
-				custom.setName(name);
-				custom.setData(wi);
-				emc.persist(custom, CheckPersistType.all);
-			}
-			emc.commit();
-			wo.setId(custom.getId());
-			result.setData(wo);
-			return result;
-		}
-	}
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String name, String wi) throws Exception {
 
-	public static class Wo extends WoId {
-	}
+        LOGGER.debug("execute:{}, name:{}, wi:{}.", effectivePerson::getDistinguishedName, () -> name, () -> wi);
+
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Wo wo = new Wo();
+            Custom custom = this.getWithName(emc, effectivePerson.getDistinguishedName(), name);
+            emc.beginTransaction(Custom.class);
+            if (null != custom) {
+                custom.setData(wi);
+                emc.check(custom, CheckPersistType.all);
+            } else {
+                custom = new Custom();
+                custom.setPerson(effectivePerson.getDistinguishedName());
+                custom.setName(name);
+                custom.setData(wi);
+                emc.persist(custom, CheckPersistType.all);
+            }
+            emc.commit();
+            wo.setId(custom.getId());
+            result.setData(wo);
+            return result;
+        }
+    }
+
+    public static class Wo extends WoId {
+    }
 }
