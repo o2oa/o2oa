@@ -7,13 +7,11 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.ShaTools;
-import com.x.base.core.project.tools.SslTools;
+import com.x.base.core.project.tools.*;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -44,7 +42,11 @@ public class HstService {
         try {
             Map<String, Object> map = new HashMap<>(3);
             map.put("roomName", meeting.getSubject());
-            map.put("verifyMode", "1");
+            if(BooleanUtils.isTrue(config.getOnlineConfig().getHstAuth())) {
+                map.put("verifyMode", "1");
+            }else{
+                map.put("verifyMode", "3");
+            }
             map.put("maxUserCount", 300);
             String url = config.getOnlineConfig().getHstUrl() + CREATE_MEETING_API;
             String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
@@ -57,8 +59,11 @@ public class HstService {
                 if(SUCCESS_CODE.equals(resObj.getCode())){
                     String roomId = resObj.getData(HstMeeting.class).getRoomId();
                     meeting.setRoomId(roomId);
-                    meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId);
-
+                    if(BooleanUtils.isTrue(config.getOnlineConfig().getHstAuth())) {
+                        meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId);
+                    }else{
+                        meeting.setRoomLink(config.getOnlineConfig().getHstUrl() + MEETING_WEB_URL + roomId + "&userType=0");
+                    }
                     appendMeetingUser(meeting, config);
                     reserveMeeting(meeting, config);
                     return true;
@@ -88,20 +93,24 @@ public class HstService {
             map.put("roomId", meeting.getRoomId());
             List<String> userList = new ArrayList<>();
             Person person = business.organization().person().getObject(meeting.getApplicant());
-            String userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
+            String userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+            userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
             userList.add(userId+",3");
             if(StringUtils.isNotBlank(meeting.getHostPerson()) && !meeting.getHostPerson().equals(meeting.getApplicant())){
                 person = business.organization().person().getObject(meeting.getHostPerson());
                 if(person != null) {
-                    userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
+                    userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+                    userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
                     userList.add(userId + ",3");
                 }
             }
+
             for(String user : meeting.getInvitePersonList()){
                 if(!user.equals(meeting.getApplicant()) && !user.equals(meeting.getHostPerson())) {
                     person = business.organization().person().getObject(user);
                     if(person != null) {
-                        userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
+                        userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+                        userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
                         if(existUser(userId, config)) {
                             userList.add(userId + ",2");
                         }
@@ -113,7 +122,8 @@ public class HstService {
                     if(!user.equals(meeting.getApplicant()) && !user.equals(meeting.getHostPerson())) {
                         person = business.organization().person().getObject(user);
                         if(person != null) {
-                            userId = StringUtils.isNoneBlank(person.getEmployee()) ? person.getEmployee() : person.getUnique();
+                            userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+                            userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
                             if(existUser(userId, config)) {
                                 userList.add(userId + ",0");
                             }
@@ -121,6 +131,7 @@ public class HstService {
                     }
                 }
             }
+
             map.put("roomUserStr", StringUtils.join(userList, "#"));
             String url = config.getOnlineConfig().getHstUrl() + APPEND_MEETING_USER_API;
             String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
@@ -211,32 +222,6 @@ public class HstService {
         return false;
     }
 
-    public static boolean createPerson(){
-        try {
-            Map<String, Object> map = new HashMap<>(4);
-            map.put("userName", "caixiangyi");
-            map.put("mobile", "15268803358");
-            map.put("nickName", "蔡祥熠");
-            map.put("password", "o2oa@2022");
-            String url = "https://117.133.7.109:8443" + CREATE_USER_API;
-            String token = ShaTools.getToken("4QY08Kyh", "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G");
-            List<NameValuePair> header = new ArrayList<>();
-            header.add(new NameValuePair("Authorization", token));
-            String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
-            if(StringUtils.isNotBlank(res)){
-                ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
-                if(SUCCESS_CODE.equals(resObj.getCode())){
-                    return true;
-                }else {
-                    LOGGER.info("创建用户：{},失败：{}", "", res);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return false;
-    }
-
     public static boolean existUser(String userId, MeetingConfigProperties config){
         try {
             Map<String, Object> map = new HashMap<>(2);
@@ -263,28 +248,6 @@ public class HstService {
         }
 
         return false;
-    }
-
-    public static void main(String[] args) throws Exception{
-        SslTools.ignoreSsl();
-        try {
-            Map<String, Object> map = new HashMap<>(3);
-            map.put("roomId", "10015");
-            List<String> userList = new ArrayList<>();
-            userList.add("chengjian"+",3");
-            map.put("roomUserStr", StringUtils.join(userList, "#"));
-            String url = "https://117.133.7.109:8443" + APPEND_MEETING_USER_API;
-            String token = ShaTools.getToken("4QY08Kyh", "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G");
-            List<NameValuePair> header = new ArrayList<>();
-            header.add(new NameValuePair("Authorization", token));
-            String res = HttpConnection.postAsString(url, header, XGsonBuilder.toJson(map));
-            if(StringUtils.isNotBlank(res)){
-                ResObj resObj = XGsonBuilder.instance().fromJson(res, ResObj.class);
-                LOGGER.info(res);
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
     }
 
     public static class ResObj{

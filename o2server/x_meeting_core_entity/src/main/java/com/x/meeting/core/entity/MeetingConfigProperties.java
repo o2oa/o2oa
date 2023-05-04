@@ -3,6 +3,7 @@ package com.x.meeting.core.entity;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,8 @@ public class MeetingConfigProperties extends JsonProperties {
 	private String onlineProduct = ONLINE_PROJECT_QT;
 
 	@FieldDescribe("线上会议配置(json对象：{" +
-			"'hstUrl':'好视通服务地址','hstKey':'好视通服务接口KEY','hstSecret':'好视通服务接口SECRET','hstUserSync':'是否启用O2到好视通人员同步'}")
+			"'hstUrl':'好视通服务地址','hstKey':'好视通服务接口KEY','hstSecret':'好视通服务接口SECRET'," +
+			"'hstAuth':'是否启用好视通会议鉴权登录，默认false','o2ToHstUid':'O2与好视通映射的唯一ID字段'}")
 	private OnlineConfig onlineConfig = new OnlineConfig();
 
 	public Map<String, String> getProcess() {
@@ -203,11 +205,8 @@ public class MeetingConfigProperties extends JsonProperties {
 		@FieldDescribe("好视通服务接口SECRET")
 		private String hstSecret = "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G";
 
-		@FieldDescribe("是否启用O2到好视通人员同步")
-		private Boolean hstUserSync = false;
-
-		@FieldDescribe("O2到好视通人员同步时间，默认在每天的2点和12点进行同步")
-		private String syncCron = "0 0 2,12 * * ?";
+		@FieldDescribe("是否启用好视通会议鉴权登录")
+		private Boolean hstAuth = false;
 
 		@FieldDescribe("O2与好视通映射的唯一ID字段")
 		private String o2ToHstUid = "employee";
@@ -236,24 +235,16 @@ public class MeetingConfigProperties extends JsonProperties {
 			this.hstSecret = hstSecret;
 		}
 
-		public Boolean getHstUserSync() {
-			return hstUserSync;
+		public Boolean getHstAuth() {
+			return hstAuth;
 		}
 
-		public void setHstUserSync(Boolean hstUserSync) {
-			this.hstUserSync = hstUserSync;
-		}
-
-		public String getSyncCron() {
-			return syncCron;
-		}
-
-		public void setSyncCron(String syncCron) {
-			this.syncCron = syncCron;
+		public void setHstAuth(Boolean hstAuth) {
+			this.hstAuth = hstAuth;
 		}
 
 		public String getO2ToHstUid() {
-			return o2ToHstUid;
+			return StringUtils.isBlank(o2ToHstUid) ? "employee" : o2ToHstUid;
 		}
 
 		public void setO2ToHstUid(String o2ToHstUid) {
