@@ -1,7 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,9 +16,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
-import com.x.meeting.core.entity.ConfirmStatus;
-import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.Room;
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.core.entity.*;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -31,18 +30,12 @@ class ActionCreate extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Room room = emc.find(wi.getRoom(), Room.class);
-			if (null == room) {
-				throw new ExceptionRoomNotExist(wi.getRoom());
-			}
-			if (room.getAvailable() == false) {
-				throw new ExceptionRoomNotAvailable(room.getName());
-			}
 			Meeting meeting = Wi.copier.copy(wi);
-			emc.beginTransaction(Meeting.class);
-			meeting.setManualCompleted(false);
-			meeting.setAuditor(room.getAuditor());
-			meeting.setRoom(room.getId());
+			Room room = null;
+			if(StringUtils.isBlank(wi.getSubject())){
+				throw new ExceptionCustomError("会议标题不能为空！");
+			}
+
 			String applicant = effectivePerson.getDistinguishedName();
 			/** 如果是后台调用,通过流程来触发会议 */
 			if (effectivePerson.isCipher() && StringUtils.isNotEmpty(wi.getApplicant())) {
@@ -55,29 +48,49 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionPersonNotExist(applicant);
 			}
 			meeting.setApplicant(applicant);
-			if (ListTools.isNotEmpty(meeting.getInviteMemberList())) {
-				for (String str : meeting.getInviteMemberList()) {
-					logger.debug(">>>>>>>> before convert invitePersonList:" + str);
-				}
-			}
 			if (meeting.getInviteMemberList() == null) {
 				meeting.setInviteMemberList(meeting.getInvitePersonList());
 			}
 			meeting.setInvitePersonList(this.convertToPerson(business, meeting.getInviteMemberList()));
-			if (ListTools.isNotEmpty(meeting.getInvitePersonList())) {
-				for (String str : meeting.getInvitePersonList()) {
-					logger.debug("after convert invitePersonList:{}.", str::toString);
+
+			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
+				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
+					MeetingConfigProperties config = business.getConfig();
+					if(config.onLineEnabled()){
+						boolean flag = HstService.createMeeting(meeting, config);
+						if(!flag){
+							throw new ExceptionCustomError("创建线上会议失败，请联系管理员！");
+						}
+					}else{
+						throw new ExceptionCustomError("会议号和会议链接不能为空！");
+					}
+				}
+			}else if(StringUtils.isBlank(wi.getRoom())){
+				throw new ExceptionCustomError("会议室不能为空！");
+			}
+			if(StringUtils.isNotBlank(wi.getRoom())){
+				room = emc.find(wi.getRoom(), Room.class);
+				if (null == room) {
+					throw new ExceptionRoomNotExist(wi.getRoom());
+				}
+				if (room.getAvailable() == false) {
+					throw new ExceptionRoomNotAvailable(room.getName());
+				}
+				meeting.setAuditor(room.getAuditor());
+				meeting.setRoom(room.getId());
+				if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(), "")) {
+					throw new ExceptionRoomNotAvailable(room.getName());
 				}
 			}
+
+			meeting.setManualCompleted(false);
+
 			meeting.setAcceptPersonList(this.convertToPerson(business, meeting.getAcceptPersonList()));
 			meeting.setRejectPersonList(this.convertToPerson(business, meeting.getRejectPersonList()));
 			meeting.getInvitePersonList().remove(meeting.getApplicant());
-			// ListTools.subtractWithProperty(meeting, "invitePersonList",
-			// meeting.getApplicant());
-			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(), "")) {
-				throw new ExceptionRoomNotAvailable(room.getName());
-			}
+
 			business.estimateConfirmStatus(meeting);
+			emc.beginTransaction(Meeting.class);
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
