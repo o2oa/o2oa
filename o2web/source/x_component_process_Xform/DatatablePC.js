@@ -323,25 +323,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		reload: function(){
 			debugger;
 			this.reloading = true;
-			var node;
-			if( this.titleTr ){
-				node = this.titleTr.getElement("th.mwf_addlineaction");
-				if( node )node.destroy();
-				node = this.titleTr.getElement("th.mwf_moveaction");
-				if( node )node.destroy();
-			}
-
-			if( this.templateTr ){
-				node = this.templateTr.getElement("td.mwf_editaction");
-				if( node )node.destroy();
-				node = this.templateTr.getElement("td.mwf_moveaction");
-				if( node )node.destroy();
-			}
-
-			if( this.totalTr ){
-				this.totalTr.destroy();
-				this.totalTr = null;
-			}
+			this._removeEl();
 
 			this.editModules = [];
 
@@ -375,6 +357,27 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.loading = false;
 				this.fireEvent("postLoad");
 			}.bind(this));
+		},
+		_removeEl: function(){
+			var node;
+			if( this.titleTr ){
+				node = this.titleTr.getElement("th.mwf_addlineaction");
+				if( node )node.destroy();
+				node = this.titleTr.getElement("th.mwf_moveaction");
+				if( node )node.destroy();
+			}
+
+			if( this.templateTr ){
+				node = this.templateTr.getElement("td.mwf_editaction");
+				if( node )node.destroy();
+				node = this.templateTr.getElement("td.mwf_moveaction");
+				if( node )node.destroy();
+			}
+
+			if( this.totalTr ){
+				this.totalTr.destroy();
+				this.totalTr = null;
+			}
 		},
 		_loadTitleTr: function(){
 			this.titleTr = this.table.getElement("tr");
@@ -755,7 +758,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 		},
 
-		_createLineNode: function( beforeNode, afterNode ){
+		_createLineNode: function( beforeNode ){
             var tr;
             if( beforeNode ) {
 				tr = new Element("tr").inject(beforeNode, "after");
@@ -876,7 +879,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					isEdited = true;
 				}
 				var isNew = false;
-				var sectionLine, beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateTr;
+				var sectionLine, beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateNode;
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
 					sectionLine.resetIndex( beforeNode, data, idx, isEdited, isNew, operation );
@@ -916,7 +919,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var sectionLine;
 				var isEdited = false;
 				var isNew = false;
-				var beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateTr;
+				var beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateNode;
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
 					sectionLine.resetIndex( beforeNode, data, idx, isEdited, isNew, operation );
@@ -953,7 +956,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
             this.data.data.each(function(data, idx){
                 if( !data )return;
                 var idxStr = idx.toString();
-                var beforeNode = idx > 0 ? this.lineList[idx - 1].node : this.templateTr;
+                var beforeNode = idx > 0 ? this.lineList[idx - 1].node : this.templateNode;
                 if( map[idxStr] ){
                 	if( !operation || operation === "moveUpList" ){
 						map[idxStr].node.inject( beforeNode, "after" );
@@ -2776,6 +2779,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					//该字段是合集数值字段
 					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
+						debugger;
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
 							if( this.sectionLine )this.sectionLine._loadTotal();
