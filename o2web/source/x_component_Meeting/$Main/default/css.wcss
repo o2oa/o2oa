@@ -557,6 +557,16 @@
         "opacity": "0",
         "overflow": "auto"
     },
+    "configNode_admin": {
+        "box-shadow": "inset 1px 0 0 0 #CCCCCC",
+        "background": "#F8F8F8",
+        "width": "430px",
+        "position": "absolute",
+        "right": "0px",
+        "top": "50px",
+        "opacity": "0",
+        "overflow": "auto"
+    },
     "configContentNode": {
         "margin": "20px",
         "overflow": "hidden"
@@ -627,6 +637,30 @@
     "dealStartedWorkAction": {
         "color": "#0000FF",
         "cursor": "pointer"
+    },
+    "inputAcceptButton" : {
+        "background-color": "#3C76B7",
+        "border-radius": "4px",
+        "padding" : "0px 10px",
+        "line-height" : "30px",
+        "height" : "30px",
+        "border" : "0px",
+        "color" : "#fff",
+        "cursor" : "pointer",
+        "float" : "left",
+        "font-size" : "14px"
+    },
+    "inputDenyButton" : {
+        "background-color": "#f0f0f0",
+        "border-radius": "4px",
+        "padding" : "0px 10px",
+        "display" : "inline-block",
+        "line-height" : "30px",
+        "margin-left": "10px",
+        "height" : "30px",
+        "border" : "0px",
+        "color" : "#666",
+        "cursor" : "pointer",
+        "font-size" : "14px"
     }
-
 }
