@@ -33,7 +33,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("个人接口")
 public class PersonAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(PersonAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersonAction.class);
 
 	@JaxrsMethodDescribe(value = "获取个人,附带身份,身份所在的组织,个人所在群组,个人拥有角色.", action = ActionGet.class)
 	@GET
@@ -47,7 +47,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -65,7 +65,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetNickName().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -77,13 +77,13 @@ public class PersonAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
 		ActionResult<ActionGetMobile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetMobile().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -101,7 +101,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionHasRole().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -119,7 +119,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionList().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -136,7 +136,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListAll().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -153,7 +153,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListAllObject().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -171,7 +171,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -189,7 +189,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListLoginAfter().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -207,7 +207,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListLoginAfterObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -225,7 +225,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListLoginRecent().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -243,7 +243,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListLoginRecentObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -261,7 +261,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPairIdentity().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -279,7 +279,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithGroup().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -297,7 +297,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithGroupObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -315,7 +315,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithIdentity().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -333,7 +333,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithIdentityObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -351,7 +351,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonAttribute().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -369,7 +369,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonAttributeObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -387,7 +387,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSubDirect().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -405,7 +405,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSubDirectObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -423,7 +423,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSubNested().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -441,7 +441,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSubNestedObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -459,7 +459,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSupDirect().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -477,7 +477,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSupDirectObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -495,7 +495,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSupNested().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -513,7 +513,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPersonSupNestedObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -531,7 +531,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithRole().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -549,7 +549,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithRoleObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -567,7 +567,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubDirect().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -585,7 +585,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubDirectObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -603,7 +603,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubNested().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -621,7 +621,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubNestedObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -639,7 +639,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubDirectLike().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -657,7 +657,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubDirectLikeObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -675,7 +675,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubNestedLike().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -693,7 +693,7 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithUnitSubNestedLikeObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -712,7 +712,25 @@ public class PersonAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListFilterPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "查询人员信息,返回身份,组织,组织职务,群组,角色,个人属性.", action = ActionDetail.class)
+	@POST
+	@Path("detail/{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void detail(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionDetail.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDetail().execute(effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
