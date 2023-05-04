@@ -460,20 +460,20 @@ o2.widget.Dialog = o2.DL = new Class({
             // //	this.content.setStyle("display", "block");
             // //this.fireEvent("postShow");
 
-			if( !layout.mobile ){
-				var pn = this.node.getOffsetParent() || this.node.getParent();
-				var p = pn.getPosition();
 
-				var h = this.css.to.height.toInt();
-				var y = this.css.to.top.toInt();
-				y = y+p.y;
+			debugger;
+			var pn = this.node.getOffsetParent() || this.node.getParent();
+			var p = pn.getPosition();
 
-				var ih = window.innerHeight.toInt();
-				if (h+y> ih){
-					y = ih-p.y-h-20;
-					if (y<0) y=0;
-					this.css.to.top = ""+y+"px";
-				}
+			var h = this.css.to.height.toInt();
+			var y = this.css.to.top.toInt();
+			y = y+p.y;
+
+			var ih = window.innerHeight.toInt();
+			if (h+y> ih){
+				y = ih-p.y-h-20;
+				if (y<0) y=0;
+				this.css.to.top = ""+y+"px";
 			}
 
 			this.morph.start(this.css.to).chain(function(){
