@@ -429,7 +429,49 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 	});
 
 MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
-	Extends: MWF.xApplication.process.Xform.DatatablePC$Title
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+		if (this.json.prefixIcon || this.json.suffixIcon){
+			var text = this.node.get("text");
+			this.node.empty();
+
+			var lineheight = this.node.getStyle("line-height") || "28px";
+			this.wrapNode = new Element("div", {
+				"styles": {
+					"display": "flex",
+					"align-items": "center"
+					// "justify-content": "center"
+				}
+			}).inject(this.node);
+
+			if (this.json.prefixIcon){
+				this.prefixNode = new Element("div", {"styles": {
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.prefixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
+			}
+
+			this.textNode = new Element("div", {"styles": {
+					"line-height": lineheight,
+					"vertical-align": "top",
+					"padding": "1px"
+				}, "text": text}).inject(this.wrapNode);
+
+			if (this.json.suffixIcon){
+				this.suffixNode = new Element("div", {"styles": {
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.suffixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
+			}
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatableMobile$Data =  new Class({
@@ -470,7 +512,9 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		return div;
 	},
 	loadSectionKeyNode: function () {
-		var sectionKeyStyles = this.datatable._parseStyles(this.datatable.json.sectionKeyStyles);
+		debugger;
+		var styleName = this.datatable.isShowSectionKey() ? "sectionKeyStyles" : "sectionByStyles";
+		var sectionKeyStyles = this.datatable._parseStyles( this.datatable.json[styleName] || {} );
 		var keyNode = new Element("div.mwf_sectionkey", {
 			styles : sectionKeyStyles
 		}).inject( this.sectionKeyNode );
