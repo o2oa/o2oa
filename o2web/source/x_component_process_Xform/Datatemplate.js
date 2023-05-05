@@ -178,15 +178,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this._loadModuleEvents();
 				if (this.fireEvent("queryLoad")){
 					this._queryLoaded();
-					if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
-						if( this.json.mergeTypeEdit === "script" ){
-                        this._loadMergeEditNodeByScript();
-                    }else{
-                        this._loadMergeEditNodeByDefault();
-                    }
-					}else{
-						this._loadUserInterface();
-					}
+					this._loadUserInterface();
 					this._loadStyles();
 					this._loadDomEvents();
 					//this._loadEvents();
@@ -200,7 +192,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
 				var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
 				this._setBusinessData( data );
-				this._loadUserInterface();
+				//this._loadUserInterface();
 			}
 		},
 		_loadMergeEditNodeByDefault: function(){
@@ -211,12 +203,20 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				businessData = businessData.concat( d.data );
 			});
 			this._setBusinessData(businessData);
-			this._loadUserInterface();
+			//this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
 			debugger;
 			this.loading = true;
+
+			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+				if( this.json.mergeTypeEdit === "script" ){
+					this._loadMergeEditNodeByScript();
+				}else{
+					this._loadMergeEditNodeByDefault();
+				}
+			}
 
 			//区段合并展现
 			this.isMergeRead = this.isSectionMergeRead();
@@ -548,18 +548,18 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return value;
 		},
 
-		_loadDataTemplate: function(callback){
+		_loadDataTemplate: function(callback, operation){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 				// if (o2.typeOf(this.data)=="object") this.data = [this.data];
 
 
 				if( this.isShowAllSection ){
-					this._loadSectionLineList_EditSection(callback)
+					this._loadSectionLineList_EditSection(callback, operation)
 				}else if( this.isShowSectionKey() ){
-					this._loadSectionLineList(callback)
+					this._loadSectionLineList(callback, operation)
 				}else{
-				    this._loadLineList(callback);
+				    this._loadLineList(callback, operation);
 				}
 
 				this.moduleValueAG = null;
@@ -574,7 +574,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
-		_loadSectionLineList_EditSection: function(callback){
+		_loadSectionLineList_EditSection: function(callback, operation){
 			this.getAllSectionData();
 			this.dataWithSectionBy.each(function(data, idx){
 				var isEdited = false;
@@ -634,16 +634,50 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// this.fireEvent("afterLoadLine", [line]);
 			return sectionLine;
 		},
-		_loadLineList: function(callback){
+		_loadLineList: function(callback, operation){
+			var map = this.unchangedLineMap || {};
+            Object.each(map, function (line, idx) {
+                line.resetIndex( idx.toInt() );
+            });
 			this.data.each(function(data, idx){
-				var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
-				var div = new Element("div").inject(this.node);
-				var line = this._loadLine(div, data, idx, isNew);
-				this.lineList.push(line);
+			    var idxStr = idx.toString();
+                var beforeNode = idx > 0 ? this.lineList[idx - 1].node : null;
+                if( map[idxStr] ){
+                	if( !operation || operation === "moveUpList" ){
+                		this._injectLineNode( map[idxStr].node, beforeNode );
+					}
+					this.lineList.push( map[idxStr] );
+                }else{
+                    var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
+                    var div = this._injectLineNode( new Element("div"), beforeNode );
+                    var line = this._loadLine(div, data, idx, isNew);
+                    this.lineList.push(line);
+				}
 			}.bind(this));
 			this.newLineIndex = null;
 			this.isNew = false;
 			if (callback) callback();
+		},
+		_loadLine: function(container, data, index, isNew){
+			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
+				index : index,
+				indexText : (index+1).toString(),
+				isEdited : this.editable,
+				isNew : isNew,
+				isMergeRead: this.isMergeRead
+			});
+			this.fireEvent("beforeLoadLine", [line]);
+			line.load();
+			this.fireEvent("afterLoadLine", [line]);
+			return line;
+		},
+		_injectLineNode: function( lineNode, beforeNode ){
+			if( beforeNode ){
+				lineNode.inject( beforeNode, "after");
+			}else{
+				lineNode.inject( this.node );
+			}
+			return lineNode;
 		},
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
@@ -666,19 +700,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				 }
 			}
 			return false;
-		},
-		_loadLine: function(container, data, index, isNew){
-			var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this, data, {
-				index : index,
-				indexText : (index+1).toString(),
-				isEdited : this.editable,
-				isNew : isNew,
-				isMergeRead: this.isMergeRead
-			});
-			this.fireEvent("beforeLoadLine", [line]);
-			line.load();
-			this.fireEvent("afterLoadLine", [line]);
-			return line;
 		},
 		_setLineData: function(line, d){
 			if( line.sectionLine ){
