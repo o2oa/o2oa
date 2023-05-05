@@ -258,6 +258,21 @@ MWF.xApplication.Meeting.LP = {
         "onlineProduct": "线上会议产品",
         "onlineConfig": "线上会议配置",
 
+        'hstUrl':'好视通服务地址',
+        'hstKey':'好视通服务接口Key',
+        'hstSecret':'好视通服务接口Secret',
+        'hstAuth':'好视通会议鉴权登录',
+        'o2ToHstUid':'O2与好视通映射人员字段',
+        "onlineConfigNotEmpty": "好视通服务地址、接口Key、接口Secret不能为空",
+
+        "employee": "人员工号(employee)",
+        "unique": "唯一编码(unique)",
+        "distinguishedName": "全称(distinguishedName)",
+        "mobile": "移动电话(mobile)",
+        "mail": "电子邮件(mail)",
+        "weixin": "微信号(qq)",
+        "qq": "QQ号码(qq)",
+
         "apiAddress":"网络会议api地址",
         "key":"key",
         "secret":"secret"

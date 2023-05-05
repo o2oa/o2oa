@@ -795,8 +795,11 @@ MWF.xApplication.Meeting.Config = new Class({
         var viewStyle = "font-size:14px;color:#666;heigh:16px;margin-top:6px;margin-left:10px;";
         var inputTextStyle = "float:right; width:260px; border:1px solid #ccc";
 
+        var viewStyle2 = "font-size:14px;color:#666;heigh:16px;margin-top:6px;";
+
         var d = this.configData;
         var configLp = this.lp.config;
+        if( !d.onlineConfig )d.onlineConfig = {};
 
         var html =
 
@@ -945,10 +948,38 @@ MWF.xApplication.Meeting.Config = new Class({
                 "   <div item='onlineProduct'></div>"+
 
                 "   <div class='onlineConfigArea' style='display: "+( d.onlineProduct === "好视通" ? "" : "none" )+"'>"+
-                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.onlineConfig +"</div>" +
-                "       <div item='onlineConfig' style='width: 100%;height:160px;'></div>"+
+                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstUrl +"</div>" +
+                "       <div style='"+ viewStyle2 +"'>" +
+                "           <input type='text' name='hstUrl' value='" + (d.onlineConfig.hstUrl || "") + "' style='width:calc(100% - 10px); border:1px solid #ccc'>"+
+                "       </div>"+
+
+                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstKey +"</div>" +
+                "       <div style='"+ viewStyle2 +"'>" +
+                "           <input type='text' name='hstKey' value='" + (d.onlineConfig.hstKey || "") + "' style='width:calc(100% - 10px); border:1px solid #ccc'>"+
+                "       </div>"+
+
+                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstSecret +"</div>" +
+                "       <div style='"+ viewStyle2 +"'>" +
+                "           <input type='text' name='hstSecret' value='" + (d.onlineConfig.hstSecret || "") + "' style='width:calc(100% - 10px); border:1px solid #ccc'>"+
+                "       </div>"+
+
+                "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstAuth +"</div>" +
+                "       <div item='hstAuth'></div>"+
+
+                // "       <div class='o2ToHstUidArea' style='display: "+( d.onlineConfig.hstAuth ? "" : "none" )+"'>"+
+                "           <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.o2ToHstUid +"</div>" +
+                "           <div item='o2ToHstUid'></div>"+
+                // "       </div>"+
                 "   </div>"+
                 "</div>";
+
+            // {
+            //     "hstUrl": "https://117.133.7.109:8443",
+            //     "hstKey": "4QY08Kyh",
+            //     "hstSecret": "HpQi5csSMrufkM)b&#YWVlr7o*wWUG3G",
+            //     "hstAuth": true,
+            //     "o2ToHstUid": "employee"
+            // }
 
                 // "<div class='line'></div>"+
                 // "<div class='configTitle'>"+this.lp.config.apiAddress +"</div>" +
@@ -996,7 +1027,7 @@ MWF.xApplication.Meeting.Config = new Class({
                     change: function (item, ev) {
                         var value = item.getValue();
                         this.contentNode.getElement("div.onlineArea").setStyle("display", value === "true" ? "" : "none");
-                        if( this.onlineProduct.getValue() === "好视通" && value === "true" && !this.scriptEditor )this.loadScriptEditor();
+                        // if( this.onlineProduct.getValue() === "好视通" && value === "true" && !this.scriptEditor )this.loadScriptEditor();
                         this.setSize();
                     }.bind(this)
                 }
@@ -1011,16 +1042,41 @@ MWF.xApplication.Meeting.Config = new Class({
                     change: function (item, ev ) {
                         var value = item.getValue();
                         this.contentNode.getElement("div.onlineConfigArea").setStyle("display", value === "好视通" ? "" : "none");
-                        if( value === "好视通" && this.enableOnline.getValue() === "true" &&  !this.scriptEditor )this.loadScriptEditor();
+                        // if( value === "好视通" && this.enableOnline.getValue() === "true" &&  !this.scriptEditor )this.loadScriptEditor();
                         this.setSize();
                     }.bind(this)
                 }
             } , null, this.app );
             this.onlineProduct.load();
 
-            if( d.onlineProduct === "好视通" && d.enableOnline ){
-                this.loadScriptEditor();
-            }
+            this.hstAuthNode = this.contentNode.getElement("[item='hstAuth']");
+            this.hstAuth = new MDomItem(this.hstAuthNode, {
+                name : "hstAuth", type : "select", selectValue : ["true","false"], selectText : [this.lp.yes, this.lp.no],
+                value : (d.onlineConfig.hstAuth || false).toString()
+                // event: {
+                //     change: function (item, ev ) {
+                //         var value = item.getValue();
+                //         this.contentNode.getElement("div.o2ToHstUidArea").setStyle("display", value === "true" ? "" : "none");
+                //         this.setSize();
+                //     }.bind(this)
+                // }
+            } , null, this.app );
+            this.hstAuth.load();
+
+            var lp = this.lp.config;
+            this.o2ToHstUidNode = this.contentNode.getElement("[item='o2ToHstUid']");
+            this.o2ToHstUid = new MDomItem(this.o2ToHstUidNode, {
+                name : "o2ToHstUid", type : "select",
+                selectValue : ["employee", "unique", "distinguishedName", "mobile","mail", "weixin","qq"],
+                selectText : [lp.employee, lp.unique, lp.distinguishedName, lp.mobile, lp.mail, lp.weixin, lp.qq],
+                value : d.onlineConfig.o2ToHstUid || "employee"
+            } , null, this.app );
+            this.o2ToHstUid.load();
+
+
+            // if( d.onlineProduct === "好视通" && d.enableOnline ){
+            //     this.loadScriptEditor();
+            // }
 
         }
 
@@ -1038,35 +1094,35 @@ MWF.xApplication.Meeting.Config = new Class({
 
         this.show();
     },
-    loadScriptEditor:function(){
-        var json;
-        if( !this.configData.onlineConfig ){
-            json = {
-                'hstUrl':'好视通服务地址',
-                'hstKey':'好视通服务接口KEY',
-                'hstSecret':'好视通服务接口SECRET',
-                'hstUserSync':'是否启用O2到好视通人员同步'
-            }
-        }else{
-            json = this.configData.onlineConfig;
-        }
-        MWF.require("MWF.widget.JavascriptEditor", null, false);
-        var value;
-        try{
-            value = JSON.stringify(json, null, "\t");
-        }catch (e) {}
-
-        var node = this.contentNode.getElement('div[item="onlineConfig"]');
-        if( value ){
-            this.scriptEditor = new MWF.widget.JavascriptEditor(node, {
-                "forceType": "ace",
-                "option": {"value": value, "mode" : "json" }
-            });
-            this.scriptEditor.load(function(){
-                this.scriptEditor.setValue(value);
-            }.bind(this));
-        }
-    },
+    // loadScriptEditor:function(){
+    //     var json;
+    //     if( !this.configData.onlineConfig ){
+    //         json = {
+    //             'hstUrl':'好视通服务地址',
+    //             'hstKey':'好视通服务接口KEY',
+    //             'hstSecret':'好视通服务接口SECRET',
+    //             'hstUserSync':'是否启用O2到好视通人员同步'
+    //         }
+    //     }else{
+    //         json = this.configData.onlineConfig;
+    //     }
+    //     MWF.require("MWF.widget.JavascriptEditor", null, false);
+    //     var value;
+    //     try{
+    //         value = JSON.stringify(json, null, "\t");
+    //     }catch (e) {}
+    //
+    //     var node = this.contentNode.getElement('div[item="onlineConfig"]');
+    //     if( value ){
+    //         this.scriptEditor = new MWF.widget.JavascriptEditor(node, {
+    //             "forceType": "ace",
+    //             "option": {"value": value, "mode" : "json" }
+    //         });
+    //         this.scriptEditor.load(function(){
+    //             this.scriptEditor.setValue(value);
+    //         }.bind(this));
+    //     }
+    // },
     setSize : function(){
         var sizeY = this.node.getSize().y;
         var y = this.app.content.getSize().y;
@@ -1166,19 +1222,34 @@ MWF.xApplication.Meeting.Config = new Class({
             var typeListInput = this.contentNode.getElement("textarea[name='typeList']");
             if(typeListInput)typeList = typeListInput.get("value").split("\n");
 
-            var onlineConfig;
-            if( this.scriptEditor ){
-                onlineConfig = this.scriptEditor.getValue();
-                try{
-                    onlineConfig = JSON.parse( onlineConfig );
-                }catch (e) {
-                    this.app.notice( this.app.lp.onlineConfigNotJson, "info" );
+            // var onlineConfig;
+            // if( this.scriptEditor ){
+            //     onlineConfig = this.scriptEditor.getValue();
+            //     try{
+            //         onlineConfig = JSON.parse( onlineConfig );
+            //     }catch (e) {
+            //         this.app.notice( this.app.lp.onlineConfigNotJson, "info" );
+            //         return;
+            //     }
+            //     onlineConfig = JSON.parse(this.scriptEditor.getValue())
+            // }else{
+            //     onlineConfig = this.configData.onlineConfig || {};
+            // }
+
+            var onlineConfig = {
+                hstUrl: this.contentNode.getElement("input[name='hstUrl']").get("value"),
+                hstKey: this.contentNode.getElement("input[name='hstKey']").get("value"),
+                hstSecret: this.contentNode.getElement("input[name='hstSecret']").get("value"),
+                hstAuth: this.hstAuth.getValue() === "true",
+                o2ToHstUid: this.o2ToHstUid.getValue(),
+            };
+            if( this.enableOnline.getValue() === "true" && this.onlineProduct.getValue() === "好视通" ){
+                if( !onlineConfig.hstUrl || !onlineConfig.hstKey || !onlineConfig.hstSecret ){
+                    this.app.notice( this.app.lp.config.onlineConfigNotEmpty, "info" );
                     return;
                 }
-                onlineConfig = JSON.parse(this.scriptEditor.getValue())
-            }else{
-                onlineConfig = this.configData.onlineConfig || {};
             }
+
 
             var data = {
                 //"hideMenu": hideMenu,
