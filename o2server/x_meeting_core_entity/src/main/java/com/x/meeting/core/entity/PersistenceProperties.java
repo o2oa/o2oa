@@ -22,4 +22,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class Attachment {
 		public static final String table = "MT_ATTACHMENT";
 	}
+
+	public static class MeetingConfig {
+		public static final String table = "MT_CONFIG";
+	}
 }

@@ -33,7 +33,7 @@ public class Components extends ConfigObject {
     public static final String NAME_HOTARTICLE = "HotArticle";
     public static final String NAME_NOTE = "Note";
     public static final String NAME_MEETING = "Meeting";
-    public static final String NAME_ATTENDANCE = "Attendance";
+    public static final String NAME_ATTENDANCE = "attendancev2";
     public static final String NAME_FORUM = "Forum";
     public static final String NAME_MINDER = "Minder";
     public static final String NAME_CALENDAR = "Calendar";
@@ -94,7 +94,7 @@ public class Components extends ConfigObject {
             case NAME_MEETING:
                 return new Component(NAME_MEETING, NAME_MEETING, "会议管理", APPICON_PNG, 18, Component.TYPE_SYSTEM);
             case NAME_ATTENDANCE:
-                return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理", APPICON_PNG, 20, Component.TYPE_SYSTEM);
+                return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理2", APPICON_PNG, 20, Component.TYPE_SYSTEM);
             case NAME_FORUM:
                 return new Component(NAME_FORUM, NAME_FORUM, "论坛", APPICON_PNG, 21, Component.TYPE_SYSTEM);
             case NAME_MINDER:

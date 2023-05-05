@@ -1471,6 +1471,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
             this.lineList = [];
             this.sectionlineList = [];
+
+			if( this.currentEditedLine )this.currentEditedLine = null;
+
             this._loadDatatable( function () {
 				this.unchangedLineMap = null;
 			}.bind(this), operation);
@@ -1543,6 +1546,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.lineList = [];
 			this.sectionlineList = [];
+
+			if( this.currentEditedLine )this.currentEditedLine = null;
+
 			this._loadDatatable(function () {
 				Object.each(this.unchangedSectionLineMap, function(sline, key){
 					sline.isUnchangedAll = null;

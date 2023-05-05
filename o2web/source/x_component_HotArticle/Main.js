@@ -475,8 +475,8 @@ MWF.xApplication.HotArticle.CMSList = new Class({
 		var data = {}
 		if(this.options.key!==""){
 			data.title = this.options.key;
-			data.application = "CMS";
 		}
+		data.application = "CMS";
 		return this.action.HotPictureInfoAction.listForPage(this.page,this.size,data).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
@@ -495,8 +495,8 @@ MWF.xApplication.HotArticle.BBSList = new Class({
 		var data = {}
 		if(this.options.key!==""){
 			data.title = this.options.key;
-			data.application = "BBS";
 		}
+		data.application = "BBS";
 		return this.action.HotPictureInfoAction.listForPage(this.page,this.size,data).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
@@ -600,7 +600,7 @@ MWF.xApplication.HotArticle.Toolbar = new Class({
 			});
 			form.edit()
 		}else {
-			this.app.notice("请先选择文件","error");
+			this.app.notice(this.lp.tip.selectFile,"error");
 			return;
 		}
 
@@ -611,13 +611,13 @@ MWF.xApplication.HotArticle.Toolbar = new Class({
 			var _self = this;
 			var dataList = this.explorer.selectedList;
 
-			this.app.confirm("warn", e, "删除文件确认", "是否删除选中的"+dataList.length+"个文件？删除的文件不能恢复。", 350, 120, function () {
+			this.app.confirm("warn", e, this.lp.tip.removeConfirmTitle, this.lp.tip.removeConfirm.replace("{length}",dataList.length), 350, 120, function () {
 				var count = 0;
 				dataList.each( function(data){
-					_self.action.HotPictureInfoAction.delete( data.id , function(){
+					_self.action.HotPictureInfoAction.delete(data.application, data.infoId , function(){
 						count++;
 						if( dataList.length == count ){
-							_self.app.notice("成功删除"+count+"个文件。");
+							_self.app.notice(_self.lp.tip.removeSuccess.replace("{count}",count));
 							_self.explorer.refresh();
 						}
 					});
@@ -627,7 +627,7 @@ MWF.xApplication.HotArticle.Toolbar = new Class({
 				this.close();
 			});
 		}else {
-			this.app.notice("请先选择文件","error");
+			this.app.notice(this.lp.tip.selectFile,"error");
 			return;
 		}
 

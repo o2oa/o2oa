@@ -51,6 +51,7 @@ layout.addReady(function(){
                 addEvent: function(){}
             };
         };
+
         var page = getPage();
 
         function createEnvironment(page){

@@ -1,0 +1,52 @@
+.o-time-picker {
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  position: relative;
+  display: inline-block;
+  padding: 4px 11px;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+
+  align-items: center;
+}
+.o-time-picker-input {
+  position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.o-time-picker-input .input {
+  width: 72px;
+  text-align: center;
+}
+.o-time-picker-input .input {
+  position: relative;
+  margin-right: 10px;
+  display: inline-block;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  transition: all .3s;
+  flex: auto;
+  min-width: 1px;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.placeholder {
+  color: #999999 !important;
+}
+.o-time-picker-input .icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  color: #999999;
+  cursor: pointer;
+}
