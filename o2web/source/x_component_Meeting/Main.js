@@ -966,10 +966,10 @@ MWF.xApplication.Meeting.Config = new Class({
                 "       <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.hstAuth +"</div>" +
                 "       <div item='hstAuth'></div>"+
 
-                "       <div class='o2ToHstUidArea' style='display: "+( d.onlineConfig.hstAuth ? "" : "none" )+"'>"+
+                // "       <div class='o2ToHstUidArea' style='display: "+( d.onlineConfig.hstAuth ? "" : "none" )+"'>"+
                 "           <div class='configTitle' style='margin-top:15px;'>"+ this.lp.config.o2ToHstUid +"</div>" +
                 "           <div item='o2ToHstUid'></div>"+
-                "       </div>"+
+                // "       </div>"+
                 "   </div>"+
                 "</div>";
 
@@ -1052,14 +1052,14 @@ MWF.xApplication.Meeting.Config = new Class({
             this.hstAuthNode = this.contentNode.getElement("[item='hstAuth']");
             this.hstAuth = new MDomItem(this.hstAuthNode, {
                 name : "hstAuth", type : "select", selectValue : ["true","false"], selectText : [this.lp.yes, this.lp.no],
-                value : (d.onlineConfig.hstAuth || false).toString(),
-                event: {
-                    change: function (item, ev ) {
-                        var value = item.getValue();
-                        this.contentNode.getElement("div.o2ToHstUidArea").setStyle("display", value === "true" ? "" : "none");
-                        this.setSize();
-                    }.bind(this)
-                }
+                value : (d.onlineConfig.hstAuth || false).toString()
+                // event: {
+                //     change: function (item, ev ) {
+                //         var value = item.getValue();
+                //         this.contentNode.getElement("div.o2ToHstUidArea").setStyle("display", value === "true" ? "" : "none");
+                //         this.setSize();
+                //     }.bind(this)
+                // }
             } , null, this.app );
             this.hstAuth.load();
 
