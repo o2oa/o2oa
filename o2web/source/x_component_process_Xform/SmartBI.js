@@ -15,7 +15,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     Extends: MWF.APP$Module,
 
-    _loadUserInterface: function(){  debugger
+    _loadUserInterface: function(){
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
             var url;

@@ -31,7 +31,8 @@ MWF.xApplication.process.Xform.Elcarousel = MWF.APPElcarousel =  new Class(
     },
     _loadNodeEdit: function(){
         this._createElementHtml().then(function(html){
-            this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+            var id = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+            this.json["$id"] = (id.indexOf("-")!==-1) ? id.replace(/-/g, "_") : id;
             this.node.appendHTML(html, "before");
             var input = this.node.getPrevious();
 

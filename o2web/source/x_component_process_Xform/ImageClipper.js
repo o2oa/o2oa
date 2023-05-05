@@ -29,7 +29,6 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         this.fieldModuleLoaded = false;
     },
     _loadUserInterface: function(){
-	    debugger;
         this.field = true;
         this.node.empty();
         var data = this._getBusinessData();
