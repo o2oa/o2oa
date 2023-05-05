@@ -2063,7 +2063,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             r.appendChild(t);
         }
         if (options && options.br){
-            var oo_br = this.createEl(xmlDoc,"t");
+            var oo_br = this.createEl(xmlDoc,"br");
             r.appendChild(oo_br);
         }
         if (options && options.font){

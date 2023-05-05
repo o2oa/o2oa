@@ -1064,11 +1064,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_subject){
             if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
                 this.layout_subject.set("contenteditable", control.subject);
-                this.layout_subject.addEvent("input", function(){
-                    var subject = this.getFiletextText(this.data.subject).replace(/[\n\t]/g, '');
-                    if (this.layout_subject.get('text')!==subject){
-                        this.layout_subject.set('html', this.data.subject)
-                    }
+                this.layout_subject.addEvent("paste", function(e){
+                    let paste = (e.event.clipboardData || window.clipboardData).getData('text');
+
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount) return false;
+                    selection.deleteFromDocument();
+                    selection.getRangeAt(0).insertNode(document.createTextNode(paste));
+
+                    event.preventDefault();
                 }.bind(this))
                 // this.layout_subject.addEvent("blur", function(){
                 //     this.getData();

@@ -239,7 +239,7 @@ MWF.xApplication.Common.Main = new Class({
         // this.content = this.window.content;
         // shadow.appendChild(this.content);
 
-        this.window.node = new Element("div.layout_component_node").inject(layout.desktop.contentNode);
+        this.window.node = this.windowNode || new Element("div.layout_component_node").inject(layout.desktop.contentNode);
 		this.window.content = new Element("div.layout_component_content").inject(this.window.node);
 		this.content = this.window.content;
 
