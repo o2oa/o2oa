@@ -1274,7 +1274,7 @@ async function createHistroyJson(cb) {
     const downloadHost = options.downloadSite
 
     if (host) {
-        const url = host + "/webSite/history.json?t=" + (new Date()).getTime();
+        const url = host + "/website/history.json?t=" + (new Date()).getTime();
         const mirrorUrl = mirrorHost + "/download/download-history.json?t=" + (new Date()).getTime();
 
         var doneWebSite = false;
