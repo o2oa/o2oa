@@ -16044,7 +16044,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
                 if (!b.plugins.detectConflict("image", ["easyimage", "image2"])) {
                     CKEDITOR.dialog.add("image", this.path + "dialogs/image.js");
                     var a = "img[alt,!src]{border-style,border-width,float,height,margin,margin-bottom,margin-left,margin-right,margin-top,width}";
-                    CKEDITOR.dialog.isTabEnabled(b, "image", "advanced") && (a = "img[onerror,data-orgid,data-enablepreview,data-id,alt,dir,id,lang,longdesc,!src,title]{*}(*)");
+                    CKEDITOR.dialog.isTabEnabled(b, "image", "advanced") && (a = "img[data-orgid,data-enablepreview,data-id,alt,dir,id,lang,longdesc,!src,title]{*}(*)");
                     b.addCommand("image", new CKEDITOR.dialogCommand("image", {
                         allowedContent: a,
                         requiredContent: "img[alt,src]",
