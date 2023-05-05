@@ -28,11 +28,11 @@
 			// Register the dialog.
 			CKEDITOR.dialog.add( pluginName, this.path + 'dialogs/o2image.js' );
 
-			var allowed = 'img[alt,!src,onerror,data-orgid,data-prv,data-id,data-width,data-height]{border-style,border-width,float,height,margin,margin-bottom,margin-left,margin-right,margin-top,width,max-width}',
+			var allowed = 'img[alt,!src,data-orgid,data-prv,data-id,data-width,data-height]{border-style,border-width,float,height,margin,margin-bottom,margin-left,margin-right,margin-top,width,max-width}',
 				required = 'img[alt,src]';
 
 			if ( CKEDITOR.dialog.isTabEnabled( editor, pluginName, 'advanced' ) )
-				allowed = 'img[alt,dir,id,lang,longdesc,!src,title,onerror,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)';
+				allowed = 'img[alt,dir,id,lang,longdesc,!src,title,data-orgid,data-prv,data-id,data-width,data-height]{*}(*)';
 
 			// Register the command.
 			editor.addCommand( pluginName, new CKEDITOR.dialogCommand( pluginName, {

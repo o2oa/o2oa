@@ -174,9 +174,9 @@
                         "data-id": MWF.xDesktop.uploadedImageId
                     });
                 }
-                this.imageElement.setAttributes({
-                    "onerror": "MWF.xDesktop.setImageSrc()"
-                });
+                // this.imageElement.setAttributes({
+                //     "onerror": "MWF.xDesktop.setImageSrc()"
+                // });
                 MWF.xDesktop.uploadedImageId = "";
                 this.imageElement.getAttribute("style") || this.imageElement.removeAttribute("style");
                 this.imageEditMode ? !this.linkEditMode && this.addLink ? (d.insertElement(this.linkElement), this.imageElement.appendTo(this.linkElement)) : this.linkEditMode && !this.addLink && (d.getSelection().selectElement(this.linkElement), d.insertElement(this.imageElement)) : this.addLink ? this.linkEditMode ? this.linkElement.equals(d.getSelection().getSelectedElement()) ?
