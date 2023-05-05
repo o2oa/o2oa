@@ -15,19 +15,27 @@ import com.x.organization.core.entity.Custom_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-//	@MethodDescribe("根据Person查找Custom")
-	Custom getWithName(EntityManagerContainer emc, String person, String name) throws Exception {
-		EntityManager em = emc.get(Custom.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Custom> cq = cb.createQuery(Custom.class);
-		Root<Custom> root = cq.from(Custom.class);
-		Predicate p = cb.equal(root.get(Custom_.person), person);
-		p = cb.and(p, cb.equal(root.get(Custom_.name), name));
-		List<Custom> list = em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
-		if (list.isEmpty()) {
-			return null;
-		} else {
-			return list.get(0);
-		}
-	}
+    /**
+     * 根据那么和人员查找
+     * 
+     * @param emc
+     * @param person
+     * @param name
+     * @return
+     * @throws Exception
+     */
+    Custom getWithName(EntityManagerContainer emc, String person, String name) throws Exception {
+        EntityManager em = emc.get(Custom.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Custom> cq = cb.createQuery(Custom.class);
+        Root<Custom> root = cq.from(Custom.class);
+        Predicate p = cb.equal(root.get(Custom_.person), person);
+        p = cb.and(p, cb.equal(root.get(Custom_.name), name));
+        List<Custom> list = em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
+        if (list.isEmpty()) {
+            return null;
+        } else {
+            return list.get(0);
+        }
+    }
 }

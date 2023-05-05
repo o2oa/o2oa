@@ -1415,6 +1415,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.lineList = [];
 			this.sectionlineList = [];
+
+			if( this.currentEditedLine )this.currentEditedLine = null;
+
 			this._loadDatatable();
 		},
 		clearSubModules: function(){

@@ -1,10 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections4.ListUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,9 +14,13 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
-import com.x.meeting.core.entity.ConfirmStatus;
-import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.Room;
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.core.entity.*;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
+import java.util.List;
 
 class ActionEdit extends BaseAction {
 
@@ -37,9 +36,26 @@ class ActionEdit extends BaseAction {
 			if (!business.meetingEditAvailable(effectivePerson, meeting)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			Room room = emc.find(wi.getRoom(), Room.class);
-			if (null == room) {
-				throw new ExceptionRoomNotExist(wi.getRoom());
+			if(StringUtils.isBlank(wi.getSubject())){
+				throw new ExceptionCustomError("会议标题不能为空！");
+			}
+			if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
+				if(StringUtils.isBlank(meeting.getRoomId()) || StringUtils.isBlank(meeting.getRoomLink())){
+					throw new ExceptionCustomError("会议号和会议链接不能为空！");
+				}
+			}else if(StringUtils.isBlank(wi.getRoom())){
+				throw new ExceptionCustomError("会议室不能为空！");
+			}
+			Room room = null;
+			if(StringUtils.isNotBlank(wi.getRoom())) {
+				room = emc.find(wi.getRoom(), Room.class);
+				if (null == room) {
+					throw new ExceptionRoomNotExist(wi.getRoom());
+				}
+				if (!business.room().checkIdle(meeting.getRoom(), wi.getStartTime(), wi.getCompletedTime(),
+						meeting.getId())) {
+					throw new ExceptionRoomNotAvailable(room.getName());
+				}
 			}
 
 			//判断开始时间或者结束时间有没有修改过
@@ -53,8 +69,6 @@ class ActionEdit extends BaseAction {
 				modifyTime = true;
 			}
 
-			emc.beginTransaction(Meeting.class);
-
 			Wi.copier.copy(wi, meeting);
 			if(meeting.getInviteMemberList()==null){
 				meeting.setInviteMemberList(meeting.getInvitePersonList());
@@ -65,16 +79,21 @@ class ActionEdit extends BaseAction {
 			meeting.setInvitePersonList(invitePersonList);
 			meeting.setInviteDelPersonList(inviteDelPersonList);
 
-			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
-					meeting.getId())) {
-				throw new ExceptionRoomNotAvailable(room.getName());
-			}
-			emc.persist(meeting, CheckPersistType.all);
+			emc.beginTransaction(Meeting.class);
+			emc.check(meeting, CheckPersistType.all);
 			emc.commit();
+
+			MeetingConfigProperties config = business.getConfig();
+			if(config.onLineEnabled()){
+				HstService.appendMeetingUser(meeting, config);
+				if(modifyTime){
+					HstService.reserveMeeting(meeting, config);
+				}
+			}
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 
-				if(modifyTime) { //开始时间或者结束时间有修改过
-					for (String _s : wi.getInvitePersonList()) {
+				if(modifyTime) {
+					for (String _s : meeting.getInvitePersonList()) {
 						MessageFactory.meeting_invite(_s, meeting, room);
 					}
 				}else {

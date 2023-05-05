@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.cms.core.entity.query.Comparison;
 import com.x.query.core.express.plan.FilterEntry;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -119,25 +118,23 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
         if (Comparison.isNotEquals(entry.comparison)) {
             return "!=";
         }
-
         if (Comparison.isGreaterThan(entry.comparison)) {
             return ">";
         }
-
         if (Comparison.isGreaterThanOrEqualTo(entry.comparison)) {
             return ">=";
         }
-
         if (Comparison.isLessThan(entry.comparison)) {
             return "<";
         }
-
         if (Comparison.isLessThanOrEqualTo(entry.comparison)) {
             return "<=";
         }
-
         if (Comparison.isLike(entry.comparison)) {
-            return "like";
+            return "LIKE";
+        }
+        if (Comparison.isIn(entry.comparison)) {
+            return "IN";
         }
         return "=";
     }

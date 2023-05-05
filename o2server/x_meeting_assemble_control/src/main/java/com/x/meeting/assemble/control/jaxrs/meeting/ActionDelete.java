@@ -12,9 +12,12 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.MessageFactory;
 import com.x.meeting.assemble.control.ThisApplication;
+import com.x.meeting.assemble.control.service.HstService;
 import com.x.meeting.core.entity.Attachment;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
+import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionDelete extends BaseAction {
 
@@ -40,6 +43,10 @@ class ActionDelete extends BaseAction {
 			}
 			emc.remove(meeting);
 			emc.commit();
+			MeetingConfigProperties config = business.getConfig();
+			if(config.onLineEnabled()){
+				HstService.deleteMeeting(meeting, config);
+			}
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 				if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 					for (String _s : meeting.getInvitePersonList()) {

@@ -12,9 +12,14 @@ import com.x.meeting.core.entity.Room;
 
 public class MessageFactory {
 
-	public static void meeting_invite(String person, Meeting meeting, Room room) throws Exception {
+	public static void meeting_invite(String person, Meeting meeting, Room room) {
 		String title = "会议邀请:" + meeting.getSubject() + ", 时间:"
-				+ DateTools.format(meeting.getStartTime(), DateTools.format_yyyyMMddHHmm) + ", 地点:" + room.getName();
+				+ DateTools.format(meeting.getStartTime(), DateTools.format_yyyyMMddHHmm);
+		if(room != null) {
+			title = title + ", 地点:" + room.getName();
+		}else{
+			title = title + ", 会议号:" + meeting.getRoomId();
+		}
 		MessageConnector.send(MessageConnector.TYPE_MEETING_INVITE, title, person, meeting);
 	}
 

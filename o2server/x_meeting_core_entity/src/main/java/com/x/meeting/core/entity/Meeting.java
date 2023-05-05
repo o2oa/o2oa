@@ -52,10 +52,12 @@ public class Meeting extends SliceJpaObject {
 	private static final long serialVersionUID = 8117315785915863335L;
 	private static final String TABLE = PersistenceProperties.Meeting.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -67,6 +69,7 @@ public class Meeting extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.pinyin = StringUtils.lowerCase(PinyinHelper.convertToPinyinString(subject, "", PinyinFormat.WITHOUT_TONE));
 		this.pinyinInitial = StringUtils.lowerCase(PinyinHelper.getShortPinyin(subject));
@@ -115,7 +118,7 @@ public class Meeting extends SliceJpaObject {
 	@FieldDescribe("所属楼层.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + room_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + room_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Room.class) })
+	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Room.class) })
 	private String room;
 
 	public static final String startTime_FIELDNAME = "startTime";
@@ -210,7 +213,6 @@ public class Meeting extends SliceJpaObject {
 	@FieldDescribe("会议预定状态")
 	@Enumerated(EnumType.STRING)
 	@Column(length = JpaObject.length_8B, name = ColumnNamePrefix + confirmStatus_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + confirmStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	@FieldTypeDescribe(fieldType = "enum", fieldValue = "allow|deny|wait", fieldTypeName = "com.x.meeting.core.entity.ConfirmStatus")
 	private ConfirmStatus confirmStatus;
@@ -276,9 +278,27 @@ public class Meeting extends SliceJpaObject {
 	public static final String type_FIELDNAME = "type";
 	@FieldDescribe("会议类型")
 	@Column(length = length_255B, name = ColumnNamePrefix + type_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String type;
+
+	public static final String mode_FIELDNAME = "mode";
+	@FieldDescribe("会议方式：online|线上会议;offline|线下会议")
+	@Column(length = length_255B, name = ColumnNamePrefix + mode_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String mode;
+
+	public static final String roomId_FIELDNAME = "roomId";
+	@FieldDescribe("线上会议的会议号")
+	@Column(length = length_255B, name = ColumnNamePrefix + roomId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + roomId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String roomId;
+
+	public static final String roomLink_FIELDNAME = "roomLink";
+	@FieldDescribe("线上会议的链接")
+	@Column(length = length_255B, name = ColumnNamePrefix + roomLink_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String roomLink;
 
 	public String getRoom() {
 		return room;
@@ -488,5 +508,29 @@ public class Meeting extends SliceJpaObject {
 
 	public void setInviteMemberList(List<String> inviteMemberList) {
 		this.inviteMemberList = inviteMemberList;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public String getRoomId() {
+		return roomId;
+	}
+
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
+
+	public String getRoomLink() {
+		return roomLink;
+	}
+
+	public void setRoomLink(String roomLink) {
+		this.roomLink = roomLink;
 	}
 }
