@@ -45,9 +45,10 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class(
             var viewJson = {
                 "application": this.json.queryStat.appName,
                 "statName": this.json.queryStat.name,
-                "isChart": (this.json.isChart!="no"),
-                "isLegend": (this.json.isLegend!="no"),
-                "isTable": (this.json.isTable!="no")
+                "isChart": (this.json.isChart!=="no"),
+                "isLegend": (this.json.isLegend!=="no"),
+                "isTable": (this.json.isTable!=="no"),
+                "isRowToColumn": (this.json.isRowToColumn!=="no"),
             };
 
             MWF.xDesktop.requireApp("query.Query", "Statistician", function(){

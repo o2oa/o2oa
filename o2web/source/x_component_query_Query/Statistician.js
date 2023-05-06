@@ -174,7 +174,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
                     "MWFButtonText": this.lp.chart.line
                 }).inject(this.chartToolbarNode);
             }
-            if (this.data.calculate.isGroup ){
+            if (this.data.calculate.isGroup && this.json.isRowToColumn !== false ){
                 var actionNode = new Element("div", {
                     "MWFnodeid": "rowToColumn",
                     "MWFnodetype": "MWFToolBarButton",
@@ -613,7 +613,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         this.isRowToColumn = !this.isRowToColumn;
 
-        if (this.selectedRows.length || this.selectedCols.length) this.selectAll();
+        if ((this.selectedRows && this.selectedRows.length) || (this.selectedCols && this.selectedCols.length)) this.selectAll();
         this.statGridData = this.rowToColumn(this.statGridData);
 
         this.selectedData = [];
@@ -760,8 +760,10 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
 
     reloadTable: function(){
-        this.tableAreaNode.empty();
-        this.createTable();
+        if(this.tableAreaNode){
+            this.tableAreaNode.empty();
+            this.createTable();
+        }
     },
 
     createTableHead: function(){
