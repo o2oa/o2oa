@@ -1168,7 +1168,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             if (top<0) top=0;
         }
         if (left+w>size.x){
-            left = size.x-w;
+            left = size.x-w-30;
             if (left<0) left=0;
         }
         // var top = size.y/2-230;
