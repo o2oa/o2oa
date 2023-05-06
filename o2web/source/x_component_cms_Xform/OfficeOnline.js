@@ -20,7 +20,7 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get(this.appToken).action,
                 "method": "uploadAttachment",
-                "accept" : ".docx,.xlsx,.pptx",
+                "accept" : ".docx,.xlsx,.pptx,.pdf",
                 "parameter": {
                     "id": this.workId
                 },
