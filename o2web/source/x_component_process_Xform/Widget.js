@@ -280,8 +280,12 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
         widgetDataStr = data.data;
         this.widgetData = null;
         if (widgetDataStr){
-            var jsonStr = o2.bindJson(MWF.decodeJsonString(widgetDataStr),  {"lp": MWF.xApplication.process.Xform.LP.form});
-            this.widgetData = JSON.decode(jsonStr);
+            if( this.form.isParseLanguage ){
+                var jsonStr = o2.bindJson(MWF.decodeJsonString(widgetDataStr),  {"lp": MWF.xApplication.process.Xform.LP.form});
+                this.widgetData = JSON.decode(jsonStr);
+            }else{
+                this.widgetData = JSON.decode(MWF.decodeJsonString(widgetDataStr));
+            }
             this.widgetData.updateTime = data.updateTime;
         }
     },
