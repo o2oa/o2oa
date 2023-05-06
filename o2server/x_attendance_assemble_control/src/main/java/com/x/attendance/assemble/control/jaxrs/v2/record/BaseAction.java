@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.record;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
@@ -32,6 +33,17 @@ abstract class BaseAction extends StandardJaxrsAction {
         List<String> deleteIds = new ArrayList<>();
         for (AttendanceV2CheckInRecord record : oldRecordList) {
             deleteIds.add(record.getId());
+            // 如果有异常数据也必须一起删除
+            List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+            if (appealList != null && !appealList.isEmpty()) {
+                List<String> appealListDeleteIds = new ArrayList<>();
+                for (AttendanceV2AppealInfo appealInfo : appealList) {
+                    appealListDeleteIds.add(appealInfo.getId());
+                }
+                emc.beginTransaction(AttendanceV2AppealInfo.class);
+                emc.delete(AttendanceV2AppealInfo.class, appealListDeleteIds);
+                emc.commit();
+            }
         }
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.delete(AttendanceV2CheckInRecord.class, deleteIds);
