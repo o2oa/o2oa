@@ -3,7 +3,7 @@
   /* 考勤颜色变量 */
   /* 正常 */
   --att-record-status-normal-color: #4A90E2;
-  /* 迟到 */
+  /* 早退 */
   --att-record-status-early-color: #8B572A;
   /* 迟到 */
   --att-record-status-late-color: #F5A623;
