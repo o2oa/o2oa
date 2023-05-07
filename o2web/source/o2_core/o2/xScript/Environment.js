@@ -2776,7 +2776,7 @@ MWF.xScript.Environment = function(ev){
          {
             "routeName": "", //流转到下一步要选择的路由名称
             "opinion": "", //流转意见
-            "callback": function(){} //流转完成后的回调方法
+            "callback": function(json){} //回调方法，有json参数表示正常流转，json参数为流转后返回的数据。
       }
          </code></pre>
          * @example
@@ -2788,7 +2788,7 @@ MWF.xScript.Environment = function(ev){
             "routeName": "送审批",
             "opinion": "同意",
             "callback": function(json){
-                this.form.notice("process success", "success");
+                if(json)this.form.notice("process success", "success");
             }.bind(this)
       });
          */

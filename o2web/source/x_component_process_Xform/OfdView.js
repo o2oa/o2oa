@@ -108,7 +108,6 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         var data = {
             "documentId" : this.documentId
         };
-        debugger
         this._setBusinessData(data);
     },
     loadOfdView: function(){

@@ -200,7 +200,6 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
     },
 
     getExcelName: function(){
-	    debugger;
         var title;
         if( this.json.excelName && this.json.excelName.code ){
             title = this.form.Macro.exec(this.json.excelName.code, this);

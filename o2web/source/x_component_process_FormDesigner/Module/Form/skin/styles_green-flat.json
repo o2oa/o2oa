@@ -395,6 +395,8 @@
       "background-color": "#f4f7f6",
       "margin" : "10px"
     },
+    "sectionKeyStyles": {
+    },
     "properties": {
       "border": "0",
       "cellpadding": "3",

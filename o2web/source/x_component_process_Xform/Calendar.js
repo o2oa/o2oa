@@ -256,7 +256,6 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         }
 	},
     getBaseDate : function(){
-	    debugger;
         var d;
         var value = this.getValue(true);
         if( value && value.getTime() > 10000 ){
