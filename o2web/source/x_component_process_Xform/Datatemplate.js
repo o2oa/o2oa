@@ -1043,7 +1043,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		__setData: function(data, fireChange, operation){
-			// if( typeOf( data ) === "object" && typeOf(data) === "array"  ){
+			debugger;
 			if( this.isShowAllSection ){
 				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
 				this._setEditedSectionData(data, fireChange, operation);
@@ -1072,7 +1072,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this._loadDataTemplate(function(){
 				this._setSubDatatemplateOuterEvents();
 				this.unchangedLineMap = null;
-			}.bind(this))
+			}.bind(this), operation);
 		},
 		_setSubDatatemplateOuterEvents: function(){
 			//告诉下层的数据模板绑定外部事件
@@ -1141,6 +1141,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.unchangedSectionLineMap = null;
 			}.bind(this), operation);
 		},
+
 		checkMerge: function(data){
 			//区段合并后编辑
 			var isMergeEidt = this.isSectionMergeEdit();
@@ -1199,7 +1200,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 
 			var dStr, map = {};
-			data.data.each(function (d, idx) {
+			data.each(function (d, idx) {
 				if(fromOutside)dStr = JSON.stringify(d);
 				for (var i = 0; i < this.lineList.length; i++) {
 					var isEqual= fromOutside ? (dStr === lineDataList[i]) : (d === lineDataList[i] );
@@ -1795,9 +1796,9 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
             if( this.template.isShowAllSection ){
                 id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.originialId;
             }else if( sectionKey ){
-                id = this.template.json.id + ".." + sectionKey + ".." + index + ".." + json.originialId;
+                id = this.template.json.id + ".." + sectionKey + ".." + this.options.index + ".." + json.originialId;
             }else{
-                id = this.template.json.id + ".." + index + ".." + json.originialId;
+                id = this.template.json.id + ".." + this.options.index + ".." + json.originialId;
             }
             json.id = id;
             switch (json.type) {
@@ -1832,6 +1833,10 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
                 delete this.form.forms[oldId];
                 this.form.forms[id] = module;
             }
+
+			if( hasIndexArg || hasIndexInSectionLineArg ) {
+				this.checkSequence(module, templateJsonId);
+			}
         }.bind(this));
     },
 	load: function(){
@@ -1941,7 +1946,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					}
 
 					this.setEvents(module, templateJsonId);
-
+					this.checkSequence(module, templateJsonId);
 				}
 			}
 		}.bind(this));
@@ -2022,6 +2027,12 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			this.unselect();
 		}
 
+		//???
+		// if( this.template.importActionIdList.contains(id))this.importActionList.push( module );
+		// if( this.template.exportActionIdList.contains(id))this.exportActionList.push( module );
+
+	},
+	checkSequence: function(module, id){
 		if( this.template.sequenceIdList.contains(id)){
 			this.sequenceNodeList.push( module );
 			var indexText;
@@ -2039,11 +2050,6 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				module.setData( indexText );
 			}
 		}
-
-		//???
-		// if( this.template.importActionIdList.contains(id))this.importActionList.push( module );
-		// if( this.template.exportActionIdList.contains(id))this.exportActionList.push( module );
-
 	},
 	checkSelect: function () {
 		var selectData = this.selector.getData();
