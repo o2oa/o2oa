@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.schedule.v2;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,9 +13,7 @@ import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.DateTools;
 import org.quartz.JobExecutionContext;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -40,7 +39,7 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
                 for (AttendanceV2Group group : list) {
                     try {
                         // 处理部门人员重新搜索计算
-                        List<String> trueList = calTruePersonFromMixList(business, group.getParticipateList(), group.getUnParticipateList());
+                        List<String> trueList = AttendanceV2Helper.calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
                         group.setTrueParticipantList(trueList);
                         emc.beginTransaction(AttendanceV2Group.class);
                         emc.persist(group, CheckPersistType.all);
@@ -62,38 +61,4 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
         }
     }
 
-
-
-    // 重新计算考勤组 考勤人员
-    private List<String> calTruePersonFromMixList( Business business, List<String> participateList, List<String> unParticipateList) throws Exception {
-        // 处理考勤组
-        List<String> peopleList = new ArrayList<>();
-        for (String p : participateList) {
-            if (p.endsWith("@P")) {
-                peopleList.add(p);
-            } else if (p.endsWith("@I")) {
-                String person = business.organization().person().getWithIdentity(p);
-                peopleList.add(person);
-            }else if (p.endsWith("@U")) { // 递归查询人员
-                List<String> pList = business.organization().person().listWithUnitSubNested( p );
-                peopleList.addAll(pList);
-            } else {
-                logger.info("错误的标识？ " + p);
-            }
-        }
-        // 删除排除的人员
-        if (unParticipateList != null && !unParticipateList.isEmpty()) {
-            for (String p: unParticipateList) {
-                peopleList.remove(p);
-            }
-        }
-        // 去重复
-        HashSet<String> peopleSet = new HashSet<>(peopleList);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("最终考勤组人员数：" + peopleSet.size());
-        }
-
-        return new ArrayList<>(peopleSet);
-    }
 }

@@ -2,11 +2,10 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
-import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -71,7 +70,7 @@ public class ActionCreateUpdate extends BaseAction {
             if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
                 throw new ExceptionEmptyParameter("工作场所列表");
             }
-            List<String> trueList = calTruePersonFromMixList(emc, business, wi.getId(), wi.getParticipateList(), wi.getUnParticipateList());
+            List<String> trueList = AttendanceV2Helper.calTruePersonFromMixList(emc, business, wi.getId(), wi.getParticipateList(), wi.getUnParticipateList());
             wi.setTrueParticipantList(trueList);
             // 新增或更新
             AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
