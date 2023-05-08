@@ -247,9 +247,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
 			if( this.isShowAllSection ){
-				this.data = this.getAllSectionData()
+				this.data = this.getAllSectionData();
 			}else if( this.isMergeRead ){
-				this.data = this.getSectionMergeReadData()
+				this.data = this.getSectionMergeReadData();
 			}else{
 				this.data = this._getValue();
 				if( !this._getBusinessData() ){
@@ -448,23 +448,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return array;
 		},
-		setAllSectionData: function(data, fireChange){
-			var old;
-			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
-
-			this.setBusinessDataById(data);
-			this.data = data;
-
-			if (this.data){
-				this.clearSubModules();
-			}
-
-			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
-
-			this.lineList = [];
-			this.sectionlineList = [];
-			this._loadDataTemplate();
-		},
 		getSectionMergeReadData: function(){
 			switch (this.json.mergeTypeRead) {
 				case "dataScript":
@@ -573,7 +556,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		_loadSectionLineList_EditSection: function(callback, operation){
-			this.getAllSectionData();
+			var map = this.unchangedSectionLineMap || {};
+			//this.getAllSectionData();
 			this.dataWithSectionBy.each(function(data, idx){
 				var isEdited = false;
 				if( this.isSectionLineEditable( data ) && this.editable ){
@@ -635,7 +619,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_loadLineList: function(callback, operation){
 			var map = this.unchangedLineMap || {};
             Object.each(map, function (line, idx) {
-                line.resetIndex( idx.toInt() );
+                line.setIndex( idx.toInt() );
             });
 			this.data.each(function(data, idx){
 			    var idxStr = idx.toString();
@@ -705,13 +689,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				var sdata = data[ line.sectionLine.sectionKey ];
 				if( sdata  ){
 					sdata[line.options.indexInSectionLine] = d;
-					this.setAllSectionData( data );
+					this.setAllSectionData( data, false, "setLineData" );
 				}
 			}else{
 			    var index = line.options.index;
 			    var data = this.getInputData();
 			    data[index] = d;
-			    this.setData( data );
+			    this.setData( data, false, "setLineData" );
 			}
 		},
 		_addLine: function(ev, d){
@@ -734,7 +718,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				index = sdata.length - 1;
 				this.newLineIndex = index;
 
-				this.setAllSectionData( data );
+				this.setAllSectionData( data , false, "addLine");
 				newLine = this.sectionLineEdited.lineList[index];
 			}else{
                 data = this.getInputData();
@@ -742,7 +726,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
                 data.push(d || {});
                 index = data.length-1;
                 this.newLineIndex = index;
-                this.setData( data );
+                this.setData( data, false, "addLine" );
                 newLine = this.getLine(index);
 			}
 
@@ -771,14 +755,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				sdata.splice(index, 0, {});
 				this.newLineIndex = index;
 
-				this.setAllSectionData( data );
+				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
 			}else {
                 index = beforeLine.options.index+1;
                 data = this.getInputData();
                 data.splice(index, 0, {});
                 this.newLineIndex = index;
-                this.setData( data );
+                this.setData( data, false, "insertLine" );
                 newLine = this.getLine( index );
 			}
 
@@ -805,14 +789,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				sdata.splice(index, 0, d || {});
 				this.newLineIndex = index;
 
-				this.setAllSectionData( data );
+				this.setAllSectionData( data , false, "insertLine");
 				line = this.sectionLineEdited.lineList[index];
 			}else {
                 data = this.getInputData();
                 if(data.length < index )return null;
                 data.splice(index, 0, d||{});
                 this.newLineIndex = index;
-                this.setData( data );
+                this.setData( data , false, "insertLine");
                 newLine = this.getLine( index );
 			}
 
@@ -855,14 +839,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_delLines: function(lines){
 			var _self = this;
+			var saveFlag = false;
+
 			var data;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 			}else{
 				data = _self.getInputData();
 			}
-
-			var saveFlag = false;
 
 			lines.reverse().each(function(line){
 				_self.fireEvent("deleteLine", [line]);
@@ -882,9 +866,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			});
 
 			if( this.isShowAllSection ){
-				_self.setAllSectionData(data);
+				_self.setAllSectionData(data, false, "deleteLines");
 			}else{
-			    _self.setData( data );
+			    _self.setData( data , false, "deleteLines");
 			}
 			this.validationMode();
 
@@ -918,11 +902,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( d ){
 					d.splice(line.options.indexInSectionLine, 1);
 				}
-				this.setAllSectionData( data );
+				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
                 data = this.getInputData();
                 data.splice(line.options.index, 1);
-                this.setData( data );
+                this.setData( data , false, "deleteLine");
 			}
 
 			this.validationMode();
@@ -1035,17 +1019,17 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * })
 		 *  field.setData( promise );
 		 */
-		setData: function(data){
+		setData: function(data, fireChange, operation){
 			if (!data){
 				data = this._getValue();
 			}
-			this._setData(data);
+			this._setData(data, fireChange, operation);
 		},
-		_setData: function(data){
+		_setData: function(data, fireChange, operation){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 				// if (o2.typeOf(data)==="object") data = [data];
-				this.__setData(data);
+				this.__setData(data, fireChange, operation);
 				this.moduleValueAG = null;
 				return v;
 			}.bind(this), function(){
@@ -1058,8 +1042,22 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
-		__setData: function(data){
+		__setData: function(data, fireChange, operation){
 			// if( typeOf( data ) === "object" && typeOf(data) === "array"  ){
+			if( this.isShowAllSection ){
+				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
+				this._setEditedSectionData(data, fireChange, operation);
+				return;
+			}else if( this.isMergeRead ){
+				//合并且只读，不允许setData
+				throw new Error("The data table is merged and read-only, you can use the 'setAllSectionData' method to set all section data");
+			}
+
+			var old;
+            if(fireChange)old = Object.clone(this._getBusinessData() || {});
+
+			this._setUnchangedLineMap(data, operation);
+
 			this._setBusinessData(data);
 			this.data = data;
 
@@ -1067,10 +1065,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.clearSubModules();
 			}
 
+            if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
 			this.lineList = [];
 			this.sectionlineList = [];
 			this._loadDataTemplate(function(){
 				this._setSubDatatemplateOuterEvents();
+				this.unchangedLineMap = null;
 			}.bind(this))
 		},
 		_setSubDatatemplateOuterEvents: function(){
@@ -1079,15 +1080,165 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.lineList[i].setSubDatatemplateOuterActionEvents();
 			}
 		},
+		_setEditedSectionData: function(data, fireChange, operation){
+			if( this.isShowAllSection ){
+				var d = this.getBusinessDataById();
+				d[ this.sectionBy ] = data || { data: [] };
+				this.setAllSectionData( d, fireChange , operation);
+			}
+		},
+		/**
+		 * @summary 当数据模板设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
+		 * @param data{Object} 必选，对象.
+		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
+		 * @example
+		 *  this.form.get("fieldId").setAllSectionData({}); //赋空值
+		 * @example
+		 *  this.data['fieldId'].setAllSectionData({
+		 *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": [ //区段1的key和data
+     *				{
+     *					"good": "yf",
+     *					"number_2": 11,
+     *					"prize": 1
+     *				}
+     *			],
+		 *  	"83de86fc-60bc-4b4c-955c-1085915865a4": [ //区段2的key和data
+     *  			{
+     *  				"good": "yf",
+     *  				"number_2": 11,
+     *  				"prize": 10
+     *  			}
+     *  		]
+		 *  });
+		 */
+		setAllSectionData: function(data, fireChange, operation){
+			var old;
+			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
+
+			this._setUnchangedSectionLineMap(data);
+
+			this.setBusinessDataById(data);
+
+			if( operation ){
+				this.data = this.isShowAllSection ? this.getAllSectionData() : data;
+			}else{
+				this.checkMerge(data);
+			}
+
+			if (this.data){
+				this.clearSubModules();
+			}
+
+			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
+			this.lineList = [];
+			this.sectionlineList = [];
+			this._loadDataTemplate(function () {
+				Object.each(this.unchangedSectionLineMap, function(sline, key){
+					sline.isUnchangedAll = null;
+					sline.unchangedLineMap = null;
+				});
+				this.unchangedSectionLineMap = null;
+			}.bind(this), operation);
+		},
+		checkMerge: function(data){
+			//区段合并后编辑
+			var isMergeEidt = this.isSectionMergeEdit();
+			if( isMergeEidt ){ //区段合并，删除区段值合并数据后编辑
+				if( this.json.mergeTypeEdit === "script" ){
+					this._loadMergeEditNodeByScript();
+				}else{
+					this._loadMergeEditNodeByDefault();
+				}
+			}
+			//区段合并展现
+			this.isMergeRead = this.isSectionMergeRead();
+			//启用区段且显示所有区段
+			this.sectionBy = this._getSectionBy();
+			this.isShowAllSection = this.isAllSectionShow();
+
+			if( this.isShowAllSection ){
+				this.data = this.getAllSectionData();
+			}else if( this.isMergeRead ) {
+				this.data = this.getSectionMergeReadData();
+			}else if( isMergeEidt ){
+				this.data = this._getBusinessData()
+			}else{
+				this.data = data;
+			}
+		},
+		_setUnchangedSectionLineMap: function( data, operation ){
+			if( !data ){
+				return;
+			}
+			var map = {};
+			if( this.sectionlineList && this.sectionlineList.length ){
+				this.sectionlineList.each(function (sline, i) {
+					for( var key in data ){
+						if( key === sline.sectionKey ){
+							var m = sline._setUnchangedLineMap(data[key], operation);
+							if( m )map[key] = m;
+							break;
+						}
+					}
+				}.bind(this));
+			}
+			this.unchangedSectionLineMap = map;
+        },
+		_setUnchangedLineMap: function(data, operation){
+			if( !data ){
+				this.unchangedLineMap = {};
+				return;
+			}
+			var fromOutside = !operation;
+			var lineDataList = this.lineList.map(function (line) {
+				if( line.options.isEdited !== this.editable )return "";
+				if( line.options.isDeleteable !== this.editable )return "";
+				if( line.options.isAddable !== this.editable )return "";
+				return fromOutside ?  JSON.stringify(line.data) : line.data;
+			}.bind(this));
+
+			var dStr, map = {};
+			data.data.each(function (d, idx) {
+				if(fromOutside)dStr = JSON.stringify(d);
+				for (var i = 0; i < this.lineList.length; i++) {
+					var isEqual= fromOutside ? (dStr === lineDataList[i]) : (d === lineDataList[i] );
+					if ( isEqual ) {
+						map[idx] = this.lineList[i];
+						lineDataList[i] = "";
+						break;
+					}
+				}
+			}.bind(this));
+			this.unchangedLineMap = map;
+		},
 		clearSubModules: function(){
 			if( this.sectionlineList && this.sectionlineList.length ){
 				for( var i=0; i<this.sectionlineList.length; i++ ){
 					this.sectionlineList[i].clearSubModules();
 				}
 			}else{
+				var map = this.unchangedLineMap || {};
+				var lines = [];
+				Object.values(map).each(function (d) {
+					lines = lines.concat(d);
+				});
                 for (var i=0; i<this.lineList.length; i++){
-                    this.lineList[i].clearSubModules();
+                    //this.lineList[i].clearSubModules();
+                    var l = this.lineList[i];
+					if(!lines.contains(l))l.clearSubModules();
                 }
+			}
+		},
+		resetId: function(){
+			if( this.sectionlineList && this.sectionlineList.length ){
+				this.sectionlineList.each(function (sline, i) {
+					sline.resetId();
+				}.bind(this));
+			}else{
+				for (var i=0; i<this.lineList.length; i++){
+					this.lineList[i].resetId();
+				}
 			}
 		},
 		/**
@@ -1321,6 +1472,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 				this.errNode = this.createErrorNode(text).inject(this.node, "after");
 				this.showNotValidationMode(this.node);
+
+				var parentNode = this.errNode;
+				while( parentNode && parentNode.offsetParent === null ){
+					parentNode = parentNode.getParent();
+				}
+
+				if (parentNode && !parentNode.isIntoView()) parentNode.scrollIntoView(false);
 			}
 		},
 		showNotValidationMode: function(node){
@@ -1506,6 +1664,11 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			}.bind(this));
 		}
 	},
+	resetId: function(){
+		this.lineList.each(function (line) {
+			line.resetId();
+		}.bind(this))
+	},
 	_loadLine: function(container, data, index, isEdited, isNew){
 		var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this.template, data, {
 			indexInSectionLine : index,
@@ -1599,6 +1762,78 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 		this.subDatatemplateModuleList = [];
 	},
+	resetId: function(){
+		this.setIndex();
+	},
+	setIndex: function(index, indexInSectionLine){
+        var hasIndexArg = typeOf(index) !== "null";
+		var hasIndexInSectionLineArg = typeOf(indexInSectionLine) !== "null";
+
+		if( hasIndexArg && hasIndexInSectionLineArg){
+			if( this.options.index === index && this.options.indexInSectionLine === indexInSectionLine )return;
+		}else if( hasIndexArg && !hasIndexInSectionLineArg){
+			if( this.options.index === index )return;
+		}else if(!hasIndexArg && hasIndexInSectionLineArg){
+			if( this.options.indexInSectionLine === indexInSectionLine )return;
+		}
+
+		if( hasIndexArg ){
+			this.options.index = index;
+			this.options.indexText = (index.toInt()+1).toString();
+		}
+
+        if( hasIndexInSectionLineArg ){
+			this.options.indexInSectionLine = indexInSectionLine;
+			this.options.indexInSectionLineText = (indexInSectionLine.toInt()+1).toString();
+		}
+
+        //合并状态或拆分状态
+        var sectionKey = this.options.sectionKey || this.template.sectionBy;
+        this.modules.each(function (module) {
+            var json = module.json;
+            var id, oldId = json.id, templateJsonId = json.originialId;
+            if( this.template.isShowAllSection ){
+                id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.originialId;
+            }else if( sectionKey ){
+                id = this.template.json.id + ".." + sectionKey + ".." + index + ".." + json.originialId;
+            }else{
+                id = this.template.json.id + ".." + index + ".." + json.originialId;
+            }
+            json.id = id;
+            switch (json.type) {
+				case "Select":
+					(module.areaNode || module.node).set("id", id);
+					break;
+				case "Datatable":
+				case "Datatemplate":
+					module.resetId();
+					break;
+				default:
+					module.node.set("id", id);
+					break;
+			}
+
+            if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+                json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+            }
+
+            delete this.all[oldId];
+            this.all[id] = module;
+
+            delete this.allField[oldId];
+            this.allField[id] = module;
+
+            if(this.form.all[oldId]){
+                delete this.form.all[oldId];
+                this.form.all[id] = module;
+            }
+
+            if(this.form.forms[oldId]){
+                delete this.form.forms[oldId];
+                this.form.forms[id] = module;
+            }
+        }.bind(this));
+    },
 	load: function(){
 		this.node.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
@@ -1629,6 +1864,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						id = this.template.json.id + ".." + index + ".." + json.id;
 					}
 
+					json.originialId = templateJsonId;
 					json.id = id;
 					node.set("id", id);
 

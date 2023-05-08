@@ -865,7 +865,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_loadSectionLineList_EditSection: function(callback, operation){
 			var map = this.unchangedSectionLineMap || {};
 			// Object.each(map, function (sline, idx) {
-            //     sline.resetIndex( idx.toInt(), (idx.toInt()+1).toString() );
+            //     sline.setIndex( idx.toInt(), (idx.toInt()+1).toString() );
             // });
 			this.dataWithSectionBy.each(function(data, idx){
 				var isEdited = false;
@@ -876,7 +876,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var sectionLine, beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateNode;
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
-					sectionLine.resetIndex( beforeNode, data, idx, isEdited, isNew, operation );
+					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
 				}else{
 					var node = this._createLineNode( beforeNode );
 					sectionLine = this._loadSectionLine_EditSection(node, data, idx, isEdited, isNew);
@@ -916,7 +916,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var beforeNode = idx > 0 ? this.sectionlineList[idx-1].getLastTr() : this.templateNode;
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
-					sectionLine.resetIndex( beforeNode, data, idx, isEdited, isNew, operation );
+					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
 				}else {
 					var node = this._createLineNode( beforeNode );
 					sectionLine = this._loadSectionLine(node, data, idx, isEdited, isNew);
@@ -945,7 +945,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_loadLineList: function(callback, operation){
 			var map = this.unchangedLineMap || {};
             Object.each(map, function (line, idx) {
-                line.resetIndex( idx.toInt() );
+                line.setIndex( idx.toInt() );
             });
             this.data.data.each(function(data, idx){
                 if( !data )return;
@@ -1645,6 +1645,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
             }
         },
+		resetId: function(){
+			if( this.sectionlineList && this.sectionlineList.length ){
+				this.sectionlineList.each(function (sline, i) {
+					sline.resetId();
+				}.bind(this));
+			}else{
+				for (var i=0; i<this.lineList.length; i++){
+					this.lineList[i].resetId();
+				}
+			}
+		},
 		/**
 		 * @summary 判断数据表格是否为空.
 		 * @example
@@ -2230,7 +2241,12 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			this._loadTotal();
 		}
 	},
-	resetIndex: function( preNode, data, index, isEdited, isNew, operation ){
+	resetId: function(){
+		this.lineList.each(function (line) {
+			line.resetId();
+		}.bind(this))
+	},
+	setIndex: function( preNode, data, index, isEdited, isNew, operation ){
 		if( this.isUnchangedAll && index === this.options.index )return;
 
 		this.data = data;
@@ -2243,7 +2259,7 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		this.lineList = [];
 		var map = this.unchangedLineMap || {};
 		Object.each(map, function (line, idx) {
-            line.resetIndex( this.datatable.lineList.length + idx.toInt(), idx.toInt() );
+            line.setIndex( this.datatable.lineList.length + idx.toInt(), idx.toInt() );
         }.bind(this));
 		if( this.data.data &&  this.data.data.data ){
 			this.data.data.data.each(function (d, idx) {
@@ -2598,12 +2614,27 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		// 	this.options.isNew = false;
 		// }
 	},
-	resetIndex: function(index, indexInSectionLine){
-        if( this.options.index === index )return;
-        this.options.index = index;
-        this.options.indexText = (index.toInt()+1).toString();
+	resetId: function(){
+		this.setIndex();
+	},
+	setIndex: function(index, indexInSectionLine){
+		var hasIndexArg = typeOf(index) !== "null";
+		var hasIndexInSectionLineArg = typeOf(indexInSectionLine) !== "null";
 
-        if( typeOf(indexInSectionLine) !== "null" ){
+		if( hasIndexArg && hasIndexInSectionLineArg){
+			if( this.options.index === index && this.options.indexInSectionLine === indexInSectionLine )return;
+		}else if( hasIndexArg && !hasIndexInSectionLineArg){
+			if( this.options.index === index )return;
+		}else if(!hasIndexArg && hasIndexInSectionLineArg){
+			if( this.options.indexInSectionLine === indexInSectionLine )return;
+		}
+
+		if( hasIndexArg ){
+			this.options.index = index;
+			this.options.indexText = (index.toInt()+1).toString();
+		}
+
+        if( hasIndexInSectionLineArg ){
 			this.options.indexInSectionLine = indexInSectionLine;
 			this.options.indexInSectionLineText = (indexInSectionLine.toInt()+1).toString();
 		}
@@ -2616,9 +2647,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
             if( this.datatable.isShowAllSection ){
                 id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.originialId;
             }else if( sectionKey ){
-                id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.originialId;
+                id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.index + ".." + json.originialId;
             }else{
-                id = this.datatable.json.id + "..data.." + index + ".." + json.originialId;
+                id = this.datatable.json.id + "..data.." + this.options.index + ".." + json.originialId;
             }
             json.id = id;
             switch (module.json.type) {
@@ -2650,8 +2681,10 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
                 this.form.forms[id] = module;
             }
 
-            this.loadSequence();
-            this.loadZebraStyle();
+            if( hasIndexArg || hasIndexInSectionLineArg ){
+				this.loadSequence();
+				this.loadZebraStyle();
+			}
         }.bind(this));
     },
 	loadModules: function(){
