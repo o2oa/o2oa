@@ -13,7 +13,7 @@
                   @remove="removeFile"/>
       <BaseRadio :label-style="labelStyle"
                  :label="lp._resource.overwrite"
-                 :options="[{label: 'true', value: 'true', text: lp._resource.overwriteTrue}, {label: 'false', value: 'false', text: lp._resource.overwriteFalse}]"
+                 :options="[{label: 'false', value: 'false', text: lp._resource.overwriteTrue}, {label: 'true', value: 'true', text: lp._resource.overwriteFalse}]"
                  v-model:value="deloyData.overwrite"/>
 
       <BaseInput :label-style="labelStyle" :label="lp._resource.deployPath" v-model:value="deloyData.path"/>
@@ -36,7 +36,7 @@ import BaseInput from '@/components/item/BaseInput.vue';
 
 const deloyData = ref({
   file: [],
-  overwrite: 'true',
+  overwrite: 'false',
   path: ''
 });
 const labelStyle = {
