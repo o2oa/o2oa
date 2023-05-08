@@ -19,6 +19,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 		Implements: [Events],
 		Extends: MWF.xApplication.process.Xform.DatatablePC,
 		loadDatatable: function(){
+			this.loading = true;
 			this._loadStyles();
 
 			this._loadTitleTr();
@@ -31,8 +32,17 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
 				this.fieldModuleLoaded = true;
+				this.loading = false;
 				this.fireEvent("postLoad");
 			}.bind(this));
+		},
+		_removeEl: function(){
+			if( this.templateNode )this.templateNode.destroy();
+
+			if( this.totalDiv ){
+				this.totalDiv.destroy();
+				this.totalDiv = null;
+			}
 		},
 		_loadTitleTr: function(){
 			this.titleTr = this.table.getElement("tr");
@@ -253,28 +263,70 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
 			if (!this.totalDiv)this._loadTotalTr();
-			var data = this.getValue();
+			var data;
+			if( this.isShowAllSection ){
+				data = { data : [] };
+				Object.each( this.getBusinessDataById(), function (d, key) {
+					if( !["data","total"].contains(key) ){
+						data.data = data.data.concat( d.data )
+					}
+				});
+			}else if( this.isMergeRead ){
+				data = this.data;
+			}else{
+				data = this.getValue();
+			}
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
 				if(!json)return;
+
+				var pointLength = 0; //小数点后的最大数位
+				var tmpV;
 				if (column.type === "count"){
 					tmpV = data.data.length;
 				}else if(column.type === "number"){
-					var tmpV = new Decimal(0);
+					tmpV = new Decimal(0);
 					for (var i=0; i<data.data.length; i++){
 						var d = data.data[i];
-						if(d[json.id])tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+						if(d[json.id]){
+							tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+							var v = d[json.id].toString();
+							if( v.indexOf(".") > -1 ){
+								pointLength = Math.max(pointLength, v.split(".")[1].length);
+							}
+						}
 					}
 				}
-				totalData[json.id] = tmpV.toString();
-				column.td.set("text", isNaN( tmpV ) ? "" : tmpV );
+				if( isNaN( tmpV ) ){
+					totalData[json.id] = "";
+					column.td.set("text", "" );
+				}else{
+					if( pointLength > 0 && tmpV.toString() !== "0" ){
+						var s = tmpV.toString();
+						if( s.indexOf(".") > -1 ){
+							var length = s.split(".")[1].length;
+							if( length < pointLength ){
+								totalData[json.id] = s + "0".repeat(pointLength-length);
+							}else{
+								totalData[json.id] = s;
+							}
+						}else{
+							totalData[json.id] = s +"."+ "0".repeat(pointLength);
+						}
+					}else{
+						totalData[json.id] = tmpV.toString();
+					}
+					column.td.set("text", totalData[json.id] );
+				}
 			}.bind(this));
 			data.total = totalData;
 			return totalData;
 		},
-		_createLineNode: function(){
+		_createLineNode: function(beforeNode){
 			var div;
-			if( this.totalDiv ){
+			if( beforeNode ) {
+				div = new Element("div").inject(beforeNode, "after");
+			}else if( this.totalDiv ){
 				div = new Element("div").inject(this.totalDiv, "before");
 			}else{
 				div = new Element("div").inject(this.node);
@@ -377,7 +429,49 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 	});
 
 MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
-	Extends: MWF.APP$Module
+	Extends: MWF.APP$Module,
+	_loadUserInterface: function(){
+		if(this.json.recoveryStyles){
+			this.node.setStyles(this.json.recoveryStyles);
+		}
+		if (this.json.prefixIcon || this.json.suffixIcon){
+			var text = this.node.get("text");
+			this.node.empty();
+
+			var lineheight = this.node.getStyle("line-height") || "28px";
+			this.wrapNode = new Element("div", {
+				"styles": {
+					"display": "flex",
+					"align-items": "center"
+					// "justify-content": "center"
+				}
+			}).inject(this.node);
+
+			if (this.json.prefixIcon){
+				this.prefixNode = new Element("div", {"styles": {
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.prefixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
+			}
+
+			this.textNode = new Element("div", {"styles": {
+					"line-height": lineheight,
+					"vertical-align": "top",
+					"padding": "1px"
+				}, "text": text}).inject(this.wrapNode);
+
+			if (this.json.suffixIcon){
+				this.suffixNode = new Element("div", {"styles": {
+						"width": "20px",
+						"min-width": "20px",
+						"height": lineheight,
+						"background": "url("+this.json.suffixIcon+") center center no-repeat"
+					}}).inject(this.wrapNode);
+			}
+		}
+	}
 });
 
 MWF.xApplication.process.Xform.DatatableMobile$Data =  new Class({
@@ -405,9 +499,11 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		this.datatable.fireEvent("afterLoadLine", [line]);
 		return line;
 	},
-	_createLineNode: function(){
+	_createLineNode: function( beforeNode ){
 		var div;
-		if( this.totalDiv ){
+		if( beforeNode ){
+			div = new Element("div").inject(beforeNode, "after");
+		}else if( this.totalDiv ){
 			div = new Element("div").inject(this.totalDiv, "before");
 		}else{
 			div = this.datatable._createLineNode();
@@ -416,7 +512,9 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		return div;
 	},
 	loadSectionKeyNode: function () {
-		var sectionKeyStyles = this.datatable._parseStyles(this.datatable.json.sectionKeyStyles);
+		debugger;
+		var styleName = this.datatable.isShowSectionKey() ? "sectionKeyStyles" : "sectionByStyles";
+		var sectionKeyStyles = this.datatable._parseStyles( this.datatable.json[styleName] || {} );
 		var keyNode = new Element("div.mwf_sectionkey", {
 			styles : sectionKeyStyles
 		}).inject( this.sectionKeyNode );
@@ -438,16 +536,34 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		}.bind(this));
 	},
 	clearSubModules: function(){
-		if( this.keyNode ){
-			this.keyNode.destroy();
-			this.keyNode = null;
+		if( this.isUnchangedAll )return;
+
+		var map = this.unchangedLineMap || {};
+		var hasUnchangedLine = Object.keys(map).length > 0;
+
+		if( !hasUnchangedLine ){
+			if( this.sectionKeyNode ){
+				this.sectionKeyNode.destroy();
+				this.sectionKeyNode = null;
+			}
 		}
+
+		var lines = [];
+		Object.values(map).each(function (d) {
+			lines = lines.concat(d);
+		});
 		for (var i=0; i<this.lineList.length; i++){
-			this.lineList[i].clearSubModules();
+			var l = this.lineList[i];
+			if(!lines.contains(l)){
+				l.clearSubModules();
+			}
 		}
-		if( this.totalDiv ){
-			this.totalDiv.destroy();
-			this.totalDiv = null;
+
+		if( !hasUnchangedLine ) {
+			if( this.totalDiv ){
+				this.totalDiv.destroy();
+				this.totalDiv = null;
+			}
 		}
 	},
 	_loadTotalTr: function(){
@@ -456,21 +572,21 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		if( !this.isTotalTrShow() )this.totalDiv.hide();
 
 		var titleDiv = new Element("div", {"styles": this.datatable.json.itemTitleStyles}).inject(this.totalDiv);
-			titleDiv.setStyle("overflow", "hidden");
-			new Element("div.sequenceDiv", {
-				"styles": {"float": "left"},
-				"text": MWF.xApplication.process.Xform.LP.sectionAmount
-			}).inject(titleDiv);
+		titleDiv.setStyle("overflow", "hidden");
+		new Element("div.sequenceDiv", {
+			"styles": {"float": "left"},
+			"text": MWF.xApplication.process.Xform.LP.sectionAmount
+		}).inject(titleDiv);
 
-			this.totalTable = new Element("table").inject(this.totalDiv);
-			if (this.datatable.json.border) {
-				this.totalTable.setStyles({
-					"border-top": this.json.border,
-					"border-left": this.json.border
-				});
-			}
-			this.totalTable.setStyles(this.datatable.json.tableStyles);
-			this.totalTable.set(this.datatable.json.properties);
+		this.totalTable = new Element("table").inject(this.totalDiv);
+		if (this.datatable.json.border) {
+			this.totalTable.setStyles({
+				"border-top": this.json.border,
+				"border-left": this.json.border
+			});
+		}
+		this.totalTable.setStyles(this.datatable.json.tableStyles);
+		this.totalTable.set(this.datatable.json.properties);
 
 		var ths = this.datatable.titleTr.getElements("th");
 		var idx = 0;
@@ -483,44 +599,44 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 			if (json){
 				if ((json.total === "number") || (json.total === "count")){
 
-						var datath = new Element("th").inject(tr);
-						datath.set("text", th.get("text"));
-						if (this.datatable.json.border){
-							ths.setStyles({
-								"border-bottom": this.datatable.json.border,
-								"border-right": this.datatable.json.border
-							});
-						}
-						datath.setStyles(this.datatable.json.titleStyles);
-
-						var datatd = new Element("td").inject(tr);
-						if (this.datatable.json.border) {
-							datatd.setStyles({
-								"border-bottom": this.datatable.json.border,
-								"border-right": this.datatable.json.border,
-								"background": "transparent"
-							});
-						}
-						datatd.setStyles(this.datatable.json.sectionAmountStyles || {});
-
-						if( json.isShow === false ){
-							tr.hide(); //隐藏列
-						}else{
-							if ((idx%2)===0 && this.datatable.json.zebraColor){
-								datatd.setStyle("background-color", this.datatable.json.zebraColor);
-							}else if(this.datatable.json.backgroundColor){
-								datatd.setStyle("background-color", this.datatable.json.backgroundColor);
-							}
-							idx++;
-						}
-
-						this.totalColumns.push({
-							"th" : datath,
-							"td" : datatd,
-							"index": index,
-							"type": json.total
-						})
+					var datath = new Element("th").inject(tr);
+					datath.set("text", th.get("text"));
+					if (this.datatable.json.border){
+						ths.setStyles({
+							"border-bottom": this.datatable.json.border,
+							"border-right": this.datatable.json.border
+						});
 					}
+					datath.setStyles(this.datatable.json.titleStyles);
+
+					var datatd = new Element("td").inject(tr);
+					if (this.datatable.json.border) {
+						datatd.setStyles({
+							"border-bottom": this.datatable.json.border,
+							"border-right": this.datatable.json.border,
+							"background": "transparent"
+						});
+					}
+					datatd.setStyles(this.datatable.json.sectionAmountStyles || {});
+
+					if( json.isShow === false ){
+						tr.hide(); //隐藏列
+					}else{
+						if ((idx%2)===0 && this.datatable.json.zebraColor){
+							datatd.setStyle("background-color", this.datatable.json.zebraColor);
+						}else if(this.datatable.json.backgroundColor){
+							datatd.setStyle("background-color", this.datatable.json.backgroundColor);
+						}
+						idx++;
+					}
+
+					this.totalColumns.push({
+						"th" : datath,
+						"td" : datatd,
+						"index": index,
+						"type": json.total
+					})
+				}
 			}
 		}.bind(this));
 
@@ -556,20 +672,53 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 		this.totalColumns.each(function(column, index){
 			var json = column.moduleJson;
 			if(!json)return;
-				if (column.type === "count"){
-					tmpV = data.data.length;
-				}else if(column.type === "number"){
-					var tmpV = new Decimal(0);
-					for (var i=0; i<data.data.length; i++){
-						var d = data.data[i];
-						if(d[json.id])tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+
+			var pointLength = 0; //小数点后的最大数位
+			var tmpV;
+			if (column.type === "count"){
+				tmpV = data.data.length;
+			}else if(column.type === "number"){
+				tmpV = new Decimal(0);
+				for (var i=0; i<data.data.length; i++){
+					var d = data.data[i];
+					if(d[json.id]){
+						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+						var v = d[json.id].toString();
+						if( v.indexOf(".") > -1 ){
+							pointLength = Math.max(pointLength, v.split(".")[1].length);
+						}
 					}
 				}
-				totalData[json.id] = tmpV.toString();
-				column.td.set("text", isNaN( tmpV ) ? "" : tmpV );
+			}
+			if( isNaN( tmpV ) ){
+				totalData[json.id] = "";
+				column.td.set("text", "" );
+			}else{
+				if( pointLength > 0 && tmpV.toString() !== "0" ){
+					var s = tmpV.toString();
+					if( s.indexOf(".") > -1 ){
+						var length = s.split(".")[1].length;
+						if( length < pointLength ){
+							totalData[json.id] = s + "0".repeat(pointLength-length);
+						}else{
+							totalData[json.id] = s;
+						}
+					}else{
+						totalData[json.id] = s +"."+ "0".repeat(pointLength)
+					}
+				}else{
+					totalData[json.id] = tmpV.toString();
+				}
+				column.td.set("text", totalData[json.id]);
+			}
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
+	},
+	getLastTr: function () {
+		if( this.totalDiv )return this.totalDiv;
+		if( this.lineList.length )return this.lineList.getLast().node;
+		return this.sectionKeyNode;
 	}
 });
 

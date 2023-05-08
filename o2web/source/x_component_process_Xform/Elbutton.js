@@ -43,7 +43,6 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
         if (!this.json.icon) this.json.icon = false;
     },
     _createElementHtml: function(){
-        debugger;
         var html = "<el-button";
         html += " :size=\"size\"";
         html += " :type=\"bttype\"";

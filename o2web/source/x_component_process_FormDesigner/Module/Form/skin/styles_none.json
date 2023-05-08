@@ -145,6 +145,7 @@
     "itemTitleStyles": {},
     "importActionStyles" : {},
     "exportActionStyles" : {},
+    "sectionKeyStyles": {},
     "properties": {}
   },
   "datatable$Title": {

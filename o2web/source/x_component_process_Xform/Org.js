@@ -650,7 +650,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var v = this._getBusinessData();
         if (!v || !v.length){
             if( this.descriptionNode ){
-                debugger;
                 if( this.node.getFirst() ){
                     var size = this.node.getFirst().getSize();
                     var w = size.x-3;
@@ -667,7 +666,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                     this.descriptionNode.setStyle("display", "block");
                 }
             }else{
-                debugger;
                 this.loadDescription();
             }
         }else{

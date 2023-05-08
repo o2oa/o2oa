@@ -258,6 +258,21 @@ MWF.xApplication.Meeting.LP = {
         "onlineConfig": "Online meeting configuration",
         "onlineProduct": "Online meeting product",
 
+        'hstUrl': 'Service Address',
+        'hstKey':'Service Interface KEY',
+        'hstSecret': 'Service interface SECRET',
+        'hstAuth': 'Is authenticated',
+        'o2ToHstUid': 'People Synchronization Fields',
+        "onlineConfigNotEmpty": "Hostel service address, interface Key, and interface Secret cannot be empty",
+
+        "employee": "employee",
+        "unique": "unique",
+        "distinguishedName": "distinguishedName",
+        "mobile": "mobile",
+        "mail": "mail",
+        "weixin": "qq",
+        "qq": "qq",
+
         "apiAddress": "web conferencing api address",
         "key": "key",
         "secret": "secret"

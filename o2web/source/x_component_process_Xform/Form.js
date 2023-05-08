@@ -388,6 +388,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadMacro(function () {
             debugger
             this.loadLanguage(function(flag){
+                this.isParseLanguage = flag;
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
                     this.data = JSON.parse(data);
@@ -856,6 +857,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 } else {
                     actionStyle.width = (buttonWidth * 2) + "px";
                     var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                    if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                     action.store("tool", tool);
                     action.addEvent("click", function (e) {
                         var t = e.target.retrieve("tool");
@@ -901,6 +903,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 actionStyle.width = "100%";
                 var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(this.actionMoreArea);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var t = e.target.retrieve("tool");
@@ -929,6 +932,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             tools.each(function (tool) {
 
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var t = e.target.retrieve("tool");
@@ -947,6 +951,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = 0; i < 2; i++) {
                 tool = tools[i];
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var t = e.target.retrieve("tool");
@@ -993,6 +998,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var action = new Element("div", { "styles": this.css.html5ActionOtherButton, "text": tool.text }).inject(this.actionMoreArea);
+                if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
                     var t = e.target.retrieve("tool");

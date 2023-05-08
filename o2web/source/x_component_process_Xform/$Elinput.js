@@ -42,7 +42,8 @@ Object.assign(o2.APP$Elinput.prototype, {
     //     }
     // },
     _loadNodeEdit: function(){
-        this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+        var id = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+        this.json["$id"] = (id.indexOf("-")!==-1) ? id.replace(/-/g, "_") : id;
         this.node.appendHTML(this._createElementHtml(), "before");
         var input = this.node.getPrevious();
 

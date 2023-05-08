@@ -374,6 +374,8 @@
       "padding": "0px 5px",
       "background-color": "#efefef",
       "margin" : "5px"
+    },,
+    "sectionKeyStyles": {
     },
     "properties": {
       "width": "100%",

@@ -48,7 +48,6 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
         },
 
         _loadUserInterface: function () {
-            debugger;
             this.node.empty();
             if (this.isReadonly()) {
                 // this.node.set("html", this._getBusinessData());
