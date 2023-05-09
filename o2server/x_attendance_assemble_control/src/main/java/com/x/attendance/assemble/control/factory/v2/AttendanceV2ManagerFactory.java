@@ -428,7 +428,7 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         CriteriaQuery<AttendanceV2AlertMessage> cq = cb.createQuery(AttendanceV2AlertMessage.class);
         Root<AttendanceV2AlertMessage> root = cq.from(AttendanceV2AlertMessage.class);
         Predicate p = cb.lessThan(root.get(AttendanceV2AlertMessage_.sendDateTime), date);
-        p = cb.and(p, cb.equal(root.get(AttendanceV2AlertMessage_.sendStatus), true));
+        p = cb.and(p, cb.equal(root.get(AttendanceV2AlertMessage_.sendStatus), false));
         cq.select(root).where(p);
         return em.createQuery(cq).getResultList();
     }

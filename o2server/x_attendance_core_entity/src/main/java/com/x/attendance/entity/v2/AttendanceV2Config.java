@@ -153,7 +153,7 @@ public class AttendanceV2Config extends SliceJpaObject {
     // 记录任务执行的日期，用于判断当天是否已经执行过提醒任务了
     public static final String exceptionAlertDate_FIELDNAME = "exceptionAlertDate";
     @FieldDescribe("异常打卡定时执行日期：yyyy-MM-dd .")
-    @Column(length = length_8B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
+    @Column(length = length_32B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
     private String exceptionAlertDate;
 
 
