@@ -216,7 +216,7 @@ MWF.xApplication.attendancev2.LP = {
     btnRecordList: "打卡记录",
   },
   detailExportExcelFileSuccess: "数据已经统计完成，点击确定下载Excel文件！",
-  detailExportConfirmMsg: "导出操作比较耗时，请不要关闭浏览器，等待一会儿！",
+  detailExportConfirmMsg: "导出操作比较耗时，请等待一会儿！",
   detailStatisticList: {
     filterEmptyPlaceholder: "请选择需要查询人员或组织!",
     filterSelectTitle: "查询统计的人员或组织",

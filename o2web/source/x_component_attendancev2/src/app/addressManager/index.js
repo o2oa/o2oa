@@ -31,10 +31,10 @@ export default content({
   },
   clickDeleteItem(id, name) {
     var _self = this;
-    const c = lpFormat(this.bind.lp, "workAddressForm.confirmDelete", { name: name });
+    const c = lpFormat(lp, "workAddressForm.confirmDelete", { name: name });
     o2.api.page.confirm(
       "warn",
-      this.bind.lp.alert,
+      lp.alert,
       c,
       300,
       100,

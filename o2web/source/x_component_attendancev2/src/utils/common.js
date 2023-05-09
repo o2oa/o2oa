@@ -164,9 +164,13 @@ const  convertTo2DArray = (arr, subSize) => {
  * loading 展示
  * @param {*} component 组件本身
  */
-const showLoading = async (component) => {
+const showLoading = async (component, newText) => {
   const loading = (await import(`../components/o-loading/index.js`)).default;
-  component.loadingVm = await loading.generate(document.body, {}, component);
+  let bind = {}
+  if (newText) {
+    bind = { text: newText }
+  }
+  component.loadingVm = await loading.generate(document.body, {bind: bind}, component);
 }
 /**
  * 关闭 loading 

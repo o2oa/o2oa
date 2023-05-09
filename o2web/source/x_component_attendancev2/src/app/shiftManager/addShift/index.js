@@ -66,7 +66,7 @@ export default content({
     },
     afterRender() {
         if (this.bind.form && this.bind.form.id && this.bind.form.id !== '') {
-            this.bind.fTitle = this.bind.lp.editShift;
+            this.bind.fTitle = lp.editShift;
         }
     },
     // o time picker 控件使用

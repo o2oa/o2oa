@@ -75,33 +75,26 @@ export default content({
   // 导出 
   statisticExport() {
     if (this.validateForm()) {
-      var _self = this;
-      o2.api.page.confirm(
-        "warn",
-        this.bind.lp.alert,
-        this.bind.lp.detailExportConfirmMsg,
-        300,
-        100,
-        function () {
-          _self.exportExcel();
-          this.close();
-        },
-        function () {
-          this.close();
-        }
-      );
+      this.exportExcel();
+      // var _self = this;
+      // o2.api.page.confirm(
+      //   "warn",
+      //   this.bind.lp.alert,
+      //   this.bind.lp.detailExportConfirmMsg,
+      //   300,
+      //   100,
+      //   function () {
+      //     _self.exportExcel();
+      //     this.close();
+      //   },
+      //   function () {
+      //     this.close();
+      //   }
+      // );
     }
   },
   async exportExcel() {
-    showLoading(this);
-    // const dAction = o2.Actions.load("x_attendance_assemble_control").DetailAction.action;
-    // let url =  dAction.getAddress() + dAction.actions.statisticExport.uri;
-    // console.debug(url);
-    // url = url.replace("{filter}", );
-    // url = url.replace("{start}", );
-    // url = url.replace("{end}", );
-    // console.debug(url);
-    // window.open(o2.filterUrl(url));
+    showLoading(this, lp.detailExportConfirmMsg);
     detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
       if (data ) {
         this.downloadExcelConfirm(data);
