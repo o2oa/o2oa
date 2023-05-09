@@ -388,6 +388,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadMacro(function () {
             debugger
             this.loadLanguage(function(flag){
+                this.isParseLanguage = flag;
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
                     this.data = JSON.parse(data);
