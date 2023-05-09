@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatDate, isEmpty , convertMinutesToHoursAndMinutes} from "../../utils/common";
+import { formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading} from "../../utils/common";
 import { detailAction } from "../../utils/actions";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
@@ -55,6 +55,23 @@ export default content({
   search() {
     if (this.validateForm()) {this.loadDetailList();}
   },
+  async loadDetailList() {
+    const form = this.bind.form;
+    form.filter = this.bind.filterList[0];
+    const json = await detailAction("statistic", form);
+    this.bind.statisticList = json || [];
+  },
+  // 格式化用户姓名
+  formatName(person) {
+    if (person && person.indexOf("@") > -1) {
+      return person.split("@")[0];
+    }
+    return person;
+  },
+  // 格式化工作时长
+  formatWorkTimeDuration(workTime) {
+    return convertMinutesToHoursAndMinutes(workTime);
+  },
   // 导出 
   statisticExport() {
     if (this.validateForm()) {
@@ -73,36 +90,58 @@ export default content({
           this.close();
         }
       );
-     
     }
   },
-  exportExcel() {
-    const dAction = o2.Actions.load("x_attendance_assemble_control").DetailAction.action;
-    let url =  dAction.getAddress() + dAction.actions.statisticExport.uri;
-    console.debug(url);
-    url = url.replace("{filter}", encodeURIComponent(this.bind.filterList[0]));
-    url = url.replace("{start}", encodeURIComponent(this.bind.form.startDate));
-    url = url.replace("{end}", encodeURIComponent(this.bind.form.endDate));
-    console.debug(url);
-    window.open(o2.filterUrl(url));
+  async exportExcel() {
+    showLoading(this);
+    // const dAction = o2.Actions.load("x_attendance_assemble_control").DetailAction.action;
+    // let url =  dAction.getAddress() + dAction.actions.statisticExport.uri;
+    // console.debug(url);
+    // url = url.replace("{filter}", );
+    // url = url.replace("{start}", );
+    // url = url.replace("{end}", );
+    // console.debug(url);
+    // window.open(o2.filterUrl(url));
+    detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
+      if (data ) {
+        this.downloadExcelConfirm(data);
+      }
+    })
+    .catch( err => {
+      console.error(err);
+    })
+    .finally(() => {
+      hideLoading(this);
+    });
   },
-   
-  async loadDetailList() {
-    const form = this.bind.form;
-    form.filter = this.bind.filterList[0];
-    const json = await detailAction("statistic", form);
-    this.bind.statisticList = json || [];
-  },
-  // 格式化用户姓名
-  formatName(person) {
-    if (person && person.indexOf("@") > -1) {
-      return person.split("@")[0];
+  downloadExcelConfirm(result) {
+    if (result) {
+      var _self = this;
+      o2.api.page.confirm(
+        "info",
+        lp.alert,
+        lp.detailExportExcelFileSuccess, //lpFormat(lp,  "", {number: result.errorRows}),
+        300,
+        100,
+        function () {
+          _self.downloadExportExcel(result.flag);
+          this.close();
+        },
+        function () {
+          this.close();
+        }
+      );
     }
-    return person;
   },
-  // 格式化工作时长
-  formatWorkTimeDuration(workTime) {
-    return convertMinutesToHoursAndMinutes(workTime);
-  }
+  // 下载统计结果
+  downloadExportExcel(resultFlag) {
+    if (resultFlag) {
+      const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
+      let url =  dAction.getAddress() + dAction.actions.getResult.uri;
+      url = url.replace("{flag}", encodeURIComponent(resultFlag));
+      console.debug(url);
+      window.open(o2.filterUrl(url));
+    }
+  },
   
 });

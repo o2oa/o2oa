@@ -215,6 +215,7 @@ MWF.xApplication.attendancev2.LP = {
     fieldWorkTimes: "外勤次数",
     btnRecordList: "打卡记录",
   },
+  detailExportExcelFileSuccess: "数据已经统计完成，点击确定下载Excel文件！",
   detailExportConfirmMsg: "导出操作比较耗时，请不要关闭浏览器，等待一会儿！",
   detailStatisticList: {
     filterEmptyPlaceholder: "请选择需要查询人员或组织!",
@@ -223,6 +224,7 @@ MWF.xApplication.attendancev2.LP = {
     participatesErrorNotEmtpy: "参与考勤人员、组织不能为空！",
     startDateEmptyPlaceholder: "请选择开始日期!",
     endDateEmptyPlaceholder: "请选择结束日期!",
+    
   },
   detailRecordList: {
     title: "打卡记录",

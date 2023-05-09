@@ -216,6 +216,53 @@
   display: none;
   opacity: 0;
 }
+
+.o2-mask-container {
+  position: absolute;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  border-radius: 5px;
+  left: 0px;
+  z-index: 1024;
+}
+.o2-mask-backgroundBar {
+  position: absolute;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  border-radius: 5px;
+  background-color: #F1F1F1;
+  left: 0px;
+  z-index: 1025;
+}
+.o2-mask {
+  position: absolute;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  border: 0;
+  left: 0px;
+  z-index: 1024;
+}
+.o2-mask-loadingBar {
+  width: 120px;
+  height:30px;
+  border: 1px solid #CCC;
+  border-radius: 5px;
+  position: absolute;
+  background-color: #EEEFF9;
+  text-align: center;
+  opacity: 1;
+  top: 0px;
+  left: 0px;
+  font-size: 12px;
+  z-index: 1026;
+}
+
 /* dialog */
 .s-dialog {
   position: relative;
