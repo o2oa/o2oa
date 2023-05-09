@@ -571,7 +571,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					if( !operation || operation === "moveUpList"){
 					    this._injectLineNode( sectionLine.node, beforeNode );
 					}
-					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
+					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 				}else{
 				    var div = this._injectLineNode( new Element("div"), beforeNode );
 				    sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
@@ -613,7 +613,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					if( !operation || operation === "moveUpList"){
 					    this._injectLineNode( sectionLine.node, beforeNode );
 					}
-					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
+					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 				}else {
                     //var div = new Element("div").inject(this.node);
                     var div = this._injectLineNode( new Element("div"), beforeNode );
@@ -1693,7 +1693,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			line.resetId();
 		}.bind(this))
 	},
-	setIndex: function( preNode, data, index, isEdited, isNew, operation ){
+	setIndex: function( data, index, isEdited, isNew, operation ){
 	    debugger;
 		if( this.isUnchangedAll && index === this.options.index )return;
 
@@ -1702,7 +1702,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		this.options.index = index;
 		this.options.indexText = (index+1).toString();
 
-		this.node.inject(preNode, "after");
+		//this.node.inject(preNode, "after");
 
 		this.lineList = [];
 		var map = this.unchangedLineMap || {};
@@ -1824,7 +1824,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		if( this.isUnchangedAll ){
 			for( var i=0; i<data.length; i++ ){
 				var line = map[i.toString()];
-				if( !line || line.options.index !== i ){
+				if( !line || line.options.indexInSectionLine !== i ){
 					this.isUnchangedAll = false;
 					break;
 				}
