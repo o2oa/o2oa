@@ -1134,6 +1134,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
+			debugger;
 			var old;
 			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
 
@@ -1973,9 +1974,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
                 this.form.forms[id] = module;
             }
 
-			if( hasIndexArg || hasIndexInSectionLineArg ) {
-				this.checkSequence(module, templateJsonId);
-			}
+			this.checkSequence(module, templateJsonId);
         }.bind(this));
     },
 	load: function(){

@@ -1444,6 +1444,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}.bind(this));
 		},
 		__setData: function(data, fireChange, operation){
+			debugger;
             // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
 			if( this.isShowAllSection ){
 				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
@@ -1514,6 +1515,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
+			debugger;
 			// if( this.isSectionMergeEdit() ){
 			// 	//合并且编辑，不允许setAllSectionData
 			// 	throw new Error("The data table is in merge editing state, you can use the 'setData' method to set the data");
@@ -1525,8 +1527,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			//删除并没有用，因为会对比数据提交，如果要清空可以给data.data = []; data.total = {}
 			// if( data && data.data )delete data.data;
 			// if( data && data.total )delete data.total;
-
-			debugger;
 
 			this._setUnchangedSectionLineMap(data);
 
