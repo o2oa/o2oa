@@ -564,8 +564,18 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					isEdited = true;
 				}
 				var isNew = false;
-				var div = new Element("div").inject(this.node);
-				var sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
+				var sectionLine;
+				var beforeNode = idx > 0 ? this.sectionlineList[idx-1].node : null;
+				if( map[data.sectionKey] ) {
+					sectionLine =  map[data.sectionKey];
+					if( !operation || operation === "moveUpList"){
+					    this._injectLineNode( sectionLine.node, beforeNode );
+					}
+					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
+				}else{
+				    var div = this._injectLineNode( new Element("div"), beforeNode );
+				    sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
+				}
 				if( this.sectionBy && this.sectionBy === data.sectionKey ){
 					this.sectionLineEdited = sectionLine;
 				}
@@ -591,13 +601,25 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.isShowAllSection && this.sectionBy && this.sectionBy === data.sectionKey;
 		},
 
-		_loadSectionLineList: function(callback){
+		_loadSectionLineList: function(callback, operation){
+			var map = this.unchangedSectionLineMap || {};
 			this.dataWithSectionKey.each(function(data, idx){
+				var sectionLine;
 				var isEdited = false;
 				var isNew = false;
-				var div = new Element("div").inject(this.node);
-				var sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
-				this.sectionlineList.push(sectionLine);
+				var beforeNode = idx > 0 ? this.sectionlineList[idx-1].node : null;
+				if( map[data.sectionKey] ) {
+					sectionLine =  map[data.sectionKey];
+					if( !operation || operation === "moveUpList"){
+					    this._injectLineNode( sectionLine.node, beforeNode );
+					}
+					sectionLine.setIndex( beforeNode, data, idx, isEdited, isNew, operation );
+				}else {
+                    //var div = new Element("div").inject(this.node);
+                    var div = this._injectLineNode( new Element("div"), beforeNode );
+                    sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
+				}
+                this.sectionlineList.push(sectionLine);
 			}.bind(this))
 			if (callback) callback();
 		},
@@ -1050,7 +1072,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return;
 			}else if( this.isMergeRead ){
 				//合并且只读，不允许setData
-				throw new Error("The data table is merged and read-only, you can use the 'setAllSectionData' method to set all section data");
+				throw new Error("The data template is merged and read-only, you can use the 'setAllSectionData' method to set all section data");
 			}
 
 			var old;
@@ -1404,7 +1426,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				// return (this.data.length) ? this.data : [];
 				this.lineList.each(function (line) {
 					line.computeModuleData("save");
-				});
+				})
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
@@ -1670,6 +1692,50 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			line.resetId();
 		}.bind(this))
 	},
+	setIndex: function( preNode, data, index, isEdited, isNew, operation ){
+	    debugger;
+		if( this.isUnchangedAll && index === this.options.index )return;
+
+		this.data = data;
+
+		this.options.index = index;
+		this.options.indexText = (index+1).toString();
+
+		this.node.inject(preNode, "after");
+
+		this.lineList = [];
+		var map = this.unchangedLineMap || {};
+		Object.each(map, function (line, idx) {
+            line.setIndex( this.template.lineList.length + idx.toInt(), idx.toInt() );
+        }.bind(this));
+		if( this.data &&  this.data.data ){
+			this.data.data.each(function (d, idx) {
+				if( !d )return;
+				var idxStr = idx.toString();
+				var beforeNode = idx > 0 ? this.lineList[idx - 1].node : null;
+				if( map[idxStr] ){
+					if( !operation || operation === "moveUpList" ){
+						this._injectLineNode( map[idxStr].node, beforeNode )
+					}
+					this.lineList.push( map[idxStr] );
+					this.template.lineList.push(map[idxStr]);
+				}else{
+					var node = this._injectLineNode( new Element("div"), beforeNode );
+					var isEdited = false, isNew = false;
+                    if( this.options.isEdited ){
+                        var dt = this.template;
+                        isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
+                        isEdited = true;
+                        dt.isNew = false;
+                        dt.newLineIndex = null;
+                    }
+					var line = this._loadLine( node, d, idx, isEdited, isNew );
+					this.lineList.push(line);
+					this.template.lineList.push(line);
+				}
+			}.bind(this))
+		}
+	},
 	_loadLine: function(container, data, index, isEdited, isNew){
 		var line = new MWF.xApplication.process.Xform.Datatemplate.Line(container, this.template, data, {
 			indexInSectionLine : index,
@@ -1688,6 +1754,14 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		this.template.fireEvent("afterLoadLine", [line]);
 		return line;
 	},
+	_injectLineNode: function( lineNode, beforeNode ){
+        if( beforeNode ){
+            lineNode.inject( beforeNode, "after");
+        }else{
+            lineNode.inject( this.node );
+        }
+        return lineNode;
+    },
 	loadSectionKeyNode: function () {
 		var sectionKeyStyles = this.template._parseStyles(this.template.json.sectionKeyStyles);
 		var keyNode = new Element("div.mwf_sectionkey", {
@@ -1710,13 +1784,78 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			}
 		}.bind(this));
 	},
-	clearSubModules: function(){
-		if( this.keyNode ){
-			this.keyNode.destroy();
-			this.keyNode = null;
+	_setUnchangedLineMap: function(data, operation){
+	    debugger;
+		var fromOutside = !operation;
+		var dt = this.template;
+		var editalbe;
+		if( dt.isShowAllSection ){
+			editalbe = dt.isShowAllSection && dt.sectionBy && dt.sectionBy === this.sectionKey;
 		}
+		var lineDataList = this.lineList.map(function (line) {
+			if( dt.isShowAllSection ){
+				if( line.options.isEdited !== (dt.editable && editalbe) )return "";
+				if( line.options.isDeleteable !== (dt.editable && editalbe) )return "";
+				if( line.options.isAddable !== (dt.editable && editalbe) )return "";
+			}else{
+				if( line.options.isEdited !== dt.editable )return "";
+				if( line.options.isDeleteable !== dt.editable )return "";
+				if( line.options.isAddable !== dt.editable )return "";
+			}
+			return fromOutside ?  JSON.stringify(line.data) : line.data;
+		}.bind(this));
+
+		var dStr, map = {};
+		data.each(function (d, idx) {
+			if(fromOutside)dStr = JSON.stringify(d);
+			for (var i = 0; i < this.lineList.length; i++) {
+				var isEqual = fromOutside ? (dStr === lineDataList[i]) : (d === lineDataList[i] );
+				if ( isEqual ) {
+					map[idx] = this.lineList[i];
+					lineDataList[i] = "";
+					break;
+				}
+			}
+		}.bind(this));
+
+
+		this.isUnchangedAll = data.length === this.lineList.length;
+		if( this.isUnchangedAll ){
+			for( var i=0; i<data.length; i++ ){
+				var line = map[i.toString()];
+				if( !line || line.options.index !== i ){
+					this.isUnchangedAll = false;
+					break;
+				}
+			}
+		}
+
+		this.unchangedLineMap = map;
+
+		return Object.keys(map).length ? this : null;
+	},
+	clearSubModules: function(){
+		if( this.isUnchangedAll )return;
+
+		var map = this.unchangedLineMap || {};
+		var hasUnchangedLine = Object.keys(map).length > 0;
+
+        if( !hasUnchangedLine ){
+            if( this.keyNode ){
+                this.keyNode.destroy();
+                this.keyNode = null;
+            }
+		}
+
+		var lines = [];
+		Object.values(map).each(function (d) {
+			lines = lines.concat(d);
+		});
 		for (var i=0; i<this.lineList.length; i++){
-			this.lineList[i].clearSubModules();
+		    var l = this.lineList[i];
+			if(!lines.contains(l)){
+				l.clearSubModules();
+			}
 		}
 	}
 });
@@ -2045,7 +2184,12 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				indexText = this.options.indexText;
 			}
 			if(this.form.getModuleType(module) === "label"){
-				module.node.set("text", indexText );
+				if (module.json.valueType === "script" && module.json.script && module.json.script.code){
+					var value = module.form.Macro.exec(module.json.script.code, module);
+					module._setNodeText(value);
+				}else{
+					module.node.set("text", indexText );
+				}
 			}else if(module.setData){
 				module.setData( indexText );
 			}
