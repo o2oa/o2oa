@@ -1,17 +1,18 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2, component as c } from "@o2oa/component";
 import { configAction } from "../../utils/actions";
-import { isInt } from "../../utils/common";
+import { isInt, setJSONValue } from "../../utils/common";
 import template from "./template.html";
 import style from "./style.scope.css";
 import oInput from "../../components/o-input";
+import oTimePicker from '../../components/o-time-picker';
 import oSelectorProcess from "../../components/o-selector-process";
 
 export default content({
   style,
   template,
   autoUpdate: true,
-  components: { oInput, oSelectorProcess },
+  components: { oInput, oSelectorProcess, oTimePicker },
   bind() {
     return {
       lp,
@@ -21,6 +22,7 @@ export default content({
         offDutyFastCheckInEnable: false,
         checkInAlertEnable: false,
         exceptionAlertEnable: false,
+        exceptionAlertTime: "09:30",
         appealMaxTimes: 0,
       },
       holidayList: [],
@@ -33,12 +35,18 @@ export default content({
       },
     };
   },
-  beforeRender() {},
+  async beforeRender() {
+    await this.loadConfig();
+  },
   afterRender() {
-    this.loadConfig();
+    
     // this.loadHolidayDateSelector();
     // this.loadWorkdayDateSelector();
   },
+  // o time picker 控件使用
+  setTimeValue(key, value) {
+    setJSONValue(key, value, this.bind);
+},
   // 获取配置对象
   async loadConfig() {
     const json = await configAction("get");

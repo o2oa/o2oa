@@ -252,7 +252,9 @@ MWF.xApplication.attendancev2.LP = {
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
     checkInAlert: "打卡提醒",
     checkInAlertEnable: "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
-    exceptionAlertEnable: "是否启用异常打卡提醒 (次日将收到异常打卡消息)",
+    exceptionAlertEnable: "是否启用异常打卡提醒 ",
+    exceptionAlertEnableTime1: " (次日 ",
+    exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
 
   },
   // 请假外出记录
