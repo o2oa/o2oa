@@ -1,17 +1,22 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
-import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.general.core.entity.GeneralFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by fancyLou on 2023/3/15.
@@ -30,11 +36,12 @@ import java.util.List;
 public class ActionStatisticExportExcel extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionStatisticExportExcel.class);
-
-    Workbook wb = new XSSFWorkbook();
-
-    ActionResult<Wo> execute(String filter, String start, String end) throws Exception {
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+    private static final ReentrantLock lock = new ReentrantLock();
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String filter, String start, String end) throws Exception {
+        lock.lock();
+        LOGGER.info("开始统计考勤数据。。。filter: {}, start:{}, end:{} ", filter, start, end);
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream();
+                EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
             if (StringUtils.isEmpty(filter)) {
                 throw new ExceptionEmptyParameter("过滤人员或组织");
@@ -74,32 +81,33 @@ public class ActionStatisticExportExcel extends BaseAction {
             wi.setEndDate(end);
             statisticDetail(wi, userList, business, wos);
             // 数据excel文件传教
-            createExcelFile(wos);
+            Workbook wb = new XSSFWorkbook();
+            createExcelFile(wb, wos);
             // 生成excel
-            if( wb != null ) {
-                String name = filter;
-                if (name.contains("@")) {
-                    name = name.split("@")[0];
-                }
-                String fileName = name+"的考勤统计_"+start + "-" + end+".xlsx";
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                try {
-                    wb.write(bos);
-                    Wo wo = new Wo(bos.toByteArray(),
-                            this.contentType(true, fileName),
-                            this.contentDisposition(true, fileName));
-                    result.setData(wo);
-                } catch (Exception e) {
-                    LOGGER.error(e);
-                } finally {
-                    bos.close();
-                }
+            String name = filter;
+            if (name.contains("@")) {
+                name = name.split("@")[0];
             }
+            String fileName = name+"的考勤统计_"+start + "-" + end + "_" +DateTools.format(new Date())+".xlsx";
+            wb.write(os);
+            StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+            GeneralFile generalFile = new GeneralFile(gfMapping.getName(), fileName,
+                    effectivePerson.getDistinguishedName());
+            generalFile.saveContent(gfMapping, os.toByteArray(), fileName);
+            emc.beginTransaction(GeneralFile.class);
+            emc.persist(generalFile, CheckPersistType.all);
+            emc.commit();
+            Wo wo = new Wo();
+            wo.setFlag(generalFile.getId());
+            result.setData(wo);
             return result;
+        } finally {
+            lock.unlock();
+            LOGGER.info("统计结束。。。。。。。。。。。。");
         }
     }
 
-    private void createExcelFile(List<StatisticWo> wos) throws Exception {
+    private void createExcelFile(Workbook wb, List<StatisticWo> wos) throws Exception {
         // 创建新的表格
         Sheet sheet = wb.createSheet("考勤统计");
         sheet.setDefaultColumnWidth(25);
@@ -155,9 +163,19 @@ public class ActionStatisticExportExcel extends BaseAction {
         return result;
     }
 
-    public static class Wo extends WoFile {
-        public Wo(byte[] bytes, String contentType, String contentDisposition) {
-            super(bytes, contentType, contentDisposition);
+    public static class Wo extends GsonPropertyObject {
+
+        @FieldDescribe("返回的结果标识，下载结果文件使用")
+        private String flag;
+
+
+        public String getFlag() {
+            return flag;
         }
+
+        public void setFlag(String flag) {
+            this.flag = flag;
+        }
+
     }
 }

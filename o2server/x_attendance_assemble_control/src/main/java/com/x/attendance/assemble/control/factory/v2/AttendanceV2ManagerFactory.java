@@ -353,7 +353,20 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 
-
+    /**
+     * 查询申诉记录 根据日期查询出所有的申诉记录
+     * @param recordDateString  日期
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AppealInfo> listAppealInfoWithRecordDateString(String recordDateString) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.recordDateString), recordDateString);
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
 
     /**
      * 查询申诉记录
@@ -400,6 +413,23 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         }
         p = cb.and(p,  cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
+        return em.createQuery(cq).getResultList();
+    }
+
+    /**
+     * 比传入的时间更小 未发送的消息数据
+     * @param date
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AlertMessage> listAlertMessageBeforeDate(Date date) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AlertMessage.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AlertMessage> cq = cb.createQuery(AttendanceV2AlertMessage.class);
+        Root<AttendanceV2AlertMessage> root = cq.from(AttendanceV2AlertMessage.class);
+        Predicate p = cb.lessThan(root.get(AttendanceV2AlertMessage_.sendDateTime), date);
+        p = cb.and(p, cb.equal(root.get(AttendanceV2AlertMessage_.sendStatus), false));
+        cq.select(root).where(p);
         return em.createQuery(cq).getResultList();
     }
 

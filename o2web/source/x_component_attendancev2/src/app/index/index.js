@@ -1,5 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
+import { personalAction } from "../../utils/actions";
 import template from "./template.html";
 import style from "./style.scope.css";
 import myMenu from "../menu";
@@ -18,29 +19,65 @@ export default content({
       },
     },
   },
-  beforeRender() {
-    let menu = this.normalMenuData();
-    // 管理员 增加菜单
-    if (o2.AC.isAttendanceManager() && o2.AC.isAdministrator()) {
-      menu.push.apply(menu, this.adminMenuData()); // 合并数组
-    }
-    this.bind.menu.menuData = menu;
-    this.bind.menu.currentMenu = menu[0].sub[0];
-  },
   bind() {
     return {
       lp,
+      admin: "", // admin readAdmin
       menu: {
         currentMenu: {}, // 当前菜单
         menuData: [],
       },
     };
   },
+  async beforeRender() {
+    await this.loadCurrentPersonInfo();
+    const menu = this.getCurrentPersonMenu();
+    this.bind.menu.menuData = menu;
+    if (menu.length) {
+      this.bind.menu.currentMenu = menu[0].sub[0];
+    }
+  },
+  async loadCurrentPersonInfo() {
+    content.myDutyList = [];
+    this.bind.admin = "";
+    if (o2.AC.isAttendanceManager() && o2.AC.isAdministrator()) {
+      this.bind.admin = "admin";
+    } else {
+      const personInfo = await personalAction("get");
+      let isReadAdmin = false;
+      let dutyList = [];
+      if (personInfo && personInfo.woIdentityList) {
+        for (const { woUnitDutyList } of personInfo.woIdentityList) {
+          if (woUnitDutyList && woUnitDutyList.some((duty) => duty.name === "考勤管理员")) {
+            dutyList.push(...woUnitDutyList.filter((duty) => duty.name === "考勤管理员"));
+            isReadAdmin = true;
+          }
+        }
+      }
+      if (isReadAdmin) {
+        this.bind.admin = "readAdmin";
+        content.myDutyList = dutyList;
+      }
+    }
+  }
+  ,
   // 普通菜单数据
-  normalMenuData() {
+  getCurrentPersonMenu() {
+    const menus = this.menuDataAll();
+    let access = 0;
+    if (this.bind.admin === "readAdmin") {
+      access = 1;
+    } else if (this.bind.admin === "admin") {
+      access = 2;
+    }
+    return menus.filter((menu) => menu.access <= access);
+  },
+ 
+  menuDataAll() {
     return [
       {
         title: lp.menu.myAttendance,
+        access: 0,
         sub: [
           {
             id: "1-1",
@@ -59,14 +96,9 @@ export default content({
           },
         ],
       },
-    ];
-  },
-  // 管理员菜单数据
-  adminMenuData() {
-    return [
       {
         title: lp.menu.statistic,
-        access: "admin",
+        access: 1,
         sub: [
           {
             id: "2-1",
@@ -87,7 +119,7 @@ export default content({
       },
       {
         title: lp.menu.config,
-        access: "admin",
+        access: 2,
         sub: [
           {
             id: "3-1",

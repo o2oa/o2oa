@@ -16,9 +16,10 @@ export default content({
             label: "",
             selectorTitle: "",
             value: [],
+            units:[], // 控制选择范围
             showValue: "",
             placeholder: "",
-            types: ["person", "unit"], // 选择器类型
+            types: ["identity", "unit"], // 选择器类型
             count: 0 , // 0是多选 其它是固定数据选择
         };
     },
@@ -49,7 +50,9 @@ export default content({
             "types": this.bind.types,
             "count": this.bind.count,
             "title": this.bind.selectorTitle,
+            "units": this.bind.units,
             "values": this.bind.value,
+            "resultType": "person",
             "onComplete": function(items) {
               this.changeValue(items);
             }.bind(this)

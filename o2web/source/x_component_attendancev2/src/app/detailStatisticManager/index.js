@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatDate, isEmpty , convertMinutesToHoursAndMinutes} from "../../utils/common";
+import { formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading} from "../../utils/common";
 import { detailAction } from "../../utils/actions";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
@@ -19,7 +19,7 @@ export default content({
         startDate: '',
         endDate: ''
       },
-      //
+      units: [], // 控制组织选择的范围
       filterList: [],
       statisticList: [],
      
@@ -33,6 +33,17 @@ export default content({
     const lastDayOfWeek = new Date(today.setDate(firstDayOfWeek.getDate() + 6));
     this.bind.form.startDate = formatDate(firstDayOfWeek);
     this.bind.form.endDate = formatDate(lastDayOfWeek);
+    // 当前用户的选择范围
+    if (content.myDutyList && content.myDutyList.length > 0) {
+      let units = [];
+      for (let i = 0; i < content.myDutyList.length; i++) {
+        const duty = content.myDutyList[i];
+        if (duty.woUnit && duty.woUnit.distinguishedName) {
+          units.push(duty.woUnit.distinguishedName);
+        }
+      }
+      this.bind.units = units;
+    }
   },
   afterRender() {
      
@@ -55,38 +66,6 @@ export default content({
   search() {
     if (this.validateForm()) {this.loadDetailList();}
   },
-  // 导出 
-  statisticExport() {
-    if (this.validateForm()) {
-      var _self = this;
-      o2.api.page.confirm(
-        "warn",
-        this.bind.lp.alert,
-        this.bind.lp.detailExportConfirmMsg,
-        300,
-        100,
-        function () {
-          _self.exportExcel();
-          this.close();
-        },
-        function () {
-          this.close();
-        }
-      );
-     
-    }
-  },
-  exportExcel() {
-    const dAction = o2.Actions.load("x_attendance_assemble_control").DetailAction.action;
-    let url =  dAction.getAddress() + dAction.actions.statisticExport.uri;
-    console.debug(url);
-    url = url.replace("{filter}", encodeURIComponent(this.bind.filterList[0]));
-    url = url.replace("{start}", encodeURIComponent(this.bind.form.startDate));
-    url = url.replace("{end}", encodeURIComponent(this.bind.form.endDate));
-    console.debug(url);
-    window.open(o2.filterUrl(url));
-  },
-   
   async loadDetailList() {
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
@@ -103,6 +82,70 @@ export default content({
   // 格式化工作时长
   formatWorkTimeDuration(workTime) {
     return convertMinutesToHoursAndMinutes(workTime);
-  }
+  },
+  // 导出 
+  statisticExport() {
+    if (this.validateForm()) {
+      this.exportExcel();
+      // var _self = this;
+      // o2.api.page.confirm(
+      //   "warn",
+      //   this.bind.lp.alert,
+      //   this.bind.lp.detailExportConfirmMsg,
+      //   300,
+      //   100,
+      //   function () {
+      //     _self.exportExcel();
+      //     this.close();
+      //   },
+      //   function () {
+      //     this.close();
+      //   }
+      // );
+    }
+  },
+  async exportExcel() {
+    showLoading(this, lp.detailExportConfirmMsg);
+    detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
+      if (data ) {
+        this.downloadExcelConfirm(data);
+      }
+    })
+    .catch( err => {
+      console.error(err);
+    })
+    .finally(() => {
+      hideLoading(this);
+    });
+  },
+  downloadExcelConfirm(result) {
+    if (result) {
+      var _self = this;
+      o2.api.page.confirm(
+        "info",
+        lp.alert,
+        lp.detailExportExcelFileSuccess, //lpFormat(lp,  "", {number: result.errorRows}),
+        300,
+        100,
+        function () {
+          _self.downloadExportExcel(result.flag);
+          this.close();
+        },
+        function () {
+          this.close();
+        }
+      );
+    }
+  },
+  // 下载统计结果
+  downloadExportExcel(resultFlag) {
+    if (resultFlag) {
+      const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
+      let url =  dAction.getAddress() + dAction.actions.getResult.uri;
+      url = url.replace("{flag}", encodeURIComponent(resultFlag));
+      console.debug(url);
+      window.open(o2.filterUrl(url));
+    }
+  },
   
 });

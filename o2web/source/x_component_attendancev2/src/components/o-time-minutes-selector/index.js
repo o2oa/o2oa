@@ -125,15 +125,15 @@ export default content({
       const v = parseInt(this.bind.value);
       if (v < 60) {
         if (this.bind.chooseHour == '' && this.bind.chooseMinute == '' ) {
-          this.bind.showValue = this.bind.lp.components.timeMinutesSelectorClosePlaceholder;
+          this.bind.showValue = lp.components.timeMinutesSelectorClosePlaceholder;
         } else {
-          this.bind.showValue = `${this.bind.chooseMinute}${this.bind.lp.components.timeMinutesSelectorMinute}`;
+          this.bind.showValue = `${this.bind.chooseMinute}${lp.components.timeMinutesSelectorMinute}`;
         }
       } else {
         if (this.bind.chooseHour == '' && this.bind.chooseMinute == '' ) {
-          this.bind.showValue = this.bind.lp.components.timeMinutesSelectorClosePlaceholder;
+          this.bind.showValue = lp.components.timeMinutesSelectorClosePlaceholder;
         } else {
-          this.bind.showValue = `${this.bind.chooseHour}${this.bind.lp.components.timeMinutesSelectorHour}${this.bind.chooseMinute}${this.bind.lp.components.timeMinutesSelectorMinute}`;
+          this.bind.showValue = `${this.bind.chooseHour}${lp.components.timeMinutesSelectorHour}${this.bind.chooseMinute}${lp.components.timeMinutesSelectorMinute}`;
         }
       }
     },

@@ -100,7 +100,12 @@
                     <div class="o2-icon-14">
                         <i class="{{ $.form.exceptionAlertEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
                     </div>
-                    <label style="margin: 5px;" >{{$.lp.config.exceptionAlertEnable}}</label>
+                    <label style="margin: 5px;" >
+                        {{$.lp.config.exceptionAlertEnable}} 
+                        {{$.lp.config.exceptionAlertEnableTime1}} 
+                        <o-time-picker oo-prop="{'value': $.form.exceptionAlertTime, 'key': 'form.exceptionAlertTime'}"></o-time-picker>
+                        {{$.lp.config.exceptionAlertEnableTime2}} 
+                    </label>
                 </div>
             </div>
         </div>
