@@ -73,6 +73,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"password": "密码管理",
 	"logout": "注销",
 	"welcome": "您好，",
+	"noServiceNote": "系统未安装三员管理后台服务，请联系管理员到应用市场安装。",
 	"noDataText" : {
 		"process": "该应用下无流程",
 		"category": "该应用下无分类",
