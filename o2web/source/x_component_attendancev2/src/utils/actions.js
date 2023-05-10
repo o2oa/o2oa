@@ -243,13 +243,25 @@ function mobileAction(method, ...args) {
 }
 
 /**
- * 人员API
+ * 组织管理 人员 API
+ * x_organization_assemble_control
  * @param {*} method
  * @param  {...any} args
  * @returns
  */
 function personAction(method, ...args) {
   return doAction("x_organization_assemble_control", "PersonAction", method, args);
+}
+
+/**
+ * 个人 API
+ * x_organization_assemble_personal
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function personalAction(method, ...args) {
+  return doAction("x_organization_assemble_personal", "PersonAction", method, args);
 }
 
 
@@ -270,6 +282,7 @@ export {
   myAction,
   mobileAction,
   personAction,
+  personalAction,
   leaveActionListByPaging,
   leaveAction,
   recordActionListByPaging,

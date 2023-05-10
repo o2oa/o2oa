@@ -19,7 +19,7 @@ export default content({
         startDate: '',
         endDate: ''
       },
-      //
+      units: [], // 控制组织选择的范围
       filterList: [],
       statisticList: [],
      
@@ -33,6 +33,17 @@ export default content({
     const lastDayOfWeek = new Date(today.setDate(firstDayOfWeek.getDate() + 6));
     this.bind.form.startDate = formatDate(firstDayOfWeek);
     this.bind.form.endDate = formatDate(lastDayOfWeek);
+    // 当前用户的选择范围
+    if (content.myDutyList && content.myDutyList.length > 0) {
+      let units = [];
+      for (let i = 0; i < content.myDutyList.length; i++) {
+        const duty = content.myDutyList[i];
+        if (duty.woUnit && duty.woUnit.distinguishedName) {
+          units.push(duty.woUnit.distinguishedName);
+        }
+      }
+      this.bind.units = units;
+    }
   },
   afterRender() {
      
