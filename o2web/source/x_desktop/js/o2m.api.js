@@ -548,6 +548,9 @@
         o2m.util.navigation.setTitle
         o2m.util.navigation.close
         o2m.util.navigation.goBack
+        o2m.util.navigation.openInnerApp
+        o2m.util.navigation.openOtherApp
+        o2m.util.navigation.openWindow
   
   
   
@@ -1166,6 +1169,58 @@
    */
   this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
 
+
+  //o2m.util.navigation.openInnerApp  内部应用打开 包含门户
+  this.o2m.util.navigation.openInnerAppSuccess = function (result) {
+    console.log("util navigation openInnerApp back, result:" + result);
+  };
+  var _o2m_u_navigation_openInnerApp = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.openInnerAppSuccess = onSuccess;
+    }
+    var appKey = c && c.appKey ? c.appKey : "";
+    var portalFlag = c && c.portalFlag ? c.portalFlag : "";
+    var portalTitle = c && c.portalTitle ? c.portalTitle : "";
+    var portalPage = c && c.portalPage ? c.portalPage : "";
+    var body = {
+      type: "navigation.openInnerApp",
+      callback: "o2m.util.navigation.openInnerAppSuccess",
+      data: {
+        appKey: appKey,
+        portalFlag: portalFlag,
+        portalTitle: portalTitle,
+        portalPage: portalPage
+      }
+    };
+    _util_post(body, onFail);
+  };
+
+  /**
+   * 打开内部应用
+   * @method openInnerApp
+   * @memberOf o2m
+   * @o2membercategory util.navigation
+   * @static
+   * @param {Object} obj  openInnerApp需要传入对象
+   * <pre><code class='language-js'>{
+   *  appKey : 'attendance',  // 对应用的 key:  task(待办)、taskcompleted(已办)、read(待阅)、readcompleted(已阅)、meeting(会议管理)、clouddisk(网盘)、bbs(论坛)、cms(信息中心)、attendance(考勤)、calendar(日程)、mindMap(脑图)、portal(门户，门户需要传入portalFlag和portalTitle)
+   *  portalFlag : '门户标识',  
+   *  portalTitle : '门户标题', 
+   *  portalPage : '门户页面 id', 
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.util.navigation.openInnerApp({
+   * appKey : 'attendance',
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.navigation.openInnerApp = _o2m_u_navigation_openInnerApp;
 
   //o2m.util.navigation.openOtherApp 功能不完整，有很多限制。暂时不开放
   this.o2m.util.navigation.openOtherAppSuccess = function (result) {
