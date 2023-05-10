@@ -34,6 +34,14 @@ MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
 
         this.loadStatData();
     },
+    reload: function(json){
+        if( this.stat )this.stat.destroy();
+        this.container.empty();
+        if(json)this.json = json;
+        this.loadLayout();
+        this.fireEvent("loadLayout");
+        this.loadStatData();
+    },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
 
@@ -111,7 +119,9 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
         }
 
         if (this.json.isChart) this.chartAreaNode = new Element("div", {"styles": this.css.statChartAreaNode}).inject(this.node);
+        if( this.json.chartNodeStyles )this.chartAreaNode.setStyles(this.json.chartNodeStyles);
         if (this.json.isTable) this.tableAreaNode = new Element("div#tableAreaNode", {"styles": this.css.statTableAreaNode}).inject(this.node);
+        if( this.json.tableNodeStyles )this.tableAreaNode.setStyles(this.json.tableNodeStyles);
         this.loadData();
         if (this.json.isTable) this.createTable();
         if (this.json.isChart) this.createChart();
@@ -174,7 +184,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
                     "MWFButtonText": this.lp.chart.line
                 }).inject(this.chartToolbarNode);
             }
-            if (this.data.calculate.isGroup ){
+            if (this.data.calculate.isGroup && this.json.isRowToColumn !== false ){
                 var actionNode = new Element("div", {
                     "MWFnodeid": "rowToColumn",
                     "MWFnodetype": "MWFToolBarButton",
@@ -272,6 +282,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
                 }.bind(this)
             });
             this.bar.load();
+            this.statistician.fireEvent("loadChart");
         }.bind(this));
     },
     loadChartPie: function(){
@@ -290,6 +301,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
 
             this.bar = new MWF.widget.chart.Pie(this.chartNode, data, {"textType": "percent"});
             this.bar.load();
+            this.statistician.fireEvent("loadChart");
         }.bind(this));
     },
     loadChartLine: function(){
@@ -316,6 +328,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
             });
 
             this.bar.load();
+            this.statistician.fireEvent("loadChart");
         }.bind(this));
     },
 
@@ -363,9 +376,9 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
         if (this.bar) this.bar.destroy();
         if (this.statistician.app){
             if (this.resizeChartFun){
-                this.resizeChartFun.app.removeEvent("resizeCompleted", this.resizeChartFun);
-                this.resizeChartFun.app.removeEvent("postMaxSize", this.resizeChartFun);
-                this.resizeChartFun.app.removeEvent("postRestoreSize", this.resizeChartFun);
+                this.statistician.app.removeEvent("resizeCompleted", this.resizeChartFun);
+                this.statistician.app.removeEvent("postMaxSize", this.resizeChartFun);
+                this.statistician.app.removeEvent("postRestoreSize", this.resizeChartFun);
             }
         }
         MWF.release(this);
@@ -479,6 +492,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             });
             this.bar.load();
             if (this.json.isLegend) this.loadFlags();
+            this.statistician.fireEvent("loadChart");
         }.bind(this));
     },
     rowToColumn: function(data){
@@ -552,6 +566,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 var pie = new MWF.widget.chart.Pie(pieNode, data, {"textType": "percent"});
                 pie.load();
             }.bind(this));
+            this.statistician.fireEvent("loadChart");
 
         }.bind(this));
     },
@@ -606,6 +621,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             });
             this.bar.load();
             if (this.json.isLegend) this.loadFlags();
+            this.statistician.fireEvent("loadChart");
         }.bind(this));
     },
 
@@ -613,7 +629,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         this.isRowToColumn = !this.isRowToColumn;
 
-        if (this.selectedRows.length || this.selectedCols.length) this.selectAll();
+        if ((this.selectedRows && this.selectedRows.length) || (this.selectedCols && this.selectedCols.length)) this.selectAll();
         this.statGridData = this.rowToColumn(this.statGridData);
 
         this.selectedData = [];
@@ -760,8 +776,10 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
 
     reloadTable: function(){
-        this.tableAreaNode.empty();
-        this.createTable();
+        if(this.tableAreaNode){
+            this.tableAreaNode.empty();
+            this.createTable();
+        }
     },
 
     createTableHead: function(){
