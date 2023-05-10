@@ -257,7 +257,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.sectionBy = this._getSectionBy();
 			this.isShowAllSection = this.isAllSectionShow();
 
-			this.editModules = [];
+			// this.editModules = [];
 
 			if( !layout.mobile ){
 				this.node.setStyle("overflow-x", "auto");
@@ -319,7 +319,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.reloading = true;
 			this._removeEl();
 
-			this.editModules = [];
+			// this.editModules = [];
 
 			//是否有总计列
 			this.totalFlag = false;
@@ -1364,16 +1364,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.currentEditedLine = line;
 		},
 
-		editValidation: function(){
-			var flag = true;
-			this.editModules.each(function(field, key){
-				if (field.json.type!=="sequence" && field.validationMode ){
-					field.validationMode();
-					if (!field.validation()) flag = false;
-				}
-			}.bind(this));
-			return flag;
-		},
+		// editValidation: function(){
+		// 	var flag = true;
+		// 	this.editModules.each(function(field, key){
+		// 		if (field.json.type!=="sequence" && field.validationMode ){
+		// 			field.validationMode();
+		// 			if (!field.validation()) flag = false;
+		// 		}
+		// 	}.bind(this));
+		// 	return flag;
+		// },
 
 
 		_afterLoaded: function(){
@@ -2019,11 +2019,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return true;
 		},
 		validation: function(routeName, opinion){
-			if (this.isEdit){
-				if (!this.editValidation()){
-					return false;
-				}
-			}
+			// if (this.isEdit){
+			// 	if (!this.editValidation()){
+			// 		return false;
+			// 	}
+			// }
 			if (!this.validationConfig(routeName, opinion))  return false;
 
 			if( !this.validationCurrentEditedLine() )return false;
@@ -3282,7 +3282,7 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterDatabale = new Class({
 	_loadUserInterface: function(){
 		// this.fireEvent("queryLoad");
 
-		this.editModules = [];
+		// this.editModules = [];
 
 		this.table = new Element("table").inject(this.node);
 		this.tBody = new Element("tbody").inject(this.table);

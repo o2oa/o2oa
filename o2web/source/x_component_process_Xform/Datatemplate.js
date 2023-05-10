@@ -227,7 +227,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var iconNode = this.node.getElement("div[o2icon='datatemplate']");
 			if(iconNode)iconNode.destroy();
 
-			this.editModules = [];
+			// this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
 
@@ -284,6 +284,38 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				// this._loadImportExportAction();
 				this.fieldModuleLoaded = true;
 				this.loading = false;
+				this.fireEvent("postLoad");
+			}.bind(this));
+		},
+		/*
+		 * @summary 重新加载数据表格。
+		 * @example
+		 *  this.form.get("fieldId").reload(); //重新加载
+		 */
+		reload: function(){
+			debugger;
+			this.reloading = true;
+
+			// this.editModules = [];
+
+			this.getRelativeId();
+
+			this.checkMerge( this.getValue() );
+
+			this.clearSubModules();
+
+			this._loadStyles();
+
+			//获取html模板和json模板
+			this.getTemplate();
+
+			this.lineList = [];
+			this.sectionlineList = [];
+
+			this.fireEvent("load");
+			this._loadDataTemplate(function(){
+				// this._loadImportExportAction();
+				this.reloading = false;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},
@@ -980,16 +1012,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 		},
 
-		editValidation: function(){
-			var flag = true;
-			this.editModules.each(function(field, key){
-				if (field.json.type!=="sequence" && field.validationMode ){
-					field.validationMode();
-					if (!field.validation()) flag = false;
-				}
-			}.bind(this));
-			return flag;
-		},
+		// editValidation: function(){
+		// 	var flag = true;
+		// 	this.editModules.each(function(field, key){
+		// 		if (field.json.type!=="sequence" && field.validationMode ){
+		// 			field.validationMode();
+		// 			if (!field.validation()) flag = false;
+		// 		}
+		// 	}.bind(this));
+		// 	return flag;
+		// },
 		exportToExcel: function(){
 			this.exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this);
 			this.exporter.exportToExcel();
@@ -1617,11 +1649,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return flag;
 		},
 		validation: function(routeName, opinion){
-			if (this.isEdit){
-				if (!this.editValidation()){
-					return false;
-				}
-			}
+			// if (this.isEdit){
+			// 	if (!this.editValidation()){
+			// 		return false;
+			// 	}
+			// }
 			if (!this.validationConfig(routeName, opinion))  return false;
 
 			if (!this.json.validation) return true;
