@@ -12,303 +12,325 @@ import com.x.processplatform.core.entity.element.Form;
 
 public class WorkCompletedProperties extends JsonProperties {
 
-	@FieldDescribe("合并已办对象")
-	private List<TaskCompleted> taskCompletedList = new ArrayList<TaskCompleted>();
+    @FieldDescribe("合并已办对象")
+    private List<TaskCompleted> taskCompletedList = new ArrayList<TaskCompleted>();
 
-	@FieldDescribe("合并已阅对象")
-	private List<ReadCompleted> readCompletedList = new ArrayList<ReadCompleted>();
+    @FieldDescribe("合并已阅对象")
+    private List<ReadCompleted> readCompletedList = new ArrayList<ReadCompleted>();
 
-	@FieldDescribe("合并参阅对象")
-	private List<Review> reviewList = new ArrayList<Review>();
+    @FieldDescribe("合并参阅对象")
+    private List<Review> reviewList = new ArrayList<Review>();
 
-	@FieldDescribe("合并记录对象")
-	private List<Record> recordList = new ArrayList<Record>();
+    @FieldDescribe("合并记录对象")
+    private List<Record> recordList = new ArrayList<Record>();
 
-	@FieldDescribe("合并数据对象")
-	private Data data;
+    @FieldDescribe("合并数据对象")
+    private Data data;
 
-	@FieldDescribe("合并工作日志对象")
-	private List<WorkLog> workLogList = new ArrayList<WorkLog>();
+    @FieldDescribe("合并工作日志对象")
+    private List<WorkLog> workLogList = new ArrayList<WorkLog>();
 
-	@FieldDescribe("合并工作Form")
-	private StoreForm storeForm;
+    @FieldDescribe("合并工作Form")
+    private StoreForm storeForm;
 
-	@FieldDescribe("合并工作Form,移动端.")
-	private StoreForm mobileStoreForm;
+    @FieldDescribe("合并工作Form,移动端.")
+    private StoreForm mobileStoreForm;
 
-	@FieldDescribe("标题")
-	private String title;
+    @FieldDescribe("标题")
+    private String title;
 
-	public List<Record> getRecordList() {
-		return recordList;
-	}
+    @FieldDescribe("父工作,在当前工作是通过子流程调用时产生.")
+    private String parentWork;
 
-	public void setRecordList(List<Record> recordList) {
-		this.recordList = recordList;
-	}
+    @FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
+    private String parentJob;
 
-	public Data getData() {
-		return data;
-	}
+    public String getParentWork() {
+        return parentWork;
+    }
 
-	public void setData(Data data) {
-		this.data = data;
-	}
+    public void setParentWork(String parentWork) {
+        this.parentWork = parentWork;
+    }
 
-	public List<WorkLog> getWorkLogList() {
-		return workLogList;
-	}
+    public String getParentJob() {
+        return parentJob;
+    }
 
-	public void setWorkLogList(List<WorkLog> workLogList) {
-		this.workLogList = workLogList;
-	}
+    public void setParentJob(String parentJob) {
+        this.parentJob = parentJob;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public List<Record> getRecordList() {
+        return recordList;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setRecordList(List<Record> recordList) {
+        this.recordList = recordList;
+    }
 
-	public List<TaskCompleted> getTaskCompletedList() {
-		return taskCompletedList;
-	}
+    public Data getData() {
+        return data;
+    }
 
-	public void setTaskCompletedList(List<TaskCompleted> taskCompletedList) {
-		this.taskCompletedList = taskCompletedList;
-	}
+    public void setData(Data data) {
+        this.data = data;
+    }
 
-	public List<ReadCompleted> getReadCompletedList() {
-		return readCompletedList;
-	}
+    public List<WorkLog> getWorkLogList() {
+        return workLogList;
+    }
 
-	public void setReadCompletedList(List<ReadCompleted> readCompletedList) {
-		this.readCompletedList = readCompletedList;
-	}
+    public void setWorkLogList(List<WorkLog> workLogList) {
+        this.workLogList = workLogList;
+    }
 
-	public List<Review> getReviewList() {
-		return reviewList;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setReviewList(List<Review> reviewList) {
-		this.reviewList = reviewList;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public StoreForm storeForm(boolean mobile) throws Exception {
-		if (mobile) {
-			return this.getMobileStoreForm();
-		} else {
-			return this.getStoreForm();
-		}
-	}
+    public List<TaskCompleted> getTaskCompletedList() {
+        return taskCompletedList;
+    }
 
-	public StoreForm getStoreForm() {
-		return storeForm;
-	}
+    public void setTaskCompletedList(List<TaskCompleted> taskCompletedList) {
+        this.taskCompletedList = taskCompletedList;
+    }
 
-	public void setStoreForm(StoreForm storeForm) {
-		this.storeForm = storeForm;
-	}
+    public List<ReadCompleted> getReadCompletedList() {
+        return readCompletedList;
+    }
 
-	public StoreForm getMobileStoreForm() {
-		return mobileStoreForm;
-	}
+    public void setReadCompletedList(List<ReadCompleted> readCompletedList) {
+        this.readCompletedList = readCompletedList;
+    }
 
-	public void setMobileStoreForm(StoreForm mobileStoreForm) {
-		this.mobileStoreForm = mobileStoreForm;
-	}
+    public List<Review> getReviewList() {
+        return reviewList;
+    }
 
-	public static class StoreForm extends GsonPropertyObject {
+    public void setReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
+    }
 
-		private static final long serialVersionUID = 6402145056972301805L;
+    public StoreForm storeForm(boolean mobile) throws Exception {
+        if (mobile) {
+            return this.getMobileStoreForm();
+        } else {
+            return this.getStoreForm();
+        }
+    }
 
-		private RelatedForm form;
+    public StoreForm getStoreForm() {
+        return storeForm;
+    }
 
-		private Map<String, RelatedForm> relatedFormMap = new HashMap<>();
+    public void setStoreForm(StoreForm storeForm) {
+        this.storeForm = storeForm;
+    }
 
-		private Map<String, RelatedScript> relatedScriptMap = new HashMap<>();
+    public StoreForm getMobileStoreForm() {
+        return mobileStoreForm;
+    }
 
-		public RelatedForm getForm() {
-			return form;
-		}
+    public void setMobileStoreForm(StoreForm mobileStoreForm) {
+        this.mobileStoreForm = mobileStoreForm;
+    }
 
-		public void setForm(RelatedForm form) {
-			this.form = form;
-		}
+    public static class StoreForm extends GsonPropertyObject {
 
-		public Map<String, RelatedForm> getRelatedFormMap() {
-			return relatedFormMap;
-		}
+        private static final long serialVersionUID = 6402145056972301805L;
 
-		public void setRelatedFormMap(Map<String, RelatedForm> relatedFormMap) {
-			this.relatedFormMap = relatedFormMap;
-		}
+        private RelatedForm form;
 
-		public Map<String, RelatedScript> getRelatedScriptMap() {
-			return relatedScriptMap;
-		}
+        private Map<String, RelatedForm> relatedFormMap = new HashMap<>();
 
-		public void setRelatedScriptMap(Map<String, RelatedScript> relatedScriptMap) {
-			this.relatedScriptMap = relatedScriptMap;
-		}
+        private Map<String, RelatedScript> relatedScriptMap = new HashMap<>();
 
-	}
+        public RelatedForm getForm() {
+            return form;
+        }
 
-	public static class RelatedScript extends GsonPropertyObject {
+        public void setForm(RelatedForm form) {
+            this.form = form;
+        }
 
-		private static final long serialVersionUID = 4695405501650343555L;
+        public Map<String, RelatedForm> getRelatedFormMap() {
+            return relatedFormMap;
+        }
 
-		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
-		public static final String TYPE_CMS = "cms";
-		public static final String TYPE_PORTAL = "portal";
-		public static final String TYPE_SERVICE = "service";
+        public void setRelatedFormMap(Map<String, RelatedForm> relatedFormMap) {
+            this.relatedFormMap = relatedFormMap;
+        }
 
-		public RelatedScript() {
+        public Map<String, RelatedScript> getRelatedScriptMap() {
+            return relatedScriptMap;
+        }
 
-		}
+        public void setRelatedScriptMap(Map<String, RelatedScript> relatedScriptMap) {
+            this.relatedScriptMap = relatedScriptMap;
+        }
 
-		public RelatedScript(String id, String name, String alias, String text, String type) {
-			this.id = id;
-			this.alias = alias;
-			this.name = name;
-			this.text = text;
-			this.type = type;
-		}
+    }
 
-		private String type;
+    public static class RelatedScript extends GsonPropertyObject {
 
-		private String id;
+        private static final long serialVersionUID = 4695405501650343555L;
 
-		private String alias;
+        public static final String TYPE_PROCESSPLATFORM = "processPlatform";
+        public static final String TYPE_CMS = "cms";
+        public static final String TYPE_PORTAL = "portal";
+        public static final String TYPE_SERVICE = "service";
 
-		private String name;
+        public RelatedScript() {
 
-		private String text;
+        }
 
-		public String getId() {
-			return id;
-		}
+        public RelatedScript(String id, String name, String alias, String text, String type) {
+            this.id = id;
+            this.alias = alias;
+            this.name = name;
+            this.text = text;
+            this.type = type;
+        }
 
-		public void setId(String id) {
-			this.id = id;
-		}
+        private String type;
 
-		public String getAlias() {
-			return alias;
-		}
+        private String id;
 
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
+        private String alias;
 
-		public String getName() {
-			return name;
-		}
+        private String name;
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        private String text;
 
-		public String getType() {
-			return type;
-		}
+        public String getId() {
+            return id;
+        }
 
-		public void setType(String type) {
-			this.type = type;
-		}
+        public void setId(String id) {
+            this.id = id;
+        }
 
-		public String getText() {
-			return text;
-		}
+        public String getAlias() {
+            return alias;
+        }
 
-		public void setText(String text) {
-			this.text = text;
-		}
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
 
-	}
+        public String getName() {
+            return name;
+        }
 
-	public static class RelatedForm extends GsonPropertyObject {
+        public void setName(String name) {
+            this.name = name;
+        }
 
-		private static final long serialVersionUID = -8345275108890011204L;
+        public String getType() {
+            return type;
+        }
 
-		public RelatedForm() {
+        public void setType(String type) {
+            this.type = type;
+        }
 
-		}
+        public String getText() {
+            return text;
+        }
 
-		public RelatedForm(Form form, String data) {
-			this.id = form.getId();
-			this.alias = form.getAlias();
-			this.name = form.getName();
-			this.category = form.getCategory();
-			this.application = form.getApplication();
-			this.hasMobile = form.getHasMobile();
-			this.data = data;
-		}
+        public void setText(String text) {
+            this.text = text;
+        }
 
-		private String id;
-		private String alias;
-		private String name;
-		private String category;
-		private String application;
-		private Boolean hasMobile;
-		private String data;
+    }
 
-		public String getCategory() {
-			return category;
-		}
+    public static class RelatedForm extends GsonPropertyObject {
 
-		public void setCategory(String category) {
-			this.category = category;
-		}
+        private static final long serialVersionUID = -8345275108890011204L;
 
-		public String getApplication() {
-			return application;
-		}
+        public RelatedForm() {
 
-		public void setApplication(String application) {
-			this.application = application;
-		}
+        }
 
-		public Boolean getHasMobile() {
-			return hasMobile;
-		}
+        public RelatedForm(Form form, String data) {
+            this.id = form.getId();
+            this.alias = form.getAlias();
+            this.name = form.getName();
+            this.category = form.getCategory();
+            this.application = form.getApplication();
+            this.hasMobile = form.getHasMobile();
+            this.data = data;
+        }
 
-		public void setHasMobile(Boolean hasMobile) {
-			this.hasMobile = hasMobile;
-		}
+        private String id;
+        private String alias;
+        private String name;
+        private String category;
+        private String application;
+        private Boolean hasMobile;
+        private String data;
 
-		public String getAlias() {
-			return alias;
-		}
+        public String getCategory() {
+            return category;
+        }
 
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
+        public void setCategory(String category) {
+            this.category = category;
+        }
 
-		public String getName() {
-			return name;
-		}
+        public String getApplication() {
+            return application;
+        }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        public void setApplication(String application) {
+            this.application = application;
+        }
 
-		public String getId() {
-			return id;
-		}
+        public Boolean getHasMobile() {
+            return hasMobile;
+        }
 
-		public void setId(String id) {
-			this.id = id;
-		}
+        public void setHasMobile(Boolean hasMobile) {
+            this.hasMobile = hasMobile;
+        }
 
-		public String getData() {
-			return data;
-		}
+        public String getAlias() {
+            return alias;
+        }
 
-		public void setData(String data) {
-			this.data = data;
-		}
-	}
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
 
 }
