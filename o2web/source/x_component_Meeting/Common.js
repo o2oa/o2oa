@@ -1820,8 +1820,8 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         this.setItemValue(contentNode, "subject",  data.subject );
         this.setItemValue(contentNode, "invitePerson", persons.join(",") );
         this.setItemValue(contentNode, "description",  description );
-        this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
-        this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
+        this.setItemValue(contentNode, "hostPerson",  (this.data.hostPerson || "").split("@")[0] );
+        this.setItemValue(contentNode, "hostUnit",  (this.data.hostUnit || "").split("@")[0] );
 
         this.fireEvent("customContent", [contentNode, node]);
     },

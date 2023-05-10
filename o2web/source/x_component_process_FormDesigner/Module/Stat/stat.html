@@ -52,6 +52,13 @@
 					<input class="editTableRadio" name="isTable" text{($.isTable=='no')?'checked':''} type="radio" value="no"/>{{$.lp.hide}}
 				</td>
 			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showRowToColumn}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isRowToColumn" text{($.isRowToColumn!='no')?'checked':''} type="radio" value="yes"/>{{$.lp.show}}
+					<input class="editTableRadio" name="isRowToColumn" text{($.isRowToColumn=='no')?'checked':''} type="radio" value="no"/>{{$.lp.hide}}
+				</td>
+			</tr>
 		</table>
 	</div>
 
