@@ -3154,7 +3154,7 @@ MWF.xScript.Environment = function(ev){
                         option.identity = (_form.businessData.task) && _form.businessData.task.identityDn;
                     }
                     var workId = _form.businessData.work.id;
-                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.v2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
+                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
                 });
             }else{
                 if (_form.businessData.control["allowAddTask"]) _form.addTask();
