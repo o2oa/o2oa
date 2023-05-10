@@ -73,6 +73,7 @@ MWF.xApplication.ThreeMember.LP = {
 	"password": "Password Management",
 	"logout": "Logout",
 	"welcome": "Hello,",
+	"noServiceNote": "The three-person management background service is not installed in the system, please contact the administrator to install it in the application market.",
 	"noDataText" : {
 		"process": "There is no process in this application",
 		"category": "There is no category in this app",

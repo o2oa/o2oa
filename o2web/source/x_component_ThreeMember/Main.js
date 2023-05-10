@@ -48,6 +48,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         return this.access.isAdmin();
     },
     createNode: function () {
+        debugger;
         this.content.setStyle("overflow", "hidden");
         this.node = new Element("div", {
             "styles": this.css.node
@@ -71,7 +72,9 @@ MWF.xApplication.ThreeMember.Main = new Class({
         this.addEvent("resize", this.setContentSizeFun);
 
         this.loadUser();
-        this.loadNavi();
+        this.checkService(function () {
+            this.loadNavi();
+        }.bind(this));
         // this.loadLogView();
 
         // this.createTopNode();
@@ -111,6 +114,17 @@ MWF.xApplication.ThreeMember.Main = new Class({
             // window.location.reload();
             window.location = "/";
         }.bind(this));
+    },
+    checkService: function(success){
+        if( layout.serviceAddressList["x_auditlog_assemble_control"] ){
+            success();
+        }else{
+            this.contentContainerNode.setStyle("background-color","#fff");
+            new Element("div", {
+                "styles": this.css.noServiceNode,
+                "text": this.lp.noServiceNote
+            }).inject( this.contentContainerNode );
+        }
     },
     loadNavi : function(){
         this.managerEnabled = this.options.managerEnabled && o2.AC.isManager();
