@@ -292,7 +292,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * @example
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
-		reload: function(){
+		reload: function( isReloadTemplate ){
 			debugger;
 			this.reloading = true;
 
@@ -306,8 +306,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this._loadStyles();
 
-			//获取html模板和json模板
-			this.getTemplate();
+			if( isReloadTemplate ){ //重新获取html模板和json模板
+				this.node.getChildren().setStyle("display", "");
+				this.getTemplate();
+				this.node.getChildren().hide();
+			}
 
 			this.lineList = [];
 			this.sectionlineList = [];
