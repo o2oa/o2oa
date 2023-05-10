@@ -461,6 +461,34 @@ public class Document extends SliceJpaObject {
     @CheckPersist(allowEmpty = true)
     private String stringValue06;
 
+    public static final String stringValue07_FIELDNAME = "stringValue07";
+    @FieldDescribe("业务数据String值07.")
+    @Column(length = length_255B, name = ColumnNamePrefix + stringValue07_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + stringValue07_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String stringValue07;
+
+    public static final String stringValue08_FIELDNAME = "stringValue08";
+    @FieldDescribe("业务数据String值08.")
+    @Column(length = length_255B, name = ColumnNamePrefix + stringValue08_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + stringValue08_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String stringValue08;
+
+    public static final String stringValue09_FIELDNAME = "stringValue09";
+    @FieldDescribe("业务数据String值09.")
+    @Column(length = length_255B, name = ColumnNamePrefix + stringValue09_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + stringValue09_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String stringValue09;
+
+    public static final String stringValue10_FIELDNAME = "stringValue10";
+    @FieldDescribe("业务数据String值10.")
+    @Column(length = length_255B, name = ColumnNamePrefix + stringValue10_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + stringValue10_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String stringValue10;
+
     public static final String longValue01_FIELDNAME = "longValue01";
     @FieldDescribe("业务数据Long值01.")
     @Column(name = ColumnNamePrefix + longValue01_FIELDNAME)
@@ -1046,6 +1074,38 @@ public class Document extends SliceJpaObject {
         this.dateTimeValue03 = dateTimeValue03;
     }
 
+    public String getStringValue07() {
+        return stringValue07;
+    }
+
+    public void setStringValue07(String stringValue07) {
+        this.stringValue07 = stringValue07;
+    }
+
+    public String getStringValue08() {
+        return stringValue08;
+    }
+
+    public void setStringValue08(String stringValue08) {
+        this.stringValue08 = stringValue08;
+    }
+
+    public String getStringValue09() {
+        return stringValue09;
+    }
+
+    public void setStringValue09(String stringValue09) {
+        this.stringValue09 = stringValue09;
+    }
+
+    public String getStringValue10() {
+        return stringValue10;
+    }
+
+    public void setStringValue10(String stringValue10) {
+        this.stringValue10 = stringValue10;
+    }
+
     // -------------------Reader-------------------------
     // -------------------2020-06-12 改为只存储DistinguishedName后两段，第一段可能会在运行过程中修改
     public void addToReadPersonList(String readPerson) {
@@ -1120,7 +1180,7 @@ public class Document extends SliceJpaObject {
 
     /**
      * 获取只取两段的组织、人员、群组名称distinguishedName标识，默认应该有3段，第一段变动比较频繁，不适合作为权限标识
-     * 
+     *
      * @param distinguishedName
      * @return
      */
@@ -1173,7 +1233,7 @@ public class Document extends SliceJpaObject {
 
     /**
      * 判断指定的列名是否已经创建了对应的sequence列
-     * 
+     *
      * @param orderField - 列名
      * @return
      */
@@ -1217,7 +1277,7 @@ public class Document extends SliceJpaObject {
 
     /**
      * 根据指定的列名，获取对应的sequence列
-     * 
+     *
      * @param fieldName - 列名
      * @return
      */
