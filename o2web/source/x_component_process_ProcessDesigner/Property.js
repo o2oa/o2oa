@@ -285,7 +285,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.ScriptText", function(){
             var _self = this;
             scriptNodes.each(function(node){
-                debugger;
                 var api = node.dataset["o2Api"];
                 var editorType = node.dataset["editorType"];
                 var loadImmediately = node.dataset["loadImmediately"];
@@ -498,40 +497,56 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var nodes = this.propertyContent.getElements(".gobackActivityConfig");
         // this.manuals
         nodes.each(function(node){
-            Object.keys(this.manuals).forEach(function(key){
-                var activity = this.manuals[key];
+            Object.keys(this.process.manuals).forEach(function(key){
+                var activity = this.process.manuals[key];
+                if (activity.data.id !== this.data.id){
+                    var label = new Element('label').inject(node);
+                    var div = new Element('div', {styles:{
+                            "display": "flex",
+                            "align-items": "center",
+                            "height": "24px",
+                            "line-height": "24px",
+                            "padding": "0 10px",
+                            "border-bottom": "1px solid #f6f6f6"
+                        }}).inject(label);
+                    // this.data.goBackConfig
+                    var check = new Element('input',{
+                        type: 'checkbox',
+                        value: activity.data.id
+                    }).inject(div);
+                    div.appendChild(document.createTextNode(activity.data.name));
+                }
 
-            });
-
-            var title = node.get("title");
-            var name = node.get("name");
-            var lName = name.toLowerCase();
-            var collapse = node.get("collapse");
-            var mapObj = this.data[name] || {};
-            //if (!mapObj) mapObj = {};
-            MWF.require("MWF.widget.Maplist", function(){
-                node.empty();
-                var maplist = new MWF.widget.Maplist(node, {
-                    "title": title,
-                    "collapse": (collapse) ? true : false,
-                    "onChange": function(){
-                        //this.data[name] = maplist.toJson();
-                        //
-                        //var oldData = this.data[name];
-                        this.setValue(name, maplist.toJson());
-                        // this.changeStyle(name, oldData);
-                        // this.changeData(name);
-                    }.bind(this),
-                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
-                });
-                maplist.load(mapObj);
-                //this.maplists[name] = maplist;
             }.bind(this));
+
+            // var title = node.get("title");
+            // var name = node.get("name");
+            // var lName = name.toLowerCase();
+            // var collapse = node.get("collapse");
+            // var mapObj = this.data[name] || {};
+            // //if (!mapObj) mapObj = {};
+            // MWF.require("MWF.widget.Maplist", function(){
+            //     node.empty();
+            //     var maplist = new MWF.widget.Maplist(node, {
+            //         "title": title,
+            //         "collapse": (collapse) ? true : false,
+            //         "onChange": function(){
+            //             //this.data[name] = maplist.toJson();
+            //             //
+            //             //var oldData = this.data[name];
+            //             this.setValue(name, maplist.toJson());
+            //             // this.changeStyle(name, oldData);
+            //             // this.changeData(name);
+            //         }.bind(this),
+            //         "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+            //     });
+            //     maplist.load(mapObj);
+            //     //this.maplists[name] = maplist;
+            // }.bind(this));
         }.bind(this));
     },
 
     loadPersonInput: function(){
-	    debugger;
         var personIdentityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
@@ -694,7 +709,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         this.data[node.get("name")] = JSON.encode(values);
     },
     savePersonItem: function(node, ids, dataType, resultKey){
-        debugger;
         var count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){

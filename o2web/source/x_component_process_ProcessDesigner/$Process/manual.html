@@ -402,7 +402,8 @@
                     <td class="editTableTitle">{{$.lp.backWay}}: </td>
                     <td class="editTableValue">
                         <label><input class="editTableRadio" name="goBackConfig.way" text{(!$.goBackConfig || $.goBackConfig.way!=='jump')?'checked':''} type="radio" value="step"/>{{$.lp.backWayStep}}</label><br>
-                        <label><input class="editTableRadio" name="goBackConfig.way" text{($.goBackConfig && $.goBackConfig.way=='jump')?'checked':''} type="radio" value="jump"/>{{$.lp.backWayJump}}</label>
+                        <label><input class="editTableRadio" name="goBackConfig.way" text{($.goBackConfig && $.goBackConfig.way=='jump')?'checked':''} type="radio" value="jump"/>{{$.lp.backWayJump}}</label><br>
+                        <label><input class="editTableRadio" name="goBackConfig.way" text{($.goBackConfig && $.goBackConfig.way=='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.backWayCustom}}</label>
                     </td>
                 </tr>
                 <tr>

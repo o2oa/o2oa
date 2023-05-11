@@ -431,6 +431,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"backWay": "退回后处理",
 		"backWayStep": "按流程配置正常流转",
 		"backWayJump": "直接回到退回人",
+		"backWayCustom": "由退回人决定",
 		// "backActivity": "",
 
 
