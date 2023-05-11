@@ -3917,6 +3917,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.datatable = datatable;
 		this.form = this.datatable.form;
 
+		this.lp = MWF.xApplication.process.Xform.LP;
+		this.columnText =  this.lp.importValidationColumnText;
+		this.columnTextExcel = this.lp.importValidationColumnTextExcel;
+		this.excelUtil = new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable );
+
 		this.columnJsonList = [];
 	},
 	isAvaliableColumn : function(thJson, mJson){
@@ -3932,7 +3937,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var dateColArray = this.getDateIndexArray(); //日期列
 		var orgTitleArray = this.getOrgTitleArray();
 
-		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).upload( dateColArray, function (data) {
+		this.excelUtil.upload( dateColArray, function (data) {
 			debugger;
 			this.loadSimulateModule();
 			this.columnJsonList.each(function (c) {
@@ -4318,11 +4323,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 	checkData : function( idata ){
 		var flag = true;
 
-		var lp = MWF.xApplication.process.Xform.LP;
-		var columnText =  lp.importValidationColumnText;
-		var columnTextExcel = lp.importValidationColumnTextExcel;
-		var excelUtil = new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable );
-
 		var parsedData = this.parseImportedData(idata, true);
 		this.parsedData = parsedData;
 
@@ -4333,72 +4333,10 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 			var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
 
-			this.columnJsonList.each( function (obj, i) {
-				var index = obj.index;
-				var json = obj.mJson;
-				var module = obj.module;
-				var text = obj.title;
-
-				var colInfor = columnText.replace( "{n}", index+1 );
-				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
-
-				var d = lineData[text] || "";
-				var parsedD = parsedLineData[json.id] || "";
-
-				if(d){
-
-					switch (json && json.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							var arr = this.stringToArray(d);
-							arr.each( function(d, idx){
-								var obj = this.getOrgData( d );
-								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
-								}
-							}.bind(this));
-							break;
-						case "Number":
-						case "Elnumber":
-							if (isNaN(d)){
-								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-							}
-							break;
-						case "Calendar":
-						case "Eldate":
-						case "Eldatetime":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-							}
-							break;
-						default:
-							break;
-					}
-				}
-				if (module && module.setData && json.type !== "Address"){
-					var hasError = false;
-					if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
-						if(o2.typeOf(parsedD)==="array" && parsedD.length){
-							hasError = parsedD.some(function (item) { return item.errorText; })
-						}
-					}
-					if(!hasError){
-						debugger;
-						module.setExcelData(parsedD);
-						var result = module.validationExcel();
-						if ( result && result.length ){
-							errorTextList.push(colInfor + result.join("\n") );
-							errorTextListExcel.push( colInforExcel + result.join("\n"));
-						}
-						parsedLineData[json.id] = module.getData();
-					}
-				}
+			this.columnJsonList.each( function (columnJson, i){
+				var result = this.checkModuleData(columnJson, lineData, parsedLineData);
+				result.errorTextList.each(function (t) { errorTextList.push(t); });
+				result.errorTextListExcel.each(function (t) { errorTextListExcel.push(t); });
 			}.bind(this));
 
 			if(errorTextList.length>0){
@@ -4416,6 +4354,77 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.datatable.fireEvent( "validImport", [arg] );
 
 		return arg.validted;
+	},
+	checkModuleData: function (columnJson, lineData, parsedLineData) {
+		var index = columnJson.index;
+		var json = columnJson.mJson;
+		var module = columnJson.module;
+		var text = columnJson.title;
+
+		var colInfor = this.columnText.replace( "{n}", index+1 );
+		var colInforExcel = this.columnTextExcel.replace( "{n}", this.excelUtil.index2ColName( index ) );
+
+		var d = lineData[text] || "";
+		var parsedD = parsedLineData[json.id] || "";
+		var lp = this.lp;
+		var errorTextList = [], errorTextListExcel = [];
+
+		if(d){
+			switch (json && json.type) {
+				case "Org":
+				case "Reader":
+				case "Author":
+				case "Personfield":
+				case "Orgfield":
+					var arr = this.stringToArray(d);
+					arr.each( function(d, idx){
+						var obj = this.getOrgData( d );
+						if( obj.errorText ){
+							errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+							errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+						}
+					}.bind(this));
+					break;
+				case "Number":
+				case "Elnumber":
+					if (isNaN(d)){
+						errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+						errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+					}
+					break;
+				case "Calendar":
+				case "Eldate":
+				case "Eldatetime":
+					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+						errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+						errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		if (module && module.setData && json.type !== "Address"){
+			var hasError = false;
+			if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
+				if(o2.typeOf(parsedD)==="array" && parsedD.length){
+					hasError = parsedD.some(function (item) { return item.errorText; })
+				}
+			}
+			if(!hasError){
+				module.setExcelData(parsedD);
+				var result = module.validationExcel();
+				if ( result && result.length ){
+					errorTextList.push(colInfor + result.join("\n") );
+					errorTextListExcel.push( colInforExcel + result.join("\n"));
+				}
+				parsedLineData[json.id] = module.getData();
+			}
+		}
+		return {
+			errorTextList: errorTextList,
+			errorTextListExcel: errorTextListExcel
+		}
 	},
 	exportWithImportDataToExcel: function(eData){
 		var exporter = new MWF.xApplication.process.Xform.DatatablePC.Exporter(this.datatable);

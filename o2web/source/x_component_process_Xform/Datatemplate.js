@@ -1930,8 +1930,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 	}
 });
 
-
-
 MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	Implements: [Options, Events],
 	options: {
