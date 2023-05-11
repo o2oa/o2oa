@@ -225,6 +225,11 @@
     "text": "officeOnline",
     "className": "OfficeOnline"
   },
+  "pdfView": {
+    "icon": "pdfview.png",
+    "text": "PDF View",
+    "className": "PdfView"
+  },
   "wpsOffice": {
     "icon": "wpsOffice.png",
     "text": "wpsOffice",
