@@ -20,8 +20,19 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("同一处理人不同身份待办合并处理一次.")
 	private Boolean processingTaskOnceUnderSamePerson;
 
+	@FieldDescribe("是否允许退回.")
+	private Boolean allowGoBack;
+
 	@FieldDescribe("回退配置.")
 	private GoBackConfig goBackConfig;
+
+	public Boolean getAllowGoBack() {
+		return allowGoBack;
+	}
+
+	public void setAllowGoBack(Boolean allowGoBack) {
+		this.allowGoBack = allowGoBack;
+	}
 
 	public GoBackConfig getGoBackConfig() {
 		return goBackConfig;
@@ -67,9 +78,22 @@ public class ManualProperties extends JsonProperties {
 		public static final String WAY_JUMP = "jump";
 		public static final String WAY_CUSTOM = "custom";
 
+		@FieldDescribe("类型,prev:退回上一环节,any:任意环节,define:配置.")
 		private String type;
 
+		@FieldDescribe("路由方式,step:正常流转,jump:跳转到退回发起的环节,custom:用户指定.")
 		private String way;
+
+		@FieldDescribe("有多条待办时是否允许退回.")
+		private Boolean multiTaskEnable;
+
+		public Boolean getMultiTaskEnable() {
+			return multiTaskEnable;
+		}
+
+		public void setMultiTaskEnable(Boolean multiTaskEnable) {
+			this.multiTaskEnable = multiTaskEnable;
+		}
 
 		private List<DefineConfig> defineConfigList = new ArrayList<>();
 

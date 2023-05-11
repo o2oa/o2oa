@@ -80,6 +80,7 @@ public class Manual extends Activity {
 			this.customData = this.getProperties().getCustomData();
 			this.allowAddTask = this.getProperties().getAllowAddTask();
 			this.goBackConfig = this.getProperties().getGoBackConfig();
+			this.allowGoBack = this.getProperties().getAllowGoBack();
 		}
 	}
 
@@ -153,10 +154,29 @@ public class Manual extends Activity {
 		this.properties.setProcessingTaskOnceUnderSamePerson(processingTaskOnceUnderSamePerson);
 	}
 
-	public static final String GOBACKCONFIG_FIELDNAME = "goBackConfig";
+	public static final String ALLOWGOBACK_FIELDNAME = "allowGoBack";
+	@Transient
+	@FieldDescribe("是否允许退回.")
 	// @since 8.0.2
+	private Boolean allowGoBack;
+
+	public Boolean getAllowGoBack() {
+		if (null != this.allowGoBack) {
+			return this.allowGoBack;
+		} else {
+			return this.getProperties().getAllowGoBack();
+		}
+	}
+
+	public void setAllowGoBack(Boolean allowGoBack) {
+		this.allowGoBack = allowGoBack;
+		this.properties.setAllowGoBack(allowGoBack);
+	}
+
+	public static final String GOBACKCONFIG_FIELDNAME = "goBackConfig";
 	@Transient
 	@FieldDescribe("回退配置.")
+	// @since 8.0.2
 	private GoBackConfig goBackConfig;
 
 	public GoBackConfig getGoBackConfig() {
