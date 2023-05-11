@@ -1209,7 +1209,19 @@ MWF.xApplication.process.ProcessDesigner.Activity.Property = new Class({
         this.htmlPath = "../x_component_process_ProcessDesigner/$Process/"+this.activity.type+".html";
     },
     setValue: function(name, value){
-        this.data[name] = value;
+        var names = name.split(".");
+        var o = this.data;
+        while (names.length>1){
+            var k = names.shift();
+            if (!o.hasOwnProperty(k)){
+                o[k] = {};
+            }
+            o=o[k];
+        }
+        var key = names.shift();
+        o[key] = value;
+
+        // this.data[name] = value;
         if (name=="name"){
             if (!value) this.data[name] = MWF.APPPD.LP.unnamed;
             this.activity.redraw();

@@ -146,7 +146,7 @@ if (!window.o2) {
          */
         this.o2.languageName = _lp;
         _lp = _lp.toLocaleLowerCase();
-        var supportedLanguages = ["zh-CN", "en"];
+        var supportedLanguages = ["zh-CN", "en", "es"];
         if (supportedLanguages.indexOf(_lp) == -1) _lp = "zh-cn";
         this.o2.language = _lp;
         this.o2.splitStr = /\s*(?:,|;)\s*/;

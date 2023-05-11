@@ -217,18 +217,49 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
     },
 	setRadioValue: function(name, input){
 		if (input.checked){
-            var oldValue = this.data[name];
+            // var oldValue = this.data[name];
 			var value = input.value;
 			if (value=="false") value = false;
 			if (value=="true") value = true;
-			this.data[name] = value;
+
+            var names = name.split(".");
+            var oldValue = null;
+            var o = this.data;
+
+            while (names.length>1){
+                var k = names.shift();
+                if (!o.hasOwnProperty(k)){
+                    o[k] = {};
+                }
+                o=o[k];
+            }
+            var key = names.shift();
+            oldValue = o[key];
+            o[key] = value;
+
+			// this.data[name] = value;
 
             if (this.route) this.route._setEditProperty(name, input, oldValue);
 		}
 	},
 	setValue: function(name, value){
-        var oldValue = this.data[name];
-		this.data[name] = value;
+        // var oldValue = this.data[name];
+		// this.data[name] = value;
+        var names = name.split(".");
+        var oldValue = null;
+        var o = this.data;
+
+        while (names.length>1){
+            var k = names.shift();
+            if (!o.hasOwnProperty(k)){
+                o[k] = {};
+            }
+            o=o[k];
+        }
+        var key = names.shift();
+        oldValue = o[key];
+        o[key] = value;
+
 		if (name=="name"){
 			if (!value) this.data[name] = MWF.APPPD.LP.unnamed;
 		//	this.activity.redraw();

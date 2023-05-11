@@ -417,6 +417,23 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowPause": "允许挂起",
         "allowAddTask": "允许加签",
 
+		"backConfig": "退回配置",
+		"allowBack": "允许退回",
+		"multiTaskEnable": "多人处理时是否允许退回",
+		"multiTaskEnableInfo": "多人处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
+		"backType": "退回方式",
+		"backPrev": "逐级退回",
+		"backAny": "任意活动退回",
+		"backDefine": "选择退回活动",
+		"backPrevInfo": "逐级退回：用户选择“退回”，则将当前工作退回到上一个处理活动",
+		"backAnyInfo": "任意活动退回：用户选择“退回”时，可选择任意一个已经处理过的活动",
+		"backDefineInfo": "选择退回活动：定义用户可退回的活动，用于可以退回到已定义的活动",
+		"backWay": "退回后处理",
+		"backWayStep": "按流程配置正常流转",
+		"backWayJump": "直接回到退回人",
+		// "backActivity": "",
+
+
 		"beforeBegin": "流程启动前",
 		"eventInfo1": "启动流程生成work实例",
 		"afterBegin": "流程启动",
