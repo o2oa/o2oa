@@ -143,6 +143,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             if (this.form) {
                 if (MWF.clipboard.data) {
                     if (MWF.clipboard.data.type == "form") {
+                        var datatemplateJsons = [];
+                        var idMap = {};
                         var html = MWF.clipboard.data.data.html;
                         var json = Object.clone(MWF.clipboard.data.data.json);
                         var tmpNode = Element("div", {
@@ -159,13 +161,19 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                             }
 
                             if (oid != id) {
+                                idMap[oid] = id;
                                 moduleJson.id = id;
                                 var moduleNode = tmpNode.getElementById(oid);
                                 if (moduleNode) moduleNode.set("id", id);
                             }
+                            if( moduleJson.type === "Datatemplate" )datatemplateJsons.push(moduleJson);
                             this.form.json.moduleList[moduleJson.id] = moduleJson;
                         }.bind(this));
                         json = null;
+
+                        datatemplateJsons.each(function (json) {
+                            this.checkDatatemplateRelativeId(json, idMap);
+                        }.bind(this));
 
                         var injectNode = this.form.node;
                         var where = "bottom";
@@ -1909,6 +1917,31 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 "top": ""+y+"px"
             });
         }
+    },
+    checkDatatemplateRelativeId: function( json, idMap ){
+        ["outerAddActionId","outerDeleteActionId","outerSelectAllId",
+            "addActionId","deleteActionId","sequenceId","selectorId"].each(function(key){
+            var str = json[key];
+            if(str){
+                var strArr;
+                if( str.indexOf("/") > -1 ) {
+                    strArr = str.split("/");
+                }else if(str.indexOf(".*.") > -1){
+                    strArr = str.split(".*.");
+                }
+                if(strArr){
+                    strArr = strArr.map(function (s) {
+                        return idMap[s] || s;
+                    });
+                    json[key] = strArr.join("/");
+                }else{
+                    if( str && idMap[str] ){
+                        json[key] = idMap[str];
+                    }
+                }
+            }
+
+        }.bind(this));
     }
 });
 MWF.xApplication.process.FormDesigner.ToolsGroup = new Class({
