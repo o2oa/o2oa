@@ -908,6 +908,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showChart": "显示图表",
         "showLegend": "显示图例",
         "showTable": "显示表格",
+        "showRowToColumn": "行列转换",
+        "chartNodeStyles": "图表容器样式",
+        "tableNodeStyles": "表格容器样式",
 
         "selectTag": "选择标签",
         "elementTag": "元素标签",

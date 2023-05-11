@@ -910,6 +910,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showChart": "Show Chart",
         "showLegend": "Show Legend",
         "showTable": "Show Table",
+        "showRowToColumn": "Row to column conversion",
+        "chartNodeStyles": "Chart Container Styles",
+        "tableNodeStyles": "Table Container Styles",
 
         "selectTag": "Select Tag",
         "elementTag": "Tag",
