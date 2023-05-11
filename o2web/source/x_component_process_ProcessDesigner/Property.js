@@ -500,21 +500,21 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             Object.keys(this.process.manuals).forEach(function(key){
                 var activity = this.process.manuals[key];
                 if (activity.data.id !== this.data.id){
-                    var label = new Element('label').inject(node);
                     var div = new Element('div', {styles:{
                             "display": "flex",
                             "align-items": "center",
                             "height": "24px",
                             "line-height": "24px",
                             "padding": "0 10px",
-                            "border-bottom": "1px solid #f6f6f6"
-                        }}).inject(label);
+                            "border-bottom": "1px solid #f3f3f3"
+                        }}).inject(node);
+                    var label = new Element('label').inject(div);
                     // this.data.goBackConfig
                     var check = new Element('input',{
                         type: 'checkbox',
                         value: activity.data.id
-                    }).inject(div);
-                    div.appendChild(document.createTextNode(activity.data.name));
+                    }).inject(label);
+                    label.appendChild(document.createTextNode(activity.data.name));
                 }
 
             }.bind(this));
