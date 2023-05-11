@@ -378,7 +378,7 @@
             </tr>
         </table>
         <hr />
-        <div style="height: 24px; line-height: 24px; background-color: #f1f1f1; font-weight: bold;text-align: center">{{$.lp.backConfig}}</div>
+        <div style="height: 28px;line-height: 28px; background-color: #f1f1f1; font-weight: bold;text-align: center; border-bottom: 1px solid #cccccc;">{{$.lp.backConfig}}</div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
@@ -408,15 +408,18 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.backType}}: </td>
                     <td class="editTableValue">
-                        <label><input class="editTableRadio" name="goBackConfig.type" text{(!$.goBackConfig || $.goBackConfig.type==='prev')?'checked':''} type="radio" value="prev"/><b>{{$.lp.backPrev}}</b></label>
+                        <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'none'); }" class="editTableRadio" name="goBackConfig.type" text{(!$.goBackConfig || $.goBackConfig.type==='prev')?'checked':''} type="radio" value="prev"/><b>{{$.lp.backPrev}}</b></label>
                         <div style="color: #999999;">{{$.lp.backPrevInfo}}</div>
-                        <label><input class="editTableRadio" name="goBackConfig.type" text{($.goBackConfig && $.goBackConfig.type==='any')?'checked':''} type="radio" value="any"/><b>{{$.lp.backAny}}</b></label>
+                        <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'none'); }" class="editTableRadio" name="goBackConfig.type" text{($.goBackConfig && $.goBackConfig.type==='any')?'checked':''} type="radio" value="any"/><b>{{$.lp.backAny}}</b></label>
                         <div style="color: #999999;}">{{$.lp.backAnyInfo}}</div>
-                        <label><input class="editTableRadio" name="goBackConfig.type" text{($.goBackConfig && $.goBackConfig.type==='define')?'checked':''} type="radio" value="define"/><b>{{$.lp.backDefine}}</b></label>
+                        <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'block'); }" class="editTableRadio" name="goBackConfig.type" text{($.goBackConfig && $.goBackConfig.type==='define')?'checked':''} type="radio" value="define"/><b>{{$.lp.backDefine}}</b></label>
                         <div style="color: #999999;">{{$.lp.backDefineInfo}}</div>
                     </td>
                 </tr>
             </table>
+        </div>
+        <div id="text{$.id}gobackConfigActivityArea" style="display: text{($.goBackConfig && $.goBackConfig.type==='define')?'block':'none'};">
+            <div class="gobackActivityConfig"></div>
         </div>
 <!--        <div id="text{$.id}gobackDefineConfigArea" style="display: text{($.goBackConfig && $.goBackConfig.type==='define')?'block':'none'};">-->
 <!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
