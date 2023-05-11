@@ -186,5 +186,9 @@
   "ftsearch": {
     "icon": "ftsearch.png",
     "color": "#758790"
+  },
+  "Drive": {
+    "icon": "drive.png",
+    "color": "#FF7800"
   }
 }

@@ -150,7 +150,7 @@ export default content({
   // 
   afterRender() {
     if (this.bind.form && this.bind.form.id && this.bind.form.id !== "") { // 修改
-      this.bind.fTitle = this.bind.lp.groupUpdate;
+      this.bind.fTitle = lp.groupUpdate;
       // 回查工作场所对象
       this.loadWorkPlaceObjectsByIds(this.bind.form.workPlaceIdList);
       // 日期列表分拆

@@ -21,6 +21,7 @@ export default content({
         endDate: ''
       },
       filterList: [],
+      units: [], // 控制组织选择的范围
       detailList: [],
       pagerData: {
         page: 1,
@@ -49,6 +50,17 @@ export default content({
     const chooseDate = `${year}-${month}-${day}`;
     this.bind.form.startDate = chooseDate;
     this.bind.form.endDate = chooseDate;
+    // 当前用户的选择范围
+    if (content.myDutyList && content.myDutyList.length > 0) {
+      let units = [];
+      for (let i = 0; i < content.myDutyList.length; i++) {
+        const duty = content.myDutyList[i];
+        if (duty.woUnit && duty.woUnit.distinguishedName) {
+          units.push(duty.woUnit.distinguishedName);
+        }
+      }
+      this.bind.units = units;
+    }
   },
   afterRender() {
     this.loadDetailList();

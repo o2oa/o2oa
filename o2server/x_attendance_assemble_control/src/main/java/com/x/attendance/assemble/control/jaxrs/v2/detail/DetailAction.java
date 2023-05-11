@@ -99,7 +99,7 @@ public class DetailAction extends StandardJaxrsAction {
         ActionResult<ActionStatisticExportExcel.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionStatisticExportExcel().execute( filter, start ,end );
+            result = new ActionStatisticExportExcel().execute(effectivePerson, filter, start ,end );
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

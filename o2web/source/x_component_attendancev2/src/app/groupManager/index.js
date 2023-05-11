@@ -144,10 +144,10 @@ export default content({
   // 删除
   async clickDeleteGroup(id, name) {
     var _self = this;
-    const c = lpFormat(this.bind.lp, "groupForm.confirmDelete", { name: name });
+    const c = lpFormat(lp, "groupForm.confirmDelete", { name: name });
     o2.api.page.confirm(
       "warn",
-      this.bind.lp.alert,
+      lp.alert,
       c,
       300,
       100,

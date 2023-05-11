@@ -215,7 +215,8 @@ MWF.xApplication.attendancev2.LP = {
     fieldWorkTimes: "外勤次数",
     btnRecordList: "打卡记录",
   },
-  detailExportConfirmMsg: "导出操作比较耗时，请不要关闭浏览器，等待一会儿！",
+  detailExportExcelFileSuccess: "数据已经统计完成，点击确定下载Excel文件！",
+  detailExportConfirmMsg: "导出操作比较耗时，请等待一会儿！",
   detailStatisticList: {
     filterEmptyPlaceholder: "请选择需要查询人员或组织!",
     filterSelectTitle: "查询统计的人员或组织",
@@ -223,6 +224,7 @@ MWF.xApplication.attendancev2.LP = {
     participatesErrorNotEmtpy: "参与考勤人员、组织不能为空！",
     startDateEmptyPlaceholder: "请选择开始日期!",
     endDateEmptyPlaceholder: "请选择结束日期!",
+    
   },
   detailRecordList: {
     title: "打卡记录",
@@ -250,7 +252,9 @@ MWF.xApplication.attendancev2.LP = {
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
     checkInAlert: "打卡提醒",
     checkInAlertEnable: "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
-    exceptionAlertEnable: "是否启用异常打卡提醒 (次日将收到异常打卡消息)",
+    exceptionAlertEnable: "是否启用异常打卡提醒 ",
+    exceptionAlertEnableTime1: " (次日 ",
+    exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
 
   },
   // 请假外出记录

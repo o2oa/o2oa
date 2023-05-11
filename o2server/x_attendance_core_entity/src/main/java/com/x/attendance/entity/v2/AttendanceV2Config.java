@@ -6,13 +6,8 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * 考勤配置
@@ -150,7 +145,33 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + exceptionAlertEnable_FIELDNAME)
     private Boolean exceptionAlertEnable = false;
 
+    public static final String exceptionAlertTime_FIELDNAME = "exceptionAlertTime";
+    @FieldDescribe("异常打卡提醒时间：HH:mm")
+    @Column(length = length_8B, name = ColumnNamePrefix + exceptionAlertTime_FIELDNAME)
+    private String exceptionAlertTime = "09:30";
 
+    // 记录任务执行的日期，用于判断当天是否已经执行过提醒任务了
+    public static final String exceptionAlertDate_FIELDNAME = "exceptionAlertDate";
+    @FieldDescribe("异常打卡定时执行日期：yyyy-MM-dd .")
+    @Column(length = length_32B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
+    private String exceptionAlertDate;
+
+
+    public String getExceptionAlertDate() {
+        return exceptionAlertDate;
+    }
+
+    public void setExceptionAlertDate(String exceptionAlertDate) {
+        this.exceptionAlertDate = exceptionAlertDate;
+    }
+
+    public String getExceptionAlertTime() {
+        return exceptionAlertTime;
+    }
+
+    public void setExceptionAlertTime(String exceptionAlertTime) {
+        this.exceptionAlertTime = exceptionAlertTime;
+    }
 
     public Integer getAppealMaxTimes() {
         return appealMaxTimes;

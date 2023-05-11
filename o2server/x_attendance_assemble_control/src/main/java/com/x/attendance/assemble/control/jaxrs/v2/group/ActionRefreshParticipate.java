@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.group;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
@@ -35,7 +36,7 @@ public class ActionRefreshParticipate extends BaseAction {
             if (group == null) {
                 throw new ExceptionNotExistObject(id+"考勤组");
             }
-            List<String> trueList = calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
+            List<String> trueList = AttendanceV2Helper.calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
             group.setTrueParticipantList(trueList);
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);
