@@ -292,7 +292,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// this.hiddenColIndexList = [];
 
 			if( this.isShowAllSection ){
-				this.data = this.getAllSectionData()
+				this.data = this._getAllSectionData()
 			}else if( this.isMergeRead ){
 				this.data = this.getSectionMergeReadData()
 			}else{
@@ -661,7 +661,37 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return false;
 		},
+		/**
+		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法获取所有区段数据。
+		 * @return {Object} 对象.
+		 * @example
+		 * var data = this.form.get("fieldId").getAllSectionData();
+		 * //data格式如下：
+		 * {
+		 *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": { //区段1的key和data
+		 *			"data": [
+		 *				{
+		 *					"good": "yf",
+		 *					"number_2": 11,
+		 *					"prize": 1
+		 *				}
+		 *			]
+		 *		},
+		 *  	"83de86fc-60bc-4b4c-955c-1085915865a4": { //区段2的key和data
+		 *  		"data": [
+		 *  			{
+		 *  				"good": "yf",
+		 *  				"number_2": 11,
+		 *  				"prize": 10
+		 *  			}
+		 *  		]
+		 *  	}
+		 *  }
+		 */
 		getAllSectionData: function(){
+			return this.getBusinessDataById();
+		},
+		_getAllSectionData: function(){
 			var bData = this.getBusinessDataById();
 			var flag = false;
 			if( !bData ){
@@ -1533,7 +1563,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.setBusinessDataById(data);
 
 			if( operation ){
-				this.data = this.isShowAllSection ? this.getAllSectionData() : data;
+				this.data = this.isShowAllSection ? this._getAllSectionData() : data;
 			}else{
 				this.checkMerge(data);
 			}
@@ -1574,7 +1604,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.isShowAllSection = this.isAllSectionShow();
 
 			if( this.isShowAllSection ){
-				this.data = this.getAllSectionData();
+				this.data = this._getAllSectionData();
 			}else if( this.isMergeRead ) {
 				this.data = this.getSectionMergeReadData();
 			}else if( isMergeEidt ){

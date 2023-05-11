@@ -290,29 +290,29 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *
      * //引用服务管理中的数据字典
      * var dict = new this.Dict({
-     *   "type": "service",
-     *   "name": "dictName"
+     *    "type": "service",
+     *    "name": "dictName"
      * });
      *
      * //引用流程管理中的数据字典
      * var dict = new this.Dict({
-     *   "type": "process",
-     *   "application": "appName",
-     *   "name": "dictName"
+     *    "type": "process",
+     *    "application": "appName",
+     *    "name": "dictName"
      * });
      *
      * //引用内容管理中的数据字典
      * var dict = new this.Dict({
-     *   "type": "cms",
-     *   "application": "appName",
-     *   "name": "dictName"
+     *     "type": "cms",
+     *     "application": "appName",
+     *    "name": "dictName"
      * });
      *
      * //引用门户管理中的数据字典
      * var dict = new this.Dict({
-     *   "type": "portal",
-     *   "application": "appName",
-     *   "name": "dictName"
+     *    "type": "portal",
+     *    "application": "appName",
+     *    "name": "dictName"
      * });
      *
      * </code></pre>

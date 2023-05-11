@@ -247,7 +247,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.exportenable  = (this.exportActionIdList.length > 0) && (this.json.impexpType === "impexp" || this.json.impexpType === "exp");
 
 			if( this.isShowAllSection ){
-				this.data = this.getAllSectionData();
+				this.data = this._getAllSectionData();
 			}else if( this.isMergeRead ){
 				this.data = this.getSectionMergeReadData();
 			}else{
@@ -444,7 +444,33 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return false;
 		},
+		/**
+		 * @summary 当数据模板设置为区段合并展现、区段合并编辑时，可以使用本方法获取所有区段数据。
+		 * @return {Object} 对象.
+		 * @example
+		 * var data = this.form.get("fieldId").getAllSectionData();
+		 * //data格式如下：
+		 * {
+         *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": [ //区段1的key和data
+         *			{
+         *				"good": "yf",
+         *				"number_2": 11,
+         *				"prize": 1
+         *			}
+         *		],
+         *  	"83de86fc-60bc-4b4c-955c-1085915865a4": [ //区段2的key和data
+         *  		{
+         *  			"good": "yf",
+         *  			"number_2": 11,
+         *  			"prize": 10
+         *  		}
+         *  	]
+         *  }
+		 */
 		getAllSectionData: function(){
+			return this.getBusinessDataById();
+		},
+		_getAllSectionData: function(){
 			var bData = this.getBusinessDataById();
 			var flag = false;
 			if( !bData ){
@@ -592,7 +618,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadSectionLineList_EditSection: function(callback, operation){
 			var map = this.unchangedSectionLineMap || {};
-			//this.getAllSectionData();
+			//this._getAllSectionData();
 			this.dataWithSectionBy.each(function(data, idx){
 				var isEdited = false;
 				if( this.isSectionLineEditable( data ) && this.editable ){
@@ -607,9 +633,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					    this._injectLineNode( sectionLine.node, beforeNode );
 					}
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
+					//console.log("setIndex", sectionLine);
 				}else{
 				    var div = this._injectLineNode( new Element("div"), beforeNode );
 				    sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
+					//console.log("_loadSectionLine_EditSection", sectionLine);
 				}
 				if( this.sectionBy && this.sectionBy === data.sectionKey ){
 					this.sectionLineEdited = sectionLine;
@@ -648,11 +676,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					if( !operation || operation === "moveUpList"){
 					    this._injectLineNode( sectionLine.node, beforeNode );
 					}
+					//console.log("setIndex", sectionLine);
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 				}else {
                     //var div = new Element("div").inject(this.node);
                     var div = this._injectLineNode( new Element("div"), beforeNode );
                     sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
+					//console.log("_loadSectionLine", sectionLine);
 				}
                 this.sectionlineList.push(sectionLine);
 			}.bind(this))
@@ -685,11 +715,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
                 	if( !operation || operation === "moveUpList" ){
                 		this._injectLineNode( map[idxStr].node, beforeNode );
 					}
+					//console.log("inject", map[idxStr]);
 					this.lineList.push( map[idxStr] );
                 }else{
                     var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
                     var div = this._injectLineNode( new Element("div"), beforeNode );
                     var line = this._loadLine(div, data, idx, isNew);
+					//console.log("_loadLine", line);
                     this.lineList.push(line);
 				}
 			}.bind(this));
@@ -1153,19 +1185,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * @example
 		 *  this.data['fieldId'].setAllSectionData({
 		 *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": [ //区段1的key和data
-     *				{
-     *					"good": "yf",
-     *					"number_2": 11,
-     *					"prize": 1
-     *				}
-     *			],
+		 *			{
+		 *				"good": "yf",
+		 *				"number_2": 11,
+		 *				"prize": 1
+		 *			}
+		 *		],
 		 *  	"83de86fc-60bc-4b4c-955c-1085915865a4": [ //区段2的key和data
-     *  			{
-     *  				"good": "yf",
-     *  				"number_2": 11,
-     *  				"prize": 10
-     *  			}
-     *  		]
+		 *  		{
+		 *  			"good": "yf",
+		 *  			"number_2": 11,
+		 *  			"prize": 10
+		 *  		}
+		 *  	]
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
@@ -1178,7 +1210,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setBusinessDataById(data);
 
 			if( operation ){
-				this.data = this.isShowAllSection ? this.getAllSectionData() : data;
+				this.data = this.isShowAllSection ? this._getAllSectionData() : data;
 			}else{
 				this.checkMerge(data);
 			}
@@ -1217,7 +1249,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.isShowAllSection = this.isAllSectionShow();
 
 			if( this.isShowAllSection ){
-				this.data = this.getAllSectionData();
+				this.data = this._getAllSectionData();
 			}else if( this.isMergeRead ) {
 				this.data = this.getSectionMergeReadData();
 			}else if( isMergeEidt ){
@@ -1753,6 +1785,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 					if( !operation || operation === "moveUpList" ){
 						this._injectLineNode( map[idxStr].node, beforeNode )
 					}
+					//console.log("inject", map[idxStr]);
 					this.lineList.push( map[idxStr] );
 					this.template.lineList.push(map[idxStr]);
 				}else{
@@ -1766,6 +1799,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
                         dt.newLineIndex = null;
                     }
 					var line = this._loadLine( node, d, idx, isEdited, isNew );
+					//console.log("_loadLine", line);
 					this.lineList.push(line);
 					this.template.lineList.push(line);
 				}
