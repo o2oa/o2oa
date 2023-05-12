@@ -437,8 +437,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"backActivitySelectTitle": "选择允许退回的活动",
 		"backActivitySelectInfo": "您可以选择当前活动允许退回的活动节点，只有已经流转过的被允许活动，才能退回。您还可以为每个允许退回活动单独设置退回后的处理方式。",
 
-		// "backActivity": "",
-
 
 		"beforeBegin": "流程启动前",
 		"eventInfo1": "启动流程生成work实例",
