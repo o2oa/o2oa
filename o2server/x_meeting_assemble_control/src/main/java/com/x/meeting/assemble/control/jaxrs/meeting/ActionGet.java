@@ -8,10 +8,15 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.tools.PropertyTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.Meeting;
+import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionGet extends BaseAction {
 
@@ -21,6 +26,17 @@ class ActionGet extends BaseAction {
 			Business business = new Business(emc);
 			Meeting meeting = emc.find(id, Meeting.class, ExceptionWhen.not_found);
 			Wo wo = Wo.copier.copy(meeting);
+			MeetingConfigProperties config = business.getConfig();
+			if(StringUtils.isNotBlank(wo.getRoomLink()) && config.onLineEnabled()){
+				if(BooleanUtils.isTrue(config.getOnlineConfig().getHstAuth())) {
+					Person person = business.organization().person().getObject(effectivePerson.getDistinguishedName());
+					String userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+					userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
+					wo.setRoomLink(wo.getRoomLink() + "&userPwd=&userName=" + userId);
+				}else{
+					wo.setRoomLink(wo.getRoomLink() + "&userName=" + effectivePerson.getName());
+				}
+			}
 			WrapTools.setAttachment(business, wo);
 			WrapTools.decorate(business, wo, effectivePerson);
 			result.setData(wo);
