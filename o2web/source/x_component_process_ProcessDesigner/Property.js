@@ -493,31 +493,89 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         }.bind(this));
     },
 
+    saveGobackConfig: function(check, select, defineConfigList){
+        var activityId = check.value;
+        var config = defineConfigList.find(function(c){
+            return c.activity === activityId;
+        });
+
+        if (check.checked){
+            var way = select.options[select.selectedIndex].value;
+            if (config){
+                config.way = way;
+            }else{
+                defineConfigList.push({
+                    activity: activityId,
+                    way: way
+                });
+            }
+        }else {
+            if (config) {
+                defineConfigList.erase(config);
+            }
+        }
+    },
     loadGobackActivityConfig: function(){
         var nodes = this.propertyContent.getElements(".gobackActivityConfig");
         // this.manuals
         nodes.each(function(node){
-            Object.keys(this.process.manuals).forEach(function(key){
-                var activity = this.process.manuals[key];
-                if (activity.data.id !== this.data.id){
-                    var div = new Element('div', {styles:{
-                            "display": "flex",
-                            "align-items": "center",
-                            "height": "24px",
-                            "line-height": "24px",
-                            "padding": "0 10px",
-                            "border-bottom": "1px solid #f3f3f3"
-                        }}).inject(node);
-                    var label = new Element('label').inject(div);
-                    // this.data.goBackConfig
-                    var check = new Element('input',{
-                        type: 'checkbox',
-                        value: activity.data.id
-                    }).inject(label);
-                    label.appendChild(document.createTextNode(activity.data.name));
-                }
+            var keys = Object.keys(this.process.manuals);
+            if (keys.length){
+                var html = '<table cellspacing="0" cellpadding="5px" style="width: 100%; border: 1px solid #cccccc; border-collapse: collapse"><tr>' +
+                    // '<th class="grayColor_bg" style="width: 20px; max-width: 20px; border: 1px solid #cccccc;"></th>' +
+                    '<th class="grayColor_bg" style="text-align:left; border: 1px solid #cccccc;">活动</th>' +
+                    '<th class="grayColor_bg" style="text-align:left; border: 1px solid #cccccc;">退回后处理方式</th>' +
+                    '</tr></table>';
+                node.insertAdjacentHTML('beforeend', html);
+                var table = node.getElement('table');
 
-            }.bind(this));
+                if (!this.data.goBackConfig) this.data.goBackConfig = {};
+                if (!this.data.goBackConfig.defineConfigList) this.data.goBackConfig.defineConfigList = [];
+                var defineConfigList = this.data.goBackConfig.defineConfigList;
+
+                keys.forEach(function(key){
+                    var activity = this.process.manuals[key];
+                    if (activity.data.id !== this.data.id){
+                        var config = defineConfigList.find(function(c){
+                            return c.activity === activity.data.id;
+                        });
+                        var tr = table.insertRow();
+                        var td = tr.insertCell();
+                        td.setStyles({
+                            "border": "1px solid #cccccc"
+                        });
+
+                        var label = new Element('label').inject(td);
+                        var check = new Element('input',{
+                            type: 'checkbox',
+                            value: activity.data.id,
+                            checked: !!config
+                        }).inject(label);
+                        label.appendChild(document.createTextNode(activity.data.name));
+                        check.addEvent('click', function(e){
+                            var select = e.target.getParent('tr').getElement('select');
+                            this.saveGobackConfig(e.target, select, defineConfigList);
+                        }.bind(this));
+
+                        td = tr.insertCell();
+                        td.setStyles({
+                            "border": "1px solid #cccccc"
+                        });
+                        var select = new Element('select', {
+                            html: '<option '+(!config || config.way==='default' ? 'selected' : '')+' value="default" select>'+o2.APPPD.LP.propertyTemplate.backWayDefault+'</option>' +
+                                '<option '+(config && config.way==='step' ? 'selected' : '')+' value="step" select>'+o2.APPPD.LP.propertyTemplate.backWayStep+'</option>' +
+                                '<option '+(config && config.way==='jump' ? 'selected' : '')+' value="jump">'+o2.APPPD.LP.propertyTemplate.backWayJump+'</option>' +
+                                '<option '+(config && config.way==='custom' ? 'selected' : '')+' value="custom">'+o2.APPPD.LP.propertyTemplate.backWayCustom+'</option>'
+                        }).inject(td);
+                        select.addEvent('click', function(e){
+                            var check = e.target.getParent('tr').getElement('input');
+                            this.saveGobackConfig(check, e.target, defineConfigList);
+                        }.bind(this));
+
+                    }
+                }.bind(this));
+            }
+
 
             // var title = node.get("title");
             // var name = node.get("name");
