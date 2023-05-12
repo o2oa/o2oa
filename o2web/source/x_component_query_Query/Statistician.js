@@ -876,24 +876,26 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                     td.set("text", l.value);
                     this.setDragEvent(td);
 
-                    total = total.plus( ( l.value || "0" ).toFloat() )
+                    total = total.plus( this.toFloat( l.value || "0" ) );
                 }.bind(this));
 
                 if( this.isRowToColumn && this.data.calculate.isAmount ) {
                     var td = new Element("td.totalTd", {"styles": this.css.totalContentTdNode}).inject(tr);
-                    td.set("text", total.toString());
+                    var t = total.toString();
+                    td.set("text", this.toString(d, t));
                 }
 
             }.bind(this));
 
             if( !this.isRowToColumn && this.data.calculate.isAmount ){
-                var totals = [];
+                var totals = [], gridDataList = [];
                 this.statGridData.each(function(d){
                     d.list.each(function(l, i){
-                        var addv = ( l.value || "0" ).toFloat();
+                        var addv = this.toFloat( l.value || "0" );
                         if( totals.length > i ){
                             totals[i] = totals[i].plus(addv);
                         }else{
+                            gridDataList.push( l );
                             totals.push( new Decimal(addv) );
                         }
 
@@ -905,12 +907,44 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 var td = new Element("td.blankTd", {"styles": this.css.blankTd}).inject(tr);
 
                 var th = new Element("th.totalTh", {"styles": this.css.totalHeadTh, "text": this.lp.amount}).inject(tr);
-                totals.each(function(l) {
+                totals.each(function(l, i) {
                     var td = new Element("td.totalTd", {"styles": this.css.totalContentTdNode}).inject(tr);
-                    td.set("text", l.toString());
-                }.bind(this))
+                    var t = l.toString();
+                    td.set("text", this.toString(gridDataList[i], t));
+                }.bind(this));
             }
         }
+    },
+    toString: function(gridData, value){
+        var calculates = this.data.calculate.calculateList.filter(function(c){
+            return c.id === gridData.column;
+        });
+        if( !calculates.length )return value;
+        var calculate = calculates[0];
+        switch (calculate.formatType) {
+            case "currency": //货币
+                value = this.addZero( value );
+                value = value.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,'); //添加逗号
+                value = "￥" + value;
+                break;
+            case "percent": //百分比
+                value = value.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,'); //添加逗号
+                value = value + "%";
+                break;
+        }
+        return value;
+    },
+    addZero: function( s ){
+        var pointLength = 2;
+        if( s.indexOf(".") > -1 ){
+            var length = s.split(".")[1].length;
+            if( length < pointLength ){
+                s = s + "0".repeat(pointLength-length);
+            }
+        }else{
+            s = s +"."+ "0".repeat(pointLength)
+        }
+        return s;
     },
     setDragEvent: function(td){
         new Drag(td, {
