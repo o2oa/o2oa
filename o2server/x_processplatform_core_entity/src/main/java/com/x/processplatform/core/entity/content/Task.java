@@ -490,6 +490,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	protected String opinion;
 
+	public static final String DECISION_FIELDNAME = "decision";
+	@FieldDescribe("决策.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	protected String decision;
+
 	public static final String opinionLob_FIELDNAME = "opinionLob";
 	@Schema(description = "待办处理意见长文本.")
 	@Lob
@@ -819,6 +825,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
+
+	public String getDecision() {
+		return decision;
+	}
+
+	public void setDecision(String decision) {
+		this.decision = decision;
+	}
 
 	public String getProcess() {
 		return process;

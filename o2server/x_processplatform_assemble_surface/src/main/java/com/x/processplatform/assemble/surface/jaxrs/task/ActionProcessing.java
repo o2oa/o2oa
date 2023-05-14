@@ -2,8 +2,10 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -36,6 +39,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
@@ -49,6 +53,7 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProc
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -96,7 +101,7 @@ class ActionProcessing extends BaseAction {
 			Wo wo = new Wo();
 			try {
 				if (StringUtils.equals(wi.getAction(), ACTION_GOBACK)) {
-					processingGoBack();
+					processingGoBack(gson.fromJson(wi.getOption(), OptionGoBack.class));
 				} else if (StringUtils.equals(type, TYPE_APPENDTASK)) {
 					processingAppendTask();
 				} else {
@@ -202,6 +207,10 @@ class ActionProcessing extends BaseAction {
 			// 如果有新的流程意见那么覆盖原有流程意见,null表示没有传过来,""可能是前端传过来的改为空值.
 			if (null != this.wi.getOpinion()) {
 				this.task.setOpinion(this.wi.getOpinion());
+			}
+			// 如果有新的决策那么覆盖原有决策,null表示没有传过来,""可能是前端传过来的改为空值.
+			if (null != this.wi.getDecision()) {
+				this.task.setDecision(this.wi.getDecision());
 			}
 			// 强制覆盖多媒体意见
 			this.task.setMediaOpinion(this.wi.getMediaOpinion());
@@ -381,18 +390,68 @@ class ActionProcessing extends BaseAction {
 	 * @throws Exception
 	 */
 	private void processingGoBack(OptionGoBack option) throws Exception {
-		Work work = null;
 		WorkLogTree workLogTree = null;
+		V2GoBackWi req = new V2GoBackWi();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			workLogTree = workLogTree(business, task.getJob());
-		}
-		Node node = workLogTree.find(workLog);
-		Nodes nodes = workLogTree.up(node);
-		for (Node n : nodes) {
-			if (n.getWorkLog().getFromActivity() == "") {
-				return n.getWorkLog();
+			Node node = workLogTree.find(workLog);
+			Nodes nodes = workLogTree.up(node);
+			Optional<Node> targetNode = nodes.stream()
+					.filter(o -> StringUtils.equals(o.getWorkLog().getFromActivity(), option.getActivity()))
+					.findFirst();
+			if (targetNode.isEmpty()) {
+				throw new ExceptionGoBackTargetNotExist(option.getActivity());
 			}
+			Manual targetManual = (Manual) business.getActivity(targetNode.get().getWorkLog().getFromActivity(),
+					ActivityType.manual);
+			if (null == targetManual) {
+				throw new ExceptionEntityNotExist(option.getActivity(), Manual.class);
+			}
+			List<String> identities = emc
+					.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
+							TaskCompleted.activityToken_FIELDNAME, targetNode.get().getWorkLog().getFromActivityToken(),
+							TaskCompleted.job_FIELDNAME, task.getJob())
+					.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList());
+			req.setActivity(option.getActivity());
+			req.setTaskIdentityList(identities);
+			req.setWay(option.getWay());
+		}
+		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_TASK);
+		WrapBoolean resp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", task.getWork(), "goback"), req, this.task.getJob())
+				.getData(WrapBoolean.class);
+		if (BooleanUtils.isNotTrue(resp.getValue())) {
+			throw new ExceptionGoBack(req.getActivity(), req.getActivity());
+		}
+		this.processingProcessingWork(ProcessingAttributes.TYPE_TASK);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			this.newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.series_FIELDNAME,
+					this.series);
+		}
+		// 流程流转到取消环节，此时工作已被删除.flag =true 代表存在,false 已经被删除
+		boolean flag = true;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
+					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, task.getJob()) == 0)) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			this.rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, workLog, task, taskCompletedId, newTaskIds);
+			// 加签也记录流程意见和路由决策
+			this.rec.getProperties().setOpinion(this.task.getOpinion());
+			this.rec.getProperties().setRouteName(this.task.getRouteName());
+			RecordBuilder.processing(rec);
+			this.processingUpdateTaskCompleted();
+			this.processingUpdateTask();
+		} else {
+			this.rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, workLog, task, taskCompletedId, newTaskIds);
+			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
+			this.rec.getProperties().setOpinion(this.task.getOpinion());
+			this.rec.getProperties().setRouteName(this.task.getRouteName());
+			rec.setCompleted(true);
 		}
 	}
 
@@ -424,8 +483,24 @@ class ActionProcessing extends BaseAction {
 		// 退回的活动对象
 		private String activity;
 
-		//
+		// 路由方式
 		private String way;
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
+
+		public String getWay() {
+			return way;
+		}
+
+		public void setWay(String way) {
+			this.way = way;
+		}
 
 	}
 

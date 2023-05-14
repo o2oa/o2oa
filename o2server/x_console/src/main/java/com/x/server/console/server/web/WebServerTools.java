@@ -1,17 +1,12 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
-
-import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -22,14 +17,12 @@ import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
@@ -131,7 +124,9 @@ public class WebServerTools extends JettySeverTools {
 	private static WebAppContext webContext(WebServer webServer) throws Exception {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
-		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
+		ResourceCollection resources = new ResourceCollection(new String[] { new File(Config.base(), "web").toString(),
+				new File(Config.base(), "servers/webServer").toString() });
+		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", false + "");

@@ -49,6 +49,14 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "action的参数对象.")
 	private JsonElement option;
 
+	public String getDecision() {
+		return decision;
+	}
+
+	public void setDecision(String decision) {
+		this.decision = decision;
+	}
+
 	public String getAction() {
 		return action;
 	}
