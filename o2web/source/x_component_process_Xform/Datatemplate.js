@@ -2390,27 +2390,46 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		});
 		resultArr.push( titleArr );
 
+        var lineList = [];
 
-		this.template.lineList.each(function (line, index) {
-			resultArr.push( this.getLineExportData(line, index) );
+		if( this.template.isShowAllSection ){
+			if( this.exportAllSection ){
+				lineList = this.template.lineList;
+			}else{
+				lineList = this.template.sectionLineEdited ? this.template.sectionLineEdited.lineList : [];
+			}
+		}else if( this.template.isMergeRead ) {
+			lineList = this.template.lineList;
+		}else{
+			lineList = this.template.lineList;
+		}
+
+		lineList.each(function (line, index) {
+			var lineData = this.getLineExportData(line, index);
+			var p = Promise.all(lineData).then(function (arr) {
+				return arr;
+			});
+			resultArr.push( p );
 		}.bind(this));
 
-		var colWidthArr = this.getColWidthArray();
-		var excelName = this.getExcelName();
+        Promise.all(resultArr).then(function ( rstArr ) {
+            var colWidthArr = this.getColWidthArray();
+            var excelName = this.getExcelName();
 
-		var arg = {
-			data : resultArr,
-			colWidthArray : colWidthArr,
-			title : excelName
-		};
-		this.template.fireEvent("export", [arg]);
+            var arg = {
+                data : rstArr,
+                colWidthArray : colWidthArr,
+                title : excelName
+            };
+            this.template.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
-			arg.data || resultArr,
-			arg.title || excelName,
-			arg.colWidthArray || colWidthArr,
-			this.getDateIndexArray()  //日期格式列下标
-		);
+            new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
+                arg.data || rstArr,
+                arg.title || excelName,
+                arg.colWidthArray || colWidthArr,
+                this.getDateIndexArray()  //日期格式列下标
+            );
+		}.bind(this))
 	},
 	getLineExportData: function(line, index ){
 		var exportData = [];
@@ -2492,8 +2511,89 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		}.bind(this));
 		return exportData;
 	},
+	// getLineExportData: function(line, index ){
+	// 	var exportData = [];
+	// 	this.template.json.excelFieldConfig.each(function (config) {
+	//
+	// 		var module = line.all_templateId[config.field];
+	// 		var json = module ? module.json : "";
+	//
+	// 		if ( !module || !json || !this.isAvaliableField( json ) ) {
+	// 			exportData.push("");
+	// 		}else{
+	// 			var value = module.getData();
+	// 			var text = "";
+	//
+	//
+	// 			if( value ){
+	// 				switch (module.json.type) {
+	// 					case "Org":
+	// 					case "Reader":
+	// 					case "Author":
+	// 					case "Personfield":
+	// 					case "Orgfield":
+	// 						if (o2.typeOf(value) === "array") {
+	// 							var textArray = [];
+	// 							value.each(function (item) {
+	// 								if (o2.typeOf(item) === "object") {
+	// 									textArray.push(item.distinguishedName);
+	// 								} else {
+	// 									textArray.push(item);
+	// 								}
+	// 							}.bind(this));
+	// 							text = textArray.join(", \n");
+	// 						} else if (o2.typeOf(value) === "object") {
+	// 							text = value.distinguishedName;
+	// 						} else {
+	// 							text = value;
+	// 						}
+	// 						break;
+	// 					case "Combox":
+	// 					case "Address":
+	// 						text = o2.typeOf(value) === "array" ? value.join(", ") : value;
+	// 						break;
+	// 					case "Checkbox":
+	// 						var options = module.getOptionsObj();
+	// 						var value = o2.typeOf(value) === "array" ? value : [value];
+	// 						var arr = [];
+	// 						value.each( function( a, i ){
+	// 							var idx = options.valueList.indexOf( a );
+	// 							arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+	// 						});
+	// 						text = arr.join(", ");
+	// 						break;
+	// 					case "Radio":
+	// 					case "Select":
+	// 						var options = module.getOptionsObj();
+	// 						var idx = options.textList.indexOf( value );
+	// 						text = idx > -1 ? options.valueList[ idx ] : "";
+	// 						break;
+	// 					case "Textarea":
+	// 						text = value;
+	// 						break;
+	// 					case "Calendar":
+	// 						text = value;
+	// 						break;
+	// 					default:
+	// 						text = value;
+	// 						break;
+	// 				}
+	// 			} else if ( json.type === "Label" && module.node) {
+	// 				text = module.node.get("text");
+	// 			}
+	//
+	// 			if( !text && o2.typeOf(text) !== "number" ){
+	// 				text = "";
+	// 			}
+	//
+	// 			exportData.push( text );
+	// 		}
+	// 	}.bind(this));
+	// 	return exportData;
+	// },
 	isAvaliableField : function(json){
-		if (["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label"].contains( json.type) )return false; //图片，附件,Label不导入导出
+		if (["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label",
+			"Elbutton","Elbutton","Elcarousel","Eldropdown","Elicon","Eltree"].contains( json.type) )return false; //图片，附件,Label不导入导出
 		return true;
 	},
 	getExcelName: function(){

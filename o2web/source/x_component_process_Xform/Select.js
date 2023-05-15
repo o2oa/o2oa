@@ -212,18 +212,19 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				textList.push( tmps[0] );
 				valueList.push( tmps[1] || tmps[0] );
 			}.bind(this));
-		}else if(o2.typeOf(optionItems.then)==="function"){
-			var p = Promise.resolve(optionItems).then(function (optItems) {
-				optItems.each(function(item){
-					var tmps = item.split("|");
-					textList.push( tmps[0] );
-					valueList.push( tmps[1] || tmps[0] );
-				}.bind(this));
-				return { textList : textList, valueList : valueList };
-			})
-			this.moduleSelectAG = p;
-			return p;
 		}
+		// else if(o2.typeOf(optionItems.then)==="function"){
+		// 	var p = Promise.resolve(optionItems).then(function (optItems) {
+		// 		optItems.each(function(item){
+		// 			var tmps = item.split("|");
+		// 			textList.push( tmps[0] );
+		// 			valueList.push( tmps[1] || tmps[0] );
+		// 		}.bind(this));
+		// 		return { textList : textList, valueList : valueList };
+		// 	})
+		// 	this.moduleSelectAG = p;
+		// 	return p;
+		// }
 		return { textList : textList, valueList : valueList };
 	},
 
