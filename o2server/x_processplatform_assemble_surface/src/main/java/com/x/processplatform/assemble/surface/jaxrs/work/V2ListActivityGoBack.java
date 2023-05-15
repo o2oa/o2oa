@@ -23,14 +23,16 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualProperties.DefineConfig;
+import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
-import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 class V2ListActivityGoBack extends BaseAction {
 
@@ -66,58 +68,106 @@ class V2ListActivityGoBack extends BaseAction {
 				throw new ExceptionEntityExist(work.getActivity());
 			}
 
-			WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
-
-			Node node = workLogTree.location(work);
-
-			if (null != node) {
-				result.setData(list(business, manual, workLogTree, node));
+			// 1.允许goBack,2.多待办允许goBack或待办只有一条
+			if (BooleanUtils.isTrue(manual.getAllowGoBack())
+					&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+							|| emc.countEqualAndEqual(Task.class, Task.activityToken_FIELDNAME, work.getActivityToken(),
+									Task.job_FIELDNAME, work.getJob()) <= 1)) {
+				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
+				Node node = workLogTree.location(work);
+				if (null != node) {
+					List<WorkLog> workLogs = new ArrayList<>();
+					if (BooleanUtils.isNotFalse(wi.getLastOnly())) {
+						// 过滤掉未链接的,过滤掉不是manual活动的,每个活动只取最近一次的workLog
+						workLogs = workLogTree.up(node).stream().map(Node::getWorkLog)
+								.filter(o -> Objects.equals(o.getArrivedActivityType(), ActivityType.manual)
+										&& BooleanUtils.isTrue(o.getConnected()))
+								.collect(Collectors.groupingBy(WorkLog::getFromActivity)).entrySet().stream()
+								.map(o -> o.getValue().get(0)).collect(Collectors.toList());
+					} else {
+						workLogs = workLogTree.up(node).stream().map(Node::getWorkLog)
+								.filter(o -> Objects.equals(o.getArrivedActivityType(), ActivityType.manual)
+										&& BooleanUtils.isTrue(o.getConnected()))
+								.collect(Collectors.toList());
+					}
+					List<Wo> wos = this.list(manual, workLogs);
+					wos = this.supplement(business, manual, wos);
+				}
 			}
+
 		}
 		return result;
+
 	}
 
-	private List<Wo> list(Business business, Manual manual, WorkLogTree workLogTree, Node node) {
-		final Nodes nodes = workLogTree.up(node);
+	private List<Wo> list(Manual manual, List<WorkLog> workLogs) {
 		List<Wo> list = new ArrayList<>();
-		nodes.stream()
-				.filter(o -> Objects.equals(o.getWorkLog().getArrivedActivityType(), ActivityType.manual)
-						&& BooleanUtils.isTrue(o.getWorkLog().getConnected()))
-				.map(o -> o.getWorkLog().getFromActivity()).distinct().forEach(o -> {
-					try {
-						Manual m = (Manual) business.getActivity(o, ActivityType.manual);
-						if (null != m) {
-							Wo wo = new Wo();
-							wo.setName(manual.getName());
-							wo.setId(manual.getId());
-							list.add(wo);
-						}
-					} catch (Exception e) {
-						LOGGER.error(e);
-					}
-				});
+		if (StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
+			Optional<WorkLog> opt = workLogs.stream()
+					.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
+							&& BooleanUtils.isTrue((o.getConnected())))
+					.findFirst();
+			if (opt.isPresent()) {
+				Wo wo = new Wo();
+				wo.setActivity(opt.get().getFromActivity());
+				wo.setLastUpdateTime(opt.get().getFromTime());
+				wo.setActivityToken(opt.get().getFromActivityToken());
+				wo.setWay(manual.getGoBackConfig().getWay());
+				list.add(wo);
+			}
+		} else if (StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
+			workLogs.stream().forEach(o -> {
+				Optional<DefineConfig> opt = manual.getGoBackConfig().getDefineConfigList().stream()
+						.filter(d -> StringUtils.equalsIgnoreCase(d.getActivity(), o.getFromActivity())).findFirst();
+				if (opt.isPresent()) {
+					Wo wo = new Wo();
+					wo.setActivity(opt.get().getActivity());
+					wo.setWay(opt.get().getWay());
+					wo.setLastUpdateTime(o.getFromTime());
+					wo.setActivityToken(o.getFromActivityToken());
+					list.add(wo);
+				}
+			});
+		} else {
+			workLogs.stream().forEach(o -> {
+				Wo wo = new Wo();
+				wo.setActivity(o.getFromActivity());
+				wo.setLastUpdateTime(o.getFromTime());
+				wo.setActivityToken(o.getFromActivityToken());
+				wo.setWay(manual.getGoBackConfig().getWay());
+				list.add(wo);
+			});
+		}
+		return list;
+	}
+
+	private List<Wo> supplement(Business business, Manual manual, List<Wo> wos) {
+		List<Wo> list = new ArrayList<>();
+		wos.stream().forEach(o -> {
+			try {
+				Manual m = (Manual) business.getActivity(o.getActivity(), ActivityType.manual);
+				if (null != m) {
+					o.setName(manual.getName());
+					list.add(o);
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+		});
 		// 拼装上最后一次环节处理人和处理时间
 		list.stream().forEach(o -> {
-			Optional<Node> opt = nodes.stream()
-					.filter(n -> StringUtils.equalsIgnoreCase(n.getWorkLog().getFromActivity(), o.getId())).findFirst();
-			if (opt.isPresent()) {
-				try {
-					o.setLastIdentityList(business.entityManagerContainer()
-							.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
-									TaskCompleted.activityToken_FIELDNAME,
-									opt.get().getWorkLog().getFromActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
-									true)
-							.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList()));
-					o.setLastUpdateTime(opt.get().getWorkLog().getFromTime());
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
+			try {
+				o.setLastIdentityList(business.entityManagerContainer()
+						.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
+								TaskCompleted.activityToken_FIELDNAME, o.getActivityToken(),
+								TaskCompleted.joinInquire_FIELDNAME, true)
+						.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList()));
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 		});
 		// 过滤掉为空不可goBack的节点
-		return list.stream()
-				.filter(o -> (!Objects.isNull(o.getLastUpdateTime())) && ListTools.isNotEmpty(o.getLastIdentityList()))
-				.collect(Collectors.toList());
+		return list.stream().filter(o -> ListTools.isNotEmpty(o.getLastIdentityList())).collect(Collectors.toList());
 	}
 
 	private WorkLogTree workLogTree(Business business, String job) throws Exception {
@@ -129,17 +179,26 @@ class V2ListActivityGoBack extends BaseAction {
 
 		private static final long serialVersionUID = -7690519507479509393L;
 
-		// 活动名称
-		private String name;
-
-		// 活动标识
-		private String id;
-
 		// 上次处理时间
 		private Date lastUpdateTime;
-
+		// 返回方式
+		private String way;
+		// 返回方式
+		private String activityToken;
+		// 活动标识
+		private String activity;
+		// 活动名称
+		private String name;
 		// 上次处理人
 		private List<String> lastIdentityList = new ArrayList<>();
+
+		public String getActivityToken() {
+			return activityToken;
+		}
+
+		public void setActivityToken(String activityToken) {
+			this.activityToken = activityToken;
+		}
 
 		public String getName() {
 			return name;
@@ -149,12 +208,20 @@ class V2ListActivityGoBack extends BaseAction {
 			this.name = name;
 		}
 
-		public String getId() {
-			return id;
+		public String getActivity() {
+			return activity;
 		}
 
-		public void setId(String id) {
-			this.id = id;
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
+
+		public String getWay() {
+			return way;
+		}
+
+		public void setWay(String way) {
+			this.way = way;
 		}
 
 		public Date getLastUpdateTime() {
@@ -177,7 +244,18 @@ class V2ListActivityGoBack extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		private Boolean all;
+		private static final long serialVersionUID = -6178473080370914961L;
+
+		// 重复经过的活动仅取最近的,默认为true
+		private Boolean lastOnly;
+
+		public Boolean getLastOnly() {
+			return lastOnly;
+		}
+
+		public void setLastOnly(Boolean lastOnly) {
+			this.lastOnly = lastOnly;
+		}
 
 	}
 }
