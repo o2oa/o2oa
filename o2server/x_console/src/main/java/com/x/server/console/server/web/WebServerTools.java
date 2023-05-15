@@ -18,7 +18,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -124,8 +123,9 @@ public class WebServerTools extends JettySeverTools {
 	private static WebAppContext webContext(WebServer webServer) throws Exception {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
-		ResourceCollection resources = new ResourceCollection(new String[] { new File(Config.base(), "web").toString(),
-				new File(Config.base(), "servers/webServer").toString() });
+		ResourceCollection resources = new ResourceCollection(
+				new String[] { Config.path_servers_webServer(true).toString(),
+						Config.path_webroot(true).toAbsolutePath().toString() });
 		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
