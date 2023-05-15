@@ -120,13 +120,14 @@
 				},
 				crossDomain : true,
 				error : function(e){
-					
+
 				}
 			}).done(function(json){
 				debugger;
 				centerJson += '<tr>';
 				centerJson += '<td>' + json.data.name + '</td>';
-				centerJson += '<td>' + json.data.className + '</td>';
+				let classNames = json.data.className.split(".");
+				centerJson += '<td>' + classNames[classNames.length-1] + '</td>';
 				centerJson += '<td>';
 				$.each(json.data.urlList, function(i, url) {
 					url = url.replace(/(127.0.0.1)/g, window.location.hostname);
@@ -134,7 +135,7 @@
 				});
 				centerJson += '</td>';
 				centerJson += '</tr>';
-				
+
 				druidTable += '<tr>';
 				druidTable += '<td>' + 'Druid Monitor' + '</td>';
 				druidTable += '<td>' + '' + '</td>';
@@ -147,10 +148,10 @@
 				druidTable += '</td>';
 				druidTable += '</tr>';
 			})
-			
+
 			return centerJson + druidTable;
 		}
-		
+
 		$(function() {
 			$.ajax({
 				type : 'get',
@@ -173,7 +174,8 @@
 						$.each(json.data, function(index, o) {
 							str += '<tr>';
 							str += '<td>' + o.name + '</td>';
-							str += '<td>' + o.className + '</td>';
+							let classNames = o.className.split(".");
+							str += '<td>' + classNames[classNames.length-1] + '</td>';
 							str += '<td>';
 							$.each(o.urlList, function(i, url) {
 								url = url.replace(/(127.0.0.1)/g, window.location.hostname);
@@ -191,7 +193,7 @@
 					}
 				}
 			});
-			
+
 
 		$.ajax({
 			type : 'get',
@@ -213,9 +215,9 @@
 				}
 			 }
 		);
-		
-		
-		
+
+
+
 		});
 	</script>
 
