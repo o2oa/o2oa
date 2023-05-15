@@ -1144,7 +1144,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             }.bind(this));
         },
-        publishDocument: function (callback) {
+        publishDocument: function (callback, slience) {
             this.fireEvent("beforePublish");
             this.app.content.mask({
                 "destroyOnHide": true,
@@ -1152,12 +1152,12 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             });
             if (!this.formValidation("publish")) {
                 this.app.content.unmask();
-                //if (callback) callback();
+                if (o2.typeOf(callback) === "function") callback();
                 return false;
             }
             if (!this.formPublishValidation()) {
                 this.app.content.unmask();
-                if (callback) callback();
+                if (o2.typeOf(callback) === "function") callback();
                 return false;
             }
 
@@ -1188,15 +1188,17 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     this.businessData.data.isNew = false;
                     this.fireEvent("afterPublish", [this, json.data]);
                     if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
-                    // if (callback) callback(); // 传进来不是function
+                    if (o2.typeOf(callback) === "function") callback(json); // 传进来不是function
                     if (layout.mobile) {
                         this.app.content.unmask();
                         this.closeWindowOnMobile();
                     } else {
-                        if (this.businessData.document.title) {
-                            this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
-                        } else {
-                            this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
+                        if( slience !== true ){
+                            if (this.businessData.document.title) {
+                                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished + ": “" + this.businessData.document.title + "”", "success");
+                            } else {
+                                this.app.notice(MWF.xApplication.cms.Xform.LP.documentPublished, "success");
+                            }
                         }
                         this.options.saveOnClose = false;
 

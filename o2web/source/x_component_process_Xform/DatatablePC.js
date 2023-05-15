@@ -4328,22 +4328,24 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		idata.each( function(lineData, lineIndex){
 
-			var errorTextList = [];
-			var errorTextListExcel = [];
-
-			var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
-
-			this.columnJsonList.each( function (columnJson, i){
-				var result = this.checkModuleData(columnJson, lineData, parsedLineData);
-				result.errorTextList.each(function (t) { errorTextList.push(t); });
-				result.errorTextListExcel.each(function (t) { errorTextListExcel.push(t); });
-			}.bind(this));
-
-			if(errorTextList.length>0){
-				lineData.errorTextList = errorTextList;
-				lineData.errorTextListExcel = errorTextListExcel;
-				flag = false;
-			}
+			// lineData.errorTextList = lineData.errorTextList || [];
+			// lineData.errorTextListExcel = lineData.errorTextListExcel || [];
+			//
+			// var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
+			//
+			// this.columnJsonList.each( function (columnJson, i){
+			// 	var result = this.checkModuleData(columnJson, lineData, parsedLineData);
+			// 	Promise.resolve(result).then(function (r) {
+			// 		r.errorTextList.each(function (t) { errorTextList.push(t); });
+			// 		r.errorTextListExcel.each(function (t) { errorTextListExcel.push(t); });
+			// 	})
+			// }.bind(this));
+			//
+			// if(errorTextList.length>0){
+			// 	lineData.errorTextList = errorTextList;
+			// 	lineData.errorTextListExcel = errorTextListExcel;
+			// 	flag = false;
+			// }
 
 		}.bind(this));
 
@@ -4355,7 +4357,29 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		return arg.validted;
 	},
-	checkModuleData: function (columnJson, lineData, parsedLineData) {
+	checkLineData: function(lineData, lineIndex, callback){
+		lineData.errorTextList = lineData.errorTextList || [];
+		lineData.errorTextListExcel = lineData.errorTextListExcel || [];
+
+		var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
+
+		this.checkModuleData(0, lineData, parsedLineData, function () {
+			var flag = !!lineData.errorTextList.length;
+			callback(flag);
+		});
+	},
+	checkModuleData: function(index, lineData, parsedLineData, callback){
+		if( index < this.columnJsonList.length ){
+			var result = this._checkModuleData(columnJson, lineData, parsedLineData);
+			Promise.resolve(result).then(function (r) {
+				index++;
+				this.checkModuleData(index, lineData, parsedLineData, callback);
+			}.bind(this))
+		}else{
+			if(callback)callback();
+		}
+	},
+	_checkModuleData: function (columnJson, lineData, parsedLineData) {
 		var index = columnJson.index;
 		var json = columnJson.mJson;
 		var module = columnJson.module;
@@ -4367,7 +4391,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var d = lineData[text] || "";
 		var parsedD = parsedLineData[json.id] || "";
 		var lp = this.lp;
-		var errorTextList = [], errorTextListExcel = [];
+		var flag = true;
 
 		if(d){
 			switch (json && json.type) {
@@ -4380,24 +4404,27 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					arr.each( function(d, idx){
 						var obj = this.getOrgData( d );
 						if( obj.errorText ){
-							errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-							errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+							lineData.errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+							lineData.errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+							flag = false;
 						}
 					}.bind(this));
 					break;
 				case "Number":
 				case "Elnumber":
 					if (isNaN(d)){
-						errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-						errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+						flag = false;
 					}
 					break;
 				case "Calendar":
 				case "Eldate":
 				case "Eldatetime":
 					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-						errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-						errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+						flag = false;
 					}
 					break;
 				default:
@@ -4408,23 +4435,25 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 			var hasError = false;
 			if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
 				if(o2.typeOf(parsedD)==="array" && parsedD.length){
-					hasError = parsedD.some(function (item) { return item.errorText; })
+					hasError = parsedD.some(function (item) { return item.errorText; });
+					flag = false;
 				}
 			}
 			if(!hasError){
 				module.setExcelData(parsedD);
-				var result = module.validationExcel();
-				if ( result && result.length ){
-					errorTextList.push(colInfor + result.join("\n") );
-					errorTextListExcel.push( colInforExcel + result.join("\n"));
-				}
-				parsedLineData[json.id] = module.getData();
+				return Promise.resolve( module.moduleValueAG ).then(function () {
+					var result = module.validationExcel();
+					if ( result && result.length ){
+						lineData.errorTextList.push(colInfor + result.join("\n") );
+						lineData.errorTextListExcel.push( colInforExcel + result.join("\n"));
+						flag = false;
+					}
+					parsedLineData[json.id] = module.getData();
+					return flag;
+				})
 			}
 		}
-		return {
-			errorTextList: errorTextList,
-			errorTextListExcel: errorTextListExcel
-		}
+		return flag
 	},
 	exportWithImportDataToExcel: function(eData){
 		var exporter = new MWF.xApplication.process.Xform.DatatablePC.Exporter(this.datatable);
