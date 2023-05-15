@@ -49,7 +49,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 	setTemplateStyles: function(styles){
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
-		if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
+		if (styles.tableStyles) this.copyStyles(styles.tableStyles, "tableStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
 		if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");

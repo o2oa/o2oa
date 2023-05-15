@@ -212,6 +212,17 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				textList.push( tmps[0] );
 				valueList.push( tmps[1] || tmps[0] );
 			}.bind(this));
+		}else if(o2.typeOf(optionItems.then)==="function"){
+			var p = Promise.resolve(optionItems).then(function (optItems) {
+				optItems.each(function(item){
+					var tmps = item.split("|");
+					textList.push( tmps[0] );
+					valueList.push( tmps[1] || tmps[0] );
+				}.bind(this));
+				return { textList : textList, valueList : valueList };
+			})
+			this.moduleSelectAG = p;
+			return p;
 		}
 		return { textList : textList, valueList : valueList };
 	},
@@ -509,9 +520,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		getExcelData: function(){
 			var value = this.getData();
 			var options = this.getOptionsObj();
-			var idx = options.valueList.indexOf( value );
-			var text = idx > -1 ? options.textList[ idx ] : "";
-			return text;
+			return Promise.resolve(options).then(function (opts) {
+				var idx = opts.valueList.indexOf( value );
+				var text = idx > -1 ? opts.textList[ idx ] : "";
+				return text;
+			});
 		},
 		setExcelData: function(d){
 			var value = d.replace(/&#10;/g,""); //换行符&#10;

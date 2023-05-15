@@ -3639,27 +3639,47 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var titleArr = this.getTitleArray();
 		resultArr.push( titleArr );
 
+		var lineList = [];
 
-		this.datatable.lineList.each(function (line, index) {
-			resultArr.push( this.getLineExportData(line, index) );
+		if( this.datatable.isShowAllSection ){
+			if( this.exportAllSection ){
+				lineList = this.datatable.lineList;
+			}else{
+				lineList = this.datatable.sectionLineEdited ? this.datatable.sectionLineEdited.lineList : [];
+			}
+		}else if( this.datatable.isMergeRead ) {
+			lineList = this.datatable.lineList;
+		}else{
+			lineList = this.datatable.lineList;
+		}
+
+		lineList.each(function (line, index) {
+			var lineData = this.getLineExportData(line, index);
+			var p = Promise.all(lineData).then(function (arr) {
+				return arr;
+			});
+			resultArr.push( p );
 		}.bind(this));
 
-		var colWidthArr = this.getColWidthArray();
-		var excelName = this.getExcelName();
+		Promise.all(resultArr).then(function ( rstArr ) {
+			var colWidthArr = this.getColWidthArray();
+			var excelName = this.getExcelName();
 
-		var arg = {
-			data : resultArr,
-			colWidthArray : colWidthArr,
-			title : excelName
-		};
-		this.datatable.fireEvent("export", [arg]);
+			var arg = {
+				data : rstArr,
+				colWidthArray : colWidthArr,
+				title : excelName
+			};
+			this.datatable.fireEvent("export", [arg]);
 
-		new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).exportToExcel(
-			arg.data || resultArr,
-			arg.title || excelName,
-			arg.colWidthArray || colWidthArr,
-			this.getDateIndexArray()  //日期格式列下标
-		);
+			new MWF.xApplication.process.Xform.DatatablePC.ExcelUtils( this.datatable ).exportToExcel(
+				arg.data || rstArr,
+				arg.title || excelName,
+				arg.colWidthArray || colWidthArr,
+				this.getDateIndexArray()  //日期格式列下标
+			);
+		}.bind(this))
+
 	},
 	getColumnList: function(){
 		this.columnJsonList = [];
@@ -3689,8 +3709,6 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 	getLineExportData: function(line, index ){
 		var exportData = [];
 		this.columnJsonList.each(function (column) {
-
-			debugger;
 
 			var module;
 			if( column.mJson && column.available ){
@@ -3946,13 +3964,18 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 
 			if( !this.checkCount(data) )return;
+
 			var checkAndImport = function () {
-				if( !this.checkData( data ) ){
-					this.openErrorDlg( data );
-				}else{
-					this.importData( data )
-				}
-				this.destroySimulateModule();
+				this.checkData( data, function (flag) {
+
+					if( !flag ){
+						this.openErrorDlg( data );
+					}else{
+						this.importData( data )
+					}
+					this.destroySimulateModule();
+
+				}.bind(this));
 			}.bind(this);
 
 			if( orgTitleArray.length > 0 ){
@@ -4320,58 +4343,46 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}
 		return true;
 	},
-	checkData : function( idata ){
-		var flag = true;
+	checkData : function( iData, callback){
+		this.parsedData = this.parseImportedData(iData, true);
+		this.iData = iData;
+		this.isImportSuccess = true;
 
-		var parsedData = this.parseImportedData(idata, true);
-		this.parsedData = parsedData;
-
-		idata.each( function(lineData, lineIndex){
-
-			// lineData.errorTextList = lineData.errorTextList || [];
-			// lineData.errorTextListExcel = lineData.errorTextListExcel || [];
-			//
-			// var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
-			//
-			// this.columnJsonList.each( function (columnJson, i){
-			// 	var result = this.checkModuleData(columnJson, lineData, parsedLineData);
-			// 	Promise.resolve(result).then(function (r) {
-			// 		r.errorTextList.each(function (t) { errorTextList.push(t); });
-			// 		r.errorTextListExcel.each(function (t) { errorTextListExcel.push(t); });
-			// 	})
-			// }.bind(this));
-			//
-			// if(errorTextList.length>0){
-			// 	lineData.errorTextList = errorTextList;
-			// 	lineData.errorTextListExcel = errorTextListExcel;
-			// 	flag = false;
-			// }
-
+		this.checkLineData(0, function () {
+			var arg = {
+				validted : this.isImportSuccess,
+				data : iData
+			};
+			this.datatable.fireEvent( "validImport", [arg] );
+			callback( arg.validted )
 		}.bind(this));
-
-		var arg = {
-			validted : flag,
-			data : idata
-		};
-		this.datatable.fireEvent( "validImport", [arg] );
-
-		return arg.validted;
 	},
-	checkLineData: function(lineData, lineIndex, callback){
+	checkLineData: function(lineIndex, callback){
+		if( lineIndex < this.iData.length ){
+			this._checkLineData(this.iData[lineIndex], lineIndex, function (flag) {
+				lineIndex++;
+				if( !flag )this.isImportSuccess = false;
+				this.checkLineData(lineIndex, callback);
+			}.bind(this));
+		}else{
+			if(callback)callback();
+		}
+	},
+	_checkLineData: function(lineData, lineIndex, callback){
 		lineData.errorTextList = lineData.errorTextList || [];
 		lineData.errorTextListExcel = lineData.errorTextListExcel || [];
 
-		var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
+		var parsedLineData = (this.parsedData && this.parsedData[lineIndex]) ? this.parsedData[lineIndex] : [];
 
 		this.checkModuleData(0, lineData, parsedLineData, function () {
-			var flag = !!lineData.errorTextList.length;
+			var flag = !lineData.errorTextList.length;
 			callback(flag);
 		});
 	},
 	checkModuleData: function(index, lineData, parsedLineData, callback){
 		if( index < this.columnJsonList.length ){
-			var result = this._checkModuleData(columnJson, lineData, parsedLineData);
-			Promise.resolve(result).then(function (r) {
+			var result = this._checkModuleData(this.columnJsonList[index], lineData, parsedLineData);
+			Promise.resolve(result).then(function (flag) {
 				index++;
 				this.checkModuleData(index, lineData, parsedLineData, callback);
 			}.bind(this))
@@ -4441,7 +4452,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 			}
 			if(!hasError){
 				module.setExcelData(parsedD);
-				return Promise.resolve( module.moduleValueAG ).then(function () {
+				return Promise.resolve( module.moduleValueAG || module.moduleSelectAG ).then(function () {
 					var result = module.validationExcel();
 					if ( result && result.length ){
 						lineData.errorTextList.push(colInfor + result.join("\n") );
