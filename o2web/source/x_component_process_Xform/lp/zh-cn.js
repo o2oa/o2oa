@@ -343,6 +343,9 @@ MWF.xApplication.process.Xform.LP = {
         "addTask": "加签",
         "addTaskTitle": "在当前活动添加处理人",
 
+        "goBack": "退回",
+        "goBackTitle": "退回到已经过的活动",
+
         "rerouteActivity": "调度到：",
         "reroutePerson": "调度给：",
         "selectPerson": "选择人员",

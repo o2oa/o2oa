@@ -1535,7 +1535,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "addTask": "加签",
         "addTaskTitle": "在当前活动添加处理人",
         "goBack": "退回",
-        "goBackTitle": "退回到已经过的活动",
+        "goBackTitle": "退回到已经过的活动"
     },
     "filedConfigurator": {
 		 "sequence": "序号",

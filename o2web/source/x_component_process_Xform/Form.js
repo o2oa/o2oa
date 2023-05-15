@@ -3558,60 +3558,52 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
      * this.form.getApp().appForm.goBack();
      */
     goBack: function(){
-        if (!this.businessData.control["allowGoBack"]) {
-            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
-            return false;
-        }
+        // if (!this.businessData.control["allowGoBack"]) {
+        //     MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+        //     return false;
+        // }
         if( !this.businessData.task ){
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
         }
+        o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(_self.businessData.task.work, function(json){
+            var activitys = json.data;
+            if (activitys.length){
+                var h = this.app.content.getSize().y*0.7-241;
+                var size = activitys.length*40;
+                h = (size<h) ? size+241 : "70%";
+                o2.DL.open({
+                    "title": this.app.lp.goBack,
+                    "style": this.json.dialogStyle || "user", //|| "work",
+                    "width":   (layout.mobile) ? "100%" : 680,
+                    "height":  (layout.mobile) ? "100%" : h,
+                    "url": this.app.path + ( (layout.mobile) ? "goBackMobile" : "goBack") +".html",
+                    "lp": o2.xApplication.process.Xform.LP.form,
+                    "container": (layout.mobile) ? document.body : this.app.content,
+                    "maskNode": this.app.content,
+                    "offset": (layout.mobile) ? null : {y: -50},
+                    "buttonList": [
+                        {
+                            "type": "ok",
+                            "text": o2.LP.process.button.ok,
+                            "action": function (d, e) {
+                                _self.doGoBack(this);
+                            }
+                        },
+                        {
+                            "type": "cancel",
+                            "text": MWF.LP.process.button.cancel,
+                            "action": function () {
+                                this.close();
+                            }
+                        }
+                    ],
+                    "onPostShow": function () {
 
-        MWF.require("MWF.xDesktop.Dialog", function () {
-            var width = 680;
-            var height = 300;
-            var p = MWF.getCenterPosition(this.app.content, width, height);
-
-            var _self = this;
-            var dlg = new MWF.xDesktop.Dialog({
-                "title": this.app.lp.goBack,
-                "style": this.json.dialogStyle || "user", //|| "work",
-                "top": p.y - 100,
-                "left": p.x,
-                "fromTop": p.y - 100,
-                "fromLeft": p.x,
-                "width": width,
-                "height": height,
-                "url": this.app.path + "goBack.html",
-                "lp": MWF.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
-                "isClose": true,
-                "buttonList": [
-                    {
-                        "type": "ok",
-                        "text": MWF.LP.process.button.ok,
-                        "action": function (d, e) {
-                            this.doGoBack(dlg);
-                        }.bind(this)
-                    },
-                    {
-                        "type": "cancel",
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function () { dlg.close(); }
                     }
-                ],
-                "onPostShow": function () {
-                    o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(_self.businessData.task.wordId, function(json){
-                        json.data;
-                        //@todo
-                    });
 
-                    $("resetWork_selPeopleButton").addEvent("click", function () {
-                        _self.selectPeople(this);
-                    }.bind(this));
-                }
-            });
-            dlg.show();
+                });
+            }
         }.bind(this));
     },
 

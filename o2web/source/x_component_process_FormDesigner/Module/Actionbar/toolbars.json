@@ -39,7 +39,7 @@
     "action": "goBack",
     "text": "{{$.lp.goBack}}",
     "id": "action_goBack",
-    "control": "allowGoBack",
+    "control": "allowProcessing",
     "condition": "",
     "read": false
   },
