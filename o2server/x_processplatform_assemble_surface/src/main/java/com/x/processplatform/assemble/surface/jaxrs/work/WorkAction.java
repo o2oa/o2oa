@@ -1347,21 +1347,21 @@ public class WorkAction extends StandardJaxrsAction {
 			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
 					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
 	@JaxrsMethodDescribe(value = "按条件过滤的当前用户创建的待办.", action = V2List.class)
-	@POST
+	@GET
 	@Path("v2/list/{id}/activity/goback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2ListActivityGoBack(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
 		ActionResult<List<V2ListActivityGoBack.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2ListActivityGoBack().execute(effectivePerson, id, jsonElement);
+			result = new V2ListActivityGoBack().execute(effectivePerson, id);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 	@JaxrsMethodDescribe(value = "分页列示指定应用下根据过滤条件的Work.", action = ActionManageListWithApplicationPaging.class)
