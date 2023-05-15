@@ -2,11 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +16,6 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -43,8 +39,6 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualProperties.DefineConfig;
-import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -404,14 +398,14 @@ class ActionProcessing extends BaseAction {
 			Node node = workLogTree.find(workLog);
 			Nodes nodes = workLogTree.up(node);
 
-			Manual targetManual = (Manual) business.getActivity(targetNode.get().getWorkLog().getFromActivity(),
-					ActivityType.manual);
-			if (null == targetManual) {
-				throw new ExceptionEntityNotExist(option.getActivity(), Manual.class);
-			}
-			List<String> identities = aaaa(option, emc, nodes, targetManual);
+//			Manual targetManual = (Manual) business.getActivity(targetNode.get().getWorkLog().getFromActivity(),
+//					ActivityType.manual);
+//			if (null == targetManual) {
+//				throw new ExceptionEntityNotExist(option.getActivity(), Manual.class);
+//			}
+			// List<String> identities = aaaa(option, emc, nodes, targetManual);
 			req.setActivity(option.getActivity());
-			req.setTaskIdentityList(identities);
+			// req.setTaskIdentityList(identities);
 			req.setWay(option.getWay());
 		}
 		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_TASK);
@@ -452,36 +446,36 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private Triple<WorkLog, String, List<String>> processingGoBackFindWorkLogAndWay(Business business, Manual manual,
-			OptionGoBack option, Nodes nodes) throws Exception {
-		String activity = null;
-		String way = null;
-		if ((manual.getGoBackConfig() == null)
-				|| StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_ANY)) {
-			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-					&& StringUtils.equals(o.getWorkLog().getFromActivity(), option.getActivity())).findFirst();
-			if (targetNode.isEmpty()) {
-				throw new ExceptionGoBackTargetNotExist(option.getActivity());
-			}
-		} else if ((targetManual.getGoBackConfig() != null)
-				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
-			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-					&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)).findFirst();
-		} else if ((targetManual.getGoBackConfig() != null)
-				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
-			Optional<DefineConfig> opt = targetManual.getGoBackConfig().getDefineConfigList().stream()
-					.filter(o -> StringUtils.equalsIgnoreCase(option.getActivity(), o.getActivity())).findFirst();
-			if (opt.isPresent()) {
-
-			}
-		}
-		List<String> identities = emc
-				.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
-						TaskCompleted.activityToken_FIELDNAME, targetNode.get().getWorkLog().getFromActivityToken(),
-						TaskCompleted.job_FIELDNAME, task.getJob())
-				.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList());
-		return identities;
-	}
+//	private Triple<WorkLog, String, List<String>> processingGoBackFindWorkLogAndWay(Business business, Manual manual,
+//			OptionGoBack option, Nodes nodes) throws Exception {
+//		String activity = null;
+//		String way = null;
+//		if ((manual.getGoBackConfig() == null)
+//				|| StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_ANY)) {
+//			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+//					&& StringUtils.equals(o.getWorkLog().getFromActivity(), option.getActivity())).findFirst();
+//			if (targetNode.isEmpty()) {
+//				throw new ExceptionGoBackTargetNotExist(option.getActivity());
+//			}
+//		} else if ((targetManual.getGoBackConfig() != null)
+//				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
+//			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+//					&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)).findFirst();
+//		} else if ((targetManual.getGoBackConfig() != null)
+//				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
+//			Optional<DefineConfig> opt = targetManual.getGoBackConfig().getDefineConfigList().stream()
+//					.filter(o -> StringUtils.equalsIgnoreCase(option.getActivity(), o.getActivity())).findFirst();
+//			if (opt.isPresent()) {
+//
+//			}
+//		}
+//		List<String> identities = emc
+//				.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
+//						TaskCompleted.activityToken_FIELDNAME, targetNode.get().getWorkLog().getFromActivityToken(),
+//						TaskCompleted.job_FIELDNAME, task.getJob())
+//				.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList());
+//		return identities;
+//	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionProcessing.Wo")
 	public static class Wo extends ActionProcessingWo {
