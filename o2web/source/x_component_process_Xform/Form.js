@@ -3553,6 +3553,74 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     /**
+     * @summary 退回到之前流转过的活动（根据活动配置列出可退回的活动）.
+     * @example
+     * this.form.getApp().appForm.goBack();
+     */
+    goBack: function(){
+        if (!this.businessData.control["allowGoBack"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
+        if( !this.businessData.task ){
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
+
+        MWF.require("MWF.xDesktop.Dialog", function () {
+            var width = 680;
+            var height = 300;
+            var p = MWF.getCenterPosition(this.app.content, width, height);
+
+            var _self = this;
+            var dlg = new MWF.xDesktop.Dialog({
+                "title": this.app.lp.goBack,
+                "style": this.json.dialogStyle || "user", //|| "work",
+                "top": p.y - 100,
+                "left": p.x,
+                "fromTop": p.y - 100,
+                "fromLeft": p.x,
+                "width": width,
+                "height": height,
+                "url": this.app.path + "goBack.html",
+                "lp": MWF.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "isClose": true,
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            this.doGoBack(dlg);
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ],
+                "onPostShow": function () {
+                    o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(_self.businessData.task.wordId, function(json){
+                        json.data;
+                        //@todo
+                    });
+
+                    $("resetWork_selPeopleButton").addEvent("click", function () {
+                        _self.selectPeople(this);
+                    }.bind(this));
+                }
+            });
+            dlg.show();
+        }.bind(this));
+    },
+
+    doGoBack: function(){
+        //@todo
+    },
+
+
+    /**
      * @summary 将待办设置为挂起状态，不计算工作时长.
      * @example
      * this.form.getApp().appForm.pauseTask();
@@ -3871,8 +3939,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (failure) failure(xhr, text, error);
             }, true, null, true
         );
-
-
     },
     addAddSplitMessage: function (data) {
         // var content = "";
@@ -5234,16 +5300,21 @@ debugger;
         if (this.checkControl("allowAddTask")){
             var _self = this;
             var opt = {};
+
+            this.app.content.parent
+
             o2.DL.open({
                 "title": o2.xApplication.process.Xform.LP.form.addTask,
                 "style": this.json.dialogStyle || "user",
-                "width": 680,
-                "height": 380,
-                "url": this.app.path + "addTask.html",
+                "width":   (layout.mobile) ? "100%" : 680,
+                "height":  (layout.mobile) ? "100%" : 380,
+                "url": this.app.path + ( (layout.mobile) ? "addTaskMobile" : "addTask") +".html",
                 "lp": o2.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "maskNode": this.app.content,
-                "offset": {y: -120},
+                "offset": (layout.mobile) ? null : {y: -120},
+                // "top": (layout.mobile) ? 0 : undefined,
+                // "left": (layout.mobile) ? 0 : undefined,
                 "buttonList": [
                     {
                         "type": "ok",

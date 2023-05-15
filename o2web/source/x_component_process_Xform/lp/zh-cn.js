@@ -378,6 +378,9 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskAfterTitle": "在您处理之后添加处理人",
         "addTaskType": "加签方式",
 
+        "goBackActivity": "退回到活动：",
+
+
         "addTaskRepeatedTitle": "重复加签提醒",
         "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
 

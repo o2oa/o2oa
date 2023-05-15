@@ -21,6 +21,19 @@
     "condition": "",
     "read": false
   },
+
+  {
+    "type": "MWFToolBarButton",
+    "img": "addTask.png",
+    "title": "{{$.lp.addTaskTitle}}",
+    "action": "addTask",
+    "text": "{{$.lp.addTask}}",
+    "id": "action_addTask",
+    "control": "allowReset",
+    "condition": "",
+    "read": true
+  },
+
   {
     "type": "MWFToolBarButton",
     "img": "retract.png",
