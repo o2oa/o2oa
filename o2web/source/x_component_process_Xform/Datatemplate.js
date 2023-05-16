@@ -2441,65 +2441,11 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			if ( !module || !json || !this.isAvaliableField( json ) ) {
 				exportData.push("");
 			}else{
-				var value = module.getData();
-				var text = "";
-
-
-				if( value ){
-					switch (module.json.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							if (o2.typeOf(value) === "array") {
-								var textArray = [];
-								value.each(function (item) {
-									if (o2.typeOf(item) === "object") {
-										textArray.push(item.distinguishedName);
-									} else {
-										textArray.push(item);
-									}
-								}.bind(this));
-								text = textArray.join(", \n");
-							} else if (o2.typeOf(value) === "object") {
-								text = value.distinguishedName;
-							} else {
-								text = value;
-							}
-							break;
-						case "Combox":
-						case "Address":
-							text = o2.typeOf(value) === "array" ? value.join(", ") : value;
-							break;
-						case "Checkbox":
-							var options = module.getOptionsObj();
-							var value = o2.typeOf(value) === "array" ? value : [value];
-							var arr = [];
-							value.each( function( a, i ){
-								var idx = options.valueList.indexOf( a );
-								arr.push( idx > -1 ? options.textList[ idx ] : "") ;
-							});
-							text = arr.join(", ");
-							break;
-						case "Radio":
-						case "Select":
-							var options = module.getOptionsObj();
-							var idx = options.textList.indexOf( value );
-							text = idx > -1 ? options.valueList[ idx ] : "";
-							break;
-						case "Textarea":
-							text = value;
-							break;
-						case "Calendar":
-							text = value;
-							break;
-						default:
-							text = value;
-							break;
-					}
-				} else if ( json.type === "Label" && module.node) {
+				var text;
+                if ( json.type === "Label" && module.node) {
 					text = module.node.get("text");
+				}else{
+				    text = module.getExcelData();
 				}
 
 				if( !text && o2.typeOf(text) !== "number" ){
