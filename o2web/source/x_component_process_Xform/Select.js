@@ -59,23 +59,46 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
-		if (value){
-			if (typeOf(value)!=="array") value = [value];
-			var texts = [];
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				var t = tmps[0];
-				var v = tmps[1] || t;
+		if( typeOf(optionItems.then) === "function" ){
+			Promise.resolve(optionItems).then(function (value) {
+				if (value){
+					if (typeOf(value)!=="array") value = [value];
+					var texts = [];
+					optionItems.each(function(item){
+						var tmps = item.split("|");
+						var t = tmps[0];
+						var v = tmps[1] || t;
 
-				if (v){
+						if (v){
 
-					if (value.indexOf(v)!=-1){
-						texts.push(t);
-					}
+							if (value.indexOf(v)!==-1){
+								texts.push(t);
+							}
+						}
+
+					});
+					node.set("text", texts.join(", "));
 				}
+			})
+		}else{
+			if (value){
+				if (typeOf(value)!=="array") value = [value];
+				var texts = [];
+				optionItems.each(function(item){
+					var tmps = item.split("|");
+					var t = tmps[0];
+					var v = tmps[1] || t;
 
-			});
-			node.set("text", texts.join(", "));
+					if (v){
+
+						if (value.indexOf(v)!=-1){
+							texts.push(t);
+						}
+					}
+
+				});
+				node.set("text", texts.join(", "));
+			}
 		}
 	},
 	_loadDomEvents: function(){
@@ -213,18 +236,16 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				valueList.push( tmps[1] || tmps[0] );
 			}.bind(this));
 		}
-		// else if(o2.typeOf(optionItems.then)==="function"){
-		// 	var p = Promise.resolve(optionItems).then(function (optItems) {
-		// 		optItems.each(function(item){
-		// 			var tmps = item.split("|");
-		// 			textList.push( tmps[0] );
-		// 			valueList.push( tmps[1] || tmps[0] );
-		// 		}.bind(this));
-		// 		return { textList : textList, valueList : valueList };
-		// 	})
-		// 	this.moduleSelectAG = p;
-		// 	return p;
-		// }
+		else if(o2.typeOf(optionItems.then)==="function"){
+			return Promise.resolve(optionItems).then(function (optItems) {
+				optItems.each(function(item){
+					var tmps = item.split("|");
+					textList.push( tmps[0] );
+					valueList.push( tmps[1] || tmps[0] );
+				}.bind(this));
+				return { textList : textList, valueList : valueList };
+			});
+		}
 		return { textList : textList, valueList : valueList };
 	},
 

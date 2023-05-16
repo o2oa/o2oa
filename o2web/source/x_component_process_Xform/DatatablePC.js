@@ -3823,7 +3823,7 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		if (thJson && ( thJson.isShow === false || thJson.isImpExp === false ))return false; //隐藏列，不允许导入导出
 		if (mJson && (mJson.type == "sequence" || mJson.cellType == "sequence") )return false; //序号列
 		if (mJson && ["Image","Button","ImageClipper","WritingBoard","Attachment","AttachmentDg","Label",
-			"Elbutton","Elbutton","Elcarousel","Eldropdown","Elicon","Eltree"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
+			"Elbutton","Elcarousel","Eldropdown","Elicon","Eltree"].contains(mJson.type) )return false; //图片，附件,Label列不导入导出
 		// if (type==="import" && module && ["Label"].contains(module.json.type))return false; //Label 不导入
 		return true;
 	},
@@ -3956,36 +3956,34 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var orgTitleArray = this.getOrgTitleArray();
 
 		this.excelUtil.upload( dateColArray, function (data) {
-			debugger;
+			this.importedData = data;
+			if( !this.checkCount() )return;
+
 			this.loadSimulateModule();
 			this.columnJsonList.each(function (c) {
 				c.module = this.importerLine.getModule(c.mJson.id)
 			}.bind(this));
 
-
-			if( !this.checkCount(data) )return;
-
-			var checkAndImport = function () {
-				this.checkData( data, function (flag) {
-
-					if( !flag ){
-						this.openErrorDlg( data );
-					}else{
-						this.importData( data )
-					}
-					this.destroySimulateModule();
-
-				}.bind(this));
-			}.bind(this);
-
 			if( orgTitleArray.length > 0 ){
-				this.listAllOrgData( orgTitleArray, data, function () {
-					checkAndImport();
+				this.listAllOrgData( orgTitleArray, function () {
+					this.checkAndImport();
 				}.bind(this));
 			}else{
-				checkAndImport();
+				this.checkAndImport();
 			}
 
+
+		}.bind(this));
+	},
+	checkAndImport: function () {
+		this.checkData( function (flag) {
+
+			if( !flag ){
+				this.openErrorDlg();
+			}else{
+				this.importData()
+			}
+			this.destroySimulateModule();
 
 		}.bind(this));
 	},
@@ -4132,10 +4130,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}.bind(this));
 		return orgTitleArr;
 	},
-	parseImportedData: function(idata){
+	parseImportedData: function(){
 		var data = [];
-
-		idata.each( function( ilineData ){
+		this.importedData.each( function( ilineData ){
 			var lineData = {};
 
 			this.columnJsonList.each( function (obj, i) {
@@ -4230,8 +4227,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 			return !!s;
 		});
 	},
-	importData: function(idata){
-
+	importData: function(){
 		var data = this.parsedData; //this.parseImportedData(idata);
 
 		this.datatable.fireEvent("import", [data] );
@@ -4245,7 +4241,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
-	openErrorDlg : function(eData){
+	openErrorDlg : function(){
+		var eData = this.importedData;
 		var _self = this;
 
 		var objectToString = function (obj, type) {
@@ -4319,7 +4316,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		});
 
 	},
-	checkCount: function(idata){
+	checkCount: function(){
+		var idata = this.importedData;
+
 		var lp = MWF.xApplication.process.Xform.LP;
 
 		var exceeded = false;
@@ -4343,23 +4342,22 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		}
 		return true;
 	},
-	checkData : function( iData, callback){
-		this.parsedData = this.parseImportedData(iData, true);
-		this.iData = iData;
+	checkData : function( callback){
+		this.parsedData = this.parseImportedData(true);
 		this.isImportSuccess = true;
 
 		this.checkLineData(0, function () {
 			var arg = {
 				validted : this.isImportSuccess,
-				data : iData
+				data : this.importedData
 			};
 			this.datatable.fireEvent( "validImport", [arg] );
 			callback( arg.validted )
 		}.bind(this));
 	},
 	checkLineData: function(lineIndex, callback){
-		if( lineIndex < this.iData.length ){
-			this._checkLineData(this.iData[lineIndex], lineIndex, function (flag) {
+		if( lineIndex < this.importedData.length ){
+			this._checkLineData(this.importedData[lineIndex], lineIndex, function (flag) {
 				lineIndex++;
 				if( !flag )this.isImportSuccess = false;
 				this.checkLineData(lineIndex, callback);
@@ -4491,10 +4489,10 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		}
 	},
-	listAllOrgData : function (orgTitleList, iData, callback) {
+	listAllOrgData : function (orgTitleList, callback) {
 		var identityList = [], personList = [], unitList = [], groupList = [];
 		if( orgTitleList.length > 0 ){
-			iData.each( function( lineData, lineIndex ){
+			this.importedData.each( function( lineData, lineIndex ){
 				// if( lineIndex === 0 )return;
 
 				orgTitleList.each( function (title, index) {
