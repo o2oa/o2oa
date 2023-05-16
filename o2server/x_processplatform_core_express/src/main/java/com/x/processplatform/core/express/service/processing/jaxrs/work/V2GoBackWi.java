@@ -17,7 +17,7 @@ public class V2GoBackWi extends GsonPropertyObject {
 	private String way;
 
 	@FieldDescribe("人工活动强制处理人.")
-	private List<String> taskIdentityList = new ArrayList<>();
+	private List<String> identityList = new ArrayList<>();
 
 	public String getActivity() {
 		return activity;
@@ -35,12 +35,12 @@ public class V2GoBackWi extends GsonPropertyObject {
 		this.way = way;
 	}
 
-	public List<String> getTaskIdentityList() {
-		return taskIdentityList;
+	public List<String> getIdentityList() {
+		return identityList;
 	}
 
-	public void setTaskIdentityList(List<String> taskIdentityList) {
-		this.taskIdentityList = taskIdentityList;
+	public void setIdentityList(List<String> identityList) {
+		this.identityList = identityList;
 	}
 
 }

@@ -2,8 +2,11 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +19,8 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -25,6 +30,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.RecordBuilder;
@@ -39,6 +45,8 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualProperties.DefineConfig;
+import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -391,24 +399,22 @@ class ActionProcessing extends BaseAction {
 		WorkLogTree workLogTree = null;
 		V2GoBackWi req = new V2GoBackWi();
 		Manual manual = null;
+		Triple<WorkLog, String, List<String>> param = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			manual = (Manual) business.getActivity(task.getActivity(), ActivityType.manual);
+			if (null == manual) {
+				throw new ExceptionEntityNotExist(task.getActivity(), Manual.class);
+			}
 			workLogTree = workLogTree(business, task.getJob());
 			Node node = workLogTree.find(workLog);
 			Nodes nodes = workLogTree.up(node);
-
-//			Manual targetManual = (Manual) business.getActivity(targetNode.get().getWorkLog().getFromActivity(),
-//					ActivityType.manual);
-//			if (null == targetManual) {
-//				throw new ExceptionEntityNotExist(option.getActivity(), Manual.class);
-//			}
-			// List<String> identities = aaaa(option, emc, nodes, targetManual);
-			req.setActivity(option.getActivity());
-			// req.setTaskIdentityList(identities);
-			req.setWay(option.getWay());
+			param = goBackParam(business, manual, option, nodes);
 		}
-		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_TASK);
+		req.setActivity(param.first().getFromActivity());
+		req.setWay(param.second());
+		req.setIdentityList(param.third());
+		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_GOBACK);
 		WrapBoolean resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", "v2", task.getWork(), "goback"), req, this.task.getJob())
@@ -416,7 +422,7 @@ class ActionProcessing extends BaseAction {
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionGoBack(req.getActivity(), req.getActivity());
 		}
-		this.processingProcessingWork(ProcessingAttributes.TYPE_TASK);
+		this.processingWorkGoBack(task.getWork(), task.getJob());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			this.newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.series_FIELDNAME,
 					this.series);
@@ -431,7 +437,7 @@ class ActionProcessing extends BaseAction {
 		}
 		if (flag) {
 			this.rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, workLog, task, taskCompletedId, newTaskIds);
-			// 加签也记录流程意见和路由决策
+			// 加签也记录流程意见和路由选择
 			this.rec.getProperties().setOpinion(this.task.getOpinion());
 			this.rec.getProperties().setRouteName(this.task.getRouteName());
 			RecordBuilder.processing(rec);
@@ -446,36 +452,122 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-//	private Triple<WorkLog, String, List<String>> processingGoBackFindWorkLogAndWay(Business business, Manual manual,
-//			OptionGoBack option, Nodes nodes) throws Exception {
-//		String activity = null;
-//		String way = null;
-//		if ((manual.getGoBackConfig() == null)
-//				|| StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_ANY)) {
-//			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-//					&& StringUtils.equals(o.getWorkLog().getFromActivity(), option.getActivity())).findFirst();
-//			if (targetNode.isEmpty()) {
-//				throw new ExceptionGoBackTargetNotExist(option.getActivity());
-//			}
-//		} else if ((targetManual.getGoBackConfig() != null)
-//				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
-//			Optional<Node> targetNode = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-//					&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)).findFirst();
-//		} else if ((targetManual.getGoBackConfig() != null)
-//				&& StringUtils.equalsIgnoreCase(targetManual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
-//			Optional<DefineConfig> opt = targetManual.getGoBackConfig().getDefineConfigList().stream()
-//					.filter(o -> StringUtils.equalsIgnoreCase(option.getActivity(), o.getActivity())).findFirst();
-//			if (opt.isPresent()) {
-//
-//			}
-//		}
-//		List<String> identities = emc
-//				.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
-//						TaskCompleted.activityToken_FIELDNAME, targetNode.get().getWorkLog().getFromActivityToken(),
-//						TaskCompleted.job_FIELDNAME, task.getJob())
-//				.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList());
-//		return identities;
-//	}
+	private void processingWorkGoBack(String workId, String job) throws Exception {
+		ProcessingAttributes req = new ProcessingAttributes();
+		req.setType(ProcessingAttributes.TYPE_GOBACK);
+		req.setSeries(series);
+		req.setForceJoinAtArrive(true);
+		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionGoBackCallServiceProcessing(workId);
+		}
+	}
+
+	private Triple<WorkLog, String, List<String>> goBackParam(Business business, Manual manual, OptionGoBack option,
+			Nodes nodes) throws Exception {
+		Pair<WorkLog, String> pair = null;
+		if ((null != manual.getGoBackConfig())
+				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
+			pair = this.goBackParamPrev(manual, option, nodes);
+		} else if ((null != manual.getGoBackConfig())
+				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
+			pair = this.goBackParamCustom(manual, option, nodes);
+		} else {
+			pair = this.goBackParamAny(manual, option, nodes);
+		}
+		if (null == pair.first()) {
+			throw new ExceptionGoBackWorkLog(option.getActivity());
+		}
+		if (StringUtils.isBlank(pair.second())) {
+			throw new ExceptionGoBackWay(option.getActivity());
+		}
+		List<String> third = business.entityManagerContainer()
+				.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
+						TaskCompleted.activityToken_FIELDNAME, pair.first().getFromActivityToken(),
+						TaskCompleted.job_FIELDNAME, task.getJob())
+				.stream().map(TaskCompleted::getIdentity).distinct().collect(Collectors.toList());
+		if (ListTools.isEmpty(third)) {
+			throw new ExceptionGoBackIdentityList();
+		}
+		return Triple.of(pair, third);
+	}
+
+	/**
+	 * 在 type=prev的设置下获取调用后台goBack所需参数
+	 * 
+	 * @param manual
+	 * @param option
+	 * @param nodes
+	 * @return
+	 */
+	private Pair<WorkLog, String> goBackParamPrev(Manual manual, OptionGoBack option, Nodes nodes) {
+		WorkLog first = null;
+		String second = null;
+		Optional<Node> opt = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+				&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)).findFirst();
+		if (opt.isPresent()
+				&& StringUtils.equalsIgnoreCase(opt.get().getWorkLog().getFromActivity(), option.getActivity())) {
+			first = opt.get().getWorkLog();
+			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
+					? option.getWay()
+					: manual.getGoBackConfig().getWay();
+		}
+		return Pair.of(first, second);
+	}
+
+	/**
+	 * 在 type=custom的设置下获取调用后台goBack所需参数
+	 * 
+	 * @param manual
+	 * @param option
+	 * @param nodes
+	 * @return
+	 */
+	private Pair<WorkLog, String> goBackParamCustom(Manual manual, OptionGoBack option, Nodes nodes) {
+		WorkLog first = null;
+		String second = null;
+		Optional<Node> opt = nodes.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+						&& StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivity(), option.getActivity()))
+				.findFirst();
+		if (opt.isPresent()) {
+			Optional<DefineConfig> optDefineConfig = manual.getGoBackConfig().getDefineConfigList().stream().filter(
+					o -> StringUtils.equalsIgnoreCase(o.getActivity(), opt.get().getWorkLog().getFromActivity()))
+					.findFirst();
+			if (optDefineConfig.isPresent()) {
+				first = opt.get().getWorkLog();
+				second = StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)
+						? option.getWay()
+						: optDefineConfig.get().getWay();
+			}
+		}
+		return Pair.of(first, second);
+	}
+
+	/**
+	 * 在 type=any的设置下获取调用后台goBack所需参数
+	 * 
+	 * @param manual
+	 * @param option
+	 * @param nodes
+	 * @return
+	 */
+	private Pair<WorkLog, String> goBackParamAny(Manual manual, OptionGoBack option, Nodes nodes) {
+		WorkLog first = null;
+		String second = null;
+		Optional<Node> opt = nodes.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+						&& StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivity(), option.getActivity()))
+				.findFirst();
+		if (opt.isPresent()) {
+			first = opt.get().getWorkLog();
+			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
+					? option.getWay()
+					: manual.getGoBackConfig().getWay();
+		}
+		return Pair.of(first, second);
+	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionProcessing.Wo")
 	public static class Wo extends ActionProcessingWo {
