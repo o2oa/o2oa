@@ -3553,6 +3553,66 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     /**
+     * @summary 退回到之前流转过的活动（根据活动配置列出可退回的活动）.
+     * @example
+     * this.form.getApp().appForm.goBack();
+     */
+    goBack: function(){
+        // if (!this.businessData.control["allowGoBack"]) {
+        //     MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+        //     return false;
+        // }
+        if( !this.businessData.task ){
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
+        o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(_self.businessData.task.work, function(json){
+            var activitys = json.data;
+            if (activitys.length){
+                var h = this.app.content.getSize().y*0.7-241;
+                var size = activitys.length*40;
+                h = (size<h) ? size+241 : "70%";
+                o2.DL.open({
+                    "title": this.app.lp.goBack,
+                    "style": this.json.dialogStyle || "user", //|| "work",
+                    "width":   (layout.mobile) ? "100%" : 680,
+                    "height":  (layout.mobile) ? "100%" : h,
+                    "url": this.app.path + ( (layout.mobile) ? "goBackMobile" : "goBack") +".html",
+                    "lp": o2.xApplication.process.Xform.LP.form,
+                    "container": (layout.mobile) ? document.body : this.app.content,
+                    "maskNode": this.app.content,
+                    "offset": (layout.mobile) ? null : {y: -50},
+                    "buttonList": [
+                        {
+                            "type": "ok",
+                            "text": o2.LP.process.button.ok,
+                            "action": function (d, e) {
+                                _self.doGoBack(this);
+                            }
+                        },
+                        {
+                            "type": "cancel",
+                            "text": MWF.LP.process.button.cancel,
+                            "action": function () {
+                                this.close();
+                            }
+                        }
+                    ],
+                    "onPostShow": function () {
+
+                    }
+
+                });
+            }
+        }.bind(this));
+    },
+
+    doGoBack: function(){
+        //@todo
+    },
+
+
+    /**
      * @summary 将待办设置为挂起状态，不计算工作时长.
      * @example
      * this.form.getApp().appForm.pauseTask();
@@ -3871,8 +3931,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (failure) failure(xhr, text, error);
             }, true, null, true
         );
-
-
     },
     addAddSplitMessage: function (data) {
         // var content = "";
@@ -5234,16 +5292,21 @@ debugger;
         if (this.checkControl("allowAddTask")){
             var _self = this;
             var opt = {};
+
+            this.app.content.parent
+
             o2.DL.open({
                 "title": o2.xApplication.process.Xform.LP.form.addTask,
                 "style": this.json.dialogStyle || "user",
-                "width": 680,
-                "height": 380,
-                "url": this.app.path + "addTask.html",
+                "width":   (layout.mobile) ? "100%" : 680,
+                "height":  (layout.mobile) ? "100%" : 380,
+                "url": this.app.path + ( (layout.mobile) ? "addTaskMobile" : "addTask") +".html",
                 "lp": o2.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "maskNode": this.app.content,
-                "offset": {y: -120},
+                "offset": (layout.mobile) ? null : {y: -120},
+                // "top": (layout.mobile) ? 0 : undefined,
+                // "left": (layout.mobile) ? 0 : undefined,
                 "buttonList": [
                     {
                         "type": "ok",

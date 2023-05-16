@@ -378,6 +378,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
 
                 }.bind(this), function(){});
             }
-        }
+        },
+        goBack: function(e){
+            this.form.goBack(e);
+        },
 
     });
