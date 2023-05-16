@@ -52,9 +52,14 @@ class ActionExecuteV2 extends BaseAction {
         }
         ExecuteTarget dataExecuteTarget = executeTargetPair.first();
         Optional<ExecuteTarget> optionalCountExecuteTarget = executeTargetPair.second();
-        result.setData(Executor.executeData(statement, runtime, dataExecuteTarget));
+        if(!Statement.MODE_COUNT.equals(mode)) {
+            result.setData(Executor.executeData(statement, runtime, dataExecuteTarget));
+        }
         if (optionalCountExecuteTarget.isPresent()) {
             result.setCount(Executor.executeCount(statement, optionalCountExecuteTarget.get()));
+            if(Statement.MODE_COUNT.equals(mode)){
+                result.setData(result.getCount());
+            }
         }
         return result;
     }
