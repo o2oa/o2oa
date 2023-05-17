@@ -473,7 +473,7 @@ MWF.xApplication.portal.PortalManager.Select = new Class({
         this.content.set("text", this.getText(this.value));
     },
     save: function(){
-        if (this.input && this.input.options.length) {
+        if (this.input && this.input.options && this.input.options.length) {
             this.value = this.input.options[this.input.selectedIndex].get("value");
         }else{
             this.value = "";
