@@ -80,6 +80,7 @@ public class ManualProperties extends JsonProperties {
 		public static final String WAY_STEP = "step";
 		public static final String WAY_JUMP = "jump";
 		public static final String WAY_CUSTOM = "custom";
+		public static final String WAY_DEFAULT = "default";
 
 		@FieldDescribe("类型,prev:退回上一环节,any:任意环节,define:配置.")
 		private String type;
