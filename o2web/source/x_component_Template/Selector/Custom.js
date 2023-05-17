@@ -187,7 +187,7 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category, delay);
     },
     createItemsSearchData: function (callback) {
-        if (!this.itemsSearchData) {
+        // if (!this.itemsSearchData) {
             this.itemsSearchData = [];
             this.getAllItemData();
             MWF.require("MWF.widget.PinYin", function () {
@@ -209,9 +209,9 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                 delete initIds;
                 if (callback) callback();
             }.bind(this));
-        } else {
-            if (callback) callback();
-        }
+        // } else {
+        //     if (callback) callback();
+        // }
     },
     getAllItemData: function(){
         this.itemDataList = [];
