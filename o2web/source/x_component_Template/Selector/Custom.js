@@ -187,29 +187,58 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category, delay);
     },
     createItemsSearchData: function (callback) {
-        if (!this.itemsSearchData) {
+        // if (!this.itemsSearchData) {
             this.itemsSearchData = [];
+            this.getAllItemData();
             MWF.require("MWF.widget.PinYin", function () {
                 var initIds = [];
-                this.items.each(function (item) {
-                    if (initIds.indexOf(item.data.name) == -1) {
-                        var text = item._getShowName().toLowerCase();
+                this.itemDataList.each(function (item) {
+                    if (initIds.indexOf(item.name) === -1) {
+                        var text = item.name.toLowerCase();
                         var pinyin = text.toPY().toLowerCase();
                         var firstPY = text.toPYFirst().toLowerCase();
                         this.itemsSearchData.push({
                             "text": text,
                             "pinyin": pinyin,
                             "firstPY": firstPY,
-                            "data": item.data
+                            "data": item
                         });
-                        initIds.push(item.data.name);
+                        initIds.push(item.name);
                     }
                 }.bind(this));
                 delete initIds;
                 if (callback) callback();
             }.bind(this));
-        } else {
-            if (callback) callback();
+        // } else {
+        //     if (callback) callback();
+        // }
+    },
+    getAllItemData: function(){
+        this.itemDataList = [];
+        this.options.selectableItems.each(function (item, index) {
+            if (item.isItem) {
+                this.itemDataList.push(item);
+            }else{
+                if( this.options.categorySelectable ){
+                    this.itemDataList.push(item);
+                    this.flatItemData(item);
+                }else{
+                    this.flatItemData(item);
+                }
+            }
+        }.bind(this));
+    },
+    flatItemData: function( c ){
+        if( o2.typeOf( c.subItemList ) === "array" ){
+            c.subItemList.each(function (item) {
+                this.itemDataList.push(item)
+            }.bind(this))
+        }
+        if( o2.typeOf( c.subCategoryList ) === "array" ){
+            c.subCategoryList.each(function (item) {
+                if( this.options.categorySelectable )this.itemDataList.push(item);
+                this.flatItemData( item );
+            }.bind(this));
         }
     },
 
