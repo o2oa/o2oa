@@ -941,6 +941,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handwrittenHeight": "Handwritten Height",
         "logFormat": "Format",
         "logFormatScript": "Format Script",
+        "logHtmlScript": "Html Script",
         "currentPerson": "Current Processor",
         "readReaded": "Read and Readed",
         "readTitle": "Read Title",

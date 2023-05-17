@@ -40,21 +40,22 @@
 					<input class="editTableRadio" onclick="if (this.checked){
 		    	 	$('text{$.pid}displayScriptArea').setStyle('display', 'block');
 		    	 	$('text{$.pid}textStyleArea').setStyle('display', 'none');
-		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+		    	 }"  name="mode" text{($.mode=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
 					<input class="editTableRadio" onclick="if (this.checked){
                  	$('text{$.pid}displayScriptArea').setStyle('display', 'none');
                  	$('text{$.pid}textStyleArea').setStyle('display', 'none');
-                 }"  name="mode" text{($.mode=='table')?'checked':''} type="radio" value="notShow"/>{{$.lp.notShow}}<br>
+                 }"  name="mode" text{($.mode=='notShow')?'checked':''} type="radio" value="notShow"/>{{$.lp.notShow}}<br>
 
 				</td>
 			</tr>
 		</table>
 
-		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea" class="MWFScriptArea" name="displayScript" title="{{$.lp.logFormatScript}} (S)"></div>
+		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea" class="MWFScriptArea" name="displayScript" title="{{$.lp.logHtmlScript}} (S)"></div>
 
 		<div style="display: text{($.mode=='default') ?'block':'none'}" id="text{$.pid}textStyleArea">
 <!--			<textarea name="textStyle" class="editTableTextarea">text{$.textStyle}</textarea>-->
 			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.logFormat}} (H)"></div>
+			<div class="MWFScriptArea" name="textStyleScript" title="{{$.lp.logFormatScript}} (S)" collapse="true"></div>
 		</div>
 
 

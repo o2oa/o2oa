@@ -939,6 +939,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handwrittenHeight": "手写意见高度",
         "logFormat": "格式",
         "logFormatScript": "格式脚本",
+        "logHtmlScript": "html脚本",
         "currentPerson": "当前处理人",
         "readReaded": "待阅已阅",
         "readTitle": "待阅标题",
