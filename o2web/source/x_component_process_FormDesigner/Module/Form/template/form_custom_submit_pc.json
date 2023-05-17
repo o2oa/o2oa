@@ -550,7 +550,13 @@
                        "overflow-x": "hidden",
                        "overflow-y": "auto"
                      },
-                     "preprocessing": "y"
+                     "preprocessing": "y",
+                     "events": {
+                      "queryLoad": {
+                        "code": "this.target.isReadonly = function(){\r\n    return false;\r\n}",
+                        "html": "this.target.isReadonly = function(){\r\n    return false;\r\n}"
+                      }
+                    }
                    },
                    "mediaActionArea": {
                      "id": "mediaActionArea",

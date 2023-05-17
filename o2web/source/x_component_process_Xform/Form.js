@@ -289,11 +289,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return css;
     },
     loadCss: function () {
-        cssText = (this.json.css) ? this.json.css.code : "";
+        var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
         var styleNode = $("style" + this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText) {
+
+            //删除注释
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
             cssText = this.parseCSS(cssText);
 
             var rex = new RegExp("(.+)(?=\\{)", "g");
@@ -388,6 +392,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         this.loadMacro(function () {
             debugger
             this.loadLanguage(function(flag){
+                this.isParseLanguage = flag;
                 if (flag && this.formDataText){
                     var data = o2.bindJson(this.formDataText,  {"lp": MWF.xApplication.process.Xform.LP.form});
                     this.data = JSON.parse(data);

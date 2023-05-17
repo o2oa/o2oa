@@ -1279,7 +1279,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 "style": "xform",
                 "isTime": true,
                 "secondEnable" : true,
-                "target": this.container,
+                "target": this.app ? this.app.content : this.container,
                 "format": "db"
             });
         }.bind(this));
@@ -1295,7 +1295,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
                 "style": "xform",
                 "isTime": false,
-                "target": this.container,
+                "target": this.app ? this.app.content : this.container,
                 "format": "%Y-%m-%d"
             });
         }.bind(this));
@@ -1311,7 +1311,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
                 "style": "xform",
                 "timeOnly": true,
-                "target": this.container,
+                "target": this.app ? this.app.content : this.container,
                 "format": "%H:%M:%S"
             });
         }.bind(this));

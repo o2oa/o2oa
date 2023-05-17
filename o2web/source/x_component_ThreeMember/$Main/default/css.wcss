@@ -40,7 +40,21 @@
   "naviItemNode_selected" : {
     "color" : "#4A90E2"
   },
-
+  "noServiceNode": {
+    "border": "1px solid #ccc",
+    "border-radius": "4px",
+    "width": "400px",
+    "height": "140px",
+    "line-height": "26px",
+    "margin": "100px auto 0px auto",
+    "font-size": "16px",
+    "color": "#666",
+    "padding-top": "80px",
+    "padding-right": "20px",
+    "padding-left": "100px",
+    "background": "url(../x_component_ThreeMember/$Main/default/icon/noService.png) no-repeat 20px center",
+    "background-color": "#fff"
+  },
   "noPermissionNode": {
     "width": "450px",
     "height": "150px",

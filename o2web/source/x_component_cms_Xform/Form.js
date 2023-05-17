@@ -231,6 +231,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
 
             this.loadLanguage(function(flag) {
+                this.isParseLanguage = flag;
                 if (flag && this.formDataText) {
                     var data = o2.bindJson(this.formDataText, {"lp": MWF.xApplication.cms.Xform.LP.form});
                     this.data = JSON.parse(data);
