@@ -748,18 +748,18 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         }.bind(this),null,false);
 
     },
-    setImportView : function( viewId, viewAppId ){
-        var d = this.data;
-        d.importViewId = viewId;
-        d.importViewAppId = viewAppId;
-        var json = {
-            viewId : viewId,
-            viewAppId : viewAppId
-        };
-        this.app.restActions.saveCategoryImportView(d.id, json, function( json ){
-            this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setImpExpViewSuccess );
-        }.bind(this))
-    },
+    // setImportView : function( viewId, viewAppId ){
+    //     var d = this.data;
+    //     d.importViewId = viewId;
+    //     d.importViewAppId = viewAppId;
+    //     var json = {
+    //         viewId : viewId,
+    //         viewAppId : viewAppId
+    //     };
+    //     this.app.restActions.saveCategoryImportView(d.id, json, function( json ){
+    //         this.app.notice( MWF.xApplication.cms.ColumnManager.LP.setImpExpViewSuccess );
+    //     }.bind(this))
+    // },
     setCategoryAlias : function( alias ){
         var d = this.data;
         d.categoryAlias = alias;
@@ -2729,7 +2729,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
        // html += "<tr><td class='formTitle'>"+this.app.lp.application.name+"</td><td id='formApplicationName'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.category.documentType +"</td><td id='formCategoryType' class='formValue'>"+"</td></tr>"; //(this.category.data.documentType || "" )+
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
-        html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='cursor:pointer;width:90%;min-height:22px;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
+        // html += "<tr><td class='formTitle'>"+this.app.lp.category.excelImportView +"</td><td class='formValue'><div id='formImportViewId' style='cursor:pointer;width:90%;min-height:22px;overflow:hidden;border:1px solid #ccc;border-radius: 3px;'></div></td></td></tr>"; //(this.category.data.documentType || "" )+
         html += "<tr><td class='formTitle'>"+this.app.lp.category.sendNotify +"</td><td id='formCategorySendNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
         html += "<tr><td class='formTitle'></td><td style='color:#999;padding-left: 20px;font-size: 12px;'>"+this.app.lp.category.sendNotifyInfo+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.category.blankToAllNotify +"</td><td id='formCategoryBlankToAllNotify' class='formValue'></td></tr>"; //"+this.category.data.categoryAlias+"
@@ -2791,40 +2791,40 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         // this.blankToAllNotify.load();
 
 
-        var value = this.category.data.importViewId ? [{
-            id : this.category.data.importViewId,
-            name : this.category.data.importViewName,
-            applicationName : this.category.data.importViewAppId
-        }] : [];
-        this.importViewIdSelect = new MDomItem( this.propertyContentNode.getElement("#formImportViewId"), {
-            type : "org",
-            orgType : "QueryView",
-            style : {
-                "width" : "100%",
-                "min-height" : "22px"
-            },
-            orgWidgetOptions : {
-                canRemove : false
-            },
-            //value : this.category.data.importViewName || this.category.data.importViewId || "不使用",//this.category.data.documentType || "信息",
-            value : value,
-            event : {
-                change : function( item ){
-                    if( item.orgObject && item.orgObject.length > 0  ){
-                        this.category.data.importViewId = item.orgObject[0].data.id;
-                        this.category.data.importViewName = item.orgObject[0].data.name;
-                        this.category.data.importViewAppId = item.orgObject[0].data.applicationName;
-                        this.category.setImportView( item.orgObject[0].data.id, item.orgObject[0].data.applicationName );
-                    }else{
-                        this.category.data.importViewId = "";
-                        this.category.data.importViewName = "";
-                        this.category.data.importViewAppId = "";
-                        this.category.setImportView( "", "" );
-                    }
-                }.bind(this)
-            }
-        }, null, this.app);
-        this.importViewIdSelect.load();
+        // var value = this.category.data.importViewId ? [{
+        //     id : this.category.data.importViewId,
+        //     name : this.category.data.importViewName,
+        //     applicationName : this.category.data.importViewAppId
+        // }] : [];
+        // this.importViewIdSelect = new MDomItem( this.propertyContentNode.getElement("#formImportViewId"), {
+        //     type : "org",
+        //     orgType : "QueryView",
+        //     style : {
+        //         "width" : "100%",
+        //         "min-height" : "22px"
+        //     },
+        //     orgWidgetOptions : {
+        //         canRemove : false
+        //     },
+        //     //value : this.category.data.importViewName || this.category.data.importViewId || "不使用",//this.category.data.documentType || "信息",
+        //     value : value,
+        //     event : {
+        //         change : function( item ){
+        //             if( item.orgObject && item.orgObject.length > 0  ){
+        //                 this.category.data.importViewId = item.orgObject[0].data.id;
+        //                 this.category.data.importViewName = item.orgObject[0].data.name;
+        //                 this.category.data.importViewAppId = item.orgObject[0].data.applicationName;
+        //                 this.category.setImportView( item.orgObject[0].data.id, item.orgObject[0].data.applicationName );
+        //             }else{
+        //                 this.category.data.importViewId = "";
+        //                 this.category.data.importViewName = "";
+        //                 this.category.data.importViewAppId = "";
+        //                 this.category.setImportView( "", "" );
+        //             }
+        //         }.bind(this)
+        //     }
+        // }, null, this.app);
+        // this.importViewIdSelect.load();
 
         //this.nameInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationName"), this.data.name || this.data.appName, this.app.css.formInput);
         //this.descriptionInput = new MWF.xApplication.cms.ColumnManager.Input(this.propertyContentNode.getElement("#formApplicationDescription"), this.data.description, this.app.css.formInput);
