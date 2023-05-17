@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.thirdparty.com.google.common.collect.Lists;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -32,6 +34,7 @@ import com.x.processplatform.core.entity.element.ManualProperties.DefineConfig;
 import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 class V2ListActivityGoBack extends BaseAction {
 
@@ -70,13 +73,16 @@ class V2ListActivityGoBack extends BaseAction {
 									Task.job_FIELDNAME, work.getJob()) <= 1)) {
 				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
 				Node node = workLogTree.location(work);
+				Nodes nodes = workLogTree.up(node);
 				if (null != node) {
-					// 过滤掉未链接的,过滤掉不是manual活动的,每个活动只取最近一次的workLog
-					List<WorkLog> workLogs = workLogTree.up(node).stream().map(Node::getWorkLog)
+					// 过滤掉未链接的,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
+					List<WorkLog> workLogs = nodes.stream().map(Node::getWorkLog)
 							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
-									&& BooleanUtils.isTrue(o.getConnected()))
-							.collect(Collectors.groupingBy(WorkLog::getFromActivity)).entrySet().stream()
-							.map(o -> o.getValue().get(0)).collect(Collectors.toList());
+									&& BooleanUtils.isTrue(o.getConnected())
+									&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
+							.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
+									Collectors.toList()))
+							.entrySet().stream().map(o -> o.getValue().get(0)).collect(Collectors.toList());
 					wos = this.list(manual, workLogs);
 					wos = this.supplement(business, wos);
 				}
@@ -125,7 +131,8 @@ class V2ListActivityGoBack extends BaseAction {
 				list.add(wo);
 			});
 		}
-		return list;
+		// 最后时间按早到晚输出,让前端按时间顺序排序.
+		return Lists.reverse(list);
 	}
 
 	private List<Wo> supplement(Business business, List<Wo> wos) {
@@ -141,7 +148,7 @@ class V2ListActivityGoBack extends BaseAction {
 				LOGGER.error(e);
 			}
 		});
-		// 拼装上最后一次环节处理人和处理时间
+		// 拼装上最后一次环节处理人
 		list.stream().forEach(o -> {
 			try {
 				o.setLastIdentityList(business.entityManagerContainer()
