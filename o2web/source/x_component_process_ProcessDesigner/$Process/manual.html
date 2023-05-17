@@ -409,7 +409,7 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.backType}}: </td>
                     <td class="editTableValue">
-                        <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'none'); }" class="editTableRadio" name="goBackConfig.type" text{(!$.goBackConfig || $.goBackConfig.type==='prev')?'checked':''} type="radio" value="prev"/><b>{{$.lp.backPrev}}</b></label>
+                        <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'none'); }" class="editTableRadio" name="goBackConfig.type" text{(!$.goBackConfig || !$.goBackConfig.type || $.goBackConfig.type==='prev')?'checked':''} type="radio" value="prev"/><b>{{$.lp.backPrev}}</b></label>
                         <div style="color: #999999;">{{$.lp.backPrevInfo}}</div>
                         <label><input onclick="if (this.checked){ $('text{$.id}gobackConfigActivityArea').setStyle('display', 'none'); }" class="editTableRadio" name="goBackConfig.type" text{($.goBackConfig && $.goBackConfig.type==='any')?'checked':''} type="radio" value="any"/><b>{{$.lp.backAny}}</b></label>
                         <div style="color: #999999;}">{{$.lp.backAnyInfo}}</div>

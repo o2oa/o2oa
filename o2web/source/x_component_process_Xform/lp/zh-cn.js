@@ -382,6 +382,13 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskType": "加签方式",
 
         "goBackActivity": "退回到活动：",
+        "goBackActivityWay": "退回后处理：",
+
+        "goBackActivityWayStep": "按流程正常流转",
+        "goBackActivityWayJump": "直接回到退回人",
+        "goBackTo": "退回到：",
+
+        "selectGoBackActivity": "请选择要退回的活动",
 
 
         "addTaskRepeatedTitle": "重复加签提醒",

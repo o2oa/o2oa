@@ -75,7 +75,7 @@
 
     "allowHang": false,
     "allowRetract": true,
-    "allowGoBack": true,
+    "allowGoBack": false,
 
     "group": "",
 

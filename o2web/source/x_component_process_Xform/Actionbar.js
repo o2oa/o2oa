@@ -228,11 +228,11 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
                 var hideFlag = this.form.Macro.exec(tool.condition, this);
                 flag = flag && (!hideFlag);
             }
-            // if (tool.id == "action_processWork"){
-            //     if (!this.form.businessData.task){
-            //         flag = false;
-            //     }
-            // }
+
+            if (tool.id === "action_goBack"){
+                flag = false;
+            }
+
             if (tool.id == "action_downloadAll" || tool.id == "action_print"){
                 if (!this.form.businessData.work.startTime){
                     flag = false;
