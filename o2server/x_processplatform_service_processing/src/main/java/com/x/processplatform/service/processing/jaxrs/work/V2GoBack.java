@@ -109,8 +109,8 @@ class V2GoBack extends BaseAction {
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
 				work.getProperties().setManualForceTaskIdentityList(new ArrayList<>());
-				if (ListTools.isNotEmpty(wi.getTaskIdentityList())) {
-					work.getProperties().setManualForceTaskIdentityList(wi.getTaskIdentityList());
+				if (ListTools.isNotEmpty(wi.getIdentityList())) {
+					work.getProperties().setManualForceTaskIdentityList(wi.getIdentityList());
 				}
 				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_STEP)) {
 					if (BooleanUtils.isTrue(work.getSplitting())) {

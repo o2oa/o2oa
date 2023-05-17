@@ -27,6 +27,7 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	public static final String TYPE_SERVICE = "service";
 	public static final String TYPE_TASKEXTEND = "taskExtend";
 	public static final String TYPE_TASKADD = "taskAdd";
+	public static final String TYPE_GOBACK = "goBack";
 
 	private Integer loop = 1;
 

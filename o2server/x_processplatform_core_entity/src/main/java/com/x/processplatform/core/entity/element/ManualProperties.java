@@ -35,7 +35,10 @@ public class ManualProperties extends JsonProperties {
 	}
 
 	public GoBackConfig getGoBackConfig() {
-		return goBackConfig;
+		if (null == goBackConfig) {
+			this.goBackConfig = new GoBackConfig();
+		}
+		return this.goBackConfig;
 	}
 
 	public void setGoBackConfig(GoBackConfig goBackConfig) {

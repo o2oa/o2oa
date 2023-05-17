@@ -42,7 +42,7 @@ class V2ListActivityGoBack extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
-
+		List<Wo> wos = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
 			Work work = emc.find(id, Work.class);
@@ -64,25 +64,25 @@ class V2ListActivityGoBack extends BaseAction {
 			}
 
 			// 1.允许goBack,2.多待办允许goBack或待办只有一条
-			if (BooleanUtils.isTrue(manual.getAllowGoBack())
+			if (BooleanUtils.isNotFalse(manual.getAllowGoBack())
 					&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
 							|| emc.countEqualAndEqual(Task.class, Task.activityToken_FIELDNAME, work.getActivityToken(),
 									Task.job_FIELDNAME, work.getJob()) <= 1)) {
 				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
 				Node node = workLogTree.location(work);
 				if (null != node) {
-					List<WorkLog> workLogs = new ArrayList<>();
 					// 过滤掉未链接的,过滤掉不是manual活动的,每个活动只取最近一次的workLog
-					workLogs = workLogTree.up(node).stream().map(Node::getWorkLog)
-							.filter(o -> Objects.equals(o.getArrivedActivityType(), ActivityType.manual)
+					List<WorkLog> workLogs = workLogTree.up(node).stream().map(Node::getWorkLog)
+							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
 									&& BooleanUtils.isTrue(o.getConnected()))
 							.collect(Collectors.groupingBy(WorkLog::getFromActivity)).entrySet().stream()
 							.map(o -> o.getValue().get(0)).collect(Collectors.toList());
-					List<Wo> wos = this.list(manual, workLogs);
-					wos = this.supplement(business, manual, wos);
+					wos = this.list(manual, workLogs);
+					wos = this.supplement(business, wos);
 				}
 			}
 		}
+		result.setData(wos);
 		return result;
 
 	}
@@ -128,13 +128,13 @@ class V2ListActivityGoBack extends BaseAction {
 		return list;
 	}
 
-	private List<Wo> supplement(Business business, Manual manual, List<Wo> wos) {
+	private List<Wo> supplement(Business business, List<Wo> wos) {
 		List<Wo> list = new ArrayList<>();
 		wos.stream().forEach(o -> {
 			try {
 				Manual m = (Manual) business.getActivity(o.getActivity(), ActivityType.manual);
 				if (null != m) {
-					o.setName(manual.getName());
+					o.setName(m.getName());
 					list.add(o);
 				}
 			} catch (Exception e) {
@@ -158,8 +158,7 @@ class V2ListActivityGoBack extends BaseAction {
 	}
 
 	private WorkLogTree workLogTree(Business business, String job) throws Exception {
-		return new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
-				WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.JOB_FIELDNAME, job));
+		return new WorkLogTree(business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job));
 	}
 
 	public static class Wo extends GsonPropertyObject {

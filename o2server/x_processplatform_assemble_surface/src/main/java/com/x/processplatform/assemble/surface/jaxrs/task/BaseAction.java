@@ -14,7 +14,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 	Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Task.class, Application.class, Process.class);
 
 	protected WorkLogTree workLogTree(Business business, String job) throws Exception {
-		return new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
-				WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.JOB_FIELDNAME, job));
+		return new WorkLogTree(business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job));
 	}
 }
