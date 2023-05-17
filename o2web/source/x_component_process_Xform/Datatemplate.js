@@ -2371,6 +2371,332 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	}
 });
 
+MWF.xApplication.process.Xform.Datatemplate.ImporterDatatemplate = new Class({
+	Extends: MWF.xApplication.process.Xform.Datatemplate,
+	initialize: function(mainDatatable){
+		this.mainDatatable = mainDatatable;
+		this.json = Object.clone( mainDatatable.json );
+		this.json.id = this.json.id + "_o2simula";
+
+		this.node = new Element("div", {
+			id: this.json.id
+		});
+		this.node.store("module", this);
+
+		this.form = mainDatatable.form;
+		this.field = false;
+		this.fieldModuleLoaded = false;
+	},
+	load: function(){
+
+		this.deleteFormData = function(data){
+			delete data[this.id];
+			this._self.form.removeEvent("getData", this._self.deleteFormData);
+		}.bind({_self: this, id: this.json.id});
+		this.form.addEvent("getData", this.deleteFormData);
+
+		this._loadModuleEvents();
+		if (this.fireEvent("queryLoad")){
+			this._queryLoaded();
+			this._loadUserInterface();
+			this._afterLoaded();
+			this.fireEvent("afterLoad");
+			// this.fireEvent("load");
+		}
+	},
+	_loadUserInterface: function(){
+		// this.fireEvent("queryLoad");
+
+		// this.editModules = [];
+
+		this.table = new Element("table").inject(this.node);
+		this.tBody = new Element("tbody").inject(this.table);
+
+		this.editable = true;
+
+		//是否多行同时编辑
+		this.multiEditMode = true;
+
+		this.data = {"data": [], "total":{}};
+		this._setValue(this.data);
+
+		this.lineList = [];
+
+		this.loadDatatable();
+	},
+	loadDatatable: function(){
+		this.loading = true;
+
+		//this._loadTitleTr();
+		//this._loadTemplate();
+		//this._loadTotalTr();
+
+		// this.templateNode = this.mainDatatable.templateNode;
+		// this.templateTr = this.mainDatatable.templateTr;
+		this.columnCount = this.mainDatatable.columnCount;
+		this.templateHtml = this.mainDatatable.templateHtml;
+
+		this.fireEvent("load");
+		this._loadDatatable(function(){
+			this.fieldModuleLoaded = true;
+			this.loading = false;
+			this.fireEvent("postLoad");
+		}.bind(this));
+	},
+	_loadDatatable: function(callback){
+		this._loadLineList(function(){
+			//this._loadTotal();
+			if(callback)callback();
+		}.bind(this));
+	},
+	_loadLine: function(container, data, index, isEdited, isNew){
+		var line = new MWF.xApplication.process.Xform.Datatemplate.ImporterLine(container, this, data, {
+			index : index,
+			indexText : (index+1).toString()
+		});
+		this.fireEvent("beforeLoadLine", [line]);
+		line.load();
+		this.fireEvent("afterLoadLine", [line]);
+		return line;
+	},
+	_addLine: function(ev, edited, d){
+
+		var data, index, line;
+
+		index = this.lineList.length;
+		data = this.data;
+
+		data.data.push(d||{});
+		this.newLineIndex = index;
+
+		this.setData( data );
+		line = this.getLine(index);
+		line.isNewAdd = true;
+
+		this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+
+		this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
+
+		return line;
+	},
+	// _delLine: function(line){
+	// 	this.fireEvent("deleteLine", [line]);
+	//
+	// 	//使用数据驱动
+	// 	var data = this.data;
+	// 	data.data.splice(line.options.index, 1);
+	//
+	// 	if(this.currentEditedLine === line)this.currentEditedLine = null;
+	// 	this.setData( data );
+	//
+	// 	// this.validationMode();
+	// 	this.fireEvent("afterDeleteLine");
+	//
+	// 	this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
+	// },
+	destroy: function(){
+		this.clearSubModules();
+		var id = this.json.id;
+		if (this.form.all[id]) delete this.form.all[id];
+		if (this.form.forms[id])delete this.form.forms[id];
+		// if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
+		// if( this.form.Macro.environment.data.hasOwnProperty(id) )delete this.form.Macro.environment.data[id];
+		this.node.destroy();
+	}
+});
+
+//Excel导入时候创建的组件
+MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
+	Implements: [Options, Events],
+	options: {
+		isNew: true,
+		isEdited : true, //是否正在编辑
+		isEditable : true, //能否被编辑
+		isDeleteable: true, //能否被删除
+	},
+	initialize: function (node, template, data, options) {
+
+		this.setOptions(options);
+
+		this.node = node;
+		this.template = template;
+		this.data = data;
+		this.form = this.template.form;
+
+		this.init()
+	},
+	init: function(){
+		this.modules = [];
+		this.all = {};
+		this.all_templateId = {};
+
+		this.fields = [];
+		this.allField = {};
+		this.allField_templateId = {};
+	},
+	load: function(){
+		// if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
+
+		this.loadModules();
+
+		// if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
+	},
+	loadModules: function(){
+		this.node.set("html", this.template.templateHtml);
+		var moduleNodes = this.form._getModuleNodes(this.node);
+
+		//合并状态或拆分状态
+		// var sectionKey = this.options.sectionKey || this.datatable.sectionBy;
+		moduleNodes.each(function (node) {
+			var mwfType = node.get("MWFtype");
+			if (mwfType === "form")return;
+
+			var _self = this;
+
+			var tJson = this.form._getDomjson(node);
+			if( tJson ){
+				var json = Object.clone(tJson);
+
+				if( !this.options.isEdited )json.isReadonly = true;
+
+				var templateJsonId = json.id;
+
+				var index = "0"; //this.options.index;
+
+				var id;
+				// if( this.datatable.isShowAllSection ){
+				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.id;
+				// }else if( sectionKey ){
+				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
+				// }else{
+				id = this.template.json.id + "..data.." + index + ".." + json.id;
+				// }
+
+				json.id = id;
+				node.set("id", id);
+
+				// if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+				// 	json.type = "AttachmentDg";
+				// 	json.ignoreSite = true;
+				// 	json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+				// }
+
+				if (this.form.all[id]) this.form.all[id] = null;
+				if (this.form.forms[id])this.form.forms[id] = null;
+
+				//var hasData = this.data.hasOwnProperty(templateJsonId);
+
+				var module = this.form._loadModule(json, node, function () {
+
+					// this.field = false; //不希望保存数据
+					// this._getBusinessData = function(){
+					// 	return _self.data[templateJsonId];
+					// };
+					// this._setBusinessData = function () {};
+
+					if( _self.widget )this.widget = _self.widget;
+					this.parentLine = _self;
+					this.parentDatatemplate = _self.template;
+
+					//只读方法值在页面加载的时候或者new的时候计算一下
+					if( this.json.compute === "show" ){
+						var needComputeShow = false;
+						if( _self.template.loading ) {
+							needComputeShow = true;
+						}else if( _self.options.isNew && !_self.reloading ){
+							needComputeShow = true;
+						}
+						if( !needComputeShow ){
+							this.json.compute = "create"; //
+							if( this.options.moduleEvents && this.options.moduleEvents.length ){ //恢复compute
+								var eventName = ( this.options.moduleEvents || [] ).contains("afterLoad") ? "afterLoad" : "load";
+								var resetCompute = function () {
+									this.json.compute = "show";
+									this.removeEvent( eventName, resetCompute );
+								}.bind(this)
+								this.addEvent(eventName, resetCompute);
+							}
+						}
+					}
+
+				});
+				if(!module.parentLine)module.parentLine = this;
+				if(!module.parentDatatemplate)module.parentDatatemplate = this.template;
+
+				this.form.modules.push(module);
+
+				this.modules.push(module);
+				this.all[id] = module;
+				this.all_templateId[templateJsonId] = module;
+
+				if (module.field) {
+					if(this.options.isEdited) {
+					this.allField[id] = module;
+					this.allField_templateId[templateJsonId] = module;
+					this.fields.push( module );
+				}
+			}
+		}.bind(this));
+	},
+	clearSubModules: function () { //把module清除掉
+		for(var key in this.all){
+			var module = this.all[key];
+			//如果嵌套数据模板或者数据表格，还要清除掉下级
+			if(module.clearSubModules)module.clearSubModules();
+			if( module.json && (module.json.type==="TinyMCEEditor" || module.json.type==="Htmleditor"))module.destroy();
+			this.form.modules.erase(module);
+			// if( this.form.businessData.data.hasOwnProperty(key) )delete this.form.businessData.data[key];
+			// if( this.form.Macro.environment.data.hasOwnProperty(key) )delete this.form.Macro.environment.data[key];
+			if (this.form.all[key]) delete this.form.all[key];
+			if (this.form.forms[key])delete this.form.forms[key];
+		}
+		this.node.destroy();
+		this.init();
+	},
+	getModule: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
+	get: function(templateJsonId){
+		return this.all_templateId[templateJsonId];
+	},
+	// computeModuleData: function( when ){
+	// 	for( var key in this.allField_templateId){
+	// 		var module = this.allField_templateId[key];
+	// 		if( module.json.compute === when ){
+	// 			this.data[key] = module.getData();
+	// 		}
+	// 	}
+	// },
+	getData: function () {
+		var data = this.data;
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			// var id = key.split("..").getLast();
+			if( module.json.type==="Attachment" || module.json.type==="AttachmentDg" ){
+				data[key] = module._getBusinessData();
+			}else{
+				data[key] = module.getData();
+			}
+		}
+		return data;
+	},
+	// validation: function(){
+	// 	if( !this.validationFields())return false;
+	// 	if( !this.validationCompleteLine())return false;
+	// 	return true;
+	// },
+	// validationFields: function(){
+	// 	var flag = true;
+	// 	this.fields.each(function(field, key){
+	// 		if (field.json.type!="sequence" && field.validationMode ){
+	// 			field.validationMode();
+	// 			if (!field.validation()) flag = false;
+	// 		}
+	// 	}.bind(this));
+	// 	return flag;
+	// },
+});
+
 MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 	Implements: [Options, Events],
 	options: {
@@ -2648,7 +2974,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.template = template;
 		this.form = this.template.form;
 
-		this.excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template )
+		this.lp = MWF.xApplication.process.Xform.LP;
+		this.columnText =  lp.importValidationColumnText;
+		this.columnTextExcel = lp.importValidationColumnTextExcel;
+		this.excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
 
 	},
 	isAvaliableField : function(json, module, type){
@@ -2817,49 +3146,49 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 								}.bind(this));
 							}
 							break;
-						case "Combox":
-						case "Address":
-							arr = this.stringToArray(d);
-							value = arr.length === 0  ? arr[0] : arr;
-							break;
-						case "Checkbox":
-							arr = this.stringToArray(d);
-							var options = module.getOptionsObj();
-							arr.each( function( a, i ){
-								var idx = options.textList.indexOf( a );
-								arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-							});
-							value = arr.length === 1  ? arr[0] : arr;
-							break;
-						case "Radio":
-						case "Select":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							var options = module.getOptionsObj();
-							var idx = options.textList.indexOf( value );
-							value = idx > -1 ? options.valueList[ idx ] : value;
-							break;
-						case "Textarea":
-							value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-							break;
-						case "Calendar":
-							value = d.replace(/&#10;/g,""); //换行符&#10;
-							if( value && (new Date(value).isValid()) ){
-								var format;
-								if (!json.format){
-									if (json.selectType==="datetime" || json.selectType==="time"){
-										format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-									}else{
-										format = Locale.get("Date").shortDate;
-									}
-								}else{
-									format = json.format;
-								}
-								value = Date.parse( value ).format( format );
-							}
-							break;
 						default:
-							value = d.replace(/&#10;/g,""); //换行符&#10;
+							value = d; //d.replace(/&#10;/g,""); //换行符&#10;
 							break;
+						// case "Combox":
+						// case "Address":
+						// 	arr = this.stringToArray(d);
+						// 	value = arr.length === 0  ? arr[0] : arr;
+						// 	break;
+						// case "Checkbox":
+						// 	arr = this.stringToArray(d);
+						// 	var options = module.getOptionsObj();
+						// 	arr.each( function( a, i ){
+						// 		var idx = options.textList.indexOf( a );
+						// 		arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
+						// 	});
+						// 	value = arr.length === 1  ? arr[0] : arr;
+						// 	break;
+						// case "Radio":
+						// case "Select":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	var options = module.getOptionsObj();
+						// 	var idx = options.textList.indexOf( value );
+						// 	value = idx > -1 ? options.valueList[ idx ] : value;
+						// 	break;
+						// case "Textarea":
+						// 	value = d.replace(/&#10;/g,"\n"); //换行符&#10;
+						// 	break;
+						// case "Calendar":
+						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
+						// 	if( value && (new Date(value).isValid()) ){
+						// 		var format;
+						// 		if (!json.format){
+						// 			if (json.selectType==="datetime" || json.selectType==="time"){
+						// 				format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
+						// 			}else{
+						// 				format = Locale.get("Date").shortDate;
+						// 			}
+						// 		}else{
+						// 			format = json.format;
+						// 		}
+						// 		value = Date.parse( value ).format( format );
+						// 	}
+						// 	break;
 					}
 				}
 
@@ -2879,7 +3208,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		});
 	},
 	importData: function(){
-		var data = this.parseImportedData();
+		var data = this.parsedData;
 
 		this.template.fireEvent("import", [data] );
 
@@ -2905,7 +3234,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				}else{
 					arr.push( key + "='"+ value +"'" )
 				}
-			})
+			});
 			return arr.join(" ")
 		}
 
@@ -2967,10 +3296,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		});
 
 	},
-	exportWithImportDataToExcel: function(eData){
-		var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this.template);
-		exporter.exportWithImportDataToExcel(this.fieldArray, eData)
-	},
 	checkCount: function(){
 		var idata = this.importedData;
 
@@ -2997,102 +3322,222 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}
 		return true;
 	},
-	checkData : function( callback ){
+	// checkData : function( callback ){
+	// 	var parsedData = this.parseImportedData();
+	// 	this.isImportSuccess = true;
+	//
+	// 	this.importedData.each( function(lineData, lineIndex){
+	//
+	// 		var errorTextList = [];
+	// 		var errorTextListExcel = [];
+	//
+	// 		var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
+	//
+	// 		this.fieldArray.each( function (obj, i) {
+	// 			var index = obj.index;
+	// 			var json = obj.json;
+	// 			var module = obj.module;
+	// 			var text = obj.text;
+	//
+	// 			var colInfor = columnText.replace( "{n}", index+1 );
+	// 			var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
+	//
+	// 			var d = lineData[text] || "";
+	// 			var parsedD = parsedLineData[json.id] || "";
+	//
+	// 			if(d){
+	//
+	// 				switch (json && json.type) {
+	// 					case "Org":
+	// 					case "Reader":
+	// 					case "Author":
+	// 					case "Personfield":
+	// 					case "Orgfield":
+	// 						var arr = this.stringToArray(d);
+	// 						arr.each( function(d, idx){
+	// 							var obj = this.getOrgData( d );
+	// 							if( obj.errorText ){
+	// 								errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+	// 								errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+	// 							}
+	// 						}.bind(this));
+	// 						break;
+	// 					case "Number":
+	// 						if (isNaN(d)){
+	// 							errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+	// 							errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+	// 						}
+	// 						break;
+	// 					case "Calendar":
+	// 						if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+	// 							errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+	// 							errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+	// 						}
+	// 						break;
+	// 					default:
+	// 						break;
+	// 				}
+	// 			}
+	// 			if (module && module.setData && json.type !== "Address"){
+	// 				var hasError = false;
+	// 				if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
+	// 					if(o2.typeOf(parsedD)==="array" && parsedD.length){
+	// 						hasError = parsedD.some(function (item) { return item.errorText; })
+	// 					}
+	// 				}
+	// 				if(!hasError){
+	// 					module.setData(parsedD);
+	// 					module.validationMode();
+	// 					if (!module.validation() && module.errNode){
+	// 						errorTextList.push(colInfor + module.errNode.get("text"));
+	// 						errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
+	// 						module.errNode.destroy();
+	// 					}
+	// 				}
+	// 			}
+	// 		}.bind(this));
+	//
+	// 		if(errorTextList.length>0){
+	// 			lineData.errorTextList = errorTextList;
+	// 			lineData.errorTextListExcel = errorTextListExcel;
+	// 			flag = false;
+	// 		}
+	//
+	// 	}.bind(this));
+	//
+	// 	var arg = {
+	// 		validted : flag,
+	// 		data : idata
+	// 	};
+	// 	this.template.fireEvent( "validImport", [arg] );
+	//
+	// 	return arg.validted;
+	// },
+	checkData : function( callback){
+		this.parsedData = this.parseImportedData();
+		this.isImportSuccess = true;
+
+		this.checkLineData(0, function () {
+			var arg = {
+				validted : this.isImportSuccess,
+				data : this.importedData
+			};
+			this.template.fireEvent( "validImport", [arg] );
+			callback( arg.validted )
+		}.bind(this));
+	},
+	checkLineData: function(lineIndex, callback){
+		if( lineIndex < this.importedData.length ){
+			this._checkLineData(this.importedData[lineIndex], lineIndex, function (flag) {
+				lineIndex++;
+				if( !flag )this.isImportSuccess = false;
+				this.checkLineData(lineIndex, callback);
+			}.bind(this));
+		}else{
+			if(callback)callback();
+		}
+	},
+	_checkLineData: function(lineData, lineIndex, callback){
+		lineData.errorTextList = lineData.errorTextList || [];
+		lineData.errorTextListExcel = lineData.errorTextListExcel || [];
+
+		var parsedLineData = (this.parsedData && this.parsedData[lineIndex]) ? this.parsedData[lineIndex] : [];
+
+		this.checkModuleData(0, lineData, parsedLineData, function () {
+			var flag = !lineData.errorTextList.length;
+			callback(flag);
+		});
+	},
+	checkModuleData: function(index, lineData, parsedLineData, callback){
+		if( index < this.fieldArray.length ){
+			var result = this._checkModuleData(this.fieldArray[index], lineData, parsedLineData);
+			Promise.resolve(result).then(function (flag) {
+				index++;
+				this.checkModuleData(index, lineData, parsedLineData, callback);
+			}.bind(this))
+		}else{
+			if(callback)callback();
+		}
+	},
+	_checkModuleData: function (field, lineData, parsedLineData) {
+		var index = field.index;
+        var json = field.json;
+        var module = field.module;
+        var text = field.text;
+
+		var colInfor = this.columnText.replace( "{n}", index+1 );
+		var colInforExcel = this.columnTextExcel.replace( "{n}", this.excelUtil.index2ColName( index ) );
+
+		var d = lineData[text] || "";
+		var parsedD = parsedLineData[json.id] || "";
+		var lp = this.lp;
 		var flag = true;
 
-		var lp = MWF.xApplication.process.Xform.LP;
-		var columnText =  lp.importValidationColumnText;
-		var columnTextExcel = lp.importValidationColumnTextExcel;
-		var excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
-
-		var parsedData = this.parseImportedData(true);
-
-		this.importedData.each( function(lineData, lineIndex){
-
-			var errorTextList = [];
-			var errorTextListExcel = [];
-
-			var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
-
-			this.fieldArray.each( function (obj, i) {
-				var index = obj.index;
-				var json = obj.json;
-				var module = obj.module;
-				var text = obj.text;
-
-				var colInfor = columnText.replace( "{n}", index+1 );
-				var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
-
-				var d = lineData[text] || "";
-				var parsedD = parsedLineData[json.id] || "";
-
-				if(d){
-
-					switch (json && json.type) {
-						case "Org":
-						case "Reader":
-						case "Author":
-						case "Personfield":
-						case "Orgfield":
-							var arr = this.stringToArray(d);
-							arr.each( function(d, idx){
-								var obj = this.getOrgData( d );
-								if( obj.errorText ){
-									errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-									errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
-								}
-							}.bind(this));
-							break;
-						case "Number":
-							if (isNaN(d)){
-								errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-							}
-							break;
-						case "Calendar":
-							if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-								errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-								errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-							}
-							break;
-						default:
-							break;
-					}
-				}
-				if (module && module.setData && json.type !== "Address"){
-					var hasError = false;
-					if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
-						if(o2.typeOf(parsedD)==="array" && parsedD.length){
-							hasError = parsedD.some(function (item) { return item.errorText; })
+		if(d){
+			switch (json && json.type) {
+				case "Org":
+				case "Reader":
+				case "Author":
+				case "Personfield":
+				case "Orgfield":
+					var arr = this.stringToArray(d);
+					arr.each( function(d, idx){
+						var obj = this.getOrgData( d );
+						if( obj.errorText ){
+							lineData.errorTextList.push( colInfor + obj.errorText + lp.fullstop );
+							lineData.errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
+							flag = false;
 						}
+					}.bind(this));
+					break;
+				case "Number":
+				case "Elnumber":
+					if (isNaN(d)){
+						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
+						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
+						flag = false;
 					}
-					if(!hasError){
-						module.setData(parsedD);
-						module.validationMode();
-						if (!module.validation() && module.errNode){
-							errorTextList.push(colInfor + module.errNode.get("text"));
-							errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-							module.errNode.destroy();
-						}
+					break;
+				case "Calendar":
+				case "Eldate":
+				case "Eldatetime":
+					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+						flag = false;
 					}
-				}
-			}.bind(this));
-
-			if(errorTextList.length>0){
-				lineData.errorTextList = errorTextList;
-				lineData.errorTextListExcel = errorTextListExcel;
-				flag = false;
+					break;
+				default:
+					break;
 			}
-
-		}.bind(this));
-
-		var arg = {
-			validted : flag,
-			data : idata
-		};
-		this.template.fireEvent( "validImport", [arg] );
-
-		return arg.validted;
+		}
+		if (module && module.setData && json.type !== "Address"){
+			var hasError = false;
+			if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
+				if(o2.typeOf(parsedD)==="array" && parsedD.length){
+					hasError = parsedD.some(function (item) { return item.errorText; });
+					flag = false;
+				}
+			}
+			if(!hasError){
+				module.setExcelData(parsedD);
+				return Promise.resolve( module.moduleValueAG || module.moduleSelectAG ).then(function () {
+					var result = module.validationExcel();
+					if ( result && result.length ){
+						lineData.errorTextList.push(colInfor + result.join("\n") );
+						lineData.errorTextListExcel.push( colInforExcel + result.join("\n"));
+						flag = false;
+					}
+					parsedLineData[json.id] = module.getData();
+					return flag;
+				})
+			}
+		}
+		return flag
+	},
+	exportWithImportDataToExcel: function(eData){
+		var exporter = new MWF.xApplication.process.Xform.Datatemplate.Exporter(this.template);
+		exporter.exportWithImportDataToExcel(this.fieldArray, eData)
 	},
 	getOrgData : function( str ){
 		str = str.trim();

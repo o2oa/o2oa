@@ -4343,7 +4343,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		return true;
 	},
 	checkData : function( callback){
-		this.parsedData = this.parseImportedData(true);
+		this.parsedData = this.parseImportedData();
 		this.isImportSuccess = true;
 
 		this.checkLineData(0, function () {
