@@ -214,10 +214,6 @@ class ActionProcessing extends BaseAction {
 			if (null != this.wi.getOpinion()) {
 				this.task.setOpinion(this.wi.getOpinion());
 			}
-			// 如果有新的决策那么覆盖原有决策,null表示没有传过来,""可能是前端传过来的改为空值.
-			if (null != this.wi.getDecision()) {
-				this.task.setDecision(this.wi.getDecision());
-			}
 			// 强制覆盖多媒体意见
 			this.task.setMediaOpinion(this.wi.getMediaOpinion());
 			if (StringUtils.isEmpty(task.getOpinion())) {
@@ -230,13 +226,13 @@ class ActionProcessing extends BaseAction {
 			business.entityManagerContainer().commit();
 		}
 		// 校验路由选择不能为空
-		if (StringUtils.isBlank(this.task.getRouteName())) {
-			throw new ExceptionEmptyRouteName();
-		}
+//		if (StringUtils.isBlank(this.task.getRouteName())) {
+//			throw new ExceptionEmptyRouteName();
+//		}
 		// 校验路由在可选择范围内
-		if (!this.task.getRouteNameList().contains(this.task.getRouteName())) {
-			throw new ExceptionErrorRouteName(this.task.getRouteName());
-		}
+//		if (!this.task.getRouteNameList().contains(this.task.getRouteName())) {
+//			throw new ExceptionErrorRouteName(this.task.getRouteName());
+//		}
 	}
 
 	private void seeManualRoute(Business business) throws Exception {
@@ -416,7 +412,7 @@ class ActionProcessing extends BaseAction {
 		req.setIdentityList(param.third());
 		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_GOBACK);
 		WrapBoolean resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
+				.postQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", "v2", task.getWork(), "goback"), req, this.task.getJob())
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
@@ -512,6 +508,7 @@ class ActionProcessing extends BaseAction {
 			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
 					? option.getWay()
 					: manual.getGoBackConfig().getWay();
+			second = goBackParamDefaultWay(second);
 		}
 		return Pair.of(first, second);
 	}
@@ -537,9 +534,14 @@ class ActionProcessing extends BaseAction {
 					.findFirst();
 			if (optDefineConfig.isPresent()) {
 				first = opt.get().getWorkLog();
-				second = StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)
-						? option.getWay()
-						: optDefineConfig.get().getWay();
+				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
+					second = option.getWay();
+				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
+					second = manual.getGoBackConfig().getWay();
+				} else {
+					second = optDefineConfig.get().getWay();
+				}
+				second = goBackParamDefaultWay(second);
 			}
 		}
 		return Pair.of(first, second);
@@ -565,8 +567,16 @@ class ActionProcessing extends BaseAction {
 			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
 					? option.getWay()
 					: manual.getGoBackConfig().getWay();
+			second = goBackParamDefaultWay(second);
 		}
 		return Pair.of(first, second);
+	}
+
+	private String goBackParamDefaultWay(String way) {
+		if (StringUtils.equalsIgnoreCase(way, GoBackConfig.WAY_STEP)) {
+			return GoBackConfig.WAY_STEP;
+		}
+		return GoBackConfig.WAY_JUMP;
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionProcessing.Wo")

@@ -361,7 +361,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
-		this.decision = task.getDecision();
 	}
 
 	public TaskCompletedProperties getProperties() {
@@ -603,11 +602,11 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	protected String opinion;
 
-	public static final String DECISION_FIELDNAME = "decision";
-	@FieldDescribe("决策.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	protected String decision;
+//	public static final String DECISION_FIELDNAME = "decision";
+//	@FieldDescribe("决策.")
+//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	protected String decision;
 
 	public static final String opinionLob_FIELDNAME = "opinionLob";
 	@Lob
@@ -931,13 +930,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
-	public String getDecision() {
-		return decision;
-	}
-
-	public void setDecision(String decision) {
-		this.decision = decision;
-	}
+//	public String getDecision() {
+//		return decision;
+//	}
+//
+//	public void setDecision(String decision) {
+//		this.decision = decision;
+//	}
 
 	public String getJob() {
 		return job;
