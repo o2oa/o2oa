@@ -10,6 +10,7 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
@@ -19,7 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.ByteArrayOutputStream;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.*;
 
 class ActionBatchDownload extends BaseAction {
@@ -43,13 +44,22 @@ class ActionBatchDownload extends BaseAction {
 			fileName = adjustFileName(fileName, document.getTitle());
 			Map<String, byte[]> map = new HashMap<>();
 			this.assembleFile(business, map, flag);
-			LOGGER.info("batchDown to:{}，att size:{}, from doc:{}.", fileName, readableAttachmentList.size(), docId);
-			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				business.downToZip(readableAttachmentList, os, map);
-				byte[] bs = os.toByteArray();
-				Wo wo = new Wo(bs, this.contentType(false, fileName), this.contentDisposition(false, fileName));
-				result.setData(wo);
-			}
+
+			StreamingOutput streamingOutput = output -> {
+				try {
+					business.downToZip(readableAttachmentList, output, map);
+					output.flush();
+				} catch (Exception e) {
+					LOGGER.warn("batchDown error：{}", e.getMessage());
+				}
+			};
+
+			LOGGER.info("{} do batchDown to:{}, from doc:{}.", effectivePerson.getDistinguishedName(), fileName, docId);
+			String fastETag = StringTools.uniqueToken();
+			Wo wo = new Wo(streamingOutput, this.contentType(true, fileName),
+					this.contentDisposition(true, fileName),
+					null, fastETag);
+			result.setData(wo);
 			return result;
 		}
 	}
@@ -113,8 +123,8 @@ class ActionBatchDownload extends BaseAction {
 
 		private static final long serialVersionUID = -4350231304623811352L;
 
-		public Wo(byte[] bytes, String contentType, String contentDisposition) {
-			super(bytes, contentType, contentDisposition);
+		public Wo(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength, String fastETag) {
+			super(streamingOutput, contentType, contentDisposition, contentLength, fastETag);
 		}
 
 	}
