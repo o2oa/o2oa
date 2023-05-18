@@ -2212,12 +2212,16 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 unitOpt.exclude = exclude;
             }
 
-            // var groupOpt;
-            // if( this.groupOptions ){
-            //    groupOpt = this.groupOptions.getOptions();
-            //    groupOpt.values = (this.json.isInput) ? [] : values;
-            //    groupOpt.exclude = exclude;
-            // }
+            var groupOpt;
+            if( this.groupOptions ){
+               groupOpt = this.groupOptions.getOptions();
+                if (this.ignoreOldData) {
+                    groupOpt.values = this._computeValue() || [];
+                } else {
+                    groupOpt.values = this.getValue() || [];
+                }
+               groupOpt.exclude = exclude;
+            }
 
             var defaultOpt;
             if (layout.mobile) {
@@ -2281,7 +2285,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             };
 
             if (this.selectTypeList.length === 1) {
-                return Object.merge(
+                var opts = Object.merge(
                     defaultOpt,
                     {
                         "type": this.selectTypeList[0],
@@ -2296,8 +2300,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                         //"onClose": this.selectOnClose.bind(this)
                     },
                     layout.mobile ? mobileEvents : {},
-                    identityOpt || unitOpt
+                    identityOpt || unitOpt || groupOpt
                 )
+                return this.filterOptionValues( opts, this.selectTypeList[0] );
             } else if (this.selectTypeList.length > 1) {
                 var options = {
                     "type": "",
@@ -2326,9 +2331,40 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                         unitOpt
                     );
                 }
-                //if( groupOpt )options.groupOptions = groupOpt;
+                if (groupOpt) {
+                    options.groupOptions = Object.merge(
+                        defaultOpt,
+                        layout.mobile ? mobileEvents : {},
+                        groupOpt
+                    );
+                }
                 return options;
             }
+        },
+        filterOptionValues: function( options, type ){
+            var suffix;
+            switch (type) {
+                case "identity": suffix = "I"; break;
+                case "unit": suffix = "U"; break;
+                case "group": suffix = "G"; break;
+            }
+            options.values = (options.values || []).filter(function (v) {
+                if( typeOf(v) === "string" ){
+                    if( v.contains("@") ){
+                        return v.split("@").getLast().toUpperCase() === suffix;
+                    }else{
+                        return true;
+                    }
+                }else if( typeOf(v) === "object" ){
+                    if( v.distinguishedName ){
+                        return v.distinguishedName.split("@").getLast().toUpperCase() === suffix;
+                    }else{
+                        return false;
+                    }
+                }
+                return false;
+            }.bind(this));
+            return options;
         },
         selectOnComplete: function (items) { //移动端才执行
             var array = [];
@@ -2544,6 +2580,11 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                     if (v) values.push(v)
                 });
             }
+            // if (this.json.groupValue) {
+            //     this.json.groupValue.each(function (v) {
+            //         if (v) values.push(v)
+            //     });
+            // }
             if (this.json.dutyValue) {
                 var dutys = JSON.decode(this.json.dutyValue);
                 var par;
