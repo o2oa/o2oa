@@ -152,7 +152,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
 				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
 
-		//相互之间有影响的重新计算.
+		// 相互之间有影响的重新计算.
 		recalculate(wo, work);
 
 		return wo;
@@ -175,6 +175,8 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			wo.setAllowGoBack(false);
 			wo.setAllowRollback(false);
 		}
+		// 如果没有权限处理那么设置为false
+		wo.setAllowGoBack(wo.getAllowProcessing() && wo.getAllowGoBack());
 	}
 
 	/**

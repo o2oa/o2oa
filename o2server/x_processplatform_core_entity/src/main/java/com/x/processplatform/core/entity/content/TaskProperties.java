@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TaskProperties extends JsonProperties {
 
@@ -39,6 +44,17 @@ public class TaskProperties extends JsonProperties {
 
 	@FieldDescribe("待办计时暂停自然时间时长(分钟).")
 	private Integer pauseMinutes;
+
+	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
+	private Boolean routeNameDisable;
+
+	public Boolean getRouteNameDisable() {
+		return routeNameDisable;
+	}
+
+	public void setRouteNameDisable(Boolean routeNameDisable) {
+		this.routeNameDisable = routeNameDisable;
+	}
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == prevTaskIdentityList) {

@@ -20,6 +20,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -94,6 +95,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
 				this.opinion = this.getProperties().getOpinion();
 			}
+			this.routeNameDisable = this.getProperties().getRouteNameDisable();
 		}
 	}
 
@@ -129,6 +131,19 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.properties = new TaskProperties();
 	}
 
+	public Boolean getRouteNameDisable() {
+		return routeNameDisable;
+	}
+
+	public void setRouteNameDisable(Boolean routeNameDisable) {
+		this.routeNameDisable = routeNameDisable;
+		this.getProperties().setRouteNameDisable(routeNameDisable);
+	}
+
+	@Transient
+	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
+	private Boolean routeNameDisable;
+
 	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
 			Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this();
@@ -158,7 +173,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.creatorUnit = work.getCreatorUnit();
 		this.workCreateType = work.getWorkCreateType();
 		this.expireTime = expireTime;
-		this.routeNameEnable = true;
+		this.routeNameDisable = false;
 		this.routeName = "";
 		this.opinion = "";
 
@@ -492,12 +507,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	protected String opinion;
 
-//	public static final String DECISION_FIELDNAME = "decision";
-//	@FieldDescribe("决策.")
-//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	protected String decision;
-
 	public static final String opinionLob_FIELDNAME = "opinionLob";
 	@Schema(description = "待办处理意见长文本.")
 	@Lob
@@ -572,13 +581,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + workCreateType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workCreateType;
-
-	public static final String ROUTENAMEENABLE_FIELDNAME = "routeNameEnable";
-	@Schema(description = "待办是否需要输入routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
-	@FieldDescribe("待办是否需要输入routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
-	@Column(name = ColumnNamePrefix + ROUTENAMEENABLE_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean routeNameEnable;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@Schema(description = "业务数据String值01.")
@@ -834,14 +836,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
-
-	public Boolean getRouteNameEnable() {
-		return routeNameEnable;
-	}
-
-	public void setRouteNameEnable(Boolean routeNameEnable) {
-		this.routeNameEnable = routeNameEnable;
-	}
 
 	public String getProcess() {
 		return process;
