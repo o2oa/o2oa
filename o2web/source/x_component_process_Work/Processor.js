@@ -2155,9 +2155,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             if (this.selectTypeList.contains("unit")) {
                 this.unitOptions = new MWF.xApplication.process.Work.Processor.UnitOptions(this.form, this.json);
             }
-            //if( this.selectTypeList.contains( "group" ) ){
-            //    this.groupOptions = new MWF.APPOrg.GroupOptions( this.form, this.json );
-            //}
+            if( this.selectTypeList.contains( "group" ) ){
+               this.groupOptions = new MWF.xApplication.process.Work.Processor.GroupOptions( this.form, this.json );
+            }
         },
         getOptions: function () {
             var _self = this;
@@ -2212,12 +2212,12 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 unitOpt.exclude = exclude;
             }
 
-            //var groupOpt;
-            //if( this.groupOptions ){
+            // var groupOpt;
+            // if( this.groupOptions ){
             //    groupOpt = this.groupOptions.getOptions();
             //    groupOpt.values = (this.json.isInput) ? [] : values;
             //    groupOpt.exclude = exclude;
-            //}
+            // }
 
             var defaultOpt;
             if (layout.mobile) {
@@ -3122,5 +3122,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
 
     MWF.xApplication.process.Work.Processor.IdentityOptions = new Class({
         Extends: MWF.APPOrg.IdentityOptions
+    });
+
+    MWF.xApplication.process.Work.Processor.GroupOptions = new Class({
+        Extends: MWF.APPOrg.GroupOptions
     });
 }

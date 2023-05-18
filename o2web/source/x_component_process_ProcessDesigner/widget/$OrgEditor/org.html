@@ -54,12 +54,16 @@
                 <td class="editTableValue">
                     <input type="radio" name="selectType" value="identity" text{($.selectType.indexOf('identity')!=-1)?'checked':''}
                             onchange="$('text{$.pid}identityProperties').setStyle('display','');
-                    $('text{$.pid}unitProperties').setStyle('display','none');"/>{{$.lp.personIdentity}}
+                                      $('text{$.pid}unitProperties').setStyle('display','none');
+                                      $('text{$.pid}groupProperties').setStyle('display','none');"/>{{$.lp.personIdentity}}
                     <input type="radio" name="selectType" value="unit" text{($.selectType.indexOf('unit')!=-1)?'checked':''}
                             onchange="$('text{$.pid}identityProperties').setStyle('display','none');
-                    $('text{$.pid}unitProperties').setStyle('display','');"/>{{$.lp.unit}}
-                    <!--<input type="radio" name="selectType" value="group" text{($.selectType.indexOf('group')!=-1)?'checked':''}-->
-                            <!--onchange="var tab = $('text{$.pid}groupProperty').retrieve('tab'); this.checked ? tab.enableTab() : tab.disableTab();"/>群组-->
+                                      $('text{$.pid}unitProperties').setStyle('display','');
+                                      $('text{$.pid}groupProperties').setStyle('display','none');"/>{{$.lp.unit}}
+                    <input type="radio" name="selectType" value="group" text{($.selectType.indexOf('group')!=-1)?'checked':''}
+                            onchange="$('text{$.pid}identityProperties').setStyle('display','none');
+                                      $('text{$.pid}unitProperties').setStyle('display','none');
+                                      $('text{$.pid}groupProperties').setStyle('display','');"/>{{$.lp.group}}
                 </td>
             </tr>
         </table>
@@ -353,28 +357,26 @@
                 </div>
             </div>
 
-
-            <!--<div id="text{$.pid}groupProperty" title="群组" class="MWFTab" data-group="selectType" style="display: text{($.selectType.indexOf('group')!=-1)?'block':'none'};">-->
-            <!--<div  id="text{$.pid}groupProperty">-->
-                <!--<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-                    <!--<tr>-->
-                        <!--<td class="editTableTitle">选择数量:</td>-->
-                        <!--<td class="editTableValue"><input type="text" name="groupCount" value="text{$.groupCount}" class="editTableInput"/></td>-->
-                    <!--</tr>-->
-                    <!--<tr>-->
-                        <!--<td class="editTableTitle">选择范围:</td>-->
-                        <!--<td class="editTableValue">-->
-                            <!--<input type="radio" name="groupRange" value="all" text{($.groupRange!=='group')?'checked':''}-->
-                            <!--onchange="if (this.checked)$('text{$.pid}groupScript').setStyle('display', 'none');"/>全部-->
-                            <!--<input type="radio" name="groupRange" value="group" text{($.groupRange==='group')?'checked':''}-->
-                            <!--onchange="if (this.checked)$('text{$.pid}groupScript').setStyle('display', '');"/>指定群组-->
-                        <!--</td>-->
-                    <!--</tr>-->
-                <!--</table>-->
-                <!--<div id="text{$.pid}groupScript" style="border-bottom: 1px solid #999; display: text{($.groupRange=='group')?'block':'none'}; ">-->
-                    <!--<div class="MWFFormulaArea" name="groupRangeKey" title="脚本 (S)"></div>-->
-                <!--</div>-->
-            <!--</div>-->
+            <div id="text{$.pid}groupProperties" style="display: text{($.selectType.indexOf('group')!=-1)?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.selectCount}}:</td>
+                        <td class="editTableValue"><input type="text" name="groupCount" value="text{$.groupCount}" class="editTableInput"/></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.groupRange}}:</td>
+                        <td class="editTableValue">
+                            <input type="radio" name="groupRange" value="all" text{($.groupRange!=='group')?'checked':''}
+                            onchange="if (this.checked)$('text{$.pid}groupScript').setStyle('display', 'none');"/>{{$.lp.all2}}
+                            <input type="radio" name="groupRange" value="group" text{($.groupRange==='group')?'checked':''}
+                            onchange="if (this.checked)$('text{$.pid}groupScript').setStyle('display', '');"/>{{$.lp.specifyGroup}}
+                        </td>
+                    </tr>
+                </table>
+                <div id="text{$.pid}groupScript" style="border-bottom: 1px solid #999; display: text{($.groupRange=='group')?'block':'none'}; ">
+                    <div class="MWFFormulaArea" name="groupRangeKey" title="{{$.lp.script}} (S)"></div>
+                </div>
+            </div>
 
 
         </div>
