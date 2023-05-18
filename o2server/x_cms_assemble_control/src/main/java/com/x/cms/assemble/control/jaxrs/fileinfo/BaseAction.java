@@ -8,6 +8,8 @@ import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
@@ -16,7 +18,19 @@ import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import com.x.cms.core.entity.FileInfo_;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -127,6 +141,27 @@ public class BaseAction extends StandardJaxrsAction {
 			this.fileBase64 = fileBase64;
 		}
 
+	}
+	
+	protected String adjustFileName(Business business, String documentId, String fileName) throws Exception {
+		List<String> list = new ArrayList<>();
+		list.add(fileName);
+		String base = FilenameUtils.getBaseName(fileName);
+		String extension = FilenameUtils.getExtension(fileName);
+		for (int i = 1; i < 50; i++) {
+			list.add(base + i + (StringUtils.isEmpty(extension) ? "" : "." + extension));
+		}
+		list.add(StringTools.uniqueToken());
+		EntityManager em = business.entityManagerContainer().get(FileInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<FileInfo> root = cq.from(FileInfo.class);
+		Predicate p = root.get(FileInfo_.name).in(list);
+		p = cb.and(p, cb.equal(root.get(FileInfo_.documentId), documentId));
+		cq.select(root.get(FileInfo_.name)).where(p);
+		List<String> os = em.createQuery(cq).getResultList();
+		list = ListUtils.subtract(list, os);
+		return list.get(0);
 	}
 
 }

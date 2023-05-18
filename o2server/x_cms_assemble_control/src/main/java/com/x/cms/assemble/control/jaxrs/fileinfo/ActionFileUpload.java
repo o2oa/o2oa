@@ -1,5 +1,17 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import java.util.Date;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -11,118 +23,134 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.UUID;
 
 public class ActionFileUpload extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionFileUpload.class);
 
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson,
-			String docId, String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String docId,
+			String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		if( StringUtils.isEmpty(docId) ){
-			throw new URLParameterGetException( new Exception("未获取到汇报ID") );
+		if (StringUtils.isEmpty(docId)) {
+			throw new URLParameterGetException(new Exception("未获取到汇报ID"));
 		}
 
-		Document document = documentQueryService.get( docId );
+		Document document = documentQueryService.get(docId);
 		if (null == document) {
-			throw  new ExceptionDocumentNotExists( docId );
+			throw new ExceptionDocumentNotExists(docId);
 		}
 
-		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
-		if(mapping == null){
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			fileName = adjustFileName(business, document.getId(), fileName);
+		}
+
+		StorageMapping mapping = ThisApplication.context().storageMappings().random(FileInfo.class);
+		if (mapping == null) {
 			throw new ExceptionStorageMappingNotExist(StorageType.cms.name());
 		}
 
 		this.verifyConstraint(bytes.length, fileName, null);
 
-		FileInfo attachment = this.concreteAttachment( mapping, document, fileName, effectivePerson, site );
+		FileInfo attachment = this.concreteAttachment(mapping, document, fileName, effectivePerson, site);
 
 		attachment.setType((new Tika()).detect(bytes, fileName));
 		logger.info("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
-		if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
+		if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
+				&& ExtractTextTools.available(bytes)) {
 			attachment.setText(ExtractTextTools.image(bytes));
 			logger.info("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 					attachment.getText());
 		}
 
 		attachment.saveContent(mapping, bytes, fileName);
-		attachment = fileInfoServiceAdv.saveAttachment( docId, attachment );
+		attachment = fileInfoServiceAdv.saveAttachment(docId, attachment);
 
-		CacheManager.notify( FileInfo.class );
-		CacheManager.notify( Document.class );
+		CacheManager.notify(FileInfo.class);
+		CacheManager.notify(Document.class);
 
 		Wo wo = new Wo();
-		wo.setId( attachment.getId() );
+		wo.setId(attachment.getId());
 		result.setData(wo);
 
 		return result;
 	}
 
-	private FileInfo concreteAttachment(StorageMapping mapping, Document document, String name, EffectivePerson effectivePerson, String site) throws Exception {
+	private FileInfo concreteAttachment(StorageMapping mapping, Document document, String name,
+			EffectivePerson effectivePerson, String site) throws Exception {
 		FileInfo attachment = new FileInfo();
 		String fileName = UUID.randomUUID().toString();
-		String extension = FilenameUtils.getExtension( name );
-		if ( StringUtils.isNotEmpty(extension)) {
+		String extension = FilenameUtils.getExtension(name);
+		if (StringUtils.isNotEmpty(extension)) {
 			fileName = fileName + "." + extension;
-		}else{
+		} else {
 			throw new Exception("file extension is empty.");
 		}
-		if( name.indexOf( "\\" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "\\");
+		if (name.indexOf("\\") > 0) {
+			name = StringUtils.substringAfterLast(name, "\\");
 		}
-		if( name.indexOf( "/" ) >0 ){
-			name = StringUtils.substringAfterLast( name, "/");
+		if (name.indexOf("/") > 0) {
+			name = StringUtils.substringAfterLast(name, "/");
 		}
-		attachment.setCreateTime( new Date() );
-		attachment.setLastUpdateTime( new Date() );
-		attachment.setExtension( extension );
-		attachment.setName( name );
-		attachment.setFileName( fileName );
-		attachment.setStorage( mapping.getName() );
-		attachment.setAppId( document.getAppId() );
-		attachment.setCategoryId( document.getCategoryId() );
-		attachment.setDocumentId( document.getId() );
-		attachment.setCreatorUid( effectivePerson.getDistinguishedName() );
-		attachment.setSite( site );
-		attachment.setFileHost( "" );
+		attachment.setCreateTime(new Date());
+		attachment.setLastUpdateTime(new Date());
+		attachment.setExtension(extension);
+		attachment.setName(name);
+		attachment.setFileName(fileName);
+		attachment.setStorage(mapping.getName());
+		attachment.setAppId(document.getAppId());
+		attachment.setCategoryId(document.getCategoryId());
+		attachment.setDocumentId(document.getId());
+		attachment.setCreatorUid(effectivePerson.getDistinguishedName());
+		attachment.setSite(site);
+		attachment.setFileHost("");
 		attachment.setFileType("ATTACHMENT");
-		attachment.setFileExtType( getExtType( extension ) );
-		attachment.setFilePath( "" );
+		attachment.setFileExtType(getExtType(extension));
+		attachment.setFilePath("");
 		return attachment;
 	}
 
-	private String getExtType( String ext ){
+	private String getExtType(String ext) {
 		String type = "OTHER";
-		if( "jpg".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("jpeg".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("png".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("tif".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("bmp".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("gif".equalsIgnoreCase( ext ) ){ type = "PICTURE";
-		} else if("xls".equalsIgnoreCase( ext ) ){ type = "EXCEL";
-		} else if("xlsx".equalsIgnoreCase( ext ) ){ type = "EXCEL";
-		} else if("doc".equalsIgnoreCase( ext ) ){ type = "WORD";
-		} else if("docx".equalsIgnoreCase( ext ) ){ type = "WORD";
-		} else if("ppt".equalsIgnoreCase( ext ) ){ type = "PPT";
-		} else if("pptx".equalsIgnoreCase( ext ) ){ type = "PPT";
-		} else if("zip".equalsIgnoreCase( ext ) ){ type = "ZIP";
-		} else if("rar".equalsIgnoreCase( ext ) ){ type = "ZIP";
-		} else if("txt".equalsIgnoreCase( ext ) ){ type = "TXT";
-		} else if("pdf".equalsIgnoreCase( ext ) ){ type = "PDF";
+		if ("jpg".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("jpeg".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("png".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("tif".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("bmp".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("gif".equalsIgnoreCase(ext)) {
+			type = "PICTURE";
+		} else if ("xls".equalsIgnoreCase(ext)) {
+			type = "EXCEL";
+		} else if ("xlsx".equalsIgnoreCase(ext)) {
+			type = "EXCEL";
+		} else if ("doc".equalsIgnoreCase(ext)) {
+			type = "WORD";
+		} else if ("docx".equalsIgnoreCase(ext)) {
+			type = "WORD";
+		} else if ("ppt".equalsIgnoreCase(ext)) {
+			type = "PPT";
+		} else if ("pptx".equalsIgnoreCase(ext)) {
+			type = "PPT";
+		} else if ("zip".equalsIgnoreCase(ext)) {
+			type = "ZIP";
+		} else if ("rar".equalsIgnoreCase(ext)) {
+			type = "ZIP";
+		} else if ("txt".equalsIgnoreCase(ext)) {
+			type = "TXT";
+		} else if ("pdf".equalsIgnoreCase(ext)) {
+			type = "PDF";
 		}
 		return type;
 	}

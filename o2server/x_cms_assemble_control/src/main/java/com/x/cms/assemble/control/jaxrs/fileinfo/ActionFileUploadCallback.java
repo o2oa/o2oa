@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
@@ -10,6 +12,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
@@ -41,6 +44,12 @@ public class ActionFileUploadCallback extends BaseAction {
 			throw  new ExceptionDocumentNotExistsCallback(callback, docId );
 		}
 
+
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			fileName = adjustFileName(business, document.getId(), fileName);
+		}
+		
 		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
 
 		this.verifyConstraint(bytes.length, fileName, callback);
