@@ -11,6 +11,8 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 public class TaskCompletedProperties extends JsonProperties {
 
+	private static final long serialVersionUID = -7986324325800894903L;
+
 	@FieldDescribe("从task带过来的上一处理人")
 	private List<String> prevTaskIdentityList;
 
