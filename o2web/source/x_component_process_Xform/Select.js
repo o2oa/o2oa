@@ -60,11 +60,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
 		if( typeOf(optionItems.then) === "function" ){
-			Promise.resolve(optionItems).then(function (value) {
+			Promise.resolve(optionItems).then(function (optItems) {
 				if (value){
 					if (typeOf(value)!=="array") value = [value];
 					var texts = [];
-					optionItems.each(function(item){
+					optItems.each(function(item){
 						var tmps = item.split("|");
 						var t = tmps[0];
 						var v = tmps[1] || t;
@@ -552,9 +552,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			var value = d.replace(/&#10;/g,""); //换行符&#10;
 			this.excelData = value;
 			var options = this.getOptionsObj();
-			var idx = options.textList.indexOf( value );
-			value = idx > -1 ? options.valueList[ idx ] : "";
-			this.setData(value, true);
+			this.moduleSelectAG = Promise.resolve(options).then(function (opts) {
+				var idx = opts.textList.indexOf( value );
+				value = idx > -1 ? opts.valueList[ idx ] : "";
+				this.setData(value, true);
+			}.bind(this));
 		}
 	
 }); 

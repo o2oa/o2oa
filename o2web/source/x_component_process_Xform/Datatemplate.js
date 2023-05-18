@@ -175,18 +175,18 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.fieldModuleLoaded = false;
 		},
 		load: function(){
-				this._loadModuleEvents();
-				if (this.fireEvent("queryLoad")){
-					this._queryLoaded();
-					this._loadUserInterface();
-					this._loadStyles();
-					this._loadDomEvents();
-					//this._loadEvents();
+			this._loadModuleEvents();
+			if (this.fireEvent("queryLoad")){
+				this._queryLoaded();
+				this._loadUserInterface();
+				this._loadStyles();
+				this._loadDomEvents();
+				//this._loadEvents();
 
-					this._afterLoaded();
-					this.fireEvent("afterLoad");
-					// this.fireEvent("load");
-				}
+				this._afterLoaded();
+				this.fireEvent("afterLoad");
+				// this.fireEvent("load");
+			}
 		},
 		_loadMergeEditNodeByScript: function(){
 			if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
@@ -451,21 +451,21 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * var data = this.form.get("fieldId").getAllSectionData();
 		 * //data格式如下：
 		 * {
-         *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": [ //区段1的key和data
-         *			{
-         *				"good": "yf",
-         *				"number_2": 11,
-         *				"prize": 1
-         *			}
-         *		],
-         *  	"83de86fc-60bc-4b4c-955c-1085915865a4": [ //区段2的key和data
-         *  		{
-         *  			"good": "yf",
-         *  			"number_2": 11,
-         *  			"prize": 10
-         *  		}
-         *  	]
-         *  }
+		 *  	"3455b82a-399c-4ee4-b9b9-e70ae40fbaf1": [ //区段1的key和data
+		 *			{
+		 *				"good": "yf",
+		 *				"number_2": 11,
+		 *				"prize": 1
+		 *			}
+		 *		],
+		 *  	"83de86fc-60bc-4b4c-955c-1085915865a4": [ //区段2的key和data
+		 *  		{
+		 *  			"good": "yf",
+		 *  			"number_2": 11,
+		 *  			"prize": 10
+		 *  		}
+		 *  	]
+		 *  }
 		 */
 		getAllSectionData: function(){
 			return this.getBusinessDataById();
@@ -601,7 +601,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				}else if( this.isShowSectionKey() ){
 					this._loadSectionLineList(callback, operation)
 				}else{
-				    this._loadLineList(callback, operation);
+					this._loadLineList(callback, operation);
 				}
 
 				this.moduleValueAG = null;
@@ -630,13 +630,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
 					if( !operation || operation === "moveUpList"){
-					    this._injectLineNode( sectionLine.node, beforeNode );
+						this._injectLineNode( sectionLine.node, beforeNode );
 					}
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 					//console.log("setIndex", sectionLine);
 				}else{
-				    var div = this._injectLineNode( new Element("div"), beforeNode );
-				    sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
+					var div = this._injectLineNode( new Element("div"), beforeNode );
+					sectionLine = this._loadSectionLine_EditSection(div, data, idx, isEdited, isNew );
 					//console.log("_loadSectionLine_EditSection", sectionLine);
 				}
 				if( this.sectionBy && this.sectionBy === data.sectionKey ){
@@ -674,17 +674,17 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( map[data.sectionKey] ) {
 					sectionLine =  map[data.sectionKey];
 					if( !operation || operation === "moveUpList"){
-					    this._injectLineNode( sectionLine.node, beforeNode );
+						this._injectLineNode( sectionLine.node, beforeNode );
 					}
 					//console.log("setIndex", sectionLine);
 					sectionLine.setIndex( data, idx, isEdited, isNew, operation );
 				}else {
-                    //var div = new Element("div").inject(this.node);
-                    var div = this._injectLineNode( new Element("div"), beforeNode );
-                    sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
+					//var div = new Element("div").inject(this.node);
+					var div = this._injectLineNode( new Element("div"), beforeNode );
+					sectionLine = this._loadSectionLine(div, data, idx, isEdited, isNew );
 					//console.log("_loadSectionLine", sectionLine);
 				}
-                this.sectionlineList.push(sectionLine);
+				this.sectionlineList.push(sectionLine);
 			}.bind(this))
 			if (callback) callback();
 		},
@@ -705,24 +705,24 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadLineList: function(callback, operation){
 			var map = this.unchangedLineMap || {};
-            Object.each(map, function (line, idx) {
-                line.setIndex( idx.toInt() );
-            });
+			Object.each(map, function (line, idx) {
+				line.setIndex( idx.toInt() );
+			});
 			this.data.each(function(data, idx){
-			    var idxStr = idx.toString();
-                var beforeNode = idx > 0 ? this.lineList[idx - 1].node : null;
-                if( map[idxStr] ){
-                	if( !operation || operation === "moveUpList" ){
-                		this._injectLineNode( map[idxStr].node, beforeNode );
+				var idxStr = idx.toString();
+				var beforeNode = idx > 0 ? this.lineList[idx - 1].node : null;
+				if( map[idxStr] ){
+					if( !operation || operation === "moveUpList" ){
+						this._injectLineNode( map[idxStr].node, beforeNode );
 					}
 					//console.log("inject", map[idxStr]);
 					this.lineList.push( map[idxStr] );
-                }else{
-                    var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
-                    var div = this._injectLineNode( new Element("div"), beforeNode );
-                    var line = this._loadLine(div, data, idx, isNew);
+				}else{
+					var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
+					var div = this._injectLineNode( new Element("div"), beforeNode );
+					var line = this._loadLine(div, data, idx, isNew);
 					//console.log("_loadLine", line);
-                    this.lineList.push(line);
+					this.lineList.push(line);
 				}
 			}.bind(this));
 			this.newLineIndex = null;
@@ -756,7 +756,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( this.isShowAllSection ){
 					if( this.sectionLineEdited && this.sectionLineEdited.lineList.length >= maxCount )return true;
 				}else{
-				    if( this.lineList.length >= maxCount )return true;
+					if( this.lineList.length >= maxCount )return true;
 				}
 			}
 			return false;
@@ -767,8 +767,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				if( this.isShowAllSection ){
 					if( this.sectionLineEdited && this.sectionLineEdited.lineList.length <= minCount )return true;
 				}else {
-				    if( this.lineList.length <= minCount )return true;
-				 }
+					if( this.lineList.length <= minCount )return true;
+				}
 			}
 			return false;
 		},
@@ -781,10 +781,10 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 					this.setAllSectionData( data, false, "setLineData" );
 				}
 			}else{
-			    var index = line.options.index;
-			    var data = this.getInputData();
-			    data[index] = d;
-			    this.setData( data, false, "setLineData" );
+				var index = line.options.index;
+				var data = this.getInputData();
+				data[index] = d;
+				this.setData( data, false, "setLineData" );
 			}
 		},
 		_addLine: function(ev, d){
@@ -795,7 +795,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 
-            var data, index, newLine;
+			var data, index, newLine;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -810,13 +810,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "addLine");
 				newLine = this.sectionLineEdited.lineList[index];
 			}else{
-                data = this.getInputData();
+				data = this.getInputData();
 
-                data.push(d || {});
-                index = data.length-1;
-                this.newLineIndex = index;
-                this.setData( data, false, "addLine" );
-                newLine = this.getLine(index);
+				data.push(d || {});
+				index = data.length-1;
+				this.newLineIndex = index;
+				this.setData( data, false, "addLine" );
+				newLine = this.getLine(index);
 			}
 
 			this.validationMode();
@@ -847,12 +847,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "insertLine");
 				newLine = this.sectionLineEdited.lineList[index];
 			}else {
-                index = beforeLine.options.index+1;
-                data = this.getInputData();
-                data.splice(index, 0, {});
-                this.newLineIndex = index;
-                this.setData( data, false, "insertLine" );
-                newLine = this.getLine( index );
+				index = beforeLine.options.index+1;
+				data = this.getInputData();
+				data.splice(index, 0, {});
+				this.newLineIndex = index;
+				this.setData( data, false, "insertLine" );
+				newLine = this.getLine( index );
 			}
 
 			this.validationMode();
@@ -867,7 +867,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				return false;
 			}
 			//使用数据驱动
-            var data, newLine;
+			var data, newLine;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -881,12 +881,12 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data , false, "insertLine");
 				line = this.sectionLineEdited.lineList[index];
 			}else {
-                data = this.getInputData();
-                if(data.length < index )return null;
-                data.splice(index, 0, d||{});
-                this.newLineIndex = index;
-                this.setData( data , false, "insertLine");
-                newLine = this.getLine( index );
+				data = this.getInputData();
+				if(data.length < index )return null;
+				data.splice(index, 0, d||{});
+				this.newLineIndex = index;
+				this.setData( data , false, "insertLine");
+				newLine = this.getLine( index );
 			}
 
 			this.validationMode();
@@ -948,7 +948,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 						d.splice(line.options.indexInSectionLine, 1);
 					}
 				}else {
-				    data.splice(line.options.index, 1);
+					data.splice(line.options.index, 1);
 				}
 
 				_self.fireEvent("afterDeleteLine");
@@ -957,7 +957,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			if( this.isShowAllSection ){
 				_self.setAllSectionData(data, false, "deleteLines");
 			}else{
-			    _self.setData( data , false, "deleteLines");
+				_self.setData( data , false, "deleteLines");
 			}
 			this.validationMode();
 
@@ -993,9 +993,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				}
 				this.setAllSectionData( data, false, "deleteLine" );
 			}else{
-                data = this.getInputData();
-                data.splice(line.options.index, 1);
-                this.setData( data , false, "deleteLine");
+				data = this.getInputData();
+				data.splice(line.options.index, 1);
+				this.setData( data , false, "deleteLine");
 			}
 
 			this.validationMode();
@@ -1143,7 +1143,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 
 			var old;
-            if(fireChange)old = Object.clone(this._getBusinessData() || {});
+			if(fireChange)old = Object.clone(this._getBusinessData() || {});
 
 			this._setUnchangedLineMap(data, operation);
 
@@ -1154,7 +1154,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.clearSubModules();
 			}
 
-            if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 
 			this.lineList = [];
 			this.sectionlineList = [];
@@ -1275,7 +1275,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				}.bind(this));
 			}
 			this.unchangedSectionLineMap = map;
-        },
+		},
 		_setUnchangedLineMap: function(data, operation){
 			if( !data ){
 				this.unchangedLineMap = {};
@@ -1314,11 +1314,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				Object.values(map).each(function (d) {
 					lines = lines.concat(d);
 				});
-                for (var i=0; i<this.lineList.length; i++){
-                    //this.lineList[i].clearSubModules();
-                    var l = this.lineList[i];
+				for (var i=0; i<this.lineList.length; i++){
+					//this.lineList[i].clearSubModules();
+					var l = this.lineList[i];
 					if(!lines.contains(l))l.clearSubModules();
-                }
+				}
 			}
 		},
 		resetId: function(){
@@ -1761,7 +1761,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this))
 	},
 	setIndex: function( data, index, isEdited, isNew, operation ){
-	    debugger;
+		debugger;
 		if( this.isUnchangedAll && index === this.options.index )return;
 
 		this.data = data;
@@ -1774,8 +1774,8 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		this.lineList = [];
 		var map = this.unchangedLineMap || {};
 		Object.each(map, function (line, idx) {
-            line.setIndex( this.template.lineList.length + idx.toInt(), idx.toInt() );
-        }.bind(this));
+			line.setIndex( this.template.lineList.length + idx.toInt(), idx.toInt() );
+		}.bind(this));
 		if( this.data &&  this.data.data ){
 			this.data.data.each(function (d, idx) {
 				if( !d )return;
@@ -1791,13 +1791,13 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 				}else{
 					var node = this._injectLineNode( new Element("div"), beforeNode );
 					var isEdited = false, isNew = false;
-                    if( this.options.isEdited ){
-                        var dt = this.template;
-                        isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
-                        isEdited = true;
-                        dt.isNew = false;
-                        dt.newLineIndex = null;
-                    }
+					if( this.options.isEdited ){
+						var dt = this.template;
+						isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
+						isEdited = true;
+						dt.isNew = false;
+						dt.newLineIndex = null;
+					}
 					var line = this._loadLine( node, d, idx, isEdited, isNew );
 					//console.log("_loadLine", line);
 					this.lineList.push(line);
@@ -1825,13 +1825,13 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		return line;
 	},
 	_injectLineNode: function( lineNode, beforeNode ){
-        if( beforeNode ){
-            lineNode.inject( beforeNode, "after");
-        }else{
-            lineNode.inject( this.node );
-        }
-        return lineNode;
-    },
+		if( beforeNode ){
+			lineNode.inject( beforeNode, "after");
+		}else{
+			lineNode.inject( this.node );
+		}
+		return lineNode;
+	},
 	loadSectionKeyNode: function () {
 		var sectionKeyStyles = this.template._parseStyles(this.template.json.sectionKeyStyles);
 		var keyNode = new Element("div.mwf_sectionkey", {
@@ -1855,7 +1855,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this));
 	},
 	_setUnchangedLineMap: function(data, operation){
-	    debugger;
+		debugger;
 		var fromOutside = !operation;
 		var dt = this.template;
 		var editalbe;
@@ -1910,11 +1910,11 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		var map = this.unchangedLineMap || {};
 		var hasUnchangedLine = Object.keys(map).length > 0;
 
-        if( !hasUnchangedLine ){
-            if( this.keyNode ){
-                this.keyNode.destroy();
-                this.keyNode = null;
-            }
+		if( !hasUnchangedLine ){
+			if( this.keyNode ){
+				this.keyNode.destroy();
+				this.keyNode = null;
+			}
 		}
 
 		var lines = [];
@@ -1922,7 +1922,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			lines = lines.concat(d);
 		});
 		for (var i=0; i<this.lineList.length; i++){
-		    var l = this.lineList[i];
+			var l = this.lineList[i];
 			if(!lines.contains(l)){
 				l.clearSubModules();
 			}
@@ -1974,7 +1974,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		this.setIndex();
 	},
 	setIndex: function(index, indexInSectionLine){
-        var hasIndexArg = typeOf(index) !== "null";
+		var hasIndexArg = typeOf(index) !== "null";
 		var hasIndexInSectionLineArg = typeOf(indexInSectionLine) !== "null";
 
 		if( hasIndexArg && hasIndexInSectionLineArg){
@@ -1990,25 +1990,25 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			this.options.indexText = (index.toInt()+1).toString();
 		}
 
-        if( hasIndexInSectionLineArg ){
+		if( hasIndexInSectionLineArg ){
 			this.options.indexInSectionLine = indexInSectionLine;
 			this.options.indexInSectionLineText = (indexInSectionLine.toInt()+1).toString();
 		}
 
-        //合并状态或拆分状态
-        var sectionKey = this.options.sectionKey || this.template.sectionBy;
-        this.modules.each(function (module) {
-            var json = module.json;
-            var id, oldId = json.id, templateJsonId = json.originialId;
-            if( this.template.isShowAllSection ){
-                id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.originialId;
-            }else if( sectionKey ){
-                id = this.template.json.id + ".." + sectionKey + ".." + this.options.index + ".." + json.originialId;
-            }else{
-                id = this.template.json.id + ".." + this.options.index + ".." + json.originialId;
-            }
-            json.id = id;
-            switch (json.type) {
+		//合并状态或拆分状态
+		var sectionKey = this.options.sectionKey || this.template.sectionBy;
+		this.modules.each(function (module) {
+			var json = module.json;
+			var id, oldId = json.id, templateJsonId = json.originialId;
+			if( this.template.isShowAllSection ){
+				id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.originialId;
+			}else if( sectionKey ){
+				id = this.template.json.id + ".." + sectionKey + ".." + this.options.index + ".." + json.originialId;
+			}else{
+				id = this.template.json.id + ".." + this.options.index + ".." + json.originialId;
+			}
+			json.id = id;
+			switch (json.type) {
 				case "Select":
 					(module.areaNode || module.node).set("id", id);
 					break;
@@ -2021,29 +2021,29 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					break;
 			}
 
-            if( json.type==="Attachment" || json.type==="AttachmentDg" ){
-                json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
-            }
+			if( json.type==="Attachment" || json.type==="AttachmentDg" ){
+				json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
+			}
 
-            delete this.all[oldId];
-            this.all[id] = module;
+			delete this.all[oldId];
+			this.all[id] = module;
 
-            delete this.allField[oldId];
-            this.allField[id] = module;
+			delete this.allField[oldId];
+			this.allField[id] = module;
 
-            if(this.form.all[oldId]){
-                delete this.form.all[oldId];
-                this.form.all[id] = module;
-            }
+			if(this.form.all[oldId]){
+				delete this.form.all[oldId];
+				this.form.all[id] = module;
+			}
 
-            if(this.form.forms[oldId]){
-                delete this.form.forms[oldId];
-                this.form.forms[id] = module;
-            }
+			if(this.form.forms[oldId]){
+				delete this.form.forms[oldId];
+				this.form.forms[id] = module;
+			}
 
 			this.checkSequence(module, templateJsonId);
-        }.bind(this));
-    },
+		}.bind(this));
+	},
 	load: function(){
 		this.node.set("html", this.template.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node);
@@ -2067,8 +2067,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					var index = this.options.index;
 					var id;
 					if( this.template.isShowAllSection ){
-					    id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.id;
-				    }else if( sectionKey ){
+						id = this.template.json.id + ".." + sectionKey + ".." + this.options.indexInSectionLine + ".." + json.id;
+					}else if( sectionKey ){
 						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
 					}else{
 						id = this.template.json.id + ".." + index + ".." + json.id;
@@ -2089,12 +2089,12 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 
 					var module = this.form._loadModule(json, node, function () {
 						if( _self.options.isMergeRead ){
-                            this.field = false; //不希望保存数据
-                            this._getBusinessData = function(){
-                                return _self.data[templateJsonId];
-                            };
-                            this._setBusinessData = function () {};
-					    }
+							this.field = false; //不希望保存数据
+							this._getBusinessData = function(){
+								return _self.data[templateJsonId];
+							};
+							this._setBusinessData = function () {};
+						}
 						if( _self.widget )this.widget = _self.widget;
 						this.parentLine = _self;
 						this.parentDatatemplate = _self.template;
@@ -2401,55 +2401,41 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterDatatemplate = new Class({
 			this._loadUserInterface();
 			this._afterLoaded();
 			this.fireEvent("afterLoad");
-			// this.fireEvent("load");
 		}
 	},
 	_loadUserInterface: function(){
-		// this.fireEvent("queryLoad");
-
-		// this.editModules = [];
-
-		this.table = new Element("table").inject(this.node);
-		this.tBody = new Element("tbody").inject(this.table);
 
 		this.editable = true;
 
 		//是否多行同时编辑
 		this.multiEditMode = true;
 
-		this.data = {"data": [], "total":{}};
+		this.data = [];
 		this._setValue(this.data);
 
 		this.lineList = [];
 
-		this.loadDatatable();
+		this.loadDatatemplate();
 	},
-	loadDatatable: function(){
+	loadDatatemplate: function(){
 		this.loading = true;
 
-		//this._loadTitleTr();
-		//this._loadTemplate();
-		//this._loadTotalTr();
-
-		// this.templateNode = this.mainDatatable.templateNode;
-		// this.templateTr = this.mainDatatable.templateTr;
-		this.columnCount = this.mainDatatable.columnCount;
+		this.templateJson = this.mainDatatable.templateJson;
 		this.templateHtml = this.mainDatatable.templateHtml;
 
 		this.fireEvent("load");
-		this._loadDatatable(function(){
+		this._loadDataTemplate(function(){
 			this.fieldModuleLoaded = true;
 			this.loading = false;
 			this.fireEvent("postLoad");
 		}.bind(this));
 	},
-	_loadDatatable: function(callback){
+	_loadDataTemplate: function(callback){
 		this._loadLineList(function(){
-			//this._loadTotal();
 			if(callback)callback();
 		}.bind(this));
 	},
-	_loadLine: function(container, data, index, isEdited, isNew){
+	_loadLine: function(container, data, index, isNew){
 		var line = new MWF.xApplication.process.Xform.Datatemplate.ImporterLine(container, this, data, {
 			index : index,
 			indexText : (index+1).toString()
@@ -2459,14 +2445,14 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterDatatemplate = new Class({
 		this.fireEvent("afterLoadLine", [line]);
 		return line;
 	},
-	_addLine: function(ev, edited, d){
+	_addLine: function(ev, d){
 
 		var data, index, line;
 
 		index = this.lineList.length;
-		data = this.data;
+		data = this.getInputData();
 
-		data.data.push(d||{});
+		data.push(d||{});
 		this.newLineIndex = index;
 
 		this.setData( data );
@@ -2479,21 +2465,8 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterDatatemplate = new Class({
 
 		return line;
 	},
-	// _delLine: function(line){
-	// 	this.fireEvent("deleteLine", [line]);
-	//
-	// 	//使用数据驱动
-	// 	var data = this.data;
-	// 	data.data.splice(line.options.index, 1);
-	//
-	// 	if(this.currentEditedLine === line)this.currentEditedLine = null;
-	// 	this.setData( data );
-	//
-	// 	// this.validationMode();
-	// 	this.fireEvent("afterDeleteLine");
-	//
-	// 	this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
-	// },
+	_setSubDatatemplateOuterEvents: function(){
+	},
 	destroy: function(){
 		this.clearSubModules();
 		var id = this.json.id;
@@ -2535,11 +2508,7 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 		this.allField_templateId = {};
 	},
 	load: function(){
-		// if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
-
 		this.loadModules();
-
-		// if( !this.datatable.multiEditMode )this.originalData = Object.clone(this.data);
 	},
 	loadModules: function(){
 		this.node.set("html", this.template.templateHtml);
@@ -2563,37 +2532,15 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 
 				var index = "0"; //this.options.index;
 
-				var id;
-				// if( this.datatable.isShowAllSection ){
-				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.id;
-				// }else if( sectionKey ){
-				// 	id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
-				// }else{
-				id = this.template.json.id + "..data.." + index + ".." + json.id;
-				// }
+				var id = this.template.json.id + "..data.." + index + ".." + json.id;
 
 				json.id = id;
 				node.set("id", id);
 
-				// if( json.type==="Attachment" || json.type==="AttachmentDg" ){
-				// 	json.type = "AttachmentDg";
-				// 	json.ignoreSite = true;
-				// 	json.site = this.getAttachmentSite(json, templateJsonId, sectionKey);
-				// }
-
 				if (this.form.all[id]) this.form.all[id] = null;
 				if (this.form.forms[id])this.form.forms[id] = null;
 
-				//var hasData = this.data.hasOwnProperty(templateJsonId);
-
 				var module = this.form._loadModule(json, node, function () {
-
-					// this.field = false; //不希望保存数据
-					// this._getBusinessData = function(){
-					// 	return _self.data[templateJsonId];
-					// };
-					// this._setBusinessData = function () {};
-
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatemplate = _self.template;
@@ -2618,7 +2565,6 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 							}
 						}
 					}
-
 				});
 				if(!module.parentLine)module.parentLine = this;
 				if(!module.parentDatatemplate)module.parentDatatemplate = this.template;
@@ -2629,14 +2575,14 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 				this.all[id] = module;
 				this.all_templateId[templateJsonId] = module;
 
-				if (module.field) {
-					if(this.options.isEdited) {
+				if( module.field && this.options.isEdited ) {
 					this.allField[id] = module;
 					this.allField_templateId[templateJsonId] = module;
 					this.fields.push( module );
 				}
 			}
 		}.bind(this));
+
 	},
 	clearSubModules: function () { //把module清除掉
 		for(var key in this.all){
@@ -2659,14 +2605,6 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 	get: function(templateJsonId){
 		return this.all_templateId[templateJsonId];
 	},
-	// computeModuleData: function( when ){
-	// 	for( var key in this.allField_templateId){
-	// 		var module = this.allField_templateId[key];
-	// 		if( module.json.compute === when ){
-	// 			this.data[key] = module.getData();
-	// 		}
-	// 	}
-	// },
 	getData: function () {
 		var data = this.data;
 		for( var key in this.allField_templateId){
@@ -2679,22 +2617,7 @@ MWF.xApplication.process.Xform.Datatemplate.ImporterLine =  new Class({
 			}
 		}
 		return data;
-	},
-	// validation: function(){
-	// 	if( !this.validationFields())return false;
-	// 	if( !this.validationCompleteLine())return false;
-	// 	return true;
-	// },
-	// validationFields: function(){
-	// 	var flag = true;
-	// 	this.fields.each(function(field, key){
-	// 		if (field.json.type!="sequence" && field.validationMode ){
-	// 			field.validationMode();
-	// 			if (!field.validation()) flag = false;
-	// 		}
-	// 	}.bind(this));
-	// 	return flag;
-	// },
+	}
 });
 
 MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
@@ -2716,7 +2639,7 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		});
 		resultArr.push( titleArr );
 
-        var lineList = [];
+		var lineList = [];
 
 		if( this.template.isShowAllSection ){
 			if( this.exportAllSection ){
@@ -2738,23 +2661,23 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			resultArr.push( p );
 		}.bind(this));
 
-        Promise.all(resultArr).then(function ( rstArr ) {
-            var colWidthArr = this.getColWidthArray();
-            var excelName = this.getExcelName();
+		Promise.all(resultArr).then(function ( rstArr ) {
+			var colWidthArr = this.getColWidthArray();
+			var excelName = this.getExcelName();
 
-            var arg = {
-                data : rstArr,
-                colWidthArray : colWidthArr,
-                title : excelName
-            };
-            this.template.fireEvent("export", [arg]);
+			var arg = {
+				data : rstArr,
+				colWidthArray : colWidthArr,
+				title : excelName
+			};
+			this.template.fireEvent("export", [arg]);
 
-            new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
-                arg.data || rstArr,
-                arg.title || excelName,
-                arg.colWidthArray || colWidthArr,
-                this.getDateIndexArray()  //日期格式列下标
-            );
+			new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template ).exportToExcel(
+				arg.data || rstArr,
+				arg.title || excelName,
+				arg.colWidthArray || colWidthArr,
+				this.getDateIndexArray()  //日期格式列下标
+			);
 		}.bind(this))
 	},
 	getLineExportData: function(line, index ){
@@ -2768,10 +2691,10 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				exportData.push("");
 			}else{
 				var text;
-                if ( json.type === "Label" && module.node) {
+				if ( json.type === "Label" && module.node) {
 					text = module.node.get("text");
 				}else{
-				    text = module.getExcelData();
+					text = module.getExcelData();
 				}
 
 				if( !text && o2.typeOf(text) !== "number" ){
@@ -2975,8 +2898,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.form = this.template.form;
 
 		this.lp = MWF.xApplication.process.Xform.LP;
-		this.columnText =  lp.importValidationColumnText;
-		this.columnTextExcel = lp.importValidationColumnTextExcel;
+		this.columnText =  this.lp.importValidationColumnText;
+		this.columnTextExcel = this.lp.importValidationColumnTextExcel;
 		this.excelUtil = new MWF.xApplication.process.Xform.Datatemplate.ExcelUtils( this.template );
 
 	},
@@ -3025,58 +2948,21 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}.bind(this));
 	},
 	destroySimulateModule: function(){
-		if( !this.simelateModuleMap )return;
-		var keys = Object.keys(this.simelateModuleMap);
-		keys.each(function (key, i) {
-			var module = this.simelateModuleMap[key];
-			if( module ){
-				var id = module.json.id;
-				if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
-				delete this.simelateModuleMap[key];
-			}
-		}.bind(this))
-		this.simelateModuleMap = null;
-
-		if(this.simulateNode){
-			this.simulateNode.destroy();
-			this.simulateNode = null;
+		if( !this.importerDatatemplate ){
+			this.form.disallowSaving = false;
+			return;
 		}
+
+		this.importerDatatemplate.destroy();
+		this.importerDatatemplate = null;
+		this.form.disallowSaving = false;
 	},
 	loadSimulateModule: function(){
-		if( this.simelateModuleMap ){
-			this.destroySimulateModule();
-		}
-		//加载模拟字段
-		this.simelateModuleMap = {};
-		this.simulateNode = new Element("div").inject(this.template.node);
-		this.simulateNode.hide();
-		this.simulateNode.set("html", this.template.templateHtml);
-		var moduleNodes = this.form._getModuleNodes(this.simulateNode);
-		moduleNodes.each(function (node) {
-			if (node.get("MWFtype") !== "form") {
-				var _self = this;
+		this.form.disallowSaving = true;
+		this.importerDatatemplate = new MWF.xApplication.process.Xform.Datatemplate.ImporterDatatemplate( this.template );
+		this.importerDatatemplate.load();
 
-				var tJson = this.form._getDomjson(node);
-				if( tJson && this.isAvaliableField(tJson) ){
-					var json = Object.clone(tJson);
-
-					var templateJsonId = json.id;
-
-					json.id = "dtSimulate_"+json.id;
-					node.set("id", json.id);
-
-					if (!MWF["APP" + json.type]) {
-						MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
-					}
-					var module = new MWF["APP" + json.type](node, json, this.form);
-
-					this.simelateModuleMap[templateJsonId] = module;
-
-					module.load();
-
-				}
-			}
-		}.bind(this));
+		this.importerLine = this.importerDatatemplate.addLine({});
 	},
 	getFieldArray: function(){
 		//this.loadSimulateModule();
@@ -3149,46 +3035,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 						default:
 							value = d; //d.replace(/&#10;/g,""); //换行符&#10;
 							break;
-						// case "Combox":
-						// case "Address":
-						// 	arr = this.stringToArray(d);
-						// 	value = arr.length === 0  ? arr[0] : arr;
-						// 	break;
-						// case "Checkbox":
-						// 	arr = this.stringToArray(d);
-						// 	var options = module.getOptionsObj();
-						// 	arr.each( function( a, i ){
-						// 		var idx = options.textList.indexOf( a );
-						// 		arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-						// 	});
-						// 	value = arr.length === 1  ? arr[0] : arr;
-						// 	break;
-						// case "Radio":
-						// case "Select":
-						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
-						// 	var options = module.getOptionsObj();
-						// 	var idx = options.textList.indexOf( value );
-						// 	value = idx > -1 ? options.valueList[ idx ] : value;
-						// 	break;
-						// case "Textarea":
-						// 	value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-						// 	break;
-						// case "Calendar":
-						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
-						// 	if( value && (new Date(value).isValid()) ){
-						// 		var format;
-						// 		if (!json.format){
-						// 			if (json.selectType==="datetime" || json.selectType==="time"){
-						// 				format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-						// 			}else{
-						// 				format = Locale.get("Date").shortDate;
-						// 			}
-						// 		}else{
-						// 			format = json.format;
-						// 		}
-						// 		value = Date.parse( value ).format( format );
-						// 	}
-						// 	break;
 					}
 				}
 
@@ -3322,97 +3168,6 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		}
 		return true;
 	},
-	// checkData : function( callback ){
-	// 	var parsedData = this.parseImportedData();
-	// 	this.isImportSuccess = true;
-	//
-	// 	this.importedData.each( function(lineData, lineIndex){
-	//
-	// 		var errorTextList = [];
-	// 		var errorTextListExcel = [];
-	//
-	// 		var parsedLineData = (parsedData && parsedData[lineIndex]) ? parsedData[lineIndex] : [];
-	//
-	// 		this.fieldArray.each( function (obj, i) {
-	// 			var index = obj.index;
-	// 			var json = obj.json;
-	// 			var module = obj.module;
-	// 			var text = obj.text;
-	//
-	// 			var colInfor = columnText.replace( "{n}", index+1 );
-	// 			var colInforExcel = columnTextExcel.replace( "{n}", excelUtil.index2ColName( index ) );
-	//
-	// 			var d = lineData[text] || "";
-	// 			var parsedD = parsedLineData[json.id] || "";
-	//
-	// 			if(d){
-	//
-	// 				switch (json && json.type) {
-	// 					case "Org":
-	// 					case "Reader":
-	// 					case "Author":
-	// 					case "Personfield":
-	// 					case "Orgfield":
-	// 						var arr = this.stringToArray(d);
-	// 						arr.each( function(d, idx){
-	// 							var obj = this.getOrgData( d );
-	// 							if( obj.errorText ){
-	// 								errorTextList.push( colInfor + obj.errorText + lp.fullstop );
-	// 								errorTextListExcel.push( colInforExcel + obj.errorText + lp.fullstop );
-	// 							}
-	// 						}.bind(this));
-	// 						break;
-	// 					case "Number":
-	// 						if (isNaN(d)){
-	// 							errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );
-	// 							errorTextListExcel.push( colInforExcel + d + lp.notValidNumber + lp.fullstop );
-	// 						}
-	// 						break;
-	// 					case "Calendar":
-	// 						if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-	// 							errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-	// 							errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-	// 						}
-	// 						break;
-	// 					default:
-	// 						break;
-	// 				}
-	// 			}
-	// 			if (module && module.setData && json.type !== "Address"){
-	// 				var hasError = false;
-	// 				if(["Org","Reader","Author","Personfield","Orgfield"].contains(json.type)){
-	// 					if(o2.typeOf(parsedD)==="array" && parsedD.length){
-	// 						hasError = parsedD.some(function (item) { return item.errorText; })
-	// 					}
-	// 				}
-	// 				if(!hasError){
-	// 					module.setData(parsedD);
-	// 					module.validationMode();
-	// 					if (!module.validation() && module.errNode){
-	// 						errorTextList.push(colInfor + module.errNode.get("text"));
-	// 						errorTextListExcel.push( colInforExcel + module.errNode.get("text"));
-	// 						module.errNode.destroy();
-	// 					}
-	// 				}
-	// 			}
-	// 		}.bind(this));
-	//
-	// 		if(errorTextList.length>0){
-	// 			lineData.errorTextList = errorTextList;
-	// 			lineData.errorTextListExcel = errorTextListExcel;
-	// 			flag = false;
-	// 		}
-	//
-	// 	}.bind(this));
-	//
-	// 	var arg = {
-	// 		validted : flag,
-	// 		data : idata
-	// 	};
-	// 	this.template.fireEvent( "validImport", [arg] );
-	//
-	// 	return arg.validted;
-	// },
 	checkData : function( callback){
 		this.parsedData = this.parseImportedData();
 		this.isImportSuccess = true;
@@ -3461,9 +3216,9 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 	},
 	_checkModuleData: function (field, lineData, parsedLineData) {
 		var index = field.index;
-        var json = field.json;
-        var module = field.module;
-        var text = field.text;
+		var json = field.json;
+		var module = field.module;
+		var text = field.text;
 
 		var colInfor = this.columnText.replace( "{n}", index+1 );
 		var colInforExcel = this.columnTextExcel.replace( "{n}", this.excelUtil.index2ColName( index ) );

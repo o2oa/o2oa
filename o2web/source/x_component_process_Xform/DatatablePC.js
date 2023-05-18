@@ -3996,20 +3996,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.importerDatatable.destroy();
 		this.importerDatatable = null;
 		this.form.disallowSaving = false;
-
-		// if( !this.importerLine ){
-		// 	this.form.disallowSaving = false;
-		// 	return;
-		// }
-		//
-		// this.importerLine.clearSubModules();
-		// this.importerLine = null;
-		//
-		// if(this.importerLineNode){
-		// 	this.importerLineNode.destroy();
-		// 	this.importerLineNode = null;
-		// }
-		// this.form.disallowSaving = false;
 	},
 	loadSimulateModule: function(){
 		this.form.disallowSaving = true;
@@ -4017,68 +4003,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.importerDatatable.load();
 
 		this.importerLine = this.importerDatatable.addLine({});
-
-		// this.importerLineNode = new Element("tr");
-		// this.importerLine = new MWF.xApplication.process.Xform.DatatablePC.ImporterLine(this.importerLineNode, this.datatable, {});
-		// this.importerLine.load();
 	},
-	// destroySimulateModule: function(){
-	// 	if( !this.simelateModuleMap )return;
-	// 	var keys = Object.keys(this.simelateModuleMap);
-	// 	keys.each(function (key, i) {
-	// 		var module = this.simelateModuleMap[key];
-	// 		if( module ){
-	// 			var id = module.json.id;
-	// 			if( this.form.businessData.data.hasOwnProperty(id) )delete this.form.businessData.data[id];
-	// 			delete this.simelateModuleMap[key];
-	// 		}
-	// 	}.bind(this))
-	// 	this.simelateModuleMap = null;
-	//
-	// 	if(this.simulateNode){
-	// 		this.simulateNode.destroy();
-	// 		this.simulateNode = null;
-	// 	}
-	// },
-	// loadSimulateModule: function(){
-	// 	if( this.simelateModuleMap ){
-	// 		this.destroySimulateModule();
-	// 	}
-	// 	//加载模拟字段
-	// 	this.simelateModuleMap = {};
-	// 	this.simulateNode = new Element("div").inject(this.datatable.node);
-	// 	this.simulateNode.hide();
-	// 	this.simulateNode.set("html", this.datatable.templateHtml);
-	// 	var moduleNodes = this.form._getModuleNodes(this.simulateNode);
-	// 	moduleNodes.each(function (node) {
-	// 		if (node.get("MWFtype") !== "form") {
-	// 			var _self = this;
-	//
-	// 			var tJson = this.form._getDomjson(node);
-	// 			if( tJson && this.isAvaliableColumn(null, tJson) ){
-	// 				var json = Object.clone(tJson);
-	//
-	// 				var templateJsonId = json.id;
-	//
-	// 				json.id = "dtSimulate_"+json.id;
-	// 				node.set("id", json.id);
-	//
-	// 				if (!MWF["APP" + json.type]) {
-	// 					MWF.xDesktop.requireApp("process.Xform", json.type, null, false);
-	// 				}
-	// 				var module = new MWF["APP" + json.type](node, json, this.form);
-	//
-	// 				this.simelateModuleMap[templateJsonId] = module;
-	//
-	// 				module.load();
-	//
-	// 			}
-	// 		}
-	// 	}.bind(this));
-	// },
 	getColumnList: function(){
-		// this.loadSimulateModule();
-
 		this.columnJsonList = [];
 
 		var ths = this.datatable.titleTr.getElements("th.mwf_origional");
@@ -4167,49 +4093,6 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						default:
 							value = d; //换行符&#10;
 							break;
-						// case "Combox":
-						// case "Address":
-						// 	arr = this.stringToArray(d);
-						// 	value = arr.length === 0  ? arr[0] : arr;
-						// 	break;
-						// case "Checkbox":
-						// 	arr = this.stringToArray(d);
-						// 	var options = module.getOptionsObj();
-						// 	arr.each( function( a, i ){
-						// 		var idx = options.textList.indexOf( a );
-						// 		arr[ i ] = idx > -1 ? options.valueList[ idx ] : a;
-						// 	});
-						// 	value = arr.length === 1  ? arr[0] : arr;
-						// 	break;
-						// case "Radio":
-						// case "Select":
-						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
-						// 	var options = module.getOptionsObj();
-						// 	var idx = options.textList.indexOf( value );
-						// 	value = idx > -1 ? options.valueList[ idx ] : value;
-						// 	break;
-						// case "Textarea":
-						// 	value = d.replace(/&#10;/g,"\n"); //换行符&#10;
-						// 	break;
-						// case "Calendar":
-						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
-						// 	if( value && (new Date(value).isValid()) ){
-						// 		var format;
-						// 		if (!json.format){
-						// 			if (json.selectType==="datetime" || json.selectType==="time"){
-						// 				format = (json.selectType === "time") ? "%H:%M" : (Locale.get("Date").shortDate + " " + "%H:%M")
-						// 			}else{
-						// 				format = Locale.get("Date").shortDate;
-						// 			}
-						// 		}else{
-						// 			format = json.format;
-						// 		}
-						// 		value = Date.parse( value ).format( format );
-						// 	}
-						// 	break;
-						// default:
-						// 	value = d.replace(/&#10;/g,""); //换行符&#10;
-						// 	break;
 					}
 				}
 
