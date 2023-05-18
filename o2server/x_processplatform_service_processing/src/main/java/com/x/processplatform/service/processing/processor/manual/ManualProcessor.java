@@ -764,6 +764,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 		identities.stream().forEach(o -> {
 			try {
 				Task task = Tasks.createTask(aeiObjects, manual, o);
+				if (null != aeiObjects.getWork().getGoBackStore()) {
+					// 如果存储了退回说明下一步需要jump那么待办无需选择路由
+					task.setRouteNameEnable(false);
+				}
 				aeiObjects.createTask(task);
 				// 将用户可能已经存在的同一环节已办全部标记为不参与流转
 				aeiObjects.getJoinInquireTaskCompletedsWithActivityToken(task.getActivityToken()).stream()

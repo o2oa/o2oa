@@ -142,7 +142,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		setAllowAddSplit(effectivePerson, business, activity, work, wo);
 		// 是否可以召回
 		setAllowRetract(business, effectivePerson, work, wo, activity);
-		//是否可以退回
+		// 是否可以退回
 		setAllowGoBack(business, work, wo, activity);
 		// 是否可以回滚
 		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
@@ -151,10 +151,30 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		// 是否可以提醒
 		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
 				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-		// 是否可以看到
-		wo.setAllowVisit(true);
+
+		//相互之间有影响的重新计算.
+		recalculate(wo, work);
+
 		return wo;
 
+	}
+
+	/**
+	 * 在退回处理过程中如果有getGoBackStore说明下一步需要jump,那么禁用以下功能.
+	 * 
+	 * @param wo
+	 * @param work
+	 */
+	private void recalculate(Wo wo, Work work) {
+		if (null != work.getGoBackStore()) {
+			wo.setAllowAddTask(false);
+			wo.setAllowReset(false);
+			wo.setAllowPause(false);
+			wo.setAllowAddSplit(false);
+			wo.setAllowRetract(false);
+			wo.setAllowGoBack(false);
+			wo.setAllowRollback(false);
+		}
 	}
 
 	/**
