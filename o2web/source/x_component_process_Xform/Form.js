@@ -2636,7 +2636,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (layout.mobile) {
                 innerNode = new Element("div").inject(processNode);
             }
-
             this.processor = new MWF.xApplication.process.Work.Processor(innerNode || processNode, this.businessData.task, {
                 "style": (layout.mobile) ? "mobile" : (style || "default"),
                 "opinion": op.opinion,
