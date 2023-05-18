@@ -80,7 +80,7 @@ public class Attachment extends StorageObject {
 		this.extension = StringUtils.trimToEmpty(this.extension);
 		this.site = StringUtils.trimToEmpty(this.site);
 		if (StringTools.utf8Length(this.getProperties().getName()) > length_255B) {
-			this.name = StringTools.utf8SubString(this.getProperties().getName(), length_255B - 3) + "...";
+			this.name = StringTools.utf8FileNameSubString(this.getProperties().getName(), length_255B);
 		}
 	}
 

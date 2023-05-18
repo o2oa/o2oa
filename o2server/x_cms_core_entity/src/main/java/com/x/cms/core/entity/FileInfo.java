@@ -12,6 +12,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,11 +20,13 @@ import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -34,6 +37,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -51,6 +55,37 @@ public class FileInfo extends StorageObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.FileInfo.table;
 
+	@Override
+	public void onPersist() throws Exception {
+		this.extension = StringUtils.trimToEmpty(this.extension);
+		this.site = StringUtils.trimToEmpty(this.site);
+		if (StringTools.utf8Length(this.getProperties().getName()) > length_255B) {
+			this.name = StringTools.utf8FileNameSubString(this.getProperties().getName(), length_255B);
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getName())) {
+			this.name = this.getProperties().getName();
+		}
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+		this.getProperties().setName(name);
+	}
+
+	@Override
+	public String getName() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getName())) {
+			return this.properties.getName();
+		} else {
+			return this.name;
+		}
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -59,13 +94,21 @@ public class FileInfo extends StorageObject {
 		this.id = id;
 	}
 
+	public FileInfoProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new FileInfoProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(FileInfoProperties properties) {
+		this.properties = properties;
+	}
+
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
-
-	public void onPersist() throws Exception {
-	}
 
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
@@ -87,6 +130,14 @@ public class FileInfo extends StorageObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + site_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String site;
+
+	public static final String PROPERTIES_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private FileInfoProperties properties;
 
 	@Override
 	public Date getLastUpdateTime() {
@@ -503,14 +554,6 @@ public class FileInfo extends StorageObject {
 	 */
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getExtension() {
