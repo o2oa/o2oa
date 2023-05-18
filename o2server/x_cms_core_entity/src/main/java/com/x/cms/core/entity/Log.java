@@ -1,22 +1,15 @@
 package com.x.cms.core.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-
+import com.x.base.core.project.tools.StringTools;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.openjpa.persistence.jdbc.Index;
+
+import javax.persistence.*;
 
 /**
  * 内容管理日志信息表
@@ -35,10 +28,12 @@ public class Log extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.Log.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -48,8 +43,11 @@ public class Log extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
-
+		if (StringTools.utf8Length(this.getDescription()) > length_255B) {
+			this.description = StringTools.utf8FileNameSubString(this.getDescription(), length_255B);
+		}
 	}
 	/*
 	 * =============================================================================
@@ -125,7 +123,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作类别
-	 * 
+	 *
 	 * @return
 	 */
 	public String getOperationType() {
@@ -134,7 +132,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作类别
-	 * 
+	 *
 	 * @param operationType
 	 */
 	public void setOperationType(String operationType) {
@@ -143,7 +141,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作者帐号
-	 * 
+	 *
 	 * @return
 	 */
 	public String getOperatorUid() {
@@ -152,7 +150,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作者帐号
-	 * 
+	 *
 	 * @param operatorUid
 	 */
 	public void setOperatorUid(String operatorUid) {
@@ -161,7 +159,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作者姓名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getOperatorName() {
@@ -170,7 +168,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作者姓名
-	 * 
+	 *
 	 * @param operatorName
 	 */
 	public void setOperatorName(String operatorName) {
@@ -179,7 +177,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作日志文字描述
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDescription() {
@@ -188,7 +186,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作日志文字描述
-	 * 
+	 *
 	 * @param description
 	 */
 	public void setDescription(String description) {
@@ -197,7 +195,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作的应用ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getAppId() {
@@ -206,7 +204,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作的应用ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setAppId(String appId) {
@@ -215,7 +213,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作的分类ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoryId() {
@@ -224,7 +222,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作的分类ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setCategoryId(String categoryId) {
@@ -233,7 +231,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作的文档ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDocumentId() {
@@ -242,7 +240,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作的文档ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setDocumentId(String documentId) {
@@ -251,7 +249,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 获取操作的文件ID
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFileId() {
@@ -260,7 +258,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 设置操作的文件ID
-	 * 
+	 *
 	 * @param appId
 	 */
 	public void setFileId(String fileId) {
@@ -269,7 +267,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 操作对象级别：应用|分类|文档|文件
-	 * 
+	 *
 	 * @return
 	 */
 	public String getOperationLevel() {
@@ -278,7 +276,7 @@ public class Log extends SliceJpaObject {
 
 	/**
 	 * 操作对象级别：应用|分类|文档|文件
-	 * 
+	 *
 	 * @return
 	 */
 	public void setOperationLevel(String operationLevel) {
