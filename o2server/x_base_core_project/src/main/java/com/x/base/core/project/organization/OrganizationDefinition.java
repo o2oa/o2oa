@@ -70,7 +70,7 @@ public class OrganizationDefinition {
 
 	public static final String QueryManager = "QueryManager";
 	public static final String QueryManager_description = "数据中心管理员(系统角色)，可以在数据中心进行视图管理，统计管理等操作。";
-	
+
 	public static final String QueryCreator = "QueryCreator";
 	public static final String QueryCreator_description = "数据中心创建者(系统角色)，可以在数据中心进行新增视图管理，统计管理等操作。";
 
@@ -118,6 +118,8 @@ public class OrganizationDefinition {
 
 	public static final Pattern distinguishedName_pattern = Pattern.compile("^(.+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
 
+	public static final String NAME_JOIN_CHAR = "@";
+
 	public static final List<String> DEFAULTROLES = new UnmodifiableList<>(ListTools.toList(Manager, SystemManager,
 			SecurityManager, AuditManager, AttendanceManager, OrganizationManager, PersonManager, GroupManager,
 			UnitManager, RoleManager, ProcessPlatformManager, ProcessPlatformCreator, MeetingManager, MeetingViewer,
@@ -125,15 +127,15 @@ public class OrganizationDefinition {
 			QueryManager, MessageManager, HotPictureManager, SearchPrivilege, FileManager, ServiceManager));
 
 	public static String toDistinguishedName(String name) {
-		if (!StringUtils.contains(name, "@")) {
-			name = name + "@" + name + RoleDefinitionSuffix + "@R";
+		if (!StringUtils.contains(name, NAME_JOIN_CHAR)) {
+			name = name + NAME_JOIN_CHAR + name + RoleDefinitionSuffix + "@R";
 		}
 		return name;
 	}
 
 	public static String name(String distinguishedName) {
-		if (StringUtils.contains(distinguishedName, "@")) {
-			return StringUtils.substringBefore(distinguishedName, "@");
+		if (StringUtils.contains(distinguishedName, NAME_JOIN_CHAR)) {
+			return StringUtils.substringBefore(distinguishedName, NAME_JOIN_CHAR);
 		}
 		return distinguishedName;
 	}

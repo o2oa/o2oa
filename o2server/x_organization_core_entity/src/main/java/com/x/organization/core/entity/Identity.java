@@ -110,7 +110,7 @@ public class Identity extends SliceJpaObject {
 	@FieldDescribe("唯一标识,不可重复,为空则使用自动填充值")
 	@Column(length = length_255B, name = ColumnNamePrefix + unique_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + unique_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists = @CitationNotExist(fields = "unique", type = Identity.class))
+	@CheckPersist(allowEmpty = false, simplyString = false, citationNotExists = @CitationNotExist(fields = "unique", type = Identity.class))
 	private String unique;
 
 	public static final String distinguishedName_FIELDNAME = "distinguishedName";
