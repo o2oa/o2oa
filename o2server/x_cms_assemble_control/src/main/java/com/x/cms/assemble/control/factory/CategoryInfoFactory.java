@@ -95,7 +95,7 @@ public class CategoryInfoFactory extends ElementFactory {
 			p = cb.or(p, root.get(CategoryInfo_.manageableUnitList).in(unitNames));
 		}
 		if(ListTools.isNotEmpty(groupNames)){
-			p = cb.or(p, root.get(CategoryInfo_.viewableGroupList).in(unitNames));
+			p = cb.or(p, root.get(CategoryInfo_.viewableGroupList).in(groupNames));
 			p = cb.or(p, root.get(CategoryInfo_.publishableGroupList).in(groupNames));
 			p = cb.or(p, root.get(CategoryInfo_.manageableGroupList).in(groupNames));
 		}
