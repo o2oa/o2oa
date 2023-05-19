@@ -1262,7 +1262,7 @@ MWF.xApplication.process.Work.Processor = new Class({
     getRouteDataList: function () {
         if(this.routeDataList)return this.routeDataList;
 
-        if (!this.task.routeNameEnable){
+        if (this.task.routeNameDisable){
             this.routeDataList = [{
                 "id": o2.uuid(),
                 "asyncSupported": false,
