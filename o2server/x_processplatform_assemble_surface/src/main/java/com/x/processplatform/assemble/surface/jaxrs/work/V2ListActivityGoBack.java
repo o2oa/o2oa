@@ -35,6 +35,7 @@ import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.express.ProcessingAttributes;
 
 class V2ListActivityGoBack extends BaseAction {
 
@@ -76,9 +77,10 @@ class V2ListActivityGoBack extends BaseAction {
 				if (null != node) {
 					Nodes nodes = workLogTree.up(node);
 					List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
-					// 过滤掉未链接的,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
+					// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
 					workLogs = workLogs.stream()
 							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
+									&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
 									&& BooleanUtils.isTrue(o.getConnected())
 									&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
 							.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
@@ -134,7 +136,9 @@ class V2ListActivityGoBack extends BaseAction {
 				if (opt.isPresent()) {
 					Wo wo = new Wo();
 					wo.setActivity(opt.get().getActivity());
-					wo.setWay(opt.get().getWay());
+					wo.setWay(StringUtils.equalsIgnoreCase(opt.get().getWay(), GoBackConfig.WAY_DEFAULT)
+							? manual.getGoBackConfig().getWay()
+							: opt.get().getWay());
 					wo.setLastModifyTime(o.getFromTime());
 					wo.setActivityToken(o.getFromActivityToken());
 					list.add(wo);

@@ -205,9 +205,6 @@ class ActionProcessing extends BaseAction {
 				emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, task.getJob(),
 						TaskCompleted.person_FIELDNAME, task.getPerson()).forEach(o -> o.setLatest(false));
 				TaskCompleted taskCompleted = concreteTaskCompleted(task);
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				System.out.println(taskCompleted);
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				emc.persist(taskCompleted, CheckPersistType.all);
 				emc.remove(task, CheckRemoveType.all);
 				/* 去掉处理同一处理人不同身份待办合并处理一次processingTaskOnceUnderSamePerson(business, task); */

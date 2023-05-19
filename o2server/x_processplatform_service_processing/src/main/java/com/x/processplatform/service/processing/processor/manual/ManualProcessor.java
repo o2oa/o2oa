@@ -535,6 +535,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<Route> results = new ArrayList<>();
 		Optional<Route> optional = inquiringFromGoBackStore(aeiObjects);
 		if (optional.isPresent()) {
+			// 设置处理人
+			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(
+					aeiObjects.getWork().getGoBackStore().getManualTaskIdentityMatrix().flat());
+			// 清理掉goBackStore
+			aeiObjects.getWork().setGoBackStore(null);
+			// 清理掉退回到的activityToken标志
+			aeiObjects.getWork().setGoBackActivityToken(null);
 			results.add(optional.get());
 			return results;
 		}

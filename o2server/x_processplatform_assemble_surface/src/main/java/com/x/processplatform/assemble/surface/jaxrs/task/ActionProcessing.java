@@ -74,7 +74,7 @@ class ActionProcessing extends BaseAction {
 	private WorkLog workLog;
 	private String taskCompletedId;
 	private String type = TYPE_TASK;
-	private Boolean asyncSupported = true;
+	private Boolean asyncSupported = false;
 	private EffectivePerson effectivePerson;
 	private List<TaskCompleted> taskCompleteds = new ArrayList<>();
 	private List<String> newTaskIds = new ArrayList<>();
@@ -456,6 +456,10 @@ class ActionProcessing extends BaseAction {
 	}
 
 	/**
+	 * 
+	 * 先过滤掉connected=false<br>
+	 * 过滤掉非manual环节<br>
+	 * 过滤掉workLog的type=goBack<br>
 	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
 	 * 
 	 * @param nodes
@@ -464,13 +468,17 @@ class ActionProcessing extends BaseAction {
 	 */
 	private List<WorkLog> goBackTruncateWorkLog(Nodes nodes, String activityToken) {
 		List<WorkLog> list = new ArrayList<>();
-		nodes.forEach(o -> {
-			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
-				list.clear();
-			} else {
-				list.add(o.getWorkLog());
-			}
-		});
+		nodes.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+						&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)
+						&& (!StringUtils.equalsIgnoreCase(o.getWorkLog().getType(), ProcessingAttributes.TYPE_GOBACK)))
+				.forEach(o -> {
+					if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
+						list.clear();
+					} else {
+						list.add(o.getWorkLog());
+					}
+				});
 		return list;
 	}
 
@@ -529,6 +537,7 @@ class ActionProcessing extends BaseAction {
 		Optional<WorkLog> opt = workLogs.stream()
 				.filter(o -> BooleanUtils.isTrue(o.getConnected())
 						&& Objects.equals(o.getFromActivityType(), ActivityType.manual)
+						&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
 						&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity()))
 				.findFirst();
 		if (opt.isPresent()) {
@@ -552,8 +561,11 @@ class ActionProcessing extends BaseAction {
 	private Pair<WorkLog, String> goBackParamDefine(Manual manual, OptionGoBack option, List<WorkLog> workLogs) {
 		WorkLog first = null;
 		String second = null;
-		Optional<WorkLog> opt = workLogs.stream().filter(o -> BooleanUtils.isTrue(o.getConnected())
-				&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity())).findFirst();
+		Optional<WorkLog> opt = workLogs.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getConnected())
+						&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
+						&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity()))
+				.findFirst();
 		if (opt.isPresent()) {
 			Optional<DefineConfig> optDefineConfig = manual.getGoBackConfig().getDefineConfigList().stream()
 					.filter(o -> StringUtils.equalsIgnoreCase(o.getActivity(), opt.get().getFromActivity()))
@@ -584,8 +596,11 @@ class ActionProcessing extends BaseAction {
 	private Pair<WorkLog, String> goBackParamAny(Manual manual, OptionGoBack option, List<WorkLog> workLogs) {
 		WorkLog first = null;
 		String second = null;
-		Optional<WorkLog> opt = workLogs.stream().filter(o -> BooleanUtils.isTrue(o.getConnected())
-				&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity())).findFirst();
+		Optional<WorkLog> opt = workLogs.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getConnected())
+						&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
+						&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity()))
+				.findFirst();
 		if (opt.isPresent()) {
 			first = opt.get();
 			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
