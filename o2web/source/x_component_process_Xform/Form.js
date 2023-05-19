@@ -2060,14 +2060,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         if (!this.formValidation(routeName, opinion, medias)) {
             this.app.content.unmask();
-            //this.app.notice("", "error", target, where, offset);
             if (callback) callback();
             return false;
         }
         if (!this.validation(routeName, opinion, processor, medias)) {
-            //this.app.content.unmask();
             if (processor && processor.node) processor.node.unmask();
-            //if (callback) callback();
             return false;
         }
         if (!opinion) {
@@ -2075,17 +2072,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.businessData.task.routeOpinionList[idx]) {
                 opinion = this.businessData.task.routeOpinionList[idx];
             }
-            // else{
-            //     opinion = routeName;
-            // }
         }
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
-        // if (this.documenteditorList) {
-        //     this.documenteditorList.each(function (module) {
-        //         module.save(history);
-        //     });
-        // }
 
         //处理忽略授权
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
@@ -2093,7 +2082,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            debugger; // 适配移动端
+            // 适配移动端
             if (layout.mobile) {
                 this.mask.load();
             } else {
@@ -5241,13 +5230,15 @@ debugger;
             o2.DL.open({
                 "title": o2.xApplication.process.Xform.LP.form.addTask,
                 "style": this.json.dialogStyle || "user",
-                "width": 680,
-                "height": 380,
-                "url": this.app.path + "addTask.html",
+                "width":   (layout.mobile) ? "100%" : 680,
+                "height":  (layout.mobile) ? "100%" : 380,
+                "url": this.app.path + ( (layout.mobile) ? "addTaskMobile" : "addTask") +".html",
                 "lp": o2.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "maskNode": this.app.content,
-                "offset": {y: -120},
+                "offset": (layout.mobile) ? null : {y: -120},
+                // "top": (layout.mobile) ? 0 : undefined,
+                // "left": (layout.mobile) ? 0 : undefined,
                 "buttonList": [
                     {
                         "type": "ok",
