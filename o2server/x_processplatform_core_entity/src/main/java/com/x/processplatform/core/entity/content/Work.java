@@ -118,6 +118,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.parentJob = this.getProperties().getParentJob();
 		this.parentWork = this.getProperties().getParentWork();
 		this.goBackStore = this.getProperties().getGoBackStore();
+		this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
 	}
 
 	/* 更新运行方法 */
@@ -237,6 +238,18 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.goBackStore = goBackStore;
 		this.getProperties().setGoBackStore(goBackStore);
 	}
+
+	public String getGoBackActivityToken() {
+		return goBackActivityToken;
+	}
+
+	public void setGoBackActivityToken(String goBackActivityToken) {
+		this.goBackActivityToken = goBackActivityToken;
+		this.getProperties().setGoBackActivityToken(goBackActivityToken);
+	}
+
+	@FieldDescribe("goBack进行跳转退回时使用的.")
+	private String goBackActivityToken;
 
 	@Transient
 	@FieldDescribe("回退临时存储数据.")

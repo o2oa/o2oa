@@ -13,11 +13,22 @@ public class V2GoBackWi extends GsonPropertyObject {
 	@FieldDescribe("活动节点")
 	private String activity;
 
+	@FieldDescribe("活动节点")
+	private String activityToken;
+
 	@FieldDescribe("路由方式")
 	private String way;
 
 	@FieldDescribe("人工活动强制处理人.")
 	private List<String> identityList = new ArrayList<>();
+
+	public String getActivityToken() {
+		return activityToken;
+	}
+
+	public void setActivityToken(String activityToken) {
+		this.activityToken = activityToken;
+	}
 
 	public String getActivity() {
 		return activity;

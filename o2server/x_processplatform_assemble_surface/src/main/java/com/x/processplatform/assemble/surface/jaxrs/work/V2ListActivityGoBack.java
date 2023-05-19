@@ -73,10 +73,11 @@ class V2ListActivityGoBack extends BaseAction {
 									Task.job_FIELDNAME, work.getJob()) <= 1)) {
 				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
 				Node node = workLogTree.location(work);
-				Nodes nodes = workLogTree.up(node);
 				if (null != node) {
+					Nodes nodes = workLogTree.up(node);
+					List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
 					// 过滤掉未链接的,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
-					List<WorkLog> workLogs = nodes.stream().map(Node::getWorkLog)
+					workLogs = workLogs.stream()
 							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
 									&& BooleanUtils.isTrue(o.getConnected())
 									&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
@@ -90,7 +91,25 @@ class V2ListActivityGoBack extends BaseAction {
 		}
 		result.setData(wos);
 		return result;
+	}
 
+	/**
+	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
+	 * 
+	 * @param nodes
+	 * @param activityToken
+	 * @return
+	 */
+	private List<WorkLog> truncateWorkLog(Nodes nodes, String activityToken) {
+		List<WorkLog> list = new ArrayList<>();
+		nodes.forEach(o -> {
+			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
+				list.clear();
+			} else {
+				list.add(o.getWorkLog());
+			}
+		});
+		return list;
 	}
 
 	private List<Wo> list(Manual manual, List<WorkLog> workLogs) {

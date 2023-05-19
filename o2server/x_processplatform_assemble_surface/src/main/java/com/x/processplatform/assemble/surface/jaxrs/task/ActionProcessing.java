@@ -395,6 +395,7 @@ class ActionProcessing extends BaseAction {
 		WorkLogTree workLogTree = null;
 		V2GoBackWi req = new V2GoBackWi();
 		Manual manual = null;
+		Work work = null;
 		Triple<WorkLog, String, List<String>> param = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -402,12 +403,18 @@ class ActionProcessing extends BaseAction {
 			if (null == manual) {
 				throw new ExceptionEntityNotExist(task.getActivity(), Manual.class);
 			}
+			work = emc.find(task.getWork(), Work.class);
+			if (null == work) {
+				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+			}
 			workLogTree = workLogTree(business, task.getJob());
 			Node node = workLogTree.find(workLog);
 			Nodes nodes = workLogTree.up(node);
-			param = goBackParam(business, manual, option, nodes);
+			List<WorkLog> workLogs = goBackTruncateWorkLog(nodes, work.getGoBackActivityToken());
+			param = goBackParam(business, manual, option, workLogs);
 		}
 		req.setActivity(param.first().getFromActivity());
+		req.setActivityToken(param.first().getFromActivityToken());
 		req.setWay(param.second());
 		req.setIdentityList(param.third());
 		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_GOBACK);
@@ -448,6 +455,25 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
+	/**
+	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
+	 * 
+	 * @param nodes
+	 * @param activityToken
+	 * @return
+	 */
+	private List<WorkLog> goBackTruncateWorkLog(Nodes nodes, String activityToken) {
+		List<WorkLog> list = new ArrayList<>();
+		nodes.forEach(o -> {
+			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
+				list.clear();
+			} else {
+				list.add(o.getWorkLog());
+			}
+		});
+		return list;
+	}
+
 	private void processingWorkGoBack(String workId, String job) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_GOBACK);
@@ -461,16 +487,16 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private Triple<WorkLog, String, List<String>> goBackParam(Business business, Manual manual, OptionGoBack option,
-			Nodes nodes) throws Exception {
+			List<WorkLog> workLogs) throws Exception {
 		Pair<WorkLog, String> pair = null;
 		if ((null != manual.getGoBackConfig())
 				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
-			pair = this.goBackParamPrev(manual, option, nodes);
+			pair = this.goBackParamPrev(manual, option, workLogs);
 		} else if ((null != manual.getGoBackConfig())
 				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
-			pair = this.goBackParamCustom(manual, option, nodes);
+			pair = this.goBackParamDefine(manual, option, workLogs);
 		} else {
-			pair = this.goBackParamAny(manual, option, nodes);
+			pair = this.goBackParamAny(manual, option, workLogs);
 		}
 		if (null == pair.first()) {
 			throw new ExceptionGoBackWorkLog(option.getActivity());
@@ -497,14 +523,16 @@ class ActionProcessing extends BaseAction {
 	 * @param nodes
 	 * @return
 	 */
-	private Pair<WorkLog, String> goBackParamPrev(Manual manual, OptionGoBack option, Nodes nodes) {
+	private Pair<WorkLog, String> goBackParamPrev(Manual manual, OptionGoBack option, List<WorkLog> workLogs) {
 		WorkLog first = null;
 		String second = null;
-		Optional<Node> opt = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-				&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)).findFirst();
-		if (opt.isPresent()
-				&& StringUtils.equalsIgnoreCase(opt.get().getWorkLog().getFromActivity(), option.getActivity())) {
-			first = opt.get().getWorkLog();
+		Optional<WorkLog> opt = workLogs.stream()
+				.filter(o -> BooleanUtils.isTrue(o.getConnected())
+						&& Objects.equals(o.getFromActivityType(), ActivityType.manual)
+						&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity()))
+				.findFirst();
+		if (opt.isPresent()) {
+			first = opt.get();
 			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
 					? option.getWay()
 					: manual.getGoBackConfig().getWay();
@@ -521,19 +549,17 @@ class ActionProcessing extends BaseAction {
 	 * @param nodes
 	 * @return
 	 */
-	private Pair<WorkLog, String> goBackParamCustom(Manual manual, OptionGoBack option, Nodes nodes) {
+	private Pair<WorkLog, String> goBackParamDefine(Manual manual, OptionGoBack option, List<WorkLog> workLogs) {
 		WorkLog first = null;
 		String second = null;
-		Optional<Node> opt = nodes.stream()
-				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-						&& StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivity(), option.getActivity()))
-				.findFirst();
+		Optional<WorkLog> opt = workLogs.stream().filter(o -> BooleanUtils.isTrue(o.getConnected())
+				&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity())).findFirst();
 		if (opt.isPresent()) {
-			Optional<DefineConfig> optDefineConfig = manual.getGoBackConfig().getDefineConfigList().stream().filter(
-					o -> StringUtils.equalsIgnoreCase(o.getActivity(), opt.get().getWorkLog().getFromActivity()))
+			Optional<DefineConfig> optDefineConfig = manual.getGoBackConfig().getDefineConfigList().stream()
+					.filter(o -> StringUtils.equalsIgnoreCase(o.getActivity(), opt.get().getFromActivity()))
 					.findFirst();
 			if (optDefineConfig.isPresent()) {
-				first = opt.get().getWorkLog();
+				first = opt.get();
 				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
 					second = option.getWay();
 				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
@@ -555,15 +581,13 @@ class ActionProcessing extends BaseAction {
 	 * @param nodes
 	 * @return
 	 */
-	private Pair<WorkLog, String> goBackParamAny(Manual manual, OptionGoBack option, Nodes nodes) {
+	private Pair<WorkLog, String> goBackParamAny(Manual manual, OptionGoBack option, List<WorkLog> workLogs) {
 		WorkLog first = null;
 		String second = null;
-		Optional<Node> opt = nodes.stream()
-				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-						&& StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivity(), option.getActivity()))
-				.findFirst();
+		Optional<WorkLog> opt = workLogs.stream().filter(o -> BooleanUtils.isTrue(o.getConnected())
+				&& StringUtils.equalsIgnoreCase(o.getFromActivity(), option.getActivity())).findFirst();
 		if (opt.isPresent()) {
-			first = opt.get().getWorkLog();
+			first = opt.get();
 			second = StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)
 					? option.getWay()
 					: manual.getGoBackConfig().getWay();

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -90,6 +89,7 @@ class V2GoBack extends BaseAction {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
 				Activity activity = business.element().getActivity(wi.getActivity());
+
 				if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
 					throw new ExceptionProcessNotMatch();
 				}
@@ -108,31 +108,20 @@ class V2GoBack extends BaseAction {
 				work.setDestinationActivityType(activity.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
+				work.setGoBackActivityToken(wi.getActivityToken());
 				work.getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 				if (ListTools.isNotEmpty(wi.getIdentityList())) {
 					work.getProperties().setManualForceTaskIdentityList(wi.getIdentityList());
 				}
-				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_STEP)) {
-					if (BooleanUtils.isTrue(work.getSplitting())) {
-						// 合并工作
-						work.setSplitting(false);
-						work.setSplitToken("");
-						work.getSplitTokenList().clear();
-						work.setSplitValue("");
-						redirectOtherRead(business, work);
-						removeOtherWork(business, work);
-						removeOtherWorkLog(business, work);
-					}
-					removeAllTask(business, work);
-				} else {
+				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_JUMP)) {
 					// way = jump
 					GoBackStore goBackStore = new GoBackStore();
 					goBackStore.setManualTaskIdentityMatrix(work.getManualTaskIdentityMatrix());
 					goBackStore.setActivity(work.getActivity());
 					goBackStore.setActivityType(work.getActivityType());
 					work.setGoBackStore(goBackStore);
-					removeTask(business, work);
 				}
+				removeTask(business, work);
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 			}

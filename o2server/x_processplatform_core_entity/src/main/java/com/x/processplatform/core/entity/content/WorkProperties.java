@@ -48,6 +48,17 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("待办身份矩阵")
 	private GoBackStore goBackStore;
 
+	@FieldDescribe("goBack进行跳转退回时使用的.")
+	private String goBackActivityToken;
+
+	public String getGoBackActivityToken() {
+		return goBackActivityToken;
+	}
+
+	public void setGoBackActivityToken(String goBackActivityToken) {
+		this.goBackActivityToken = goBackActivityToken;
+	}
+
 	public GoBackStore getGoBackStore() {
 		return goBackStore;
 	}

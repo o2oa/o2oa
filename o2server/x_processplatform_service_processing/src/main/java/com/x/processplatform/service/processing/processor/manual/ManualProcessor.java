@@ -396,8 +396,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// ManualTaskIdentityMatrix matrix =
 		// executingManualTaskIdentityMatrix(aeiObjects, manual);
 		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
-		List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
-				aeiObjects.getWork().getActivityToken());
+//		List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
+//				aeiObjects.getWork().getActivityToken());
+		// 由于退回存在空名称的路由
+		List<TaskCompleted> taskCompleteds = aeiObjects
+				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, matrix, taskCompleteds);
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
@@ -410,8 +413,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 			tasks.stream().forEach(aeiObjects::deleteTask);
 			uncompletedTaskToRead(aeiObjects, manual, tasks);
 			// aeiObjects.business().organization().identity().listObject(null)
-
 		} else {
+			if (matrix.isEmpty()) {
+				// 在添加分支的情况下需要在这里重新计算matrix
+				matrix = manual.identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects, manual));
+			}
 			switch (manual.getManualMode()) {
 			case parallel:
 				this.parallel(aeiObjects, manual, matrix, taskCompleteds);
@@ -542,13 +548,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 				results.add(optional.get());
 			}
 		} else {
-			throw new ExceptionManualNotRoute(manual.getId());
+			// 无法找到合适的路由那么默认选择走第一条
+			results.add(aeiObjects.getRoutes().get(0));
+			// throw new ExceptionManualNotRoute(manual.getId());
 		}
 		if (!results.isEmpty()) {
 			// 清理掉强制的指定的处理人
 			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 			// 清理掉goBackStore
 			aeiObjects.getWork().setGoBackStore(null);
+			// 清理掉退回到的activityToken标志
+			aeiObjects.getWork().setGoBackActivityToken(null);
 		}
 		return results;
 	}
@@ -764,10 +774,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		identities.stream().forEach(o -> {
 			try {
 				Task task = Tasks.createTask(aeiObjects, manual, o);
-				if (null != aeiObjects.getWork().getGoBackStore()) {
-					// 如果存储了退回说明下一步需要jump那么待办无需选择路由
-					task.setRouteNameDisable(true);
-				}
 				aeiObjects.createTask(task);
 				// 将用户可能已经存在的同一环节已办全部标记为不参与流转
 				aeiObjects.getJoinInquireTaskCompletedsWithActivityToken(task.getActivityToken()).stream()
