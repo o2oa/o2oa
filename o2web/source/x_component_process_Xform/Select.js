@@ -59,47 +59,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
-		if( typeOf(optionItems.then) === "function" ){
-			Promise.resolve(optionItems).then(function (optItems) {
-				if (value){
-					if (typeOf(value)!=="array") value = [value];
-					var texts = [];
-					optItems.each(function(item){
-						var tmps = item.split("|");
-						var t = tmps[0];
-						var v = tmps[1] || t;
+        if (value){
+            if (typeOf(value)!=="array") value = [value];
+            var texts = [];
+            optionItems.each(function(item){
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
 
-						if (v){
+                if (v){
 
-							if (value.indexOf(v)!==-1){
-								texts.push(t);
-							}
-						}
+                    if (value.indexOf(v)!=-1){
+                        texts.push(t);
+                    }
+                }
 
-					});
-					node.set("text", texts.join(", "));
-				}
-			})
-		}else{
-			if (value){
-				if (typeOf(value)!=="array") value = [value];
-				var texts = [];
-				optionItems.each(function(item){
-					var tmps = item.split("|");
-					var t = tmps[0];
-					var v = tmps[1] || t;
-
-					if (v){
-
-						if (value.indexOf(v)!=-1){
-							texts.push(t);
-						}
-					}
-
-				});
-				node.set("text", texts.join(", "));
-			}
-		}
+            });
+            node.set("text", texts.join(", "));
+        }
 	},
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
@@ -235,16 +212,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				textList.push( tmps[0] );
 				valueList.push( tmps[1] || tmps[0] );
 			}.bind(this));
-		}
-		else if(o2.typeOf(optionItems.then)==="function"){
-			return Promise.resolve(optionItems).then(function (optItems) {
-				optItems.each(function(item){
-					var tmps = item.split("|");
-					textList.push( tmps[0] );
-					valueList.push( tmps[1] || tmps[0] );
-				}.bind(this));
-				return { textList : textList, valueList : valueList };
-			});
 		}
 		return { textList : textList, valueList : valueList };
 	},
