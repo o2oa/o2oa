@@ -1016,7 +1016,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             var _self = this;
                             if( typeOf(this.data[name]) === "array" && this.data[name].length > 0 ){
                                 //this.form.designer.lp.selectIcon
-                                this.form.designer.confirm( "", new Event(), "导入字段确认", "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？", 300, 200, function(){
+                                this.form.designer.confirm( "", node, "导入字段确认", "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？", 300, 200, function(){
                                     if( !_self.module.getExpImpFieldJson )return;
                                     filedConfigurator.data = _self.module.getExpImpFieldJson();
                                     filedConfigurator.reloadContent();

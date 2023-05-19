@@ -3642,11 +3642,7 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		var lineList = [];
 
 		if( this.datatable.isShowAllSection ){
-			if( this.exportAllSection ){
-				lineList = this.datatable.lineList;
-			}else{
-				lineList = this.datatable.sectionLineEdited ? this.datatable.sectionLineEdited.lineList : [];
-			}
+			lineList = this.datatable.sectionLineEdited ? this.datatable.sectionLineEdited.lineList : this.datatable.lineList;
 		}else if( this.datatable.isMergeRead ) {
 			lineList = this.datatable.lineList;
 		}else{

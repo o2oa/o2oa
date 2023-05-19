@@ -2642,13 +2642,9 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 		var lineList = [];
 
 		if( this.template.isShowAllSection ){
-			if( this.exportAllSection ){
-				lineList = this.template.lineList;
-			}else{
-				lineList = this.template.sectionLineEdited ? this.template.sectionLineEdited.lineList : [];
-			}
+			lineList = this.template.sectionLineEdited ? this.template.sectionLineEdited.lineList : this.template.lineList;
 		}else if( this.template.isMergeRead ) {
-			lineList = this.template.lineList;
+			lineList = this.template.lineList; 
 		}else{
 			lineList = this.template.lineList;
 		}
