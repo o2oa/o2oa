@@ -59,24 +59,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
-		if (value){
-			if (typeOf(value)!=="array") value = [value];
-			var texts = [];
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				var t = tmps[0];
-				var v = tmps[1] || t;
+        if (value){
+            if (typeOf(value)!=="array") value = [value];
+            var texts = [];
+            optionItems.each(function(item){
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
 
-				if (v){
+                if (v){
 
-					if (value.indexOf(v)!=-1){
-						texts.push(t);
-					}
-				}
+                    if (value.indexOf(v)!=-1){
+                        texts.push(t);
+                    }
+                }
 
-			});
-			node.set("text", texts.join(", "));
-		}
+            });
+            node.set("text", texts.join(", "));
+        }
 	},
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
@@ -509,17 +509,21 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		getExcelData: function(){
 			var value = this.getData();
 			var options = this.getOptionsObj();
-			var idx = options.valueList.indexOf( value );
-			var text = idx > -1 ? options.textList[ idx ] : "";
-			return text;
+			return Promise.resolve(options).then(function (opts) {
+				var idx = opts.valueList.indexOf( value );
+				var text = idx > -1 ? opts.textList[ idx ] : "";
+				return text;
+			});
 		},
 		setExcelData: function(d){
 			var value = d.replace(/&#10;/g,""); //换行符&#10;
 			this.excelData = value;
 			var options = this.getOptionsObj();
-			var idx = options.textList.indexOf( value );
-			value = idx > -1 ? options.valueList[ idx ] : "";
-			this.setData(value, true);
+			this.moduleSelectAG = Promise.resolve(options).then(function (opts) {
+				var idx = opts.textList.indexOf( value );
+				value = idx > -1 ? opts.valueList[ idx ] : "";
+				this.setData(value, true);
+			}.bind(this));
 		}
 	
 }); 
