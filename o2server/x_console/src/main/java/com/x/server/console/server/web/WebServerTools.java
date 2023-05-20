@@ -90,14 +90,14 @@ public class WebServerTools extends JettySeverTools {
 		coverToWebServer();
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
-			return startInApplication(webServer);
+			return startInApplication();
 		} else {
 			return startStandalone(webServer);
 		}
 
 	}
 
-	private static Server startInApplication(WebServer webServer) throws Exception {
+	private static Server startInApplication() throws Exception {
 		WebAppContext webContext = webContext();
 		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -127,7 +127,7 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())) {
-			server.setRequestLog(requestLog(webServer));
+			server.setRequestLog(requestLog());
 		}
 		context.setMimeTypes(Config.mimeTypes());
 		server.start();
@@ -161,12 +161,11 @@ public class WebServerTools extends JettySeverTools {
 
 	private static WebAppContext webContext() throws Exception {
 		WebAppContext context = new WebAppContext();
-		context.setContextPath("/");
 		moveNonDefaultDirectoryToWebroot();
+		context.setContextPath("/");
 		ResourceCollection resources = new ResourceCollection(
 				new String[] { Config.path_servers_webServer(true).toString(),
 						Config.path_webroot(true).toAbsolutePath().toString() });
-
 		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
@@ -199,7 +198,7 @@ public class WebServerTools extends JettySeverTools {
 		}
 	}
 
-	private static RequestLog requestLog(WebServer webServer) throws Exception {
+	private static RequestLog requestLog() throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
