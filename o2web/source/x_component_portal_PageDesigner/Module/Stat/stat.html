@@ -20,6 +20,8 @@
 		</table>
 		
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+		<div class="MWFMaplist" name="chartNodeStyles" title="{{$.lp.chartNodeStyles}}"></div>
+		<div class="MWFMaplist" name="tableNodeStyles" title="{{$.lp.tableNodeStyles}}"></div>
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
 
 		<div>
@@ -50,6 +52,13 @@
 				<td class="editTableValue">
 					<input class="editTableRadio" name="isTable" text{($.isTable!='no')?'checked':''} type="radio" value="yes"/>{{$.lp.show}}
 					<input class="editTableRadio" name="isTable" text{($.isTable=='no')?'checked':''} type="radio" value="no"/>{{$.lp.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.showRowToColumn}}</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="isRowToColumn" text{($.isRowToColumn!='no')?'checked':''} type="radio" value="yes"/>{{$.lp.show}}
+					<input class="editTableRadio" name="isRowToColumn" text{($.isRowToColumn=='no')?'checked':''} type="radio" value="no"/>{{$.lp.hide}}
 				</td>
 			</tr>
 		</table>

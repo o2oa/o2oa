@@ -6,7 +6,7 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
 	options: {
 		"style": "default",
         "maxTypeCount": {
-            "string": 6,
+            "string": 10,
             "long": 2,
             "double": 2,
             "dateTime": 3

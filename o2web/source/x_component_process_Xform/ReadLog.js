@@ -81,16 +81,21 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
             if (this.json.displayScript && this.json.displayScript.code){
                 var code = this.json.displayScript.code;
                 this.readLog.each(function(log){
-                    this.form.Macro.environment.log = log;
-                    this.form.Macro.environment.list = null;
-                    var r = this.form.Macro.exec(code, this);
+                    if (!this.json.isShowRead && log.type === "read"){
+                        //不显示待阅
+                    }else{
+                        this.form.Macro.environment.log = log;
+                        this.form.Macro.environment.list = null;
+                        var r = this.form.Macro.exec(code, this);
 
-                    var t = o2.typeOf(r);
-                    if (t==="string"){
-                        this.node.appendHTML(r);
-                    }else if (t==="element"){
-                        this.node.appendChild(r);
+                        var t = o2.typeOf(r);
+                        if (t==="string"){
+                            this.node.appendHTML(r);
+                        }else if (t==="element"){
+                            this.node.appendChild(r);
+                        }
                     }
+
                 }.bind(this));
             }
         },
@@ -99,6 +104,13 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
             var readPersons = [];
             this.lineClass = "logTaskNode";
             this.readLog.each(function(log, i){
+
+                if (this.json.textStyleScript && this.json.textStyleScript.code){
+                    this.form.Macro.environment.log = log;
+                    this.form.Macro.environment.list = null;
+                    text = this.form.Macro.exec(this.json.textStyleScript.code, this);
+                }
+
                 if (log.type == "readCompleted"){
                     var div = new Element("div", {styles: this.form.css[this.lineClass]}).inject(this.node);
                     var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);

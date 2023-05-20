@@ -908,6 +908,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showChart": "显示图表",
         "showLegend": "显示图例",
         "showTable": "显示表格",
+        "showRowToColumn": "行列转换",
+        "chartNodeStyles": "图表容器样式",
+        "tableNodeStyles": "表格容器样式",
 
         "selectTag": "选择标签",
         "elementTag": "元素标签",
@@ -936,6 +939,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handwrittenHeight": "手写意见高度",
         "logFormat": "格式",
         "logFormatScript": "格式脚本",
+        "logHtmlScript": "html脚本",
         "currentPerson": "当前处理人",
         "readReaded": "待阅已阅",
         "readTitle": "待阅标题",

@@ -288,10 +288,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		var className = this.moduleName.capitalize();
 		var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
 		var newTool = new MWF[prefix+className](this.form);
+        var oldId = newModuleJson.id;
 		newTool.json = newModuleJson;
 		newModuleJson.id = newTool._getNewId();
 		newNode.set("id", newModuleJson.id);
-
+        if( this.form.copyedModule && this.form.copyedModule.checkCopySubModule){
+			this.form.copyedModule.checkCopySubModule(newModuleJson, oldId);
+		}
 		this.form.json.moduleList[newModuleJson.id] = newModuleJson;
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(newModuleJson);
 
