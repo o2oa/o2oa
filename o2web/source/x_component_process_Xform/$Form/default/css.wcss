@@ -1312,5 +1312,51 @@
      "el-container-footer": {
          "background-color": "#B3C0D1",
          "height": "60px"
-      }
+     },
+     "goBack_activityArea": {
+
+     },
+  "goBack_activity": {
+    "padding": "6px 0",
+    "overflow": "hidden",
+    "height": "48px",
+    "display": "flex",
+    "width": "97%",
+    "justify-content": "space-between",
+    "cursor": "pointer",
+    "border-bottom": "1px solid #cccccc",
+    "border-radius": "10px"
+  },
+  "goBack_activity_content": {
+    "overflow": "hidden",
+    "width": "calc(100% - 40px)",
+    "display": "flex",
+    "align-items": "flex-start",
+    "justify-content": "center",
+    "flex-direction": "column"
+  },
+  "goBack_activity_way": {
+    "width": "140px",
+    "color": "#666666",
+    "font-size": "12px",
+    "display": "flex",
+    "align-items": "center",
+    "justify-content": "center",
+    "padding-right": "20px"
+  },
+  "goBack_activity_check": {
+    "width": "40px",
+    "display": "flex",
+    "align-items": "center",
+    "justify-content": "center"
+  },
+  "goBack_activity_name": {
+    "color": "#000000",
+    "font-size": "14px"
+  },
+  "goBack_activity_info": {
+    "color": "#999999",
+    "font-size": "12px"
+  }
+
 }

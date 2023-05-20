@@ -113,6 +113,7 @@ abstract class AbstractBaseProcessor {
 			workLog.setCompleted(false);
 			workLog.setConnected(true);
 			workLog.setDuration(Config.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
+			workLog.setType(aeiObjects.getProcessingAttributes().getType());
 			aeiObjects.getUpdateWorkLogs().add(workLog);
 		} else {
 			/* 拆分情况下是有可能这样的情况的,多份Work其中一份已经连接了formActivityToken的WorkLog */
@@ -135,6 +136,7 @@ abstract class AbstractBaseProcessor {
 				workLog.setCompleted(false);
 				workLog.setConnected(true);
 				workLog.setDuration(Config.workTime().betweenMinutes(workLog.getFromTime(), workLog.getArrivedTime()));
+				workLog.setType(aeiObjects.getProcessingAttributes().getType());
 				aeiObjects.getCreateWorkLogs().add(workLog);
 			} else {
 				/* 这样的情况应该是不可能的 */
