@@ -6,7 +6,10 @@ import net.lingala.zip4j.model.FileHeader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -20,9 +23,15 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipTools {
     private static final int BUFFER_SIZE = 2 * 1024;
+    private static final List<String> DEFAULT_IGNORE_LIST = List.of("__MACOSX", ".DS_Store");
 
-    public static void unZip(File source, List<String> subs, File dist, boolean asNew, Charset charset) {
+    public static void unZip(File source, List<String> ignoreList, File dist, boolean asNew, Charset charset) {
         try{
+            if(ignoreList == null){
+                ignoreList = new ArrayList<>(DEFAULT_IGNORE_LIST);
+            }else{
+                ignoreList.addAll(DEFAULT_IGNORE_LIST);
+            }
             ZipFile zipFile = new ZipFile(source);
             if(charset == null){
                 charset = DefaultCharset.charset;
@@ -31,28 +40,20 @@ public class ZipTools {
             List<FileHeader> fileHeaderList = zipFile.getFileHeaders();
             for (FileHeader fileHeader : fileHeaderList){
                 if(isFromExtraData(fileHeader) && DefaultCharset.charset.name() == charset.name()){
-                    unZip(source, subs, dist, asNew, DefaultCharset.charset_gbk);
+                    unZip(source, ignoreList, dist, asNew, DefaultCharset.charset_gbk);
                     return;
                 }
                 String name = fileHeader.getFileName();
                 if (name.length() < 2) {
                     continue;
                 }
-                if (subs != null) {
-                    boolean flag = false;
-                    for (String sub : subs) {
-                        if (StringUtils.startsWith(name, sub)) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        continue;
-                    }
+                if (isMember(name, ignoreList)) {
+                    continue;
                 }
                 if (fileHeader.isDirectory()) {
                     File dir = new File(dist, name);
-                    if (dir.exists() && name.indexOf("/") == name.lastIndexOf("/") && asNew) {
+                    if (dir.exists() && !dist.getAbsolutePath().startsWith(dir.getAbsolutePath())
+                            && name.indexOf("/") == name.lastIndexOf("/") && asNew) {
                         FileUtils.cleanDirectory(dir);
                     }
                     FileUtils.forceMkdir(dir);
@@ -64,6 +65,66 @@ public class ZipTools {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void unZip(File source, List<String> ignoreList, File dist, List<String> dist2List, File dist2, boolean asNew, Charset charset) {
+        try{
+            if(ignoreList == null){
+                ignoreList = new ArrayList<>(DEFAULT_IGNORE_LIST);
+            }else{
+                ignoreList.addAll(DEFAULT_IGNORE_LIST);
+            }
+            ZipFile zipFile = new ZipFile(source);
+            if(charset == null){
+                charset = DefaultCharset.charset;
+            }
+            zipFile.setCharset(charset);
+            List<FileHeader> fileHeaderList = zipFile.getFileHeaders();
+            for (FileHeader fileHeader : fileHeaderList){
+                if(isFromExtraData(fileHeader) && DefaultCharset.charset.name() == charset.name()){
+                    unZip(source, ignoreList, dist, dist2List, dist2, asNew, DefaultCharset.charset_gbk);
+                    return;
+                }
+                String name = fileHeader.getFileName();
+                if (name.length() < 2) {
+                    continue;
+                }
+                if (isMember(name, ignoreList)) {
+                    continue;
+                }
+                if (fileHeader.isDirectory()) {
+                    if(name.indexOf("/") == name.lastIndexOf("/") && asNew){
+                        File dir = new File(dist, name);
+                        if(isMember(name, dist2List)){
+                            dir = new File(dist2, name);
+                        }
+                        if (dir.exists()) {
+                            FileUtils.cleanDirectory(dir);
+                        }
+                        FileUtils.forceMkdir(dir);
+                    }
+                } else {
+                    String path = dist.getAbsolutePath();
+                    if(isMember(name, dist2List)){
+                        path = dist2.getAbsolutePath();
+                    }
+                    zipFile.extractFile(fileHeader, path);
+                }
+            }
+            fileHeaderList.clear();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isMember(final String name, List<String> list){
+        if(ListTools.isEmpty(list)){
+            return true;
+        }
+        if(StringUtils.isBlank(name)){
+            return false;
+        }
+        return list.stream().filter(s -> (name.startsWith(s) || name.startsWith("/"+s))).findFirst().isPresent();
     }
 
     public static boolean isFromExtraData(FileHeader fileHeader) {
@@ -181,9 +242,11 @@ public class ZipTools {
     }
 
     public static void main(String[] args) throws Exception{
-        File zipFile = new File("/Users/chengjian/dev/tmp/test.zip");
-        List<String> list = new ArrayList<>();
-        ZipTools.toZip(new File("/Users/chengjian/dev/tmp/test"), new FileOutputStream(zipFile), list);
-        System.out.println(1);
+        System.out.println("===================");
+        File source = new File("/Users/chengjian/dev/tmp/test/测试文件夹2");
+        File dist = new File("/Users/chengjian/dev/tmp/test/测试文件夹1");
+        dist = new File(dist, source.getName());
+        FileUtils.copyDirectory(source, dist);
+        System.out.println("===================");
     }
 }
