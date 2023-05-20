@@ -99,7 +99,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     if (StringUtils.isEmpty(shiftId)) {
                         shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
                     }
-                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay( model.getDate(), group)) {
+                    if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(model.getDate(), group)) {
                         shiftId = null; // 特殊节假日 清空
                     }
                     if (StringUtils.isNotEmpty(shiftId)) {
@@ -140,7 +140,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         isWorkDay = dayList.contains(day);
                     }
                     // 特殊节假日
-                    if (isWorkDay && AttendanceV2Helper.isSpecialRestDay(  model.getDate(), group)) {
+                    if (isWorkDay && AttendanceV2Helper.isSpecialRestDay(model.getDate(), group)) {
                         isWorkDay = false;
                     }
                 }
@@ -295,29 +295,29 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     logger.debug("考勤数据处理完成, {}", v2Detail.toString());
                 }
                 // 如果有异常打卡数据生成对应的数据
-                generateAppealInfo(emc, business, config, recordList, BooleanUtils.isTrue(group.getFieldWorkMarkError()));
+                generateAppealInfo(emc, business, config, recordList, BooleanUtils.isTrue(group.getFieldWorkMarkError()), isWorkDay);
             }
         }
     }
 
 
-
     /**
      * 如果开启了是否开启补卡申请功能 生成对应的异常打卡申请数据
      *
-     * @param config 配置
+     * @param config             配置
      * @param recordList
      * @param fieldWorkMarkError 外勤是否标记为异常数据
+     * @param isWorkDay 是否工作日
      * @throws Exception
      */
-    private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList, boolean fieldWorkMarkError) throws Exception {
+    private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList, boolean fieldWorkMarkError, boolean isWorkDay) throws Exception {
         if (emc != null && business != null
                 && config != null && BooleanUtils.isTrue(config.getAppealEnable())
                 && recordList != null && !recordList.isEmpty()) {
             for (AttendanceV2CheckInRecord record : recordList) {
                 List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
                 // 异常打卡 新增AttendanceV2AppealInfo记录
-                if (record.checkResultException(fieldWorkMarkError)) {
+                if (isWorkDay && record.checkResultException(fieldWorkMarkError) ) {
                     if (appealList != null && !appealList.isEmpty()) {
                         logger.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
                         continue;
