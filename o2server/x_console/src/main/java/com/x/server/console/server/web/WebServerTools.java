@@ -29,16 +29,13 @@ import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.WebServer;
-import com.x.base.core.project.config.WebServers;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.server.console.server.JettySeverTools;
-import com.x.server.console.server.ServerRequestLog;
-import com.x.server.console.server.Servers;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.stream.Stream;
 
 public class WebServerTools extends JettySeverTools {
 
@@ -88,6 +85,8 @@ public class WebServerTools extends JettySeverTools {
 		copyDefaultHtml();
 		// 覆盖 webServer
 		coverToWebServer();
+		// 迁移自定义程序web资源到webRoot下
+		copyCustomWebToWebRoot();
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
 			return startInApplication();
@@ -285,6 +284,18 @@ public class WebServerTools extends JettySeverTools {
 		Path p = Config.path_config_coverToWebServer(true);
 		if (Files.exists(p)) {
 			FileUtils.copyDirectory(p.toFile(), Config.path_servers_webServer(true).toFile());
+		}
+	}
+
+	private static void copyCustomWebToWebRoot() throws Exception {
+		File[] files = Config.dir_servers_webServer().listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if(file.isDirectory() && !ZipTools.isMember(file.getName(), WebServers.WEB_SERVER_FOLDERS)){
+				File dist = new File(Config.path_webroot(true).toFile(), file.getName());
+				FileUtils.copyDirectory(file, dist);
+				FileUtils.deleteDirectory(file);
+			}
 		}
 	}
 
