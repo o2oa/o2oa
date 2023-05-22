@@ -438,11 +438,15 @@
 .pf_fromActivityName{
     color: #333333;
     line-height: 20px;
+    height: 20px;
+    overflow: hidden;
 }
 .pf_routeName{
     color: #666666;
     font-size: 12px;
     line-height: 20px;
+    height: 20px;
+    overflow: hidden;
 }
 .pf_arrivedTime{
     color: #666666;
