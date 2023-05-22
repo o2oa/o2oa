@@ -668,6 +668,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectStyle": "Select样式",
         "options": "可选值",
         "optionScript": "可选值脚本",
+        "defaultOptionScript": "默认可选值脚本",
         "divStyle": "容器样式",
         "buttonStyle": "按钮样式",
         "extendOptions": "其他可选值",

@@ -688,6 +688,18 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                             this.setFormSelectOptions(node, select);
                         }.bind(this), true);
                     }.bind(this));
+
+                    var viewNode = new Element("div", {"styles": this.process.css.propertyViewFormNode}).inject(node);
+                    viewNode.addEvent("click", function (e) {
+                        var name = node.get("name");
+                        if(this.data[name] && this.data[name]!=="none"){
+                            layout.openApplication(null, "process.FormDesigner", {
+                                "style": layout.desktop.formDesignerStyle || "default",
+                                "appId": "process.FormDesigner"+this.process.designer.application.id,
+                                "id": this.data[name]
+                            });
+                        }
+                    }.bind(this))
                 }.bind(this));
             }.bind(this));
         }
