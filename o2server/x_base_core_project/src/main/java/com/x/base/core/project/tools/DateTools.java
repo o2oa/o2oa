@@ -1,5 +1,9 @@
 package com.x.base.core.project.tools;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -618,6 +622,60 @@ public class DateTools {
 	}
 
 	/**
+	 * 判断当前日期是星期几
+	 *
+	 * @param dateTime 修要判断的时间
+	 * @return 0-6 代表 星期天-星期六
+	 * @Exception 发生异常
+	 */
+	public static int dayForWeekAttendanceV2(Date dateTime) throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateTime);
+		return c.get(Calendar.DAY_OF_WEEK) - 1;
+	}
+
+	/**
+	 * 两个日期是否在每周循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInWeekCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long daysBetween = ChronoUnit.DAYS.between(origin, judge);
+		return (daysBetween % 7 == 0) ;
+	}
+
+	/**
+	 * 两个日期是否在每个14天循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInTwoWeekCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long daysBetween = ChronoUnit.DAYS.between(origin, judge);
+		return (daysBetween % 14 == 0) ;
+	}
+
+
+	/**
+	 * 两个日期是否在每月循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInMonthCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		Period period = Period.between(origin, judge);
+		return (period.getDays() == 0) ;
+	}
+
+
+	/**
 	 * 指定的日期，添加指定的天数
 	 *
 	 * @param date
@@ -631,6 +689,62 @@ public class DateTools {
 		date = calendar.getTime();
 		return date;
 	}
+
+	/**
+	 * 指定时间添加指定的分钟数
+	 * @param date
+	 * @param minutes
+	 * @return
+	 */
+	public static Date addMinutes(Date date, int minutes) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MINUTE, minutes);// 指定的时间上加上n分钟
+		date = calendar.getTime();
+		return date;
+	}
+
+	/**
+	 * endDate比startDate多的天数
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static int differentDays(Date startDate,Date endDate)
+	{
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(startDate);
+
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(endDate);
+		int day1= cal1.get(Calendar.DAY_OF_YEAR);
+		int day2 = cal2.get(Calendar.DAY_OF_YEAR);
+
+		int year1 = cal1.get(Calendar.YEAR);
+		int year2 = cal2.get(Calendar.YEAR);
+		if(year1 != year2)   //同一年
+		{
+			int timeDistance = 0 ;
+			for(int i = year1 ; i < year2 ; i ++)
+			{
+				if(i%4==0 && i%100!=0 || i%400==0)    //闰年
+				{
+					timeDistance += 366;
+				}
+				else    //不是闰年
+				{
+					timeDistance += 365;
+				}
+			}
+
+			return timeDistance + (day2-day1) ;
+		}
+		else    //不同年
+		{
+			return day2-day1;
+		}
+	}
+
 
 	/**
 	 * 时间戳转Unix时间戳

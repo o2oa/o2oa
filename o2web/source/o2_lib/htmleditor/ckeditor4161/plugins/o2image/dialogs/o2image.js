@@ -462,9 +462,9 @@
 							"data-orgid": MWF.xDesktop.uploadedImageOrgid
 						});
 					}
-					this.imageElement.setAttributes({
-						"onerror": "MWF.xDesktop.setImageSrc()"
-					});
+					// this.imageElement.setAttributes({
+					// 	"onerror": "MWF.xDesktop.setImageSrc()"
+					// });
 					MWF.xDesktop.uploadedImageId = "";
 					MWF.xDesktop.uploadedImageOrgid = "";
 

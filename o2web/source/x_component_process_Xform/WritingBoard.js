@@ -158,7 +158,6 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
              * @summary 手写板容器.
              * @member {Element}
              */
-            debugger;
             this.handwritingNode = new Element("div", {"styles": this.form.css.handwritingNode}).inject(this.node, "after");
             var x, y;
             if(layout.mobile){

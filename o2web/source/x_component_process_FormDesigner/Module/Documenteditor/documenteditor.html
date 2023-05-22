@@ -87,6 +87,16 @@
 				</td>
 			</tr>
 		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.viewTracesFullScreen}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="viewTracesFullScreen" text{($.viewTracesFullScreen===true)?'checked':''} type="radio" value="true"/>{{$.lp.true}}
+					<input class="editTableRadio" name="viewTracesFullScreen" text{($.viewTracesFullScreen!==true)?'checked':''} type="radio" value="false"/>{{$.lp.false}}
+					<div>{{$.lp.viewTracesFullScreenInfo}}</div>
+				</td>
+			</tr>
+		</table>
 		<div id="text{$.pid}allowHistoryScriptArea" style="display: text{($.allowHistory=='s')?'block':'none'}" class="MWFFormulaArea" name="allowHistoryScript" title="{{$.lp.viewTracesScript}} (S)"></div>
 
 <!--		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->

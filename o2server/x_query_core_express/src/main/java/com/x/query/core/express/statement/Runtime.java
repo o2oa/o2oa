@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections4.ListUtils;
@@ -16,8 +15,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.ListTools;
-import com.x.cms.core.entity.query.Comparison;
 import com.x.organization.core.express.Organization;
 import com.x.query.core.express.plan.FilterEntry;
 

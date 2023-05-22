@@ -1,11 +1,12 @@
 package com.x.query.core.express.index;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.grouping.TopGroupsCollector;
@@ -26,16 +27,21 @@ public class Facets {
             woFacet.setField(param.first());
             TopGroups<BytesRef> topGroups = param.second().getTopGroups(0);
             if (null != topGroups) {
-                List<ValueCountPair> list = Arrays.stream(topGroups.groups).map(o -> {
-                    ValueCountPair valueCountPair = new ValueCountPair();
-                    // 存在可能为null
-                    valueCountPair.setValue(null == o.groupValue ? "" : o.groupValue.utf8ToString());
-                    valueCountPair.setCount(o.totalHits.value);
-                    return valueCountPair;
-                }).collect(Collectors.toList());
+                List<ValueCountPair> list = Arrays.stream(topGroups.groups)
+                        // 存在可能为null
+                        .filter(o -> null != o.groupValue && StringUtils.isNotEmpty(o.groupValue.utf8ToString()))
+                        .map(o -> {
+                            ValueCountPair valueCountPair = new ValueCountPair();
+
+                            valueCountPair.setValue(o.groupValue.utf8ToString());
+                            valueCountPair.setCount(o.totalHits.value);
+                            return valueCountPair;
+                        }).collect(Collectors.toList());
                 if (StringUtils.equalsIgnoreCase(facetGroupOrder,
                         com.x.base.core.project.config.Query.Index.FACETGROUPORDER_KEYDESC)) {
-                    Collections.reverse(list);
+                    list = list.stream().sorted(
+                            (v1, v2) -> ObjectUtils.compare(v1.getValue().toString(), v2.getValue().toString(), true))
+                            .collect(Collectors.toList());
                 } else if (StringUtils.equalsIgnoreCase(facetGroupOrder,
                         com.x.base.core.project.config.Query.Index.FACETGROUPORDER_COUNTASC)) {
                     list = list.stream().sorted(Comparator.nullsLast(Comparator.comparing(ValueCountPair::getCount)))
@@ -44,6 +50,10 @@ public class Facets {
                         com.x.base.core.project.config.Query.Index.FACETGROUPORDER_COUNTDESC)) {
                     list = list.stream()
                             .sorted(Comparator.nullsLast(Comparator.comparing(ValueCountPair::getCount)).reversed())
+                            .collect(Collectors.toList());
+                } else {
+                    list = list.stream().sorted(
+                            (v1, v2) -> ObjectUtils.compare(v2.getValue().toString(), v1.getValue().toString(), true))
                             .collect(Collectors.toList());
                 }
                 woFacet.setValueCountPairList(list);

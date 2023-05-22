@@ -1,0 +1,24 @@
+<div  id="mobile-attendance-v2" class="{{ $.isDarkTheme ? 'mobile-page theme-dark': 'mobile-page theme-default' }}">
+  <div class="mobile-page-header">
+    <div class="page-title">
+      {{$.menu.currentMenu.name}}
+    </div> 
+  </div>
+  <div class="mobile-page-body">
+    <app-container></app-container>
+  </div>
+  <div class="mobile-page-footer">
+    <!-- 打卡 -->
+    <div oo-each="$.menu.menuData" oo-item="menu" class="menu-item" @click="this.openMenu(menu.value)">
+      <div class="{{$.menu.currentMenu.action === menu.value.action ? 'o2-icon-24 primary_color' : 'o2-icon-24'}}">
+        <i class="o2icon-accept" oo-if="menu.value.action === 'checkIn'"></i>
+        <i class="o2icon-piechart" oo-if="menu.value.action === 'statistic'"></i>
+        <i class="o2icon-config" oo-if="menu.value.action === 'settings'"></i>
+      </div>
+      <div class="{{$.menu.currentMenu.action === menu.value.action ? 'menu-title primary_color' : 'menu-title'}}">
+        {{ menu.value.name }}
+      </div>
+    </div>
+     
+  </div>
+</div>

@@ -126,7 +126,6 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
       return this.json.showIcon!='no' && (!this.form.json || !this.form.json.hideModuleIcon);
     },
     _preprocessingModuleData: function(){
-        debugger;
         this.node.clearStyles();
         this.recoveryIconNode = this.node.getFirst();
         this.recoveryIconNode.dispose();

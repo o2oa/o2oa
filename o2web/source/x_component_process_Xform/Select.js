@@ -1,5 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 /** @class Select 下拉选择组件。
+ * 在8.1之后，支持从数据字典、视图和查询获取可选项。获取过程为异步。
  * @o2cn 下拉选择
  * @example
  * //可以在脚本中获取该组件
@@ -24,6 +25,13 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	Implements: [Events],
 	Extends: MWF.APP$Input,
 	iconStyle: "selectIcon",
+
+
+		/**
+		 * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+		 * @event MWF.xApplication.process.Xform.Select#load
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
 
 	/**
 	 * @ignore
@@ -68,24 +76,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		}
 	},
 	__showValue: function(node, optionItems, value){
-		if (value){
-			if (typeOf(value)!=="array") value = [value];
-			var texts = [];
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				var t = tmps[0];
-				var v = tmps[1] || t;
+        if (value){
+            if (typeOf(value)!=="array") value = [value];
+            var texts = [];
+            optionItems.each(function(item){
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
 
-				if (v){
+                if (v){
 
-					if (value.indexOf(v)!=-1){
-						texts.push(t);
-					}
-				}
+                    if (value.indexOf(v)!=-1){
+                        texts.push(t);
+                    }
+                }
 
-			});
-			node.set("text", texts.join(", "));
-		}
+            });
+            node.set("text", texts.join(", "));
+        }
 	},
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
@@ -176,67 +184,60 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
 	/**
 	 * @summary 刷新选择项，如果选择项是脚本，重新计算。
-	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
-	 * @param {Boolean} [refresh] 是否强制刷新，如果是true，从后台重新获取；否则从缓存获取。默认为false。
 	 * @example
 	 * this.form.get('fieldId').resetOption();
-	 * this.form.get('fieldId').resetOption(true);
 	 */
-    resetOption: function( async, refresh ){
+    resetOption: function(){
         this.node.empty();
-        this.setOptions( async, refresh );
-		this.fireEvent("resetOption");
+        this.setOptions();
+		this.fireEvent("resetOption")
     },
 	/**
 	 * @summary 获取选择项。
-	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
-	 * @param {Boolean} [refresh] 如果是true，从后台重新获取；否则从缓存获取。默认为false。
-	 * @return {Array | Promise} 返回选择项数组；如果可选值脚本返回Promise，或其他可选值为异步加载，返回Promise。如：<pre><code class='language-js'>[
+	 * @return {Array | Promise} 返回选择项数组或Promise，如：<pre><code class='language-js'>[
 	 *  "女|female",
 	 *  "男|male"
 	 * ]</code></pre>
 	 * @example
-	 * //同步
-	 * var options = this.form.get('fieldId').getOptions(); //options为选择项数组
+	 * this.form.get('fieldId').getOptions();
 	 * @example
 	 * //异步
-	 * var opt = this.form.get('fieldId').getOptions(true);
+	 * var opt = this.form.get('fieldId').getOptions();
 	 * Promise.resolve(opt).then(function(options){
 	 *     //options为选择项数组
 	 * })
 	 */
-	getOptions: function( async, refresh ){
-		var opt = this.getDefaultOptions();
-		var extOpt = this.getExtendOptions( refresh );
-		if( (opt && typeOf(opt.then) === "function") || (extOpt && typeOf(extOpt.then) === "function") ){
-			return Promise.all( [opt, extOpt] ).then(function (arr) {
-				return (arr[0] || []).concat( arr[1] || [] );
-			});
+	 getOptions: function(async, refresh){
+	    this.optionsCache = null;
+		var opt = this._getOptions(async, refresh);
+		if( (opt && typeOf(opt.then) === "function") ){
+			var p = Promise.resolve( opt ).then(function(option){
+				this.moduleSelectAG = null;
+			    this.optionsCache = (option || []);
+			    return this.optionsCache;
+			}.bind(this));
+			this.moduleSelectAG = p;
+			return p;
 		}else{
-			return (opt || []).concat( extOpt || [] );
+		    this.optionsCache = (opt || []);
+			return this.optionsCache;
 		}
 	},
-	getDefaultOptions: function(){
-		switch (this.json.itemType) {
+	_getOptions: function(async, refresh){
+	    switch (this.json.itemType) {
 			case "values": return this.json.itemValues;
+			case "dict": return this.getOptionsWithDict( async, refresh );
+			case "view": return this.getOptionsWithView( async, refresh );
+			case "statement": return this.getOptionsWithStatement( async, refresh );
 			default:
 				return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
 		}
 	},
-	getExtendOptions: function( async, refresh ){
-		switch (this.json.itemTypeExtend) {
-			case "dict": return this.getOptionsWithDict( async, refresh );
-			case "view": return this.getOptionsWithView( async, refresh );
-			case "statement": return this.getOptionsWithStatement( async, refresh );
-		}
-		return [];
-	},
 
 	/**
 	 * @summary 获取整理后的选择项。
-	 * @param {Boolean} [async] 如果是true异步获取额外可选值，false同步获取额外可选值。默认根据额外选项配置判断。<b>（该选项无法控制可选值脚本的异步或同步）</b>
-	 * @param {Boolean} [refresh] 如果是true，从后台重新获取；否则从缓存获取。默认为false。
-	 * @return {Object | Promise} 返回整理后的选择项，如：
+	 * @param {Boolean} [refresh] 是否忽略缓存重新计算可选项。
+	 * @return {Object} 返回整理后的选择项数组或Promise，如：
 	 * <pre><code class='language-js'>{"valueList": ["","female","male"], "textList": ["","女","男"]}
 	 * </code></pre>
 	 * @example
@@ -248,23 +249,31 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	 *     //optionData为选择项
 	 * })
 	 */
-	getOptionsObj : function(async, refresh){
-		var textList = [];
-		var valueList = [];
-		var optionItems = this.getOptions(async, refresh);
+	getOptionsObj : function( refresh ){
+		var optionItems = (refresh!==true && this.optionsCache) ? this.optionsCache : this.getOptions();
 		if (!optionItems) optionItems = [];
 		if (o2.typeOf(optionItems)==="array"){
-			optionItems.each(function(item){
-				var tmps = item.split("|");
-				textList.push( tmps[0] );
-				valueList.push( tmps[1] || tmps[0] );
-			}.bind(this));
+		    return this._getOptionsObj( optionItems );
+		}else if (o2.typeOf(optionItems.then)==="function"){
+			return optionItems.then(function(optItems){
+			    return this._getOptionsObj( optItems )
+			});
 		}
 		return { textList : textList, valueList : valueList };
 	},
+	_getOptionsObj: function( optionItems ){
+		var textList = [];
+		var valueList = [];
+		optionItems.each(function(item){
+			var tmps = item.split("|");
+			textList.push( tmps[0] );
+			valueList.push( tmps[1] || tmps[0] );
+		}.bind(this));
+		return { textList : textList, valueList : valueList };
+	},
 
-	setOptions: function( async, refresh ){
-		var optionItems = this.getOptions( async, refresh );
+	setOptions: function(){
+		var optionItems = this.getOptions();
 		this._setOptions(optionItems);
 	},
 	_setOptions: function(optionItems){
@@ -439,19 +448,21 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	 * var text = data.text[0] //获取选中项的文本
 	 */
 	getTextData: function(){
-		var value = [];
-		var text = [];
+		var ops;
 		if (this.isReadonly()){
-			var ops = this.getOptionsObj(false);
+			ops = this.getOptionsObj();
 			var data = this._getBusinessData();
 			var d = typeOf(data) === "array" ? data : [data];
-			d.each( function (v) {
-				var idx = ops.valueList.indexOf( v );
-				value.push( v || "" );
-				text.push( idx > -1 ? ops.textList[idx] : (v || "") );
-			});
+			if( typeOf(ops.then) === "function" ){
+			    return ops.then( function(options){
+					return this._getTextDataRead( d, options );
+			    }.bind(this));
+			}else{
+                return this._getTextDataRead( d, ops );
+			}
 		}else{
-			var ops = this.node.getElements("option");
+			var value = [], text = [];
+			ops = this.node.getElements("option");
 			ops.each(function(op){
 				if (op.selected){
 					var v = op.get("value");
@@ -460,11 +471,23 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 					text.push(t || v || "");
 				}
 			});
+			if (!value.length) value = [""];
+			if (!text.length) text = [""];
+			return {"value": value, "text": text};
 		}
+	},
+	_getTextDataRead: function(d, ops){
+		var value = [], text = [];
+		d.each( function (v) {
+			var idx = ops.valueList.indexOf( v );
+			value.push( v || "" );
+			text.push( idx > -1 ? ops.textList[idx] : (v || "") );
+		});
 		if (!value.length) value = [""];
 		if (!text.length) text = [""];
 		return {"value": value, "text": text};
 	},
+
 	/**
 	 * @summary 获取选中项的text。
 	 * @return {String} 返回选中项的text
@@ -472,8 +495,16 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	 * var text = this.form.get('fieldId').getText(); //获取选中项的文本
 	 */
 	getText: function(){
-		var texts = this.getTextData().text;
-		return (texts && texts.length) ? texts[0] : "";
+		var d = this.getTextData();
+		if( typeOf(d.then) === "function" ){
+			return d.then(function( d1 ){
+				var texts = d1.text;
+				return (texts && texts.length) ? texts[0] : "";
+			})
+		}else{
+			var texts = d.text;
+			return (texts && texts.length) ? texts[0] : "";
+		}
 	},
     getInputData: function(){
 		if( this.isReadonly()){
@@ -492,7 +523,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		}
 	},
     resetData: function(){
-
         this.setData(this.getValue());
     },
 
@@ -522,17 +552,27 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this._setBusinessData(data);
 		if (this.isReadonly()){
 			var d = typeOf(data) === "array" ? data : [data];
-			var ops = this.getOptionsObj(false);
+			var ops = this.getOptionsObj();
 			var result = [];
-			d.each( function (v) {
-				var idx = ops.valueList.indexOf( v );
-				result.push( idx > -1 ? ops.textList[idx] : v);
-			})
-			this.node.set("text", result.join(","));
+			if( typeOf(ops.then) === "function" ){
+                this.moduleSelectAG = Promise.resolve(ops).then(function(){
+                    d.each( function (v) {
+                        var idx = ops.valueList.indexOf( v );
+                        result.push( idx > -1 ? ops.textList[idx] : v);
+                    })
+                    this.node.set("text", result.join(","));
+                }.bind(this))
+			}else{
+			    d.each( function (v) {
+                    var idx = ops.valueList.indexOf( v );
+                    result.push( idx > -1 ? ops.textList[idx] : v);
+                })
+                this.node.set("text", result.join(","));
+			}
 		}else{
 			var ops = this.node.getElements("option");
 			ops.each(function(op){
-				if (typeOf(data)=="array"){
+				if (typeOf(data)==="array"){
 					if (data.indexOf(op.get("value"))!=-1){
 						op.set("selected", true);
 					}else{
@@ -553,20 +593,25 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		if (fireChange && old!==data) this.fireEvent("change");
 	},
 
-		getExcelData: function(){
-			var value = this.getData();
-			var options = this.getOptionsObj();
-			var idx = options.valueList.indexOf( value );
-			var text = idx > -1 ? options.textList[ idx ] : "";
+	getExcelData: function(){
+		var value = this.getData();
+		var options = this.getOptionsObj();
+		return Promise.resolve(options).then(function (opts) {
+			var idx = opts.valueList.indexOf( value );
+			var text = idx > -1 ? opts.textList[ idx ] : "";
 			return text;
-		},
-		setExcelData: function(d){
-			var value = d.replace(/&#10;/g,""); //换行符&#10;
-			this.excelData = value;
-			var options = this.getOptionsObj();
-			var idx = options.textList.indexOf( value );
-			value = idx > -1 ? options.valueList[ idx ] : "";
+		});
+	},
+	setExcelData: function(d){
+		var value = d.replace(/&#10;/g,""); //换行符&#10;
+		this.excelData = value;
+		var options = this.getOptionsObj();
+		this.moduleSelectAG = Promise.resolve(options).then(function (opts) {
+			var idx = opts.textList.indexOf( value );
+			value = idx > -1 ? opts.valueList[ idx ] : "";
 			this.setData(value, true);
-		}
+			this.moduleSelectAG = null;
+		}.bind(this));
+	}
 	
 }); 

@@ -1,0 +1,34 @@
+<div class="cc-mask cc-mask-show" id="selectShift">
+  <div class="sl-dialog" id="selectShiftBox">
+    <div class="sl-dialog-header">
+      <span class="title">{{$.title}}</span>
+      <button class="close" @click="closeSelectWorkPlace"><i class="o2icon-icon_close"></i></button>
+    </div>
+    <div class="sl-dialog-content">
+      <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+        <thead>
+          <th style="width: 10%;">{{$.lp.choose}}</th>
+          <th>{{$.lp.workAddressName}}</th>
+          <th>{{$.lp.workAddressRange}}</th>
+        </thead>
+        <tbody class="selector">
+        <tr oo-each="$.workAddressList" oo-item="address" @click="this.chooseWorkPlace(address.value)">
+          <td>
+            <div class="icon"><i
+                class="{{ ($.workAddressSelected.length > 0 && $m.isContainWorkPlace(address.value)) ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+            </div>
+          </td>
+          <td>{{address.value.placeName}}</td>
+          <td>{{address.value.errorRange}}</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <div class="sl-dialog-footer">
+      <span>
+        <button class="lightColor_bg" @click="closeSelectWorkPlace">{{$.lp.cancel}}</button>
+        <button class="mainColor_bg" @click="submit">{{$.lp.positive}}</button>
+      </span>
+    </div>
+  </div>
+</div>

@@ -186,3 +186,9 @@ body.document-editor table thead th:first-of-type {
 .o2_editorPlugin_doc_attachment_title_td {
     width: 2.8cm;
 }
+.doc_layout_filetext{
+    word-break: break-all;
+}
+.doc_layout_filetext ins,  doc_layout_filetext del{
+    word-break: break-all;
+}

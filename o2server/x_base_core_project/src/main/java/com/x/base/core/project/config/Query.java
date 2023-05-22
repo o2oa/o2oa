@@ -42,6 +42,30 @@ public class Query extends ConfigObject {
     public static final Boolean DEFAULT_EXTRACTIMAGE = false;
     public static final String DEFAULT_TESSLANGUAGE = "chi_sim";
     public static final Integer DEFAULT_PLANQUERYBATCHSIZE = 500;
+    public static final Boolean DEFAULT_STATEMENTDELETEENABLE = false;
+    public static final Boolean DEFAULT_STATEMENTUPDATEENABLE = false;
+    public static final Boolean DEFAULT_STATEMENTINSERTENABLE = false;
+
+    @FieldDescribe("statement语句是否允许执行delete.")
+    private Boolean statementDeleteEnable = DEFAULT_STATEMENTDELETEENABLE;
+
+    @FieldDescribe("statement语句是否允许执行update.")
+    private Boolean statementUpdateEnable = DEFAULT_STATEMENTUPDATEENABLE;
+
+    @FieldDescribe("statement语句是否允许执行insert.")
+    private Boolean statementInsertEnable = DEFAULT_STATEMENTINSERTENABLE;
+
+    public Boolean getStatementDeleteEnable() {
+        return BooleanUtils.isTrue(statementDeleteEnable);
+    }
+
+    public Boolean getStatementUpdateEnable() {
+        return BooleanUtils.isTrue(statementUpdateEnable);
+    }
+
+    public Boolean getStatementInsertEnable() {
+        return BooleanUtils.isTrue(statementInsertEnable);
+    }
 
     public Integer getPlanQueryBatchSize() {
         return (this.planQueryBatchSize == null || planQueryBatchSize < 1) ? DEFAULT_PLANQUERYBATCHSIZE
@@ -83,8 +107,78 @@ public class Query extends ConfigObject {
     public static class Index extends ConfigObject {
 
         public static Index defaultInstance() {
-            return new Index();
+            Index o = new Index();
+            o.enable = DEFAULT_ENABLE;
+            o.mode = DEFAULT_MODE;
+            o.hdfsDirectoryDefaultFS = DEFAULT_HDFSDIRECTORYDEFAULTFS;
+            o.hdfsDirectoryPath = DEFAULT_HDFSDIRECTORYPATH;
+            o.sharedDirectoryPath = DEFAULT_SHAREDDIRECTORYPATH;
+            o.maxSegments = DEFAULT_MAXSEGMENTS;
+            o.optimizeIndexEnable = DEFAULT_OPTIMIZEINDEXENABLE;
+            o.optimizeIndexCron = DEFAULT_OPTIMIZEINDEXCRON;
+            o.dataStringThreshold = DEFAULT_DATASTRINGTHRESHOLD;
+            o.summaryLength = DEFAULT_SUMMARYLENGTH;
+            o.attachmentMaxSize = DEFAULT_ATTACHMENTMAXSIZE;
+            o.workIndexAttachment = DEFAULT_WORKINDEXATTACHMENT;
+            o.workCompletedIndexAttachment = DEFAULT_WORKCOMPLETEDINDEXATTACHMENT;
+            o.documentIndexAttachment = DEFAULT_DOCUMENTINDEXATTACHMENT;
+            o.lowFreqWorkEnable = DEFAULT_LOWFREQWORKENABLE;
+            o.lowFreqWorkCron = DEFAULT_LOWFREQWORKCRON;
+            o.lowFreqWorkBatchSize = DEFAULT_LOWFREQWORKBATCHSIZE;
+            o.lowFreqWorkMaxCount = DEFAULT_LOWFREQWORKMAXCOUNT;
+            o.lowFreqWorkMaxMinutes = DEFAULT_LOWFREQWORKMAXMINUTES;
+            o.lowFreqWorkCompletedEnable = DEFAULT_LOWFREQWORKCOMPLETEDENABLE;
+            o.lowFreqWorkCompletedCron = DEFAULT_LOWFREQWORKCOMPLETEDCRON;
+            o.lowFreqWorkCompletedBatchSize = DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE;
+            o.lowFreqWorkCompletedMaxCount = DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT;
+            o.lowFreqWorkCompletedMaxMinutes = DEFAULT_LOWFREQWORKCOMPLETEDMAXMINUTES;
+            o.lowFreqDocumentEnable = DEFAULT_LOWFREQDOCUMENTENABLE;
+            o.lowFreqDocumentCron = DEFAULT_LOWFREQDOCUMENTCRON;
+            o.lowFreqDocumentBatchSize = DEFAULT_LOWFREQDOCUMENTBATCHSIZE;
+            o.lowFreqDocumentMaxCount = DEFAULT_LOWFREQDOCUMENTMAXCOUNT;
+            o.lowFreqDocumentMaxMinutes = DEFAULT_LOWFREQDOCUMENTMAXMINUTES;
+            o.highFreqWorkEnable = DEFAULT_HIGHFREQWORKENABLE;
+            o.highFreqWorkCron = DEFAULT_HIGHFREQWORKCRON;
+            o.highFreqWorkBatchSize = DEFAULT_HIGHFREQWORKBATCHSIZE;
+            o.highFreqWorkMaxCount = DEFAULT_HIGHFREQWORKMAXCOUNT;
+            o.highFreqWorkMaxMinutes = DEFAULT_HIGHFREQWORKMAXMINUTES;
+            o.highFreqWorkCompletedEnable = DEFAULT_HIGHFREQWORKCOMPLETEDENABLE;
+            o.highFreqWorkCompletedCron = DEFAULT_HIGHFREQWORKCOMPLETEDCRON;
+            o.highFreqWorkCompletedBatchSize = DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE;
+            o.highFreqWorkCompletedMaxCount = DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT;
+            o.highFreqWorkCompletedMaxMinutes = DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES;
+            o.highFreqDocumentEnable = DEFAULT_HIGHFREQDOCUMENTENABLE;
+            o.highFreqDocumentCron = DEFAULT_HIGHFREQDOCUMENTCRON;
+            o.highFreqDocumentBatchSize = DEFAULT_HIGHFREQDOCUMENTBATCHSIZE;
+            o.highFreqDocumentMaxCount = DEFAULT_HIGHFREQDOCUMENTMAXCOUNT;
+            o.highFreqDocumentMaxMinutes = DEFAULT_HIGHFREQDOCUMENTMAXMINUTES;
+            o.cleanupThresholdDays = DEFAULT_CLEANUPTHRESHOLDDAYS;
+            o.searchEnable = DEFAULT_SEARCHENABLE;
+            o.searchTitleBoost = DEFAULT_SEARCHTITLEBOOST;
+            o.searchSummaryBoost = DEFAULT_SEARCHSUMMARYBOOST;
+            o.searchBodyBoost = DEFAULT_SEARCHBODYBOOST;
+            o.searchAttachmentBoost = DEFAULT_SEARCHATTACHMENTBOOST;
+            o.searchPageSize = DEFAULT_SEARCHPAGESIZE;
+            o.searchMaxPageSize = DEFAULT_SEARCHMAXPAGESIZE;
+            o.searchMaxHits = DEFAULT_SEARCHMAXHITS;
+            o.facetMaxGroups = DEFAULT_FACETMAXGROUPS;
+            o.facetGroupOrder = DEFAULT_FACETGROUPORDER;
+            o.highlightFragmentSize = DEFAULT_HIGHLIGHTFRAGMENTSIZE;
+            o.highlightFragmentCount = DEFAULT_HIGHLIGHTFRAGMENTCOUNT;
+            o.highlightPre = DEFAULT_HIGHLIGHTPRE;
+            o.highlightPost = DEFAULT_HIGHLIGHTPOST;
+            o.moreLikeThisSize = DEFAULT_MORELIKETHISSIZE;
+            o.moreLikeThisMaxSize = DEFAULT_MORELIKETHISMAXSIZE;
+            o.moreLikeThisMinTermFreq = DEFAULT_MORELIKETHISMINTERMFREQ;
+            o.moreLikeThisMinDocFreq = DEFAULT_MORELIKETHISMINDOCFREQ;
+            o.moreLikeThisScoreThreshold = DEFAULT_MORELIKETHISSCORETHRESHOLD;
+            o.creatorUnitUnknown = DEFAULT_CREATORUNITUNKNOWN;
+            o.creatorPersonUnknown = DEFAULT_CREATORPERSONUNKNOWN;
+            o.creatorPersonCipher = DEFAULT_CREATORPERSONCIPHER;
+            return o;
         }
+
+        public static final Boolean DEFAULT_ENABLE = true;
 
         public static final String FIELD_HIGHLIGHTING = "highlighting";
         public static final String READERS_SYMBOL_ALL = "ALL";
@@ -158,7 +252,7 @@ public class Query extends ConfigObject {
         public static final Integer DEFAULT_SEARCHPAGESIZE = 20;
         public static final Integer DEFAULT_SEARCHMAXPAGESIZE = 5000;
 
-        public static final Integer DEFAULT_SEARCHMAXHITS = 1000000;
+        public static final Integer DEFAULT_SEARCHMAXHITS = 500000;
 
         public static final Integer DEFAULT_FACETMAXGROUPS = 100;
 
@@ -185,6 +279,10 @@ public class Query extends ConfigObject {
         public static final String DEFAULT_CREATORUNITUNKNOWN = UNKNOWN;
         public static final String DEFAULT_CREATORPERSONUNKNOWN = UNKNOWN;
         public static final String DEFAULT_CREATORPERSONCIPHER = "系统服务";
+
+        @FieldDescribe("是否启用.")
+        @Schema(description = "是否启用.")
+        private Boolean enable;
 
         @FieldDescribe("索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
         @Schema(description = "索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
@@ -226,16 +324,16 @@ public class Query extends ConfigObject {
         @Schema(description = "附件索引阈值(兆),超过此值的附件不进行索引.")
         private Integer attachmentMaxSize;
 
-        @FieldDescribe("是否对流转中工作进行索引.")
-        @Schema(description = "是否对流转中工作进行索引.")
+        @FieldDescribe("是否对流转中工作的附件进行索引.")
+        @Schema(description = "是否对流转中工作的附件进行索引.")
         private Boolean workIndexAttachment;
 
-        @FieldDescribe("是否对已完成工作进行索引.")
-        @Schema(description = "是否对已完成工作进行索引.")
+        @FieldDescribe("是否对已完成工作的附件进行索引.")
+        @Schema(description = "是否对已完成工作的附件进行索引.")
         private Boolean workCompletedIndexAttachment;
 
-        @FieldDescribe("是否对内容管理文档进行索引.")
-        @Schema(description = "是否对内容管理文档进行索引.")
+        @FieldDescribe("是否对内容管理文档的附件进行索引.")
+        @Schema(description = "是否对内容管理文档的附件进行索引.")
         private Boolean documentIndexAttachment;
 
         @FieldDescribe("是否启用流转中工作低频索引.")
@@ -266,16 +364,16 @@ public class Query extends ConfigObject {
         @Schema(description = "已完成工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCOMPLETEDCRON)
         private String lowFreqWorkCompletedCron;
 
-        @FieldDescribe("流转中工作低频索引批量获取大小.")
-        @Schema(description = "流转中工作低频索引批量获取大小.")
+        @FieldDescribe("已完成工作低频索引批量获取大小.")
+        @Schema(description = "已完成工作低频索引批量获取大小.")
         private Integer lowFreqWorkCompletedBatchSize;
 
-        @FieldDescribe("流转中工作低频索引单次最大处理数量.")
-        @Schema(description = "流转中工作低频索引单次最大处理数量.")
+        @FieldDescribe("已完成工作低频索引单次最大处理数量.")
+        @Schema(description = "已完成工作低频索引单次最大处理数量.")
         private Integer lowFreqWorkCompletedMaxCount;
 
-        @FieldDescribe("流转中工作低频索引单次最大处理时长(分钟).")
-        @Schema(description = "流转中工作低频索引单次最大处理时长(分钟).")
+        @FieldDescribe("已完成工作低频索引单次最大处理时长(分钟).")
+        @Schema(description = "已完成工作低频索引单次最大处理时长(分钟).")
         private Integer lowFreqWorkCompletedMaxMinutes;
 
         @FieldDescribe("是否启用内容管理文档低频索引.")
@@ -446,6 +544,10 @@ public class Query extends ConfigObject {
         @FieldDescribe("creatorPerson值为cipher时的替换值.")
         @Schema(description = "creatorPerson值为cipher时的替换值.")
         private String creatorPersonCipher;
+
+        public Boolean getEnable() {
+            return BooleanUtils.isNotFalse(this.enable);
+        }
 
         public String getCreatorUnitUnknown() {
             return StringUtils.isEmpty(this.creatorUnitUnknown) ? DEFAULT_CREATORUNITUNKNOWN

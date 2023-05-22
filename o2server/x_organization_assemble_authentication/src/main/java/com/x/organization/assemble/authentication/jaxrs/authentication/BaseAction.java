@@ -67,6 +67,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected static final String OAUTH_CLIENTSECRET = "clientSecret";
 	protected static final String OAUTH_CODE = "code";
 	protected static final String OAUTH_REDIRECTURI = "redirectUri";
+	protected static final String CUSTOM_SMS_APPLICATION = "x_sms_assemble_control";
+	protected static final String CUSTOM_SMS_CONFIG_NAME = "custom_sms";
 
 	private static final Type OAUTH_PARAMTYPE = new TypeToken<Map<String, Object>>() {
 	}.getType();

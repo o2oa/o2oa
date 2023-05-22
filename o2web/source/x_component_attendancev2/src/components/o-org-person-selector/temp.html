@@ -1,0 +1,10 @@
+<div class="o-org-people-selector margin-top">
+  <div class="o-org-people-selector-label" oo-if="$.label">
+    <span class="required" oo-if="$.isRequried">*</span>
+    {{$.label}}
+  </div>
+  <div class="o-org-people-selector-input">
+    <span class="{{$.value.length > 0 ? 'input' : 'input placeholder'}}" @click="clickOpenO2Selector" title="{{$.value.length > 0 ? $.showValue : $.placeholder}}">{{$.value.length > 0 ? $.showValue : $.placeholder}}</span>
+    <div class="icon" @mouseenter="enterIcon" @mouseleave="leaveIcon" @click="clickIconClearValue"><i class="{{$$.showClear ? 'o2icon-cancel-circle': 'o2icon-icon_bumen3'}}"></i></div>
+  </div>
+</div>

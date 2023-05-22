@@ -1435,12 +1435,19 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		inforNode.set("html", html);
 
 		if (!Browser.Platform.ios){
-			new mBox.Tooltip({
-				content: inforNode,
-				setStyles: {content: {padding: 15, lineHeight: 20}},
-				attach: e.target,
-				transition: 'flyin'
+			// new mBox.Tooltip({
+			// 	content: inforNode,
+			// 	setStyles: {content: {padding: 15, lineHeight: 20}},
+			// 	attach: e.target,
+			// 	transition: 'flyin'
+			// });
+
+			this.tooltip = new MWF.xApplication.process.workcenter.List.Tooltip(this.app.content, e.target, this.app, {}, {
+				axis : "y",
+				hiddenDelay : 300,
+				displayDelay : 300
 			});
+			this.tooltip.inforNode = inforNode;
 		}
 	},
 	openWork: function(e, data){
@@ -1579,5 +1586,43 @@ MWF.xApplication.process.workcenter.DraftList = new Class({
 			}.bind(this)
 		};
 		this.app.desktop.openApplication(e, "process.Work", options);
+	}
+});
+
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xApplication.process.workcenter.List.Tooltip = new Class({
+	Extends: MTooltips,
+	options:{
+		nodeStyles: {
+			"font-size" : "12px",
+			"position" : "absolute",
+			"max-width" : "500px",
+			"min-width" : "180px",
+			"z-index" : "1001",
+			"background-color" : "#fff",
+			"padding" : "10px",
+			"border-radius" : "8px",
+			"box-shadow": "0 0 18px 0 #999999",
+			"-webkit-user-select": "text",
+			"-moz-user-select": "text",
+			"line-height": "20px"
+		},
+		priorityOfAuto :{
+			x : [ "center", "right", "left" ], //当position x 为 auto 时候的优先级
+			y : [ "middle", "top", "bottom" ] //当position y 为 auto 时候的优先级
+		},
+		isFitToContainer : true,
+		overflow : "scroll"
+	},
+	_loadCustom : function( callback ){
+		if(callback)callback();
+	},
+	_customNode : function( node, contentNode ){
+		this.inforNode.inject(contentNode);
+		if( this.inforNode.getSize().y > 300 ){
+			this.inforNode.setStyle("padding-bottom", "20px");
+		}
+
+		this.fireEvent("customContent", [contentNode, node]);
 	}
 });

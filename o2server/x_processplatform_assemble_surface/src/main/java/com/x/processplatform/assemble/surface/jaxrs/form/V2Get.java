@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,7 +62,7 @@ class V2Get extends BaseAction {
             CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties,
                     list);
             CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
-                    .getRelatedScriptFuture(form.getApplication(), properties, list);
+                    .getRelatedScriptFuture(properties, list);
             wo.setRelatedFormMap(
                     getRelatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
             wo.setRelatedScriptMap(
@@ -103,7 +102,7 @@ class V2Get extends BaseAction {
         }, ThisApplication.threadPool());
     }
 
-    private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(String applicationId,
+    private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(
             FormProperties properties,
             final List<String> list) {
         return CompletableFuture.supplyAsync(() -> {
@@ -111,7 +110,7 @@ class V2Get extends BaseAction {
             if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
                 try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                     Business business = new Business(emc);
-                    map = convertScript(business, applicationId, properties, list);
+                    map = convertScript(business, properties, list);
                 } catch (Exception e) {
                     LOGGER.error(e);
                 }
@@ -120,7 +119,7 @@ class V2Get extends BaseAction {
         }, ThisApplication.threadPool());
     }
 
-    private Map<String, RelatedScript> convertScript(Business business, String applicationId, FormProperties properties,
+    private Map<String, RelatedScript> convertScript(Business business, FormProperties properties,
             final List<String> list)
             throws Exception {
         Map<String, RelatedScript> map = new TreeMap<>();
@@ -173,100 +172,6 @@ class V2Get extends BaseAction {
             }
         }
         return map;
-    }
-
-    private String processPlatformScriptLoad(Business business, com.x.processplatform.core.entity.element.Script script)
-            throws Exception {
-        List<com.x.processplatform.core.entity.element.Script> list = new ArrayList<>();
-        for (com.x.processplatform.core.entity.element.Script o : business.script()
-                .listScriptNestedWithApplicationWithUniqueName(script.getApplication(),
-                        script.getId())) {
-            list.add(o);
-        }
-        StringBuilder sb = new StringBuilder("");
-        List<String> imported = new ArrayList<>();
-        for (com.x.processplatform.core.entity.element.Script o : list) {
-            sb.append(o.getText());
-            sb.append(System.lineSeparator());
-            imported.add(o.getId());
-            if (StringUtils.isNotEmpty(o.getName())) {
-                imported.add(o.getName());
-            }
-            if (StringUtils.isNotEmpty(o.getAlias())) {
-                imported.add(o.getAlias());
-            }
-        }
-        return sb.toString();
-    }
-
-    private String cmsScriptLoad(Business business, com.x.cms.core.entity.element.Script script)
-            throws Exception {
-        List<com.x.cms.core.entity.element.Script> list = new ArrayList<>();
-        for (com.x.cms.core.entity.element.Script o : business.cms().script().listScriptNestedWithAppInfoWithUniqueName(
-                script.getAppId(),
-                script.getId())) {
-            list.add(o);
-        }
-        StringBuilder sb = new StringBuilder("");
-        List<String> imported = new ArrayList<>();
-        for (com.x.cms.core.entity.element.Script o : list) {
-            sb.append(o.getText());
-            sb.append(System.lineSeparator());
-            imported.add(o.getId());
-            if (StringUtils.isNotEmpty(o.getName())) {
-                imported.add(o.getName());
-            }
-            if (StringUtils.isNotEmpty(o.getAlias())) {
-                imported.add(o.getAlias());
-            }
-        }
-        return sb.toString();
-    }
-
-    private String portalScriptLoad(Business business, com.x.portal.core.entity.Script script)
-            throws Exception {
-        List<com.x.portal.core.entity.Script> list = new ArrayList<>();
-        for (com.x.portal.core.entity.Script o : business.portal().script().listScriptNestedWithPortalWithFlag(
-                script.getPortal(),
-                script.getId())) {
-            list.add(o);
-        }
-        StringBuilder sb = new StringBuilder("");
-        List<String> imported = new ArrayList<>();
-        for (com.x.portal.core.entity.Script o : list) {
-            sb.append(o.getText());
-            sb.append(System.lineSeparator());
-            imported.add(o.getId());
-            if (StringUtils.isNotEmpty(o.getName())) {
-                imported.add(o.getName());
-            }
-            if (StringUtils.isNotEmpty(o.getAlias())) {
-                imported.add(o.getAlias());
-            }
-        }
-        return sb.toString();
-    }
-
-    private String serviceScriptLoad(Business business, com.x.program.center.core.entity.Script script)
-            throws Exception {
-        List<com.x.program.center.core.entity.Script> list = new ArrayList<>();
-        for (com.x.program.center.core.entity.Script o : business.centerService().script().listScriptNestedWithFlag(script.getId())) {
-            list.add(o);
-        }
-        StringBuilder sb = new StringBuilder("");
-        List<String> imported = new ArrayList<>();
-        for (com.x.program.center.core.entity.Script o : list) {
-            sb.append(o.getText());
-            sb.append(System.lineSeparator());
-            imported.add(o.getId());
-            if (StringUtils.isNotEmpty(o.getName())) {
-                imported.add(o.getName());
-            }
-            if (StringUtils.isNotEmpty(o.getAlias())) {
-                imported.add(o.getAlias());
-            }
-        }
-        return sb.toString();
     }
 
     @Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2Get$Wo")

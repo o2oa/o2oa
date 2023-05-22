@@ -240,7 +240,6 @@ public class Business {
 		List<String> list = new ArrayList<>();
 		Nodes nodes = Config.nodes();
 		for (String node : nodes.keySet()){
-			boolean flag = false;
 
 			try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
 				socket.setKeepAlive(true);
@@ -273,9 +272,8 @@ public class Business {
 					}
 
 					String result = dis.readUTF();
-					logger.print("socket dispatch resource {} to {}:{} result={}", fileName, node, nodes.get(node).nodeAgentPort(), result);
+					logger.info("socket dispatch resource {} to {}:{} result={}", fileName, node, nodes.get(node).nodeAgentPort(), result);
 					if("success".equals(result)){
-						flag = true;
 						list.add(node+":success");
 					}else{
 						list.add(node + ":failure");
@@ -284,7 +282,7 @@ public class Business {
 
 			} catch (Exception ex) {
 				list.add(node + ":failure-"+ex.getMessage());
-				logger.print("socket dispatch resource to {}:{} error={}", node, nodes.get(node).nodeAgentPort(), ex.getMessage());
+				logger.warn("socket dispatch resource to {}:{} error={}", node, nodes.get(node).nodeAgentPort(), ex.getMessage());
 			}
 
 		}

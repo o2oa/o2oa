@@ -1,0 +1,7 @@
+<div class="o-input-item margin-top">
+  <div class="o-input-item-label" oo-if="$.label">
+    <span class="required" oo-if="$.isRequried">*</span>
+    {{$.label}}
+  </div>
+  <textarea class="o-input-item-input" rows="{{$.textRows}}"  oo-model="value"  @input="onValueChange" placeholder="{{$.placeholder}}"  />
+</div>

@@ -46,9 +46,9 @@ public class ProcessFactory extends ElementFactory {
 
     /**
      * 在启动方法中根据应用和流程标识找到流程,需要考虑如果启用版本管理,那么流程名是重复的
-     * 
+     *
      * @param application
-     * @param flag
+     * @param flag 流程ID、流程名称
      * @return
      * @throws Exception
      */
@@ -70,6 +70,15 @@ public class ProcessFactory extends ElementFactory {
             if (p != null) {
                 this.entityManagerContainer().get(Process.class).detach(p);
                 CacheManager.put(cacheCategory, cacheKey, p);
+            }else{
+                p = this.entityManagerContainer().find(flag, Process.class);
+                if(p != null && BooleanUtils.isFalse(p.getEditionEnable())){
+                    p = this.getEnabledProcess(p.getApplication(), p.getEdition());
+                }
+                if (p != null) {
+                    this.entityManagerContainer().get(Process.class).detach(p);
+                    CacheManager.put(cacheCategory, cacheKey, p);
+                }
             }
         }
         return p;
@@ -262,7 +271,7 @@ public class ProcessFactory extends ElementFactory {
 
     /**
      * 判断用户是否可以启动此流程
-     * 
+     *
      * @param effectivePerson
      * @param identities
      * @param units

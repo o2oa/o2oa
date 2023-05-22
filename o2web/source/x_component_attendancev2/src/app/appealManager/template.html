@@ -1,0 +1,39 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.appealManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+        <div style="margin: 10px 0;float: left;">
+            <!-- <button class="mainColor_bg" @click="addGroup">{{$.lp.groupAdd}}</button> -->
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.appeal.date}}</th>
+                <th>{{$.lp.appeal.dutyType}}</th>
+                <th>{{$.lp.appeal.recordTime}}</th>
+                <th>{{$.lp.appeal.recordResult}}</th>
+                <th>{{$.lp.appeal.status}}</th>
+                
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.appealList" oo-item="g">
+                <td>{{g.value.recordDateString}}</td>
+                <td>{{ g.value.record.checkInType == 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
+                <td>{{ g.value.recordDate }}</td>
+                <td class="{{this.formatRecordResultClass(g.value.record)}}">{{  $m.formatRecordResult(g.value.record) }}</td>
+                <td>{{  $m.formatAppealStatus(g.value) }}</td>
+                 
+                <td>
+                    <span class="operator_link" oo-if="g.value.status === 0"
+                        @click="this.startProcess(g.value)">{{$.lp.appeal.startProcess}}</span>
+                    <span class="operator_link" oo-if="g.value.jobId"
+                        @click="this.openJob(g.value.jobId)">{{$.lp.appeal.openJob}}</span>
+                    
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$.pagerData"   @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
+</div>

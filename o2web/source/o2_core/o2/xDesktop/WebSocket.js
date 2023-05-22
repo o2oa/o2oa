@@ -10,7 +10,7 @@ MWF.xDesktop.WebSocket = new Class({
         var uri = new URI(window.location.href);
         var scheme = uri.get("scheme");
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
-        this.ws = wsScheme+"://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
+        this.ws = wsScheme+"://"+addressObj.host+( (!addressObj.port || addressObj.port==80) ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
 
         this.reConnect = true;
         this.checking = false;
@@ -167,6 +167,7 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
+                                break;
                             case "im_create":
                             case "im_revoke":
                                 this.receiveIMMessage(data);

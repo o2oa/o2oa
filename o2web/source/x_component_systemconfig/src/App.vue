@@ -197,6 +197,12 @@ const contentComponent = computed(() => {
   cursor: pointer;
   margin-left: 10px;
 }
+.systemconfig button:disabled{
+    opacity: 0.6;
+    background-color: #cccccc!important;
+    color: #333333!important;
+    cursor: not-allowed;
+}
 .systemconfig *::-webkit-scrollbar {
   width:8px;
   height: 8px;

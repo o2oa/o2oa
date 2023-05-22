@@ -1127,9 +1127,12 @@ MWF.xApplication.AppCenter.Exporter.ServiceElement = new Class({
             selectData.dictList.length===this.data.dictList.length;
     },
     selectAll: function( forceStatus ){
+        if( !this.data.agentList )this.data.agentList = [];
+        if( !this.data.invokeList )this.data.invokeList = [];
         if( !this.data.scriptList )this.data.scriptList = [];
+        if( !this.data.dictList )this.data.dictList = [];
         var selectData = this.postData;
-        if( selectData.scriptList )selectData.scriptList = [];
+        //if( selectData.scriptList )selectData.scriptList = [];
         if (selectData.agentList.length  || selectData.invokeList.length || selectData.scriptList.length || selectData.dictList.length){
             if (  this.isAllSelected(selectData) ){
                 selectData =  {

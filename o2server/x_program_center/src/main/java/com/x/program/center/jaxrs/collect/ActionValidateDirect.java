@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.schedule.CollectPerson;
@@ -12,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 class ActionValidateDirect extends BaseAction {
 
-	ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
@@ -39,7 +40,7 @@ class ActionValidateDirect extends BaseAction {
 			Config.collect().setName(name);
 			Config.collect().setPassword(password);
 			Config.collect().save();
-			Config.flush();
+			this.configFlush(effectivePerson);
 			/* 人员和应用市场同步 */
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
 		}
@@ -56,7 +57,7 @@ class ActionValidateDirect extends BaseAction {
 	public static class Wo extends WrapBoolean {
 
 		private static final long serialVersionUID = -1060687212629295952L;
-		
+
 	}
 
 }

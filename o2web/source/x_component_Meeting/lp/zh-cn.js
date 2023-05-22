@@ -123,6 +123,7 @@ MWF.xApplication.Meeting.LP = {
 
     "meeting_input_subject_error": "会议标题不能为空！",
     "meeting_input_room_error": "会议室不能为空！",
+    "meeting_input_url_number_error": "会议链接和会议号不能同时为空！",
     "meeting_input_person_error": "邀请参会人员不能为空！",
     "meeting_input_date_error": "会议开始时间不能早于现在！",
     "meeting_input_time_error": "会议结束时间不能早于开始时间！",
@@ -163,6 +164,18 @@ MWF.xApplication.Meeting.LP = {
     "hostPerson": "主持人",
     "hostUnit": "承办部门",
     "meetingType":"会议类型",
+    "meetingMode":"会议方式",
+    "meetingModeSelectText": ["线下会议","线上会议"],
+    "meetingModeSelectValue": ["offline","online"],
+    "meetingUrl": "会议链接",
+    "meetingNumber": "会议号",
+    "netMeetingAbb": "网",
+    "yes": "是",
+    "no": "否",
+    "other": "其他",
+    "createOnSave": "保存后自动生成",
+    "copy": "拷贝",
+    "noRoomBuilding": "网络会议\n(无会议室)",
 
     "week" : "周",
     "weeks": {
@@ -240,7 +253,29 @@ MWF.xApplication.Meeting.LP = {
         "viewCustomName" : "视图显示名称",
         "mobileCreateEnable" : "移动端是否能新建会议",
         "mobileCreateEnableOptions" : ["是","否"],
-        "meetingType":"会议类型（每行一种）"
+        "meetingType":"会议类型（每行一种）",
+        "enableOnline":"启用线上会议",
+        "onlineProduct": "线上会议产品",
+        "onlineConfig": "线上会议配置",
+
+        'hstUrl':'好视通服务地址',
+        'hstKey':'好视通服务接口Key',
+        'hstSecret':'好视通服务接口Secret',
+        'hstAuth':'好视通会议鉴权登录',
+        'o2ToHstUid':'O2与好视通映射人员字段',
+        "onlineConfigNotEmpty": "好视通服务地址、接口Key、接口Secret不能为空",
+
+        "employee": "人员工号(employee)",
+        "unique": "唯一编码(unique)",
+        "distinguishedName": "全称(distinguishedName)",
+        "mobile": "移动电话(mobile)",
+        "mail": "电子邮件(mail)",
+        "weixin": "微信号(qq)",
+        "qq": "QQ号码(qq)",
+
+        "apiAddress":"网络会议api地址",
+        "key":"key",
+        "secret":"secret"
     },
     "nextActivity": "下一个活动：",
     "nextUser": "处理人：",
@@ -249,5 +284,6 @@ MWF.xApplication.Meeting.LP = {
     "processStartedMessage": "您启动了一个新的工作：",
     "needSignInPerson" : "签到人员",
     "printQrcode": "打印签到二维码",
-    "weeklyViewTitle" : "{month}，第{week}周"
+    "weeklyViewTitle" : "{month}，第{week}周",
+    "onlineConfigNotJson": "线上会议配置未配置成正确的JSON格式"
 };

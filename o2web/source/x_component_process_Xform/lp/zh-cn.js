@@ -278,7 +278,8 @@ MWF.xApplication.process.Xform.LP = {
         "nodiff": "目前还没有历史修改信息",
         "word": "字",
         "diff": "对比",
-        "diffTitle": "与上一版本对比"
+        "diffTitle": "与上一版本对比",
+        "showAll": "显示所有痕迹"
     },
     "subjectEmpty": "标题不能为空",
     "issuanceUnitEmpty": "发文单位不能为空",
@@ -342,6 +343,9 @@ MWF.xApplication.process.Xform.LP = {
         "addTask": "加签",
         "addTaskTitle": "在当前活动添加处理人",
 
+        "goBack": "退回",
+        "goBackTitle": "退回到已经过的活动",
+
         "rerouteActivity": "调度到：",
         "reroutePerson": "调度给：",
         "selectPerson": "选择人员",
@@ -376,6 +380,16 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "在您处理之前添加处理人",
         "addTaskAfterTitle": "在您处理之后添加处理人",
         "addTaskType": "加签方式",
+
+        "goBackActivity": "退回到活动：",
+        "goBackActivityWay": "退回后处理：",
+
+        "goBackActivityWayStep": "按流程正常流转",
+        "goBackActivityWayJump": "直接回到退回人",
+        "goBackTo": "退回到：",
+
+        "selectGoBackActivity": "请选择要退回的活动",
+
 
         "addTaskRepeatedTitle": "重复加签提醒",
         "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"

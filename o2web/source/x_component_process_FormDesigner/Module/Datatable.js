@@ -46,6 +46,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
 			if (styles.importActionStyles) this.removeStyles(styles.importActionStyles, "importActionStyles");
 			if (styles.exportActionStyles) this.removeStyles(styles.exportActionStyles, "exportActionStyles");
+			if (styles.sectionKeyStyles) this.removeStyles(styles.sectionKeyStyles, "sectionKeyStyles");
+			if (styles.sectionKeyStyles) this.removeStyles(styles.sectionKeyStyles, "sectionByStyles");
 		}
 	},
 	setTemplateStyles: function(styles){
@@ -62,6 +64,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 		if (styles.importActionStyles) this.copyStyles(styles.importActionStyles, "importActionStyles");
 		if (styles.exportActionStyles) this.copyStyles(styles.exportActionStyles, "exportActionStyles");
+		if (styles.sectionKeyStyles) this.copyStyles(styles.sectionKeyStyles, "sectionKeyStyles");
+		if (styles.sectionKeyStyles) this.copyStyles(styles.sectionKeyStyles, "sectionByStyles");
 	},
 	setImpExpTableStyles: function(){
 		//设置导入导出表格样式

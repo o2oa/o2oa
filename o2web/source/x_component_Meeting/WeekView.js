@@ -358,6 +358,15 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
     },
     listRoom : function( callback ){
         this.app.actions.listBuilding( function( json ){
+            json.data.push({
+                id: "noRoom",
+                name: "noRoom",
+                roomList: [{
+                    id: "noRoom",
+                    name: "noRoom",
+                    available: true
+                }]
+            });
             this.bulidingData = json.data;
             if(callback)callback();
         }.bind(this) )
@@ -387,6 +396,10 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
         this.bulidingData.each( function( buliding ){
             buliding.roomList.each( function( room ){
                 var tr = new Element( "tr").inject( this.calendarTable );
+                if( buliding.id === "noRoom" ){
+                    tr.set("noRoom", "yes")
+                    this.noRoomTr = tr;
+                }
                 var td = new Element( "td", {
                     "tdType" : "room"
                 } ).inject( tr );
@@ -407,13 +420,15 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
 
                 this.rooms[ room.id ] = new MWF.xApplication.Meeting.WeekView.Room(this, node, room, buliding.name);
 
-                this.roomTooltips.push(
-                    new MWF.xApplication.Meeting.RoomTooltip(this.app.content, node, this.app, room, {
-                        axis : "x",
-                        hiddenDelay : 300,
-                        displayDelay : 300
-                    })
-                );
+                if( buliding.id !== "noRoom" ){
+                    this.roomTooltips.push(
+                        new MWF.xApplication.Meeting.RoomTooltip(this.app.content, node, this.app, room, {
+                            axis : "x",
+                            hiddenDelay : 300,
+                            displayDelay : 300
+                        })
+                    );
+                }
             }.bind(this))
         }.bind(this));
 
@@ -477,6 +492,7 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
     },
 
     loadCalendar: function(){
+        this.noRoomTr.setStyle("display","none");
         var date = this.date.clone();
         for( var i = 1; i<8; i++ ){
             this.loadDay(i, date);
@@ -564,11 +580,15 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
         });
 
         this.titleNode = new Element("div.titleNode", { "styles": this.css.roomItemTitleNode }).inject(this.node);
-        this.titleNode.addEvents({
-            click : function(){
-                this.openRoom()
-            }.bind(this)
-        });
+
+        if( this.data.id !== "noRoom" ){
+            this.titleNode.addEvents({
+                click : function(){
+                    this.openRoom()
+                }.bind(this)
+            });
+        }
+
         if( this.enable ){
             this.titleNode.addEvents({
                 mouseenter : function(){
@@ -600,7 +620,7 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
         }
 
 
-        if( this.buildingName ){
+        if( this.buildingName && this.buildingName !== "noRoom" ){
             this.buildingTextNode = new Element("div.buildingTextNode", {
                 "styles": this.enable ? this.css.roomItemBuildingTextNode : this.css.roomItemBuildingTextNode_disable,
                 "text" :  this.buildingName
@@ -609,8 +629,18 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
 
         this.titleTextNode = new Element("div.roomItemTitleTextNode", {
             "styles": this.enable ? this.css.roomItemTitleTextNode : this.css.roomItemTitleTextNode_disable ,
-            "text" :  this.data.name
+            "text" :  this.data.name === "noRoom" ? this.app.lp.noRoomBuilding : this.data.name
         }).inject(this.topNode);
+        if( this.data.name === "noRoom" ){
+            this.topNode.setStyles({
+                "height": "auto",
+                "padding-top": "30px"
+            })
+            this.titleTextNode.setStyles({
+                "white-space": "pre-wrap",
+                "line-height": "28px"
+            })
+        }
 
 
         //this.middleNode = new Element("div.middleNode", {
@@ -827,6 +857,10 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day = new Class({
         this.app.actions[ isAll ? "listMeetingDayAll" : "listMeetingDay" ](y, m, d, function(json){
             var length = json.data.length;
             json.data.each(function(meeting, i){
+                if( !meeting.room ){
+                    meeting.room = "noRoom";
+                    this.calendar.noRoomTr.setStyle("display", "");
+                }
                 if( !this.roomMeetingObject[ meeting.room ] ){
                     this.roomMeetingObject[ meeting.room ] = [];
                 }

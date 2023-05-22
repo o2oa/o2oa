@@ -3,6 +3,8 @@ package com.x.meeting.assemble.control.jaxrs.meeting;
 import java.util.Date;
 import java.util.List;
 
+import com.x.meeting.assemble.control.service.HstService;
+import com.x.meeting.core.entity.MeetingConfigProperties;
 import org.apache.commons.collections4.ListUtils;
 
 import com.google.gson.JsonElement;
@@ -74,6 +76,13 @@ class ActionModify extends BaseAction {
 
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
+			MeetingConfigProperties config = business.getConfig();
+			if(config.onLineEnabled()){
+				HstService.appendMeetingUser(meeting, config);
+				if(modifyTime){
+					HstService.reserveMeeting(meeting, config);
+				}
+			}
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
 
 				if (modifyTime) { // 开始时间或者结束时间有修改过

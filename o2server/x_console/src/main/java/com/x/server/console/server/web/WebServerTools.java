@@ -3,16 +3,18 @@ package com.x.server.console.server.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
-import javax.servlet.DispatcherType;
-
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -22,14 +24,11 @@ import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
@@ -37,6 +36,7 @@ import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ZipTools;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.Servers;
@@ -59,15 +59,15 @@ public class WebServerTools extends JettySeverTools {
 		coverToWebServer();
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
-			return startInApplication(webServer);
+			return startInApplication();
 		} else {
 			return startStandalone(webServer);
 		}
 
 	}
 
-	private static Server startInApplication(WebServer webServer) throws Exception {
-		WebAppContext webContext = webContext(webServer);
+	private static Server startInApplication() throws Exception {
+		WebAppContext webContext = webContext();
 		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
@@ -82,7 +82,7 @@ public class WebServerTools extends JettySeverTools {
 	private static Server startStandalone(WebServer webServer) throws Exception {
 		HandlerList handlers = new HandlerList();
 		Server server = createServer(webServer, handlers);
-		WebAppContext context = webContext(webServer);
+		WebAppContext context = webContext();
 		handlers.addHandler(context);
 		context.start();
 		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
@@ -96,7 +96,7 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())) {
-			server.setRequestLog(requestLog(webServer));
+			server.setRequestLog(requestLog());
 		}
 		context.setMimeTypes(Config.mimeTypes());
 		server.start();
@@ -128,10 +128,14 @@ public class WebServerTools extends JettySeverTools {
 		return server;
 	}
 
-	private static WebAppContext webContext(WebServer webServer) throws Exception {
+	private static WebAppContext webContext() throws Exception {
 		WebAppContext context = new WebAppContext();
+		moveNonDefaultDirectoryToWebroot();
 		context.setContextPath("/");
-		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
+		ResourceCollection resources = new ResourceCollection(
+				new String[] { Config.path_servers_webServer(true).toString(),
+						Config.path_webroot(true).toAbsolutePath().toString() });
+		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", false + "");
@@ -143,18 +147,27 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-//		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
-//			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-//			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
-//			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-//			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-//			statServletHolder.setInitParameter("sessionStatEnable", "false");
-//			context.addServlet(statServletHolder, "/druid/*");
-//		}
 		return context;
 	}
 
-	private static RequestLog requestLog(WebServer webServer) throws Exception {
+	private static void moveNonDefaultDirectoryToWebroot() throws Exception {
+		// 将webServer目录下的自定义目录移动到webroot
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Config.path_servers_webServer(true),
+				Files::isDirectory)) {
+			directoryStream.forEach(o -> {
+				String name = o.getFileName().toString();
+				if (!WebServers.WEB_SERVER_FOLDERS.contains(name)) {
+					try {
+						Files.move(o, Config.path_webroot(true).resolve(name), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException | URISyntaxException e) {
+						LOGGER.error(e);
+					}
+				}
+			});
+		}
+	}
+
+	private static RequestLog requestLog() throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);

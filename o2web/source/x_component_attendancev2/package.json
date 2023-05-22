@@ -1,0 +1,34 @@
+{
+  "name": "x_component_attendancev2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production BUILD_PATH=dist PUBLIC_URL=/x_component_attendancev2/ webpack",
+    "start": "cross-env NODE_ENV=development BUILD_PATH=dist PUBLIC_URL=/x_component_attendancev2/ webpack-dev-server",
+    "o2-deploy": "cross-env NODE_ENV=production BUILD_PATH=../../dest/x_component_attendancev2 PUBLIC_URL=/x_component_attendancev2/ webpack",
+    "o2-build": "cross-env NODE_ENV=production BUILD_PATH=../../../target/o2server/servers/webServer/x_component_attendancev2 PUBLIC_URL=../x_component_attendancev2/ webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git.o2oa.net:2020/o2oa/o2wb-empty.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@o2oa/oovm-scripts": "^1.0.9"
+  },
+  "dependencies": {
+    "@o2oa/component": "^1.1.6",
+    "@o2oa/oovm": "^2.1.41"
+  },
+  "browserslist": [
+    "> 0.1%",
+    "ie 11",
+    "last 2 version"
+  ]
+}

@@ -171,7 +171,7 @@ public class AppInfoFactory extends AbstractFactory {
 			p = cb.or(p, root.get(AppInfo_.manageableUnitList).in(unitNames));
 		}
 		if(ListTools.isNotEmpty(groupNames)){
-			p = cb.or(p, root.get(AppInfo_.viewableGroupList).in(unitNames));
+			p = cb.or(p, root.get(AppInfo_.viewableGroupList).in(groupNames));
 			p = cb.or(p, root.get(AppInfo_.publishableGroupList).in(groupNames));
 			p = cb.or(p, root.get(AppInfo_.manageableGroupList).in(groupNames));
 		}

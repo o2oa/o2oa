@@ -1,0 +1,57 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+        <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
+             <!--人员组织选择  -->
+             <div class="margin-right">
+                <o-org-person-selector
+                oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailStatisticList.filterSelectTitle,  'placeholder': $.lp.detailStatisticList.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'units': $.units}"
+                oo-model="filterList"></o-org-person-selector>
+             </div>
+             
+             <!-- 日期选择 -->
+             <div class="margin-top margin-right">
+                <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker> 
+                <span style="margin: 0 10px;">{{$.lp.until}}</span> 
+                <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
+             </div>
+             <div class="margin-top margin-right">
+                <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
+            <div class="margin-top margin-right">
+                <button class="light-border-button mainColor_border" @click="statisticExport">{{$.lp.statisticExport}}</button>
+            </div>
+        </div>
+       
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.detailTable.person}}</th>
+                <th>{{$.lp.detailTable.averageWorkTimeDuration}}</th>
+                <th>{{$.lp.detailTable.workTimeDuration}}</th>
+                <th>{{$.lp.detailTable.attendance}}</th>
+                <th>{{$.lp.detailTable.rest}}</th>
+                <th>{{$.lp.detailTable.absenteeismDays}}</th>
+                <th>{{$.lp.detailTable.lateTimes}}</th>
+                <th>{{$.lp.detailTable.leaveEarlierTimes}}</th>
+                <th>{{$.lp.detailTable.absenceTimes}}</th>
+                <th>{{$.lp.detailTable.fieldWorkTimes}}</th>
+ 
+            </thead>
+            <tr oo-each="$.statisticList" oo-item="d">
+                <td>{{ $m.formatName(d.value.userId)}}</td>
+                <td>{{  d.value.averageWorkTimeDuration }}</td>
+                <td>{{ $m.formatWorkTimeDuration(d.value.workTimeDuration)}}</td>
+                <td>{{d.value.attendance}}</td>
+                <td>{{d.value.rest}}</td>
+                <td>{{d.value.absenteeismDays}}</td>
+                <td>{{d.value.lateTimes}}</td>
+                <td>{{d.value.leaveEarlierTimes}}</td>
+                <td>{{d.value.absenceTimes}}</td>
+                <td>{{d.value.fieldWorkTimes}}</td>
+            </tr>
+        </table>
+    </div>
+     
+</div>

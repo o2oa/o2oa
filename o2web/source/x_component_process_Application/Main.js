@@ -498,7 +498,7 @@ MWF.xApplication.process.Application.List = new Class({
 
 					})
 
-					this.selectedList = this.dataList;
+					this.selectedList.append(this.dataList);
 				}
 			}
 		}
@@ -1083,6 +1083,7 @@ MWF.xApplication.process.Application.WorkList = new Class({
 	Extends: MWF.xApplication.process.Application.List,
 	loadData: function(){
 		var _self = this;
+		this.filterList.relateEditionProcess = true;
 		return this.action.WorkAction.manageListWithApplicationPaging(this.page, this.size, this.application.id,this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
@@ -1170,7 +1171,7 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 	Extends: MWF.xApplication.process.Application.List,
 	loadData: function(){
 		var _self = this;
-
+		this.filterList.relateEditionProcess = true;
 		return this.action.WorkCompletedAction.manageListWithApplicationPaging(this.page, this.size,this.application.id, this.filterList||{}).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;

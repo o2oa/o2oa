@@ -236,7 +236,52 @@ MWF.xApplication.portal.PortalManager.Menu = new Class({
 
 MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
     Extends: MWF.xApplication.process.ProcessManager.ApplicationProperty,
+    load: function(){
+        this.app.restActions.getApplication(this.app.options.application.id, function(json){
+            this.data = json.data;
+            this.propertyTitleBar = new Element("div", {
+                "styles": this.app.css.propertyTitleBar,
+                "text": this.data.name
+            }).inject(this.node);
 
+            this.contentNode =  new Element("div", {
+                "styles": this.app.css.propertyContentNode
+            }).inject(this.node);
+            this.contentAreaNode =  new Element("div", {
+                "styles": this.app.css.propertyContentAreaNode
+            }).inject(this.contentNode);
+
+            this.setContentHeight();
+            this.setContentHeightFun = this.setContentHeight.bind(this);
+            this.app.addEvent("resize", this.setContentHeightFun);
+            MWF.require("MWF.widget.ScrollBar", function(){
+                new MWF.widget.ScrollBar(this.contentNode, {"indent": false});
+            }.bind(this));
+
+            this.baseActionAreaNode = new Element("div", {
+                "styles": this.app.css.baseActionAreaNode
+            }).inject(this.contentAreaNode);
+
+            this.baseActionNode = new Element("div", {
+                "styles": this.app.css.propertyInforActionNode
+            }).inject(this.baseActionAreaNode);
+            this.baseTextNode = new Element("div", {
+                "styles": this.app.css.baseTextNode,
+                "text": this.app.lp.application.property
+            }).inject(this.baseActionAreaNode);
+
+            this.createEditBaseNode();
+
+            this.createPropertyContentNode();
+
+            this.createIconContentNode();
+
+            this.createAvailableNode();
+            this.createControllerListNode();
+
+            // this.createMaintainerNode();
+        }.bind(this));
+    },
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {
             "overflow": "hidden",
@@ -428,7 +473,11 @@ MWF.xApplication.portal.PortalManager.Select = new Class({
         this.content.set("text", this.getText(this.value));
     },
     save: function(){
-        if (this.input) this.value = this.input.options[this.input.selectedIndex].get("value");
+        if (this.input && this.input.options && this.input.options.length) {
+            this.value = this.input.options[this.input.selectedIndex].get("value");
+        }else{
+            this.value = "";
+        }
         return this.value;
     }
 });

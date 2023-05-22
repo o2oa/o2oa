@@ -72,7 +72,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                 var div;
                 var countPerLine = this.json.countPerline.toInt();
                 if( countPerLine === 0 ){
-                    div = new Element("div").inject( node );
+                    div = new Element("div", {"style":"display:inline-block;"}).inject( node );
                     div.set("text", texts.join(", "));
                 }else{
                     var textsPerLine = [];
@@ -219,8 +219,8 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                         }
                     }else{
                         var countPerLine = this.json.countPerline.toInt();
-                        if( countPerLine === 0 && i===0 ){
-                            node = new Element("div").inject(this.node);
+                        if( countPerLine === 0 ){
+                            if(i===0)node = new Element("div", {"style":"display:inline-block;"}).inject(this.node);
                         }else if( i % countPerLine === 0){
                             node = new Element("div").inject(this.node);
                         }

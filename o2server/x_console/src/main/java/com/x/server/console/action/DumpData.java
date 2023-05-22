@@ -2,6 +2,7 @@ package com.x.server.console.action;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,8 +10,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -66,7 +69,6 @@ public class DumpData {
         ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
         Files.createDirectories(dir);
         Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
-        thread.setContextClassLoader(classLoader);
         thread.start();
         return true;
     }
@@ -197,9 +199,25 @@ public class DumpData {
             List<T> list = null;
             int count = 0;
             int loop = 1;
+            final Set<String> idCheckSet = new HashSet<>();
             int btach = (int) Math.ceil((total + 0.0) / containerEntity.dumpSize());
             do {
                 list = list(em, cls, id, containerEntity.dumpSize());
+                // 检查已经存在重复的id
+                list = list.stream().filter(o -> {
+                    String objId;
+                    try {
+                        objId = BeanUtils.getProperty(o, JpaObject.id_FIELDNAME);
+                        if (idCheckSet.add(objId)) {
+                            return true;
+                        } else {
+                            LOGGER.warn("detect {}, id:{} is duplicate object.", cls, objId);
+                        }
+                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        LOGGER.error(e);
+                    }
+                    return false;
+                }).collect(Collectors.toList());
                 if (ListTools.isNotEmpty(list)) {
                     count = count + list.size();
                     id = BeanUtils.getProperty(list.get(list.size() - 1), JpaObject.id_FIELDNAME);

@@ -1,9 +1,11 @@
 package com.x.query.service.processing.jaxrs.index;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
 
 import com.google.gson.JsonElement;

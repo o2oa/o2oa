@@ -1,0 +1,33 @@
+ .o-input-item {
+  width: 312px;
+ }
+.o-input-item-label{
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #171a1d;
+}
+.o-input-item-label .required {
+  color: #ff5219;
+  font-size: 12px;
+  margin-right: 6px;
+}
+.o-input-item-input{
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: 4px 11px;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  transition: all .3s;
+}
+ 

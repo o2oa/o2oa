@@ -105,6 +105,7 @@ MWF.xApplication.ANN.Model = new Class({
         this.app = app;
         this.lp = app.lp;
         this.listNode = this.app.listNode;
+        this.container = new Element("div").inject(this.listNode);
         this.load();
     },
     reload: function(){
@@ -129,8 +130,8 @@ MWF.xApplication.ANN.Model = new Class({
 	},
     loadList: function(callback){
         var viewPath = this.app.path+this.app.options.style+"/model.html";
-        this.listNode.loadHtml(viewPath, {"bind": {"lp": this.lp, "data": this.data}}, function(){
-			this.node = this.listNode.getLast();
+        this.container.loadHtml(viewPath, {"bind": {"lp": this.lp, "data": this.data}}, function(){
+			this.node = this.container.getFirst();
             // var rightIcon = this.node.getElement(".o2_ann_model_nodeRight");
             // rightIcon.set("title", this.lp.status[this.data.status||'idle']);
             // rightIcon.setStyle("background-image", "url(../x_component_ANN/$Main/default/icon/"+(this.data.status || 'idle')+".png")

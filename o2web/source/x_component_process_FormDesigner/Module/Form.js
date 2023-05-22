@@ -8,7 +8,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		"propertyPath": "../x_component_process_FormDesigner/Module/Form/form.html",
         "mode": "PC",
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data",
-			"Datatemplate","Htmleditor","TinyMCEEditor", "Number", "Office", "Orgfield","Org", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield", "Address","Combox"],
+			"Datatemplate","Htmleditor","TinyMCEEditor", "Number", "Office", "Orgfield","Org", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield", "Address","Combox",
+			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch"
+		],
 		"injectActions" : [
 			{
 				"name" : "top",
@@ -1263,7 +1265,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 				this.designer.notice(MWF.APPFD.LP.version["resumeSuccess"]);
-				this.reload(JSON.decode(MWF.decodeJsonString(formData.data)));
+                var data = JSON.decode(MWF.decodeJsonString(formData.data));
+                data.isNewForm = false;
+				this.reload(data);
 				this.dlg.close();
 			//}.bind(this), null, false);
 		}.bind(this), null, false);

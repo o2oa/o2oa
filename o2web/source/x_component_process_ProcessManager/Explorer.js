@@ -271,6 +271,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             // categoryItems.setStyles(this.css.categoryElementItemNode);
             // this.categoryElementNode.getFirst().setStyles(this.css.categoryElementItemAllNode);
             // e.target.setStyles((this.elementCategory) ? this.css.categoryElementItemNode_current : this.css.categoryElementItemAllNode_current);
+            this.isSetContentSize = false;
             this.reload();
         }.bind(this));
     },

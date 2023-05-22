@@ -123,6 +123,7 @@ MWF.xApplication.Meeting.LP = {
 
     "meeting_input_subject_error": "Meeting title cannot be empty!",
     "meeting_input_room_error": "The meeting room cannot be empty!",
+    "meeting_input_url_number_error": "Meeting URL and meeting number cannot be empty at the same time!",
     "meeting_input_person_error": "The invited participant cannot be empty!",
     "meeting_input_date_error": "The meeting start time cannot be earlier than now!",
     "meeting_input_time_error": "The meeting end time cannot be earlier than the start time!",
@@ -163,6 +164,18 @@ MWF.xApplication.Meeting.LP = {
     "hostPerson": "Host Person",
     "hostUnit": "Host Unit",
     "meetingType":"Meeting Type",
+    "meetingMode": "meeting mode",
+    "meetingModeSelectText": ["offline meeting","online meeting"],
+    "meetingModeSelectValue": ["offline","online"],
+    "meeting Url": "meeting link",
+    "meeting Number": "meeting number",
+    "netMeetingAbb": "Net",
+    "yes": "Yes",
+    "no": "No",
+    "other": "Other",
+    "createOnSave": "Automatically generated after saving",
+    "copy": "Copy",
+    "noRoomBuilding": "Network meeting without meeting room",
 
     "week": "Week",
     "weeks": {
@@ -240,7 +253,29 @@ MWF.xApplication.Meeting.LP = {
         "viewCustomName": "Display name",
         "mobileCreateEnable": "Whether the mobile terminal can create a new meeting",
         "mobileCreateEnableOptions": ["Yes","No"],
-        "meetingType":"Meeting Type (one per line)"
+        "meetingType":"Meeting Type (one per line)",
+        "enableOnline": "Enable online meeting",
+        "onlineConfig": "Online meeting configuration",
+        "onlineProduct": "Online meeting product",
+
+        'hstUrl': 'Service Address',
+        'hstKey':'Service Interface KEY',
+        'hstSecret': 'Service interface SECRET',
+        'hstAuth': 'Is authenticated',
+        'o2ToHstUid': 'People Synchronization Fields',
+        "onlineConfigNotEmpty": "Hostel service address, interface Key, and interface Secret cannot be empty",
+
+        "employee": "employee",
+        "unique": "unique",
+        "distinguishedName": "distinguishedName",
+        "mobile": "mobile",
+        "mail": "mail",
+        "weixin": "qq",
+        "qq": "qq",
+
+        "apiAddress": "web conferencing api address",
+        "key": "key",
+        "secret": "secret"
     },
     "nextActivity": "Next Activity:",
     "nextUser": "Processor:",
@@ -249,5 +284,6 @@ MWF.xApplication.Meeting.LP = {
     "processStartedMessage": "You started a new job:",
     "needSignInPerson": "Checked in",
     "printQrcode": "Print QR Code for Sign-in",
-    "weeklyViewTitle": "{month}, week {week}"
+    "weeklyViewTitle": "{month}, week {week}",
+    "onlineConfigNotJson": "The online meeting configuration is not in the correct JSON format"
 };

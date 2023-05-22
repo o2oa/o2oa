@@ -1,0 +1,64 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+         <!--人员组织选择  -->
+         <div style="margin-right: 10px;float: left;">
+            <o-org-person-selector
+            oo-prop="{  'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+            oo-model="filterList"></o-org-person-selector>
+         </div>
+        <div style="margin: 10px 0;float: left;">
+             <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker> <span style="margin: 0 10px;">{{$.lp.until}}</span> <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
+        </div>
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.detailTable.person}}</th>
+                <th>{{$.lp.detailTable.groupName}}</th>
+                <th>{{$.lp.detailTable.shiftName}}</th>
+                <th>{{$.lp.detailTable.date}}</th>
+                <th>{{$.lp.detailTable.attendance}}</th>
+                <th>{{$.lp.detailTable.rest}}</th>
+                <!-- <th>{{$.lp.detailTable.leave}}</th> -->
+                <th>{{$.lp.detailTable.workTimeDuration}}</th>
+                <th>{{$.lp.detailTable.lateTimes}}</th>
+                <th>{{$.lp.detailTable.lateTimeDuration}}</th>
+                <th>{{$.lp.detailTable.leaveEarlierTimes}}</th>
+                <th>{{$.lp.detailTable.leaveEarlierTimeDuration}}</th>
+                <th>{{$.lp.detailTable.onDutyAbsenceTimes}}</th>
+                <th>{{$.lp.detailTable.offDutyAbsenceTimes}}</th>
+                <th>{{$.lp.detailTable.fieldWorkTimes}}</th>
+                
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.detailList" oo-item="d">
+                <td>{{ $m.formatName(d.value.userId)}}</td>
+                <td>{{d.value.groupName}}</td>
+                <td>{{d.value.shiftName}}</td>
+                <td class="{{ $m.dateClassName(d.value) }}">{{ $m.formatDate(d.value) }}</td>
+                <td>{{d.value.attendance}}</td>
+                <td>{{d.value.rest}}</td>
+                <!-- <td>{{d.value.leaveDays}}</td> -->
+                <td>{{ $m.formatWorkTimeDuration(d.value.workTimeDuration) }}</td>
+                <td>{{d.value.lateTimes}}</td>
+                <td>{{d.value.lateTimeDuration}}</td>
+                <td>{{d.value.leaveEarlierTimes}}</td>
+                <td>{{d.value.leaveEarlierTimeDuration}}</td>
+                <td>{{d.value.onDutyAbsenceTimes}}</td>
+                <td>{{d.value.offDutyAbsenceTimes}}</td>
+                <td>{{d.value.fieldWorkTimes}}</td>
+               
+                <td>
+                    <span class="operator_link" @click="this.openRecordList(d.value)">{{$.lp.detailTable.btnRecordList}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$.pagerData" @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
+</div>

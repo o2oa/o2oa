@@ -16,16 +16,19 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -35,6 +38,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
@@ -75,6 +79,31 @@ public class Attachment extends StorageObject {
 	public void onPersist() throws Exception {
 		this.extension = StringUtils.trimToEmpty(this.extension);
 		this.site = StringUtils.trimToEmpty(this.site);
+		if (StringTools.utf8Length(this.getProperties().getName()) > length_255B) {
+			this.name = StringTools.utf8FileNameSubString(this.getProperties().getName(), length_255B);
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getName())) {
+			this.name = this.getProperties().getName();
+		}
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+		this.getProperties().setName(name);
+	}
+
+	@Override
+	public String getName() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getName())) {
+			return this.properties.getName();
+		} else {
+			return this.name;
+		}
 	}
 
 	public Attachment() {
@@ -195,16 +224,6 @@ public class Attachment extends StorageObject {
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
 	public String getExtension() {
 		return extension;
 	}
@@ -232,6 +251,17 @@ public class Attachment extends StorageObject {
 	@Override
 	public void setDeepPath(Boolean deepPath) {
 		this.deepPath = deepPath;
+	}
+
+	public AttachmentProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new AttachmentProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(AttachmentProperties properties) {
+		this.properties = properties;
 	}
 
 	public static final String name_FIELDNAME = "name";
@@ -497,25 +527,36 @@ public class Attachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	private String fromPath;
 
+	public static final String PROPERTIES_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private AttachmentProperties properties;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
-	@FieldDescribe("业务数据String值01.")
+	@FieldDescribe("预留数据String值01.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + stringValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
+	@Deprecated(since = "8.0.3")
 	private String stringValue01;
 
 	public static final String stringValue02_FIELDNAME = "stringValue02";
-	@FieldDescribe("业务数据String值02.")
+	@FieldDescribe("预留数据String值02.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue02_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + stringValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
+	@Deprecated(since = "8.0.3")
 	private String stringValue02;
 
 	public static final String stringValue03_FIELDNAME = "stringValue03";
-	@FieldDescribe("业务数据String值03.")
+	@FieldDescribe("预留数据String值03.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue03_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + stringValue03_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
+	@Deprecated(since = "8.0.3")
 	private String stringValue03;
 
 	public String getJob() {

@@ -71,13 +71,6 @@ public class Config {
 	public static final String NAME_CONFIG_COLLECT = "collect.json";
 	public static final String PATH_CONFIG_DUMPRESTOREDATA = "config/dumpRestoreData.json";
 	public static final String PATH_CONFIG_MESSAGES = "config/messages.json";
-//	public static final String PATH_CONFIG_MESSAGERESTFUL = "config/messageRestful.json";
-//	public static final String PATH_CONFIG_MESSAGEMQ = "config/messageMq.json";
-//	public static final String PATH_CONFIG_MESSAGEMAIL = "config/messageMail.json";
-//	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
-//	public static final String PATH_CONFIG_MESSAGEJDBC = "config/messageJdbc.json";
-//	public static final String PATH_CONFIG_MESSAGETABLE = "config/messageTable.json";
-//	public static final String PATH_CONFIG_MESSAGEHADOOP = "config/messageHadoop.json";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -96,13 +89,10 @@ public class Config {
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
-//	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
-//	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
-//	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 	public static final String PATH_CONFIG_WEB = "config/web.json";
@@ -159,6 +149,7 @@ public class Config {
 	public static final String DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG = "servers/webServer/x_desktop/res/config";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
+	public static final String DIR_WEBROOT = "webroot";
 
 	public static final String RESOURCE_CONTAINERENTITIES = "containerEntities";
 
@@ -758,17 +749,18 @@ public class Config {
 		return instance().collect;
 	}
 
-	public DumpRestoreData dumpRestoreData;
-
+	/**
+	 * dumpRestoreData配置不考虑进行缓存,每次直接取值
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public static synchronized DumpRestoreData dumpRestoreData() throws Exception {
-		if (null == instance().dumpRestoreData) {
-			DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
-			if (null == obj) {
-				obj = DumpRestoreData.defaultInstance();
-			}
-			instance().dumpRestoreData = obj;
+		DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
+		if (null == obj) {
+			obj = DumpRestoreData.defaultInstance();
 		}
-		return instance().dumpRestoreData;
+		return obj;
 	}
 
 	private String initialScriptText;
@@ -1483,6 +1475,14 @@ public class Config {
 
 	public static Path path_local_repository_index(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_INDEX);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_webroot(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_WEBROOT);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}

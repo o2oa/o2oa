@@ -31,7 +31,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"deleteRouteTitle": "删除路由确认",
 		"deleteActivityTitle": "删除活动确认",
 		"deleteActivity": "删除活动将同时删除关联此活动的所有路由，您确定要删除选中的活动吗？",
-		"saveRouteOrgNoName" : "名称和标题不能为空",
+		"saveRouteOrgNoName" : "标识和标题不能为空",
+		"saveRouteOrgNumberId" : "标识不能为纯数字",
+		"saveRouteOrgDoubleDotId" : "标识不能包含连续两个点号",
 		"processCopyError": "活动粘贴失败，请重新复制后重试"
 	},
 	"menu": {
@@ -414,6 +416,27 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowPress": "允许发起办理提醒",
 		"allowPause": "允许挂起",
         "allowAddTask": "允许加签",
+
+		"backConfig": "退回配置",
+		"allowBack": "允许退回",
+		"multiTaskEnable": "多人处理时是否允许退回",
+		"multiTaskEnableInfo": "多人处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
+		"backType": "退回方式",
+		"backPrev": "逐级退回",
+		"backAny": "任意活动退回",
+		"backDefine": "选择退回活动",
+		"backPrevInfo": "逐级退回：用户选择“退回”，则将当前工作退回到上一个处理活动",
+		"backAnyInfo": "任意活动退回：用户选择“退回”时，可选择任意一个已经处理过的活动",
+		"backDefineInfo": "选择退回活动：定义允许退回的活动，用于可以退回到已允许的活动",
+		"backWay": "退回后处理",
+		"backWayDefault": "默认",
+		"backWayStep": "按流程配置正常流转",
+		"backWayJump": "直接回到退回人",
+		"backWayCustom": "由退回人决定",
+
+		"backActivitySelectTitle": "选择允许退回的活动",
+		"backActivitySelectInfo": "您可以选择当前活动允许退回的活动节点，只有已经流转过的被允许活动，才能退回。您还可以为每个允许退回活动单独设置退回后的处理方式。",
+
 
 		"beforeBegin": "流程启动前",
 		"eventInfo1": "启动流程生成work实例",

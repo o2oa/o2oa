@@ -1,0 +1,117 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.configManagerTitle}}</div>
+    </div>
+    <div class="form sl-dialog-content">
+        <!-- 节假日 -->
+        <!-- <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.holidays}}
+                <span class="operator_link margin-left" id="holidaysDateSelector">{{$.lp.add}}</span>
+            </div>
+            <div class="margin-top"> <span class="form-alert ">{{ $.lp.config.holidayLabels }}</span></div>
+            <div class="form-item-content config-border margin-top padding-bottom">
+                <div class="tag-container">
+                    <div class="tag-item" oo-each="$.holidayList" oo-item="rDate"
+                        @click="this.deleteHolidayDateSelector(rDate.value)">
+                        {{rDate.value}}
+                        <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- 工作日 -->
+        <!-- <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.workdays}}
+                <span class="operator_link margin-left" id="workdaysDateSelector">{{$.lp.add}}</span>
+            </div>
+            <div class="margin-top"> <span class="form-alert ">{{ $.lp.config.workdayLabels }}</span></div>
+            <div class="form-item-content config-border margin-top padding-bottom">
+                <div class="tag-container">
+                    <div class="tag-item" oo-each="$.workDayList" oo-item="rDate"
+                        @click="this.deleteWorkdayDateSelector(rDate.value)">
+                        {{rDate.value}}
+                        <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- 补卡申请配置 -->
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.appealConfig}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                <!-- 是否启用补卡申请 -->
+                <div class="margin-top margin-left flex" @click="clickEnableAppeal">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.appealEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin-left: 8px;">{{$.lp.config.appealEnableLabel}}</label>
+                </div>
+                <div class="margin-top margin-left" oo-if="$.form.appealEnable">
+                    <!-- 自定义流程 -->
+                    <o-selector-process oo-prop="$.processSelector" ></o-selector-process>
+                </div>
+            </div>
+            <div class="margin-left" oo-if="$.form.appealEnable">
+                <o-input oo-prop="{'label':$.lp.config.appealMaxTimesLabel, 'value': $.form.appealMaxTimes}" oo-model="form.appealMaxTimes"></o-input>
+            </div>
+            
+        </div>
+       
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.fastCheckIn}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                 <!-- 上班极速打卡 -->
+                <div class="margin-top margin-left flex" @click="clickOnDutyFastCheckInEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.onDutyFastCheckInEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.onDutyFastCheckInEnable}}</label>
+                </div>
+                <!-- 下班极速打卡 -->
+                <div class="margin-top margin-left flex" @click="clickOffDutyFastCheckInEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.offDutyFastCheckInEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.offDutyFastCheckInEnable}}</label>
+                </div>
+            </div>
+        </div>
+       
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.checkInAlert}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                <!-- 打卡提醒 -->
+                <div class="margin-top margin-left flex" @click="clickCheckInAlertEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.checkInAlertEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >{{$.lp.config.checkInAlertEnable}}</label>
+                </div>
+                <!-- 异常打卡提醒 -->
+                <div class="margin-top margin-left flex" @click="clickExceptionAlertEnable">
+                    <div class="o2-icon-14">
+                        <i class="{{ $.form.exceptionAlertEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                    <label style="margin: 5px;" >
+                        {{$.lp.config.exceptionAlertEnable}} 
+                        {{$.lp.config.exceptionAlertEnableTime1}} 
+                        <o-time-picker oo-prop="{'value': $.form.exceptionAlertTime, 'key': 'form.exceptionAlertTime'}"></o-time-picker>
+                        {{$.lp.config.exceptionAlertEnableTime2}} 
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px;">
+            <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
+        </div>
+    </div>
+</div>

@@ -62,7 +62,7 @@ class ActionPost extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-        LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();

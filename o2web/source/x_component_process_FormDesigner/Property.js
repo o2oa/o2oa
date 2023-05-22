@@ -74,17 +74,24 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
 	show: function(){
         if (!this.propertyContent){
+            this.ignoreSection = false;
             this.getHtmlString(function(){
-                if (this.htmlString){
+                if (this.htmlString) {
                     var lp;
-                    if( this.options.appType === "cms" ) {
+                    if (this.options.appType === "cms") {
                         this.appType = "cms";
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
-                    }else if( this.designer && this.designer.options && this.designer.options.name && this.designer.options.name.indexOf("cms") === 0 ){
+                        this.ignoreSection = true;
+                    } else if (this.designer && this.designer.options && this.designer.options.name && this.designer.options.name.indexOf("cms") === 0) {
                         this.appType = "cms";
                         lp = MWF.xApplication.cms.FormDesigner.LP.propertyTemplate;
-                    }else{
+                        this.ignoreSection = true;
+                    } else {
                         lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
+                        if( this.module && this.module.node ) {
+                            var parentNode = this.module.node.getParent("div[mwftype='datatable'],div[mwftype='datatemplate']");
+                            this.ignoreSection = !!parentNode;
+                        }
                     }
                     this.htmlString = o2.bindJson(this.htmlString, {"lp": lp});
                     // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
@@ -97,7 +104,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadingCount = 0;
                     this.loadedCount = 0;
                     this.ready = false;
-                    if(this.module.hasOwnProperty("isPropertyLoaded")){ //ElementUI需要判断isPropertyLoaded为true的时候才会setEditStyle
+                    if (this.module.hasOwnProperty("isPropertyLoaded")) { //ElementUI需要判断isPropertyLoaded为true的时候才会setEditStyle
                         this.module.isPropertyLoaded = false;
                     }
 
@@ -150,8 +157,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElTDropDownData();
                     this.loadElCarouselContent();
 
-                    this.loadSectionMerger();
-                    this.loadSectionDisplayer();
+                    if ( !this.ignoreSection ){
+                        this.loadSectionMerger();
+                        this.loadSectionDisplayer();
+                    }
 
                     this.loadSmartBISelect();
 
@@ -1061,7 +1070,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             var _self = this;
                             if( typeOf(this.data[name]) === "array" && this.data[name].length > 0 ){
                                 //this.form.designer.lp.selectIcon
-                                this.form.designer.confirm( "", new Event(), "导入字段确认", "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？", 300, 200, function(){
+                                this.form.designer.confirm( "", node, "导入字段确认", "本操作从数据模板的内部组件获取字段。如果执行本操作，之前配置的字段会被替换，是否继续？", 300, 200, function(){
                                     if( !_self.module.getExpImpFieldJson )return;
                                     filedConfigurator.data = _self.module.getExpImpFieldJson();
                                     filedConfigurator.reloadContent();
@@ -2943,7 +2952,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	//},
     loadPropertyTab: function(){
         var tabNodes = this.propertyContent.getElements(".MWFTab");
-        if( this.appType === "cms" ){
+        if( this.ignoreSection ){
             tabNodes = tabNodes.filter(function(node){
                 return node.get("title") !== MWF.xApplication.process.FormDesigner.LP.propertyTemplate.section;
             })
@@ -2976,7 +2985,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.setScrollBar(page.contentScrollNode, "small", null, null);
                         }
                     }.bind(this));
-                    debugger;
                     tabPages[this.propertyTabIndex || 0].showTab();
 
                     this.propertyTab = tab;
@@ -3202,6 +3210,20 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			if (value!==this.module.json.id) {
                 if (!value) {
                     this.designer.notice(MWF.APPFD.LP.notNullId, "error", this.module.form.designer.propertyContentArea, {
+                        x: "right",
+                        y: "bottom"
+                    });
+                    obj.focus();
+                    return false;
+                }else if ( value.test(/^\d+$/)  ) {
+                        this.designer.notice(MWF.APPFD.LP.notNumberId, "error", this.module.form.designer.propertyContentArea, {
+                            x: "right",
+                            y: "bottom"
+                        });
+                        obj.focus();
+                        return false;
+                }else if ( value.indexOf("..") > -1 ) {
+                    this.designer.notice(MWF.APPFD.LP.notDoubleDotId, "error", this.module.form.designer.propertyContentArea, {
                         x: "right",
                         y: "bottom"
                     });

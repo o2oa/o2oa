@@ -1835,13 +1835,22 @@ MWF.xScript.CMSEnvironment = function(ev){
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
          * @method publish
          * @memberOf module:form
-         * @param {Function} callback - 发布后的回调方法
+         * @param {Function} callback - 发布后的回调方法，如果接收的参数<b>为空</b>表示校验未通过，如果参数<b>不为空</b>为发布后的回调
          * @o2syntax
-         this.form.publish( callback );
+         * this.form.publish( callback );
+         * @sample
+         * this.form.publish( function(json){
+         *     if( !json ){
+         *         //校验未通过
+         *     }else{
+         *         //校验通过，json.data.id 为文档id
+         *     }
+         * });
          */
         "publish": function(callback){
             _form.publishDocument(callback)
         },
+
         //"archive": function(option){
         //    _form.archiveDocument()
         //},
@@ -2428,6 +2437,9 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent, _form){
                 }},
 
             "add": {"value": function(newKey, newValue, overwrite, noreset){
+                    if( newKey.test(/^\d+$/) ){
+                        throw new Error("Field name '"+newKey+"' cannot contain only numbers" );
+                    }
                     if (arguments.length<2 || newKey.indexOf("..")===-1){
                         var flag = true;
                         var type = typeOf(data);

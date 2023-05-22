@@ -256,7 +256,7 @@ MWF.xApplication.process.Xform.LP = {
         "editionUnit":"[印发机关]",
         "editionDate":"[印发日期]",
         "historyList": "历史版本文档",
-        "attachmentInfor": "[Click here to edit the content of attachments]",
+        "attachmentInfor": "[Click here to edit the content of attachments]"
     },
     "documentHistory": {
         "diffContent": "<div>{time}</div>{name} modified content at \"{activity}\"",
@@ -279,7 +279,9 @@ MWF.xApplication.process.Xform.LP = {
         "nodiff": "There is no historical modification information yet",
         "word": " word ",
         "diff": "Contrast",
-        "diffTitle": "Compared with the previous version"
+        "diffTitle": "Compared with the previous version",
+
+        "showAllHistory": "Show All History"
     },
     "subjectEmpty": "Subject cannot be empty",
     "issuanceUnitEmpty": "The issuing unit cannot be empty",

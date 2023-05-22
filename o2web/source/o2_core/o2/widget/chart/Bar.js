@@ -45,6 +45,9 @@ o2.widget.chart.Bar = new Class({
     load: function(){
 
         this.svgNode = new Element("div", {"styles": this.css.svgNode}).inject(this.node);
+
+
+
         if (this.fireEvent("queryLoad")){
             this.size = this.node.getSize();
             o2.widget.chart.d3.load(function(){
@@ -79,6 +82,9 @@ o2.widget.chart.Bar = new Class({
         }.bind(this));
         var max = d3.max(this.barsData, function(d){ return d3.max(d, function(d){return d.data}); });
         var min = d3.min(this.barsData, function(d){ return d3.min(d, function(d){return d.data}); });
+
+        var left = (max || 0).toString().length / 3 * 20;
+        if( this.options.marginLeft < left )this.options.marginLeft = left;
 
         this.yScale = d3.scaleLinear().domain([min*0.9, max*1.1])
             .range(this.getYScaleRange());

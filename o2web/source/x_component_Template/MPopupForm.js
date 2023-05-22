@@ -608,6 +608,24 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         this.fireEvent("restore");
         this.fireEvent("afterResize");
     },
+    resetHeight: function( height, offset ){
+        var h;
+        if( height === "auto" ){
+            var tableHeight = this.formTableArea.getSize().y;
+            var tableContainerOffsetY = this.getOffsetY( this.formTableContainer );
+            var formContentOffsetY = this.getOffsetY( this.formContentNode );
+            var formTopHeight = this.formTopNode ? ( this.formTopNode.getSize().y + this.getOffsetY(this.formTopNode) ) : 0;
+            var formBottomHeight = this.formBottomNode ? ( this.formBottomNode.getSize().y + this.getOffsetY(this.formBottomNode) ) : 0;
+            h = tableHeight + tableContainerOffsetY + formContentOffsetY + formTopHeight + formBottomHeight + (offset || 0);
+        }else{
+            h = height + (offset || 0);
+        }
+        this.options.height = h;
+        if( this.isMax )return;
+        var s = this.lastStyle || {};
+        this.setFormNodeSize(null, h, s.top, s.left );
+        this.fireEvent("afterResize");
+    },
     setSize: function(width, height){
         if( width )this.options.width = width;
         if( height )this.options.height = height;
@@ -677,6 +695,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             styles.right = "auto";
         }
 
+        this.lastStyle = styles;
+
         if( this.formAreaNode )this.formAreaNode.setStyles(styles);
 
         this._setFormNodeSize(styles);
@@ -731,5 +751,21 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     },
     _setNodesSize : function(width, height, formContentHeight, formTableHeight ){
 
+    },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
     }
 });

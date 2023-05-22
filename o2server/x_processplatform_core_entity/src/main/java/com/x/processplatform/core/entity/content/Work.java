@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -115,6 +117,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
 		this.parentJob = this.getProperties().getParentJob();
 		this.parentWork = this.getProperties().getParentWork();
+		this.goBackStore = this.getProperties().getGoBackStore();
+		this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
 	}
 
 	/* 更新运行方法 */
@@ -123,7 +127,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.properties = new WorkProperties();
 	}
 
-	public Work(Work work) throws Exception {
+	public Work(Work work) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		this();
 		Work copy = XGsonBuilder.convert(work, Work.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
@@ -217,7 +221,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		return parentWork;
 	}
 
-	public void setparentJob(String parentJob) {
+	public void setParentJob(String parentJob) {
 		this.getProperties().setParentJob(parentJob);
 		this.parentJob = parentJob;
 	}
@@ -225,6 +229,31 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public String getParentJob() {
 		return parentJob;
 	}
+
+	public GoBackStore getGoBackStore() {
+		return goBackStore;
+	}
+
+	public void setGoBackStore(GoBackStore goBackStore) {
+		this.goBackStore = goBackStore;
+		this.getProperties().setGoBackStore(goBackStore);
+	}
+
+	public String getGoBackActivityToken() {
+		return goBackActivityToken;
+	}
+
+	public void setGoBackActivityToken(String goBackActivityToken) {
+		this.goBackActivityToken = goBackActivityToken;
+		this.getProperties().setGoBackActivityToken(goBackActivityToken);
+	}
+
+	@FieldDescribe("goBack进行跳转退回时使用的.")
+	private String goBackActivityToken;
+
+	@Transient
+	@FieldDescribe("回退临时存储数据.")
+	private GoBackStore goBackStore;
 
 	@Transient
 	@FieldDescribe("要拆分的值")

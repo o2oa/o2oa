@@ -1,5 +1,6 @@
 package com.x.meeting.assemble.control;
 
+import com.x.meeting.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -10,9 +11,6 @@ import com.x.meeting.assemble.control.factory.AttachmentFactory;
 import com.x.meeting.assemble.control.factory.BuildingFactory;
 import com.x.meeting.assemble.control.factory.MeetingFactory;
 import com.x.meeting.assemble.control.factory.RoomFactory;
-import com.x.meeting.core.entity.ConfirmStatus;
-import com.x.meeting.core.entity.Meeting;
-import com.x.meeting.core.entity.Room;
 import com.x.organization.core.express.Organization;
 
 public class Business {
@@ -218,6 +216,14 @@ public class Business {
 		} else {
 			meeting.setConfirmStatus(ConfirmStatus.wait);
 		}
+	}
+
+	public MeetingConfigProperties getConfig() throws Exception{
+		MeetingConfig config = this.emc.firstEqual(MeetingConfig.class, MeetingConfig.name_FIELDNAME, MeetingConfig.DEFINITION_MEETING_CONFIG);
+		if(config != null){
+			return config.getProperties();
+		}
+		return new MeetingConfigProperties();
 	}
 
 }

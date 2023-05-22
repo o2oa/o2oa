@@ -1,0 +1,48 @@
+<div class="statistic-container">
+  <div class="statistic-box">
+    <div class="statistic-head">
+      <div class="year">{{$.year}}</div>
+      <!-- <div class="vertical-divider"></div> -->
+      <div class="month">{{$.month}}{{$.lp.mobile.statisticMonthLabel}}</div>
+    </div>
+    <div class="statistic-horizontal-divider"></div>
+    <div class="statistic-item-list">
+      <div class="{{this.statisticItemClass($.statistic.averageWorkTimeDuration)}}">
+        <div class="number">{{$.statistic.averageWorkTimeDuration}}</div>
+        <div class="label">{{$.lp.detailTable.averageWorkTimeDuration}}</div>
+      </div>
+      <div  class="{{this.statisticItemClass($.statistic.attendance)}}">
+        <div class="number"> {{$.statistic.attendance}} </div>
+        <div class="label">{{$.lp.detailTable.attendance}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.rest)}}">
+        <div class="number"> {{$.statistic.rest}} </div>
+        <div class="label">{{$.lp.detailTable.rest}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.leaveDays)}}">
+        <div class="number"> {{$.statistic.leaveDays}} </div>
+        <div class="label">{{$.lp.detailTable.leave}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.absenteeismDays)}}">
+        <div class="number"> {{$.statistic.absenteeismDays}} </div>
+        <div class="label">{{$.lp.detailTable.absenteeismDays}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.lateTimes)}}">
+        <div class="number">{{$.statistic.lateTimes}}</div>
+        <div class="label">{{$.lp.detailTable.lateTimes}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.leaveEarlierTimes)}}">
+        <div class="number">{{$.statistic.leaveEarlierTimes}}</div>
+        <div class="label">{{$.lp.detailTable.leaveEarlierTimes}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.absenceTimes)}}">
+        <div class="number">{{$.statistic.absenceTimes}}</div>
+        <div class="label">{{$.lp.detailTable.absenceTimes}}</div>
+      </div>
+      <div class="{{this.statisticItemClass($.statistic.fieldWorkTimes)}}">
+        <div class="number">{{$.statistic.fieldWorkTimes}}</div>
+        <div class="label">{{$.lp.detailTable.fieldWorkTimes}}</div>
+      </div>
+    </div>
+  </div>
+</div>

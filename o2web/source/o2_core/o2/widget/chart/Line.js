@@ -72,6 +72,9 @@ o2.widget.chart.Line = new Class({
         var max = d3.max(this.barsData, function(d){ return d3.max(d, function(d){return d.data}); });
         var min = d3.min(this.barsData, function(d){ return d3.min(d, function(d){return d.data}); });
 
+        var left = max.toString().length / 3 * 20;
+        if( this.options.marginLeft < left )this.options.marginLeft = left;
+
         this.yScale = d3.scaleLinear().domain([min*0.9, max*1.1])
             .range(this.getYScaleRange());
     },

@@ -72,6 +72,7 @@ class ActionCreate extends BaseAction {
             statement.setCreatorPerson(effectivePerson.getDistinguishedName());
             statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
             statement.setLastUpdateTime(new Date());
+            statement.setFv(Statement.VALUE_FV_8_0);
             emc.persist(statement, CheckPersistType.all);
             emc.commit();
             CacheManager.notify(Statement.class);

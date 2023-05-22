@@ -2776,7 +2776,7 @@ MWF.xScript.Environment = function(ev){
          {
             "routeName": "", //流转到下一步要选择的路由名称
             "opinion": "", //流转意见
-            "callback": function(){} //流转完成后的回调方法
+            "callback": function(json){} //回调方法，有json参数表示正常流转，json参数为流转后返回的数据。
       }
          </code></pre>
          * @example
@@ -2788,7 +2788,7 @@ MWF.xScript.Environment = function(ev){
             "routeName": "送审批",
             "opinion": "同意",
             "callback": function(json){
-                this.form.notice("process success", "success");
+                if(json)this.form.notice("process success", "success");
             }.bind(this)
       });
          */
@@ -3154,7 +3154,7 @@ MWF.xScript.Environment = function(ev){
                         option.identity = (_form.businessData.task) && _form.businessData.task.identityDn;
                     }
                     var workId = _form.businessData.work.id;
-                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.v2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
+                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
                 });
             }else{
                 if (_form.businessData.control["allowAddTask"]) _form.addTask();
@@ -3780,7 +3780,7 @@ MWF.xScript.Environment = function(ev){
          *   "data" : data, //（json object）可选，创建文档时默认的业务数据
          *   "identity" : identity, //（string | Array）可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          *   "callback" : callback, //（funcation）可选，文档创建后的回调函数。
-         *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。
+         *   "target" : target, //（boolean）可选，为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          *   "latest" : latest, //（boolean）可选，为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
          *   "selectColumnEnable" : selectColumnEnable, //（boolean）可选，是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
          *   "ignoreTitle" : ignoreTitle //（boolean）可选，值为false时，创建的时候需要强制填写标题，默认为false。
@@ -3790,7 +3790,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Object} [data] - 创建文档时默认的业务数据
          * @param {String} [identity | Array] - 可选，创建文档所使用的身份。如果此参数为空，且当前人有多个身份的情况下，会弹出身份选择对话框；如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback] - 文档创建后的回调函数
-         * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false
+         * @param {Boolean} [target] - 为true时，在当前页面打开创建的文档；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest] - 为true时，如果当前用户已经创建了此分类的文档，并且没有发布过，直接调用此文档为新文档；否则创建一个新文档。默认true。
          * @param {Boolean} [selectColumnEnable] - 是否可以选择应用和分类进行创建文档。有category参数时为默认false,否则默认为true。
          * @param {Boolean} [ignoreTitle] - 值为false时，创建的时候需要强制填写标题，默认为false。
@@ -3871,7 +3871,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Object} [data]   - 流程启动时默认的业务数据。
          * @param {String | Array} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框;如果此参数为数组，则弹出数组范围内的身份供选择；否则使用默认身份。
          * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
-         * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
+         * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
          * @example
@@ -4190,6 +4190,9 @@ if ( !MWF.xScript.JSONData )MWF.xScript.JSONData = function(data, callback, key,
                 }},
 
             "add": {"value": function(newKey, newValue, overwrite, noreset){
+                    if( newKey.test(/^\d+$/) ){
+                        throw new Error("Field name '"+newKey+"' cannot contain only numbers" );
+                    }
                     if (arguments.length<2 || newKey.indexOf("..")===-1){
                         var flag = true;
                         var type = typeOf(data);

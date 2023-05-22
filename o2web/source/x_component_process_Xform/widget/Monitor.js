@@ -8,7 +8,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     options: {
         "style": "default"
     },
-    initialize: function(container, worklog, processid, options){
+    initialize: function(container, worklog, recordList, processid, options){
         this.setOptions(options);
 
         this.path = "../x_component_process_Xform/widget/$Monitor/";
@@ -17,8 +17,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         this.container = $(container);
         this.worklog = worklog;
+        this.recordList = recordList;
         this.processid = processid;
-
 
         this.load();
     },
@@ -209,7 +209,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     showPlayLog: function(activity,log){
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
-        this.playLogNode = this.createWorkLogNode([log]);
+        this.playLogNode = this.createWorkLogNode([log], activity);
         this.playLogNode.setStyle("display", "block");
         var p = this.getlogNodePosition(activity, this.playLogNode, offset, size);
         this.playLogNode.setPosition({"x": p.x, "y": p.y});
@@ -353,6 +353,13 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             activity.worklogs.push(log);
             if (!activitys[log.fromActivity]) activitys[log.fromActivity] = activity
         }.bind(this));
+        if (this.recordList){
+            this.recordList.each(function (r, i){
+                var activity = activitys[r.fromActivity];
+                if (!activity.recordCount) activity.recordCount = 0
+                activity.recordCount++;
+            }.bind(this));
+        }
 
         var offset = this.paperNode.getPosition(this.paperNode.getOffsetParent());
         var size = this.paperNode.getSize();
@@ -362,13 +369,13 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this));
     },
     writePassCount: function(activity){
-        if (activity.passedCount){
+        if (activity.passedCount || activity.recordCount){
             var x = activity.point.x+activity.width;
             var y = activity.point.y;
             var shap = this.paper.circle(x, y, 9);
             shap.attr(this.css.activityPassedCount);
 
-            text = this.paper.text(x, y, activity.passedCount);
+            text = this.paper.text(x, y, activity.recordCount || activity.passedCount);
             text.attr(this.css.activityPassedCountText);
 
             activity.countSet = this.paper.set();
@@ -461,7 +468,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     },
     showWorklog: function(activity, offset, psize){
         this.hideCurrentWorklog();
-        if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs);
+        if (!activity.worklogNode) activity.worklogNode = this.createWorkLogNode(activity.worklogs, activity);
 
         this.currentWorklogNode = activity.worklogNode;
         this.currentWorklogNode.setStyle("display", "block");
@@ -476,44 +483,111 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
     },
 
-    createWorkLogNode: function(worklogs){
+    createWorkLogNode: function(worklogs, activity){
         var node = new Element("div", {"styles": this.css.workLogNode});
-        worklogs.each(function(log, idx){
-            var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
-            if ((idx % 2)==0){
-                workNode.setStyle("background-color", "#FFF");
-            }else{
-                workNode.setStyle("background-color", "#EEE");
-            }
 
-            if (log.taskCompletedList.length+log.taskList.length<1){
-                if (log.connected){
+        if (this.recordList){
+            var logs = this.recordList.filter(function(r){
+                return r.fromActivity === activity.data.id;
+            });
+            logs.each(function(log, idx){
+                var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
+                if ((idx % 2)==0){
+                    workNode.setStyle("background-color", "#FFF");
+                }else{
+                    workNode.setStyle("background-color", "#EEE");
+                }
+
+                var router, opinion, arrivedActivitys, arrivedUsers;
+                arrivedActivitys = log.properties.nextManualList.map(function(o){
+                    return o.activityName;
+                }).join(",");
+                arrivedUsers = (log.properties.nextManualTaskIdentityList && log.properties.nextManualTaskIdentityList.length) ? o2.name.cns(log.properties.nextManualTaskIdentityList).join(",") : "";
+
+                switch (log.type) {
+                    case "empower":
+                        router = MWF.xApplication.process.Xform.LP.empower;
+                        var empowerTo = (log.properties.nextManualTaskIdentityList && log.properties.nextManualTaskIdentityList.length) ? o2.name.cns(log.properties.nextManualTaskIdentityList).join(",") : "";
+                        opinion = MWF.xApplication.process.Xform.LP.empowerTo + empowerTo;
+                        break;
+                    case "retract":
+                        router = MWF.xApplication.process.Xform.LP.retract;
+                        opinion = MWF.xApplication.process.Xform.LP.retract;
+                        break;
+                    case "reroute":
+                        router = log.properties.routeName || MWF.xApplication.process.Xform.LP.reroute;
+                        opinion = log.properties.opinion || MWF.xApplication.process.Xform.LP.rerouteTo+": "+arrivedActivitys;
+                        break;
+                    case "rollback":
+                        router = log.properties.routeName || MWF.xApplication.process.Xform.LP.rollback;
+                        opinion = log.properties.opinion || MWF.xApplication.process.Xform.LP.rollbackTo+": "+log.arrivedActivityName;
+                        break;
+                    case "reset":
+                        var resetUser = log.properties.nextManualTaskIdentityList.erase(log.identity);
+                        resetUserText = o2.name.cns(resetUser).join(",");
+                        router = MWF.xApplication.process.Xform.LP.resetTo+":"+resetUserText;
+                        opinion = log.properties.opinion || ""
+                        break;
+                    case "appendTask":
+                    case "back":
+                    case "addSplit":
+                    case "urge":
+                    case "expire":
+                    case "read":
+                    default:
+                        router = log.properties.routeName || "";
+                        opinion = log.properties.opinion || "";
+                }
+                if (log.type==="currentTask"){
                     var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
-                    html += "<div style='text-align: right'>"+log.arrivedTime+"</div>";
+                    var html = "<div style='font-weight: bold; color: red'>"+log.person.substring(0, log.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
                     taskNode.set("html", html);
                 }else{
                     var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
+                    var html = "<div style='font-weight: bold'>"+log.person.substring(0, log.person.indexOf("@"))+": </div>";
+                    html += "<div style='margin-left: 10px'>["+router+"] "+o2.txt(opinion)+"</div>";
+                    html += "<div style='text-align: right'>"+log.recordTime+"</div>";
                     taskNode.set("html", html);
                 }
-            }else{
-                log.taskCompletedList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
-                    html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
-                    html += "<div style='text-align: right'>"+task.completedTime+"</div>";
-                    taskNode.set("html", html);
-                }.bind(this));
+            }.bind(this));
+        }else{
+            worklogs.each(function(log, idx){
+                var workNode = new Element("div", {"styles": this.css.workLogWorkNode}).inject(node);
+                if ((idx % 2)==0){
+                    workNode.setStyle("background-color", "#FFF");
+                }else{
+                    workNode.setStyle("background-color", "#EEE");
+                }
 
-                log.taskList.each(function(task){
-                    var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
-                    var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
-                    taskNode.set("html", html);
-                }.bind(this));
-            }
+                if (log.taskCompletedList.length+log.taskList.length<1){
+                    if (log.connected){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
+                        html += "<div style='text-align: right'>"+log.arrivedTime+"</div>";
+                        taskNode.set("html", html);
+                    }else{
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold; color: red'>"+MWF.xApplication.process.Xform.LP.systemProcess+" </div>";
+                        taskNode.set("html", html);
+                    }
+                }else{
+                    log.taskCompletedList.each(function(task){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
+                        html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
+                        html += "<div style='text-align: right'>"+task.completedTime+"</div>";
+                        taskNode.set("html", html);
+                    }.bind(this));
 
-        }.bind(this));
+                    log.taskList.each(function(task){
+                        var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
+                        var html = "<div style='font-weight: bold; color: red'>"+task.person.substring(0, task.person.indexOf("@"))+" "+MWF.xApplication.process.Xform.LP.processing+" </div>";
+                        taskNode.set("html", html);
+                    }.bind(this));
+                }
+
+            }.bind(this));
+        }
         node.inject(this.paperNode);
         return node;
     }

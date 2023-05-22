@@ -193,7 +193,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.filetextEditor) this.filetextEditor.destroy();
             if (this.attachmentTextEditor) this.attachmentTextEditor.destroy();
             this.editMode = false;
-            this.historyMode = false;
+            // this.historyMode = false;
 
             var pageContentNode = this._createNewPage().getFirst();
             pageContentNode.set("html", html);
@@ -1064,6 +1064,16 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_subject){
             if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
                 this.layout_subject.set("contenteditable", control.subject);
+                this.layout_subject.addEvent("paste", function(e){
+                    let paste = (e.event.clipboardData || window.clipboardData).getData('text');
+
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount) return false;
+                    selection.deleteFromDocument();
+                    selection.getRangeAt(0).insertNode(document.createTextNode(paste));
+
+                    event.preventDefault();
+                }.bind(this))
                 // this.layout_subject.addEvent("blur", function(){
                 //     this.getData();
                 // }.bind(this))
@@ -1219,12 +1229,25 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     getFiletextText: function(data){
-        var div = new Element("div", {
-            "html": data
-        });
-        var text = div.get("text");
-        div.destroy();
+        // var div = new Element("div", {
+        //     "html": data
+        // });
+        // var text = div.get("text");
+        // div.destroy();
+        // return text;
+
+        var div = document.createElement("div");
+        div.style.height = '0px';
+        document.body.appendChild(div);
+        div.innerHTML = data;
+        var text = div.innerText;
+        if (div.remove){
+            div.remove();
+        }else{
+            if (div.parentNode) div.parentNode.removeChild(div);
+        }
         return text;
+
     },
     checkSaveNewEdition: function(callback){
         if (!this.allowEdit || !this.data.filetext || this.data.filetext == this.json.defaultValue.filetext) return false;
@@ -1552,6 +1575,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), "", null, true);
     },
     _historyDoc: function(){
+        if (this.json.viewTracesFullScreen===true){
+            this._fullScreen();
+        }
         this._readFiletext();
         this.editMode = false;
 
@@ -2051,6 +2077,25 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.documenteditorScale = this.scale;
         }.bind(this));
     },
+    _fullScreen: function(){
+        this.positionNode = new Element("div").inject(this.node, "after");
+        this.node.inject(this.scrollNode, "top");
+        this.form.node.hide();
+        this.node.setStyle("min-height", "100%");
+        this.fireEvent("fullScreen");
+        this.isFullScreen = true;
+        this.resizeToolbar();
+    },
+    _returnScreen: function(){
+        this.form.node.show();
+        this.node.inject(this.positionNode, "before");
+        this.positionNode.destroy();
+        this.node.setStyle("min-height", "");
+        this.fireEvent("returnScreen");
+        this.isFullScreen = false;
+        this.resizeToolbar();
+    },
+
     fullScreen: function(bt){
         var text = bt.node.get("text");
         var content = this.form.app.content;

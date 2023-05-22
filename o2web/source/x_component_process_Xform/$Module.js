@@ -15,13 +15,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 组件加载时触发.
-         * @event MWF.xApplication.process.Xform.$Module#load
+         * 组件加载后触发.
+         * @event MWF.xApplication.process.Xform.$Module#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 组件加载后触发.
-         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @event MWF.xApplication.process.Xform.$Module#load
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad"]
@@ -481,10 +481,18 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             this._loadStyles();
             this._loadDomEvents();
             //this._loadEvents();
-
             this._afterLoaded();
             this.fireEvent("postLoad");
-            this.fireEvent("load");
+
+            if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
+                this.moduleSelectAG.then(function () {
+                    this.fireEvent("load");
+                    this.loaded = true;
+                }.bind(this))
+            }else{
+                this.fireEvent("load");
+                this.loaded = true;
+            }
         }
     },
     _loadUserInterface: function(){

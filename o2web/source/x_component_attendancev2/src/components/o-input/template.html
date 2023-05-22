@@ -1,0 +1,11 @@
+<div class="o-input-item margin-top">
+  <div class="o-input-item-label" oo-if="$.label">
+    <span class="required" oo-if="$.isRequried">*</span>
+    {{$.label}}
+  </div>
+  <div class="o-input-item-input">
+    <input class="input"  oo-model="value"  @input="onValueChange" placeholder="{{$.placeholder}}"  />
+    <div class="icon" @click="clickIconClearValue" oo-if="$.value"><i class="o2icon-cancel-circle"></i></div>
+  </div>
+  
+</div>

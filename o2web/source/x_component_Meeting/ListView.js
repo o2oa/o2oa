@@ -318,10 +318,13 @@ MWF.xApplication.Meeting.ListView.View.Line = new Class({
         var etime = Date.parse(this.data.completedTime).format("%H:%M");
 
         //this.app.actions.getRoom(this.data.room, function (json){
-        var roomData = this.data.woRoom;
-        var bulidingData = this.getBulidingData( roomData.building );
+        var room = "";
+        if( this.data.woRoom ){
+            var roomData = this.data.woRoom;
+            var bulidingData = this.getBulidingData( roomData.building );
 
-        var room = roomData.name+"("+bulidingData.name+((roomData.roomNumber) ? " #"+roomData.roomNumber : "")+")";
+            room = roomData.name+"("+bulidingData.name+((roomData.roomNumber) ? " #"+roomData.roomNumber : "")+")";
+        }
 
         // this.node = new Element("tr",{
         //     "html": "<td></td><td>"+bdate+"</td><td>"+btime+"-"+etime+"</td><td>"+this.data.subject+"</td><td>"+room+"</td>"

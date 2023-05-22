@@ -1128,7 +1128,7 @@ function build_web_v_o2() {
             //.pipe(gulp.dest(dest))
             // .pipe(uglify())
             // .pipe(rename({ extname: '.min.js' }))
-            // .pipe(gulp.dest(dest))
+            .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
     }, function(){
         return gulp.src(src)
@@ -1136,8 +1136,6 @@ function build_web_v_o2() {
             .pipe(gutil.noop());
     });
 }
-
-
 
 async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
@@ -1276,7 +1274,7 @@ async function createHistroyJson(cb) {
     const downloadHost = options.downloadSite
 
     if (host) {
-        const url = host + "/webSite/history.json?t=" + (new Date()).getTime();
+        const url = host + "/website/history.json?t=" + (new Date()).getTime();
         const mirrorUrl = mirrorHost + "/download/download-history.json?t=" + (new Date()).getTime();
 
         var doneWebSite = false;

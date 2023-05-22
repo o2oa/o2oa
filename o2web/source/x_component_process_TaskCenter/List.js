@@ -1042,16 +1042,24 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             var text = taskList.length;
             countNode.set("text", text);
         }
-        new mBox.Tooltip({
-            content: inforNode,
-            setStyles: {content: {padding: 10, lineHeight: 20}},
-            attach: logActivityNode,
-            transition: 'flyin',
-            offset: {
-                x: this.list.app.contentNode.getScroll().x,
-                y: this.list.listScrollAreaNode.getScroll().y
-            }
+        // new mBox.Tooltip({
+        //     content: inforNode,
+        //     setStyles: {content: {padding: 10, lineHeight: 20}},
+        //     attach: logActivityNode,
+        //     transition: 'flyin',
+        //     offset: {
+        //         x: this.list.app.contentNode.getScroll().x,
+        //         y: this.list.listScrollAreaNode.getScroll().y
+        //     }
+        // });
+
+        this.tooltip = new MWF.xApplication.process.TaskCenter.List.Item.Tooltip(this.list.app.content, logActivityNode, this.list.app, {}, {
+            axis : "y",
+            hiddenDelay : 300,
+            displayDelay : 300
         });
+        this.tooltip.inforNode = inforNode;
+
     },
 
     setProcessor: function(){
@@ -1160,7 +1168,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             if (top<0) top=0;
         }
         if (left+w>size.x){
-            left = size.x-w;
+            left = size.x-w-30;
             if (left<0) left=0;
         }
         // var top = size.y/2-230;
@@ -1323,4 +1331,37 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
     //    //this.titleNode.setStyles(this.list.css.itemCell);
     //    //this.titleNode.set("text", this.data.title);
     //}
+});
+
+
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xApplication.process.TaskCenter.List.Item.Tooltip = new Class({
+    Extends: MTooltips,
+    options:{
+        nodeStyles: {
+            "font-size" : "12px",
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "180px",
+            "z-index" : "1001",
+            "background-color" : "#fff",
+            "padding" : "10px",
+            "border-radius" : "8px",
+            "box-shadow": "0 0 18px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        },
+        isFitToContainer : true,
+        overflow : "scroll"
+    },
+    _loadCustom : function( callback ){
+        if(callback)callback();
+    },
+    _customNode : function( node, contentNode ){
+        this.inforNode.inject(contentNode);
+        if( this.inforNode.getSize().y > 300 ){
+            this.inforNode.setStyle("padding-bottom", "15px");
+        }
+        this.fireEvent("customContent", [contentNode, node]);
+    }
 });

@@ -1305,6 +1305,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					"value" : this.addZero(i, 2 ),
 					"styles" : this.css.calendarTimeSelectItem_mobile
 				}).inject( this.itmeSelectHNode );
+				if (Browser.name === "firefox") {
+					opt.addEvent( "mousedown", function(e){ e.stopPropagation(); });
+				}
 				if( i === this.cHour )opt.set("selected", true);
 			}
 		}
@@ -1330,6 +1333,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					"value": this.addZero(i, 2),
 					"styles": this.css.calendarTimeSelectItem_mobile
 				}).inject(this.itmeSelectMNode);
+				if (Browser.name === "firefox") {
+					opt.addEvent( "mousedown", function(e){ e.stopPropagation(); });
+				}
 				if( i === this.cMinute )opt.set("selected", true);
 			}
 		}
@@ -1354,8 +1360,12 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					var opt = new Element("option",{
 						"text" : this.addZero(i, 2 ),
 						"value" : this.addZero(i, 2 ),
-						"styles" : this.css.calendarTimeSelectItem_mobile
+						"styles" : this.css.calendarTimeSelectItem_mobile,
+						"events": { click: function(e){ e.stopPropagation(); e.preventDefault(); } }
 					}).inject( this.itmeSelectSNode );
+					if (Browser.name === "firefox") {
+						opt.addEvent( "mousedown", function(e){ e.stopPropagation(); });
+					}
 					if( i === this.cSecond )opt.set("selected", true);
 				}
 			}

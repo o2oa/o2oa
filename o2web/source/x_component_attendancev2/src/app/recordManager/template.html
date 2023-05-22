@@ -1,0 +1,55 @@
+<div class="manager-box">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.recordManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+        <!--人员组织选择  -->
+        <div style="margin-right: 10px;float: left;">
+            <o-org-person-selector
+                oo-prop="{  'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+                oo-model="filterList"></o-org-person-selector>
+        </div>
+        <div style="margin: 10px 0;float: left;">
+            <o-date-picker oo-prop="{'value': $.form.recordDateString}" oo-model="form.recordDateString"></o-date-picker>  
+        </div>
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+        </div>
+        <div style="margin: 10px 0;float: left;">
+            <button class="light-border-button mainColor_border" @click="importExcel">{{$.lp.leave.importExcel}}</button>
+          </div>
+          <div style="float: right;margin: 10px;"  @click="excelTemplateDownload">
+            <span class="primary_color operator_link_underline">{{$.lp.leave.excelTemplate}}</span>
+          </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.record.name}}</th>
+                <th>{{$.lp.record.group}}</th>
+                <th>{{$.lp.record.shift}}</th>
+                <th>{{$.lp.record.dutyTime}}</th>
+                <th>{{$.lp.record.checkInType}}</th>
+                <th>{{$.lp.record.recordDate}}</th>
+                <th>{{$.lp.record.sourceType}}</th>
+                <th>{{$.lp.record.checkInResult}}</th>
+                <!-- <th>{{$.lp.record.fieldWork}}</th> -->
+            </thead>
+            <tr oo-each="$.recordList" oo-item="r">
+                <td>{{ $m.formatName(r.value.userId) }}</td>
+                <td>{{ r.value.groupName }}</td>
+                <td>{{ r.value.shiftName }}</td>
+                <td>{{ r.value.shiftId ? r.value.recordDateString + ' ' + r.value.preDutyTime : '' }}</td>
+                <td>{{ r.value.checkInType === 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
+                <td>{{ $m.recordDateFormat(r.value) }}</td>
+                <td>{{ $m.sourceTypeFormat(r.value.sourceType) }}</td>
+                <td>
+                    <span class="{{this.formatRecordResultClass(r.value)}}">{{ $m.formatRecordResult(r.value) }}</span>
+                    <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
+                </td>
+                <!-- <td>{{ r.value.fieldWork ? $.lp.yes : $.lp.no }}</td> -->
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$.pagerData" @refresh-data="loadData"></o-pager>
+</div>

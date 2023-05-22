@@ -189,7 +189,7 @@ const registerCollect = async (e) => {
       if (result.value){
         emit('reset', e);
       }else{
-        errorText.value = lp._cloudConfig.registerError;
+        errorText.value = lp._cloudConfig.resetPasswordError;
       }
     }
   });

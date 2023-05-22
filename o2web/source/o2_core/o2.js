@@ -117,7 +117,7 @@ if (!window.o2) {
          * var v = o2.version.v;
          */
         this.o2.version = {
-            "v": "7.3",
+            "v": "o2oa",
             "build": "2022.09.13",
             "info": "O2OA 活力办公 创意无限. Copyright © 2022, o2oa.net O2 Team All rights reserved."
         };
@@ -146,7 +146,7 @@ if (!window.o2) {
          */
         this.o2.languageName = _lp;
         _lp = _lp.toLocaleLowerCase();
-        var supportedLanguages = ["zh-CN", "en"];
+        var supportedLanguages = ["zh-CN", "en", "es"];
         if (supportedLanguages.indexOf(_lp) == -1) _lp = "zh-cn";
         this.o2.language = _lp;
         this.o2.splitStr = /\s*(?:,|;)\s*/;

@@ -43,6 +43,9 @@ o2.xApplication.systemconfig.LP = {
     "smsConfig": "短信配置",
     "mqConfig": "消息队列",
 
+    "queryIndexConfig": "索引配置",
+
+
     "mobileConfig": "移动端配置",
     "connectConfig": "连接配置",
     "appConfig": "APP配置",
@@ -952,6 +955,141 @@ o2.xApplication.systemconfig.LP = {
         "merge": "归档定时器",
         "mergeInfo": ""
     },
+    "_queryConfig": {
+        "queryIndexConfig": "索引配置",
+        "workConfig": "在流转文档",
+        "workCompletedConfig": "已完成文档",
+        "documentConfig": "内容管理文档",
+        "indexTools": "索引工具",
+
+        "work": "在流转",
+        "workCompleted": "已完成",
+        "document": "内容管理",
+
+        "touchWorkIndex": "执行在流转文档全量索引",
+        "touchWorkIndexInfo": "如果您首次启用索引，或从旧版本升级，可以在系统空闲时立即触发在流转文档的全量索引。",
+        "touchWorkIndexAction": "立即执行在流转文档的全量索引",
+
+        "touchWorkCompletedIndex": "执行已完成文档全量索引",
+        "touchWorkCompletedIndexInfo": "如果您首次启用索引，或从旧版本升级，可以在系统空闲时立即触发已完成文档的全量索引。",
+        "touchWorkCompletedIndexAction": "立即执行已完成文档的全量索引",
+
+        "touchDocumentIndex": "执行内容管理文档全量索引",
+        "touchDocumentIndexInfo": "如果您首次启用索引，或从旧版本升级，可以在系统空闲时立即触发内容管理文档的全量索引。",
+        "touchDocumentIndexAction": "立即执行内容管理文档的全量索引",
+
+        "optimizeIndex": "执行索引优化",
+        "optimizeIndexInfo": "优化索引可压缩索引存储空间，优化索引结构，以提升检索性能。执行索引优化需要较长时间，可在系统空闲时立即触发索引优化。",
+        "optimizeIndexAction": "立即执行索引优化",
+
+        "indexActionConfirmTitle": "执行{type}全量索引确认",
+        "indexActionConfirm": "全量索引会占用较多服务器资源，可能会引起服务器响应变慢，建议在系统空闲时运行。<br><br>您确认要执行{type}文档的全量索引吗？",
+        "indexActionSuccess": "{type}全量索引任务已加入队列，系统会立即运行！",
+
+        "optimizeIndexConfirmTitle": "执行索引优化确认",
+        "optimizeIndexConfirm": "执行索引优化会占用较多服务器资源，可能会引起服务器响应变慢，建议在系统空闲时运行。<br><br>您确认要执行索引优化吗？",
+        "optimizeIndexSuccess": "索引优化任务已加入队列，系统会立即运行！",
+
+        "restartServerInfo": "<span style='color: red'>关于索引配置的修改，将在重启服务器后生效！</span>",
+
+        "enable": "是否启用索引服务",
+
+        "modeConfig": "索引存储位置",
+        "modeConfigInfo": "选择索引存储位置，默认为“本地文件系统”",
+        "indexMode": "索引存储位置",
+        "modeOptions": {
+            "localDirectory": "本地文件系统",
+            "hdfsDirectory": "hadoop文件系统",
+            "sharedDirectory": "共享文件系统"
+        },
+        "hdfsDirectoryDefaultFS": "hadoop文件系统地址",
+        "hdfsDirectoryPath": "hadoop文件系统目录",
+        "sharedDirectoryPath": "共享文件系统目录",
+
+        "optimizeIndexEnable": "索引优化",
+        "optimizeIndexEnableInfo": "优化索引可压缩索引存储空间，优化索引结构，以提升检索性能。",
+        "optimizeIndexCron": "优化索引定时配置",
+        "isEnable": "是否启用",
+        "cron": "定时表达式",
+
+        "dataStringThreshold": "业务数据最大文本长度阈值",
+        "dataStringThresholdInfo": "业务数据最大文本长度阈值，超过此阈值将忽略写入到索引",
+
+        "summaryLength": "摘要长度",
+
+        "attachmentMaxSize":"附件索引阈值",
+        "attachmentMaxSizeInfo":"附件索引阈值(兆)，超过此值大小的附件不进行索引",
+
+        "cleanupThresholdDays": "检索内容清理阈值",
+        "cleanupThresholdDaysInfo": "检索内容清理阈值(天)，超过此天数未更新的索引会被清除。",
+
+        "searchMaxPageSize": "搜索每页最大数量",
+        "searchMaxPageSizeInfo": "搜索返回结果每页的最大数量",
+
+        "moreLikeThisMaxSize": "关联文档最大返回数量",
+        "moreLikeThisMaxSizeInfo": "关联文档检索的最大返回数量",
+
+        "workIndexAttachment": "是否对流转中文档的附件进行索引",
+        "workIndexAttachmentInfo": "是否对流转中文档的附件进行索引。（对附件进行索引，根据不同的业务量，可能需要较强的服务器性能和更大的内存）",
+
+        "lowFreqWorkEnable": "是否启用全量索引",
+        "lowFreqWorkEnableInfo": "全量索引会更新所有在流转文档的索引，以保证权限和数据的准确性。",
+        "lowFreqWorkCron": "全量索引定时表达式",
+        "lowFreqWorkCronInfo": "全量索引会占用较多的服务器资源，如果启用全量索引，建议设置只在系统空闲时段执行。需要注意的是，对于流转中数据，已完成数据和内容管理数据的全量索引，请尽量分开在不同的时间段运行。",
+        "lowFreqWorkMaxCount": "全量索引执行的最大数量",
+        "lowFreqWorkMaxCountInfo": "设置执行一次索引处理的最大文档数量，达到此数量索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+        "lowFreqWorkMaxMinutes": "全量索引执行处理时长(分钟)",
+        "lowFreqWorkMaxMinutesInfo": "设置执行一次索引处理的最大时长，达到此时长后索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+
+        "highFreqWorkEnable": "是否启用增量索引",
+        "highFreqWorkEnableInfo": "如果启用增量索引，在文档数据或状态发生改变时，会发出信号，增量索引定时器会在指定的时间运行，获取增量信号并更新文档索引。",
+        "highFreqWorkCron": "增量索引定时器",
+        "highFreqWorkCronInfo": "增量索引定时执行表达式",
+        "highFreqWorkMaxCount": "增量索引单次处理最大数量",
+        "highFreqWorkMaxMinutes": "增量索引单次处理最大时长(分钟)",
+
+
+        "workCompletedIndexAttachment": "是否对已完成文档的附件进行索引",
+        "workCompletedIndexAttachmentInfo": "是否对已完成文档的附件进行索引。（对附件进行索引，根据不同的业务量，可能需要较强的服务器性能和更大的内存）",
+
+        "lowFreqWorkCompletedEnable": "是否启用全量索引",
+        "lowFreqWorkCompletedEnableInfo": "全量索引会更新所有已流转完成的文档的索引，以保证权限和数据的准确性。",
+        "lowFreqWorkCompletedCron": "全量索引定时表达式",
+        "lowFreqWorkCompletedCronInfo": "全量索引会占用较多的服务器资源，如果启用全量索引，建议设置只在系统空闲时段执行。需要注意的是，对于流转中数据，已完成数据和内容管理数据的全量索引，请尽量分开在不同的时间段运行。",
+        "lowFreqWorkCompletedMaxCount": "全量索引执行的最大数量",
+        "lowFreqWorkCompletedMaxCountInfo": "设置执行一次索引处理的最大文档数量，达到此数量索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+        "lowFreqWorkCompletedMaxMinutes": "全量索引执行处理时长(分钟)",
+        "lowFreqWorkCompletedMaxMinutesInfo": "设置执行一次索引处理的最大时长，达到此时长后索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+
+
+        "highFreqWorkCompletedEnable": "否启用增量索引",
+        "highFreqWorkCompletedEnableInfo": "如果启用增量索引，在文档数据或状态发生改变时，会发出信号，增量索引定时器会在指定的时间运行，获取增量信号并更新文档索引",
+        "highFreqWorkCompletedCron": "增量索引定时器",
+        "highFreqWorkCompletedCronInfo": "增量索引定时执行表达式",
+        "highFreqWorkCompletedMaxCount": "增量索引单次处理最大数量",
+        "highFreqWorkCompletedMaxMinutes": "增量索引单次处理最大时长(分钟)",
+
+
+        "documentIndexAttachment": "是否对内容管理文档的附件进行索引",
+        "documentIndexAttachmentInfo": "是否对已完成文档的附件进行索引。（对附件进行索引，根据不同的业务量，可能需要较强的服务器性能和更大的内存）",
+
+        "lowFreqDocumentEnable": "是否启用内容管理全量索引",
+        "lowFreqDocumentEnableInfo": "全量索引会更新所有类型“信息”的内容管理文档的索引，以保证权限和数据的准确性。",
+        "lowFreqDocumentCron": "全量索引定时表达式",
+        "lowFreqDocumentCronInfo": "全量索引会占用较多的服务器资源，如果启用全量索引，建议设置只在系统空闲时段执行。需要注意的是，对于流转中数据，已完成数据和内容管理数据的全量索引，请尽量分开在不同的时间段运行。",
+        "lowFreqDocumentMaxCount": "全量索引执行的最大数量",
+        "lowFreqDocumentMaxCountInfo": "设置执行一次索引处理的最大文档数量，达到此数量索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+        "lowFreqDocumentMaxMinutes": "全量索引执行处理时长(分钟)",
+        "lowFreqDocumentMaxMinutesInfo": "设置执行一次索引处理的最大时长，达到此时长后索引停止运行，下次运行索引时，会继上次处理到文档之后继续执行。最大数量与处理时长两个配置任意一个满足就停止索引。",
+
+        "highFreqDocumentEnable": "否启用增量索引",
+        "highFreqDocumentEnableInfo": "如果启用增量索引，在文档数据或状态发生改变时，会发出信号，增量索引定时器会在指定的时间运行，获取增量信号并更新文档索引。",
+        "highFreqDocumentCron": "增量索引定时器",
+        "highFreqDocumentCronInfo": "增量索引定时执行表达式",
+        "highFreqDocumentMaxCount": "增量索引单次处理最大数量",
+        "highFreqDocumentMaxMinutes": "增量索引单次处理最大时长(分钟)"
+
+    },
     "_appConfig": {
         "connectConfig": "连接配置",
         "moduleConfig": "模块配置",
@@ -1383,7 +1521,7 @@ o2.xApplication.systemconfig.LP = {
     },
     "_pushConfig": {
         "pushType": "消息推送服务",
-        "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
+        "pushTypeInfo": "O2OA支持极光推送服务，您可以在此配置推送的应用参数",
         "pushTypeData": [
             {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
             {"value": "none", "label": "none", "text": "禁用消息推送"}

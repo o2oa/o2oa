@@ -1,0 +1,32 @@
+<div class="manager-box">
+  <div class="index_page_header_container">
+      <div class="index_page_header_title">{{$.lp.workAddressManagerTitle}}</div>
+  </div>
+  <div style="padding: 20px;">
+      <div style="margin: 10px 0;float: left;">
+          <button class="mainColor_bg" @click="clickAdd">{{$.lp.workAddressAdd}}</button>
+      </div>
+      <div style="margin: 10px 0;float: right;">
+          <button class="light-border-button mainColor_border" @click="openBdAKConfig">{{$.lp.workAddressBDkeyConfigBtn}}</button>
+      </div>
+      <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+        <thead>
+            <th>{{$.lp.workAddressName}}</th>
+            <th>{{$.lp.workAddressRange}}</th>
+            <th>{{$.lp.workAddressDesc}}</th>
+            <th style="width: 10%;">{{$.lp.operate}}</th>
+        </thead>
+        <tr oo-each="$.workAddressList" oo-item="address">
+            <td>{{address.value.placeName}}</td>
+            <td>{{address.value.errorRange}}</td>
+            <td>{{address.value.description}}</td>
+            <td>
+                <span class="operator_link"
+                    @click="this.clickDeleteItem(address.value.id, address.value.placeName)">{{$.lp.delete}}</span>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- 分页组件 -->
+<div class="form"></div>
+</div>

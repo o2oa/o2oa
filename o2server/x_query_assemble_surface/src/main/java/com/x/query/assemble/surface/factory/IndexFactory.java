@@ -114,6 +114,7 @@ public class IndexFactory extends AbstractFactory {
             return list;
         }
         list.add(person);
+        list.add(Indexs.READERS_SYMBOL_ALL);
         Optional<AppInfo> optionalAppInfo = business().appInfo().get(key);
         if (optionalAppInfo.isPresent()) {
             List<String> groups = null;

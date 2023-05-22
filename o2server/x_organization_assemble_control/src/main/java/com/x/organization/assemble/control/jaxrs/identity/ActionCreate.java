@@ -109,7 +109,7 @@ class ActionCreate extends BaseAction {
                     }
                 }
                 person.setTopUnitList(new ArrayList<>(topUnits));
-                emc.persist(person, CheckPersistType.all);
+                emc.check(person, CheckPersistType.all);
 
                 emc.commit();
                 wo.setId(identity.getId());

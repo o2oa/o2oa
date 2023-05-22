@@ -1,0 +1,60 @@
+.o-org-people-selector {
+}
+.o-org-people-selector-label {
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #171a1d;
+}
+.o-org-people-selector-label .required {
+  color: #ff5219;
+  font-size: 12px;
+  margin-right: 6px;
+}
+.o-org-people-selector-input {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  width: 312px;
+  padding: 4px 11px;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+.o-org-people-selector-input .input {
+  position: relative;
+  margin-right: 10px;
+  height: 24px;
+  line-height: 24px;
+  display: inline-block;
+  color: #171a1d;
+  font-size: 14px;
+  transition: all 0.3s;
+  flex: auto;
+  min-width: 1px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.placeholder {
+  color: #999999 !important;
+}
+.o-org-people-selector-input .icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  color: #999999;
+  cursor: pointer;
+}

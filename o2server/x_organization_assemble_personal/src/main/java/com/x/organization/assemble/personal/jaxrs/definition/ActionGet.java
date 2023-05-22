@@ -17,8 +17,6 @@ class ActionGet extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
-	private static final String DEFINITION_MEETING_CONFIG = "meetingConfig";
-
 	ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
 
 		LOGGER.debug("execute:{}, name:{}.", effectivePerson::getDistinguishedName, () -> name);
@@ -36,8 +34,6 @@ class ActionGet extends BaseAction {
 				if (null != o) {
 					wo = o.getData();
 					CacheManager.put(business.cache(), cacheKey, wo);
-				} else if (DEFINITION_MEETING_CONFIG.equalsIgnoreCase(name)) {
-					wo = "{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}";
 				}
 			}
 			result.setData(wo);

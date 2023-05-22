@@ -66,13 +66,15 @@ public class ThisApplication {
             initThreadPool();
             context.startQueue(indexWriteQueue);
             CacheManager.init(context.clazz().getSimpleName());
-            scheduleLowFreqDocument();
-            scheduleLowFreqWork();
-            scheduleLowFreqWorkCompleted();
-            scheduleHighFreqDocument();
-            scheduleHighFreqWorkCompleted();
-            scheduleHighFreqWork();
-            scheduleOptimizeIndex();
+            if (BooleanUtils.isTrue(Config.query().index().getEnable())) {
+                scheduleLowFreqDocument();
+                scheduleLowFreqWork();
+                scheduleLowFreqWorkCompleted();
+                scheduleHighFreqDocument();
+                scheduleHighFreqWorkCompleted();
+                scheduleHighFreqWork();
+                scheduleOptimizeIndex();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

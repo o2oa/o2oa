@@ -1,0 +1,79 @@
+
+@font-face {
+  font-family: 'o2Attendance';
+  src:  url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.eot?d6ubvq');
+  src:  url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.eot?d6ubvq#iefix') format('embedded-opentype'),
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.ttf?d6ubvq') format('truetype'),
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.woff?d6ubvq') format('woff'),
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.svg?d6ubvq#o2Attendance') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'o2Attendance' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-piechart:before {
+  content: "\e95f";
+}
+.o2icon-true:before {
+  content: "\e96d";
+}
+.o2icon-accept:before {
+  content: "\e975";
+}
+.o2icon-config:before {
+  content: "\e9ba";
+}
+.o2icon-triangle_left:before {
+  content: "\e90c";
+}
+.o2icon-triangle_right:before {
+  content: "\e90d";
+}
+.o2icon-icon_arrow_down:before {
+  content: "\e913";
+}
+.o2icon-icon_arrow_up2:before {
+  content: "\e916";
+}
+.o2icon-icon_bumen3:before {
+  content: "\e91e";
+}
+.o2icon-icon_close:before {
+  content: "\e928";
+}
+.o2icon-icon_sousuo:before {
+  content: "\e999";
+}
+.o2icon-clock2:before {
+  content: "\e9ab";
+}
+.o2icon-cancel-circle:before {
+  content: "\ea0d";
+}
+.o2icon-checkbox-checked:before {
+  content: "\ea52";
+}
+.o2icon-checkbox-unchecked:before {
+  content: "\ea53";
+}
+.o2icon-radio-checked:before {
+  content: "\ea54";
+}
+.o2icon-radio-unchecked:before {
+  content: "\ea56";
+}

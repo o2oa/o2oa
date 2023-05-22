@@ -453,9 +453,9 @@
 							"data-id": MWF.xDesktop.uploadedImageId
 						});
 					}
-					this.imageElement.setAttributes({
-						"onerror": "MWF.xDesktop.setImageSrc()"
-					});
+					// this.imageElement.setAttributes({
+					// 	"onerror": "MWF.xDesktop.setImageSrc()"
+					// });
 					MWF.xDesktop.uploadedImageId = "";
 
 					// Remove empty style attribute.

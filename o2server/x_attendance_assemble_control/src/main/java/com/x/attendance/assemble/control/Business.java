@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.assemble.control.factory.v2.AttendanceV2ManagerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.factory.AttendanceAdminFactory;
@@ -83,6 +84,9 @@ public class Business {
 	private AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory;
 
 	private AttendanceDetailStatisticFactory attendanceDetailStatisticFactory;
+
+
+	private AttendanceV2ManagerFactory attendanceV2ManagerFactory;
 
 	public DingdingAttendanceFactory dingdingAttendanceFactory() throws Exception {
 		if (null == this.dingdingAttendanceFactory) {
@@ -229,6 +233,13 @@ public class Business {
 			this.attendanceSelfHolidayFactory = new AttendanceSelfHolidayFactory(this);
 		}
 		return attendanceSelfHolidayFactory;
+	}
+
+	public AttendanceV2ManagerFactory getAttendanceV2ManagerFactory() throws Exception {
+		if (null == this.attendanceV2ManagerFactory) {
+			this.attendanceV2ManagerFactory = new AttendanceV2ManagerFactory(this);
+		}
+		return this.attendanceV2ManagerFactory;
 	}
 
 	/**

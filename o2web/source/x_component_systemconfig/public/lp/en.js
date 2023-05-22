@@ -43,6 +43,8 @@ o2.xApplication.systemconfig.LP = {
     "smsConfig": "SMS Configuration",
     "mqConfig": "Message Queue",
 
+    "queryIndexConfig": "Query Index",
+
     "mobileConfig": "Mobile Config",
     "connectConfig": "Connect",
     "appConfig": "APP",
@@ -954,6 +956,141 @@ o2.xApplication.systemconfig.LP = {
         "merge": "Archive Timer",
         "mergeInfo": "",
     },
+
+    "_queryConfig": {
+        "queryIndexConfig": "Index Configuration",
+        "workConfig": "Working document",
+        "workCompletedConfig": "Completed document",
+        "documentConfig": "CMS Document",
+        "indexTools": "Index Tools",
+
+        "work": "work",
+        "workCompleted": "Work Completed",
+        "document": "CMS Document",
+
+        "touchWorkIndex": "Execute the full index of documents in circulation",
+        "touchWorkIndexInfo": "If you enable indexing for the first time, or upgrade from an older version, you can trigger full indexing of documents in circulation as soon as the system is idle.",
+        "touchWorkIndexAction": "Immediately execute the full index of documents in circulation",
+
+        "touchWorkCompletedIndex": "Execute full index of completed documents",
+        "touchWorkCompletedIndexInfo": "If you are enabling indexing for the first time, or upgrading from an older version, you can trigger full indexing of completed documents as soon as the system is idle.",
+        "touchWorkCompletedIndexAction": "Immediately perform full indexing of completed documents",
+
+        "touchDocumentIndex": "Execute full indexing of content management documents",
+        "touchDocumentIndexInfo": "If you are enabling indexing for the first time, or upgrading from an older version, you can trigger full indexing of content management documents as soon as the system is idle.",
+        "touchDocumentIndexAction": "Immediately perform full indexing of content management documents",
+
+        "optimizeIndex": "Perform index optimization",
+        "optimizeIndexInfo": "Optimizing the index can compress the index storage space and optimize the index structure to improve the retrieval performance. It takes a long time to perform index optimization, and the index optimization can be triggered immediately when the system is idle.",
+        "optimizeIndexAction": "Perform index optimization immediately",
+
+        "indexActionConfirmTitle": "Execute {type} full index confirmation",
+        "indexActionConfirm": "Full indexing will take up more server resources, which may cause slow server response. It is recommended to run it when the system is idle.<br><br>Are you sure you want to perform full indexing of {type} documents?",
+        "indexActionSuccess": "{type} full index task has been added to the queue, and the system will run immediately!",
+
+        "optimizeIndexConfirmTitle": "Execute index optimization confirmation",
+        "optimizeIndexConfirm": "Executing index optimization will occupy more server resources, which may cause slow server response. It is recommended to run it when the system is idle.<br><br>Are you sure you want to perform index optimization?",
+        "optimizeIndexSuccess": "The index optimization task has been queued and the system will run it immediately!",
+
+        "restartServerInfo": "<span style='color: red'>The modification of the index configuration will take effect after restarting the server!</span>",
+
+        "enable": "Whether to enable indexing service",
+
+        "modeConfig": "Index storage location",
+        "modeConfigInfo": "Select the index storage location, the default is \"local file system\"",
+        "indexMode": "Index Storage Location",
+        "modeOptions": {
+            "localDirectory": "Local File System",
+            "hdfsDirectory": "hadoop file system",
+            "sharedDirectory": "Shared File System"
+        },
+        "hdfsDirectoryDefaultFS": "hadoop file system address",
+        "hdfsDirectoryPath": "hadoop file system directory",
+        "sharedDirectoryPath": "Shared file system directory",
+
+        "optimizeIndexEnable": "Index Optimization",
+        "optimizeIndexEnableInfo": "Optimizing the index can compress the index storage space and optimize the index structure to improve retrieval performance.",
+        "optimizeIndexCron": "Optimize index timing configuration",
+        "isEnable": "Whether to enable",
+        "cron": "Timed expression",
+
+        "dataStringThreshold": "Maximum text length threshold for business data",
+        "dataStringThresholdInfo": "Maximum text length threshold of business data, exceeding this threshold will ignore writing to the index",
+
+        "summaryLength": "Summary Length",
+
+        "attachmentMaxSize": "Attachment Index Threshold",
+        "attachmentMaxSizeInfo": "Attachment index threshold (megabytes), attachments larger than this value will not be indexed",
+
+        "cleanupThresholdDays": "Retrieve Content Cleanup Threshold",
+        "cleanupThresholdDaysInfo": "The search content cleanup threshold (days), the index that has not been updated for more than this number of days will be cleared.",
+
+        "searchMaxPageSize": "Maximum number of search pages per page",
+        "searchMaxPageSizeInfo": "The maximum number of search results per page",
+
+        "moreLikeThisMaxSize": "Maximum number of associated documents to return",
+        "moreLikeThisMaxSizeInfo": "The maximum number of related documents retrieved",
+
+        "workIndexAttachment": "Whether to index the attachment of the document in circulation",
+        "workIndexAttachmentInfo": "Whether to index the attachments of documents in circulation. (Indexing attachments may require stronger server performance and larger memory according to different business volumes)",
+
+        "lowFreqWorkEnable": "Whether to enable full index",
+        "lowFreqWorkEnableInfo": "Full indexing will update the index of all documents in circulation to ensure the accuracy of permissions and data.",
+        "lowFreqWorkCron": "Full index timing expression",
+        "lowFreqWorkCronInfo": "Full indexing will take up more server resources. If full indexing is enabled, it is recommended to set it to be executed only during idle periods of the system. It should be noted that for data in circulation, full indexing of completed data and content management data, Please try to run them at different times.",
+        "lowFreqWorkMaxCount": "The maximum number of full index executions",
+        "lowFreqWorkMaxCountInfo": "Set the maximum number of documents to perform index processing once. When this number is reached, the index will stop running. The next time the index runs, it will continue to execute after the last document processed. Either configuration of the maximum number or processing time satisfies stop indexing.",
+        "lowFreqWorkMaxMinutes": "Full index execution processing time (minutes)",
+        "lowFreqWorkMaxMinutesInfo": "Set the maximum time for performing an index process. After this time is reached, the index will stop running. When the index is run next time, it will continue to execute after the document was processed last time. Any one of the two configurations of the maximum number and the processing time satisfies stop indexing.",
+
+        "highFreqWorkEnable": "Whether to enable incremental indexing",
+        "highFreqWorkEnableInfo": "If incremental indexing is enabled, a signal will be sent when the document data or state changes, and the incremental index timer will run at the specified time to obtain the incremental signal and update the document index.",
+        "highFreqWorkCron": "Incremental index timer",
+        "highFreqWorkCronInfo": "Incremental index timing execution expression",
+        "highFreqWorkMaxCount": "Incremental index single processing maximum number",
+        "highFreqWorkMaxMinutes": "Incremental index single processing maximum duration (minutes)",
+
+
+        "workCompletedIndexAttachment": "Whether to index completed document attachments",
+        "workCompletedIndexAttachmentInfo": "Whether to index the attachments of completed documents. (Indexing attachments may require stronger server performance and larger memory according to different business volumes)",
+
+        "lowFreqWorkCompletedEnable": "Whether to enable full index",
+        "lowFreqWorkCompletedEnableInfo": "Full indexing will update the index of all documents that have been transferred to ensure the accuracy of permissions and data.",
+        "lowFreqWorkCompletedCron": "Full index timing expression",
+        "lowFreqWorkCompletedCronInfo": "Full indexing will take up more server resources. If full indexing is enabled, it is recommended to set it to be executed only during system idle time. It should be noted that for data in circulation, full indexing of completed data and content management data, Please try to run them at different times.",
+        "lowFreqWorkCompletedMaxCount": "The maximum number of full index executions",
+        "lowFreqWorkCompletedMaxCountInfo": "Set the maximum number of documents to perform an index process. When this number is reached, the index will stop running. When the index is run next time, it will continue to execute after the document was processed last time. Any of the two configurations of the maximum number and the processing time is satisfied stop indexing.",
+        "lowFreqWorkCompletedMaxMinutes": "Full index execution processing time (minutes)",
+        "lowFreqWorkCompletedMaxMinutesInfo": "Set the maximum time for performing an index process. After this time is reached, the index will stop running. The next time the index is run, it will continue to execute after the document was processed last time. Any of the two configurations of the maximum number and the processing time satisfies stop indexing.",
+
+
+        "highFreqWorkCompletedEnable": "No enable incremental indexing",
+        "highFreqWorkCompletedEnableInfo": "If incremental indexing is enabled, a signal will be sent when the document data or state changes, and the incremental index timer will run at the specified time to obtain the incremental signal and update the document index",
+        "highFreqWorkCompletedCron": "Incremental index timer",
+        "highFreqWorkCompletedCronInfo": "Incremental index timing execution expression",
+        "highFreqWorkCompletedMaxCount": "Maximum number of incremental index single processing",
+        "highFreqWorkCompletedMaxMinutes": "Incremental index single processing maximum duration (minutes)",
+        "documentIndexAttachment": "Whether to index the attachment of the content management document",
+        "documentIndexAttachmentInfo": "Whether to index the attachments of completed documents. (Indexing attachments may require stronger server performance and larger memory according to different business volumes)",
+
+        "lowFreqDocumentEnable": "Whether to enable content management full index",
+        "lowFreqDocumentEnableInfo": "Full indexing will update the index of all types of \"information\" content management documents to ensure the accuracy of permissions and data.",
+        "lowFreqDocumentCron": "Full index timing expression",
+        "lowFreqDocumentCronInfo": "Full indexing will take up more server resources. If full indexing is enabled, it is recommended to set it to be executed only during system idle time. It should be noted that for data in circulation, full indexing of completed data and content management data, Please try to run them at different times.",
+        "lowFreqDocumentMaxCount": "The maximum number of full index executions",
+        "lowFreqDocumentMaxCountInfo": "Set the maximum number of documents for index processing once. When this number is reached, the index will stop running. When the index is run next time, it will continue to execute after the document was processed last time. Either configuration of the maximum number and processing time can satisfy stop indexing.",
+        "lowFreqDocumentMaxMinutes": "Full index execution processing time (minutes)",
+        "lowFreqDocumentMaxMinutesInfo": "Set the maximum time for performing an index process. After this time is reached, the index will stop running. The next time the index is run, it will continue to execute after the document was processed last time. Any one of the two configurations, the maximum number and the processing time, satisfies stop indexing.",
+
+        "highFreqDocumentEnable": "No enable incremental index",
+        "highFreqDocumentEnableInfo": "If incremental indexing is enabled, a signal will be sent when the document data or state changes, and the incremental index timer will run at the specified time to obtain the incremental signal and update the document index.",
+        "highFreqDocumentCron": "Incremental index timer",
+        "highFreqDocumentCronInfo": "Incremental index timing execution expression",
+        "highFreqDocumentMaxCount": "Incremental index single processing maximum number",
+        "highFreqDocumentMaxMinutes": "Incremental index single processing maximum duration (minutes)"
+
+    },
+
     "_appConfig": {
         "connectConfig": "Connection Config",
         "moduleConfig": "Module Config",

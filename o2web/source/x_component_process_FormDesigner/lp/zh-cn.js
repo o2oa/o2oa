@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
+        "notNumberId": "元素标识符不能为纯数字",
+        "notDoubleDotId": "元素标识符不能包含连续的两个点号",
         "history": "历史",
         "componentTree": "组件树",
 
@@ -920,6 +922,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showChart": "显示图表",
         "showLegend": "显示图例",
         "showTable": "显示表格",
+        "showRowToColumn": "行列转换",
+        "chartNodeStyles": "图表容器样式",
+        "tableNodeStyles": "表格容器样式",
 
         "selectTag": "选择标签",
         "elementTag": "元素标签",
@@ -948,6 +953,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handwrittenHeight": "手写意见高度",
         "logFormat": "格式",
         "logFormatScript": "格式脚本",
+        "logHtmlScript": "html脚本",
         "currentPerson": "当前处理人",
         "readReaded": "待阅已阅",
         "readTitle": "待阅标题",
@@ -988,6 +994,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "edit": "编辑",
         "printFile": "打印正文",
         "viewTraces": "查看痕迹",
+        "viewTracesFullScreen": "痕迹全屏",
+        "viewTracesFullScreenInfo": "查看痕迹时全屏显示",
         "editScript": "编辑脚本",
         "printScript": "允许打印脚本",
         "viewTracesScript": "允许查看痕迹脚本",
@@ -1543,7 +1551,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "setReaded" : "标记为已阅",
         "readed" : "已阅",
         "addTask": "加签",
-        "addTaskTitle": "在当前活动添加处理人"
+        "addTaskTitle": "在当前活动添加处理人",
+        "goBack": "退回",
+        "goBackTitle": "退回到已经过的活动"
     },
     "filedConfigurator": {
 		 "sequence": "序号",

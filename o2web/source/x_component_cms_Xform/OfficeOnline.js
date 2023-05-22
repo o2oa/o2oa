@@ -7,7 +7,7 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
         this.json = json;
         this.form = form;
         this.documentId = "";
-        this.mode = "edit";
+        this.mode = "write";
         this.appToken = "x_cms_assemble_control";
         this.workId = this.form.businessData.document.id;
     },
@@ -20,7 +20,7 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get(this.appToken).action,
                 "method": "uploadAttachment",
-                "accept" : ".docx,.xlsx,.pptx",
+                "accept" : ".docx,.xlsx,.pptx,.pdf",
                 "parameter": {
                     "id": this.workId
                 },
@@ -63,8 +63,8 @@ MWF.xApplication.cms.Xform.OfficeOnline = MWF.CMSOfficeOnline =  new Class({
 
             this.fileName = this.document.name;
             var extension = this.document.extension;
-            var host = o2.Actions.getHost( "x_officeonline_assemble_control" );
-            var WOPISrc = host +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
+
+            var WOPISrc = this.WOPISrc +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
 
             console.log(WOPISrc);
 

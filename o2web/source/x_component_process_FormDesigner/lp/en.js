@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "repetitionsId": "Element ID is not unique",
     "notNullId": "Element ID cannot be empty",
+    "notNumberId": "Element identifiers cannot be pure numbers",
+    "notDoubleDotId": "Element identifier cannot contain two consecutive dots",
     "history": "History",
     "componentTree": "Component Tree",
 
@@ -920,6 +922,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "showChart": "Show Chart",
         "showLegend": "Show Legend",
         "showTable": "Show Table",
+        "showRowToColumn": "Row to column conversion",
+        "chartNodeStyles": "Chart Container Styles",
+        "tableNodeStyles": "Table Container Styles",
 
         "selectTag": "Select Tag",
         "elementTag": "Tag",
@@ -948,6 +953,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "handwrittenHeight": "Handwritten Height",
         "logFormat": "Format",
         "logFormatScript": "Format Script",
+        "logHtmlScript": "Html Script",
         "currentPerson": "Current Processor",
         "readReaded": "Read and Readed",
         "readTitle": "Read Title",
@@ -988,6 +994,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "edit": "Edit",
         "printFile": "Print File",
         "viewTraces": "View Traces",
+        "viewTracesFullScreen": "View Traces Full Screen",
+        "viewTracesFullScreenInfo": "Full screen when viewing traces",
         "editScript": "Edit Script",
         "printScript": "Allow Print Script",
         "viewTracesScript": "Allow View Traces Script",

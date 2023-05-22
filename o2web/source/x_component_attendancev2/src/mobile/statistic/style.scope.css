@@ -1,0 +1,76 @@
+.statistic-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.statistic-box {
+  background-color: var(--main-bg-color);
+  border-radius: 8px;
+  margin: 20px 15px 20px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  overflow: auto;
+}
+.statistic-head {
+  margin: 10px auto;
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+}
+.statistic-head > .vertical-divider {
+  height: 100%;
+  width: 1px;
+  background-color: #ddd;
+  margin: 0 5px;
+}
+.statistic-head  > .year {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--font-primary-color);
+}
+.statistic-head > .month {
+  font-size:16px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-left: 5px;
+  color: var(--font-primary-color);
+}
+.statistic-horizontal-divider {
+  width: calc( 100% - 30px );
+  height: 1px;
+  background-color: #eee;
+}
+.statistic-item-list {
+  width: calc( 100% - 30px );
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+  margin:10px;
+}
+.statistic-item-child {
+  box-sizing: border-box;
+  flex: 0 0 33%;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 10px;
+  opacity: 1;
+}
+.statistic-item-list > .zero {
+  opacity: 0.5!important;
+}
+.statistic-item-child > .number {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--font-primary-color);
+}
+.statistic-item-child > .label {
+  font-size:14px;
+  color: var(--font-second-color);
+}

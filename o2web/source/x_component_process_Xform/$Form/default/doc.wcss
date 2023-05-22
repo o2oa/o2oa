@@ -69,7 +69,9 @@
     "doc_layout_redline": {},
     "doc_layout_subject": {},
     "doc_layout_mainSend": {},
-    "doc_layout_filetext": {},
+    "doc_layout_filetext": {
+      "word-break": "break-all"
+    },
     "doc_layout_attachment": {},
     "doc_layout_attachment_title_td": {},
     "doc_layout_attachment_title": {},

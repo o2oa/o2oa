@@ -34,7 +34,7 @@ class ActionCreate extends BaseAction {
 			}
 			TemplateForm o = emc.find(wi.getId(), TemplateForm.class);
 			emc.beginTransaction(TemplateForm.class);
-			/** 设计端的ID都是由前台提供的,这里的拷贝需要拷贝id */
+			//设计端的ID都是由前台提供的,这里的拷贝需要拷贝id
 			if (null != o) {
 				Wi.copier.copy(wi, o);
 				emc.check(o, CheckPersistType.all);

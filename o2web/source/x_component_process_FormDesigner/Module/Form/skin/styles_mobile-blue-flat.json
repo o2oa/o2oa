@@ -450,6 +450,16 @@
       "background-color": "#efefef",
       "margin" : "5px"
     },
+    "sectionKeyStyles": {
+      "font-size":"18px",
+      "text-align":"left",
+      "margin":"20px 0px 15px 0px",
+      "padding":"5px",
+      "border-top": "1px solid #ccc",
+      "border-right": "1px solid #ccc",
+      "border-bottom": "1px solid #ccc",
+      "border-left":"5px solid #fb4747"
+    },
     "properties": {
       "width": "100%",
       "border": "0",

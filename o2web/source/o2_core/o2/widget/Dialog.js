@@ -463,11 +463,19 @@ o2.widget.Dialog = o2.DL = new Class({
 			var pn = this.node.getOffsetParent() || this.node.getParent();
 			var p = pn.getPosition();
 
+			var scrollParent = this.getScrollableParent(this.node);
+
 			var h = this.css.to.height.toInt();
 			var y = this.css.to.top.toInt();
 			y = y+p.y;
 
-			var ih = window.innerHeight.toInt();
+			var windowHeight  = window.innerHeight.toInt();
+			if( layout.mobile ){
+				var toolbar = $(document.body).getElement(".o2_form_mobile_actions");
+				if(toolbar)windowHeight = windowHeight - toolbar.getSize().y;
+			}
+
+			var ih = windowHeight + scrollParent.getScroll().y;
 			if (h+y> ih){
 				y = ih-p.y-h-20;
 				if (y<0) y=0;
@@ -481,6 +489,22 @@ o2.widget.Dialog = o2.DL = new Class({
 				this.fireEvent("postShow");
 			}.bind(this));
 		}
+	},
+	getScrollableParent: function (ele) {
+		if( !ele || ele === document.body )return document.body;
+		if( this.isScrollable(ele) ){
+			return ele;
+		}else{
+			return this.getScrollableParent(ele.parentNode);
+		}
+	},
+	isScrollable: function (ele) {
+		var hasScrollableContent = ele.scrollHeight > ele.clientHeight;
+
+		var overflowYStyle = window.getComputedStyle(ele).overflowY;
+		var isOverflowHidden = overflowYStyle.indexOf('hidden') !== -1;
+
+		return hasScrollableContent && !isOverflowHidden;
 	},
 	hide: function() {
 		if (!this.morph){

@@ -2361,7 +2361,6 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }
     },
     previewZip: function () {
-        debugger
         //zip压缩包预览
         var _self = this;
         var zipViewNode = new Element("div",{"text":"loadding..."});
@@ -2608,7 +2607,6 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         }.bind(this));
     },
     previewAce:function(type){
-        debugger
         this.app.getAttachmentUrl(this.att,  function (url) {
             o2.require("o2.widget.ace", null, false);
             var fileRequest = new Request({
@@ -2754,7 +2752,6 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         }
     },
     uploadAttachment: function (e, node, files) {
-        debugger;
         if (window.o2android && window.o2android.postMessage) {
             var body = {
                 type: "uploadAttachmentForDatagrid",

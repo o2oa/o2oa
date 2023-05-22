@@ -14,23 +14,26 @@ import com.x.organization.core.entity.Person;
 
 class ActionManagerGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManagerGet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionManagerGet.class);
 
-	ActionResult<String> execute(EffectivePerson effectivePerson, String person, String name) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<String> result = new ActionResult<>();
-			String wo = "";
-			Business business = new Business(emc);
-			if (effectivePerson.isManager() && StringUtils.isNotEmpty(person)) {
-				Person p = business.person().pick(person);
-				if (p != null) {
-					Custom o = this.getWithName(emc, p.getDistinguishedName(), name);
-					if (null != o) {
-						result.setData(o.getData());
-					}
-				}
-			}
-			return result;
-		}
-	}
+    ActionResult<String> execute(EffectivePerson effectivePerson, String person, String name) throws Exception {
+
+        LOGGER.debug("execute:{}, person:{}, name:{}.", effectivePerson::getDistinguishedName, () -> person,
+                () -> name);
+
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<String> result = new ActionResult<>();
+            Business business = new Business(emc);
+            if (effectivePerson.isManager() && StringUtils.isNotEmpty(person)) {
+                Person p = business.person().pick(person);
+                if (p != null) {
+                    Custom o = this.getWithName(emc, p.getDistinguishedName(), name);
+                    if (null != o) {
+                        result.setData(o.getData());
+                    }
+                }
+            }
+            return result;
+        }
+    }
 }

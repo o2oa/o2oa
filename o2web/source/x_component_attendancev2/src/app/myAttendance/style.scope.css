@@ -1,0 +1,122 @@
+.legend {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px 0;
+}
+.legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 10px;
+}
+.my-cal-header {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(240, 240, 240);
+}
+.my-cal-header-item {
+  flex: 1;
+  height: 100%;
+  color: rgb(51, 51, 51);
+  font-size: 18px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+.my-cal-body {
+  margin-top: 10px;
+}
+.my-cal-body-line {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+}
+.my-cal-body-line .item {
+  flex: 1;
+  margin: 7px;
+  overflow: auto;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  opacity: 1;
+  padding: 5px;
+}
+.my-cal-body-line .full {
+  background-color: rgb(248, 251, 255)!important;
+}
+.my-cal-body-line .out {
+  opacity: 0.5!important;
+}
+.item-cal-date {
+  font-size: 16px;
+  font-weight: 600;
+}
+.item-record-parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* flex-flow: row wrap;
+  align-content: flex-start; */
+}
+.item-record-child {
+  /* flex: 0 0 50%; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.item-record-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  margin-right: 5px;
+  background-color: var(--att-record-status-normal-color);
+}
+/* 正常 */
+.record-status-normal {
+  background-color: var(--att-record-status-normal-color)!important;
+}
+/* 早退 */
+.record-status-early {
+  background-color:var(--att-record-status-early-color)!important;
+}
+/* 迟到 */
+.record-status-late {
+  background-color: var(--att-record-status-late-color)!important;
+}
+/* 严重迟到 */
+.record-status-serilate {
+  background-color: var(--att-record-status-serilate-color)!important;
+}
+/* 未打卡 */
+.record-status-nosign {
+  background-color: var(--att-record-status-nosign-color)!important;
+}
+/* 外勤打卡 */
+.record-status-fieldwork {
+  background-color: var(--att-record-status-fieldwork-color)!important;
+}
+/* 申诉 */
+.record-status-appeal {
+  background-color: var(--att-record-status-appeal-color)!important;
+}
+
+
+
+
+.my-statistic-parent {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+}
+.my-statistic-label {
+  font-size: 14px;
+}
+.my-statistic-value {
+  padding-left: 4px;
+  font-size: 16px;
+  color: #666666;
+}

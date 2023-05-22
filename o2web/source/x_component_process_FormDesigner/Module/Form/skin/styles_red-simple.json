@@ -361,6 +361,8 @@
       "background-color": "#efefef",
       "margin" : "5px"
     },
+    "sectionKeyStyles": {
+    },
     "properties": {
       "width": "90%",
       "border": "0",

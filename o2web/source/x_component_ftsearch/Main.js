@@ -16,17 +16,23 @@ MWF.xApplication.ftsearch.Main = new Class({
 		this.lp = MWF.xApplication.ftsearch.LP;
 	},
 	loadApplication: function(callback){
-		var url = this.path+this.options.style+"/main.html";
-		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
-			var query = this.options.query || "";
-			if( this.status && this.status.query ){
-				query = this.status.query;
-			}
-			if( query ){
-				this.openFTSearchView( query );
-			}
-			this.status = null;
-		}.bind(this));
+		var url;
+		if( layout.config.searchEnable === false){
+			url = this.path+this.options.style+"/disabled.html";
+			this.content.loadHtml(url, {"bind": {"lp": this.lp}});
+		}else{
+			url = this.path+this.options.style+"/main.html";
+			this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
+				var query = this.options.query || "";
+				if( this.status && this.status.query ){
+					query = this.status.query;
+				}
+				if( query ){
+					this.openFTSearchView( query );
+				}
+				this.status = null;
+			}.bind(this));
+		}
 	},
 	getEventTarget: function(e, className) {
 		var parentItem = e.target;

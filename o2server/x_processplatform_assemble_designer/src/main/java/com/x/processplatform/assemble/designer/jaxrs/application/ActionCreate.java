@@ -9,6 +9,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -35,6 +36,9 @@ class ActionCreate extends BaseAction {
                     OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager,
                     OrganizationDefinition.ProcessPlatformCreator))) {
                 throw new ExceptionInsufficientPermission(effectivePerson.getDistinguishedName());
+            }
+            if (emc.duplicateWithFlags(Application.class, wi.getId())) {
+                throw new ExceptionEntityExist(wi.getId());
             }
             emc.beginTransaction(Application.class);
             Application application = new Application();

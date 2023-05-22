@@ -31,6 +31,10 @@
     "icon": "attendance.png",
     "color": "#FF8080"
   },
+  "attendancev2": {
+    "icon": "attendance.png",
+    "color": "#FF8080"
+  },
   "BAM": {
     "icon": "bam.png",
     "color": "#4A90E2"
@@ -182,5 +186,9 @@
   "ftsearch": {
     "icon": "ftsearch.png",
     "color": "#758790"
+  },
+  "Drive": {
+    "icon": "drive.png",
+    "color": "#FF7800"
   }
 }

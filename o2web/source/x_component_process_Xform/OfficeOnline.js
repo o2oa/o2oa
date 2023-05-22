@@ -50,7 +50,6 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.action = o2.Actions.load("x_officeonline_assemble_control");
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
-            debugger
             if(this.data.documentId === ""){
 
                 if (this.json.officeType === "other" && this.json.templateType === "script"){
@@ -113,7 +112,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get(this.appToken).action,
                 "method": "uploadAttachment",
-                "accept" : ".docx,.xlsx,.pptx",
+                "accept" : ".docx,.xlsx,.pptx,.pdf",
                 "parameter": {
                     "id": this.workId
                 },
@@ -149,6 +148,10 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
     loadApi : function (callback){
 
         this.officeAPI = {
+            "pdf" : {
+                "view" : "/wv/wordviewerframe.aspx?PdfMode=1",
+                "write" : "/wv/wordviewerframe.aspx?PdfMode=1"
+            },
             "docx" : {
                 "view" : "/wv/wordviewerframe.aspx?1=1",
                 "write" : "/we/wordeditorframe.aspx?1=1"
@@ -173,8 +176,16 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
                 "view" : "/p/PowerPointFrame.aspx?PowerPointView=ReadingView",
                 "write" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
             }
-        }
-        if (callback) callback();
+        };
+        this.action.ConfigAction.getCallBackUrl().then(function (json){
+            this.WOPISrc = json.data.value;
+
+            if(this.WOPISrc === ""){
+                this.WOPISrc = o2.Actions.getHost( "x_officeonline_assemble_control" );
+            }
+
+            if (callback) callback();
+        }.bind(this));
     },
     getEditor: function (callback) {
         var action = o2.Actions.load(this.appToken);
@@ -184,8 +195,8 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
 
             this.fileName = this.document.name;
             var extension = this.document.extension;
-            var host = o2.Actions.getHost( "x_officeonline_assemble_control" );
-            var WOPISrc = host +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
+
+            var WOPISrc = this.WOPISrc +"/x_officeonline_assemble_control/jaxrs/wopi/files/" + this.documentId + "?mode=" + this.mode;
 
             console.log(WOPISrc);
 

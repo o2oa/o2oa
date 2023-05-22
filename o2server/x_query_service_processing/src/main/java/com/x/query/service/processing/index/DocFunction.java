@@ -76,7 +76,7 @@ public class DocFunction {
                 doc.setReaders(readers(param.first(), work));
                 doc.setId(work.getJob());
                 doc.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
-                doc.setType(Indexs.TYPE_WORKCOMPLETED);
+                doc.setType(Indexs.TYPE_WORK);
                 doc.setKey(work.getApplication());
                 doc.setTitle(work.getTitle());
                 doc.setCreateTime(work.getCreateTime());

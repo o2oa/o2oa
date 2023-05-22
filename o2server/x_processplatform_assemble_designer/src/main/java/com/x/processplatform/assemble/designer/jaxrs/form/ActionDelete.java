@@ -1,10 +1,14 @@
 package com.x.processplatform.assemble.designer.jaxrs.form;
 
+import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -71,17 +75,17 @@ class ActionDelete extends BaseAction {
             this.checkUsedWithSplit(business, form);
             // 先删除FormField
             List<String> formFieldIds = business.formField().listWithForm(form.getId());
-            emc.beginTransaction(FormField.class);
-            emc.beginTransaction(Form.class);
-            emc.beginTransaction(FormVersion.class);
-            for (FormField o : emc.list(FormField.class, formFieldIds)) {
-                emc.remove(o);
-            }
             List<String> formVersionIds = emc.idsEqual(FormVersion.class, FormVersion.form_FIELDNAME, form.getId());
-            for (FormVersion o : emc.list(FormVersion.class, formVersionIds)) {
-                emc.remove(o);
+            if (!ListTools.isEmpty(formFieldIds)) {
+                emc.beginTransaction(FormField.class);
+                this.delete(business, FormField.class, formFieldIds);
             }
-            emc.remove(form, CheckRemoveType.all);
+            if (!ListTools.isEmpty(formVersionIds)) {
+                emc.beginTransaction(FormVersion.class);
+                this.delete(business, FormVersion.class, formVersionIds);
+            }
+            emc.beginTransaction(Form.class);
+            this.delete(business, Form.class, form.getId());
             emc.commit();
             CacheManager.notify(Form.class);
             Wo wo = new Wo();
@@ -89,6 +93,17 @@ class ActionDelete extends BaseAction {
             result.setData(wo);
             return result;
         }
+    }
+
+    private <T extends JpaObject> void delete(Business business, Class<T> clz, List<String> ids) throws Exception {
+        EntityManager em = business.entityManagerContainer().get(clz);
+        Query query = em.createQuery("DELETE FROM " + clz.getName() + " o WHERE o.id IN :ids");
+        query.setParameter("ids", ids);
+        query.executeUpdate();
+    }
+
+    private <T extends JpaObject> void delete(Business business, Class<T> clz, String... ids) throws Exception {
+        this.delete(business, clz, Arrays.asList(ids));
     }
 
     public static class Wo extends WoId {
@@ -209,7 +224,7 @@ class ActionDelete extends BaseAction {
         if (ListTools.isNotEmpty(ids)) {
             List<Publish> list = business.entityManagerContainer().fetch(ids, Publish.class,
                     ListTools.toList(Activity.name_FIELDNAME));
-            throw new ExceptionUsedWithParallel(form.getName(), form.getId(),
+            throw new ExceptionUsedWithPublish(form.getName(), form.getId(),
                     ListTools.extractProperty(list, Activity.name_FIELDNAME, String.class, true, false));
         }
     }

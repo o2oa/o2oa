@@ -22,32 +22,48 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         this.fireEvent("init");
     },
     load: function(callback){
+        debugger;
         if( Browser.name === 'ie' && !this.isIE11 ){
-            this.node.set("html", this.html);
+            this.parseOnerror();
+            this.node.set("html", this.html_new);
+            if(callback)callback();
         }else{
-            var checkLoaded = function () {
-                if( this.resourceLoaded && this.parseDone ){
-                    if(window.lozad){
-                        this.node.set("html", this.html_new);
-                        var observer = lozad( this.node.querySelectorAll('img.lozad'), {
-                            rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
-                            threshold: 0, // ratio of element convergence
-                            enableAutoReload: true // it will reload the new image when validating attributes changes
-                        });
-                        observer.observe();
-                    }else{
-                        this.node.set("html", this.html);
-                    }
-                    if(callback)callback();
-                }
-            }.bind(this);
             this.loadResource(function () {
-                this.resourceLoaded = true;
-                checkLoaded()
+                if(window.lozad){
+                    this.parseHtml();
+                    this.node.set("html", this.html_new);
+                    var observer = lozad( this.node.querySelectorAll('img.lozad'), {
+                        rootMargin: '1000px 0px', // syntax similar to that of CSS Margin
+                        threshold: 0, // ratio of element convergence
+                        enableAutoReload: true // it will reload the new image when validating attributes changes
+                    });
+                    observer.observe();
+                }else{
+                    this.parseOnerror();
+                    this.node.set("html", this.html_new);
+                }
+                if(callback)callback();
             }.bind(this));
-            this.parseHtml();
-            checkLoaded()
         }
+    },
+    parseOnerror: function(){
+        var html = this.html;
+        var regexp_all = /(i?)(<img)([^>]+>)/gmi;
+        var images = this.html.match(regexp_all);
+        if(images){
+            if (images.length){
+                for (var i=0; i<images.length; i++){
+                    var image = images[i];
+
+                    var image1 = this.removeAttribute(image, "onerror");
+                    image1 = this.addAttribute(image1, "onerror", "MWF.xDesktop.setImageSrc()");
+
+                    html = html.replace(image, image1);
+                }
+            }
+        }
+        html = this.replaceHrefJavascriptStr( html );
+        this.html_new = html;
     },
     parseHtml: function(){
         var html = this.html;
@@ -57,11 +73,15 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
             if (images.length){
                 for (var i=0; i<images.length; i++){
                     var image = images[i];
+
+                    var image1 = this.removeAttribute(image, "onerror");
+                    image1 = this.addAttribute(image1, "onerror", "MWF.xDesktop.setImageSrc()");
+
                     var src =  this.getAttributeValue(image, "src");
                     if( src.substr(0, 5) !== "data:" ){ //不是base64位
                         var size = this.getSize(image);
                         if( size ){
-                            var image1 = this.removeAttribute(image, "src");
+                            image1 = this.removeAttribute(image1, "src");
 
                             var id = this.getAttributeValue(image1, "data-id");
                             var src2 = id ? MWF.xDesktop.getImageSrc(id) : src;
@@ -73,17 +93,16 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
                             });
 
                             image1 = this.addAttribute(image1, "class", "lozad");
-
-                            html = html.replace(image, image1);
                         }
                     }
+
+                    html = html.replace(image, image1);
                 }
             }
         }
 
         html = this.replaceHrefJavascriptStr( html );
 
-        this.parseDone = true;
         this.html_new = html;
     },
     replaceHrefJavascriptStr: function( html ){

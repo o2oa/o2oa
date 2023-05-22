@@ -2,12 +2,9 @@ package com.x.organization.core.express.person;
 
 import java.util.List;
 
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.organization.Group;
 import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
@@ -15,7 +12,6 @@ import com.x.base.core.project.organization.PersonAttribute;
 import com.x.base.core.project.organization.Role;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.organization.UnitDuty;
-import com.x.base.core.project.tools.ListTools;
 
 class ActionExt extends BaseAction {
 

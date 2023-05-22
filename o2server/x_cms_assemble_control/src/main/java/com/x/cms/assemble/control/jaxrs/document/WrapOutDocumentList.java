@@ -106,6 +106,18 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe("业务数据String值06.")
 	private String stringValue06;
 
+	@FieldDescribe("业务数据String值07.")
+	private String stringValue07;
+
+	@FieldDescribe("业务数据String值08.")
+	private String stringValue08;
+
+	@FieldDescribe("业务数据String值09.")
+	private String stringValue09;
+
+	@FieldDescribe("业务数据String值10.")
+	private String stringValue10;
+
 	@FieldDescribe("业务数据Long值01.")
 	private Long longValue01;
 
@@ -474,5 +486,37 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setHasRead(Boolean hasRead) {
 		this.hasRead = hasRead;
+	}
+
+	public String getStringValue07() {
+		return stringValue07;
+	}
+
+	public void setStringValue07(String stringValue07) {
+		this.stringValue07 = stringValue07;
+	}
+
+	public String getStringValue08() {
+		return stringValue08;
+	}
+
+	public void setStringValue08(String stringValue08) {
+		this.stringValue08 = stringValue08;
+	}
+
+	public String getStringValue09() {
+		return stringValue09;
+	}
+
+	public void setStringValue09(String stringValue09) {
+		this.stringValue09 = stringValue09;
+	}
+
+	public String getStringValue10() {
+		return stringValue10;
+	}
+
+	public void setStringValue10(String stringValue10) {
+		this.stringValue10 = stringValue10;
 	}
 }

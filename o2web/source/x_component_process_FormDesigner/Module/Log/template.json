@@ -9,7 +9,7 @@
     "filterPerson": [],
     "filterRoute": [],
     "mode": "default", //default table or text
-    "textStyle": "<font style='color:#ff5400;'>{person}</font>（{department}） 选择【{route}】，提交于： {time}，处理意见：<font style='color:#00F'>{opinion}</font>",  //"{person}({department})在[{activity}]中选择[{route}]，提交于：{time}，处理意见：{opinion}",
+    "textStyle": "<font style='color:#ff5400;'>{person}</font>（{department}）在【{activity}】活动选择【{route}】，提交于： {time}，处理意见：<font style='color:#00F'>{opinion}</font>",  //"{person}({department})在[{activity}]中选择[{route}]，提交于：{time}，处理意见：{opinion}",
     "isTask": "true",
 	"showReadTitle": "待阅人",
 	"showReadCompletedTitle":"已阅人",

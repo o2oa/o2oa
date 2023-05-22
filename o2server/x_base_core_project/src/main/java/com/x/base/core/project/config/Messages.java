@@ -176,6 +176,10 @@ public class Messages extends ConfigObject {
 	private Message im_create;
 	@FieldDescribe("聊聊消息.")
 	private Message im_revoke;
+	@FieldDescribe("打卡提醒消息.")
+	private Message attendance_checkInAlert;
+	@FieldDescribe("打卡异常提醒消息.")
+	private Message attendance_checkInException;
 	@FieldDescribe("自定义消息.")
 	private Map<String, Message> custom = new LinkedHashMap<>();
 
@@ -235,6 +239,8 @@ public class Messages extends ConfigObject {
 		o.im_create = new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER)
 				.cloneThenSetDescription("聊聊消息.");
 		o.im_revoke = new Message(MessageConnector.CONSUME_WS).cloneThenSetDescription("聊聊消息.");
+		o.attendance_checkInAlert = MESSAGE_NOTICE.cloneThenSetDescription("打卡提醒消息.");
+		o.attendance_checkInException = MESSAGE_NOTICE.cloneThenSetDescription("打卡异常提醒消息.");
 		o.custom = new LinkedHashMap<>();
 		o.custom.put("foo", MESSAGE_ALL.cloneThenSetDescription("自定义消息类型."));
 		o.consumers = new LinkedHashMap<>();
@@ -668,6 +674,20 @@ public class Messages extends ConfigObject {
 		return this.im_revoke;
 	}
 
+	public Message getAttendanceCheckInAlert() {
+		if (null == this.attendance_checkInAlert) {
+			this.attendance_checkInAlert = MESSAGE_NOTICE.cloneThenSetDescription("打卡提醒消息.");
+		}
+		return this.attendance_checkInAlert;
+	}
+
+	private Message getAttendanceCheckInException() {
+		if (null == this.attendance_checkInException) {
+			this.attendance_checkInException = MESSAGE_NOTICE.cloneThenSetDescription("打卡异常提醒消息.");
+		}
+		return this.attendance_checkInException;
+	}
+
 	private Optional<Message> getMessage(String type) {
 		switch (Objects.toString(type, "")) {
 		case MessageConnector.TYPE_APPLICATION_CREATE:
@@ -776,6 +796,10 @@ public class Messages extends ConfigObject {
 			return Optional.of(getImCreate());
 		case MessageConnector.TYPE_IM_REVOKE:
 			return Optional.of(getImRevoke());
+		case MessageConnector.TYPE_ATTENDANCE_CHECK_IN_ALERT:
+			return Optional.of(getAttendanceCheckInAlert());
+		case MessageConnector.TYPE_ATTENDANCE_CHECK_IN_EXCEPTION:
+			return Optional.of(getAttendanceCheckInException());
 		default:
 			if ((null != this.custom) && type.startsWith(MessageConnector.TYPE_CUSTOM_PREFIX)) {
 				Message m = this.custom.get(StringUtils.substringAfter(type, MessageConnector.TYPE_CUSTOM_PREFIX));

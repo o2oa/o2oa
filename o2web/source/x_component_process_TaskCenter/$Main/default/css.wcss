@@ -1061,20 +1061,20 @@
         "font-weight": "bold"
     },
     "taskTextNode": {
-        "width": "160px",
+        "width": "auto",
         "line-height": "20px",
         "font-size": "12px",
         "font-weight": "bold",
         "color": "red"
     },
     "logOpinionNode": {
-        "width": "140px",
+        "width": "auto",
         "margin-left": "10px",
         "line-height": "20px",
         "font-size": "12px"
     },
     "logTimeNode": {
-        "width": "160px",
+        "width": "auto",
         "line-height": "20px",
         "text-align": "right",
         "font-size": "12px",

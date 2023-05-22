@@ -733,7 +733,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }else{
             return this.parseDictOptions(data);
         }
-
     },
     parseDictOptions: function (d) {
         var arr = [], value, text, valuekey = this.json.dictValueKey, textkey = this.json.dictTextKey;
@@ -825,6 +824,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         })
         return arr.unique();
     },
+
     getOptionsWithStatement: function(async, refresh){
 	    debugger;
         if( !this.json.itemStatement )return [];
