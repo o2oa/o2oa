@@ -134,7 +134,8 @@ o2.widget.ToolbarButton = new Class({
 		"pic": "",
 		"action": "",
         "actionScript": "",
-		"disable": false
+		"disable": false,
+		"hide": false
 	},
 	initialize: function(node, toolbar, options){
 		this.setOptions(options);
@@ -163,6 +164,9 @@ o2.widget.ToolbarButton = new Class({
 			var buttonAction = this.node.get("MWFButtonAction");
 			if (buttonAction) this.options.action = buttonAction;
 
+			var buttonHide = this.node.get("MWFHide");
+			this.options.hide = !!buttonHide;
+
             //var buttonActionScript = this.node.get("MWFButtonActionScript");
             //if (buttonActionScript) this.options.actionScript = buttonActionScript;
 		}
@@ -178,7 +182,22 @@ o2.widget.ToolbarButton = new Class({
 		if (this.options.text) this.textNode = this._createTextNode(this.options.text);
 
 		this.setDisable(this.options.disable);
-
+		this.setHide(this.options.hide);
+	},
+	hide: function(){
+		this.node.hide();
+		this.options.hide = true;
+	},
+	show: function(){
+		this.node.show();
+		this.options.hide = false;
+	},
+	setHide: function(flag){
+		if (flag){
+			this.hide();
+		}else{
+			this.show();
+		}
 	},
 	enable: function(){
 		if (this.options.disable){

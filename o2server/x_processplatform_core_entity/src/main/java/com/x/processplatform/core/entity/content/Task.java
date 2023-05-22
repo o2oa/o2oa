@@ -20,6 +20,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
@@ -94,6 +95,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
 				this.opinion = this.getProperties().getOpinion();
 			}
+			this.routeNameDisable = this.getProperties().getRouteNameDisable();
 		}
 	}
 
@@ -129,6 +131,19 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.properties = new TaskProperties();
 	}
 
+	public Boolean getRouteNameDisable() {
+		return routeNameDisable;
+	}
+
+	public void setRouteNameDisable(Boolean routeNameDisable) {
+		this.routeNameDisable = routeNameDisable;
+		this.getProperties().setRouteNameDisable(routeNameDisable);
+	}
+
+	@Transient
+	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
+	private Boolean routeNameDisable;
+
 	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
 			Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this();
@@ -158,8 +173,10 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.creatorUnit = work.getCreatorUnit();
 		this.workCreateType = work.getWorkCreateType();
 		this.expireTime = expireTime;
+		this.routeNameDisable = false;
 		this.routeName = "";
 		this.opinion = "";
+
 		this.modified = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);

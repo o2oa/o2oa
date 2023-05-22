@@ -5,6 +5,7 @@
 **/bin/
 **/target/
 /target/**
+/o2server/webroot/
 /o2server/servers/
 /o2server/store/jars/*.jar
 /o2server/store/*.war

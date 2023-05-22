@@ -107,9 +107,10 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("count/{credential}/application/{appId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void countWithPersonAndApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-								@JaxrsParameterDescribe("个人标识") @PathParam("credential") String credential,
-								@JaxrsParameterDescribe("应用标志") @PathParam("appId") String appId) {
+	public void countWithPersonAndApplication(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("个人标识") @PathParam("credential") String credential,
+			@JaxrsParameterDescribe("应用标志") @PathParam("appId") String appId) {
 		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1342,20 +1343,42 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Operation(summary = "按条件过滤的当前用户创建的待办.", operationId = OPERATIONID_PREFIX + "V2List", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "按条件过滤的当前用户创建的待办.", action = V2List.class)
+	@GET
+	@Path("v2/list/{id}/activity/goback")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ListActivityGoBack(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<List<V2ListActivityGoBack.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ListActivityGoBack().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "分页列示指定应用下根据过滤条件的Work.", action = ActionManageListWithApplicationPaging.class)
 	@POST
 	@Path("list/paging/{page}/size/{size}/application/{applicationFlag}/filter/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-						@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
-						@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-						JsonElement jsonElement) {
+	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			JsonElement jsonElement) {
 		ActionResult<List<ActionManageListWithApplicationPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag, jsonElement);
+			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag,
+					jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

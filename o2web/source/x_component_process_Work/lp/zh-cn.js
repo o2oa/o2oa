@@ -26,6 +26,7 @@ MWF.xApplication.process.Work.LP = {
     "reroute": "调度",
     "addSplit": "增加分支",
     "rollback": "流程回溯",
+    "goBack": "退回",
 
     "phone": "手机",
     "mail": "邮箱",

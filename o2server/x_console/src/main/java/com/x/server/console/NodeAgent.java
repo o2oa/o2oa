@@ -1,12 +1,27 @@
 package com.x.server.console;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import com.google.common.collect.ImmutableList;
+import com.x.base.core.project.annotation.Module;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.WebServers;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.*;
+import com.x.base.core.project.x_base_core_project;
+import com.x.server.console.server.Servers;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.quickstart.QuickStartWebApp;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -22,32 +37,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.quickstart.QuickStartWebApp;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-
-import com.google.common.collect.ImmutableList;
-import com.x.base.core.project.x_base_core_project;
-import com.x.base.core.project.annotation.Module;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.WebServers;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.ZipTools;
-import com.x.server.console.server.Servers;
 
 public class NodeAgent extends Thread {
 
@@ -388,18 +377,19 @@ public class NodeAgent extends Thread {
 
                     File zipFile = new File(tempFile.getAbsolutePath(), fileName);
                     FileUtils.writeByteArrayToFile(zipFile, bytes);
-                    File dist = new File(Config.base(), Config.DIR_SERVERS_WEBSERVER);
-                    if (StringUtils.isNotEmpty(filePath)) {
-                        dist = new File(dist, filePath);
-                        FileTools.forceMkdir(dist);
-                    }
-                    List<String> subs = new ArrayList<>();
-                    ZipTools.unZip(zipFile, subs, dist, asNew, null);
+                    File dist = Config.path_webroot(true).toFile();
+                    File dist2 = Config.dir_servers_webServer();
+                    List<String> ignoreList = new ArrayList<>();
+                    ZipTools.unZip(zipFile, ignoreList, dist, WebServers.WEB_SERVER_FOLDERS, dist2, asNew, null);
 
                     FileUtils.cleanDirectory(tempFile);
                     logger.print("upload resource {} success!", fileName);
                 } else if (StringUtils.isNotEmpty(filePath)) {
-                    File dist = new File(Config.base(), Config.DIR_SERVERS_WEBSERVER);
+                    filePath = filePath.trim();
+                    File dist = Config.path_webroot(true).toFile();
+                    if(ZipTools.isMember(filePath, WebServers.WEB_SERVER_FOLDERS)){
+                        dist = Config.dir_servers_webServer();
+                    }
                     dist = new File(dist, filePath);
                     FileTools.forceMkdir(dist);
                     File file = new File(dist, fileName);
