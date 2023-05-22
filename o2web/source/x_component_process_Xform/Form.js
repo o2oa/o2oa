@@ -2060,14 +2060,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         if (!this.formValidation(routeName, opinion, medias)) {
             this.app.content.unmask();
-            //this.app.notice("", "error", target, where, offset);
             if (callback) callback();
             return false;
         }
         if (!this.validation(routeName, opinion, processor, medias)) {
-            //this.app.content.unmask();
             if (processor && processor.node) processor.node.unmask();
-            //if (callback) callback();
             return false;
         }
         if (!opinion) {
@@ -2075,17 +2072,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.businessData.task.routeOpinionList[idx]) {
                 opinion = this.businessData.task.routeOpinionList[idx];
             }
-            // else{
-            //     opinion = routeName;
-            // }
         }
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
-        // if (this.documenteditorList) {
-        //     this.documenteditorList.each(function (module) {
-        //         module.save(history);
-        //     });
-        // }
 
         //处理忽略授权
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
@@ -2093,7 +2082,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var _self = this;
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            debugger; // 适配移动端
+            // 适配移动端
             if (layout.mobile) {
                 this.mask.load();
             } else {
@@ -2651,7 +2640,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (layout.mobile) {
                 innerNode = new Element("div").inject(processNode);
             }
-
             this.processor = new MWF.xApplication.process.Work.Processor(innerNode || processNode, this.businessData.task, {
                 "style": (layout.mobile) ? "mobile" : (style || "default"),
                 "opinion": op.opinion,
@@ -3557,6 +3545,157 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     /**
+     * @summary 退回到之前流转过的活动（根据活动配置列出可退回的活动）.
+     * @example
+     * this.form.getApp().appForm.goBack();
+     */
+    goBack: function(){
+        if (!this.businessData.control["allowGoBack"]) {
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
+        if( !this.businessData.task ){
+            MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
+        o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.businessData.task.work, function(json){
+            var activitys = json.data;
+        // var activitys = [{
+        //     name: "拟稿",
+        //     activity: "123",
+        //     way: "custom",
+        //     lastModifyTime: "2023-01-23 12:34:12",
+        //     lastIdentityList: ["张三", "李四"],
+        //     activityTokenList: ["", ""]
+        // },{
+        //     name: "拟稿",
+        //     activity: "345",
+        //     way: "jump",
+        //     lastModifyTime: "2023-01-23 12:34:12",
+        //     lastIdentityList: ["王五六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六", "赵六六"],
+        //     activityTokenList: ["", ""]
+        // }];
+            if (activitys.length){
+                var h = this.app.content.getSize().y*0.7-271;
+                var size = activitys.length*61;
+                h = (size<h) ? size+271 : "70%";
+                var _self = this;
+                o2.DL.open({
+                    "title": this.app.lp.goBack,
+                    "style": this.json.dialogStyle || "user", //|| "work",
+                    "width":   (layout.mobile) ? "100%" : 680,
+                    "height":  (layout.mobile) ? "100%" : h,
+                    "url": this.app.path + ( (layout.mobile) ? "goBackMobile" : "goBack") +".html",
+                    "lp": o2.xApplication.process.Xform.LP.form,
+                    "container": (layout.mobile) ? document.body : this.app.content,
+                    "maskNode": this.app.content,
+                    "offset": (layout.mobile) ? null : {y: -50},
+                    "buttonList": [
+                        {
+                            "type": "ok",
+                            "text": o2.LP.process.button.ok,
+                            "action": function (d, e) {
+                                _self.doGoBack(this, activitys);
+                            }
+                        },
+                        {
+                            "type": "cancel",
+                            "text": MWF.LP.process.button.cancel,
+                            "action": function () {
+                                this.close();
+                            }
+                        }
+                    ],
+                    "onPostShow": function () {
+                        debugger;
+                        var node = this.node.getElement('.activesArea');
+                        activitys.forEach(function(a, i){
+                            _self.createGoBackActivity(node, a, i);
+                        });
+                    }
+
+                });
+            }
+        }.bind(this));
+    },
+
+    createGoBackActivity: function(area, activity, i){
+        var item = new Element('div.item', {styles: this.css.goBack_activity}).inject(area);
+
+        var itemCheck = new Element('div', {styles: this.css.goBack_activity_check, html: "<input type='radio' name='goBackActivity' value='"+activity.activity+"' data-text='"+activity.name+"'/>"}).inject(item);
+        var radio = itemCheck.getElement('input');
+
+        var itemContent = new Element('div', {styles: this.css.goBack_activity_content}).inject(item);
+        var html = activity.name + "<span style='color:#999999; font-size: 12px; margin-left: 10px'>("+activity.lastModifyTime+")</span>"
+        var itemName = new Element('div', {styles: this.css.goBack_activity_name, html: html}).inject(itemContent);
+
+        var ids = o2.name.cns(activity.lastIdentityList);
+        var idsStr = (ids.length>8) ? ids.slice(0,8).join(', ')+' ...' : ids.join(', ');
+        var itemInfo = new Element('div', {styles: this.css.goBack_activity_info, text: '处理人：'+idsStr, title: ids.join(',')}).inject(itemContent);
+
+        itemContent.addEvent("click", function(e){
+            var radio = this.getPrevious('div').getElement('input');
+            radio.click();
+
+            var items = area.getElements(".item");
+            items.each(function(i){
+                var actRadio = i.getFirst().getElement('input');
+                var wayArea = i.getLast().getFirst();
+                if (actRadio.checked){
+                    wayArea.show();
+                    i.addClass('lightColor_bg');
+                }else{
+                    wayArea.hide();
+                    i.removeClass('lightColor_bg');
+                }
+            });
+
+        });
+
+        var wayRadio = "<div value='"+activity.way+"'></div>";
+        if (activity.way==="custom"){
+            wayRadio = "<div><div><label style='cursor: pointer'><input type='radio' checked name='"+activity.activity+"goBackWay' value='step'/>"+o2.xApplication.process.Xform.LP.form.goBackActivityWayStep+"</label></div>" +
+                "<div><label style='cursor: pointer'><input type='radio' name='"+activity.activity+"goBackWay' value='jump'/>"+o2.xApplication.process.Xform.LP.form.goBackActivityWayJump+"</label></div></div>"
+        }
+        var itemWay = new Element('div', {styles: this.css.goBack_activity_way, html:wayRadio}).inject(item);
+        itemWay.getFirst().hide();
+    },
+
+    doGoBack: function(dlg, activitys){
+        var node = dlg.node;
+        debugger;
+        var check = node.querySelector('input[name="goBackActivity"]:checked');
+
+        if (!check) {
+            this.app.notice(MWF.xApplication.process.Xform.LP.form.selectGoBackActivity, "error", dlg.node);
+            return false;
+        }
+
+        var wayNode = node.getElement('.item').getLast().getFirst();
+        var wayCheckNode = wayNode.querySelector('input[checked]');
+        var opinionNode = node.querySelector('textarea');
+
+        var activity = check.value;
+        var way = (wayCheckNode) ? wayCheckNode.value : wayNode.value;
+        var opinion = opinionNode.value || o2.xApplication.process.Xform.LP.form.goBackTo+check.dataset.text;
+        var decision = o2.xApplication.process.Xform.LP.form.goBack;
+
+
+        this.businessData.task.decision = decision;
+        this.businessData.task.opinion = opinion;
+        this.businessData.task.action = "goBack";
+        this.businessData.task.option = {
+            "activity": activity,
+            "way": way
+        }
+
+        this.submitWork(decision, opinion, null, function () {
+            dlg.close();
+        }.bind(this));
+    },
+
+
+    /**
      * @summary 将待办设置为挂起状态，不计算工作时长.
      * @example
      * this.form.getApp().appForm.pauseTask();
@@ -3875,8 +4014,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (failure) failure(xhr, text, error);
             }, true, null, true
         );
-
-
     },
     addAddSplitMessage: function (data) {
         // var content = "";
@@ -5238,16 +5375,21 @@ debugger;
         if (this.checkControl("allowAddTask")){
             var _self = this;
             var opt = {};
+
+            this.app.content.parent
+
             o2.DL.open({
                 "title": o2.xApplication.process.Xform.LP.form.addTask,
                 "style": this.json.dialogStyle || "user",
-                "width": 680,
-                "height": 380,
-                "url": this.app.path + "addTask.html",
+                "width":   (layout.mobile) ? "100%" : 680,
+                "height":  (layout.mobile) ? "100%" : 380,
+                "url": this.app.path + ( (layout.mobile) ? "addTaskMobile" : "addTask") +".html",
                 "lp": o2.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
+                "container": (layout.mobile) ? document.body : this.app.content,
                 "maskNode": this.app.content,
-                "offset": {y: -120},
+                "offset": (layout.mobile) ? null : {y: -120},
+                // "top": (layout.mobile) ? 0 : undefined,
+                // "left": (layout.mobile) ? 0 : undefined,
                 "buttonList": [
                     {
                         "type": "ok",

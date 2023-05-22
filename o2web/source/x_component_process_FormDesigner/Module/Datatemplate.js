@@ -261,24 +261,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			}.bind(this));
 
 			if( Object.keys(changedIdMap).length > 0 ){
-				["outerAddActionId","outerDeleteActionId","outerSelectAllId",
-					"addActionId","deleteActionId","sequenceId","selectorId"].each(function(key){
-
-					var str = dataTemplateModuleJson[key];
-					if(str){
-						if( str.indexOf("/") > -1 ){
-							var strArr = str.split("/");
-							if( strArr[1] && changedIdMap[strArr[1]] ){
-								dataTemplateModuleJson[key] = strArr[0] + "/" + changedIdMap[strArr[1]];
-							}
-						}else{
-							if( str && changedIdMap[str] ){
-								dataTemplateModuleJson[key] = changedIdMap[str];
-							}
-						}
-					}
-
-				}.bind(this));
+				this.form.designer.checkDatatemplateRelativeId( dataTemplateModuleJson, changedIdMap );
 			}
 
 			var moduleList = [];
@@ -328,6 +311,31 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 		}.bind(this));
 	},
+	// checkRelativeId: function( json, idMap ){
+	// 	["outerAddActionId","outerDeleteActionId","outerSelectAllId",
+	// 		"addActionId","deleteActionId","sequenceId","selectorId"].each(function(key){
+	// 		var str = json[key];
+	// 		if(str){
+	// 			var strArr;
+	// 			if( str.indexOf("/") > -1 ) {
+	// 				strArr = str.split("/");
+	// 			}else if(str.indexOf(".*.") > -1){
+	// 				strArr = str.split(".*.");
+	// 			}
+	// 			if(strArr){
+	// 				strArr = strArr.map(function (s) {
+	// 					return idMap[s] || s;
+	// 				});
+	// 				json[key] = strArr.join("/");
+	// 			}else{
+	// 				if( str && idMap[str] ){
+	// 					json[key] = idMap[str];
+	// 				}
+	// 			}
+	// 		}
+	//
+	// 	}.bind(this));
+	// },
 	// _getDroppableNodes: function(){
 	// 	var nodes = [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
 		// this.form.moduleList.each( function(module){
@@ -517,6 +525,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 			}
 		}
 		return list;
+	},
+
+	changeRelativeId: function (idMap) {
+		this.checkRelativeId(this.json, idMap);
 	}
 
 });

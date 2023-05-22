@@ -31,6 +31,19 @@
     "condition": "",
     "read": false
   },
+
+  {
+    "type": "MWFToolBarButton",
+    "img": "goback.png",
+    "title": "{{$.lp.goBackTitle}}",
+    "action": "goBack",
+    "text": "{{$.lp.goBack}}",
+    "id": "action_goBack",
+    "control": "allowGoBack",
+    "condition": "",
+    "read": false
+  },
+
   {
     "type": "MWFToolBarButton",
     "img": "reroute.png",

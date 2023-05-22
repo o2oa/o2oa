@@ -3,16 +3,18 @@ package com.x.server.console.server.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
-import javax.servlet.DispatcherType;
-
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -22,28 +24,54 @@ import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.WebServer;
-import com.x.base.core.project.config.WebServers;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.server.console.server.JettySeverTools;
-import com.x.server.console.server.ServerRequestLog;
-import com.x.server.console.server.Servers;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.stream.Stream;
 
 public class WebServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebServerTools.class);
+
+	private static final List<String> WEBSERVER_DIRECTORIES = ListUtils.unmodifiableList(Arrays.asList("api", "o2_core",
+			"o2_lib", "x_component_ANN", "x_component_AppCenter", "x_component_AppMarketV2",
+			"x_component_AppMarketV2_Application", "x_component_appstore", "x_component_appstore_application",
+			"x_component_Attendance", "x_component_attendancev2", "x_component_BAM", "x_component_Calendar",
+			"x_component_cms_Column", "x_component_cms_ColumnManager", "x_component_cms_DictionaryDesigner",
+			"x_component_cms_Document", "x_component_cms_FormDesigner", "x_component_cms_Index",
+			"x_component_cms_Module", "x_component_cms_QueryViewDesigner", "x_component_cms_ScriptDesigner",
+			"x_component_cms_ViewDesigner", "x_component_cms_Xform", "x_component_Collect", "x_component_Common",
+			"x_component_ConfigDesigner", "x_component_Console", "x_component_ControlPanel", "x_component_CRM",
+			"x_component_Deployment", "x_component_DesignCenter", "x_component_Empty", "x_component_FaceSet",
+			"x_component_File", "x_component_FindDesigner", "x_component_Forum", "x_component_ForumCategory",
+			"x_component_ForumDocument", "x_component_ForumPerson", "x_component_ForumSearch",
+			"x_component_ForumSection", "x_component_ftsearch", "x_component_Homepage", "x_component_HotArticle",
+			"x_component_IMV2", "x_component_LogViewer", "x_component_Meeting", "x_component_Minder",
+			"x_component_MinderEditor", "x_component_Note", "x_component_OKR", "x_component_Org",
+			"x_component_portal_DictionaryDesigner", "x_component_portal_PageDesigner", "x_component_portal_Portal",
+			"x_component_portal_PortalExplorer", "x_component_portal_PortalManager",
+			"x_component_portal_ScriptDesigner", "x_component_portal_WidgetDesigner", "x_component_process_Application",
+			"x_component_process_ApplicationExplorer", "x_component_process_DictionaryDesigner",
+			"x_component_process_FormDesigner", "x_component_process_ProcessDesigner",
+			"x_component_process_ProcessManager", "x_component_process_ScriptDesigner",
+			"x_component_process_StatDesigner", "x_componenxxxt_process_TaskCenter", "x_component_process_ViewDesigner",
+			"x_component_process_WidgetDesigner", "x_component_process_Work", "x_component_process_workcenter",
+			"x_component_process_Xform", "x_component_Profile", "x_component_query_ImporterDesigner",
+			"x_component_query_Query", "x_component_query_QueryExplorer", "x_component_query_QueryManager",
+			"x_component_query_StatDesigner", "x_component_query_StatementDesigner", "x_component_query_TableDesigner",
+			"x_component_query_ViewDesigner", "x_component_Search", "x_component_Selector",
+			"x_component_service_AgentDesigner", "x_component_service_DictionaryDesigner",
+			"x_component_service_InvokeDesigner", "x_component_service_ScriptDesigner",
+			"x_component_service_ServiceManager", "x_component_Setting", "x_component_systemconfig",
+			"x_component_Template", "x_component_ThreeMember", "x_desktop"));
 
 	public static Server start(WebServer webServer) throws Exception {
 
@@ -57,17 +85,19 @@ public class WebServerTools extends JettySeverTools {
 		copyDefaultHtml();
 		// 覆盖 webServer
 		coverToWebServer();
+		// 迁移自定义程序web资源到webRoot下
+		copyCustomWebToWebRoot();
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
-			return startInApplication(webServer);
+			return startInApplication();
 		} else {
 			return startStandalone(webServer);
 		}
 
 	}
 
-	private static Server startInApplication(WebServer webServer) throws Exception {
-		WebAppContext webContext = webContext(webServer);
+	private static Server startInApplication() throws Exception {
+		WebAppContext webContext = webContext();
 		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
@@ -82,7 +112,7 @@ public class WebServerTools extends JettySeverTools {
 	private static Server startStandalone(WebServer webServer) throws Exception {
 		HandlerList handlers = new HandlerList();
 		Server server = createServer(webServer, handlers);
-		WebAppContext context = webContext(webServer);
+		WebAppContext context = webContext();
 		handlers.addHandler(context);
 		context.start();
 		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
@@ -96,7 +126,7 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())) {
-			server.setRequestLog(requestLog(webServer));
+			server.setRequestLog(requestLog());
 		}
 		context.setMimeTypes(Config.mimeTypes());
 		server.start();
@@ -128,10 +158,14 @@ public class WebServerTools extends JettySeverTools {
 		return server;
 	}
 
-	private static WebAppContext webContext(WebServer webServer) throws Exception {
+	private static WebAppContext webContext() throws Exception {
 		WebAppContext context = new WebAppContext();
+		moveNonDefaultDirectoryToWebroot();
 		context.setContextPath("/");
-		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
+		ResourceCollection resources = new ResourceCollection(
+				new String[] { Config.path_servers_webServer(true).toString(),
+						Config.path_webroot(true).toAbsolutePath().toString() });
+		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", false + "");
@@ -143,18 +177,27 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-//		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
-//			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-//			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
-//			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-//			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-//			statServletHolder.setInitParameter("sessionStatEnable", "false");
-//			context.addServlet(statServletHolder, "/druid/*");
-//		}
 		return context;
 	}
 
-	private static RequestLog requestLog(WebServer webServer) throws Exception {
+	private static void moveNonDefaultDirectoryToWebroot() throws Exception {
+		// 将webServer目录下的自定义目录移动到webroot
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Config.path_servers_webServer(true),
+				Files::isDirectory)) {
+			directoryStream.forEach(o -> {
+				String name = o.getFileName().toString();
+				if (!WEBSERVER_DIRECTORIES.contains(name)) {
+					try {
+						Files.move(o, Config.path_webroot(true).resolve(name), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException | URISyntaxException e) {
+						LOGGER.error(e);
+					}
+				}
+			});
+		}
+	}
+
+	private static RequestLog requestLog() throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
@@ -241,6 +284,18 @@ public class WebServerTools extends JettySeverTools {
 		Path p = Config.path_config_coverToWebServer(true);
 		if (Files.exists(p)) {
 			FileUtils.copyDirectory(p.toFile(), Config.path_servers_webServer(true).toFile());
+		}
+	}
+
+	private static void copyCustomWebToWebRoot() throws Exception {
+		File[] files = Config.dir_servers_webServer().listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if(file.isDirectory() && !ZipTools.isMember(file.getName(), WebServers.WEB_SERVER_FOLDERS)){
+				File dist = new File(Config.path_webroot(true).toFile(), file.getName());
+				FileUtils.copyDirectory(file, dist);
+				FileUtils.deleteDirectory(file);
+			}
 		}
 	}
 

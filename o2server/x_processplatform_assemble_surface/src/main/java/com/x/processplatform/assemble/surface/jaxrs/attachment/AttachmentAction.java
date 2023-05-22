@@ -1,30 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -36,13 +11,27 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "AttachmentAction", description = "附件接口.")
 @Path("attachment")
@@ -1248,8 +1237,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 
     @Operation(summary = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", operationId = OPERATIONID_PREFIX
             + "batchDownloadWithWorkOrWorkCompletedStream", responses = { @ApiResponse(content = {
-                    @Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", action = ActionBatchDownloadWithWorkOrWorkCompletedStream.class)
+                    @Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompleted.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
     @GET
     @Path("batch/download/work/{workId}/site/{site}/stream")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -1259,10 +1248,10 @@ public class AttachmentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("*附件框分类,多值~隔开,(0)表示全部") @PathParam("site") String site,
             @JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName,
             @JaxrsParameterDescribe("通过uploadWorkInfo上传返回的工单信息存储id，多值逗号隔开") @QueryParam("flag") String flag) {
-        ActionResult<ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo> result = new ActionResult<>();
+        ActionResult<ActionBatchDownloadWithWorkOrWorkCompleted.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionBatchDownloadWithWorkOrWorkCompletedStream().execute(effectivePerson, workId, site,
+            result = new ActionBatchDownloadWithWorkOrWorkCompleted().execute(effectivePerson, workId, site,
                     fileName, flag);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
