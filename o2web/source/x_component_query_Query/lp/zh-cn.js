@@ -18,6 +18,9 @@ MWF.xApplication.query.Query.LP = {
     "no": "否",
     "and": "并且",
     "or": "或者",
+    "form": {
+        "exportExcel": "导出Excel"
+    },
     "chart": {
 	    "bar": "柱状图",
         "pie": "饼状图",

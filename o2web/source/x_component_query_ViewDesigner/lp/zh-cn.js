@@ -323,7 +323,10 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "selectOptionScriptNotice":"return [\"选项文本|选项值\"]",
         "selectOptionScript":"选项脚本",
         "defaultFilterCondition":"默认过滤条件",
-        "customFilterCondition":"自定义过滤数据"
+        "customFilterCondition":"自定义过滤数据",
+        "byScript": "根据脚本",
+        "language": "语言包",
+        "languageInfo": "返回包含语言信息的JSON对象；o2.language获取当前语言信息",
     },
     "viewStyle":{
         "default": "默认样式",

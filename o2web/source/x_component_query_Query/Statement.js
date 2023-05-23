@@ -91,6 +91,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                 };
             } else {
                 json = this.viewJson.pagingList[0];
+                var jsonStr = JSON.stringify(json);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                json = JSON.parse(jsonStr);
             }
             this.paging = new MWF.xApplication.query.Query.Statement.Paging(this.viewPageAreaNode, json, this, {});
             this.paging.load();

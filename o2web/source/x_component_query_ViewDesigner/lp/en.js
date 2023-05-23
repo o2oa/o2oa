@@ -315,7 +315,10 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "selectOptionScriptNotice":"return [\"option text|option value\"]",
         "selectOptionScript":"Option Script",
         "defaultFilterCondition":"Default Filter Condition",
-        "customFilterCondition":"Custom filter Condition"
+        "customFilterCondition":"Custom filter Condition",
+        "byScript": "byScript",
+        "language": "Language",
+        "languageInfo": "Return a JSON object containing language information; use \"o2.language\" get current language",
     },
     "viewStyle":{
         "default": "Default",
