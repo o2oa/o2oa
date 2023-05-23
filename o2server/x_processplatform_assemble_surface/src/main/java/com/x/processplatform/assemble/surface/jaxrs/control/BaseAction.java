@@ -47,6 +47,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowPause = false;
 		// 是否可以取消待办挂起(恢复待办计时)
 		private Boolean allowResume = false;
+		// 是否可以退回
+		private Boolean allowGoBack = false;
+
+		public Boolean getAllowGoBack() {
+			return allowGoBack;
+		}
+
+		public void setAllowGoBack(Boolean allowGoBack) {
+			this.allowGoBack = allowGoBack;
+		}
 
 		public Boolean getAllowSave() {
 			return allowSave;

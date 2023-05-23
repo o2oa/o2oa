@@ -1178,7 +1178,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }else{
             this.loadDocumentEditor(callback);
         }
-
+        o2.loadCss('../x_desktop/fonts/fonts.css');
     },
     loadDocumentEditor: function(callback){
         this._loadToolbars();
@@ -2768,7 +2768,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     loadCkeditorFiletext: function(callback, inline, node, editorName){
         if (node || this.layout_filetext){
-            o2.loadCss('../x_desktop/fonts/fonts.css');
             o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
                 (node || this.layout_filetext).setAttribute('contenteditable', true);

@@ -7,7 +7,9 @@ import java.util.Map;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
+import com.x.processplatform.core.entity.element.ActivityType;
 
 public class WorkProperties extends JsonProperties {
 
@@ -43,6 +45,28 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("待办身份矩阵")
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
 
+	@FieldDescribe("待办身份矩阵")
+	private GoBackStore goBackStore;
+
+	@FieldDescribe("goBack进行跳转退回时使用的.")
+	private String goBackActivityToken;
+
+	public String getGoBackActivityToken() {
+		return goBackActivityToken;
+	}
+
+	public void setGoBackActivityToken(String goBackActivityToken) {
+		this.goBackActivityToken = goBackActivityToken;
+	}
+
+	public GoBackStore getGoBackStore() {
+		return goBackStore;
+	}
+
+	public void setGoBackStore(GoBackStore goBackStore) {
+		this.goBackStore = goBackStore;
+	}
+
 	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 		return manualTaskIdentityMatrix;
 	}
@@ -75,7 +99,7 @@ public class WorkProperties extends JsonProperties {
 
 	public Map<String, Object> getServiceValue() {
 		if (this.serviceValue == null) {
-			this.serviceValue = new LinkedHashMap<String, Object>();
+			this.serviceValue = new LinkedHashMap<>();
 		}
 		return this.serviceValue;
 	}
@@ -133,6 +157,55 @@ public class WorkProperties extends JsonProperties {
 
 	public void setEmbedTargetJob(String embedTargetJob) {
 		this.embedTargetJob = embedTargetJob;
+	}
+
+	/**
+	 * work中存储的回退操作需要的数据
+	 * 
+	 * @author ray
+	 *
+	 */
+	public static class GoBackStore extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 2334994291846390241L;
+
+		private String way;
+		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+		private String activity;
+		private ActivityType ActivityType;
+
+		public String getWay() {
+			return way;
+		}
+
+		public void setWay(String way) {
+			this.way = way;
+		}
+
+		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+			return manualTaskIdentityMatrix;
+		}
+
+		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		}
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
+
+		public ActivityType getActivityType() {
+			return ActivityType;
+		}
+
+		public void setActivityType(ActivityType activityType) {
+			ActivityType = activityType;
+		}
+
 	}
 
 }

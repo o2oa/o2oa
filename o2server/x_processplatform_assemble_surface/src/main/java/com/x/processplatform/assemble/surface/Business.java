@@ -1,20 +1,5 @@
 package com.x.processplatform.assemble.surface;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import com.x.processplatform.assemble.surface.factory.element.*;
-import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
@@ -23,37 +8,27 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
-import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
-import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
-import com.x.processplatform.assemble.surface.factory.content.JobFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReadFactory;
-import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
-import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
-import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
-import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
+import com.x.processplatform.assemble.surface.factory.content.*;
+import com.x.processplatform.assemble.surface.factory.element.*;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.*;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.OutputStream;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class Business {
 
 	public static final String WORK_CREATE_TYPE_ASSIGN = "assign";
+
+	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" };
+	public static final String[] FILENAME_SENSITIVES_EMPTY = new String[] { "", "", "", "", "", "", "", "", "", "" };
 
 	private EntityManagerContainer emc;
 
@@ -1239,23 +1214,18 @@ public class Business {
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
 				zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-						new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" },
-						new String[] { "", "", "", "", "", "", "", "", "", "" })));
+						FILENAME_SENSITIVES_KEY,
+						FILENAME_SENSITIVES_EMPTY)));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						entry.getValue().getStorage());
-				try (ByteArrayOutputStream os1 = new ByteArrayOutputStream()) {
-					entry.getValue().readContent(mapping, os1);
-					byte[] bs = os1.toByteArray();
-					os1.close();
-					zos.write(bs);
-				}
+				entry.getValue().readContent(mapping, zos);
 			}
 
 			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
 					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-							new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" },
-							new String[] { "", "", "", "", "", "", "", "", "", "" })));
+							FILENAME_SENSITIVES_KEY,
+							FILENAME_SENSITIVES_EMPTY)));
 					zos.write(entry.getValue());
 				}
 			}

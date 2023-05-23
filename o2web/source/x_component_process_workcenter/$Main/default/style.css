@@ -393,30 +393,36 @@
     overflow: auto;
 }
 .pf_logItem{
-    height: 80px;
+    /*height: 80px;*/
+    clear:both;
+    background: url("../x_component_process_workcenter/$Main/default/icons/dot.png") 19px;
+    background-repeat: repeat-y;
 }
 .pf_itemLeft{
-    height: 80px;
+    /*height: 80px;*/
     width: 40px;
     float: left;
 }
+.pf_itemRight{
+    border-bottom: 1px solid #E6E6E6;
+    margin-left: 40px;
+    overflow: hidden;
+}
 .pf_itemActivity{
-    height: 59px;
+    /*height: 59px;*/
     width: 110px;
     float: left;
     padding: 10px 0;
-    border-bottom: 1px solid #E6E6E6;
 }
 .pf_itemOpinion{
-    height: 55px;
+    /*height: 55px;*/
     padding-top: 14px;
     padding-bottom: 10px;
     margin-left: 150px;
     margin-right: 30px;
-    border-bottom: 1px solid #E6E6E6;
 }
 .pf_itemOpinionArea{
-    height: 55px;
+    /*height: 55px;*/
     cursor:pointer;
 }
 .pf_icon{
@@ -426,7 +432,7 @@
 .pf_lineTop{
     width: 1px;
     height: 20px;
-    background-color: #E6E6E6;
+    /*background-color: #E6E6E6;*/
     margin: auto;
 }
 .pf_lineBottom{
@@ -438,11 +444,15 @@
 .pf_fromActivityName{
     color: #333333;
     line-height: 20px;
+    /*height: 20px;*/
+    overflow: hidden;
 }
 .pf_routeName{
     color: #666666;
     font-size: 12px;
     line-height: 20px;
+    /*height: 20px;*/
+    overflow: hidden;
 }
 .pf_arrivedTime{
     color: #666666;
@@ -462,6 +472,7 @@
     height: 56px;
     float: right;
     margin-left: 5px;
+    margin-bottom: 5px;
     position: relative;
     text-align: center;
 }
@@ -544,7 +555,7 @@
     color: #666666;
 }
 .mf_workLogPerson{
-    height: 20px;
+    min-height: 20px;
     line-height: 20px;
 }
 .mf_workLogOpinion{

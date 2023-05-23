@@ -1059,14 +1059,6 @@ MWF.xApplication.process.Work.Processor = new Class({
 
         if (!this.selectedRoute) {
             this.routeSelectorArea.setStyle("background-color", "#ffe9e9");
-            //new mBox.Notice({
-            //    type: "error",
-            //    position: {"x": "center", "y": "top"},
-            //    move: false,
-            //    target: this.routeSelectorArea,
-            //    delayClose: 6000,
-            //    content: MWF.xApplication.process.Work.LP.mustSelectRoute
-            //});
             MWF.xDesktop.notice(
                 "error",
                 {"x": "center", "y": "top"},
@@ -1090,14 +1082,6 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (!opinion && medias.length === 0) {
             if (routeData.opinionRequired == true) {
                 this.inputTextarea.setStyle("background-color", "#ffe9e9");
-                //new mBox.Notice({
-                //    type: "error",
-                //    position: {"x": "center", "y": "top"},
-                //    move: false,
-                //    target: this.inputTextarea,
-                //    delayClose: 6000,
-                //    content: MWF.xApplication.process.Work.LP.opinionRequired
-                //});
                 MWF.xDesktop.notice(
                     "error",
                     {"x": "center", "y": "top"},
@@ -1113,14 +1097,6 @@ MWF.xApplication.process.Work.Processor = new Class({
         var appendTaskOrgItem = "";
         if (routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select") {
             if (!this.orgItems || this.orgItems.length === 0) {
-                //new mBox.Notice({
-                //    type: "error",
-                //    position: {"x": "center", "y": "top"},
-                //    move: false,
-                //    target: this.orgsArea,
-                //    delayClose: 6000,
-                //    content: MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig //"没有配置转交人，请联系管理员"
-                //});
                 MWF.xDesktop.notice(
                     "error",
                     {"x": "center", "y": "center"},
@@ -1135,20 +1111,11 @@ MWF.xApplication.process.Work.Processor = new Class({
             }
         }
 
-
         this.saveOrgsWithCheckEmpower(function () {
             var appandTaskIdentityList;
             if (appendTaskOrgItem) {
                 appandTaskIdentityList = appendTaskOrgItem.getData();
                 if (!appandTaskIdentityList || appandTaskIdentityList.length === 0) {
-                    //new mBox.Notice({
-                    //    type: "error",
-                    //    position: {"x": "center", "y": "top"},
-                    //    move: false,
-                    //    target: this.orgsArea,
-                    //    delayClose: 6000,
-                    //    content:  MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice //"请选择转交人"
-                    //});
                     MWF.xDesktop.notice(
                         "error",
                         {"x": "center", "y": "center"},
@@ -1294,6 +1261,19 @@ MWF.xApplication.process.Work.Processor = new Class({
     },
     getRouteDataList: function () {
         if(this.routeDataList)return this.routeDataList;
+
+        if (this.task.routeNameDisable){
+            this.routeDataList = [{
+                "id": o2.uuid(),
+                "asyncSupported": false,
+                "soleDirect": false,
+                "name": "继续流转",
+                "alias": "",
+                "selectConfigList": []
+            }];
+            return this.routeDataList;
+        }
+
         if( this.form && this.form.businessData && this.form.businessData.routeList ){
             this.form.businessData.routeList.sort( function(a, b){
                 var aIdx = parseInt(a.orderNumber || "9999999");
@@ -1645,8 +1625,6 @@ MWF.xApplication.process.Work.Processor = new Class({
             });
         }
 
-        debugger;
-
         var orgItems_old = this.orgItemsObject[route] || [];
         var orgItemMap_old = this.orgItemsMap[route] || {};
 
@@ -1743,7 +1721,6 @@ MWF.xApplication.process.Work.Processor = new Class({
 
     },
     showOrgsByRoute: function (route) {
-        //debugger;
         this.loadOrgs(route);
     },
     clearAllOrgs: function () {
@@ -1928,7 +1905,6 @@ MWF.xApplication.process.Work.Processor = new Class({
         return flag;
     },
     saveOrgsWithCheckEmpower: function (callback) {
-        debugger;
         var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
 
         var visableOrg = this.getVisableOrgData( currentRoute || this.selectedRouteId || "" );

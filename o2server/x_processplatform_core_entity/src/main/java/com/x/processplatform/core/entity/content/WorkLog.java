@@ -33,6 +33,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "WorkLog", description = "流程平台工作日志.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -386,6 +387,13 @@ public class WorkLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String splitWork;
 
+	public static final String TYPE_FIELDNAME = "type";
+	@FieldDescribe("类型,与ProcessingAttributes的type对应.")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + TYPE_FIELDNAME)
+	@Index(name = TABLE + TYPE_FIELDNAME + SPLITWORK_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String type;
+
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
@@ -393,6 +401,14 @@ public class WorkLog extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private WorkLogProperties properties;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getJob() {
 		return job;

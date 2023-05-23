@@ -5,25 +5,27 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class ReadCompletedProperties extends JsonProperties {
 
-    @FieldDescribe("标题")
-    private String title;
+	private static final long serialVersionUID = -2261977487908320276L;
 
-    @FieldDescribe("意见")
-    private String opinion;
+	@FieldDescribe("标题")
+	private String title;
 
-    public String getTitle() {
-        return title;
-    }
+	@FieldDescribe("意见")
+	private String opinion;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public String getOpinion() {
-        return opinion;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public void setOpinion(String opinion) {
-        this.opinion = opinion;
-    }
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
 }

@@ -457,12 +457,8 @@ bind.Actions = {
      *  function(json){ //正确调用的回调
      *       //json.data得到服务返回数据
      *  },
-     *  function(xhr){ //可选，错误调用的回调
-     *      //xhr为XmlHttpRequest对象，服务器请求失败时有值
-     *      var responseJSON = JSON.parse( xhr.responseText ) //xhr.responseText {String}是后台返回的出错信息
-     *      //responseJSON见下面的说明
-     *
-     *      var message = responseJSON.message; //message为错误提示文本
+     *  function(responseJSON){ //可选，错误信息, json格式
+     *      print( JSON.stringify(responseJSON) )
      *  }
      * );
      *

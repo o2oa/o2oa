@@ -200,8 +200,6 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
     copy: function(e){
 
 
-
-
         //var newNode = this.node.clone(true, true);
         //var newModuleJson = Object.clone(this.json);
         //
@@ -210,8 +208,19 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         //newModuleJson.id = newTool._getNewId();
         //newNode.set("id", newModuleJson.id);
 
+		this.form.copyedModule = this;
+		this.copyedDatatemplateJsons = [];
+		this.copyedIdMap = {};
 
         this.copySubModule().move(e, "copy");
+
+		this.copyedDatatemplateJsons.each(function (json) {
+			this.form.designer.checkDatatemplateRelativeId(json, this.copyedIdMap);
+		}.bind(this))
+
+		this.form.copyedModule = null;
+		this.copyedDatatemplateJsons = null;
+		this.copyedIdMap = null;
 
         //newTool.load(newModuleJson, newNode, this.form);
         //
@@ -228,9 +237,12 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         var className = this.moduleName.capitalize();
         var prefix = (this.form.moduleType=="page") ? "PC" : "FC";
         var newTool = new MWF[prefix+className](this.form);
+        var oldId = newModuleJson.id;
         newModuleJson.id = newTool._getNewId();
         newNode.set("id", newModuleJson.id);
-
+        if( this.form.copyedModule && this.form.copyedModule.checkCopySubModule){
+			this.form.copyedModule.checkCopySubModule(newModuleJson, oldId);
+		}
         this.form.json.moduleList[newModuleJson.id] = newModuleJson;
         if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(newModuleJson);
 
@@ -275,6 +287,12 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         //    }
         //    subNode = subNode.getNext();
         //}
-    }
+    },
+	checkCopySubModule: function (subModuleJson, oldId) {
+		if( subModuleJson.type === "Datatemplate" ){
+			this.copyedDatatemplateJsons.push(subModuleJson);
+		}
+		this.copyedIdMap[oldId] = subModuleJson.id;
+	}
 
 });

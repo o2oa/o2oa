@@ -236,7 +236,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (KEYWORDS.contains(name)) {
             throw new ExceptionInitialManagerName();
         }
-        if (StringUtils.isEmpty(name) || (!StringTools.isSimply(name)) || Config.token().isInitialManager(name)) {
+        if (StringUtils.isEmpty(name) || name.indexOf(OrganizationDefinition.NAME_JOIN_CHAR) > -1 || Config.token().isInitialManager(name)) {
             throw new ExceptionInvalidName(name);
         }
 
@@ -261,8 +261,14 @@ abstract class BaseAction extends StandardJaxrsAction {
     }
 
     protected void checkUnique(Business business, String unique, String excludeId) throws Exception {
+        if(StringUtils.isBlank(unique)){
+            return;
+        }
         if (KEYWORDS.contains(unique)) {
             throw new ExceptionInitialManagerName();
+        }
+        if(unique.indexOf(OrganizationDefinition.NAME_JOIN_CHAR) > -1){
+            throw new ExceptionInvalidUnique(unique);
         }
         if (StringUtils.isNotEmpty(business.person().getWithUnique(unique, excludeId))) {
             throw new ExceptionUniqueDuplicate(unique, "唯一编码");

@@ -69,6 +69,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadProjection();
                     this.loadMaplist();
                     this.loadQueryTablePublisher();
+                    this.loadGobackActivityConfig();
 
                     this.hideAdvanced();
                 }.bind(this));
@@ -217,18 +218,49 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
     },
 	setRadioValue: function(name, input){
 		if (input.checked){
-            var oldValue = this.data[name];
+            // var oldValue = this.data[name];
 			var value = input.value;
 			if (value=="false") value = false;
 			if (value=="true") value = true;
-			this.data[name] = value;
+
+            var names = name.split(".");
+            var oldValue = null;
+            var o = this.data;
+
+            while (names.length>1){
+                var k = names.shift();
+                if (!o.hasOwnProperty(k)){
+                    o[k] = {};
+                }
+                o=o[k];
+            }
+            var key = names.shift();
+            oldValue = o[key];
+            o[key] = value;
+
+			// this.data[name] = value;
 
             if (this.route) this.route._setEditProperty(name, input, oldValue);
 		}
 	},
 	setValue: function(name, value){
-        var oldValue = this.data[name];
-		this.data[name] = value;
+        // var oldValue = this.data[name];
+		// this.data[name] = value;
+        var names = name.split(".");
+        var oldValue = null;
+        var o = this.data;
+
+        while (names.length>1){
+            var k = names.shift();
+            if (!o.hasOwnProperty(k)){
+                o[k] = {};
+            }
+            o=o[k];
+        }
+        var key = names.shift();
+        oldValue = o[key];
+        o[key] = value;
+
 		if (name=="name"){
 			if (!value) this.data[name] = MWF.APPPD.LP.unnamed;
 		//	this.activity.redraw();
@@ -253,7 +285,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.ScriptText", function(){
             var _self = this;
             scriptNodes.each(function(node){
-                debugger;
                 var api = node.dataset["o2Api"];
                 var editorType = node.dataset["editorType"];
                 var loadImmediately = node.dataset["loadImmediately"];
@@ -461,8 +492,119 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             }.bind(this));
         }.bind(this));
     },
+
+    saveGobackConfig: function(check, select, defineConfigList){
+        var activityId = check.value;
+        var config = defineConfigList.find(function(c){
+            return c.activity === activityId;
+        });
+
+        if (check.checked){
+            var way = select.options[select.selectedIndex].value;
+            if (config){
+                config.way = way;
+            }else{
+                defineConfigList.push({
+                    activity: activityId,
+                    way: way
+                });
+            }
+        }else {
+            if (config) {
+                defineConfigList.erase(config);
+            }
+        }
+    },
+    loadGobackActivityConfig: function(){
+        var nodes = this.propertyContent.getElements(".gobackActivityConfig");
+        // this.manuals
+        nodes.each(function(node){
+            var keys = Object.keys(this.process.manuals);
+            if (keys.length){
+                var html = '<table cellspacing="0" cellpadding="5px" style="width: 100%; border: 1px solid #cccccc; border-collapse: collapse"><tr>' +
+                    // '<th class="grayColor_bg" style="width: 20px; max-width: 20px; border: 1px solid #cccccc;"></th>' +
+                    '<th class="grayColor_bg" style="text-align:left; border: 1px solid #cccccc;">活动</th>' +
+                    '<th class="grayColor_bg" style="text-align:left; border: 1px solid #cccccc;">退回后处理方式</th>' +
+                    '</tr></table>';
+                node.insertAdjacentHTML('beforeend', html);
+                var table = node.getElement('table');
+
+                if (!this.data.goBackConfig) this.data.goBackConfig = {};
+                if (!this.data.goBackConfig.defineConfigList) this.data.goBackConfig.defineConfigList = [];
+                var defineConfigList = this.data.goBackConfig.defineConfigList;
+
+                keys.forEach(function(key){
+                    var activity = this.process.manuals[key];
+                    if (activity.data.id !== this.data.id){
+                        var config = defineConfigList.find(function(c){
+                            return c.activity === activity.data.id;
+                        });
+                        var tr = table.insertRow();
+                        var td = tr.insertCell();
+                        td.setStyles({
+                            "border": "1px solid #cccccc"
+                        });
+
+                        var label = new Element('label').inject(td);
+                        var check = new Element('input',{
+                            type: 'checkbox',
+                            value: activity.data.id,
+                            checked: !!config
+                        }).inject(label);
+                        label.appendChild(document.createTextNode(activity.data.name));
+                        check.addEvent('click', function(e){
+                            var select = e.target.getParent('tr').getElement('select');
+                            this.saveGobackConfig(e.target, select, defineConfigList);
+                        }.bind(this));
+
+                        td = tr.insertCell();
+                        td.setStyles({
+                            "border": "1px solid #cccccc"
+                        });
+                        var select = new Element('select', {
+                            html: '<option '+(!config || config.way==='default' ? 'selected' : '')+' value="default" select>'+o2.APPPD.LP.propertyTemplate.backWayDefault+'</option>' +
+                                '<option '+(config && config.way==='step' ? 'selected' : '')+' value="step" select>'+o2.APPPD.LP.propertyTemplate.backWayStep+'</option>' +
+                                '<option '+(config && config.way==='jump' ? 'selected' : '')+' value="jump">'+o2.APPPD.LP.propertyTemplate.backWayJump+'</option>' +
+                                '<option '+(config && config.way==='custom' ? 'selected' : '')+' value="custom">'+o2.APPPD.LP.propertyTemplate.backWayCustom+'</option>'
+                        }).inject(td);
+                        select.addEvent('click', function(e){
+                            var check = e.target.getParent('tr').getElement('input');
+                            this.saveGobackConfig(check, e.target, defineConfigList);
+                        }.bind(this));
+
+                    }
+                }.bind(this));
+            }
+
+
+            // var title = node.get("title");
+            // var name = node.get("name");
+            // var lName = name.toLowerCase();
+            // var collapse = node.get("collapse");
+            // var mapObj = this.data[name] || {};
+            // //if (!mapObj) mapObj = {};
+            // MWF.require("MWF.widget.Maplist", function(){
+            //     node.empty();
+            //     var maplist = new MWF.widget.Maplist(node, {
+            //         "title": title,
+            //         "collapse": (collapse) ? true : false,
+            //         "onChange": function(){
+            //             //this.data[name] = maplist.toJson();
+            //             //
+            //             //var oldData = this.data[name];
+            //             this.setValue(name, maplist.toJson());
+            //             // this.changeStyle(name, oldData);
+            //             // this.changeData(name);
+            //         }.bind(this),
+            //         "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+            //     });
+            //     maplist.load(mapObj);
+            //     //this.maplists[name] = maplist;
+            // }.bind(this));
+        }.bind(this));
+    },
+
     loadPersonInput: function(){
-	    debugger;
         var personIdentityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
@@ -625,7 +767,6 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         this.data[node.get("name")] = JSON.encode(values);
     },
     savePersonItem: function(node, ids, dataType, resultKey){
-        debugger;
         var count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){
