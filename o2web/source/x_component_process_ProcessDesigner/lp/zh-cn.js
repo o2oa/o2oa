@@ -419,8 +419,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 
 		"backConfig": "退回配置",
 		"allowBack": "允许退回",
-		"multiTaskEnable": "多人处理时是否允许退回",
-		"multiTaskEnableInfo": "多人处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
+		"multiTaskEnable": "多人并行时是否允许退回",
+		"multiTaskEnableInfo": "多人并行处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
 		"backType": "退回方式",
 		"backPrev": "逐级退回",
 		"backAny": "任意活动退回",
