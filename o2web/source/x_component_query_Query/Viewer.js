@@ -142,7 +142,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
     loadLanguage: function(callback){
-        debugger;
         if (this.viewJson.languageType!=="script"){
             if (callback) callback();
             return true;
