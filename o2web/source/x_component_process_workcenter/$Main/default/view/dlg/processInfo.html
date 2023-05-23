@@ -52,8 +52,8 @@
                         <div style="width: 1px; height: 17px; background-color: #E6E6E6; margin: auto;"></div>
                     </div>
                     <div style="height: 50px; margin-left: 40px; margin-right:30px; border-bottom: 1px solid #E6E6E6">
-                        <div class="pf_fromActivityName" style="float: left; line-height: 50px">{{$.fromActivityName}}</div>
-                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px">{{$.arrivedTime.substring(0,16)}}</div>
+                        <div class="pf_fromActivityName" style="float: left; line-height: 50px; height:50px;">{{$.fromActivityName}}</div>
+                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px; height:50px;">{{$.arrivedTime.substring(0,16)}}</div>
                     </div>
                 </div>
                 {{end if}}
@@ -63,32 +63,33 @@
                     <div class="pf_itemLeft">
                         <div class="pf_lineTop"></div>
                         <div class="pf_icon o2icon-point mainColor_color"></div>
-                        <div class="pf_lineBottom"></div>
+<!--                        <div class="pf_lineBottom"></div>-->
                     </div>
-                    <div class="pf_itemActivity">
-                        <div class="pf_fromActivityName">{{$.fromActivityName}}</div>
-                        <div class="pf_routeName">{{$.routeName}}</div>
-                        <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,16)}}</div>
-                    </div>
-                    <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
-                        {{if $.taskList.concat($.taskCompletedList).length>3}}
-                        <span>...</span>
-                        {{end if}}
-                    </div>
-                    <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
-                        <div class="pf_itemOpinionArea">
-                        {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
-                            <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
-                                <img class="pf_itemOpinionIcon" src="{{o2.filterUrl(o2.Actions.getHost('x_organization_assemble_control')+'/x_organization_assemble_control/jaxrs/person/'+encodeURIComponent($.person)+'/icon')}}" />
-                                <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
-                                {{if $.completedTime}}
-                                <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
-                                {{end if}}
+                    <div class="pf_itemRight">
+                        <div class="pf_itemActivity">
+                            <div class="pf_fromActivityName" title="{{$.fromActivityName}}">{{$.fromActivityName}}</div>
+                            <div class="pf_routeName" title="{{$.routeName}}">{{$.routeName}}</div>
+                            <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,16)}}</div>
+                        </div>
+                        <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
+                            {{if $.taskList.concat($.taskCompletedList).length>3}}
+                            <span>...</span>
+                            {{end if}}
+                        </div>
+                        <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
+                            <div class="pf_itemOpinionArea">
+                            {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
+                                <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
+                                    <img class="pf_itemOpinionIcon" src="{{o2.filterUrl(o2.Actions.getHost('x_organization_assemble_control')+'/x_organization_assemble_control/jaxrs/person/'+encodeURIComponent($.person)+'/icon')}}" />
+                                    <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
+                                    {{if $.completedTime}}
+                                    <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
+                                    {{end if}}
+                                </div>
+                            {{end each}}
                             </div>
-                        {{end each}}
                         </div>
                     </div>
-
                 </div>
                 {{end if}}
 
@@ -99,8 +100,8 @@
                         <div class="pf_icon o2icon-point mainColor_color" style="color: #ca6331!important;"></div>
                     </div>
                     <div style="height: 50px; margin-left: 40px; margin-right:30px; border-bottom: 1px solid #E6E6E6">
-                        <div class="pf_fromActivityName" style="float: left; line-height: 50px">{{$.arrivedActivityName}}</div>
-                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px">{{$.arrivedTime.substring(0,16)}}</div>
+                        <div class="pf_fromActivityName" style="float: left; line-height: 50px; height:50px;">{{$.arrivedActivityName}}</div>
+                        <div class="pf_arrivedTime" style="margin-left: 20px; float: left; line-height: 50px;height:50px;">{{$.arrivedTime.substring(0,16)}}</div>
                     </div>
                 </div>
                 {{end if}}
