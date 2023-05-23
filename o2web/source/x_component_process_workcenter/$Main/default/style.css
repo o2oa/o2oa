@@ -548,7 +548,7 @@
     color: #666666;
 }
 .mf_workLogPerson{
-    height: 20px;
+    min-height: 20px;
     line-height: 20px;
 }
 .mf_workLogOpinion{
