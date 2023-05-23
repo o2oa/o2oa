@@ -101,6 +101,8 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.values = [];
         }
 
+        this.tooltips = [];
+
         this.availableStatusTypes = ["identity","custom"];
 
         this._init();
@@ -461,6 +463,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     close: function(){
         this.fireEvent("close");
+        this.clearTooltip();
         this.node.destroy();
         //if (this.mask) this.mask.hide();
         if( !this.options.embedded ){
@@ -473,6 +476,13 @@ MWF.xApplication.Selector.Person = new Class({
         this.active = false;
         MWF.release(this);
         delete this;
+    },
+    clearTooltip: function(){
+        if( this.tooltips && this.tooltips.length ){
+            this.tooltips.each(function (tooltip) {
+                tooltip.destroy()
+            })
+        }
     },
     loadAction: function(){
         if( !this.okActionNode ){

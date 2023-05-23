@@ -126,6 +126,9 @@ MWF.xApplication.Selector.Group.Item = new Class({
                 displayDelay : 300,
                 groupId: this.data.id
             });
+            if( this.selector.tooltips ){
+                this.selector.tooltips.push(this.tooltip);
+            }
         }
     }
     // loadSubItem: function(){
@@ -172,6 +175,9 @@ MWF.xApplication.Selector.Group.ItemSelected = new Class({
                 displayDelay : 300,
                 groupId: this.data.id
             });
+            if( this.selector.tooltips ){
+                this.selector.tooltips.push(this.tooltip);
+            }
         }
     }
     // loadSubItem: function(){

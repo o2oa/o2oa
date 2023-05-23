@@ -376,11 +376,22 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     },
     close: function(){
         this.fireEvent("close");
+        this.clearTooltip();
         this.node.destroy();
         (this.maskRelativeNode || this.container).unmask();
         this.active = false;
         MWF.release(this);
         delete this;
+    },
+    clearTooltip: function(){
+        for( var t in this.selectors ){
+            var selector = this.selectors[t];
+            if( selector.tooltips && selector.tooltips.length ){
+                selector.tooltips.each(function (tooltip) {
+                    tooltip.destroy();
+                })
+            }
+        }
     },
     loadAction: function(){
         if( !this.okActionNode ) {
