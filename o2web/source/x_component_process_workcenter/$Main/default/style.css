@@ -472,6 +472,7 @@
     height: 56px;
     float: right;
     margin-left: 5px;
+    margin-bottom: 5px;
     position: relative;
     text-align: center;
 }
