@@ -63,32 +63,33 @@
                     <div class="pf_itemLeft">
                         <div class="pf_lineTop"></div>
                         <div class="pf_icon o2icon-point mainColor_color"></div>
-                        <div class="pf_lineBottom"></div>
+<!--                        <div class="pf_lineBottom"></div>-->
                     </div>
-                    <div class="pf_itemActivity">
-                        <div class="pf_fromActivityName" title="{{$.fromActivityName}}">{{$.fromActivityName}}</div>
-                        <div class="pf_routeName" title="{{$.routeName}}">{{$.routeName}}</div>
-                        <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,16)}}</div>
-                    </div>
-                    <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
-                        {{if $.taskList.concat($.taskCompletedList).length>3}}
-                        <span>...</span>
-                        {{end if}}
-                    </div>
-                    <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
-                        <div class="pf_itemOpinionArea">
-                        {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
-                            <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
-                                <img class="pf_itemOpinionIcon" src="{{o2.filterUrl(o2.Actions.getHost('x_organization_assemble_control')+'/x_organization_assemble_control/jaxrs/person/'+encodeURIComponent($.person)+'/icon')}}" />
-                                <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
-                                {{if $.completedTime}}
-                                <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
-                                {{end if}}
+                    <div class="pf_itemRight">
+                        <div class="pf_itemActivity">
+                            <div class="pf_fromActivityName" title="{{$.fromActivityName}}">{{$.fromActivityName}}</div>
+                            <div class="pf_routeName" title="{{$.routeName}}">{{$.routeName}}</div>
+                            <div class="pf_arrivedTime">{{$.arrivedTime.substring(0,16)}}</div>
+                        </div>
+                        <div class="pf_itemOpinionMore" data-o2-events="click:moreWorkLog">
+                            {{if $.taskList.concat($.taskCompletedList).length>3}}
+                            <span>...</span>
+                            {{end if}}
+                        </div>
+                        <div class="pf_itemOpinion" data-o2-events="click:moreWorkLog">
+                            <div class="pf_itemOpinionArea">
+                            {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
+                                <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
+                                    <img class="pf_itemOpinionIcon" src="{{o2.filterUrl(o2.Actions.getHost('x_organization_assemble_control')+'/x_organization_assemble_control/jaxrs/person/'+encodeURIComponent($.person)+'/icon')}}" />
+                                    <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
+                                    {{if $.completedTime}}
+                                    <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
+                                    {{end if}}
+                                </div>
+                            {{end each}}
                             </div>
-                        {{end each}}
                         </div>
                     </div>
-
                 </div>
                 {{end if}}
 
