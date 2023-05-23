@@ -2079,7 +2079,14 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
     },
     loadMultiToolbar : function(){
         if( this.json.multiTools ){
-            var json = Array.clone(this.json.multiTools);
+            if (MWF.xApplication.query.ViewDesigner.LP.actionBar){
+                var jsonStr = JSON.stringify(this.json.multiTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.ViewDesigner.LP.actionBar});
+                this.multiToolsJson = JSON.parse(jsonStr); //.map( function (d) { d.system = true; return d; });
+            }else{
+                this.multiToolsJson = this.json.multiTools;
+            }
+            var json = Array.clone(this.multiToolsJson);
             this.setMultiToolbars(json, this.toolbarNode);
             this.toolbarWidget.load();
             this._setEditStyle_custom("hideSystemTools");
@@ -2092,16 +2099,22 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this.toolbarWidget.load();
             this._setEditStyle_custom("hideSystemTools");
         }else{
-            // MWF.getJSON(this.path+"toolbars.json", function(json){
-            MWF.getJSON(this.getJsonPath(), function(json){
-                this.json.multiTools = json.map( function (d) { d.system = true; return d; });
+            o2.xhr_get(this.getJsonPath(), function(xhr){
+                var jsonStr = xhr.responseText;
+                this.json.multiTools = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
                 if (this.json.tools){
                     this.json.multiTools = this.json.multiTools.concat( this.json.tools )
                 }
-                this.setMultiToolbars(Array.clone(this.json.multiTools), this.toolbarNode);
+                if (MWF.xApplication.query.ViewDesigner.LP.actionBar){
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.ViewDesigner.LP.actionBar});
+                    this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+                }else{
+                    this.multiToolsJson = this.json.multiTools;
+                }
+                this.setMultiToolbars(Array.clone(this.multiToolsJson), this.toolbarNode);
                 this.toolbarWidget.load();
                 this._setEditStyle_custom("hideSystemTools");
-            }.bind(this), false);
+            }.bind(this), null,null, false);
         }
     },
     setMultiToolbars: function(tools, node){

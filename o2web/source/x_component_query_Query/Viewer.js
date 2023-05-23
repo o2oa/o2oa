@@ -2727,6 +2727,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
             //alert(this.readonly)
 
             if( this.json.multiTools ){
+                var jsonStr = JSON.stringify(this.json.multiTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP});
+                this.json.multiTools = JSON.parse(jsonStr);
                 this.json.multiTools.each( function (tool) {
                     if( tool.system ){
                         if( !this.json.hideSystemTools ){

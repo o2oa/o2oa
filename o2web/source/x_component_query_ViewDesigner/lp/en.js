@@ -76,6 +76,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "restoreDefaultTool": "Restore deleted system operations",
         "selectDefaultTool": "Select System Operation"
     },
+    "actionBar": {
+        "exportExcel": "Export Excel"
+    },
     "mastInputPath": "Please enter the data path",
     "mastInputTitle": "Please enter a title",
     "filter": {

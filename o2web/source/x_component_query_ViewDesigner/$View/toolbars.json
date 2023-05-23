@@ -2,9 +2,9 @@
   {
     "type": "MWFToolBarButton",
     "img": "export.png",
-    "title": "导出Excel",
+    "title": "{{$.lp.exportExcel}}",
     "action": "exportView",
-    "text": "导出Excel",
+    "text": "{{$.lp.exportExcel}}",
     "id": "action_export",
     "condition": "",
     "read": true

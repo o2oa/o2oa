@@ -76,6 +76,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "restoreDefaultTool" : "恢复删除的系统操作",
         "selectDefaultTool" : "选择系统操作"
     },
+    "actionBar": {
+        "exportExcel": "导出Excel"
+    },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",
     "filter": {
