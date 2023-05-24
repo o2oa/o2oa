@@ -55,7 +55,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                 if (callback) callback(baseObject);
             });
         };
-        var _createNewApplication = function (e, appNamespace, appName, options, statusObj, inBrowser, taskitem, notCurrent) {
+        var _createNewApplication = function (e, appNamespace, appName, options, statusObj, inBrowser, taskitem, notCurrent, node) {
             if (options) {
                 options.event = e;
             } else {
@@ -65,6 +65,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             app.desktop = layout.desktop;
             app.status = statusObj;
             app.inBrowser = !!(inBrowser || layout.inBrowser);
+            app.windowNode = node;
 
             if (layout.desktop.type === "layout") {
                 app.appId = (options.appId) ? options.appId : ((appNamespace.options.multitask) ? appName + "-" + (new o2.widget.UUID()) : appName);
@@ -368,7 +369,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             }
         };
 
-        layout.openApplication = function (e, appNames, options, statusObj, inBrowser, taskitem, notCurrent) {
+        layout.openApplication = function (e, appNames, options, statusObj, inBrowser, taskitem, notCurrent, node) {
             if (appNames.substring(0, 4) === "@url") {
                 var url = appNames.replace(/\@url\:/i, "");
                 var a = new Element("a", {"href": url, "target": "_blank"});
@@ -396,10 +397,10 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         if (options) options.appId = appId;
                         if (appNamespace.loading && appNamespace.loading.then){
                             appNamespace.loading.then(function(){
-                                _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent);
+                                _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent, node);
                             });
                         }else{
-                            _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent);
+                            _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent, node);
                         }
                     }
                 }.bind(this));

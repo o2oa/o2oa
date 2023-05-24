@@ -3636,8 +3636,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var idsStr = (ids.length>8) ? ids.slice(0,8).join(', ')+' ...' : ids.join(', ');
         var itemInfo = new Element('div', {styles: this.css.goBack_activity_info, text: '处理人：'+idsStr, title: ids.join(',')}).inject(itemContent);
 
-        itemContent.addEvent("click", function(e){
-            var radio = this.getPrevious('div').getElement('input');
+
+        item.addEvent("click", function(e){
+            // var radio = this.getPrevious('div').getElement('input');
+            var radio = this.getElement('input');
             radio.click();
 
             var items = area.getElements(".item");
@@ -3674,8 +3676,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-        var wayNode = node.getElement('.item').getLast().getFirst();
-        var wayCheckNode = wayNode.querySelector('input[checked]');
+        var wayNode = check.getParent().getParent().getLast().getFirst();
+
+        // var wayNode = node.getElement('.item').getLast().getFirst();
+        var wayCheckNode = wayNode.querySelector('input:checked');
         var opinionNode = node.querySelector('textarea');
 
         var activity = check.value;

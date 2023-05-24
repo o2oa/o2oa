@@ -467,12 +467,12 @@ MWF.xApplication.Common.Main = new Class({
 	setUncurrent: function () {
 		if (this.desktop.currentApp == this) {
 			this.window.setUncurrent();
-			this.taskitem.unSelected();
+			if (this.taskitem) this.taskitem.unSelected();
 			this.desktop.currentApp = null;
 			this.fireAppEvent("uncurrent");
 		}else{
 			this.window.setUncurrent();
-			this.taskitem.unSelected();
+			if (this.taskitem) this.taskitem.unSelected();
 		}
 	},
 	minSize: function () {
