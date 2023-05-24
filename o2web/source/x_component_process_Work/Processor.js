@@ -1246,6 +1246,11 @@ MWF.xApplication.process.Work.Processor = new Class({
 
 
     destroy: function () {
+        if (this.orgItems && this.orgItems.length){
+            this.orgItems.each(function (org) {
+                if(org.clearTooltip)org.clearTooltip();
+            })
+        }
         if (this.node) this.node.empty();
         delete this.task;
         delete this.node;
@@ -2121,6 +2126,11 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 if (options) {
                     this.selector = new MWF.O2Selector(this.container, options);
                 }
+            }
+        },
+        clearTooltip: function(){
+            if( this.selector && this.selector.selector && this.selector.selector.clearTooltip ){
+                this.selector.selector.clearTooltip();
             }
         },
         _getOrgOptions: function () {

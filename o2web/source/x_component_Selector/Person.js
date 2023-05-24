@@ -480,8 +480,9 @@ MWF.xApplication.Selector.Person = new Class({
     clearTooltip: function(){
         if( this.tooltips && this.tooltips.length ){
             this.tooltips.each(function (tooltip) {
-                tooltip.destroy()
-            })
+                if(tooltip.destroy)tooltip.destroy();
+            }.bind(this));
+            this.tooltips = [];
         }
     },
     loadAction: function(){

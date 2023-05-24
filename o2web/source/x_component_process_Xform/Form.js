@@ -2527,10 +2527,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "text": MWF.LP.process.button.cancel,
                         "action": function () {
                             this.processDlg.close();
-                            if (this.processor) this.processor.destroy();
                         }.bind(this)
                     }
                 ],
+                "onQueryClose": function(){
+                    if (this.processor) this.processor.destroy();
+                }.bind(this),
                 "onPostLoad": function () {
                     processNode.setStyle("opacity", 1);
                     processor.options.mediaNode = this.content;
@@ -2683,6 +2685,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }.bind(this));
                     }else{
                         _self.submitWork(routeName, opinion, medias, function () {
+                            debugger;
                             this.destroy();
                             processNode.destroy();
                             if (_self.processDlg) _self.processDlg.close();

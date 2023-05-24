@@ -388,8 +388,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             var selector = this.selectors[t];
             if( selector.tooltips && selector.tooltips.length ){
                 selector.tooltips.each(function (tooltip) {
-                    tooltip.destroy();
+                    if(tooltip.destroy)tooltip.destroy();
                 })
+                selector.tooltips = [];
             }
         }
     },
