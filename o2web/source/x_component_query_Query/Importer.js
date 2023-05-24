@@ -144,18 +144,21 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     if( this.importedData.length > 0 )this.importedData.shift();
 
                     this.fireEvent("beforeImport", [this.importedData]);
+                    Promise.resolve( this.importedData.promise ).then(function () {
+                        this.listAllOrgDataByImport( function () {
+                            this.importedData.each( function( lineData, lineIndex ){
+                                this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                            }.bind(this));
 
-                    this.listAllOrgDataByImport( function () {
-                        this.importedData.each( function( lineData, lineIndex ){
-                            this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                            var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
+                            Promise.resolve(isValid).then(function ( isValid ) {
+                                if( isValid ){
+                                    this.doImportData();
+                                }else{
+                                    this.openImportedErrorDlg();
+                                }
+                            }.bind(this));
                         }.bind(this));
-
-                        var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
-                        if( isValid ){
-                            this.doImportData();
-                        }else{
-                            this.openImportedErrorDlg();
-                        }
                     }.bind(this));
                 }.bind(this)
             });
@@ -175,6 +178,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         // }.bind(this));
 
         //再次校验数据（计算的内容）
+        var date = new Date();
+
         var flag = true;
         this.rowList.each( function(row, index){
             if( row.errorTextList.length )flag = false;
@@ -187,30 +192,37 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        flag = arg.validted;
+        Promise.resolve( arg.promise ).then(function(){
+            flag = arg.validted;
 
-        if( !flag ){
-            this.openImportedErrorDlg();
-            return;
-        }
+            if( !flag ){
+                this.openImportedErrorDlg();
+                return;
+            }
 
-        var data = this.getData();
+            var data = this.getData();
 
-        this.lookupAction.getUUID(function(json){
-            this.recordId = json.data;
-            this.lookupAction.executImportModel(this.json.id, {
-                "recordId": this.recordId,
-                "data" : data
-            }, function () {
-                this.showImportingStatus( data )
-            }.bind(this), function (xhr) {
-                var requestJson = JSON.parse(xhr.responseText);
-                this.app.notice(requestJson.message, "error");
-                this.progressBar.close();
+            this.lookupAction.getUUID(function(json){
+                this.recordId = json.data;
+                this.lookupAction.executImportModel(this.json.id, {
+                    "recordId": this.recordId,
+                    "data" : data
+                }, function () {
+                    //this.showImportingStatus( data, date )
+                    this.progressBar.showImporting( this.recordId, function( data ){
+                        data.data = data;
+                        data.rowList = this.rowList;
+                        this.fireEvent("afterImport", data);
+                        return data;
+                    }.bind(this), date);
+
+                }.bind(this), function (xhr) {
+                    var requestJson = JSON.parse(xhr.responseText);
+                    this.app.notice(requestJson.message, "error");
+                    this.progressBar.close();
+                }.bind(this))
             }.bind(this))
         }.bind(this))
-
-
     },
     objectToString: function (obj, type) {
         if(!obj)return "";
@@ -301,7 +313,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        return arg.validted;
+        return Promise.resolve( arg.promise ).then(function () {
+            return arg.validted;
+        });
     },
     //校验Excel中的数据
     checkImportedData : function(){
@@ -318,7 +332,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        return arg.validted;
+        return Promise.resolve( arg.promise ).then(function () {
+            return arg.validted;
+        });
     },
     getOrgData : function( str, ignoreNone, isParse ){
         str = str.trim();
@@ -458,13 +474,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
     },
 
-    showImportingStatus: function( improtedData ){
-        this.progressBar.showImporting( this.recordId, function( data ){
-            data.data = improtedData;
-            data.rowList = this.rowList;
-            this.fireEvent("afterImport", data)
-        }.bind(this));
-    },
+    // showImportingStatus: function( improtedData, date ){
+    //     this.progressBar.showImporting( this.recordId, function( data ){
+    //         data.data = improtedData;
+    //         data.rowList = this.rowList;
+    //         this.fireEvent("afterImport", data)
+    //     }.bind(this), date);
+    // },
 
     exportWithImportDataToExcel : function ( importData ) {
 
@@ -1429,11 +1445,11 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.status = "check";
         // this.setSize();
     },
-    showImporting: function( recordId, callback ){
+    showImporting: function( recordId, callback, date ){
         // this.node.show();
         this.setContentHtml();
         this.recordId = recordId;
-        this.currentDate = new Date();
+        this.currentDate = date || new Date();
         this.intervalId = window.setInterval( function(){
             this.actions.getImportModelRecordStatus( this.recordId, function( json ){
                 var data = json.data;
@@ -1446,9 +1462,16 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
                     this.setMessageText( this.lp.importDataContent.replace( "{count}", data.executeCount));
                     this.updateProgress( data );
                 }else{ //已经结束, 状态有 "导入成功","部分成功","导入失败"
-                    if(this.intervalId)window.clearInterval( this.intervalId );
-                    this.transferComplete( data );
                     if( callback )callback( data );
+                    if( data.promise && typeOf(data.promise.then) === "function" ){
+                        Promise.resolve( data.promise ).then(function () {
+                            if(this.intervalId)window.clearInterval( this.intervalId );
+                            this.transferComplete( data );
+                        }.bind(this))
+                    }else{
+                        if(this.intervalId)window.clearInterval( this.intervalId );
+                        this.transferComplete( data );
+                    }
                 }
             }.bind(this), null)
         }.bind(this), 500 );
