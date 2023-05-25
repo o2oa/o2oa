@@ -10,6 +10,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,10 +23,18 @@ public class AndFxFactory {
 
 	private List<User> users = new ArrayList<>();
 
+	private List<String> admins = new ArrayList<>();
+
 	public AndFxFactory() throws Exception {
 		for (Department o : this.orgs()) {
 			orgs.add(o);
 			for (User u : this.users(o)) {
+				if(admins.contains(u.getUid())){
+					u.setIsAdmin(true);
+				}
+				if(StringUtils.isBlank(u.getMobile())){
+					u.setMobile(u.getUid());
+				}
 				users.add(u);
 			}
 		}
@@ -70,8 +79,13 @@ public class AndFxFactory {
 		if (resp.getCode() != 0) {
 			throw new ExceptionListOrg(resp.getCode(), resp.getMsg());
 		}
-
-		return ListTools.isNotEmpty(resp.getData()) ? resp.getData().get(0).getDeptInfos() : Collections.EMPTY_LIST;
+		if(ListTools.isNotEmpty(resp.getData())){
+			logger.info("and fx sync system admin :{}", XGsonBuilder.toJson(resp.getData().get(0).getAdminInfos()));
+			this.admins.addAll(resp.getData().get(0).getAdminInfos().stream().map(User::getUid).collect(Collectors.toList()));
+			return resp.getData().get(0).getDeptInfos();
+		}else{
+			return Collections.EMPTY_LIST;
+		}
 	}
 
 	private List<User> users(Department department) throws Exception {
@@ -158,6 +172,7 @@ public class AndFxFactory {
 		private String orgName;
 		private String logoAddress;
 		private Integer version;
+		private List<User> adminInfos;
 		private List<Department> deptInfos;
 
 		public Long getOrgId() {
@@ -198,6 +213,14 @@ public class AndFxFactory {
 
 		public void setDeptInfos(List<Department> deptInfos) {
 			this.deptInfos = deptInfos;
+		}
+
+		public List<User> getAdminInfos() {
+			return adminInfos == null ? new ArrayList<>() : adminInfos;
+		}
+
+		public void setAdminInfos(List<User> adminInfos) {
+			this.adminInfos = adminInfos;
 		}
 	}
 

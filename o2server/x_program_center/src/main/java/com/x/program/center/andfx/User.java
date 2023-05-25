@@ -14,6 +14,8 @@ public class User extends GsonPropertyObject {
 	private String name;
 	private Long departmentId;
 
+	private Boolean isAdmin;
+
 	public String getUid() {
 		return uid;
 	}
@@ -60,6 +62,14 @@ public class User extends GsonPropertyObject {
 
 	public void setDepartmentId(Long departmentId) {
 		this.departmentId = departmentId;
+	}
+
+	public Boolean getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
 	@Override
