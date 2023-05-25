@@ -2346,6 +2346,11 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (callback) callback();
     },
     clickItem: function( callback, checkValid ){
+        if( this.tooltip ){
+            if( this.selector.tooltips )this.selector.tooltips.erase(this.tooltip);
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
         if (this.items.length){
             var items = [], map = {};
             this.items.each(function(item){

@@ -2632,7 +2632,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                     if (vtype === "string") {
                         this.getOrgAction()[this.getValueMethod(v)](function (json) {
                             data = MWF.org.parseOrgData(json.data, true, simple);
-                        }.bind(this), error, v, false);
+                        }.bind(this), null, v, false);
                     }
                     if (vtype === "object") {
                         data = MWF.org.parseOrgData(v, true, simple);
@@ -2645,7 +2645,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 var vData;
                 this.getOrgAction()[this.getValueMethod(value)](function (json) {
                     vData = MWF.org.parseOrgData(json.data, true, simple);
-                }.bind(this), error, value, false);
+                }.bind(this), null, value, false);
                 if (vData) values.push(vData);
             }
             if (type === "object") {
