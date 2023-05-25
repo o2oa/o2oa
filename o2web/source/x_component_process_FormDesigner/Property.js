@@ -844,7 +844,26 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.setWidgetSelectOptions(node, select);
                 }.bind(this), true, appNodeName);
             }.bind(this));
+
+
+            var openNode = new Element("div", {"styles": this.form.css.propertyOpenFormNode}).inject(node);
+            openNode.addEvent("click", function(e){
+                var name = node.get("name");
+                var widgetId = this.data[name];
+                if( widgetId && widgetId !== "none" ){
+                    this.form.designer.actions.getWidget(widgetId, function(json){
+                        var options = {
+                            "appId": "portal.WidgetDesigner"+widgetId,
+                            "id": widgetId
+                        };
+                        layout.openApplication(null, "portal.WidgetDesigner", options);
+                    }.bind(this), function () {
+                        return true;
+                    })
+                }
+            }.bind(this));
         }.bind(this), false, appNodeName );
+
         return select;
     },
     setWidgetSelectOptions: function(node, select){

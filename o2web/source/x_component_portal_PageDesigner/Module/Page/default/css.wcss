@@ -58,12 +58,19 @@
 		"border-bottom": "1px solid #EEE",
 		"border-right": "1px solid #EEE"
 	},
-	propertyRefreshFormNode: {
+	"propertyRefreshFormNode": {
 	    "width": "24px",
 	    "height": "24px",
 	    "float": "right",
-	    "background": "url("+"../x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
+	    "background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
 	    "cursor": "pointer"
+	},
+	"propertyOpenFormNode": {
+		"width": "24px",
+		"height": "24px",
+		"float": "right",
+		"background": "url(../x_component_process_ProcessDesigner/$Process/default/icon/form.png) no-repeat center center",
+		"cursor": "pointer"
 	},
 	"processIconNode": {
         "width": "32px",
