@@ -1037,7 +1037,7 @@ MWF.xScript.Environment = function(ev){
                 return v;
             };
 
-            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            var promise = orgActions.personHasRole(data, cb, null, !!async);
             return (!!async) ? promise : v;
 
             // var v = false;

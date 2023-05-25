@@ -2425,7 +2425,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * 否则如果人员拥有角色返回true, 否则返回false。
          * @o2syntax
          * //同步执行，返回判断结果。
-         * var groupList = this.org.personHasRole( name, roleList );
+         * var flag = this.org.personHasRole( name, roleList );
          *
          * //异步执行，返回Promise对象
          * var promise = this.org.personHasRole( name, roleList, true);
@@ -2450,7 +2450,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 return v;
             };
 
-            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            var promise = orgActions.personHasRole(data, cb, null, !!async);
             return (!!async) ? promise : v;
 
             // var v = false;
