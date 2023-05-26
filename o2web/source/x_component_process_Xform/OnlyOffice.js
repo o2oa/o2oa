@@ -252,12 +252,16 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         };
         var onDocumentReady= function() {
             console.log("Document is loaded");
+        }.bind(this);
+        var onPluginsReady= function() {
+            console.log("Plugins is loaded");
             this.fireEvent("afterOpen");
         }.bind(this);
 
         this.document.editor.events = {
             "onAppReady": onAppReady,
             "onDocumentReady":onDocumentReady,
+            "onPluginsReady":onPluginsReady,
             "onDocumentStateChange": onDocumentStateChange,
             'onRequestEditRights': onRequestEditRights,
             "onError": onError,
