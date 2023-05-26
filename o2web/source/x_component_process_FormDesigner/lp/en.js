@@ -1538,7 +1538,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "setReaded": "Mark as read",
         "readed": "Readed",
         "addTask": "Add Task",
-        "addTaskTitle": "Add task to current activity"
+        "addTaskTitle": "Add task to current activity",
+        "goBack": "Go Back",
+        "goBackTitle": "Go back to a past event"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

@@ -18,6 +18,9 @@ MWF.xApplication.query.Query.LP = {
     "no": "No",
     "and": "and",
     "or": "Or",
+    "form": {
+        "exportExcel": "Export Excel"
+    },
     "chart": {
         "bar": "Histogram",
         "pie": "Pie Chart",

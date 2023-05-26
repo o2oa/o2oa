@@ -29,6 +29,12 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "nativeSql": "原生SQL",
     "nativeSqlScript": "原生SQL脚本",
 
+    "queryParameter": "查询参数",
+    "filterList": "过滤条件",
+    "pageNo": "页码",
+    "perPage": "每页",
+    "size": "条",
+
     "statementCategory": "访问对象类型",
     "scriptTitle": "通过脚本创建JPQL",
     "sqlScriptTitle": "通过脚本创建SQL",

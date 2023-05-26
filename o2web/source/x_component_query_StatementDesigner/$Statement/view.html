@@ -139,6 +139,20 @@
         <!--<div class="MWFDepartmentSelect" title="选择部门"></div>-->
         <!--<div class="MWFPersonSelect" title="选择人员"></div>-->
         <!--<div class="MWFIdentitySelect" title="选择身份"></div>-->
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.language}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="data.languageType" text{($.data.languageType!=='default' && $.data.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'block');}" name="data.languageType" text{($.data.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+                </td>
+            </tr>
+        </table>
+        <div id="text{$.pid}languageScriptArea" style="display: text{($.data.languageType=='script')?'block':'none'}">
+            <div class="MWFScriptArea" name="data.languageScript" title="{{$.lp.languageScript}}"></div>
+            <div style="padding: 5px;">{{$.lp.languageInfo}}</div>
+        </div>
     </div>
 
     <div title="{{$.lp.filter}}"  class="MWFTab">

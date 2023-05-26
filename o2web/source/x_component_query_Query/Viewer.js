@@ -86,14 +86,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     load: function( callback ){
-        this.loadResource( function () {
-            this._loadModuleEvents();
-            if (this.fireEvent("queryLoad")){
-                this._loadUserInterface( callback );
-                //this._loadStyles();
-                this._loadDomEvents();
-            }
-        }.bind(this))
+        this.loadResource(function () {
+            this.loadLanguage( function () {
+                this._loadModuleEvents();
+                if (this.fireEvent("queryLoad")){
+                    this._loadUserInterface( callback );
+                    //this._loadStyles();
+                    this._loadDomEvents();
+                }
+            }.bind(this))
+        }.bind(this));
     },
     _loadUserInterface : function( callback ){
         this.loadLayout();
@@ -138,6 +140,42 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.Macro = new MWF.Macro.ViewContext(this);
             if (callback) callback();
         }.bind(this));
+    },
+    loadLanguage: function(callback){
+        if (this.viewJson.languageType!=="script"){
+            if (callback) callback();
+            return true;
+        }
+
+        var language = MWF.xApplication.query.Query.LP.form;
+        var languageJson = null;
+
+        if (this.viewJson.languageType=="script"){
+            if (this.viewJson.languageScript ){
+                languageJson = this.Macro.exec(this.viewJson.languageScript, this);
+            }
+        }
+
+        if (languageJson){
+            if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
+                languageJson.then(function(json) {
+                    if (!json.data){
+                        var o = Object.clone(json);
+                        json.data = o;
+                    }
+                    MWF.xApplication.query.Query.LP.form = Object.merge(MWF.xApplication.query.Query.LP.form, json);
+                    if (callback) callback(true);
+                }, function(){
+                    if (callback) callback(true);
+                })
+            }else{
+                MWF.xApplication.query.Query.LP.form = Object.merge(MWF.xApplication.query.Query.LP.form, languageJson);
+                if (callback) callback(true);
+            }
+        }else{
+            if (callback) callback(true);
+        }
+
     },
     createExportNode: function(){
         if (this.options.export){
@@ -526,6 +564,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
         if( !this.paging ){
             var json;
+
             if( !this.viewJson.pagingList || !this.viewJson.pagingList.length ){
                 json = {
                     "firstPageText": this.lp.firstPage,
@@ -533,6 +572,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 };
             }else{
                 json = this.viewJson.pagingList[0];
+                var jsonStr = JSON.stringify(json);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                json = JSON.parse(jsonStr);
             }
             this.paging = new MWF.xApplication.query.Query.Viewer.Paging(this.viewPageAreaNode, json, this, {});
             this.paging.load();
@@ -2727,6 +2769,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
             //alert(this.readonly)
 
             if( this.json.multiTools ){
+                var jsonStr = JSON.stringify(this.json.multiTools);
+                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                this.json.multiTools = JSON.parse(jsonStr);
                 this.json.multiTools.each( function (tool) {
                     if( tool.system ){
                         if( !this.json.hideSystemTools ){

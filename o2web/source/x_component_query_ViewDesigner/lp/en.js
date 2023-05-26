@@ -76,6 +76,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "restoreDefaultTool": "Restore deleted system operations",
         "selectDefaultTool": "Select System Operation"
     },
+    "actionBar": {
+        "exportExcel": "Export Excel"
+    },
     "mastInputPath": "Please enter the data path",
     "mastInputTitle": "Please enter a title",
     "filter": {
@@ -204,8 +207,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "pageSize":"Number of rows per page",
         "pageMaxCountNotice":"Note: The maximum number of lines per page is 2000",
         "actionbarHidden":"Hide actionbar",
-        "pagingbarHidden ":" Hide page bar",
-        "searchbarHidden ":" Hide searchbar",
+        "pagingbarHidden":" Hide page bar",
+        "searchbarHidden":" Hide searchbar",
         "radio": "Single Selection",
         "checkbox": "Multiple Selection",
         "selectBoxShow":"When to show select Box",
@@ -312,7 +315,10 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "selectOptionScriptNotice":"return [\"option text|option value\"]",
         "selectOptionScript":"Option Script",
         "defaultFilterCondition":"Default Filter Condition",
-        "customFilterCondition":"Custom filter Condition"
+        "customFilterCondition":"Custom filter Condition",
+        "byScript": "byScript",
+        "language": "Language",
+        "languageInfo": "Return a JSON object containing language information; use \"o2.language\" get current language",
     },
     "viewStyle":{
         "default": "Default",
