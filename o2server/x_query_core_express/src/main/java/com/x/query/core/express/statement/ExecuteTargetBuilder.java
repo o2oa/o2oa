@@ -144,10 +144,11 @@ public class ExecuteTargetBuilder {
             throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(sql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
-
         if (onlyAggregateFunction(plainSelect.getSelectItems())) {
             return Optional.empty();
         }
+        //清除可能的orderby
+        plainSelect.getOrderByElements().clear();
         plainSelect.getSelectItems().clear();
         plainSelect.getSelectItems().add(new SelectExpressionItem(new Column(KEY_COUNTSQL)));
         // 将在生成DATA语句中的参数对象PARAM传入避免重复计算
@@ -182,6 +183,8 @@ public class ExecuteTargetBuilder {
             return Optional.empty();
         }
         net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
+        //清除可能的orderby
+        plainSelect.getOrderByElements().clear();
         plainSelect.getSelectItems().clear();
         plainSelect.getSelectItems().add(new SelectExpressionItem(
                 new Column(KEY_COUNT + KEY_LEFT_PARENTHESIS + table.getAlias().getName() + KEY_RIGHT_PARENTHESIS)));
