@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.google.gson.JsonElement;
@@ -36,10 +37,12 @@ public class ProcessVersion extends SliceJpaObject {
 	private static final long serialVersionUID = 3263767038182121907L;
 	private static final String TABLE = PersistenceProperties.Element.ProcessVersion.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -51,6 +54,7 @@ public class ProcessVersion extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		//nothing
 	}
@@ -59,9 +63,10 @@ public class ProcessVersion extends SliceJpaObject {
 	public ProcessVersion() {
 	}
 
-	public ProcessVersion(String process, JsonElement jsonElement) {
+	public ProcessVersion(String process, JsonElement jsonElement, String person) {
 		this.process = process;
 		this.data = XGsonBuilder.toJson(jsonElement);
+		this.person = person;
 	}
 
 	public static final String process_FIELDNAME = "process";
@@ -70,6 +75,13 @@ public class ProcessVersion extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + process_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String process;
+
+	public static final String person_FIELDNAME = "person";
+	@FieldDescribe("操作人.")
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ person_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String person;
 
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("文本内容.")
@@ -95,4 +107,11 @@ public class ProcessVersion extends SliceJpaObject {
 		this.data = data;
 	}
 
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
+	}
 }

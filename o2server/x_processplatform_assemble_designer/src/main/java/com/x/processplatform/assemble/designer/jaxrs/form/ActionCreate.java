@@ -76,7 +76,7 @@ class ActionCreate extends BaseAction {
             emc.commit();
             CacheManager.notify(Form.class);
             // 保存历史版本
-            ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
+            ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement, effectivePerson.getDistinguishedName()));
             Wo wo = new Wo();
             wo.setId(form.getId());
             result.setData(wo);
