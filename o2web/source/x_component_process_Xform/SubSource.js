@@ -42,7 +42,9 @@ MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class(
         this._loadUserInterface();
         //this._loadStyles();
         //this._loadEvents();
-        this._loadDomEvents();
+        if( this.hasOwnProperty( "position" ) ){
+            this._loadDomEvents();
+        }
 
         this._afterLoaded();
     },
