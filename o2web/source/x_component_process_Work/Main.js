@@ -41,6 +41,8 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.jobId = this.status.jobId;
             this.options.draftId = this.status.draftId;
             this.options.priorityWork = this.status.priorityWork;
+            this.options.formid = this.status.formid;
+            if( this.status.form && this.status.form.id )this.options.form = this.status.form;
             this.options.readonly = (this.status.readonly === true || this.status.readonly === "true");
         }
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
@@ -720,7 +722,10 @@ MWF.xApplication.process.Work.Main = new Class({
 
     recordStatus: function(){
 	    debugger;
-        return {"workId": this.options.workId, "taskId": this.options.taskId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
+	    var status = {"workId": this.options.workId, "taskId": this.options.taskId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
+        if( this.options.formid )status.formid = this.options.formid;
+        if( this.options.form && this.options.form.id )status.form = this.options.form;
+        return status;
     },
     onPostClose: function(){
         if (this.appForm){
