@@ -48,7 +48,6 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 
 	private static final int RETRYMINUTES = 20;
 	private static final int THRESHOLDMINUTES = 60 * 24 * 3;
-	private transient ScriptContext scriptContext = null;
 
 	@Override
 	protected void execute(String id) throws Exception {
@@ -124,10 +123,8 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 	}
 
 	private ScriptContext scriptContext(Data data, Business business, Work work) throws Exception {
-		if (null == this.scriptContext) {
-			this.scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
-		}
-		Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 		AeiObjects.Resources resources = new AeiObjects.Resources();
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setOrganization(business.organization());
@@ -136,7 +133,7 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
 		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(work, business));
 		bindings.put(ScriptingFactory.BINDING_NAME_DATA, data);
-		return this.scriptContext;
+		return scriptContext;
 	}
 
 	private boolean hasTableAssignDataScript(Process process) {
