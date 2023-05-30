@@ -759,7 +759,7 @@
    * 月历日期选择器
    * @method chooseOneDay
    * @memberOf o2m
-   * @o2membercategory util.date
+   * @o2membercategory util.calendar
    * @static
    * @param {Object} obj  chooseOneDay需要传入对象
    * <pre><code class='language-js'>{
@@ -772,7 +772,7 @@
    * 样例效果：<br/>
    * <img src="img/module/o2m/util_choose_one_day.jpeg">
    * </caption>
-   * o2m.util.date.chooseOneDay({
+   * o2m.util.calendar.chooseOneDay({
    * value: '2019-05-05', //默认显示日期
    * onSuccess : function(result) {
    *     //onSuccess将在点击完成之后回调
@@ -810,7 +810,7 @@
    * 月历日期时间选择器
    * @method chooseDateTime
    * @memberOf o2m
-   * @o2membercategory util.date
+   * @o2membercategory util.calendar
    * @static
    * @param {Object} obj  chooseDateTime需要传入对象
    * <pre><code class='language-js'>{
@@ -823,7 +823,7 @@
    * 样例效果：<br/>
    * <img src="img/module/o2m/util_choose_date_time.jpeg">
    * </caption>
-   * o2m.util.date.chooseDateTime({
+   * o2m.util.calendar.chooseDateTime({
    * value: '2019-05-05 11:00', //默认显示时间
    * onSuccess : function(result) {
    *     //onSuccess将在点击完成之后回调
@@ -863,7 +863,7 @@
    * 月历日期区间选择器
    * @method chooseInterval
    * @memberOf o2m
-   * @o2membercategory util.date
+   * @o2membercategory util.calendar
    * @static
    * @param {Object} obj  chooseInterval需要传入对象
    * <pre><code class='language-js'>{
@@ -877,8 +877,9 @@
    * 样例效果：<br/>
    * <img src="img/module/o2m/util_choose_interval.jpeg">
    * </caption>
-   * o2m.util.date.chooseInterval({
-   * value: '2019-05-05 11:00', //默认显示时间
+   * o2m.util.calendar.chooseInterval({
+   * startDate: '2019-05-05',
+   * endDate: '2019-05-06',
    * onSuccess : function(result) {
    *     //onSuccess将在点击完成之后回调
    *     {
@@ -1331,6 +1332,11 @@
   var _o2m_b_work_close = function () {
     if (window.o2android && window.o2android.closeWork) {
       window.o2android.closeWork("");
+    } else if (window.o2android && window.o2android.postMessage) {
+      var body = {
+        type: "closeWork"
+      };
+      window.o2android.postMessage(JSON.stringify(body));
     } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
       window.webkit.messageHandlers.closeWork.postMessage("");
     } else {
@@ -1775,7 +1781,6 @@
 
 
 
-  //o2m.biz.contact.ComplexPicker
   this.o2m.biz.file.PreviewDocSuccess = function (result) {
     console.log("biz file preview doc back, result:" + result);
   };
@@ -1798,33 +1803,7 @@
     };
     _biz_post(body, onFail);
   };
-  /**
-   * 文件预览
-   * @method PreviewDoc
-   * @memberOf o2m
-   * @o2membercategory biz
-   * @static
-   * @param {Object} obj  PreviewDoc需要传入对象
-   * <pre><code class='language-js'>{
-   *  url: String, //文件下载地址，比如https://www.o2oa.net/file.pdf
-   *  fileName：String 预览的文件名称，比如file.pdf
-   *  "onSuccess": function,  //成功回调
-   *  "onFail": function, //失败回调
-   * }</code></pre>
-   * @example
-   * o2m.biz.file.PreviewDoc({
-   * url: "https://www.o2oa.net/file.pdf", //文件下载地址
-   * fileName: "file.pdf",//预览的文件名称
-   * onSuccess : function(result) {
-   *     //返回结果样例
-   *     {
-   *       result:true,
-   *       message:""
-   *     }
-   * },
-   * onFail : function(err) {}
-   * });
-   */
+  // 文件预览 后续要删除
   this.o2m.biz.file.PreviewDoc = _o2m_b_file_preview;
 
 })();
