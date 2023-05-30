@@ -159,7 +159,7 @@ var exec = function(code, _self){
         var f = eval("(function(){return function(){\n"+code+"\n}})();");
         returnValue = f.apply(_self);
     }catch(e){
-        console.log("exec", new _Error("exec script error"));
+        console.log("exec", new Error("exec script error"));
         console.log(e);
     }
     return returnValue;
@@ -793,12 +793,12 @@ bind.include = function( optionsOrName , callback ){
     if( options.type === "service" ){
         type = options.type;
     }else{
-        type  = ( options.type && options.application ) ?  options.type : "process";
+        type  = ( options.type && options.application ) ?  options.type : "service";
     }
     var application = type === "service" ? "service" : options.application;
 
     if (!name || !type || !application){
-        console.log("include", new _Error("can not find script. missing script name or application"));
+        console.log("include", new Error("can not find script. missing script name or application"));
         return false;
     }
 
@@ -869,7 +869,7 @@ bind.Dict = function(optionsOrName){
     if( options.type === "service"){
         type = options.type;
     }else{
-        type = ( options.type && options.application ) ?  options.type : "process";
+        type = ( options.type && options.application ) ?  options.type : "service";
     }
     var applicationId = options.application;
     var enableAnonymous = options.enableAnonymous || false;
