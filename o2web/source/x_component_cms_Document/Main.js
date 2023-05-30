@@ -150,7 +150,10 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         if( formId ){
             this.useProcessForm = this.options.useProcessForm;
-            this.getFormV2(formId, null, false);
+            //编辑状态要先获取document再判断有没有权限编辑
+            if( this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous ){
+                this.getFormV2(formId, null, false);
+            }
             this.getDocumentV2();
         }else{
             if( readonly ){ //只读情况，不需要判断是否有阅读权限
@@ -166,6 +169,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         }.bind(this));
     },
     checkLoad : function ( toLoadForm ) {
+        debugger;
         if( toLoadForm ){
             if( this.json_document ){
                 this.getFormV2( this.formId );
