@@ -94,16 +94,36 @@ public class AppealInfoAction extends StandardJaxrsAction {
 
 
     @JaxrsMethodDescribe(value = "启动流程后修改状态.", action = ActionUpdateForStart.class)
-    @GET
+    @POST
     @Path("{id}/start/process")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void startProcess(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id) {
+                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id,
+                             JsonElement jsonElement) {
         ActionResult<ActionUpdateForStart.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionUpdateForStart().execute(effectivePerson, id);
+            result = new ActionUpdateForStart().execute(effectivePerson, id, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "还原数据状态，清除流程关联.", action = ActionUpdateForResetStatus.class)
+    @GET
+    @Path("{id}/reset/status")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void resetStatus(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id) {
+        ActionResult<ActionUpdateForResetStatus.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionUpdateForResetStatus().execute(effectivePerson, id);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

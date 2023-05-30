@@ -221,6 +221,15 @@ function appealInfoAction(method, ...args) {
 function processAction(method, ...args) {
   return doAction("x_processplatform_assemble_surface", "ProcessAction", method, args);
 }
+/**
+ * Job API
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function jobAction(method, ...args) {
+  return doAction("x_processplatform_assemble_surface", "JobAction", method, args);
+}
 
 
 /**
@@ -279,6 +288,7 @@ export {
   appealInfoActionListByPaging,
   appealInfoAction,
   processAction,
+  jobAction,
   myAction,
   mobileAction,
   personAction,
