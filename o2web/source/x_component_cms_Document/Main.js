@@ -169,7 +169,6 @@ MWF.xApplication.cms.Document.Main = new Class({
         }.bind(this));
     },
     checkLoad : function ( toLoadForm ) {
-        debugger;
         if( toLoadForm ){
             if( this.json_document ){
                 this.getFormV2( this.formId );
