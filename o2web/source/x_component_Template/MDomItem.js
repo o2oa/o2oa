@@ -668,7 +668,10 @@ MDomItem.Util = {
             "target": container,
             "onComplate" : function( dateString ,date ){
                 if( callback )callback( dateString, date );
-            }.bind(this)
+            }.bind(this),
+            "onClear": function () {
+                if( callback )callback( "", null );
+            }
         };
         if( options.calendarOptions ){
             calendarOptions = Object.merge( calendarOptions, options.calendarOptions )
