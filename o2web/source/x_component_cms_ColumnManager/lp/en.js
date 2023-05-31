@@ -176,6 +176,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "ignoreTitle": "Ignore Title",
         "latest": "Check Draft",
         "delayView": "Delayed View",
+        "saveDraftOnClose": "Auto Save",
         "defaultEditForm": "Default Edit Form",
         "defaultReadForm": "Default Read Form",
         "editformNote": "Note: The default edit form when creating a category",
@@ -301,6 +302,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "checkDraftSelectText": ["New interface check draft","New interface does not check draft"],
     "showAllDocumentSelectText": ["Show all document views","Hide all document views"],
     "showDelayDocumentSelectText": ["Show timed release document view","Hide timed release document view"],
+    "saveDraftOnClose": ["Save the document when closing the draft","Do not save the document when closing the draft"],
 
     "selectRelateFormNotice": "Please select the related form of the view to be pasted",
 
