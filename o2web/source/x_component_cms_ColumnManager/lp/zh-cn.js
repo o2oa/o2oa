@@ -177,6 +177,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "ignoreTitle" : "忽略标题",
         "latest" : "检查草稿",
         "delayView": "定时视图",
+        "saveDraftOnClose": "自动保存",
         "defaultEditForm": "默认编辑表单",
         "defaultReadForm": "默认阅读表单",
         "editformNote": "注：创建分类时的默认编辑表单",
@@ -301,6 +302,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "checkDraftSelectText": ["新建界面检查草稿","新建界面不检查草稿"],
     "showAllDocumentSelectText": ["显示所有文档视图","隐藏所有文档视图"],
     "showDelayDocumentSelectText": ["显示定时发布文档视图","隐藏定时发布文档视图"],
+    "saveDraftOnClose": ["关闭草稿时自动保存文档","关闭草稿时不自动保存文档"],
 
     "selectRelateFormNotice": "请选择需粘贴视图的关联表单",
 

@@ -17,7 +17,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         "isControl": false,
         "readonly": true,
         "autoSave" : true,
-        "saveOnClose" : true,
+        "saveOnClose" : null,
         "postPublish" : null,
         "postDelete" : null,
         "forceFormId" : null, //不管编辑还是阅读都用此表单打开，优先使用
@@ -132,6 +132,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.loadFormFlag = false;
         this.loadDocumentFlag = false;
         this.loadModuleFlag = false;
+        this.checkSaveOnCloseFlag = false;
 
         this.json_document = null;
         this.json_form = null;
@@ -182,7 +183,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.getFormV2( this.formId );
         }
 
-        if( this.loadFormFlag && this.loadDocumentFlag && this.loadModuleFlag ){
+        if( this.loadFormFlag && this.loadDocumentFlag && this.loadModuleFlag && this.checkSaveOnCloseFlag ){
             this.parseFormV2( this.json_form.data );
             if (layout.session && layout.session.user){
                 this.openDocument();
@@ -204,7 +205,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         var documentMethod;
         if( this.options.anonymousAccess || this.options.anonymous ){
-            documentMethod = "getDocumentByAnonymous"
+            documentMethod = "getDocumentByAnonymous";
         }else if( readonly && !this.options.printFormId){
             documentMethod = "viewDocument";
         }else{
@@ -234,8 +235,9 @@ MWF.xApplication.cms.Document.Main = new Class({
                         //编辑状态要先获取document再判断有没有权限编辑
                         var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous );
                         // var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
-                        this.checkLoad( toLoadForm )
+                        this.checkLoad( toLoadForm );
                     }
+                    this.checkSaveOnClose();
                 }else{
                     this.errorLoadingV2();
                 }
@@ -355,6 +357,19 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.useProcessForm = false;
             this.getFormV2(this.formId, null, true);
         }.bind(this));
+    },
+    checkSaveOnClose: function(){
+        if( this.readonly || this.document.docStatus !== "draft" || typeOf( this.options.saveOnClose ) !== "null" ){
+            this.checkSaveOnCloseFlag =  true;
+            this.checkLoad();
+        }else{
+            this.action.getColumn( this.document.appId, function (json) {
+                var config = JSON.parse( json.data.config || {} );
+                this.options.saveOnClose = typeOf( config.saveDraftOnClose ) === "boolean" ? config.saveDraftOnClose : true;
+                this.checkSaveOnCloseFlag =  true;
+                this.checkLoad();
+            }.bind(this));
+        }
     },
     parseFormV2: function( json ){
         if (json.form){

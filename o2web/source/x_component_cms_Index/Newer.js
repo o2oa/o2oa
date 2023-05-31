@@ -110,6 +110,9 @@ MWF.xApplication.cms.Index.Newer = new Class({
             if (typeOf(options.latest) !== "boolean" && typeOf(this.columnData.config.latest) === "boolean") {
                 this.options.latest = this.columnData.config.latest;
             }
+            if (typeOf(options.saveOnClose) !== "boolean" && typeOf(this.columnData.config.saveDraftOnClose) === "boolean") {
+                this.options.saveOnClose = this.columnData.config.saveDraftOnClose;
+            }
         }
     },
     load : function(){
