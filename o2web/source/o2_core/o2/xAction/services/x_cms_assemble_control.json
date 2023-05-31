@@ -178,6 +178,7 @@
   "listAttachment" : {"uri":"/jaxrs/fileinfo/list/document/{documentid}"},
   "listAttachmentByAnonymous" : {"uri":"/jaxrs/anonymous/fileinfo/list/document/{documentId}"},
   "getAttachment": {"uri": "/jaxrs/fileinfo/{id}/document/{documentid}"},
+  "getAttachmentByAnonymous": {"uri": "/jaxrs/anonymous/fileinfo/{id}/document/{documentid}"},
   "deleteAttachment": {"uri": "/jaxrs/fileinfo/{id}", "method": "DELETE"},
 
   "configAttachment": {"uri": "/jaxrs/fileinfo/edit/{id}/doc/{docId}", "method": "PUT"},
@@ -187,7 +188,8 @@
   //"getAttachmentData": {"uri": "/servlet/download/{id}/document/{documentid}", "method": "GET"},
   "getAttachmentData": {"uri": "/jaxrs/fileinfo/download/document/{id}", "method": "GET"}, //document/{documentid}/
   "getAttachmentDataByAnonymous": {"uri": "/jaxrs/anonymous/fileinfo/download/document/{id}", "method": "GET"}, //document/{documentid}/
-  "getAttachmentStream": {"uri": "/jaxrs/fileinfo/download/document/{id}/stream", "method": "GET"}, //document/{documentid}/
+  "getAttachmentStream": {"uri": "/jaxrs/fileinfo/download/document/{id}/stream", "method": "GET"},
+  "getAttachmentStreamByAnonymous": {"uri": "/jaxrs/anonymous/fileinfo/download/document/{id}/stream", "method": "GET"},
 
   //获取互联网URL指向的图片的base64编码[Jaxrs],必填, 需要获取的图片URL地址
   //  url- 必填, 需要获取的图片URL地址
