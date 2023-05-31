@@ -196,7 +196,7 @@ var exec = function(code, _self){
         var f = eval("(function(){return function(){\n"+code+"\n}})();");
         returnValue = f.apply(_self);
     }catch(e){
-        console.log("exec", new _Error("exec script error"));
+        console.log("exec", new Error("exec script error"));
         console.log(e);
     }
     return returnValue;
@@ -1658,12 +1658,12 @@ bind.includedScripts = includedScripts;
  * @o2category server.common
  * @o2ordernumber 175
  *
- * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。<b>流程设计中的脚本只支持字符串。</b>
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
  * <pre><code class='language-js'>
  *
  * //如果需要引用其他应用的脚本配置，将options设置为Object;
  * this.include({
- *       //type: 应用类型。可以为 portal  process  cms  service。默认为process
+ *       //type: 应用类型。可以为 portal  process  cms  service。流程脚本默认为process，服务管理中默认为service
  *       type : "portal",
  *       application : "首页", // 门户、流程、CMS的名称、别名、id。 引用服务管理的脚本则忽略该参数。
  *       name : "initScript" // 脚本配置的名称、别名或id
@@ -1751,7 +1751,7 @@ bind.include = function( optionsOrName , callback ){
     var application = type === "service" ? "service" : options.application;
 
     if (!name || !type || !application){
-        console.log("include", new _Error("can not find script. missing script name or application"));
+        console.log("include", new Error("can not find script. missing script name or application"));
         return false;
     }
 
@@ -1824,7 +1824,7 @@ bind.include = function( optionsOrName , callback ){
  * var dict = new this.Dict( options )
  * @example
  * var dict = new this.Dict({
- *     //type: 应用类型。可以为process  cms portal service。默认为process。
+ *     //type: 应用类型。可以为process  cms portal service。流程脚本默认为process，服务管理中默认为service。
  *    type : "cms",
  *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
