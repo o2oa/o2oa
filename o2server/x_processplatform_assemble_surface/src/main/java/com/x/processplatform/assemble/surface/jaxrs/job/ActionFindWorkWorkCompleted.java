@@ -37,18 +37,17 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (!business.readableWithJob(effectivePerson, job)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (business.readableWithJob(effectivePerson, job)) {
+				wo.setWorkList(this.listWork(business, job));
+				wo.setWorkCompletedList(this.listWorkCompleted(business, job));
 			}
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
-			wo.setWorkList(this.listWork(business, job));
-			wo.setWorkCompletedList(this.listWorkCompleted(business, job));
-			result.setData(wo);
-			return result;
 		}
+		result.setData(wo);
+		return result;
 	}
 
 	private List<WoWork> listWork(Business business, String job) throws Exception {
