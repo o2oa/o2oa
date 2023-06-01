@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.exception.ExceptionFileNameInvalid;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import org.apache.commons.codec.binary.Base64;
@@ -312,6 +313,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	 * @throws Exception
 	 */
 	protected void verifyConstraint(long size, String fileName, String callback) throws Exception {
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionFileNameInvalid(fileName);
+		}
 		if (Config.general().getAttachmentConfig().getFileSize() != null && Config.general().getAttachmentConfig().getFileSize() > 0) {
 			size = size / (1024 * 1024);
 			if (size > Config.general().getAttachmentConfig().getFileSize()) {

@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -39,6 +40,7 @@ public class ActionUploadCallback extends BaseAction {
 				emc.beginTransaction(Attachment.class);
 				fileName = StringUtils.isEmpty(fileName) ? disposition.getFileName() : fileName;
 				fileName = FilenameUtils.getName(fileName);
+				FileTools.verifyConstraint(bytes.length, fileName, callback);
 				Attachment attachment = this.concreteAttachment(meeting, summary);
 				attachment.saveContent(mapping, input, fileName);
 				attachment.setLastUpdatePerson(effectivePerson.getDistinguishedName());

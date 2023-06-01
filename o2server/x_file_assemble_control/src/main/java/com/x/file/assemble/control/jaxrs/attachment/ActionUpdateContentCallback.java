@@ -1,14 +1,5 @@
 package com.x.file.assemble.control.jaxrs.attachment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -21,9 +12,18 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.personal.Attachment;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 class ActionUpdateContentCallback extends BaseAction {
 
@@ -61,6 +61,7 @@ class ActionUpdateContentCallback extends BaseAction {
 					attachment.getExtension())) {
 				throw new ExceptionExtensionNotMatchCallback(callback, fileName, attachment.getExtension());
 			}
+			FileTools.verifyConstraint(bytes.length, fileName, callback);
 			emc.beginTransaction(Attachment.class);
 			attachment.updateContent(mapping, bytes);
 			emc.check(attachment, CheckPersistType.all);
