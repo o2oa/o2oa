@@ -332,7 +332,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         }.bind(this));
 
         var _self = this;
-        this.form.confirm("warn", e, MWF.xApplication.cms.Xform.LP.deleteAttachmentTitle, MWF.xApplication.cms.Xform.LP.deleteAttachment + "( " + names.join(", ") + " )", 300, 120, function () {
+        this.form.confirm("warn", e, MWF.xApplication.cms.Xform.LP.deleteAttachmentTitle, MWF.xApplication.cms.Xform.LP.deleteAttachment + "( " + o2.txt(names.join(", ")) + " )", 300, 120, function () {
             while (attachments.length) {
                 var attachment = attachments.shift();
                 _self.deleteAttachment(attachment);
