@@ -81,7 +81,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Portal_.controllerList));
 			p = cb.or(p, cb.equal(root.get(Portal_.creatorPerson), effectivePerson.getDistinguishedName()));
 		}
-		p = cb.and(p, cb.equal(root.get(Portal_.portalCategory), Objects.toString(portalCategory, "")));
+		if(Portal.CATEGORY_DEFAULT.equals(portalCategory)){
+			p = cb.and(p, cb.or(cb.equal(root.get(Portal_.portalCategory), Portal.CATEGORY_DEFAULT),
+					cb.equal(root.get(Portal_.portalCategory), ""),
+					cb.isNull(root.get(Portal_.portalCategory))));
+		}else {
+			p = cb.and(p, cb.equal(root.get(Portal_.portalCategory), Objects.toString(portalCategory, "")));
+		}
 		cq.select(root.get(Portal_.id)).where(p);
 		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
