@@ -1,9 +1,5 @@
 package com.x.processplatform.assemble.designer.jaxrs.formversion;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,10 +11,14 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormVersion;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionListWithForm extends BaseAction {
 
@@ -42,6 +42,7 @@ class ActionListWithForm extends BaseAction {
                     throw new ExceptionAccessDenied(effectivePerson);
                 }
                 wos = emc.fetchEqual(FormVersion.class, Wo.copier, FormVersion.form_FIELDNAME, form.getId());
+                SortTools.desc(wos, JpaObject.createTime_FIELDNAME);
             }
             result.setData(wos);
             return result;
