@@ -679,6 +679,7 @@ o2.xDesktop.Default = new Class({
             }
         }.bind(this));
         var status = this.getLayoutStatusData();
+        console.log(status);
 
         // if (navigator.sendBeacon) {
         //     var obj = this.personalAction.action.actions["putUserData"];
