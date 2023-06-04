@@ -279,6 +279,10 @@ MWFCalendar.EventForm = new Class({
 
         var data = this.data;
 
+        if( data.comment ){
+            data.comment = this.replaceHrefJavascriptStr(data.comment);
+        }
+
         if( this.options.isWholeday && this.isNew ){
             data.isAllDayEvent = true;
         }
