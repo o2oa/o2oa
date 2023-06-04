@@ -797,7 +797,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			tds[i].set("text", tmpDate.getDate());
 			tds[i].addClass("gray_"+this.options.style);
 			tds[i].setStyles(this.css["gray_"+this.options.style]);
-			tds[i].store("dateValue", tmpDate.toString())
+			tds[i].store("dateValue", tmpDate.toString());
+			tds[i].removeClass("today_"+this.options.style);
+			tds[i].removeClass("current_"+this.options.style);
+			tds[i].removeClass("past_"+this.options.style);
+			if( this.options.todayClass ){
+				tds[i].removeClass( this.options.todayClass );
+			}
 		}
 
 		for (var i=day; i<tds.length; i++){
@@ -840,6 +846,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				tds[i].setStyle("border", "0px solid #AAA");
 				if( this.options.todayClass ){
 					tds[i].addClass( this.options.todayClass );
+				}
+			}else{
+				tds[i].removeClass("today_"+this.options.style);
+				if( this.options.todayClass ){
+					tds[i].removeClass( this.options.todayClass );
 				}
 			}
 			if (tmp.diff(this.today)>0){
