@@ -1,11 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellUtil;
@@ -22,6 +24,31 @@ import java.util.List;
  */
 public class AttendanceV2Helper {
 
+
+    /**
+     * 当前打卡对象是否是属于出勤
+     *
+     * != CHECKIN_RESULT_NotSigned  !=CHECKIN_RESULT_PreCheckIn 没有请假数据
+     * @param r 打卡对象
+     * @return
+     */
+    public static boolean isRecordAttendance(AttendanceV2CheckInRecord r) {
+        return (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
+                && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn))
+                        || StringUtils.isNotEmpty(r.getLeaveDataId());
+    }
+
+    /**
+     * 当前打卡对象是否属于未打卡数据
+     *
+     * result = CHECKIN_RESULT_NotSigned 并且 没有请假数据
+     * @param r
+     * @return
+     */
+    public static boolean isRecordNotSign(AttendanceV2CheckInRecord r) {
+        return  r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
+                && StringUtils.isEmpty(r.getLeaveDataId());
+    }
 
 
 
