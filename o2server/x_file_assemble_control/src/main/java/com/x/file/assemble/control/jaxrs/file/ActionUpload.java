@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
@@ -56,7 +57,7 @@ class ActionUpload extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);
 			}
-
+			FileTools.verifyConstraint(bytes.length, fileName, null);
 			/* 先保存原图 */
 			file = new File(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), type, reference);
 			emc.check(file, CheckPersistType.all);

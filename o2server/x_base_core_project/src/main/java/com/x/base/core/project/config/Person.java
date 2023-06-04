@@ -42,7 +42,7 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
-	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = false;
+	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = true;
 
 	public static final String DEFAULT_PASSWORDREGEX = "((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";

@@ -1,31 +1,30 @@
 package com.x.file.assemble.control.jaxrs.attachment;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.personal.Attachment;
 import com.x.file.core.entity.personal.Attachment_;
 import com.x.file.core.entity.personal.Folder;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
-class ActionUpload extends StandardJaxrsAction {
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+class ActionUpload extends BaseAction {
 
 	// @HttpMethodDescribe(value = "创建Attachment对象,如果没有上级目录用(0)替代.", response =
 	// WrapOutId.class)
@@ -67,6 +66,7 @@ class ActionUpload extends StandardJaxrsAction {
 			if (this.exist(business, fileName, folderId)) {
 				throw new ExceptionSameNameFileExist(fileName);
 			}
+			FileTools.verifyConstraint(bytes.length, fileName, null);
 			Attachment attachment = new Attachment(mapping.getName(), fileName, effectivePerson.getDistinguishedName(),
 					folderId);
 			emc.check(attachment, CheckPersistType.all);

@@ -98,6 +98,7 @@ class ActionUploadWithUrl extends BaseAction {
 				throw new IllegalStateException("fileName can not empty.");
 			}
 			fileName = this.adjustFileName(business, attachment.getJob(), fileName);
+			this.verifyConstraint(bytes.length, fileName, null);
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			attachment.saveContent(mapping, bytes, fileName);

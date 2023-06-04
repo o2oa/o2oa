@@ -10,6 +10,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
+import com.x.base.core.project.tools.FileTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
@@ -43,7 +44,7 @@ public class ActionFileUploadCallback extends BaseAction {
 
 		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
 
-		this.verifyConstraint(bytes.length, fileName, callback);
+		FileTools.verifyConstraint(bytes.length, fileName, callback);
 
 		FileInfo attachment = this.concreteAttachment( mapping, document, fileName, effectivePerson, site );
 
