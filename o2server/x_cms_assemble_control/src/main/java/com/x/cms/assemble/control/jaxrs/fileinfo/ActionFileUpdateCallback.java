@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -96,7 +97,7 @@ public class ActionFileUpdateCallback extends BaseAction {
 			}
 		}
 
-		this.verifyConstraint(bytes.length, fileName, callback);
+		FileTools.verifyConstraint(bytes.length, fileName, callback);
 
 		if( check ){
 			try {

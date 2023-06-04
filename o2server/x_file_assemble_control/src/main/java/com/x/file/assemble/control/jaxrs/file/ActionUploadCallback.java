@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
@@ -50,6 +51,7 @@ class ActionUploadCallback extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtensionCallback(callback, fileName);
 			}
+			FileTools.verifyConstraint(bytes.length, fileName, null);
 			File file = new File(mapping.getName(), fileName, effectivePerson.getDistinguishedName(), type, reference);
 			emc.check(file, CheckPersistType.all);
 			if ((scale > 0) && ArrayUtils.contains(IMAGE_EXTENSIONS_COMPRESS, file.getExtension())) {

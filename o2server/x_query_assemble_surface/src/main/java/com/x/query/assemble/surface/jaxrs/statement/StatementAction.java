@@ -32,7 +32,7 @@ public class StatementAction extends StandardJaxrsAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatementAction.class);
 
-    @JaxrsMethodDescribe(value = "V8版本新版本查询语句,取消mode参数,增加自动count,增加自动内置参数判断,替换V2版本.", action = ActionExecuteV2.class)
+    @JaxrsMethodDescribe(value = "V8版本新版本查询语句,取消mode参数,增加自动count,增加自动内置参数判断,替换V2版本.", action = ActionExecute.class)
     @POST
     @Path("{flag}/execute/page/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -44,7 +44,7 @@ public class StatementAction extends StandardJaxrsAction {
         ActionResult<Object> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionExecuteV2().execute(effectivePerson, flag, null, page, size, jsonElement);
+            result = new ActionExecute().execute(effectivePerson, flag, null, page, size, jsonElement);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, jsonElement);
             result.error(e);

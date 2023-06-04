@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.tools.FileTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import org.apache.commons.io.FilenameUtils;
@@ -87,7 +88,7 @@ public class ActionFileUploadWithUrl extends BaseAction {
 			throw new Exception("can not down file from url!");
 		}
 
-		this.verifyConstraint(bytes.length, wi.getFileName(), null);
+		FileTools.verifyConstraint(bytes.length, wi.getFileName(), null);
 
 		attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 		logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
