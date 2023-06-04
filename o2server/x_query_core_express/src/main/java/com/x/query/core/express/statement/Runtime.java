@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.x.base.core.project.annotation.FieldTypeDescribe;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,20 +34,22 @@ public class Runtime extends GsonPropertyObject {
             .unmodifiableList(Arrays.asList(PARAMETER_PERSON, PARAMETER_IDENTITYLIST, PARAMETER_UNITLIST,
                     PARAMETER_UNITALLLIST, PARAMETER_GROUPLIST, PARAMETER_ROLELIST));
 
+    public static final String filterList_FIELDNAME = "filterList";
+    @FieldDescribe("过滤条件.")
+    @FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{\"logic\": \"and\", \"path\": \"o.name\", \"comparison\": \"equals\", \"value\": \"name\", \"formatType\": \"textValue\"}", fieldSample = "{\"logic\":\"逻辑运算:and\",\"path\":\"data数据的路径:o.title\",\"comparison\":\"比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo\","
+            + "\"value\":\"7月\",\"formatType\":\"textValue|numberValue|dateTimeValue|booleanValue\"}")
+    public List<FilterEntry> filterList = new ArrayList<>();
+
+    public static final String parameter_FIELDNAME = "parameter";
     @FieldDescribe("参数.")
     public Map<String, Object> parameter = new HashMap<>();
-
-    @FieldDescribe("过滤条件.")
-    public List<FilterEntry> filterList = new ArrayList<>();
 
     public Map<String, Object> getParameter() {
         return parameter;
     }
 
-    @FieldDescribe("页码")
     public Integer page = 0;
 
-    @FieldDescribe("每页大小")
     public Integer size = 20;
 
     public boolean hasParameter(String name) {

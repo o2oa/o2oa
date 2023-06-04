@@ -1,16 +1,12 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
-import java.util.Optional;
-
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -23,9 +19,11 @@ import com.x.query.core.express.statement.ExecuteTargetBuilder;
 import com.x.query.core.express.statement.Executor;
 import com.x.query.core.express.statement.Runtime;
 
-class ActionExecuteV2 extends BaseAction {
+import java.util.Optional;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
+class ActionExecute extends BaseAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
 
     ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
             JsonElement jsonElement) throws Exception {
@@ -48,7 +46,14 @@ class ActionExecuteV2 extends BaseAction {
             if (!business.executable(effectivePerson, statement)) {
                 throw new ExceptionAccessDenied(effectivePerson, statement);
             }
-            runtime = Runtime.concrete(effectivePerson, jsonElement, business.organization(), page, size);
+            //兼容旧版本jsonElement本身即为parameter参数内容
+            JsonObject runTimeJson = jsonElement.getAsJsonObject();
+            if (!runTimeJson.has(Runtime.parameter_FIELDNAME) && !runTimeJson.has(Runtime.parameter_FIELDNAME)){
+                JsonObject rtJson = new JsonObject();
+                rtJson.add(Runtime.parameter_FIELDNAME, jsonElement);
+                runTimeJson = rtJson;
+            }
+            runtime = Runtime.concrete(effectivePerson, runTimeJson, business.organization(), page, size);
             ExecuteTargetBuilder builder = new ExecuteTargetBuilder(ThisApplication.context(), effectivePerson,
                     business.organization(), statement, runtime);
             executeTargetPair = builder.build();
@@ -67,6 +72,4 @@ class ActionExecuteV2 extends BaseAction {
         return result;
     }
 
-    public static class Wi extends Runtime {
-    }
 }

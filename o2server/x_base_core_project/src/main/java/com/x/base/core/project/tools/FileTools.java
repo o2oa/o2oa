@@ -7,11 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionAttachmentInvalid;
+import com.x.base.core.project.exception.ExceptionAttachmentInvalidCallback;
+import com.x.base.core.project.exception.ExceptionFileNameInvalid;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 
+/**
+ * @author sword
+ */
 public class FileTools {
 
 	public static String parent(String path) {
@@ -25,7 +33,7 @@ public class FileTools {
 
 	/**
 	 * 创建目录-递归父级
-	 * 
+	 *
 	 * @param dist
 	 * @throws Exception
 	 */
@@ -39,7 +47,7 @@ public class FileTools {
 
 	/**
 	 * 获取文件夹下所有的文件 + 模糊查询（当不需要模糊查询时，queryStr传空或null即可）
-	 * 
+	 *
 	 * @param folderPath 路径
 	 * @param queryStr   模糊查询字符串
 	 * @return
@@ -146,6 +154,47 @@ public class FileTools {
 		name = name.replaceAll("[/\\\\:*?|]", "_");
 		name = name.replaceAll("[\"<>]", "'");
 		return name;
+	}
+
+	/**
+	 * 判断附件是否符合大小、文件类型的约束
+	 *
+	 * @param size
+	 * @param fileName
+	 * @param callback
+	 * @throws Exception
+	 */
+	public static void verifyConstraint(long size, String fileName, String callback) throws Exception {
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionFileNameInvalid(fileName);
+		}
+		if (Config.general().getAttachmentConfig().getFileSize() != null && Config.general().getAttachmentConfig().getFileSize() > 0) {
+			size = size / (1024 * 1024);
+			if (size > Config.general().getAttachmentConfig().getFileSize()) {
+				if (StringUtils.isNotEmpty(callback)) {
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName, Config.general().getAttachmentConfig().getFileSize());
+				} else {
+					throw new ExceptionAttachmentInvalid(fileName, Config.general().getAttachmentConfig().getFileSize());
+				}
+			}
+		}
+		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
+		if ((Config.general().getAttachmentConfig().getFileTypeIncludes() != null && !Config.general().getAttachmentConfig().getFileTypeIncludes().isEmpty())
+				&& (!ListTools.contains(Config.general().getAttachmentConfig().getFileTypeIncludes(), fileType))) {
+			if (StringUtils.isNotEmpty(callback)) {
+				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+			} else {
+				throw new ExceptionAttachmentInvalid(fileName);
+			}
+		}
+		if ((Config.general().getAttachmentConfig().getFileTypeExcludes() != null && !Config.general().getAttachmentConfig().getFileTypeExcludes().isEmpty())
+				&& (ListTools.contains(Config.general().getAttachmentConfig().getFileTypeExcludes(), fileType))) {
+			if (StringUtils.isNotEmpty(callback)) {
+				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+			} else {
+				throw new ExceptionAttachmentInvalid(fileName);
+			}
+		}
 	}
 
 }

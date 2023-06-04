@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.project.exception.ExceptionFieldEmpty;
+import com.x.base.core.project.exception.ExceptionFileNameInvalid;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,9 +47,12 @@ class ActionUpdateContent extends BaseAction {
 			}
 			String fileName = wi.getFileName();
 			if (StringUtils.isEmpty(fileName)) {
-				throw new IllegalStateException("fileName can not empty!");
+				throw new ExceptionFieldEmpty("fileName");
 			}
 			fileName = fileName + "." + attachment.getExtension();
+			if(!StringTools.isFileName(fileName)){
+				throw new ExceptionFileNameInvalid(fileName);
+			}
 			if (!fileName.equalsIgnoreCase(attachment.getName())) {
 				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
