@@ -52,24 +52,6 @@ class ActionListSummaryWithPortalCategory extends BaseAction {
 		}
 	}
 
-	@Override
-	List<String> listEditableWithPortalCategory(Business business, EffectivePerson effectivePerson,
-			String portalCategory) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Portal.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Portal> root = cq.from(Portal.class);
-		Predicate p = cb.conjunction();
-		if ((!effectivePerson.isManager())
-				&& (!business.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
-			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Portal_.controllerList));
-			p = cb.or(p, cb.equal(root.get(Portal_.creatorPerson), effectivePerson.getDistinguishedName()));
-		}
-		p = cb.and(p, cb.equal(root.get(Portal_.portalCategory), Objects.toString(portalCategory, "")));
-		cq.select(root.get(Portal_.id)).where(p);
-		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-	}
-
 	public static class Wo extends Portal {
 
 		private static final long serialVersionUID = 4546727999450453639L;
