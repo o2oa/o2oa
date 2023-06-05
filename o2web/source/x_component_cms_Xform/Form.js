@@ -980,8 +980,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         // 重新加载阅读表单
         _reloadReadForm: function() {
-            this.fireEvent("reloadReadForm");
             if (this.app.inBrowser) {
+                this.fireEvent("reloadReadForm");
                 this.modules.each(function (module) {
                     MWF.release(module);
                 });
