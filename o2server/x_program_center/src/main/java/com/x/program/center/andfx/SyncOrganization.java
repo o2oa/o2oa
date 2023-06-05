@@ -7,7 +7,6 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -33,6 +32,7 @@ import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,31 +40,37 @@ import java.util.stream.Collectors;
 public class SyncOrganization {
 
     private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
+    private static ReentrantLock lock = new ReentrantLock();
 
-    public synchronized PullResult execute(Business business) throws Exception {
-        logger.info("移动办公进行人员组织同步.");
+    public PullResult execute(Business business) throws Exception {
         PullResult result = new PullResult();
         List<Unit> units = new ArrayList<>();
         List<Person> people = new ArrayList<>();
         List<PersonAttribute> personAttributes = new ArrayList<>();
         List<Identity> identities = new ArrayList<>();
-        try {
-            AndFxFactory factory = new AndFxFactory();
-            for (Department root : factory.roots()) {
-                this.check(business, result, units, people, personAttributes, identities, factory, null, root);
+        if(lock.tryLock()) {
+            logger.info("移动办公进行人员组织同步.");
+            try {
+                AndFxFactory factory = new AndFxFactory();
+                for (Department root : factory.roots()) {
+                    this.check(business, result, units, people, personAttributes, identities, factory, null, root);
+                }
+                this.clean(business, result, units, people, identities);
+                CacheManager.notify(Person.class);
+                CacheManager.notify(PersonAttribute.class);
+                CacheManager.notify(Unit.class);
+                CacheManager.notify(UnitAttribute.class);
+                CacheManager.notify(UnitDuty.class);
+                CacheManager.notify(Identity.class);
+                CacheManager.notify(Role.class);
+            } catch (Exception e) {
+                logger.warn("移动办公进行人员组织同步时出错：{}", e.getMessage());
+                logger.error(e);
+            } finally {
+                lock.unlock();
             }
-            this.clean(business, result, units, people, identities);
-        } catch (Exception e) {
-            logger.warn("移动办公进行人员组织同步时出错：{}", e.getMessage());
-            logger.error(e);
+            logger.info("移动办公人员组织同步结束.");
         }
-        CacheManager.notify(Person.class);
-        CacheManager.notify(PersonAttribute.class);
-        CacheManager.notify(Unit.class);
-        CacheManager.notify(UnitAttribute.class);
-        CacheManager.notify(UnitDuty.class);
-        CacheManager.notify(Identity.class);
-        CacheManager.notify(Role.class);
         result.end();
         if (!result.getCreateUnitList().isEmpty()) {
             logger.info("创建组织({}):{}.", result.getCreateUnitList().size(),
@@ -102,7 +108,6 @@ public class SyncOrganization {
             logger.info("删除身份({}):{}.", result.getRemoveIdentityList().size(),
                     StringUtils.join(result.getRemoveIdentityList(), ","));
         }
-        logger.info("移动办公人员组织同步结束.");
         return result;
     }
 
