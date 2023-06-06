@@ -330,13 +330,13 @@ MWF.xDesktop.WebSocket = new Class({
         var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
-            this.openWork(read.work,e);
+            this.openWork(read.work || read.workCompleted,e);
         }.bind(this));
 
         messageItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
-            this.openWork(read.work,e);
+            this.openWork(read.work || read.workCompleted,e);
         }.bind(this));
     },
     receiveCustomMessage: function(data){
