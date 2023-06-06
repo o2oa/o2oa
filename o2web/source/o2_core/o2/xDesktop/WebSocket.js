@@ -281,7 +281,7 @@ MWF.xDesktop.WebSocket = new Class({
         //if (layout.desktop.top.userPanel) layout.desktop.top.userPanel.receiveChatMessage(data);
     },
     openWork: function(id, e){
-        o2.Actions.get("x_processplatform_assemble_surface").loadWork(id, function(){
+        o2.Actions.get("x_processplatform_assemble_surface").loadWorkV2(id, function(){
             var options = {"workId": id, "appId": "process.Work"+id};
             layout.desktop.openApplication(e, "process.Work", options);
         }.bind(this), function(){
