@@ -468,24 +468,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }else if (this.json.languageType=="default") {
             var name = "lp-"+o2.language;
-
+            var p1, p2;
             if (this.options.macro==="PageContext"){
-                var portal = this.app.portal.id;
+                var portal = (this.app.portal && this.app.portal.id) ? this.app.portal.id : this.json.application;
                 // languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
                 //     return this.Macro.exec(d.data.text, this);
                 // }.bind(this), function(){});
 
-                languageJson = this.workAction.getScriptByNameV2(portal, name).then(function(d){
-                    return this.Macro.exec(d.data.text, this);
-                }.bind(this), function(){});
-            }else{
-                var application = (this.businessData.work || this.businessData.workCompleted).application;
-                var p1 = this.workAction.getDictRoot(name, application, function(d){
+                p1 = this.workAction.getDictRoot(name, portal, function(d){
                     return d.data;
                 }, function(){
                     return true;
                 });
-                var p2 = new Promise(function(resolve, reject){
+
+                p2 = new Promise(function(resolve, reject){
+                    this.workAction.getScriptByNameV2(portal, name, function(d){
+                        if (d.data.text) {
+                            resolve(this.Macro.exec(d.data.text, this));
+                        }
+                    }.bind(this), function(){reject("");});
+                }.bind(this));
+                languageJson = Promise.any([p1, p2]);
+            }else{
+                var application = (this.businessData.work || this.businessData.workCompleted).application;
+                p1 = this.workAction.getDictRoot(name, application, function(d){
+                    return d.data;
+                }, function(){
+                    return true;
+                });
+                p2 = new Promise(function(resolve, reject){
                     this.workAction.getScriptByNameV2(name, application, function(d){
                         if (d.data.text) {
                             resolve(this.Macro.exec(d.data.text, this));
