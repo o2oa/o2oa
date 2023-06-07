@@ -67,34 +67,54 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
     },
 	_showValue: function(node, value){
 		var optionItems = this.getOptions();
-		if( optionItems && typeOf(optionItems.then) === "function" ){
-			optionItems.then(function (opt) {
-				this.__showValue(node, opt, value)
-			}.bind(this));
-		}else{
-			this.__showValue(node, optionItems, value)
-		}
+		o2.promiseAll( optionItems ).then(function (opts) {
+			if (value){
+				if (typeOf(value)!=="array") value = [value];
+				var texts = [];
+				opts.each(function(item){
+					var tmps = item.split("|");
+					var t = tmps[0];
+					var v = tmps[1] || t;
+
+					if (v){
+						if (value.indexOf(v)!=-1){
+							texts.push(t);
+						}
+					}
+
+				});
+				node.set("text", texts.join(", "));
+			}
+		})
+
+		// if( optionItems && typeOf(optionItems.then) === "function" ){
+		// 	optionItems.then(function (opt) {
+		// 		this.__showValue(node, opt, value)
+		// 	}.bind(this));
+		// }else{
+		// 	this.__showValue(node, optionItems, value)
+		// }
 	},
-	__showValue: function(node, optionItems, value){
-        if (value){
-            if (typeOf(value)!=="array") value = [value];
-            var texts = [];
-            optionItems.each(function(item){
-                var tmps = item.split("|");
-                var t = tmps[0];
-                var v = tmps[1] || t;
-
-                if (v){
-
-                    if (value.indexOf(v)!=-1){
-                        texts.push(t);
-                    }
-                }
-
-            });
-            node.set("text", texts.join(", "));
-        }
-	},
+	// __showValue: function(node, optionItems, value){
+    //     if (value){
+    //         if (typeOf(value)!=="array") value = [value];
+    //         var texts = [];
+    //         optionItems.each(function(item){
+    //             var tmps = item.split("|");
+    //             var t = tmps[0];
+    //             var v = tmps[1] || t;
+	//
+    //             if (v){
+	//
+    //                 if (value.indexOf(v)!=-1){
+    //                     texts.push(t);
+    //                 }
+    //             }
+	//
+    //         });
+    //         node.set("text", texts.join(", "));
+    //     }
+	// },
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
 			if (e.code){
@@ -225,13 +245,40 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	},
 	_getOptions: function(async, refresh){
 	    switch (this.json.itemType) {
-			case "values": return this.json.itemValues;
-			case "dict": return this.getOptionsWithDict( async, refresh );
-			case "view": return this.getOptionsWithView( async, refresh );
-			case "statement": return this.getOptionsWithStatement( async, refresh );
-			default:
+			case "values":
+				return this.json.itemValues;
+			case "script":
 				return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
+			default:
+				break;
 		}
+
+		var opts, defaultOpts = this.getDefaultOptions();
+		switch (this.json.itemType) {
+			case "dict":
+				opts = this.getOptionsWithDict( async, refresh ); break;
+			case "view":
+				opts = this.getOptionsWithView( async, refresh ); break;
+			case "statement":
+				opts = this.getOptionsWithStatement( async, refresh ); break;
+		}
+		return o2.promiseAll( [defaultOpts, opts] ).then(function (arr) {
+			return this._contactOption( arr[0], arr[1] );
+		}.bind(this));
+	},
+	_contactOption: function(opt1, opt2){
+	 	var optA, optB;
+	 	if( !opt1 )opt1 = [];
+	 	if( !opt2 )opt2 = [];
+		optA = typeOf(opt1) !== "array" ? [opt1]: opt1;
+		optB = typeOf(opt2) !== "array" ? [opt2]: opt2;
+		optA.each(function (o) {
+			if( o )optB.unshift( o );
+		});
+		return optB;
+	},
+	getDefaultOptions: function(){
+		return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
 	},
 
 	/**
@@ -250,25 +297,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	 * })
 	 */
 	getOptionsObj : function( refresh ){
+		debugger;
 		var optionItems = (refresh!==true && this.optionsCache) ? this.optionsCache : this.getOptions();
-		if (!optionItems) optionItems = [];
-		if (o2.typeOf(optionItems)==="array"){
-		    return this._getOptionsObj( optionItems );
-		}else if (o2.typeOf(optionItems.then)==="function"){
-			return optionItems.then(function(optItems){
-			    return this._getOptionsObj( optItems )
-			});
+		if( optionItems && typeOf(optionItems.then) === "function" ){
+			return Promise.resolve( optionItems ).then(function(optItems){
+				return this._getOptionsObj( optItems );
+			}.bind(this));
+		}else{
+			return this._getOptionsObj( optionItems );
 		}
-		return { textList : textList, valueList : valueList };
 	},
-	_getOptionsObj: function( optionItems ){
+	_getOptionsObj: function( optItems ){
 		var textList = [];
 		var valueList = [];
-		optionItems.each(function(item){
+		optItems.each(function(item){
 			var tmps = item.split("|");
 			textList.push( tmps[0] );
 			valueList.push( tmps[1] || tmps[0] );
-		}.bind(this));
+		});
 		return { textList : textList, valueList : valueList };
 	},
 
@@ -453,13 +499,20 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			ops = this.getOptionsObj();
 			var data = this._getBusinessData();
 			var d = typeOf(data) === "array" ? data : [data];
-			if( typeOf(ops.then) === "function" ){
-			    return ops.then( function(options){
-					return this._getTextDataRead( d, options );
-			    }.bind(this));
-			}else{
-                return this._getTextDataRead( d, ops );
-			}
+
+			return o2.promiseAll( ops ).then(function (opts) {
+				debugger;
+				var value = [], text = [];
+				d.each( function (v) {
+					var idx = opts.valueList.indexOf( v );
+					value.push( v || "" );
+					text.push( idx > -1 ? opts.textList[idx] : (v || "") );
+				});
+				if (!value.length) value = [""];
+				if (!text.length) text = [""];
+				return {"value": value, "text": text};
+			})
+
 		}else{
 			var value = [], text = [];
 			ops = this.node.getElements("option");
@@ -475,17 +528,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			if (!text.length) text = [""];
 			return {"value": value, "text": text};
 		}
-	},
-	_getTextDataRead: function(d, ops){
-		var value = [], text = [];
-		d.each( function (v) {
-			var idx = ops.valueList.indexOf( v );
-			value.push( v || "" );
-			text.push( idx > -1 ? ops.textList[idx] : (v || "") );
-		});
-		if (!value.length) value = [""];
-		if (!text.length) text = [""];
-		return {"value": value, "text": text};
 	},
 
 	/**

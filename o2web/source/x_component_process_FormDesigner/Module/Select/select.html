@@ -69,7 +69,7 @@
 
         <div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
         <div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
-        <div id="text{$.pid}selectDefaultOptionScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
+        <div id="text{$.pid}selectDefaultOptionScript" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
         <div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
