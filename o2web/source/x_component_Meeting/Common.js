@@ -1342,7 +1342,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     cancelMeeting: function(e){
         var _self = this;
         var text = this.app.lp.cancel_confirm.replace(/{name}/g, this.data.subject);
-        this.app.confirm("infor", e, this.app.lp.cancel_confirm_title, text, 380, 200, function(){
+        this.app.confirm("infor", e, this.app.lp.cancel_confirm_title, text, 400, 200, function(){
             _self._cancelMeeting();
             this.close();
             _self.close();
@@ -2518,7 +2518,7 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
     cancel: function(e){
         var _self = this;
         var text = this.app.lp.cancel_confirm.replace(/{name}/g, this.data.subject);
-        this.app.confirm("infor", e, this.app.lp.cancel_confirm_title, text, 380, 150, function(){
+        this.app.confirm("infor", e, this.app.lp.cancel_confirm_title, text, 400, 200, function(){
             _self.cancelMeeting();
             this.close();
         }, function(){

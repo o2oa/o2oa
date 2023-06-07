@@ -36,7 +36,7 @@
 
     "dutyTitleTextNode": {
         "margin-right": "30px",
-        "height": "30px",
+        "min-height": "30px",
         "padding": "0px 10px",
         "color": "#666",
         "font-weight": "bold",
@@ -45,7 +45,7 @@
     },
     "dutyTitleActionNode": {
         "width": "30px",
-        "height": "30px",
+        "min-height": "30px",
         "float": "right",
         "background": "url("+"../x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
         "cursor": "pointer"
@@ -91,9 +91,8 @@
         "color": "#444",
         "font-size": "14px",
         "font-weight": "bold",
-        "height": "26px",
-        "margin-bottom": "6px",
-        "line-height": "26px"
+        "min-height": "26px",
+        "margin-bottom": "6px"
     },
 
     "dutyAreaNode": {
@@ -102,7 +101,7 @@
     },
 
     "dutyReferenceAreaNode": {
-        "height": "30px",
+        "min-height": "30px",
         "padding": "4px 0px 0px 0px",
         "overflow": "hidden"
     },

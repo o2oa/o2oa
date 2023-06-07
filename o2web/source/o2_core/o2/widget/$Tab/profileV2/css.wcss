@@ -21,7 +21,7 @@
 		"float": "left",
 		"height": "28px",
 		"cursor": "pointer",
-		"width": "90px",
+		"min-width": "90px",
 		"text-align": "center",
 		"border-bottom": "0px"
 	},
@@ -49,7 +49,7 @@
 		"margin-right": "-1px",
 		"margin-top": "1px",
 		"height": "47px",
-		"width": "90px",
+		"min-width": "90px",
 		"text-align": "center",
 		"border-bottom": "3px solid #4A90E2"
 	},

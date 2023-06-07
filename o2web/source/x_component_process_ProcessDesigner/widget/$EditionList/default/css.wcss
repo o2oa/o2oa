@@ -105,7 +105,7 @@
     },
 
     "enableAction": {
-        "width": "30px",
+        "min-width": "30px",
         "padding": "0px 3px",
         "border-radius": "20px",
         "color": "#ffffff",
@@ -116,7 +116,7 @@
         "font-weight": "100"
     },
     "delAction": {
-        "width": "30px",
+        "min-width": "30px",
         "padding": "0px 3px",
         "border-radius": "20px",
         "color": "#ffffff",
