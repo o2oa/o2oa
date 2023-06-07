@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
 /** @class Select 下拉选择组件。
  * 在8.1之后，支持从数据字典、视图和查询获取可选项。获取过程为异步。
  * @o2cn 下拉选择
@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	/** @lends MWF.xApplication.process.Xform.Select# */
 	{
 	Implements: [Events],
-	Extends: MWF.APP$Input,
+	Extends: MWF.APP$Selector,
 	iconStyle: "selectIcon",
 
 
@@ -202,126 +202,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         }.bind(this));
 
 	},
-	/**
-	 * @summary 刷新选择项，如果选择项是脚本，重新计算。
-	 * @example
-	 * this.form.get('fieldId').resetOption();
-	 */
-    resetOption: function(){
-        this.node.empty();
-        this.setOptions();
-		this.fireEvent("resetOption")
-    },
-	/**
-	 * @summary 获取选择项。
-	 * @return {Array | Promise} 返回选择项数组或Promise，如：<pre><code class='language-js'>[
-	 *  "女|female",
-	 *  "男|male"
-	 * ]</code></pre>
-	 * @example
-	 * this.form.get('fieldId').getOptions();
-	 * @example
-	 * //异步
-	 * var opt = this.form.get('fieldId').getOptions();
-	 * Promise.resolve(opt).then(function(options){
-	 *     //options为选择项数组
-	 * })
-	 */
-	 getOptions: function(async, refresh){
-	    this.optionsCache = null;
-		var opt = this._getOptions(async, refresh);
-		if( (opt && typeOf(opt.then) === "function") ){
-			var p = Promise.resolve( opt ).then(function(option){
-				this.moduleSelectAG = null;
-			    this.optionsCache = (option || []);
-			    return this.optionsCache;
-			}.bind(this));
-			this.moduleSelectAG = p;
-			return p;
-		}else{
-		    this.optionsCache = (opt || []);
-			return this.optionsCache;
-		}
-	},
-	_getOptions: function(async, refresh){
-	    switch (this.json.itemType) {
-			case "values":
-				return this.json.itemValues;
-			case "script":
-				return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
-			default:
-				break;
-		}
 
-		var opts, defaultOpts = this.getDefaultOptions();
-		switch (this.json.itemType) {
-			case "dict":
-				opts = this.getOptionsWithDict( async, refresh ); break;
-			case "view":
-				opts = this.getOptionsWithView( async, refresh ); break;
-			case "statement":
-				opts = this.getOptionsWithStatement( async, refresh ); break;
-		}
-		return o2.promiseAll( [defaultOpts, opts] ).then(function (arr) {
-			return this._contactOption( arr[0], arr[1] );
-		}.bind(this));
-	},
-	_contactOption: function(opt1, opt2){
-	 	var optA, optB;
-	 	if( !opt1 )opt1 = [];
-	 	if( !opt2 )opt2 = [];
-		optA = typeOf(opt1) !== "array" ? [opt1]: opt1;
-		optB = typeOf(opt2) !== "array" ? [opt2]: opt2;
-		optA.each(function (o) {
-			if( o )optB.unshift( o );
-		});
-		return optB;
-	},
-	getDefaultOptions: function(){
-		return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
-	},
-
-	/**
-	 * @summary 获取整理后的选择项。
-	 * @param {Boolean} [refresh] 是否忽略缓存重新计算可选项。
-	 * @return {Object} 返回整理后的选择项数组或Promise，如：
-	 * <pre><code class='language-js'>{"valueList": ["","female","male"], "textList": ["","女","男"]}
-	 * </code></pre>
-	 * @example
-	 * var optionData = this.form.get('fieldId').getOptionsObj();
-	 * @example
-	 * //异步
-	 * var opt = this.form.get('fieldId').getOptionsObj(true);
-	 * Promise.resolve(opt).then(function(optionData){
-	 *     //optionData为选择项
-	 * })
-	 */
-	getOptionsObj : function( refresh ){
-		debugger;
-		var optionItems = (refresh!==true && this.optionsCache) ? this.optionsCache : this.getOptions();
-		if( optionItems && typeOf(optionItems.then) === "function" ){
-			return Promise.resolve( optionItems ).then(function(optItems){
-				return this._getOptionsObj( optItems );
-			}.bind(this));
-		}else{
-			return this._getOptionsObj( optionItems );
-		}
-	},
-	_getOptionsObj: function( optItems ){
-		var textList = [];
-		var valueList = [];
-		optItems.each(function(item){
-			var tmps = item.split("|");
-			textList.push( tmps[0] );
-			valueList.push( tmps[1] || tmps[0] );
-		});
-		return { textList : textList, valueList : valueList };
-	},
-
-	setOptions: function(){
-		var optionItems = this.getOptions();
-		this._setOptions(optionItems);
-	},
 	_setOptions: function(optionItems){
 		var p = o2.promiseAll(optionItems).then(function(options){
 			this.moduleSelectAG = null;
@@ -483,51 +364,21 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	// 	//this.node.set("value", value);
 	// },
 
-	/**
-	 * @summary 获取选中项的value和text。
-	 * @return {Object} 返回选中项的value和text，如：
-	 * <pre><code class='language-js'>{"value": ["male"], "text": ["男"]}
-	 * {"value": [""], "text": [""]}
-	 * </code></pre>
-	 * @example
-	 * var data = this.form.get('fieldId').getTextData();
-	 * var text = data.text[0] //获取选中项的文本
-	 */
-	getTextData: function(){
-		var ops;
-		if (this.isReadonly()){
-			ops = this.getOptionsObj();
-			var data = this._getBusinessData();
-			var d = typeOf(data) === "array" ? data : [data];
 
-			return o2.promiseAll( ops ).then(function (opts) {
-				debugger;
-				var value = [], text = [];
-				d.each( function (v) {
-					var idx = opts.valueList.indexOf( v );
-					value.push( v || "" );
-					text.push( idx > -1 ? opts.textList[idx] : (v || "") );
-				});
-				if (!value.length) value = [""];
-				if (!text.length) text = [""];
-				return {"value": value, "text": text};
-			})
-
-		}else{
-			var value = [], text = [];
-			ops = this.node.getElements("option");
-			ops.each(function(op){
-				if (op.selected){
-					var v = op.get("value");
-					var t = op.get("text");
-					value.push(v || "");
-					text.push(t || v || "");
-				}
-			});
-			if (!value.length) value = [""];
-			if (!text.length) text = [""];
-			return {"value": value, "text": text};
-		}
+	_getInputTextData: function(){
+	    var value = [], text = [];
+        ops = this.node.getElements("option");
+        ops.each(function(op){
+            if (op.selected){
+                var v = op.get("value");
+                var t = op.get("text");
+                value.push(v || "");
+                text.push(t || v || "");
+            }
+        });
+        if (!value.length) value = [""];
+        if (!text.length) text = [""];
+        return {"value": value, "text": text};
 	},
 
 	/**
