@@ -53,6 +53,19 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
             }
         }
     },
+    __setReadonly: function(data){
+        if (this.isReadonly()){
+            if( o2.typeOf(data) === "array" ){
+                if( ["monthrange","daterange"].contains(this.json.selectType) ) {
+                    this.node.set("text", this.json.rangeSeparator ? data.join(this.json.rangeSeparator) : data);
+                }else{
+                    this.node.set("text", data );
+                }
+            }else{
+                this.node.set("text", data );
+            }
+        }
+    },
     _appendVueData: function(){
         if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.disabled) this.json.disabled = false;

@@ -49,6 +49,15 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
         }
     },
+    __setReadonly: function(data){
+        if (this.isReadonly()){
+            if( o2.typeOf(data) === "array" ){
+                this.node.set("text", this.json.rangeSeparator ? data.join(this.json.rangeSeparator) : data );
+            }else{
+                this.node.set("text", data );
+            }
+        }
+    },
     _appendVueData: function(){
         if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.disabled) this.json.disabled = false;
