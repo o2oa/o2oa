@@ -74,7 +74,8 @@ o2.xApplication.systemconfig.LP = {
         "languageInfo": "设置服务端语言环境",
         "languageValues": {
             "zh-CN": "简体中文",
-            "en": "英文"
+            "en": "英文",
+			"es": "西班牙语"
         },
 
         "running": "运行中",
@@ -1521,7 +1522,7 @@ o2.xApplication.systemconfig.LP = {
     },
     "_pushConfig": {
         "pushType": "消息推送服务",
-        "pushTypeInfo": "O2OA支持极光推送服务，您可以在此配置推送的应用参数",
+        "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
         "pushTypeData": [
             {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
             {"value": "none", "label": "none", "text": "禁用消息推送"}

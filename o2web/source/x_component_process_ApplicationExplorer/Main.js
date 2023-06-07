@@ -596,7 +596,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
         var check = "<br/><br/><input style='display:none' type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllInfo;
 		confirmStr += check;
 
-		this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 530, 250, function(){
+		this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 600, 280, function(){
 			confirmStr = _self.lp.application.deleteElementsConfirmAgain+"<br/><br/><font style='color:red; font-size:14px; font-weight: bold'>"+applicationList.join("、")+"</font>";
 			var checkbox = this.content.getElement("#deleteApplicationAllCheckbox");
 

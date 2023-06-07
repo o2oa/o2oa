@@ -247,7 +247,8 @@
 
 .o2_profile_ideasSave {
     height: 40px;
-    width: 220px;
+    min-width: 220px;
+    padding: 0 10px;
     background-color: #FFF;
     line-height: 40px;
     text-align: center;
@@ -393,6 +394,7 @@
     height: 40px;
     font-weight: normal;
     text-align: left;
+    padding: 5px;
 }
 
 .o2_profile_emPower_Btnimg{
@@ -523,7 +525,7 @@ label.o2_profile_empower_radio input[type=radio]{
 
 .o2_profile_emPower_noData {
     margin: 200px auto;
-    width: 100px;
+    min-width: 100px;
 
     line-height: 30px;
     text-align: center;

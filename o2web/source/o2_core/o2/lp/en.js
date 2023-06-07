@@ -165,6 +165,7 @@ o2.LP.desktop = {
 	"close": "Close",
 	"closeAll": "Close All",
 	"closeOther": "Close Others",
+	"openInBrowser": "Open in browser",
 
 	"lnkAppTitle": "Often Used",
 	"deleteLnk": "Delete Link",

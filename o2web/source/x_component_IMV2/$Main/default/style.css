@@ -230,7 +230,7 @@
 }
 
 .o2_im_chat_content_title_menu {
-  width: 98px;
+  min-width: 98px;
   position: absolute;
   right: 24px;
   top: 61px;
@@ -239,6 +239,7 @@
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   display: none;
   z-index: 10000;
+  padding: 0 10px;
 }
 .o2_im_chat_content_title_menu_item {
   height: 48px;

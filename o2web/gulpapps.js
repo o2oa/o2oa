@@ -94,7 +94,11 @@ var apps = [
     { "folder": "x_component_appstore", "tasks": [] },
     { "folder": "x_component_appstore_application", "tasks": [] },
     { "folder": "x_component_systemconfig", "tasks": [] },
-    { "folder": "x_component_attendancev2", "tasks": [] }
+    { "folder": "x_component_attendancev2", "tasks": [] },
+    { "folder": "x_component_custom_test1", "tasks": [] },
+    { "folder": "x_component_custom_testreact1", "tasks": [] },
+    { "folder": "x_component_custom_testvue2", "tasks": [] },
+    { "folder": "x_component_demo_oovm", "tasks": [] }
 ];
 
 module.exports = apps;

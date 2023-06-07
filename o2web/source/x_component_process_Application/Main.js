@@ -800,7 +800,7 @@ MWF.xApplication.process.Application.AllList = new Class({
 			"    <td styles='filterTableValue' item='startTime'></td>" +
 			"    <td styles='filterTableTitle' lable='endTime'></td>" +
 			"    <td styles='filterTableValue' item='endTime'></td>" +
-			"    <td styles='filterTableValue' style='width: 150px'><div style='float:left' item='action'></div><div item='reset'></div></td>" +
+			"    <td styles='filterTableValue' style='width: 180px'><div style='float:left' item='action'></div><div item='reset'></div></td>" +
 			"</tr>" +
 			"</table>";
 		this.fileterNode.set("html", html);

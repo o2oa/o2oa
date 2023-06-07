@@ -50,7 +50,7 @@
 		"margin-top": "0px",
 		"font-weight": "normal",
 		"margin-left": "8px",
-		"padding": "0 5px",
+		"padding": "0",
 		"display": "inline"
 	},
 	"tabCloseNode": {
@@ -87,7 +87,7 @@
 		"font-weight": "normal",
 		"margin-top": "0px",
 		"float": "left",
-		"padding": "0 5px",
+		"padding": "0",
 		"display": "inline"
 	},
 
