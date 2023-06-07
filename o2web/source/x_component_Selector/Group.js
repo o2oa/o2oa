@@ -119,54 +119,17 @@ MWF.xApplication.Selector.Group.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
-        this.node.addEvent("mouseover", function () {
-            if( !this.detailLoaded ){
-                o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
-                    groupList: [this.data.id]
-                }, function(json){
-                    debugger;
-                    var d = json.data[0];
-                    var text = "";
-                    if( d.personList && d.personList.length ){
-                        text += MWF.xApplication.Selector.LP.person + ": " + d.personList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.identityList && d.identityList.length ){
-                        text += MWF.xApplication.Selector.LP.identity + ": " + d.identityList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.unitList && d.unitList.length ){
-                        text += MWF.xApplication.Selector.LP.unit + ": " + d.unitList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.groupList && d.groupList.length ){
-                        text += MWF.xApplication.Selector.LP.group + ": " + d.groupList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
-
-                    if (!Browser.Platform.ios){
-                        this.tooltip = new mBox.Tooltip({
-                            content: node,
-                            setStyles: {content: {padding: 15, lineHeight: 20}},
-                            attach: this.node,
-                            transition: 'flyin'
-                        });
-                        this.tooltip.open()
-                    }
-
-                    this.detailLoaded = true;
-                }.bind(this))
+        if( !layout.mobile ){
+            this.tooltip = new MWF.xApplication.Selector.Group.Tooltip(document.body, this.node, null, {}, {
+                axis : "y",
+                hiddenDelay : 0,
+                displayDelay : 300,
+                groupId: this.data.id
+            });
+            if( this.selector.tooltips ){
+                this.selector.tooltips.push(this.tooltip);
             }
-        }.bind(this));
+        }
     }
     // loadSubItem: function(){
     //     this.selector.orgAction.listPersonNested(this.data.id, function(json){
@@ -205,54 +168,17 @@ MWF.xApplication.Selector.Group.ItemSelected = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
-        this.node.addEvent("mouseover", function () {
-            if( !this.detailLoaded ){
-                o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
-                    groupList: [this.data.id]
-                }, function(json){
-                    debugger;
-                    var d = json.data[0];
-                    var text = "";
-                    if( d.personList && d.personList.length ){
-                        text += MWF.xApplication.Selector.LP.person + ": " + d.personList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.identityList && d.identityList.length ){
-                        text += MWF.xApplication.Selector.LP.identity + ": " + d.identityList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.unitList && d.unitList.length ){
-                        text += MWF.xApplication.Selector.LP.unit + ": " + d.unitList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    if( d.groupList && d.groupList.length ){
-                        text += MWF.xApplication.Selector.LP.group + ": " + d.groupList.map(function(item){
-                            return item.split("@")[0]
-                        }.bind(this)).join(",")+ "\n";
-                    }
-
-                    var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
-
-                    if (!Browser.Platform.ios){
-                        this.tooltip = new mBox.Tooltip({
-                            content: node,
-                            setStyles: {content: {padding: 15, lineHeight: 20}},
-                            attach: this.node,
-                            transition: 'flyin'
-                        });
-                        this.tooltip.open()
-                    }
-
-                    this.detailLoaded = true;
-                }.bind(this))
+        if( !layout.mobile ){
+            this.tooltip = new MWF.xApplication.Selector.Group.Tooltip(document.body, this.node, null, {}, {
+                axis : "y",
+                hiddenDelay : 0,
+                displayDelay : 300,
+                groupId: this.data.id
+            });
+            if( this.selector.tooltips ){
+                this.selector.tooltips.push(this.tooltip);
             }
-        }.bind(this));
+        }
     }
     // loadSubItem: function(){
     //     this.selector.orgAction.listPersonNested(this.data.id, function(json){
@@ -278,6 +204,85 @@ MWF.xApplication.Selector.Group.ItemSelected = new Class({
     // }
 });
 
+
+
+
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xApplication.Selector.Group.Tooltip = new Class({
+    Extends: MTooltips,
+    options:{
+        nodeStyles: {
+            "font-size" : "12px",
+            "position" : "absolute",
+            "max-width" : "300px",
+            "min-width" : "180px",
+            "z-index" : "1000001",
+            "background-color" : "#fff",
+            "padding" : "10px",
+            "border-radius" : "8px",
+            "box-shadow": "0 0 18px 0 #999999",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text",
+            "line-height": "20px"
+        },
+        position : { //node 固定的位置
+            x : "auto", //x轴上left center right,  auto 系统自动计算
+            y : "top" //y 轴上top middle bottom, auto 系统自动计算
+        },
+        priorityOfAuto :{
+            x : [ "center", "right", "left" ], //当position x 为 auto 时候的优先级
+            y : [ "middle", "top", "bottom" ] //当position y 为 auto 时候的优先级, "middle", "top", "bottom"
+        },
+        offset : {
+            x : 0,
+            y : 0
+        },
+        isFitToContainer : true,
+        overflow : "scroll"
+    },
+    _loadCustom : function( callback ){
+
+        o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
+            groupList: [this.options.groupId]
+        }, function(json){
+            var d = json.data[0];
+            var text = "";
+            if( d.personList && d.personList.length ){
+                text += MWF.xApplication.Selector.LP.person + ": " + d.personList.map(function(item){
+                    return item.split("@")[0]
+                }.bind(this)).join(",")+ "\n";
+            }
+
+            if( d.identityList && d.identityList.length ){
+                text += MWF.xApplication.Selector.LP.identity + ": " + d.identityList.map(function(item){
+                    return item.split("@")[0]
+                }.bind(this)).join(",")+ "\n";
+            }
+
+            if( d.unitList && d.unitList.length ){
+                text += MWF.xApplication.Selector.LP.unit + ": " + d.unitList.map(function(item){
+                    return item.split("@")[0]
+                }.bind(this)).join(",")+ "\n";
+            }
+
+            if( d.groupList && d.groupList.length ){
+                text += MWF.xApplication.Selector.LP.group + ": " + d.groupList.map(function(item){
+                    return item.split("@")[0]
+                }.bind(this)).join(",")+ "\n";
+            }
+
+            var node = new Element("div", {"styles": {"max-width": "300px", "white-space": "pre-line"}, "text": text});
+
+            node.inject( this.contentNode );
+            if(callback)callback();
+
+        }.bind(this))
+
+    },
+    _customNode : function( node, contentNode ){
+        this.fireEvent("customContent", [contentNode, node]);
+    }
+});
 
 MWF.xApplication.Selector.Group.Filter = new Class({
     Implements: [Options, Events],
@@ -318,3 +323,4 @@ MWF.xApplication.Selector.Group.Filter = new Class({
         return result;
     }
 });
+

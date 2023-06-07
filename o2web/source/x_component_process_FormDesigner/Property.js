@@ -522,6 +522,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.setFormSelectOptions(node, select);
                         }.bind(this), true);
                     }.bind(this));
+
+                    var openNode = new Element("div", {"styles": this.form.css.propertyOpenFormNode}).inject(node);
+                    openNode.addEvent("click", function(e){
+                        var name = node.get("name");
+                        this._openForm( this.data[name] );
+                    }.bind(this));
+
+
                     //select.addEvent("click", function(e){
                     //    this.setFormSelectOptions(node, select);
                     //}.bind(this));
@@ -671,6 +679,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.setSubformSelectOptions(node, select);
                 }.bind(this), true, appNodeName);
             }.bind(this));
+
+            var openNode = new Element("div", {"styles": this.form.css.propertyOpenFormNode}).inject(node);
+            openNode.addEvent("click", function(e){
+                var name = node.get("name");
+                this._openForm( this.data[name] );
+            }.bind(this));
+
         }.bind(this), false, appNodeName );
         return select;
     },
@@ -700,6 +715,21 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }
     },
 
+    _openForm: function( formId ){
+	    var pre = this.appType === "cms" ?  "cms" : "process";
+        if( formId && formId !== "none" ){
+            this.form.designer.actions.getForm(formId, function(json){
+                var options = {
+                    "style": layout.desktop.formDesignerStyle || "default",
+                    "appId": pre+".FormDesigner"+formId,
+                    "id": formId
+                };
+                layout.openApplication(null, pre+".FormDesigner", options);
+            }.bind(this), function () {
+                return true;
+            })
+        }
+    },
 
     loadPageSelect: function(){
         var pageNodes = this.propertyContent.getElements(".MWFPageSelect");
@@ -814,7 +844,26 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.setWidgetSelectOptions(node, select);
                 }.bind(this), true, appNodeName);
             }.bind(this));
+
+
+            var openNode = new Element("div", {"styles": this.form.css.propertyOpenFormNode}).inject(node);
+            openNode.addEvent("click", function(e){
+                var name = node.get("name");
+                var widgetId = this.data[name];
+                if( widgetId && widgetId !== "none" ){
+                    this.form.designer.actions.getWidget(widgetId, function(json){
+                        var options = {
+                            "appId": "portal.WidgetDesigner"+widgetId,
+                            "id": widgetId
+                        };
+                        layout.openApplication(null, "portal.WidgetDesigner", options);
+                    }.bind(this), function () {
+                        return true;
+                    })
+                }
+            }.bind(this));
         }.bind(this), false, appNodeName );
+
         return select;
     },
     setWidgetSelectOptions: function(node, select){

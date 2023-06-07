@@ -926,13 +926,20 @@
 		"text-decoration": "underline",
 		"color": "#0000FF"
 	},
-    propertyRefreshFormNode: {
+    "propertyRefreshFormNode": {
         "width": "24px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/refresh.png) no-repeat center center",
+        "background": "url(../x_component_process_ProcessDesigner/$Process/flat/icon/refresh.png) no-repeat center center",
         "cursor": "pointer"
     },
+	"propertyOpenFormNode": {
+		"width": "24px",
+		"height": "24px",
+		"float": "right",
+		"background": "url(../x_component_process_ProcessDesigner/$Process/flat/icon/form.png) no-repeat center center",
+		"cursor": "pointer"
+	},
     "applicationSelectTitle": {
         "height": "30px",
         "line-height": "30px",

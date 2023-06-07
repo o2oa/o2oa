@@ -101,6 +101,8 @@ MWF.xApplication.Selector.Person = new Class({
             this.options.values = [];
         }
 
+        this.tooltips = [];
+
         this.availableStatusTypes = ["identity","custom"];
 
         this._init();
@@ -461,6 +463,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     close: function(){
         this.fireEvent("close");
+        this.clearTooltip();
         this.node.destroy();
         //if (this.mask) this.mask.hide();
         if( !this.options.embedded ){
@@ -473,6 +476,14 @@ MWF.xApplication.Selector.Person = new Class({
         this.active = false;
         MWF.release(this);
         delete this;
+    },
+    clearTooltip: function(){
+        if( this.tooltips && this.tooltips.length ){
+            this.tooltips.each(function (tooltip) {
+                if(tooltip.destroy)tooltip.destroy();
+            }.bind(this));
+            this.tooltips = [];
+        }
     },
     loadAction: function(){
         if( !this.okActionNode ){
@@ -2335,6 +2346,11 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (callback) callback();
     },
     clickItem: function( callback, checkValid ){
+        if( this.tooltip ){
+            if( this.selector.tooltips )this.selector.tooltips.erase(this.tooltip);
+            this.tooltip.destroy();
+            this.tooltip = null;
+        }
         if (this.items.length){
             var items = [], map = {};
             this.items.each(function(item){

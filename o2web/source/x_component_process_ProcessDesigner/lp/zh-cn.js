@@ -522,6 +522,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dutyRange": "职务范围",
 		"all": "所有",
 		"all2": "全部",
+		"groupRange": "群组范围",
+		"specifyGroup": "指定群组",
 		"specifyDuty": "指定职务",
 		"category": "分类",
 		"byUnit": "按组织",

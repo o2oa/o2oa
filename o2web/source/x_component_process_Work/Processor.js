@@ -1246,6 +1246,11 @@ MWF.xApplication.process.Work.Processor = new Class({
 
 
     destroy: function () {
+        if (this.orgItems && this.orgItems.length){
+            this.orgItems.each(function (org) {
+                if(org.clearTooltip)org.clearTooltip();
+            })
+        }
         if (this.node) this.node.empty();
         delete this.task;
         delete this.node;
@@ -2123,6 +2128,11 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 }
             }
         },
+        clearTooltip: function(){
+            if( this.selector && this.selector.selector && this.selector.selector.clearTooltip ){
+                this.selector.selector.clearTooltip();
+            }
+        },
         _getOrgOptions: function () {
             this.selectTypeList = typeOf(this.json.selectType) == "array" ? this.json.selectType : [this.json.selectType];
             if (this.selectTypeList.contains("identity")) {
@@ -2131,9 +2141,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             if (this.selectTypeList.contains("unit")) {
                 this.unitOptions = new MWF.xApplication.process.Work.Processor.UnitOptions(this.form, this.json);
             }
-            //if( this.selectTypeList.contains( "group" ) ){
-            //    this.groupOptions = new MWF.APPOrg.GroupOptions( this.form, this.json );
-            //}
+            if( this.selectTypeList.contains( "group" ) ){
+               this.groupOptions = new MWF.xApplication.process.Work.Processor.GroupOptions( this.form, this.json );
+            }
         },
         getOptions: function () {
             var _self = this;
@@ -2188,12 +2198,16 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 unitOpt.exclude = exclude;
             }
 
-            //var groupOpt;
-            //if( this.groupOptions ){
-            //    groupOpt = this.groupOptions.getOptions();
-            //    groupOpt.values = (this.json.isInput) ? [] : values;
-            //    groupOpt.exclude = exclude;
-            //}
+            var groupOpt;
+            if( this.groupOptions ){
+               groupOpt = this.groupOptions.getOptions();
+                if (this.ignoreOldData) {
+                    groupOpt.values = this._computeValue() || [];
+                } else {
+                    groupOpt.values = this.getValue() || [];
+                }
+               groupOpt.exclude = exclude;
+            }
 
             var defaultOpt;
             if (layout.mobile) {
@@ -2257,7 +2271,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
             };
 
             if (this.selectTypeList.length === 1) {
-                return Object.merge(
+                var opts = Object.merge(
                     defaultOpt,
                     {
                         "type": this.selectTypeList[0],
@@ -2272,8 +2286,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                         //"onClose": this.selectOnClose.bind(this)
                     },
                     layout.mobile ? mobileEvents : {},
-                    identityOpt || unitOpt
+                    identityOpt || unitOpt || groupOpt
                 )
+                return this.filterOptionValues( opts, this.selectTypeList[0] );
             } else if (this.selectTypeList.length > 1) {
                 var options = {
                     "type": "",
@@ -2302,9 +2317,40 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                         unitOpt
                     );
                 }
-                //if( groupOpt )options.groupOptions = groupOpt;
+                if (groupOpt) {
+                    options.groupOptions = Object.merge(
+                        defaultOpt,
+                        layout.mobile ? mobileEvents : {},
+                        groupOpt
+                    );
+                }
                 return options;
             }
+        },
+        filterOptionValues: function( options, type ){
+            var suffix;
+            switch (type) {
+                case "identity": suffix = "I"; break;
+                case "unit": suffix = "U"; break;
+                case "group": suffix = "G"; break;
+            }
+            options.values = (options.values || []).filter(function (v) {
+                if( typeOf(v) === "string" ){
+                    if( v.contains("@") ){
+                        return v.split("@").getLast().toUpperCase() === suffix;
+                    }else{
+                        return true;
+                    }
+                }else if( typeOf(v) === "object" ){
+                    if( v.distinguishedName ){
+                        return v.distinguishedName.split("@").getLast().toUpperCase() === suffix;
+                    }else{
+                        return false;
+                    }
+                }
+                return false;
+            }.bind(this));
+            return options;
         },
         selectOnComplete: function (items) { //移动端才执行
             var array = [];
@@ -2520,6 +2566,11 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                     if (v) values.push(v)
                 });
             }
+            // if (this.json.groupValue) {
+            //     this.json.groupValue.each(function (v) {
+            //         if (v) values.push(v)
+            //     });
+            // }
             if (this.json.dutyValue) {
                 var dutys = JSON.decode(this.json.dutyValue);
                 var par;
@@ -2581,7 +2632,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                     if (vtype === "string") {
                         this.getOrgAction()[this.getValueMethod(v)](function (json) {
                             data = MWF.org.parseOrgData(json.data, true, simple);
-                        }.bind(this), error, v, false);
+                        }.bind(this), null, v, false);
                     }
                     if (vtype === "object") {
                         data = MWF.org.parseOrgData(v, true, simple);
@@ -2594,7 +2645,7 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
                 var vData;
                 this.getOrgAction()[this.getValueMethod(value)](function (json) {
                     vData = MWF.org.parseOrgData(json.data, true, simple);
-                }.bind(this), error, value, false);
+                }.bind(this), null, value, false);
                 if (vData) values.push(vData);
             }
             if (type === "object") {
@@ -3098,5 +3149,9 @@ if (MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form) {
 
     MWF.xApplication.process.Work.Processor.IdentityOptions = new Class({
         Extends: MWF.APPOrg.IdentityOptions
+    });
+
+    MWF.xApplication.process.Work.Processor.GroupOptions = new Class({
+        Extends: MWF.APPOrg.GroupOptions
     });
 }
