@@ -309,6 +309,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getTaskList": function(callback, error){
+            if( ev.work.completedTime )return [];
             return _getWorkContextList("listTaskByWork", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -378,7 +379,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getTaskCompletedList": function(callback, error){
-            return _getWorkContextList("listTaskCompletedByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listTaskCompletedByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
@@ -446,7 +447,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getReadList": function(callback, error){
-            return _getWorkContextList("listReadByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listReadByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
@@ -514,7 +515,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getReadCompletedList": function(callback, error){
-            return _getWorkContextList("listReadCompletedByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listReadCompletedByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
