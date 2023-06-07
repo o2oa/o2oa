@@ -164,6 +164,19 @@ MWF.xApplication.Meeting.LP = {
     "hostUnit": "Departamento organizador",
     "meetingType":"Tipo de reunión",
 
+    "meetingMode": "metodo de encuentro",
+    "meetingModeSelectText": ["reunión fuera de línea","reunión en línea"],
+    "meetingModeSelectValue": ["desconectado","en línea"],
+    "meeting Url": "URL de la reunión",
+    "meeting Number": "número de reunión",
+    "netMeetingAbb": "neto",
+    "yes": "Sí",
+    "no": "No",
+    "other": "otro",
+    "createOnSave": "Generado automáticamente después de guardar",
+    "copy": "Copiar",
+    "noRoomBuilding": "reunión en línea\n (sin sala de reuniones)",
+
     "week" : "Semana",
     "weeks": {
         "Sun": "Domingo",
@@ -240,7 +253,30 @@ MWF.xApplication.Meeting.LP = {
         "viewCustomName" : "Nombre personalizado de la vista",
         "mobileCreateEnable" : "¿Permitir crear reuniones en dispositivos móviles?",
         "mobileCreateEnableOptions" : ["Sí","No"],
-        "meetingType":"Tipos de reuniones (uno por línea)"
+        "meetingType":"Tipos de reuniones (uno por línea)",
+
+        "enableOnline": "Habilitar reunión en línea",
+        "onlineConfig": "Configuración de reuniones en línea",
+        "onlineProduct": "Producto de reunión en línea",
+
+        'hstUrl': 'dirección de Servicio',
+        'hstKey':'KEY de interfaz de servicio',
+        'hstSecret': 'Interfaz de servicio SECRET',
+        'hstAuth': '¿Se requiere autenticación?',
+        'o2ToHstUid': 'Campos de mapeo de personas',
+        "onlineConfigNotEmpty": "La dirección del servicio GoodSight, la interfaz \"KEY\", la interfaz \"SECRET\" no puede estar vacía",
+
+        "employee": "employee",
+        "unique": "unique",
+        "distinguishedName": "distinguishedName",
+        "mobile": "mobile",
+        "mail": "mail",
+        "weixin": "qq",
+        "qq": "qq",
+
+        "apiAddress": "dirección api de conferencia web",
+        "key": "key",
+        "secret": "secret"
     },
     "nextActivity": "Siguiente actividad:",
     "nextUser": "Persona responsable:",

@@ -3489,22 +3489,37 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_signer) this.layout_signer.set("html", data.signer || " ");
             if (this.layout_subject) this.layout_subject.set("html", data.subject || " ");
             if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
+
+            var html = `
+<html>
+<body>
+    <h1>Title</h1>
+    <img src="ggg" onerror="adert('hhhh')" alt="jj"/>
+    <p>This is a paragraph.</p>
+    <button onclick="alert('Clicked!')">Click me</button>
+    <script>alert('Hel lo, World!');</script>
+</body>
+</html>
+`;
+debugger;
             if (diffFiletext) {
                 this.layout_filetext.set("html", diffFiletext);
             }else if (this.layout_filetext){
                 //this.layout_filetext.set("placeholder", this.json.defaultValue.filetext);
-                this.layout_filetext.set("html", data.filetext || "　　");
 
-                var tableList = this.layout_filetext.getElements("table");
-                if (tableList && tableList.length){
-                    // var w = this.layout_filetext.offsetWidth;
-                    // tableList.setStyle("width", ""+w+"px");
-                    tableList.setStyles({
-                        "margin-left": "",
-                        "margin-right": "",
-                        "word-break": "break-all"
-                    });
-                }
+                this.layout_filetext.set("html", html);
+                // this.layout_filetext.set("html", data.filetext || "　　");
+
+                // var tableList = this.layout_filetext.getElements("table");
+                // if (tableList && tableList.length){
+                //     // var w = this.layout_filetext.offsetWidth;
+                //     // tableList.setStyle("width", ""+w+"px");
+                //     tableList.setStyles({
+                //         "margin-left": "",
+                //         "margin-right": "",
+                //         "word-break": "break-all"
+                //     });
+                // }
             }
             if (this.layout_signer) this.layout_signer.set("html", data.signer || "");
             if (this.layout_attachmentTitle) this.layout_attachmentTitle.set("text", data.attachmentTitle || " ");

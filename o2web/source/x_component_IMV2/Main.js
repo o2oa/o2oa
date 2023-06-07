@@ -186,7 +186,8 @@ MWF.xApplication.IMV2.Main = new Class({
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
-				"height": "200",
+				"width": '500',
+				"height": "210",
 				"content": settingNode,
 				"onQueryClose": function () {
 					settingNode.destroy();
