@@ -187,8 +187,7 @@ o2.LP.desktop = {
 		"process": "Proceso",
 		"infor": "Info",
 		"query": "Datos",
-		"taskMessage": "Recordatorio de tareas pendientes",
-		"receiveTask": "Ha recibido una tarea pendiente. El título es:",
+		"taskMessage": "Recordatorio de tareas pendientes",		"receiveTask": "Ha recibido una tarea pendiente. El título es:",
 		"activity": "Actividad",
 
 		"readMessage": "Recordatorio de lectura pendiente",
