@@ -64,7 +64,12 @@
 #### Portal 门户页面组件
    {@o2IndexTable classes|o2category=FormComponents|o2range=Portal}
 
+### Query
 
+* Query为数据中心的应用，本章节包括视图、查询视图、导入模型的api。
+
+#### Viewer 视图类
+   {@o2IndexTable classes|o2category=Query|o2range=Viewer}
 
 ### 服务
 
