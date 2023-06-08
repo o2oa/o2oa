@@ -170,6 +170,8 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "im_create":
                             case "im_revoke":
+                            case "im_conv_update":
+                            case "im_conv_delete":
                                 this.receiveIMMessage(data);
                                 break;
                             case "cms_publish" :
@@ -357,6 +359,14 @@ MWF.xDesktop.WebSocket = new Class({
     /// im消息处理
     receiveIMMessage: function(data){
         var imBody = data.body;
+        // 更新会话或删除会话
+        if (data.type === "im_conv_update" || data.type === "im_conv_delete") {
+             // 执行im callback 刷新页面信息
+             if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
+                this.imListenerMap["im_conversation"](imBody);
+                }
+                return;
+        }
         // 撤回消息
         if (data.type == "im_revoke") {
             // 执行im callback 刷新页面信息
