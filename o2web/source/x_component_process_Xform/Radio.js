@@ -14,7 +14,7 @@ MWF.require("MWF.widget.UUID", null, false);
  * field.hide(); //隐藏字段
  * var id = field.json.id; //获取字段标识
  * var flag = field.isEmpty(); //字段是否为空
- * @extends MWF.xApplication.process.Xform.$Input
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
@@ -49,12 +49,11 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         var value = this.getValue();
         this._showValue(this.node, value);
     },
-    _showValue: function(node, value){
-        var radioValues = this.getOptions();
+    __showValue: function(node, value, optionItems){
         if (value){
             var texts = "";
-            for (var i=0; i<radioValues.length; i++){
-                var item = radioValues[i];
+            for (var i=0; i<optionItems.length; i++){
+                var item = optionItems[i];
                 var tmps = item.split("|");
                 var t = tmps[0];
                 var v = tmps[1] || t;

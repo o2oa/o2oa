@@ -21,17 +21,17 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     options: {
         /**
          * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
-         * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.Elradio#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 组件加载时触发.
-         * @event MWF.xApplication.process.Xform.$Module#load
+         * @event MWF.xApplication.process.Xform.Elradio#load
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 组件加载后触发.
-         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @event MWF.xApplication.process.Xform.Elradio#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad", "change"],

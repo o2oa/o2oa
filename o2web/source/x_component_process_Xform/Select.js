@@ -14,7 +14,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
  * field.hide(); //隐藏字段
  * var id = field.json.id; //获取字段标识
  * var flag = field.isEmpty(); //字段是否为空
- * @extends MWF.xApplication.process.Xform.$Input
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
@@ -65,56 +65,27 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         var value = this.getValue();
         this._showValue( this.node, value );
     },
-	_showValue: function(node, value){
-		var optionItems = this.getOptions();
-		o2.promiseAll( optionItems ).then(function (opts) {
-			if (value){
-				if (typeOf(value)!=="array") value = [value];
-				var texts = [];
-				opts.each(function(item){
-					var tmps = item.split("|");
-					var t = tmps[0];
-					var v = tmps[1] || t;
+	__showValue: function(node, value, optionItems){
+    	debugger;
+        if (value){
+            if (typeOf(value)!=="array") value = [value];
+            var texts = [];
+            optionItems.each(function(item){
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
 
-					if (v){
-						if (value.indexOf(v)!=-1){
-							texts.push(t);
-						}
-					}
+                if (v){
 
-				});
-				node.set("text", texts.join(", "));
-			}
-		})
+                    if (value.indexOf(v)!=-1){
+                        texts.push(t);
+                    }
+                }
 
-		// if( optionItems && typeOf(optionItems.then) === "function" ){
-		// 	optionItems.then(function (opt) {
-		// 		this.__showValue(node, opt, value)
-		// 	}.bind(this));
-		// }else{
-		// 	this.__showValue(node, optionItems, value)
-		// }
+            });
+            node.set("text", texts.join(", "));
+        }
 	},
-	// __showValue: function(node, optionItems, value){
-    //     if (value){
-    //         if (typeOf(value)!=="array") value = [value];
-    //         var texts = [];
-    //         optionItems.each(function(item){
-    //             var tmps = item.split("|");
-    //             var t = tmps[0];
-    //             var v = tmps[1] || t;
-	//
-    //             if (v){
-	//
-    //                 if (value.indexOf(v)!=-1){
-    //                     texts.push(t);
-    //                 }
-    //             }
-	//
-    //         });
-    //         node.set("text", texts.join(", "));
-    //     }
-	// },
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
 			if (e.code){

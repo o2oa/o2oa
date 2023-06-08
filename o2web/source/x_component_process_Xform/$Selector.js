@@ -1,8 +1,26 @@
 o2.xDesktop.requireApp("process.Xform", "$Input", null, false);
-
-o2.xApplication.process.Xform.$Selector = o2.APP$Selector = new Class({
+/** @classdesc $Selector 组件类，此类为所有可选组件的父类
+ * @class
+ * @hideconstructor
+ * @o2category FormComponents
+ * @extends MWF.xApplication.process.Xform.$Input
+ * @abstract
+ */
+MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
+    /** @lends MWF.xApplication.process.Xform.$Selector# */
+    {
     Extends: MWF.APP$Input,
 
+    _showValue: function(node, value){
+        var optionItems = this.getOptions();
+        if( optionItems && typeOf(optionItems.then) === "function" ){
+            optionItems.then(function (opt) {
+                this.__showValue(node, value, opt)
+            }.bind(this));
+        }else{
+            this.__showValue(node, value, optionItems)
+        }
+    },
     /**
      * @summary 刷新选择项，如果选择项是脚本，重新计算。
      * @example
@@ -11,7 +29,7 @@ o2.xApplication.process.Xform.$Selector = o2.APP$Selector = new Class({
     resetOption: function(){
         this.node.empty();
         this.setOptions();
-        this.fireEvent("resetOption")
+        this.fireEvent("resetOption");
     },
     /**
      * @summary 获取选择项。
@@ -145,7 +163,7 @@ o2.xApplication.process.Xform.$Selector = o2.APP$Selector = new Class({
             var data = this._getBusinessData();
             var d = typeOf(data) === "array" ? data : [data];
             if( ops && typeOf(ops.then) === "function" ){
-                return Promise.resoleve(ops).then(function (opts) {
+                return Promise.resolve(ops).then(function (opts) {
                     return this._getTextData(d, opts)
                 }.bind(this));
             }else{
