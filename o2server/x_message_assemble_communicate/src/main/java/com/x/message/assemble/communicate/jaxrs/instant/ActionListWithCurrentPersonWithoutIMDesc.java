@@ -49,6 +49,9 @@ class ActionListWithCurrentPersonWithoutIMDesc extends BaseAction {
         Root<Instant> root = cq.from(Instant.class);
         Predicate p = cb.equal(root.get(Instant_.person), effectivePerson.getDistinguishedName());
         p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_CREATE));
+        p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_REVOKE));
+        p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_CONVERSATION_DELETE));
+        p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_CONVERSATION_UPDATE));
         List<Instant> os = em.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime))))
                 .setMaxResults(count).getResultList();
         return Wo.copier.copy(os);
