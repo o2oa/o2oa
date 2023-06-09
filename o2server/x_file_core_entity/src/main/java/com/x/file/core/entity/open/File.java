@@ -18,7 +18,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.Storage;
 import com.x.base.core.entity.StorageObject;
@@ -118,65 +117,74 @@ public class File extends StorageObject {
 		this.deepPath = deepPath;
 	}
 
+	public static final String NAME_FIELDNAME = "name";
 	@FieldDescribe("名称.")
-	@Column(length = PersistenceProperties.file_name_length, name = "xname")
-	@Index(name = TABLE + "_name")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + NAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + NAME_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String name;
 
+	public static final String PERSON_FIELDNAME = "person";
 	@FieldDescribe("所属用户.")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = "xperson")
-	@Index(name = TABLE + "_person")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + PERSON_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + PERSON_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;
 
+	public static final String REFERENCETYPE_FIELDNAME = "referenceType";
 	@FieldDescribe("关联类型.")
 	@Enumerated(EnumType.STRING)
-	@Column(length = ReferenceType.length, name = "xreferenceType")
-	@Index(name = TABLE + "_referenceType")
+	@Column(length = ReferenceType.length, name = ColumnNamePrefix + REFERENCETYPE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + REFERENCETYPE_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ReferenceType referenceType;
 
+	public static final String REFERENCE_FIELDNAME = "reference";
 	@FieldDescribe("关联ID.")
-	@Column(length = JpaObject.length_255B, name = "xreference")
-	@Index(name = TABLE + "_reference")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + REFERENCE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + REFERENCE_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String reference;
 
+	public static final String EXTENSION_FIELDNAME = "extension";
 	@FieldDescribe("扩展名,必须要有扩展名的文件才允许上传.")
-	@Column(length = JpaObject.length_64B, name = "xextension")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + EXTENSION_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + EXTENSION_FIELDNAME)
 	@CheckPersist(allowEmpty = false, fileNameString = true)
-	@Index(name = TABLE + "_extension")
 	private String extension;
 
+	public static final String STORAGE_FIELDNAME = "storage";
 	@FieldDescribe("存储器的名称,也就是多个存放节点的名字.")
-	@Column(length = JpaObject.length_64B, name = "xstorage")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + STORAGE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + STORAGE_FIELDNAME)
 	@CheckPersist(allowEmpty = false, simplyString = true)
-	@Index(name = TABLE + "_storage")
 	private String storage;
 
+	public static final String LENGTH_FIELDNAME = "length";
 	@FieldDescribe("文件大小.")
-	@Index(name = TABLE + "_length")
-	@Column(name = "xlength")
+	@Column(name = ColumnNamePrefix + LENGTH_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LENGTH_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long length;
 
+	public static final String LASTUPDATETIME_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
-	@Column(name = "xlastUpdateTime")
-	@Index(name = TABLE + "_lastUpdateTime")
+	@Column(name = ColumnNamePrefix + LASTUPDATETIME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LASTUPDATETIME_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date lastUpdateTime;
 
-	@FieldDescribe("最后更新时间")
-	@Column(name = "xlastNotExistedTime")
-	@Index(name = TABLE + "_lastNotExistedTime")
-	@CheckPersist(allowEmpty = true)
-	private Date lastNotExistedTime;
+//	public static final String LASTNOTEXISTEDTIME_FIELDNAME = "lastNotExistedTime";
+//	@FieldDescribe("最后更新时间")
+//	@Column(name = ColumnNamePrefix + LASTNOTEXISTEDTIME_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + LASTNOTEXISTEDTIME_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private Date lastNotExistedTime;
 
-	public static final String deepPath_FIELDNAME = "deepPath";
+	public static final String DEEPPATH_FIELDNAME = "deepPath";
 	@FieldDescribe("是否使用更深的路径.")
 	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
+	@Column(name = ColumnNamePrefix + DEEPPATH_FIELDNAME)
 	private Boolean deepPath;
 
 	public String getName() {
@@ -212,7 +220,7 @@ public class File extends StorageObject {
 	}
 
 	@Override
-    public String getStorage() {
+	public String getStorage() {
 		return storage;
 	}
 
@@ -280,12 +288,12 @@ public class File extends StorageObject {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
-	public Date getLastNotExistedTime() {
-		return lastNotExistedTime;
-	}
-
-	public void setLastNotExistedTime(Date lastNotExistedTime) {
-		this.lastNotExistedTime = lastNotExistedTime;
-	}
+//	public Date getLastNotExistedTime() {
+//		return lastNotExistedTime;
+//	}
+//
+//	public void setLastNotExistedTime(Date lastNotExistedTime) {
+//		this.lastNotExistedTime = lastNotExistedTime;
+//	}
 
 }
