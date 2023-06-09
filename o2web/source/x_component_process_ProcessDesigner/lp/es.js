@@ -34,7 +34,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
         "saveRouteOrgNoName": "La identificación y el título no pueden estar vacíos",
         "saveRouteOrgNumberId": "La identificación no puede ser solo números",
         "saveRouteOrgDoubleDotId": "La identificación no puede contener dos puntos consecutivos",
-        "processCopyError": "La copia de la actividad ha fallado. Por favor, intente copiar de nuevo."
+        "processCopyError": "La copia de la actividad ha fallado. Por favor, intente copiar de nuevo.",
+		"routeNameConfilct ":" una actividad no puede tener dos rutas con el mismo nombre!"
 	},
 	"menu": {
 		"newRoute": "Nueva ruta",
