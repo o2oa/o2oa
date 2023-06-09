@@ -3490,23 +3490,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_subject) this.layout_subject.set("html", data.subject || " ");
             if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
 
-            var html = `
-<html>
-<body>
-    <h1>Title</h1>
-    <img src="ggg" onerror="adert('hhhh')" alt="jj"/>
-    <p>This is a paragraph.</p>
-    <button onclick="alert('Clicked!')">Click me</button>
-    <script>alert('Hel lo, World!');</script>
-</body>
-</html>
-`;
-debugger;
             if (diffFiletext) {
                 this.layout_filetext.set("html", diffFiletext);
             }else if (this.layout_filetext){
                 //this.layout_filetext.set("placeholder", this.json.defaultValue.filetext);
 
+                var html = data.filetext.replace(/(?:<script(?:\s+[\w-]+(?:=(?:"[^"]*"|'[^']*'))?)*\s*>([\s\S]*?)<\/script\s*>)|(?:on\w+\s*=\s*(?:"[^"]*"|'[^']*'))|(?:javascript:.*)/g, '');
                 this.layout_filetext.set("html", html);
                 // this.layout_filetext.set("html", data.filetext || "　　");
 
