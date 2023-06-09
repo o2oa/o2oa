@@ -7,14 +7,14 @@ MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 /** @classdesc Viewer 数据中心的视图。本章节的脚本上下文请看<b>{@link module:queryView|queryView}。</b>
  * @class
  * @o2cn 视图
- * @o2category Query
+ * @o2category QueryViewer
  * @o2range {Viewer}
  * @hideconstructor
  * @example
  * //在视图的事件中获取该类
  * var view = this.target;
  * @example
- * //在视图的操作条组件中，分页事件中获取该类
+ * //在视图的条目中，操作条组件中，分页事件中获取该类
  * var view = this.target.view;
  * @example
  * //调用api进行提示
@@ -2000,12 +2000,41 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
 });
 
-MWF.xApplication.query.Query.Viewer.Item = new Class({
+
+/** @classdesc ViewerItem 数据中心的视图条目。本章节的脚本上下文请看<b>{@link module:queryView|queryView}。</b>
+ * @class
+ * @o2cn 视图条目（行）
+ * @o2category Query
+ * @o2range {Viewer}
+ * @hideconstructor
+ * @example
+ * //在视图中获取行
+ * var item = this.target.items[0];
+ * */
+MWF.xApplication.query.Query.Viewer.Item = new Class(
+    /** @lends MWF.xApplication.query.Query.Viewer.Item# */
+    {
     initialize: function(view, data, prev, i, category, lazy){
+        /**
+         * @summary 行所属视图.
+         * @member {Object}
+         */
         this.view = view;
+        /**
+         * @summary 行数据.
+         * @member {Object}
+         */
         this.data = data;
         this.css = this.view.css;
+        /**
+         * @summary 行是否被选中.
+         * @member {Boolean}
+         */
         this.isSelected = false;
+        /**
+         * @summary 如果视图有分类，获取分类对象。
+         * @member {Object}
+         */
         this.category = category;
         this.prev = prev;
         this.idx = i;
@@ -2412,6 +2441,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
     },
 
+    /*
+     * @summary 选中（多选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.selected();
+     */
     selected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
@@ -2441,6 +2476,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /*
+     * @summary 取消选中（多选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.unSelected();
+     */
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
@@ -2476,6 +2518,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /*
+     * @summary 选中（单选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.selectedSingle();
+     */
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
         this.view.selectedItems = [this];
@@ -2496,6 +2545,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /*
+     * @summary 取消选中（单选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.unSelectedSingle();
+     */
     unSelectedSingle: function(){
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
