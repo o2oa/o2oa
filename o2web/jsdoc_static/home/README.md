@@ -70,7 +70,13 @@
 
 #### QueryView 视图类
    {@o2IndexTable classes|o2category=QueryView|o2range=QueryView}
-
+   
+#### QueryStatement 查询视图类
+   {@o2IndexTable classes|o2category=QueryStatement|o2range=QueryStatement}
+   
+#### QueryImporter 导入模型类
+   {@o2IndexTable classes|o2category=QueryImporter|o2range=QueryImporter}
+    
 ### 服务
 
 * 服务是O2OA后台提供的一系列restful服务。
