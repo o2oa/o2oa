@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<script src="./jquery.min.js"></script>
+<script src="./common.js"></script>
+<style type="text/css">
+	<!--
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size:12px;
+		color:#666666;
+		background:#fff;
+		text-align:left;
+	}
+	a {
+		color:#1E7ACE;
+		text-decoration:none; 
+	}
+	a:hover {
+		color:#000;
+		text-decoration:underline;
+	}
+	h3 {
+		font-size:14px;
+		font-weight:bold;
+	}
+	
+	pre,p {
+		color:#1E7ACE;
+		margin:4px;
+	}
+	
+	table { 
+		border-collapse: collapse;
+		margin: 0 auto;
+		text-align: left;
+	}
+	 
+	table td, table th {
+		border: 1px solid #cad9ea;
+		color: #666;
+		height: 30px;
+		padding-left:20px;
+		padding-right:60px;
+	}
+	 
+	table thead th {
+		background-color: #CCE8EB;
+		width: 100px;
+	}
+	 
+	table tr:nth-child(odd) {
+		background: #fff;
+	}
+	 
+	table tr:nth-child(even) {
+		background: #F5FAFA;
+	}
+	
+	-->
+</style>
+<script>
+var appMap = new Map();
+appMap.set("x_attendance_core_entity", "考勤相关");
+appMap.set("x_bbs_core_entity", "论坛相关");
+appMap.set("x_calendar_core_entity", "日程管理相关");
+appMap.set("x_cms_core_entity", "内容管理相关");
+appMap.set("x_component_core_entity", "组件管理相关");
+appMap.set("x_file_core_entity", "云文件相关");
+appMap.set("x_general_core_entity","常用功能相关");
+appMap.set("x_hotpic_core_entity", "热点信息相关");
+appMap.set("x_jpush_core_entity", "极光推送");
+appMap.set("x_meeting_core_entity", "会议管理相关");
+appMap.set("x_message_core_entity", "消息通信相关");
+appMap.set("x_mind_core_entity", "脑图模块相关");
+appMap.set("x_okr_core_entity", "执行力相关");
+appMap.set("x_organization_core_entity", "组织管理相关");
+appMap.set("x_portal_core_entity", "门户");
+appMap.set("x_processplatform_core_entity", "流程平台");
+appMap.set("x_program_center_core_entity", "中心服务");
+appMap.set("x_query_core_entity", "数据平台全文检索");
+appMap.set("x_teamwork_core_entity", "团队");
+$(function() {
+	   $.getJSON('../describe/table/tableList.json?rd=' + Math.random(), function(json) {
+				var str = '<table border="1">';
+				
+				for(var key in json){
+					str += '<tr>'; 
+					if(typeof(appMap.get(key)) == "undefined"){
+					   str += '<td>' + '</td>';
+					  }else{
+						str += '<td>' + appMap.get(key) + '</td>';
+					  }			  
+					str += '<td>' + key + '</td>';
+					str += '<td>';
+					var url = "./listTableDetail.html?param="+ json[key]
+				    str += '<a href="'+url+'" target="_blank">' + json[key] + '</a><br/>'; ;
+					str += '</td>';
+					str += '</tr>';
+                }
+
+				str += '</table>';
+				$('#content').html(str);
+			});
+  });
+</script>
+</head>
+
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin: 0px">
+	<center id="title" style="font-size:32px; font-weight:bold">O2OA Table structure URL</center>	
+	<div id="content" style="margin-top:10px">&nbsp;</div>
+</body>
+</html>

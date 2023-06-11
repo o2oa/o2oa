@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<script src="./jquery.min.js"></script>
+	<script src="./common.js"></script>
+	<style type="text/css">
+		<!--
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+			font-size:12px;
+			color:#666666;
+			background:#fff;
+			text-align:left;
+		}
+		a {
+			color:#1E7ACE;
+			text-decoration:none;
+		}
+		a:hover {
+			color:#000;
+			text-decoration:underline;
+		}
+		h3 {
+			font-size:14px;
+			font-weight:bold;
+		}
+
+		pre,p {
+			color:#1E7ACE;
+			margin:4px;
+		}
+
+		table {
+			border-collapse: collapse;
+			margin: 0 auto;
+			text-align: left;
+		}
+
+		table td, table th {
+			border: 1px solid #cad9ea;
+			color: #666;
+			height: 30px;
+			padding-left:20px;
+			padding-right:60px;
+		}
+
+		table thead th {
+			background-color: #CCE8EB;
+			width: 100px;
+		}
+
+		table tr:nth-child(odd) {
+			background: #fff;
+		}
+
+		table tr:nth-child(even) {
+			background: #F5FAFA;
+		}
+
+		-->
+	</style>
+	<script>
+		function tableStructure(){
+			var entityMap = new Map();
+			entityMap.set("x_attendance_core_entity", "考勤相关");
+			entityMap.set("x_bbs_core_entity", "论坛相关");
+			entityMap.set("x_calendar_core_entity", "日程管理相关");
+			entityMap.set("x_cms_core_entity", "内容管理相关");
+			entityMap.set("x_component_core_entity", "组件管理相关");
+			entityMap.set("x_file_core_entity", "云文件相关");
+			entityMap.set("x_general_core_entity","常用功能相关");
+			entityMap.set("x_hotpic_core_entity", "热点信息相关");
+			entityMap.set("x_jpush_core_entity", "极光推送");
+			entityMap.set("x_meeting_core_entity", "会议管理相关");
+			entityMap.set("x_message_core_entity", "消息通信相关");
+			entityMap.set("x_mind_core_entity", "脑图模块相关");
+			entityMap.set("x_okr_core_entity", "执行力相关");
+			entityMap.set("x_organization_core_entity", "组织管理相关");
+			entityMap.set("x_portal_core_entity", "门户");
+			entityMap.set("x_processplatform_core_entity", "流程平台");
+			entityMap.set("x_program_center_core_entity", "中心服务");
+			entityMap.set("x_query_core_entity", "数据平台全文检索");
+			entityMap.set("x_teamwork_core_entity", "团队");
+			$(function() {
+				$.getJSON('../describe/table/tableList.json?rd=' + Math.random(), function(json) {
+					$('#apiTable tbody').append("<tr><td colspan='3'><center id='title' style='font-size:32px; font-weight:bold;'>O2OA Table structure</center></td></tr>");
+					for(var key in json){
+						var str = '';
+						str += '<tr>';
+						if(typeof(entityMap.get(key)) == "undefined"){
+							str += '<td>' + '</td>';
+						}else{
+							str += '<td>' + entityMap.get(key) + '</td>';
+						}
+						str += '<td>' + key + '</td>';
+						str += '<td>';
+						var url = "./listTableDetail.html?param="+ json[key]
+						str += '<a href="'+url+'" target="_blank">' + json[key] + '</a><br/>'; ;
+						str += '</td>';
+						str += '</tr>';
+						$('#apiTable tbody').append(str);
+					}
+				});
+			});
+		}
+
+		function getCenterJson(){
+		   var centerJson = "";
+		   var druidTable = "<tr><td colspan='3'><center id='title' style='font-size:32px; font-weight:bold;'>Druid url</center></td></tr>";
+			$.ajax({
+				type : 'get',
+				dataType : 'json',
+				async:false,
+				contentType : 'application/json; charset=utf-8',
+				url : '../jaxrs/jest/center/list',
+				xhrFields : {
+					'withCredentials' : true
+				},
+				crossDomain : true,
+				error : function(e){
+
+				}
+			}).done(function(json){
+				debugger;
+				centerJson += '<tr>';
+				centerJson += '<td>' + json.data.name + '</td>';
+				let classNames = json.data.className.split(".");
+				centerJson += '<td>' + classNames[classNames.length-1] + '</td>';
+				centerJson += '<td>';
+				$.each(json.data.urlList, function(i, url) {
+					url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+					centerJson += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+				});
+				centerJson += '</td>';
+				centerJson += '</tr>';
+
+				druidTable += '<tr>';
+				druidTable += '<td>' + 'Druid Monitor' + '</td>';
+				druidTable += '<td>' + '' + '</td>';
+				druidTable += '<td>';
+				$.each(json.data.urlList, function(i, url) {
+					url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+					url = url.replace(/jest/g, 'druid');
+					druidTable += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+				});
+				druidTable += '</td>';
+				druidTable += '</tr>';
+			})
+
+			return centerJson + druidTable;
+		}
+
+		$(function() {
+			$.ajax({
+				type : 'get',
+				dataType : 'json',
+				contentType : 'application/json; charset=utf-8',
+				url : '../jaxrs/jest/list',
+				xhrFields : {
+					'withCredentials' : true
+				},
+				crossDomain : true,
+				error : function(e){
+					$('#contentTable').hide();
+					$('#content').html("<div align = 'center'>您没有权限查看，请以管理员身份登入！</div>");
+				}
+			}).done(function(json) {
+				if (json.type == 'success') {
+					if (json.data) {
+						var str = '<table border="1" id = "apiTable" >';
+                        str += '<tr><td colspan="3"><center id="title" style="font-size:32px; font-weight:bold;">O2OA Service API URL </center> </td></tr>';
+						$.each(json.data, function(index, o) {
+							str += '<tr>';
+							str += '<td>' + o.name + '</td>';
+							let classNames = o.className.split(".");
+							str += '<td>' + classNames[classNames.length-1] + '</td>';
+							str += '<td>';
+							$.each(o.urlList, function(i, url) {
+								url = url.replace(/(127.0.0.1)/g, window.location.hostname);
+								str += '<a href="'+url+'" target="_blank">' + url + '</a><br/>';
+							});
+							str += '</td>';
+							str += '</tr>';
+						});
+
+						//str += '<tr><td>中心服务</td><td>com.x.base.core.project.x_program_center</td><td><a href="http://'+window.location.hostname+':20030/x_program_center/jest/index.html" target="_blank">http://'+window.location.hostname+':20030/x_program_center/jest/index.html</a><br></td></tr>';
+						str += getCenterJson();
+						str += '</table>';
+						$('#content').html(str);
+						tableStructure();
+					}
+				}
+			});
+
+
+		$.ajax({
+			type : 'get',
+			async : false,
+			dataType : 'json',
+			contentType : 'application/json; charset=utf-8',
+			url : '../jaxrs/jest/version',
+			xhrFields : {
+				'withCredentials' : true
+			},
+			crossDomain : true,
+			error : function(e){
+			}
+		}).done(function(json) {
+			if (json.type == 'success') {
+				 if (json.data) {
+					 $('#version').html('<center>version:'+ json.data.version + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;date:" +json.data.date + "</center>");
+				 }
+				}
+			 }
+		);
+
+
+
+		});
+	</script>
+
+
+</head>
+
+<body style="font-size: 12px; font-family: Microsoft Yahei; margin-top: 50px">
+<center id="title" style="font-size:32px; font-weight:bold;"></center>
+<div id="content" style="margin-top:10px;margin-left: 50px;">&nbsp;</div>
+<div id="contentTable" style="margin-top:20px;margin-left: 50px;">&nbsp;</div>
+<div id="version"  >&nbsp;</div>
+<div><center> Copyright © 2020 Zoneland All Rights Reserved. </center></div>
+</body>
+</html>

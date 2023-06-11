@@ -83,6 +83,7 @@
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
 		<module>x_program_center</module>
+		<module>x_program_init</module>
 		<module>x_console</module>
 	</modules>
 	<dependencies>

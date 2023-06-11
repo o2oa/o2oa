@@ -1,0 +1,217 @@
+package com.x.server.console.server.init;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.stream.Stream;
+
+import javax.servlet.DispatcherType;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.eclipse.jetty.quickstart.QuickStartWebApp;
+import org.eclipse.jetty.server.AsyncRequestLogWriter;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.webapp.WebAppContext;
+
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.x.base.core.project.x_program_center;
+import com.x.base.core.project.x_program_init;
+import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.jaxrs.DenialOfServiceFilter;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.FileTools;
+import com.x.base.core.project.tools.JarTools;
+import com.x.base.core.project.tools.PathTools;
+import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.ServerRequestLogBody;
+import com.x.server.console.server.Servers;
+
+public class InitServerTools extends JettySeverTools {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitServerTools.class);
+
+	public static Server start(CenterServer centerServer) throws Exception {
+
+		cleanWorkDirectory();
+
+		Path war = Paths.get(Config.dir_store().toString(), x_program_init.class.getSimpleName() + PathTools.DOT_WAR);
+		Path dir = Config.path_servers_initServer_work(true).resolve(x_program_center.class.getSimpleName());
+
+		modified(war, dir);
+
+		if (Objects.equals(Config.currentNode().getApplication().getPort(), centerServer.getPort())) {
+			return null;
+		} else {
+			return startStandalone(centerServer);
+		}
+
+	}
+
+	public static Server startInApplication(CenterServer centerServer) throws Exception {
+		WebAppContext webContext = webContext(centerServer);
+		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+		hanlderList.addHandler(webContext);
+		webContext.start();
+		System.out.println("****************************************");
+		System.out.println("* center server is started in the application server.");
+		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
+		System.out.println("****************************************");
+		return Servers.applicationServer;
+	}
+
+	private static Server startStandalone(CenterServer centerServer) throws Exception, IOException {
+		HandlerList handlers = new HandlerList();
+
+		QuickStartWebApp webApp = webContext(centerServer);
+		handlers.addHandler(webApp);
+
+		QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setName("CenterServerQueuedThreadPool");
+		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
+		Server server = new Server(threadPool);
+		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
+
+		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
+			addHttpsConnector(server, centerServer.getPort(), true);
+		} else {
+			addHttpConnector(server, centerServer.getPort(), true);
+		}
+
+		GzipHandler gzipHandler = new GzipHandler();
+		gzipHandler.setHandler(handlers);
+		server.setHandler(gzipHandler);
+
+		server.setDumpAfterStart(false);
+		server.setDumpBeforeStop(false);
+		server.setStopAtShutdown(true);
+
+		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
+			server.setRequestLog(requestLog(centerServer));
+		}
+
+		server.start();
+
+		System.out.println("****************************************");
+		System.out.println("* center server start completed.");
+		System.out.println("* port: " + centerServer.getPort() + ".");
+		System.out.println("****************************************");
+		return server;
+	}
+
+	public static QuickStartWebApp webContext(CenterServer centerServer) throws Exception {
+		Path dir = Paths.get(Config.dir_servers_centerServer_work(true).toString(),
+				x_program_center.class.getSimpleName());
+		QuickStartWebApp webApp = new QuickStartWebApp();
+		webApp.setAutoPreconfigure(false);
+		webApp.setDisplayName(x_program_center.class.getSimpleName());
+		webApp.setContextPath("/" + x_program_center.class.getSimpleName());
+		webApp.setResourceBase(dir.toAbsolutePath().toString());
+		webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
+		webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
+		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
+				BooleanUtils.toStringTrueFalse(false));
+		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));
+		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
+				BooleanUtils.toStringTrueFalse(false));
+		setStat(centerServer, webApp);
+		setExposeJest(centerServer, webApp);
+		return webApp;
+	}
+
+	private static void setStat(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
+			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
+			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+			statServletHolder.setInitParameter("sessionStatEnable", "false");
+			webApp.addServlet(statServletHolder, "/druid/*");
+		}
+	}
+
+	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
+			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+		}
+	}
+
+	private static RequestLog requestLog(CenterServer centerServer) throws Exception {
+		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
+		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
+		asyncRequestLogWriter.setAppend(true);
+		asyncRequestLogWriter.setRetainDays(Config.general().getRequestLogRetainDays());
+		asyncRequestLogWriter.setFilename(
+				Config.dir_logs().toString() + File.separator + "center.request.yyyy_MM_dd." + Config.node() + ".log");
+		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
+		if (BooleanUtils.isTrue(Config.general().getRequestLogBodyEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
+			return new ServerRequestLog(asyncRequestLogWriter, LOG_FORMAT);
+		} else {
+			return new ServerRequestLogBody(asyncRequestLogWriter, LOG_FORMAT);
+		}
+	}
+
+	private static void cleanWorkDirectory() throws IOException, URISyntaxException {
+		try (Stream<Path> paths = Files.walk(Config.path_servers_initServer_work(true))) {
+			// 删除每个文件和子目录
+			paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+		}
+	}
+
+	private static void modified(Path war, Path dir) throws Exception {
+		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
+		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
+				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
+						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
+			LOGGER.info("deploy war:{}.", war.getFileName().toAbsolutePath());
+			if (Files.exists(dir)) {
+				PathUtils.cleanDirectory(dir);
+			}
+			JarTools.unjar(war, "", dir, true);
+			if (!Files.exists(lastModified)) {
+				Files.createDirectories(lastModified.getParent());
+				Files.createFile(lastModified);
+			}
+			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
+					DefaultCharset.charset_utf_8, false);
+		}
+		File commonLang = new File(Config.DIR_COMMONS_LANGUAGE);
+		if (commonLang.exists() && commonLang.isDirectory()) {
+			File languageDir = new File(dir.toString(), PathTools.WEB_INF_CLASSES_LANGUAGE);
+			FileTools.forceMkdir(languageDir);
+			File[] files = commonLang.listFiles();
+			for (File file : files) {
+				if (!file.isDirectory()) {
+					File languageFile = new File(languageDir, file.getName());
+					FileUtils.copyFile(file, languageFile);
+				}
+			}
+		}
+	}
+}

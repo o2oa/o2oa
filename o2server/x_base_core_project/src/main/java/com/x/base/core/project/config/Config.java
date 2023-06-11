@@ -150,6 +150,7 @@ public class Config {
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
 	public static final String DIR_WEBROOT = "webroot";
+	public static final String DIR_SERVERS_INITSERVER_WORK = "servers/initServer/work";
 
 	public static final String RESOURCE_CONTAINERENTITIES = "containerEntities";
 
@@ -1483,6 +1484,14 @@ public class Config {
 
 	public static Path path_webroot(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_WEBROOT);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_initServer_work(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_INITSERVER_WORK);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}
