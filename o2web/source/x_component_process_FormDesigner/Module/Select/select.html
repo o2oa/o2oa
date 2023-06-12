@@ -30,7 +30,7 @@
                         $('text{$.pid}selectEditItemView').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
                         $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'none');
-                    }" name="itemType" text{($.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+                    }" name="itemType" text{(!$.itemType || $.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
                     <input class="editTableRadio" onclick="if (this.checked){
                         $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
                         $('text{$.pid}selectEditItemScript').setStyle('display', 'block');
@@ -67,7 +67,7 @@
             </tr>
         </table>
 
-        <div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
+        <div id="text{$.pid}selectEditItemValues" style="display: text{(!$.itemType || $.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
         <div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
         <div id="text{$.pid}selectDefaultOptionScript" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
         <div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">

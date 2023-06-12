@@ -92,11 +92,10 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         var value = this.getValue();
         this._showValue(this.node, value);
     },
-    _showValue: function(node, value){
-        var radioValues = this.getOptions();
+    __showValue: function(node, value, optionItems){
         if (value){
             var texts = [];
-            radioValues.each(function(item){
+            optionItems.each(function(item){
                 var tmps = item.split("|");
                 var t = tmps[0];
                 var v = tmps[1] || t;
