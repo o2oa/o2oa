@@ -1009,6 +1009,18 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
                 }
             }
         }
+    },
+    checkRouteName: function (value) {
+        var flag = true;
+        if (this.fromActivity) {
+            this.fromActivity.routes.each(function(route){
+                if (route.data.id !== this.data.id && route.data.name === value && value !== MWF.APPPD.LP.unnamed ) {
+                    this.process.designer.notice(this.process.designer.lp.notice.routeNameConfilct, "error");
+                    flag = false;
+                }
+            }.bind(this));
+        }
+        return flag;
     }
 });
 
@@ -1101,10 +1113,14 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
 		this.htmlPath = "../x_component_process_ProcessDesigner/$Process/route.html";
 	},
 	setValue: function(name, value){
-		this.data[name] = value;
 		if (name=="name"){
-			if (!value) this.data[name] = MWF.APPPD.LP.unnamed;
-			this.route.reload();
+			if (!value){
+                this.data[name] = MWF.APPPD.LP.unnamed;
+            }else if( this.route.checkRouteName(value) ){
+                this.data[name] = value;
+                this.route.reload();
+            }
+
 		}
 	},
     show: function(){

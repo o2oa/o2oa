@@ -34,7 +34,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"saveRouteOrgNoName" : "标识和标题不能为空",
 		"saveRouteOrgNumberId" : "标识不能为纯数字",
 		"saveRouteOrgDoubleDotId" : "标识不能包含连续两个点号",
-		"processCopyError": "活动粘贴失败，请重新复制后重试"
+		"processCopyError": "活动粘贴失败，请重新复制后重试",
+		"routeNameConfilct": "一个活动不能有两个同名路由！"
 	},
 	"menu": {
 		"newRoute": "新建路由",
