@@ -42,11 +42,17 @@
   {
     "name": "form_custom_submit_pc.json",
     "title": MWF.xApplication.process.ProcessManager.LP.submitPcForm,
-    "icon": "form_custom_submit_pc.png"
+    "icon": "form_custom_submit_pc.png",
+    "code": {
+      "pc.json.moduleList.div_loadSubmitForm.events.queryLoad.code": "../x_component_process_FormDesigner/Module/Form/template/form_custom_submit_pc_queryLoad.txt"
+    }
   },
   {
     "name": "form_custom_submit_mobile.json",
     "title": MWF.xApplication.process.ProcessManager.LP.submitMobileForm,
-    "icon": "form_custom_submit_mobile.png"
+    "icon": "form_custom_submit_mobile.png",
+    "code": {
+      "mobile.json.moduleList.div_loadSubmitForm.events.queryLoad.code": "../x_component_process_FormDesigner/Module/Form/template/form_custom_submit_mobile_queryLoad.txt"
+    }
   }
 ]
