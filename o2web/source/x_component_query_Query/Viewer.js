@@ -4,7 +4,25 @@ MWF.require("MWF.widget.Common", null, false);
 MWF.require("o2.widget.Paging", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
-MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
+/** @classdesc View 数据中心的视图。本章节的脚本上下文请看<b>{@link module:queryView|queryView}。</b>
+ * @class
+ * @o2cn 视图
+ * @o2category QueryView
+ * @o2range {QueryView}
+ * @hideconstructor
+ * @example
+ * //在视图的事件中获取该类
+ * var view = this.target;
+ * @example
+ * //在视图的条目中，操作条组件中，分页事件中获取该类
+ * var view = this.target.view;
+ * @example
+ * //调用api进行提示
+ * this.queryView.notice("this is my information", "info");
+ * */
+MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
+    /** @lends MWF.xApplication.query.Query.Viewer# */
+    {
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
@@ -16,9 +34,59 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "isload": "true",
         "export": false,
         "lazy": false,
-        "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
-            "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow"]
+        "moduleEvents": [
+            /**
+             * 加载前触发。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Viewer#queryLoad
+             */
+            "queryLoad",
+            /**
+             * 视图界面和当前页数据加载后执行。需注意，翻页也会执行本事件。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Viewer#postLoad
+             */
+            "postLoad",
+            /**
+             * 加载当前页数据后，渲染界面前执行，翻页后也会执行本事件。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Viewer#postLoadPageData
+             */
+            "postLoadPageData",
+            /**
+             * 渲染当前页内容后执行，翻页后也会执行本事件。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Viewer#postLoadPage
+             */
+            "postLoadPage",
+            /**
+             * 选择行后执行。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#selectRow
+             */
+            "selectRow",
+            /**
+             * 取消选择行后执行。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#unselectRow
+             */
+            "unselectRow",
 
+            /**
+             * 加载每行之前执行（非分类行）。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#queryLoadItemRow
+             */
+            "queryLoadItemRow",
+            /**
+             * 加载每行之后执行（非分类行）。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#postLoadItemRow
+             */
+            "postLoadItemRow",
+            /**
+             * 加载分类行之前执行。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#queryLoadCategoryRow
+             */
+            "queryLoadCategoryRow",
+            /**
+             * 加载分类行后执行。可通过this.target获取视图对象，通过this.event获取行对象。
+             * @event MWF.xApplication.query.Query.Viewer#postLoadCategoryRow
+             */
+            "postLoadCategoryRow"
+         ]
         // "actions": {
         //     "lookup": {"uri": "/jaxrs/view/flag/{view}/query/{application}/execute", "method":"PUT"},
         //     "getView": {"uri": "/jaxrs/view/flag/{view}/query/{application}"}
@@ -42,19 +110,49 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.app = app;
 
         this.container = $(container);
+
         this.json = json;
 
         this.parentMacro = parentMacro;
 
         this.originalJson = Object.clone(json);
 
+        /**
+         * @summary 视图的详细配置信息，比如条目的选择类型等.
+         * @member {Object}
+         * @example
+         *  //可以在视图脚本中获取视图基本信息（视图事件中）
+         * var json = this.target.viewJson; //视图配置信息
+         * var name = json.selectList; //视图的列配置
+         * @example
+         *  //可以在视图的组件中获取视图基本信息(在视图的操作条组件中，分页事件中)
+         * var json = this.target.view.viewJson; //视图配置信息
+         * var name = json.selectList; //视图的列配置
+         */
         this.viewJson = null;
         this.filterItems = [];
         this.searchStatus = "none"; //none, custom, default
 
-
+        /**
+         * @summary 视图当前页的所有行对象数组.
+         * @member {Array}
+         * @example
+         * //获取视图当前页的所有行对象数组
+         * var itemList = this.target.items;
+         */
         this.items = [];
 
+        /**
+         * @summary 视图选中行的对象数组.
+         * @member {Array}
+         * @example
+         * //获取视图选中行的对象数组
+         * var itemList = this.target.selectedItems;
+         * itemList.each(function(item){
+         *      //取消选中
+         *     item.unSelected()
+         * })
+         */
         this.selectedItems = [];
         this.hideColumns = [];
         this.openColumns = [];
@@ -110,12 +208,39 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadLayout: function(){
+        /**
+         * @summary 视图的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
+         * @see https://mootools.net/core/docs/1.6.0/Element/Element
+         * @member {Element}
+         * @example
+         *  //可以在视图脚本中获取视图的Dom
+         * var node = this.target.node;
+         * @example
+         *  //可以在视图的组件中获取视图的Dom(在视图的操作条组件中，分页事件中)
+         * var node = this.target.view.node;
+         */
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
+        /**
+         * @summary 操作组件容器
+         * @member {Element}
+         */
         this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
+        /**
+         * @summary 搜索界面容器
+         * @member {Element}
+         */
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
+        /**
+         * @summary 表头和条目容器，
+         * @member {Element}
+         */
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
         // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        /**
+         * @summary 分页组件容器，
+         * @member {Element}
+         */
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
 
         this.fireEvent("loadLayout");
@@ -327,6 +452,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
             if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
+            /**
+             * @summary 视图的操作条对象.
+             * @member {Object}
+             * @example
+             * var actionbar = this.target.actionbar;
+             */
             this.actionbar = new MWF.xApplication.query.Query.Viewer.Actionbar(this.actionbarAreaNode, this.viewJson.actionbarList[0], this, {});
             this.actionbar.load();
         }else{ //兼容以前的ExportNode
@@ -576,6 +707,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
                 json = JSON.parse(jsonStr);
             }
+            /**
+             * @summary 视图的分页组件对象.
+             * @member {Object}
+             * @example
+             * var paging = this.target.paging;
+             */
             this.paging = new MWF.xApplication.query.Query.Viewer.Paging(this.viewPageAreaNode, json, this, {});
             this.paging.load();
         }else{
@@ -910,6 +1047,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     hide: function(){
         this.node.setStyle("display", "none");
     },
+    /**
+     * @summary 刷新视图。
+     *  @param {Function} [callback] - 可选，刷新视图后的回调.
+     *  @example
+     *  this.target.reload();
+     */
     reload: function( callback ){
         if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
@@ -1479,12 +1622,34 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     //搜索相关结束
 
     //api 使用 开始
+
+    /**
+     * @summary 如果当前视图是嵌入在表单或者页面中，使用该方法获取表单或页面的上下文。
+     * @see {@link module:queryView.getParentEnvironment|详情查看 this.queryViewer.getParentEnvironment}
+     * @return {Object}
+     * @example
+     *  this.target.getParentEnvironment();
+     */
     getParentEnvironment : function(){
         return this.parentMacro ? this.parentMacro.environment : null;
     },
+    /**
+     * @summary 获取视图的配置信息。
+     * @see {@link module:queryView.getViewInfor|详情查看 this.queryViewer.getViewInfor}
+     * @return {Object}
+     * @example
+     *  this.target.getViewInfor();
+     */
     getViewInfor : function(){
         return this.json;
     },
+    /**
+     * @summary 获取视图当前页的基本信息。
+     * @see {@link module:queryView.getPageInfor|详情查看 this.queryViewer.getPageInfor}
+     * @return {Object}
+     * @example
+     *  this.target.getPageInfor();
+     */
     getPageInfor : function(){
         return {
             pages : this.pages,
@@ -1492,13 +1657,54 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             currentPageNumber : this.currentPage
         };
     },
+    /**
+     * @summary 获取当前页的数据。
+     * @see {@link module:queryView.getPageData|详情查看 this.queryViewer.getPageData}
+     * @return {Object}
+     * @example
+     *  this.target.getPageData();
+     */
     getPageData : function () {
         return this.gridJson;
     },
+    /**
+     * @summary 跳转到指定的页面。
+     * @see {@link module:queryView.toPage|详情查看 this.queryViewer.toPage}
+     * @param {Number} pageNumber 需要跳转的页码
+     * @param {Function} callback 跳转的页面数据加载完成以后的回调方法。
+     * @example
+     *  //　跳转到第2页并且获取该页的数据。
+     *  this.target.toPage( 2, function(){
+     *      var data = this.target.getPageData();
+     *  }.bind(this) )
+     */
     toPage : function( pageNumber, callback ){
         this.currentPage = pageNumber;
         this.loadCurrentPageData( callback );
     },
+    /**
+     * 获取选中的条目的数据。
+     * @method getSelectedData
+     * @see {@link module:queryView.getSelectedData|详情查看 this.queryViewer.getSelectedData}
+     * @memberOf module:queryView
+     * @static
+     * @return {Object[]} 选中的条目的数据。
+     * <div>格式如下：</div>
+     * <pre><code class='language-js'>
+     * [
+     {
+        "bundle": "099ed3c9-dfbc-4094-a8b7-5bfd6c5f7070", //cms 的 documentId, process 的 jobId
+        "data": {  //视图中配置的数据
+          "title": "考勤管理-配置-统计周期设置", //列名称及列值
+          "time": "2018-08-25 11:29:45"
+        }
+      },
+     ...
+     * ]
+     </code></pre>
+     * @o2syntax
+     * var data = this.target.getSelectedData();
+     */
     getSelectedData : function(){
         return this.getData();
     },
@@ -1697,6 +1903,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // }
     },
 
+    /**
+     * @summary 设置视图的过滤条件，该方法不能修改视图中默认的过滤条件（在开发视图的时候添加的过滤条件），而是在这上面新增。
+     * @see {@link module:queryView.setFilter|详情查看 this.queryViewer.setFilter}
+     * @param {(ViewFilter[]|ViewFilter|Null)} [filter] 过滤条件
+     * @param {Function} callback 过滤完成并重新加载数据后的回调方法。
+     */
     setFilter : function( filter, callback ){
         if( this.lookuping || this.pageloading )return;
         if( !filter )filter = [];
@@ -1706,6 +1918,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
         }
     },
+    /**
+     * @summary 把当前视图切换成另外一个视图。
+     * @see {@link module:queryView.switchView|详情查看 this.queryViewer.switchView}
+     * @param {(ViewFilter[]|ViewFilter|Null)} [filter] 过滤条件
+     * @param {Object} options 需要跳转的参数配置
+     */
     switchView : function( json ){
         debugger;
         // json = {
@@ -1723,7 +1941,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.searchMorph = null;
         this.viewSearchCustomContentNode = null;
-
         this.paging = null;
 
         var newJson = Object.merge( Object.clone(this.originalJson), json );
@@ -1783,12 +2000,64 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
 });
 
-MWF.xApplication.query.Query.Viewer.Item = new Class({
+
+/** @classdesc ViewerItem 数据中心的视图条目。本章节的脚本上下文请看<b>{@link module:queryView|queryView}。</b>
+ * @class
+ * @o2cn 视图条目（行）
+ * @o2category QueryView
+ * @o2range {QueryView}
+ * @hideconstructor
+ * @example
+ * //在视图中获取行
+ * var item = this.target.items[0];
+ */
+MWF.xApplication.query.Query.Viewer.Item = new Class(
+    /** @lends MWF.xApplication.query.Query.Viewer.Item# */
+    {
     initialize: function(view, data, prev, i, category, lazy){
+        /**
+         * 加载对应列的每个单元格后触发。可通过this.target获取以下对象：
+         * <pre><code class='language-js'>{
+         *  "json ": {}, //当前行配置
+         *  "data": "",  //当前单元格数据，可能是字符串、数组、布尔值。
+         *  "node": td, //当前单元格
+         *  "view": view, //当前视图对象
+         *  "row": {} //当前行的平台类对象
+         * }</code></pre>
+         * @event MWF.xApplication.query.Query.Viewer.Item#loadContent
+         */
+        /**
+         * 加载对应列的每个单元格后触发。可通过this.target获取以下对象：
+         * <pre><code class='language-js'>{
+         *  "json ": {}, //当前行配置
+         *  "data": "",  //当前单元格数据，可能是字符串、数组、布尔值。
+         *  "node": td, //当前单元格
+         *  "view": view, //当前视图对象
+         *  "row": {} //当前行的平台类对象
+         * }</code></pre>
+         * @event MWF.xApplication.query.Query.Viewer.Item#click
+         */
+
+        /**
+         * @summary 行所属视图.
+         * @member {Object}
+         */
         this.view = view;
+        /**
+         * @summary 行数据.
+         * @member {Object}
+         */
         this.data = data;
         this.css = this.view.css;
+        /**
+         * @summary 行是否被选中.
+         * @member {Boolean}
+         */
         this.isSelected = false;
+        /**
+         * @summary 如果视图有分类，获取分类对象。
+         * @member {Object}
+         */
         this.category = category;
         this.prev = prev;
         this.idx = i;
@@ -1798,7 +2067,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
     load: function(){
         if( this.lazy && this.view.io ){
-            this.view.fireEvent("queryLoadItemRow", [null, this]);
+            this.view.fireEvent("queryLoadItemRow", [this]);
             this.loadNode();
             this.view.io.observe( this.node );
         }else{
@@ -1833,7 +2102,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     _load: function(){
         this.loading = true;
 
-        if(!this.node)this.view.fireEvent("queryLoadItemRow", [null, this]);
+        if(!this.node)this.view.fireEvent("queryLoadItemRow", [this]);
 
         var viewStyles = this.view.viewJson.viewStyles;
         var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
@@ -1979,7 +2248,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
         this.setEvent();
 
-        this.view.fireEvent("postLoadItemRow", [null, this]);
+        this.view.fireEvent("postLoadItemRow", [this]);
 
         this.loading = false;
         this.loaded = true;
@@ -2195,6 +2464,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
     },
 
+    /**
+     * @summary 选中（多选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.selected();
+     */
     selected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
@@ -2224,6 +2499,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /**
+     * @summary 取消选中（多选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.unSelected();
+     */
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
             var item = this.view.selectedItems[i];
@@ -2259,6 +2541,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /**
+     * @summary 选中（单选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.selectedSingle();
+     */
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
         this.view.selectedItems = [this];
@@ -2279,6 +2568,13 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             "data": this.data
         }]); //options 传入的事件
     },
+
+    /**
+     * @summary 取消选中（单选）。
+     * @example
+     *  item = this.target.items[0];
+     *  item.unSelectedSingle();
+     */
     unSelectedSingle: function(){
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
@@ -2307,6 +2603,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     }
 });
 
+
 MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     initialize: function(view, data, i){
         this.view = view;
@@ -2319,7 +2616,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadCategoryRow", [null, this]);
+        this.view.fireEvent("queryLoadCategoryRow", [this]);
 
         var viewStyles = this.view.viewJson.viewStyles;
 
@@ -2420,7 +2717,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             }
         }.bind(this));
 
-        this.view.fireEvent("postLoadCategoryRow", [null, this]);
+        this.view.fireEvent("postLoadCategoryRow", [this]);
     },
     getSelectAllStatus : function(){
         if ( this.view.getSelectFlag()!=="multi")return;
@@ -2627,25 +2924,76 @@ MWF.xApplication.query.Query.Viewer.Filter = new Class({
     }
 });
 
-MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
+/** @class Actionbar 视图操作条组件。
+ * @o2cn 视图操作条
+ * @example
+ * //可以在视图中获取该组件
+ * var actionbar = this.target.actionbar; //在视图中获取操作条
+ * //方法2
+ * var actionbar = this.target; //在操作条和操作本身的事件脚本中获取
+ * @o2category QueryView
+ * @o2range {QueryView}
+ * @hideconstructor
+ */
+MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
+    /** @lends MWF.xApplication.query.Query.Viewer.Actionbar# */
+    {
     Implements: [Events],
     options: {
         "style" : "default",
-        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
+        "moduleEvents": [
+            /**
+             * 视图操作条加载前触发。
+             * @event MWF.xApplication.query.Query.Viewer.Actionbar#queryLoad
+             */
+            "queryLoad",
+            /**
+             * 视图加载时触发。
+             * @event MWF.xApplication.query.Query.Viewer.Actionbar#load
+             */
+            "load",
+            /**
+             * 视图操作条加载后事件.由于加载过程中有异步处理，这个时候操作条有可能还未生成。
+             * @event MWF.xApplication.query.Query.Viewer.Actionbar#postLoad
+             */
+            "postLoad",
+            /**
+             * 视图操作条加载后事件。这个时候操作条已生成。
+             * @event MWF.xApplication.query.Query.Viewer.Actionbar#afterLoad
+             */
+            "afterLoad"
+        ]
     },
     initialize: function(node, json, form, options){
-
+        /**
+         * @summary 操作条组件容器.
+         * @member {Element}
+         */
         this.node = $(node);
         this.node.store("module", this);
+        /**
+         * @summary 操作条组件配置数据.
+         * @member {Object}
+         */
         this.json = json;
         this.form = form;
+        /**
+         * @summary 操作条组件所属视图.
+         * @member {Object}
+         */
         this.view = form;
     },
+    /**
+     * @summary 隐藏操作条。
+     */
     hide: function(){
         var dsp = this.node.getStyle("display");
         if (dsp!=="none") this.node.store("mwf_display", dsp);
         this.node.setStyle("display", "none");
     },
+    /**
+     * @summary 显示操作条。
+     */
     show: function(){
         var dsp = this.node.retrieve("mwf_display", dsp);
         this.node.setStyle("display", dsp);
@@ -2907,26 +3255,83 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     }
 });
 
-MWF.xApplication.query.Query.Viewer.Paging = new Class({
+/** @class Actionbar 视图分页组件。
+ * @o2cn 视图分页组件
+ * @example
+ * //可以在视图中获取该组件
+ * var actionbar = this.target.paging; //在视图中获取操作条
+ * //方法2
+ * var actionbar = this.target; //在分页组件本身的事件脚本中获取
+ * @o2category QueryView
+ * @o2range {QueryView}
+ * @hideconstructor
+ */
+MWF.xApplication.query.Query.Viewer.Paging = new Class(
+    /** @lends MWF.xApplication.query.Query.Viewer.Paging# */
+    {
     Implements: [Options, Events],
     options: {
         "style" : "default",
         "useMainColor": false,
-        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad","jump"]
+        "moduleEvents": [
+            /**
+             * 分页加载前触发。
+             * @event MWF.xApplication.query.Query.Viewer.Paging#queryLoad
+             */
+            "queryLoad",
+            /**
+             * 分页加载时触发。
+             * @event MWF.xApplication.query.Query.Viewer.Paging#load
+             */
+            "load",
+            /**
+             * 分页加载后事件.由于加载过程中有异步处理，这个时候分页组件有可能还未生成。
+             * @event MWF.xApplication.query.Query.Viewer.Paging#postLoad
+             */
+            "postLoad",
+            /**
+             * 分页加载后事件。这个时候分页界面已生成。
+             * @event MWF.xApplication.query.Query.Viewer.Paging#afterLoad
+             */
+             "afterLoad",
+            /**
+             * 跳页或者分页后执行。
+             * @event MWF.xApplication.query.Query.Viewer.Paging#jump
+             */
+             "jump"
+        ]
     },
     initialize: function(node, json, form, options){
         this.setOptions(options);
+        /**
+         * @summary 分页组件容器.
+         * @member {Element}
+         */
         this.node = $(node);
         this.node.store("module", this);
+        /**
+         * @summary 分页组件所属视图.
+         * @member {Object}
+         */
         this.json = json;
         this.form = form;
+        /**
+         * @summary 分页所属视图.
+         * @member {Object}
+         */
         this.view = form;
     },
+    /**
+     * @summary 隐藏分页。
+     */
     hide: function(){
         var dsp = this.node.getStyle("display");
         if (dsp!=="none") this.node.store("mwf_display", dsp);
         this.node.setStyle("display", "none");
     },
+    /**
+     * @summary 显示分页。
+     */
     show: function(){
         var dsp = this.node.retrieve("mwf_display", dsp);
         this.node.setStyle("display", dsp);
