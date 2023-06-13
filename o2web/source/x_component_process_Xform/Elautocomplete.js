@@ -1,4 +1,13 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+
+if( !o2.APP$ElSelector ){
+    o2.xApplication.process.Xform.$ElSelector = o2.APP$ElSelector = new Class({
+        Implements: [Events],
+        Extends: MWF.APP$Elinput
+    });
+    Object.assign(o2.APP$ElSelector.prototype, o2.APP$Selector.prototype);
+}
+
 /** @class Elautocomplete 基于Element UI的自动完成输入框组件。
  * @o2cn 自动完成输入框
  * @example
@@ -16,7 +25,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     /** @lends o2.xApplication.process.Xform.Elautocomplete# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Elinput,
+    Extends: MWF.APP$ElSelector,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         "elEvents": ["select", "change"]
@@ -52,7 +61,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         //         this.form.Macro.fire(this.json.events[ev].code, this, event);
         //     }
         // }.bind(this);
-        if (this.json.itemType!=='script'){
+        if (!this.json.itemType || this.json.itemType==='values'){
             app.methods.$fetchSuggestions = function(qs, cb){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
@@ -65,7 +74,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                 }
                 return [];
             }.bind(this);
-        }else{
+        }else if(this.json.itemType==='script'){
             if (this.json.itemScript && this.json.itemScript.code){
                 var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
                 if (o2.typeOf(fetchSuggestions)==="function"){
@@ -74,7 +83,23 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                     }.bind(this);
                 }
             }
-
+        }else{
+            var options;
+            Promise.resolve(this.getOptions()).then(function (opt) {
+                options = opt;
+            });
+            app.methods.$fetchSuggestions = function(qs, cb){
+                if (options){
+                    var items = options.filter(function(v){
+                        return !qs || v.indexOf(qs)!=-1;
+                    }).map(function(v){
+                        return {"value": v};
+                    });
+                    cb(items);
+                    //return items;
+                }
+                return [];
+            }.bind(this);
         }
         // app.methods.$fetchSuggestions = function(qs, cb){
         //     if (this.json.itemType!=='script'){

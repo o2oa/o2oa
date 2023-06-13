@@ -4,7 +4,6 @@ MWF.xApplication.cms.FormDesigner.Module.Checkbox = MWF.CMSFCCheckbox = new Clas
 	Extends: MWF.FCCheckbox,
 	Implements : [MWF.CMSFCMI],
 	options: {
-		"style": "default",
-		"propertyPath": "../x_component_cms_FormDesigner/Module/Checkbox/checkbox.html"
+		"style": "default"
 	}
 });

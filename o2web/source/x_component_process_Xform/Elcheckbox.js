@@ -93,6 +93,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         this._showValue(this.node, value);
     },
     __showValue: function(node, value, optionItems){
+        debugger;
         if (value){
             var texts = [];
             optionItems.each(function(item){
@@ -101,7 +102,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                 var v = tmps[1] || t;
 
                 if (value.indexOf(v)!=-1){
-                    texts.push(t);
+                    texts.push(t || v);
                 }
             });
             node.set("text", texts.join(", "));

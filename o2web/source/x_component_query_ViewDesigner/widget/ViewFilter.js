@@ -53,6 +53,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         MWF.require("MWF.widget.ScriptArea", function(){
             this.scriptArea = new MWF.widget.ScriptArea(node, {
                 "title": title,
+                "isload": true,
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function(){
                     this.scriptData = this.scriptArea.toJson();

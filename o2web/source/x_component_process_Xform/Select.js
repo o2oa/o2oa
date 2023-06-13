@@ -66,7 +66,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this._showValue( this.node, value );
     },
 	__showValue: function(node, value, optionItems){
-    	debugger;
         if (value){
             if (typeOf(value)!=="array") value = [value];
             var texts = [];

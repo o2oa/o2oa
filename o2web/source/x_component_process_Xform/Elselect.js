@@ -1,5 +1,14 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
-/** @class Elselect 基于Element UI的选择框组件。
+
+if( !o2.APP$ElSelector ){
+    o2.xApplication.process.Xform.$ElSelector = o2.APP$ElSelector = new Class({
+        Implements: [Events],
+        Extends: MWF.APP$Elinput
+    });
+    Object.assign(o2.APP$ElSelector.prototype, o2.APP$Selector.prototype);
+}
+
+/** @class Elselect 基于Element UI的选择框组de件。
  * @o2cn 选择框
  * @example
  * //可以在脚本中获取该组件
@@ -17,7 +26,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     /** @lends o2.xApplication.process.Xform.Elselect# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Elinput,
+    Extends: MWF.APP$ElSelector,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
@@ -130,26 +139,54 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
             this.json.$options = Array.clone(this.json.options);
         }
     },
+    _setOptionsWithArray: function( optionItems ){
+        if (o2.typeOf(optionItems)==="array"){
+            this.json.options = optionItems.map(function(item){
+                if (item && o2.typeOf(item)!=="object"){
+                    var value = item.toString();
+                    var arr = value.split("|");
+                    if (arr.length>1){
+                        return {"label": arr[0], "value": arr[1]};
+                    }else{
+                        return {"label": arr[0], "value": arr[0]};
+                    }
+                }
+                return item;
+            });
+            this.json.$options = Array.clone(this.json.options);
+        }
+    },
     _loadOptions: function(){
         if (this.json.itemsGroup===true){
             if (this.json.itemGroupScript && this.json.itemGroupScript.code)  this._setOptionsWithCode(this.json.itemGroupScript.code);
         }else{
-            if (this.json.itemType=="script"){
-                if (this.json.itemScript && this.json.itemScript.code) this._setOptionsWithCode(this.json.itemScript.code);
+            // if (this.json.itemType=="script"){
+            //     if (this.json.itemScript && this.json.itemScript.code) this._setOptionsWithCode(this.json.itemScript.code);
+            // }else{
+            //     if (this.json.itemValues && (o2.typeOf(this.json.itemValues)==="array")){
+            //         this.json.options = this.json.itemValues.map(function(item){
+            //             if (item){
+            //                 var arr = item.split("|");
+            //                 if (arr.length>1){
+            //                     return {"label": arr[0], "value": arr[1]};
+            //                 }else{
+            //                     return {"label": arr[0], "value": arr[0]};
+            //                 }
+            //             }
+            //         });
+            //     }
+            // }
+            var optionItems = this.getOptions();
+            if( optionItems && typeOf(optionItems.then) === "function" ){
+                this.moduleSelectAG = Promise.resolve(optionItems).then(function (optItems) {
+                    this._setOptionsWithArray( optItems );
+                    this.moduleSelectAG = false;
+                    return this.json.options;
+                }.bind(this));
             }else{
-                if (this.json.itemValues && (o2.typeOf(this.json.itemValues)==="array")){
-                    this.json.options = this.json.itemValues.map(function(item){
-                        if (item){
-                            var arr = item.split("|");
-                            if (arr.length>1){
-                                return {"label": arr[0], "value": arr[1]};
-                            }else{
-                                return {"label": arr[0], "value": arr[0]};
-                            }
-                        }
-                    });
-                }
+                this._setOptionsWithArray( optionItems );
             }
+
         }
     },
     _createElementHtml: function(){
@@ -254,7 +291,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     __setReadonly: function(data){
         if (this.isReadonly()){
             this._loadOptions();
-            Promise.resolve(this.json.options).then(function(options){
+            Promise.resolve(this.json.options || this.moduleSelectAG).then(function(options){
                 var values = (o2.typeOf(data) !== "array") ? [data] : data;
                 var text = this.__getOptionsText(options, values);
                 this.node.set("text", text.join(","));

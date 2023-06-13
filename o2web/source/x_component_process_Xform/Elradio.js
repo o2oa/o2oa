@@ -68,6 +68,24 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.setOptions();
     },
 
+    __showValue: function(node, value, optionItems){
+        if (value){
+            var texts = "";
+            for (var i=0; i<optionItems.length; i++){
+                var item = optionItems[i];
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
+
+                if (value == v){
+                    texts = t || v;
+                    break;
+                }
+            }
+            node.set("text", texts);
+        }
+    },
+
     setOptions: function(){
         var optionItems = this.getOptions();
         this._setOptions(optionItems);

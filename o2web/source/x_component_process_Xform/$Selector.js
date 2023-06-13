@@ -120,7 +120,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
      * })
      */
     getOptionsObj : function( refresh ){
-        debugger;
         var optionItems = (refresh!==true && this.optionsCache) ? this.optionsCache : this.getOptions();
         if( optionItems && typeOf(optionItems.then) === "function" ){
             return Promise.resolve( optionItems ).then(function(optItems){
@@ -187,7 +186,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
 
 
     getOptionsWithDict: function ( async, refresh ) {
-        debugger;
         if( !this.json.itemDict || !this.json.itemDict.length )return [];
         var obj = this.json.itemDict[0];
         var dict = new this.form.Macro.environment.Dict({
@@ -258,7 +256,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         }
     },
     getOptionsWithView: function(async, refresh){
-        debugger;
         if( !this.json.itemView )return [];
         var obj = this.json.itemView;
 
@@ -303,7 +300,6 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     },
 
     getOptionsWithStatement: function(async, refresh){
-        debugger;
         if( !this.json.itemStatement )return [];
         var obj = this.json.itemStatement;
 
