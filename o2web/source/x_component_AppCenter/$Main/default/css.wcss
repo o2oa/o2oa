@@ -283,7 +283,8 @@
         "min-height": "20px"
     },
     "moduleSelectContentListItemNode": {
-        "height": "20px",
+        "overflow": "hidden",
+        "min-height": "20px",
         "line-height": "20px",
         "padding-left": "20px",
         "color": "#555555"
