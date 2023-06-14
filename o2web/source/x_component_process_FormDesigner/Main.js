@@ -1328,7 +1328,31 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 this.formMobileData = obj.mobileData;
                 this.formMobileData.id="";
                 this.formMobileData.isNewForm = true;
-				if (callback) callback();
+
+                if( typeOf( this.options.templateCode ) === "object" ){
+                    var count = 0, total = Object.keys(this.options.templateCode).length;
+                    Object.each(this.options.templateCode, function ( url, key ) {
+                        MWF.getRequestText( url, function (text) {
+                            var obj, keys = key.split(".");
+                            keys.each(function (k, i) {
+                                if( i === 0 ) {
+                                    obj = k === "pc" ? this.formData : this.formMobileData;
+                                }else if( i === keys.length - 1 ){
+                                    obj[k] = text;
+                                    count++;
+                                    if( count === total ) {
+                                        if (callback) callback();
+                                    }
+                                }else{
+                                    if( !obj[k] )obj[k] = {};
+                                    obj = obj[k];
+                                }
+                            }.bind(this))
+                        }.bind(this))
+                    }.bind(this))
+                }else{
+                    if (callback) callback();
+                }
 			}.bind(this),
 			"onerror": function(text){
 				this.notice(text, "error");
