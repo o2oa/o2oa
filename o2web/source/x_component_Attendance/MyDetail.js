@@ -821,20 +821,13 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
             this.startProcessInstance(data, title, processName, workData);
         }
     },
-    startProcessDraft: function(data, title, processName, workData){
+    startProcessDraft: function(data, title, processName){
         var work = data.work;
-        if(workData){
-            delete workData.identity;
-            delete workData.attachmentList;
-        }
-        var options = {
-            "draft": work,
-            "draftData": workData,
-            "appId": "process.Work"+(new o2.widget.UUID).toString(),
-            "desktopReload": false
+        var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
+            "onPostClose": function(){
+            }.bind(this)
         };
-        var win = this.app.desktop.openApplication(null, "process.Work", options);
-        this.fireEvent("started", ["", workData, win]);
+        this.desktop.openApplication(null, "process.Work", options);
     },
     startProcessInstance: function(data, title, processName, workData){
         var workInfors = [];

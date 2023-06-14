@@ -590,7 +590,6 @@ MWF.xApplication.Meeting.Main = new Class({
 		var work = data.work;
 		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
 			"onPostClose": function(){
-				if (this.currentList.refresh) this.currentList.refresh();
 			}.bind(this)
 		};
 		this.desktop.openApplication(null, "process.Work", options);
