@@ -11,13 +11,13 @@
   },
   "dependencies": {
     "@o2oa/component": "^1.1.0",
-    "element-plus": "^2.2.5",
-    "vue": "^3.0.0"
+    "element-plus": "^2.3.6",
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "@o2oa/vue-cli-plugin-o2component": "^1.0.70",
-    "@vue/cli-service": "~4.5.15",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.3.4"
   },
   "browserslist": [
     "> 1%",
