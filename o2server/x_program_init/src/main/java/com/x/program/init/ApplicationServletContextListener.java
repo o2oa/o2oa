@@ -9,12 +9,12 @@ public class ApplicationServletContextListener implements ServletContextListener
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
-
+		// nothing
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
+		// nothing
 	}
 
 }

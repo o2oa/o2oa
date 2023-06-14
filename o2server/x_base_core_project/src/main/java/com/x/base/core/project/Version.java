@@ -5,6 +5,6 @@ public class Version {
 	private Version() {
 	}
 
-	public static final String VALUE = "7.2";
+	public static final String VALUE = "8.1";
 
 }

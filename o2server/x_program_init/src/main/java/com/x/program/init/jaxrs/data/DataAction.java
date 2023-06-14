@@ -1,4 +1,4 @@
-package com.x.program.init.jaxrs.secret;
+package com.x.program.init.jaxrs.data;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -10,7 +10,9 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.google.gson.JsonElement;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -21,24 +23,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path("secret")
-@JaxrsDescribe("密钥")
-public class SecretAction extends StandardJaxrsAction {
+@Path("data")
+@JaxrsDescribe("数据")
+public class DataAction extends StandardJaxrsAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SecretAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataAction.class);
 
-	@JaxrsMethodDescribe(value = "修改初始密码.", action = ActionCreate.class)
+	@JaxrsMethodDescribe(value = "创建Attachment的内容", action = ActionUpload.class)
 	@POST
+	@Path("upload/folder/{folderId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			JsonElement jsonElement) {
-		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
+	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@FormDataParam(FILE_FIELD) final FormDataBodyPart part) {
+		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreate().execute(effectivePerson, jsonElement);
+			result = new ActionUpload().execute(effectivePerson, part);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

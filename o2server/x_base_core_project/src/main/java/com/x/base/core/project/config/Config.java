@@ -158,6 +158,10 @@ public class Config {
 
 	public static final String RESOURCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
 
+	public static final String RESOURCE_INITSERVERSTOPSIGNAL = "initServerStopSignal";
+	
+	public static final String RESOURCE_CONSOLECOMMANDQUEUE = "consoleCommandQueue";
+
 	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
 
 	public static final String RESOURCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
@@ -696,19 +700,6 @@ public class Config {
 		return instance().person;
 	}
 
-//	private Communicate communicate = null;
-//
-//	public static synchronized Communicate communicate() throws Exception {
-//		if (null == instance().communicate) {
-//			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
-//			if (null == obj) {
-//				obj = Communicate.defaultInstance();
-//			}
-//			instance().communicate = obj;
-//		}
-//		return instance().communicate;
-//	}
-
 	private Meeting meeting;
 
 	public static synchronized Meeting meeting() throws Exception {
@@ -781,17 +772,6 @@ public class Config {
 		}
 		return instance().initialServiceScriptText;
 	}
-
-//	@Deprecated
-//	public String mooToolsScriptText;
-//
-//	@Deprecated
-//	public static synchronized String mooToolsScriptText() throws Exception {
-//		if (null == instance().mooToolsScriptText) {
-//			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
-//		}
-//		return instance().mooToolsScriptText;
-//	}
 
 	private MimeTypes mimeTypes;
 

@@ -43,12 +43,15 @@ import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
 import com.x.server.console.server.Servers;
+import com.x.server.console.server.init.InitServerTools;
 
 public class CenterServerTools extends JettySeverTools {
 
-	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CenterServerTools.class);
 
 	public static Server start(CenterServer centerServer) throws Exception {
+
+		InitServerTools.start();
 
 		cleanWorkDirectory();
 
@@ -72,10 +75,10 @@ public class CenterServerTools extends JettySeverTools {
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
 		webContext.start();
-		System.out.println("****************************************");
-		System.out.println("* center server is started in the application server.");
-		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
-		System.out.println("****************************************");
+		LOGGER.print("****************************************");
+		LOGGER.print("* center server is started in the application server.");
+		LOGGER.print("* port: {}.", Config.currentNode().getApplication().getPort());
+		LOGGER.print("****************************************");
 		return Servers.applicationServer;
 	}
 
@@ -113,10 +116,10 @@ public class CenterServerTools extends JettySeverTools {
 
 		server.start();
 
-		System.out.println("****************************************");
-		System.out.println("* center server start completed.");
-		System.out.println("* port: " + centerServer.getPort() + ".");
-		System.out.println("****************************************");
+		LOGGER.print("****************************************");
+		LOGGER.print("* center server start completed.");
+		LOGGER.print("* port: {}.", centerServer.getPort());
+		LOGGER.print("****************************************");
 		return server;
 	}
 
@@ -188,7 +191,7 @@ public class CenterServerTools extends JettySeverTools {
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
 				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
 						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
-			logger.info("deploy war:{}.", war.getFileName().toAbsolutePath());
+			LOGGER.info("deploy war:{}.", war.getFileName().toAbsolutePath());
 			if (Files.exists(dir)) {
 				PathUtils.cleanDirectory(dir);
 			}

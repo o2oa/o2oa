@@ -17,7 +17,11 @@ import com.x.base.core.project.tools.StringTools;
 
 public class SchedulerBuilder {
 
-	public Scheduler start() throws Exception {
+	private SchedulerBuilder() {
+		// nothing
+	}
+
+	public static void start() throws Exception {
 		String scheduleGroup = StringTools.uniqueToken();
 		StdSchedulerFactory stdSchedulerFactory = new StdSchedulerFactory(properties());
 		Scheduler scheduler = stdSchedulerFactory.getScheduler();
@@ -37,12 +41,12 @@ public class SchedulerBuilder {
 			stackTraceTask(scheduleGroup, scheduler);
 		}
 
-		this.registApplicationsAndVoteCenterTask(scheduleGroup, scheduler);
-		return scheduler;
+		registApplicationsAndVoteCenterTask(scheduleGroup, scheduler);
+		// return scheduler;
 
 	}
 
-	private void restoreDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+	private static void restoreDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(RestoreDataTask.class)
 				.withIdentity(RestoreDataTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
 		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(RestoreDataTask.class.getName(), scheduleGroup)
@@ -50,7 +54,7 @@ public class SchedulerBuilder {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
-	private void dumpDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+	private static void dumpDataTask(String scheduleGroup, Scheduler scheduler) throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(DumpDataTask.class)
 				.withIdentity(DumpDataTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
 		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpDataTask.class.getName(), scheduleGroup)
@@ -58,7 +62,7 @@ public class SchedulerBuilder {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
-	private void stackTraceTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+	private static void stackTraceTask(String scheduleGroup, Scheduler scheduler) throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(StackTraceTask.class)
 				.withIdentity(StackTraceTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
 		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(StackTraceTask.class.getName(), scheduleGroup)
@@ -69,7 +73,8 @@ public class SchedulerBuilder {
 	}
 
 	/* 更新node节点applications 和 选择center主节点 */
-	private void registApplicationsAndVoteCenterTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+	private static void registApplicationsAndVoteCenterTask(String scheduleGroup, Scheduler scheduler)
+			throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(RegistApplicationsAndVoteCenterTask.class)
 				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
 				.withDescription(Config.node()).build();
@@ -79,7 +84,7 @@ public class SchedulerBuilder {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
-	private Properties properties() {
+	private static Properties properties() {
 		Properties properties = new Properties();
 		properties.setProperty("org.quartz.scheduler.instanceName", "DefaultQuartzScheduler");
 		properties.setProperty("org.quartz.scheduler.rmi.export", "false");
