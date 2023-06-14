@@ -2008,14 +2008,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
@@ -2095,14 +2095,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });

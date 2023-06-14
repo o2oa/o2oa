@@ -59,6 +59,9 @@ public class ActionMsgCreate extends BaseAction {
 			// 更新会话最后消息时间
 			emc.beginTransaction(IMConversation.class);
 			IMConversation conversation = emc.find(msg.getConversationId(), IMConversation.class);
+			if (conversation == null) {
+				throw new ExceptionConversationNotExist();
+			}
 			conversation.setLastMessageTime(new Date());
 			emc.check(conversation, CheckPersistType.all);
 			emc.commit();

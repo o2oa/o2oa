@@ -4,12 +4,104 @@ MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
 MWF.require("o2.widget.Dialog", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
-MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
+/** @classdesc Importer 数据中心的导入模型。
+ * @class
+ * @o2cn 导入模型
+ * @o2category QueryImporter
+ * @o2range {QueryImporter}
+ * @hideconstructor
+ * @example
+ * //在导入模型的事件中获取该类
+ * var view = this.target;
+ * */
+MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
+    /** @lends MWF.xApplication.query.Query.Importer# */
+    {
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
-        "moduleEvents": ["queryLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData"]
+        "moduleEvents": [
+            /**
+             * 加载importer（导入模型对象）的时候执行。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Importer#queryLoad
+             */
+            "queryLoad",
+            /**
+             * 导入前触发，this.event指向导入的数据，您可以通过修改this.event来修改数据。
+             * @event MWF.xApplication.query.Query.Importer#beforeImport
+             * @example
+             * <caption>this.event数据格式如下：</caption>
+             *[
+             *  [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+             *  [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+             *]
+             */
+            "beforeImport",
+            /**
+             * 前台校验成功，并且后台执行完导入后触发，this.event指向后台返回的导入结果。
+             * @event MWF.xApplication.query.Query.Importer#afterImport
+             * @example
+             * <caption>this.event格式如下：</caption>
+             * {
+             *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
+             *     "data": {}, //前台组织好的需要导入的数据
+             *     "rowList": [], //前台组织的行对象数组
+             *     "count" : 10, //导入总数量
+             *     "failCount": 0, //失败数量
+             *     "distribution": "" //导入时候时的错误信息
+             * }
+             */
+            "afterImport",
+            /**
+             * 数据已经生成，前台进行数据校验时触发，this.event指向导入的数据。
+             * @event MWF.xApplication.query.Query.Importer#validImport
+             * @example
+             * <caption>this.event数据格式如下：</caption>
+             * {
+             *     "data" : [
+             *          [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+             *          [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+             * 	    ],
+             *     "rowList": [], //导入的行对象，数据格式常见本章API的afterCreateRowData说明。
+             *     "validted" : true  //是否校验通过，可以在本事件中修改该参数，确定是否强制导入
+             * }
+             */
+            "validImport",
+            /**
+             * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importData来修改数据。
+             * @event MWF.xApplication.query.Query.Importer#beforeCreateRowData
+             */
+            "beforeCreateRowData",
+            /**
+             * 创建每行需要导入的数据后触发，this.event指向当前行对象。
+             * @event MWF.xApplication.query.Query.Importer#afterCreateRowData
+             * @example
+             * <caption>this.event格式如下：</caption>
+             * {
+             *     "importData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
+             *     "data" : {//根据导入模型生成的业务数据
+             *  	   {
+             *  	    "subject", "标题一", //subject为导入模型列配置的路径
+             *  	 	"name" : "张三",
+             *  	    ...
+             *     },
+             *     "document": { //如果导入目标是内容管理，则包含document对象
+             *          "title": "标题一"
+             *          "identity": "xxx@xxx@I"
+             *          ...
+             *     },
+             *     "work": { //如果导入目标是流程管理，则包含work对象
+             *          "title": "标题一"
+             *          "identity": "xxx@xxx@I"
+             *          ...
+             *     },
+             *     "errorTextList" : [],  //错误信息
+             *     "errorTextListExcel": [] //在出错界面导出Excel时的错误信息
+             * }
+             */
+            "afterCreateRowData"
+         ]
     },
     initialize: function(container, json, options, app, parentMacro){
 

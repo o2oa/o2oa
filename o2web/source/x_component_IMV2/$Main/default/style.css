@@ -285,6 +285,7 @@
   background-color: #ebebeb;
   overflow: auto;
   flex: 1;
+  padding: 0 20px;
 }
 
 .chat-bottom-area {
@@ -387,12 +388,14 @@
 } */
 .chat-sender-box {
   background-color: white;
-  margin: 0 50px 10px 50px;
+  margin: 0 50px 10px 10px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   text-indent: -12px;
   word-wrap: break-word;
   white-space: pre-line;
+  display: inline-block;
+  max-width: calc(100% - 200px);
 }
 /* 业务消息专用的外框 */
 .chat-sender-card-box {
@@ -400,6 +403,7 @@
   margin: 0 50px 10px 50px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
+  display: inline-block;
 }
 /* .chat-sender div:nth-of-type(3) {
   background-color: white;
@@ -461,11 +465,13 @@
 }
 .chat-receiver-box {
   background-color: #b2e281;
-  margin: 0px 50px 10px 50px;
+  margin: 0px 10px 10px 50px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
   word-wrap: break-word;
   white-space: pre-line;
+  float: right;
+  max-width: calc(100% - 200px);
 }
 /* 业务消息专用的外框 */
 .chat-receiver-card-box {
@@ -473,6 +479,7 @@
   margin: 0px 50px 10px 50px;
   padding: 10px 10px 10px 10px;
   border-radius: 7px;
+  float: right;
 }
 /* .chat-receiver div:nth-of-type(3) {
   background-color: #b2e281;

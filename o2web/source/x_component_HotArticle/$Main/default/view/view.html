@@ -3,19 +3,19 @@
         <div class="menuArea">
             <div class="menu" >
                 <div class="menuTitle">
-                    <div class="menuTitleText">热点信息</div>
+                    <div class="menuTitleText">{{$.lp.title}}</div>
                 </div>
                 <div class="menuItem" data-o2-element="allMenuNode" data-o2-events="click:loadList:all">
                     <div class="menuItemIcon"><icon class="iconfont-down"></icon></div>
-                    <div class="menuItemText">所有热点</div>
+                    <div class="menuItemText">{{$.lp.allHotArticele}}</div>
                 </div>
                 <div style="padding-left:20px" class="menuItem" data-o2-element="CMSMenuNode" data-o2-events="click:loadList:CMS">
                     <div class="menuItemIcon"><icon class="iconfont-info"></icon></div>
-                    <div class="menuItemText">信息</div>
+                    <div class="menuItemText">{{$.lp.infoHotArticele}}</div>
                 </div>
                 <div style="padding-left:20px" class="menuItem" data-o2-element="BBSMenuNode" data-o2-events="click:loadList:BBS">
                     <div class="menuItemIcon"><icon class="iconfont-bbs"></icon></div>
-                    <div class="menuItemText">论坛</div>
+                    <div class="menuItemText">{{$.lp.bbsHotArticele}}</div>
                 </div>
             </div>
         </div>

@@ -183,7 +183,7 @@ MWF.xApplication.HotArticle.List = new Class({
 
 		if(this.options.key!==""){
 			var keyContainer = new Element("div.ft_filterItem").inject(this.pathNode);
-			new Element("div",{"class":"ft_filterItemTitle mainColor_color","text":"关键字："}).inject(keyContainer);
+			new Element("div",{"class":"ft_filterItemTitle mainColor_color","text": this.lp.key + "："}).inject(keyContainer);
 			new Element("div",{"class":"ft_filterItemName","text":this.options.key}).inject(keyContainer);
 			var iconNode = new Element("icon",{"class":"iconfont-off ft_filterItemDel"}).inject(keyContainer);
 
@@ -269,11 +269,11 @@ MWF.xApplication.HotArticle.List = new Class({
 		dataList.each(function (data){
 
 			if(data.application === "BBS"){
-				data.applicationName = "论坛";
+				data.applicationName = this.lp.bbsHotArticele;
 			}
 
 			if(data.application === "CMS"){
-				data.applicationName = "信息发布";
+				data.applicationName = this.lp.infoHotArticele;
 			}
 		}.bind(this));
 		return dataList;
@@ -538,12 +538,12 @@ MWF.xApplication.HotArticle.Toolbar = new Class({
 		this.tools = {
 			rename : {
 				action : "rename",
-				text : "修改标题",
+				text : this.lp.button.rename,
 				icon : "iconfont-edit"
 			},
 			delete : {
 				action : "delete",
-				text : "删除",
+				text : this.lp.button.delete,
 				icon : "iconfont-delete"
 			},
 		}
@@ -689,7 +689,7 @@ MWF.xApplication.HotArticle.ReNameForm = new Class({
 		"hasTop": true,
 		"hasIcon": false,
 		"draggable": true,
-		"title" : "修改标题",
+		"title" : MWF.xApplication.HotArticle.LP.tip.modifyTitle,
 		"id" : ""
 	},
 	_createTableContent: function () {
@@ -705,7 +705,7 @@ MWF.xApplication.HotArticle.ReNameForm = new Class({
 			style : "minder",
 			hasColon : true,
 			itemTemplate: {
-				title: { text : "标题", notEmpty : true }
+				title: { text : MWF.xApplication.HotArticle.LP.list.title, notEmpty : true }
 			}
 		}, this.app);
 		this.form.load();
@@ -717,7 +717,7 @@ MWF.xApplication.HotArticle.ReNameForm = new Class({
 
 			this.okActionNode = new Element("button.inputOkButton", {
 				"styles": this.css.inputOkButton,
-				"text": "确定"
+				"text": MWF.xApplication.HotArticle.LP.button.ok
 			}).inject(this.formBottomNode);
 
 			this.okActionNode.addEvent("click", function (e) {
@@ -727,7 +727,7 @@ MWF.xApplication.HotArticle.ReNameForm = new Class({
 
 		this.cancelActionNode = new Element("button.inputCancelButton", {
 			"styles": (this.isEdited || this.isNew || this.getEditPermission() ) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
-			"text": "关闭"
+			"text": MWF.xApplication.HotArticle.LP.button.close
 		}).inject(this.formBottomNode);
 
 		this.cancelActionNode.addEvent("click", function (e) {
@@ -751,7 +751,7 @@ MWF.xApplication.HotArticle.ReNameForm = new Class({
 				"createTime" : data.createTime,
 				"updateTime" : data.updateTime
 			}).then(function (){
-				this.app.notice("修改成功");
+				this.app.notice(MWF.xApplication.HotArticle.LP.tip.success);
 				this.explorer.refresh();
 				this.close();
 			}.bind(this));
