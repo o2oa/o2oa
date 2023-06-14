@@ -1362,7 +1362,7 @@ MWF.xApplication.AppCenter.Exporter.Element.Selector = new Class({
                 "value": item.id
             }).inject(div);
             new Element("div", {
-                "styles": {"float": "left"},
+                "styles": {"margin-left": "20px"},
                 "text": this.getItemName(item),
                 "events": {
                     "click": function(){checkNode.click();}
