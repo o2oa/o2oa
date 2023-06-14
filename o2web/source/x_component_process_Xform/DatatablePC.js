@@ -1498,14 +1498,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
                 this.clearSubModules();
             }
 
-            if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
-
             this.lineList = [];
             this.sectionlineList = [];
 
 			if( this.currentEditedLine )this.currentEditedLine = null;
 
             this._loadDatatable( function () {
+				if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 				this.unchangedLineMap = null;
 			}.bind(this), operation);
         },

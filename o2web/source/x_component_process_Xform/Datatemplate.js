@@ -1154,12 +1154,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.clearSubModules();
 			}
 
-			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
-
 			this.lineList = [];
 			this.sectionlineList = [];
 			this._loadDataTemplate(function(){
 				this._setSubDatatemplateOuterEvents();
+				if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 				this.unchangedLineMap = null;
 			}.bind(this), operation);
 		},
