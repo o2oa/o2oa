@@ -127,6 +127,7 @@ public class ActionPersistPublishContent extends BaseAction {
 			wi.setDocumentType( categoryInfo.getDocumentType() );
 			wi.setAppId(categoryInfo.getAppId());
 			wi.setAppName(appInfo.getAppName());
+			wi.setAppAlias(appInfo.getAppAlias());
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
