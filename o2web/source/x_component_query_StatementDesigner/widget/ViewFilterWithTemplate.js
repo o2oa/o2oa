@@ -1,4 +1,7 @@
 MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", null, false);
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
 MWF.xApplication.query.StatementDesigner.widget.ViewFilterWithTemplate = new Class({
     Extends: MWF.xApplication.query.StatementDesigner.widget.ViewFilter,
     setHtml: function(){
@@ -102,7 +105,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilterWithTemplate = new Cla
         '<div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.parameterConditions}}}</div>'+
         '<div class="parameterListAreaNode_form_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>';
 
-        htmlString = o2.bindJson(htmlString, {"lp": this.app.lp.propertyTemplate});
+        htmlString = o2.bindJson(htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
 
         // this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
         // this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);

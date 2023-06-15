@@ -1,4 +1,7 @@
 MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilter", null, false);
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+MWF.xDesktop.requireApp("process.FormDesigner", "lp."+MWF.language, null, false);
 MWF.xApplication.query.ViewDesigner.widget.ViewFilterWithTemplate = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.widget.ViewFilter,
     setHtml: function(){
@@ -77,7 +80,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilterWithTemplate = new Class({
             '<div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">{{$.lp.customFilter}}</div>'+
             '<div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>';
 
-        htmlString = o2.bindJson(htmlString, {"lp": this.app.lp.propertyTemplate});
+        htmlString = o2.bindJson(htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});
 
         // this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
         // this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
