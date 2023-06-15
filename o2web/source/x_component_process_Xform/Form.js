@@ -3796,7 +3796,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-            var xtoken = Cookie.read(o2.tokenName);
+            var xtoken = layout.session.token;
             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
         }
         window.open(downloadUrl);
@@ -4696,7 +4696,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4704,7 +4704,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4873,7 +4873,7 @@ debugger;
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4881,7 +4881,7 @@ debugger;
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);

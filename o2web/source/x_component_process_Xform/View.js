@@ -119,6 +119,14 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         this.fireEvent("beforeLoadView", [viewJson]);
 
         //MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
+
+        /**
+         * @summary view组件，平台使用该组件实现视图的功能
+         * @member {MWF.xApplication.query.Query.Viewer}
+         * @example
+         *  //可以在脚本中获取该组件
+         * var view = this.form.get("fieldId").view; //获取组件对象
+         */
             this.view = new MWF.xApplication.query.Query.Viewer(this.node, viewJson, {
                 "isload": (this.json.loadView!=="no"),
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
@@ -200,13 +208,6 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
         };
 
         MWF.xDesktop.requireApp("process.Application", "Viewer", function(){
-            /**
-             * @summary view组件，平台使用该组件实现视图的功能
-             * @member {MWF.xApplication.process.Application.Viewer}
-             * @example
-             *  //可以在脚本中获取该组件
-             * var view = this.form.get("fieldId").view; //获取组件对象
-             */
             this.view = new MWF.xApplication.process.Application.Viewer(this.node, viewJson, {
                 "actions": {
                     "lookup": {"uri": "/jaxrs/queryview/flag/{view}/application/flag/{application}/execute", "method":"PUT"},

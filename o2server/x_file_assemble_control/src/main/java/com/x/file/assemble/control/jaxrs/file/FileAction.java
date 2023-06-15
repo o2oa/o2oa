@@ -36,7 +36,7 @@ import com.x.file.core.entity.open.ReferenceType;
 @JaxrsDescribe("File操作")
 public class FileAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(FileAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileAction.class);
 
 	@JaxrsMethodDescribe(value = "获取指定File.", action = ActionGet.class)
 	@GET
@@ -50,7 +50,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -69,7 +69,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNext().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -88,7 +88,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrev().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -108,7 +108,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextWithReferenceType().execute(effectivePerson, id, count, referenceType);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -128,7 +128,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevWithReferenceType().execute(effectivePerson, id, count, referenceType);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -147,7 +147,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextAll().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -166,7 +166,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevAll().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -183,7 +183,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListReferenceType().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -202,7 +202,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, referenceType, reference);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -223,7 +223,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCopy().execute(effectivePerson, attachmentId, referenceType, reference, scale);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -243,7 +243,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithReferenceTypeWithReference().execute(effectivePerson, referenceType, reference);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -264,7 +264,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionUploadOctetStream().execute(effectivePerson, referenceType, reference, scale, bytes);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -286,7 +286,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionUpload().execute(effectivePerson, referenceType, reference, scale, bytes, disposition);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -310,7 +310,7 @@ public class FileAction extends StandardJaxrsAction {
 			result = new ActionUploadCallback().execute(effectivePerson, referenceType, reference, scale, callback,
 					bytes, disposition);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -327,7 +327,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDownloadStream().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -344,7 +344,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDownload().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -362,7 +362,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDownloadStream().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -380,7 +380,7 @@ public class FileAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDownload().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -392,15 +392,52 @@ public class FileAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void uploadWithUrl(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionUploadWithUrl.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUploadWithUrl().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "查找未使用的cmsDocument文件.", action = ActionManageListUnusedReferenceTypeCmsDocument.class)
+	@GET
+	@Path("list/unused/referencetype/cmsdocument/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListUnusedReferenceTypeCmsDocument(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		ActionResult<List<ActionManageListUnusedReferenceTypeCmsDocument.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListUnusedReferenceTypeCmsDocument().execute(effectivePerson);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "清理未使用的cmsDocument文件.", action = ActionManageCleanUnusedReferenceTypeCmsDocument.class)
+	@DELETE
+	@Path("clean/unused/referencetype/cmsdocument/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageCleanUnusedReferenceTypeCmsDocument(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		ActionResult<List<ActionManageCleanUnusedReferenceTypeCmsDocument.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageCleanUnusedReferenceTypeCmsDocument().execute(effectivePerson);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

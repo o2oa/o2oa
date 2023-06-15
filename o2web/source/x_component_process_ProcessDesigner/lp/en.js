@@ -34,7 +34,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"saveRouteOrgNoName": "Name and title cannot be empty",
 		"saveRouteOrgNumberId" : "Identifier cannot be a pure number",
 		"saveRouteOrgDoubleDotId" : "The ID cannot contain two consecutive dots",
-		"processCopyError": "Activity paste failed, please copy again and try again"
+		"processCopyError": "Activity paste failed, please copy again and try again",
+		"routeNameConfilct": "An activity cannot have two routes with the same name!"
 	},
 	"menu": {
 		"newRoute": "Create Route",

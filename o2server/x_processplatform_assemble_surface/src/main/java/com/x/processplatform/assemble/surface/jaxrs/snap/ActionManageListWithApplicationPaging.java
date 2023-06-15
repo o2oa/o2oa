@@ -118,6 +118,15 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p,cb.like(root.get(Snap_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = cb.and(p,cb.like(root.get(Snap_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(Snap_.activityName).in(wi.getActivityNameList()));
+		}
 		return p;
 	}
 
@@ -150,6 +159,12 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		@FieldDescribe("关键字")
 		private String key;
+
+		@FieldDescribe("标题")
+		private String title;
+
+		@FieldDescribe("活动名称")
+		private List<String> activityNameList;
 
 		public List<String> getProcessList() {
 			return processList == null ? Collections.emptyList() : processList;
@@ -221,6 +236,18 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		public void setKey(String key) {
 			this.key = key;
+		}
+
+		public String getTitle() { return title; }
+
+		public void setTitle(String title) { this.title = title; }
+
+		public List<String> getActivityNameList() {
+			return activityNameList;
+		}
+
+		public void setActivityNameList(List<String> activityNameList) {
+			this.activityNameList = activityNameList;
 		}
 	}
 
