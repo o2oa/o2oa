@@ -1,9 +1,9 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.List;
-
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+
+import java.util.List;
 
 public class ProcessProperties extends JsonProperties {
 
@@ -41,6 +41,9 @@ public class ProcessProperties extends JsonProperties {
 
 	@FieldDescribe("数据脚本文本.")
 	private String targetAssignDataScriptText;
+
+	@FieldDescribe("需要记录数据变化的表单字段.")
+	private List<String> formFieldList;
 
 	public String getMaintenanceIdentity() {
 		return maintenanceIdentity;
@@ -128,5 +131,13 @@ public class ProcessProperties extends JsonProperties {
 
 	public void setTargetAssignDataScriptText(String targetAssignDataScriptText) {
 		this.targetAssignDataScriptText = targetAssignDataScriptText;
+	}
+
+	public List<String> getFormFieldList() {
+		return formFieldList;
+	}
+
+	public void setFormFieldList(List<String> formFieldList) {
+		this.formFieldList = formFieldList;
 	}
 }
