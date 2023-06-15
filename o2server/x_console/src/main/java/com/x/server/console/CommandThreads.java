@@ -61,7 +61,6 @@ public class CommandThreads {
 		return new Thread(() -> {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 				while (isRunning) {
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!##############");
 					fromSystemIn(commandQueue, reader);
 					fromFile(commandQueue);
 					Thread.sleep(2000);
@@ -113,7 +112,6 @@ public class CommandThreads {
 		try {
 			if (reader.ready()) {
 				String consoleCmd = reader.readLine();
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + consoleCmd);
 				if (null != consoleCmd) {
 					commandQueue.put(consoleCmd);
 				}
@@ -126,7 +124,6 @@ public class CommandThreads {
 	private static Thread createCommandExecuteThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
 			while (isRunning) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				try {
 					String cmd = commandQueue.take();
 					if (StringUtils.isNotBlank(cmd)) {

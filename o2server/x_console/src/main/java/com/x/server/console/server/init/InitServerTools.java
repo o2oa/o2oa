@@ -2,21 +2,17 @@ package com.x.server.console.server.init;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
@@ -24,7 +20,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import com.x.base.core.project.x_base_core_project;
 import com.x.base.core.project.x_program_init;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
@@ -84,13 +79,36 @@ public class InitServerTools extends JettySeverTools {
 
 		server.start();
 
-		LOGGER.print("****************************************");
-		LOGGER.print("* init server start completed.");
-		LOGGER.print("* port: {}.", applicationServer.getPort());
-		LOGGER.print("****************************************");
+		InetAddress addr = InetAddress.getLocalHost();
 
+		LOGGER.print("请通过{}服务访问{}端口来初始化服务器密码,本机地址:{}, 访问地址:{}.",
+				BooleanUtils.isTrue(applicationServer.getSslEnable()) ? "https" : "http", applicationServer.getPort(),
+				InetAddress.getLocalHost(), url(applicationServer, addr.getHostAddress()));
 		return server;
 
+	}
+
+	/**
+	 * 计算可能的访问地址
+	 * 
+	 * @param applicationServer
+	 * @param host
+	 * @return
+	 */
+	private static String url(ApplicationServer applicationServer, String host) {
+		StringBuilder builder = new StringBuilder();
+		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
+			builder.append("https://");
+		} else {
+			builder.append("http://");
+		}
+		builder.append(host);
+		if (!((applicationServer.getSslEnable() && (applicationServer.getPort() == 443))
+				|| (BooleanUtils.isNotTrue(applicationServer.getSslEnable()) && (applicationServer.getPort() == 80)))) {
+			builder.append(":");
+			builder.append(applicationServer.getPort());
+		}
+		return builder.toString();
 	}
 
 	public static QuickStartWebApp webContext() throws Exception {
@@ -109,15 +127,6 @@ public class InitServerTools extends JettySeverTools {
 				BooleanUtils.toStringTrueFalse(false));
 		webApp.setWelcomeFiles(new String[] { "init.html" });
 		return webApp;
-	}
-
-	private static String extraClassPath() throws Exception {
-		List<String> jars = new ArrayList<>();
-		IOFileFilter filter = new WildcardFileFilter(x_base_core_project.class.getSimpleName() + "*.jar");
-		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
-			jars.add(o.getAbsolutePath());
-		}
-		return StringUtils.join(jars, ";");
 	}
 
 	private static void cleanWorkDirectory() throws IOException, URISyntaxException {

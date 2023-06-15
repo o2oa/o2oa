@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.file.PathUtils;
@@ -45,30 +43,6 @@ import org.w3c.dom.Document;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_attendance_assemble_control;
-import com.x.base.core.project.x_bbs_assemble_control;
-import com.x.base.core.project.x_calendar_assemble_control;
-import com.x.base.core.project.x_cms_assemble_control;
-import com.x.base.core.project.x_component_assemble_control;
-import com.x.base.core.project.x_file_assemble_control;
-import com.x.base.core.project.x_general_assemble_control;
-import com.x.base.core.project.x_hotpic_assemble_control;
-import com.x.base.core.project.x_meeting_assemble_control;
-import com.x.base.core.project.x_message_assemble_communicate;
-import com.x.base.core.project.x_mind_assemble_control;
-import com.x.base.core.project.x_organization_assemble_authentication;
-import com.x.base.core.project.x_organization_assemble_control;
-import com.x.base.core.project.x_organization_assemble_express;
-import com.x.base.core.project.x_organization_assemble_personal;
-import com.x.base.core.project.x_portal_assemble_designer;
-import com.x.base.core.project.x_portal_assemble_surface;
-import com.x.base.core.project.x_processplatform_assemble_bam;
-import com.x.base.core.project.x_processplatform_assemble_designer;
-import com.x.base.core.project.x_processplatform_assemble_surface;
-import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.x_query_assemble_designer;
-import com.x.base.core.project.x_query_assemble_surface;
-import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
@@ -89,7 +63,6 @@ import com.x.server.console.node.UpdateApplicationsEvent;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
-import com.x.server.console.server.Servers;
 import com.x.server.console.server.center.CenterServerTools;
 
 import io.github.classgraph.ClassGraph;
@@ -116,11 +89,11 @@ public class ApplicationServerTools extends JettySeverTools {
 			WebAppContext webContext = CenterServerTools.webContext(Config.currentNode().getCenter());
 			handlers.addHandler(webContext);
 			webContext.start();
-			//Servers.centerServer = server;
-			System.out.println("****************************************");
-			System.out.println("* center server is started in the application server.");
-			System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
-			System.out.println("****************************************");
+			// Servers.centerServer = server;
+			LOGGER.print("****************************************");
+			LOGGER.print("* center server is started in the application server.");
+			LOGGER.print("* port: " + Config.currentNode().getApplication().getPort() + ".");
+			LOGGER.print("****************************************");
 		}
 
 		LOGGER.info("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
@@ -136,10 +109,10 @@ public class ApplicationServerTools extends JettySeverTools {
 		new RegistApplicationsEvent().execute(server);
 		new UpdateApplicationsEvent().execute(server);
 
-		System.out.println("****************************************");
-		System.out.println("* application server start completed.");
-		System.out.println("* port: " + applicationServer.getPort() + ".");
-		System.out.println("****************************************");
+		LOGGER.print("****************************************");
+		LOGGER.print("* application server start completed.");
+		LOGGER.print("* port: " + applicationServer.getPort() + ".");
+		LOGGER.print("****************************************");
 		return server;
 	}
 
@@ -325,55 +298,6 @@ public class ApplicationServerTools extends JettySeverTools {
 					})).collect(Collectors.toList());
 		}
 	}
-
-//	private static List<ClassInfo> listOfficial() throws Exception {
-//		try (ScanResult scanResult = new ClassGraph()
-//				.addClassLoader(
-//						ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, true, false, false))
-//				.enableAnnotationInfo().scan()) {
-//			List<ClassInfo> list = new ArrayList<>();
-//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
-//			for (ClassInfo info : classInfos) {
-//				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
-//				Module module = clz.getAnnotation(Module.class);
-//				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
-//						|| Objects.equals(module.type(), ModuleType.SERVICE)) {
-//					list.add(info);
-//				}
-//			}
-//			List<String> filters = new ArrayList<>();
-//			for (ClassInfo info : list) {
-//				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
-//				Module module = clz.getAnnotation(Module.class);
-//				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
-//					filters.add(info.getName());
-//				}
-//			}
-//			filters = StringTools.includesExcludesWithWildcard(filters,
-//					Config.currentNode().getApplication().getIncludes(),
-//					Config.currentNode().getApplication().getExcludes());
-//			List<ClassInfo> os = new ArrayList<>();
-//			for (ClassInfo info : list) {
-//				if (filters.contains(info.getName())) {
-//					os.add(info);
-//				}
-//			}
-//			os = os.stream().sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
-//				int indx = OFFICIAL_MODULE_SORTED.indexOf(x);
-//				int indy = OFFICIAL_MODULE_SORTED.indexOf(y);
-//				if (indx == indy) {
-//					return 0;
-//				} else if (indx == -1) {
-//					return 1;
-//				} else if (indy == -1) {
-//					return -1;
-//				} else {
-//					return indx - indy;
-//				}
-//			})).collect(Collectors.toList());
-//			return os;
-//		}
-//	}
 
 	private static List<String> listCustom() throws Exception {
 		List<String> list = new ArrayList<>();

@@ -85,160 +85,165 @@ public class NodeAgent extends Thread {
 			serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort());
 			Matcher matcher;
 			while (runFlag) {
-				try (Socket socket = serverSocket.accept()) {
-					if (!socket.isClosed()) {
-						try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-								DataInputStream dis = new DataInputStream(socket.getInputStream())) {
-							String json = dis.readUTF();
+				if (serverSocket.isClosed()) {
+					try (Socket socket = serverSocket.accept()) {
+						if (!socket.isClosed()) {
+							try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+									DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+								String json = dis.readUTF();
 
-							CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
-							if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
-								String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
-								if (!StringUtils.startsWith(decrypt, "o2@")) {
-									dos.writeUTF("failure:error decrypt!");
+								CommandObject commandObject = XGsonBuilder.instance().fromJson(json,
+										CommandObject.class);
+								if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
+									String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(),
+											Config.privateKey());
+									if (!StringUtils.startsWith(decrypt, "o2@")) {
+										dos.writeUTF("failure:error decrypt!");
+										dos.flush();
+										continue;
+									}
+								}
+
+								matcher = syncFile_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									String strCommand = commandObject.getCommand();
+									strCommand = strCommand.trim();
+									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+									logger.info("收接到同步命令:" + strCommand);
+									String syncFilePath = dis.readUTF();
+									File file = new File(Config.base(), syncFilePath);
+									try (FileOutputStream fos = new FileOutputStream(file)) {
+										byte[] bytes = new byte[1024];
+										int length = 0;
+										while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
+											fos.write(bytes, 0, length);
+											fos.flush();
+										}
+									}
+									Config.flush();
+									if (syncFilePath.indexOf("web.json") > -1
+											|| syncFilePath.indexOf("collect.json") > -1
+											|| syncFilePath.indexOf("portal.json") > -1
+											|| syncFilePath.indexOf("person.json") > -1
+											|| syncFilePath.indexOf("query.json") > -1) {
+										// 更新web服务配置信息
+										WebServers.updateWebServerConfigJson();
+									}
+									logger.info("同步完成");
+									continue;
+
+								}
+
+								matcher = uninstall_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									String strCommand = commandObject.getCommand();
+									strCommand = strCommand.trim();
+									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+									logger.info("收接到命令:" + strCommand);
+									String filename = dis.readUTF();
+									File tempFile = null;
+									switch (strCommand) {
+									case "customWar":
+										tempFile = Config.dir_custom();
+										break;
+									// case "customJar":
+									default:
+										tempFile = Config.dir_custom_jars();
+										break;
+									}
+									logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
+									// File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
+									filename = filename.substring(0, filename.indexOf("."));
+									// uninstall
+									boolean result = this.customWarUninstall(filename);
+									logger.info("uninstall:" + result);
+									continue;
+								}
+
+								matcher = redeploy_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									String strCommand = commandObject.getCommand().trim();
+									strCommand = StringUtils.substringAfter(strCommand, ":");
+									logger.info("收接到命令:" + strCommand);
+									String filename = dis.readUTF();
+
+									byte[] bytes;
+									try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+										byte[] onceBytes = new byte[1024];
+										int length = 0;
+										while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
+											bos.write(onceBytes, 0, length);
+											bos.flush();
+										}
+										bytes = bos.toByteArray();
+									}
+
+									filename = filename.substring(0, filename.lastIndexOf("."));
+									// 部署
+									String result = this.redeploy(strCommand, filename, bytes, true);
+									logger.info("部署:" + result);
+									continue;
+
+								}
+
+								matcher = upload_resource_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									int fileLength = dis.readInt();
+									byte[] bytes;
+									try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+										byte[] onceBytes = new byte[1024];
+										int length = 0;
+										while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
+											bos.write(onceBytes, 0, length);
+											bos.flush();
+											if (bos.size() == fileLength) {
+												break;
+											}
+										}
+										bytes = bos.toByteArray();
+									}
+									logger.info("receive resource bytes {}", bytes.length);
+									String result = this.uploadResource(commandObject.getParam(), bytes);
+									dos.writeUTF(result);
 									dos.flush();
 									continue;
 								}
-							}
 
-							matcher = syncFile_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								String strCommand = commandObject.getCommand();
-								strCommand = strCommand.trim();
-								strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-								logger.info("收接到同步命令:" + strCommand);
-								String syncFilePath = dis.readUTF();
-								File file = new File(Config.base(), syncFilePath);
-								try (FileOutputStream fos = new FileOutputStream(file)) {
-									byte[] bytes = new byte[1024];
-									int length = 0;
-									while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
-										fos.write(bytes, 0, length);
-										fos.flush();
-									}
-								}
-								Config.flush();
-								if (syncFilePath.indexOf("web.json") > -1 || syncFilePath.indexOf("collect.json") > -1
-										|| syncFilePath.indexOf("portal.json") > -1
-										|| syncFilePath.indexOf("person.json") > -1
-										|| syncFilePath.indexOf("query.json") > -1) {
-									// 更新web服务配置信息
-									WebServers.updateWebServerConfigJson();
-								}
-								logger.info("同步完成");
-								continue;
-
-							}
-
-							matcher = uninstall_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								String strCommand = commandObject.getCommand();
-								strCommand = strCommand.trim();
-								strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-								logger.info("收接到命令:" + strCommand);
-								String filename = dis.readUTF();
-								File tempFile = null;
-								switch (strCommand) {
-								case "customWar":
-									tempFile = Config.dir_custom();
-									break;
-								// case "customJar":
-								default:
-									tempFile = Config.dir_custom_jars();
-									break;
-								}
-								logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
-								// File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
-								filename = filename.substring(0, filename.indexOf("."));
-								// uninstall
-								boolean result = this.customWarUninstall(filename);
-								logger.info("uninstall:" + result);
-								continue;
-							}
-
-							matcher = redeploy_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								String strCommand = commandObject.getCommand().trim();
-								strCommand = StringUtils.substringAfter(strCommand, ":");
-								logger.info("收接到命令:" + strCommand);
-								String filename = dis.readUTF();
-
-								byte[] bytes;
-								try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-									byte[] onceBytes = new byte[1024];
-									int length = 0;
-									while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
-										bos.write(onceBytes, 0, length);
-										bos.flush();
-									}
-									bytes = bos.toByteArray();
-								}
-
-								filename = filename.substring(0, filename.lastIndexOf("."));
-								// 部署
-								String result = this.redeploy(strCommand, filename, bytes, true);
-								logger.info("部署:" + result);
-								continue;
-
-							}
-
-							matcher = upload_resource_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								int fileLength = dis.readInt();
-								byte[] bytes;
-								try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-									byte[] onceBytes = new byte[1024];
-									int length = 0;
-									while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
-										bos.write(onceBytes, 0, length);
-										bos.flush();
-										if (bos.size() == fileLength) {
-											break;
+								matcher = read_log_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									long lastTimeFileSize = dis.readLong();
+									if (lock.tryLock()) {
+										try {
+											readLog(lastTimeFileSize, dos);
+										} finally {
+											lock.unlock();
 										}
+									} else {
+										dos.writeUTF("failure");
+										dos.flush();
 									}
-									bytes = bos.toByteArray();
+									continue;
 								}
-								logger.info("receive resource bytes {}", bytes.length);
-								String result = this.uploadResource(commandObject.getParam(), bytes);
-								dos.writeUTF(result);
+
+								matcher = execute_command_pattern.matcher(commandObject.getCommand());
+								if (matcher.find()) {
+									String strCommand = commandObject.getCommand();
+									strCommand = strCommand.trim();
+									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+									logger.info("收接到命令:" + strCommand);
+									// 为了同步文件
+									commandQueue.add(strCommand);
+									continue;
+								}
+
+								dos.writeUTF("failure:no pattern method!");
 								dos.flush();
-								continue;
+
 							}
-
-							matcher = read_log_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								long lastTimeFileSize = dis.readLong();
-								if (lock.tryLock()) {
-									try {
-										readLog(lastTimeFileSize, dos);
-									} finally {
-										lock.unlock();
-									}
-								} else {
-									dos.writeUTF("failure");
-									dos.flush();
-								}
-								continue;
-							}
-
-							matcher = execute_command_pattern.matcher(commandObject.getCommand());
-							if (matcher.find()) {
-								String strCommand = commandObject.getCommand();
-								strCommand = strCommand.trim();
-								strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-								logger.info("收接到命令:" + strCommand);
-								// 为了同步文件
-								commandQueue.add(strCommand);
-								continue;
-							}
-
-							dos.writeUTF("failure:no pattern method!");
-							dos.flush();
-
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 				try {
 					Thread.sleep(2000);

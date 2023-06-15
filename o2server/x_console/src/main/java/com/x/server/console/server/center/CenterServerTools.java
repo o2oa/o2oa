@@ -43,15 +43,12 @@ import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
 import com.x.server.console.server.Servers;
-import com.x.server.console.server.init.InitServerTools;
 
 public class CenterServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CenterServerTools.class);
 
 	public static Server start(CenterServer centerServer) throws Exception {
-
-		InitServerTools.start();
 
 		cleanWorkDirectory();
 

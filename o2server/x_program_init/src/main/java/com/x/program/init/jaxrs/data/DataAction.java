@@ -29,9 +29,9 @@ public class DataAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataAction.class);
 
-	@JaxrsMethodDescribe(value = "创建Attachment的内容", action = ActionUpload.class)
+	@JaxrsMethodDescribe(value = "上传dataDump数据包.", action = ActionUpload.class)
 	@POST
-	@Path("upload/folder/{folderId}")
+	@Path("upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

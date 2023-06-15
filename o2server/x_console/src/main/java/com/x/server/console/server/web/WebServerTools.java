@@ -68,10 +68,10 @@ public class WebServerTools extends JettySeverTools {
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
 		webContext.start();
-		System.out.println("****************************************");
-		System.out.println("* web server is started in the application server.");
-		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
-		System.out.println("****************************************");
+		LOGGER.print("****************************************");
+		LOGGER.print("* web server is started in the application server.");
+		LOGGER.print("* port: " + Config.currentNode().getApplication().getPort() + ".");
+		LOGGER.print("****************************************");
 		return Servers.getApplicationServer();
 	}
 

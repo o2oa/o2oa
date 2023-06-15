@@ -1,9 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
+
 <head>
-<meta charset="UTF-8" />
-<meta http-equiv="pragma" content="no-cache" />
-<meta http-equiv="refresh" content="0;URL='/x_program_center/jest/list.html'" /> 
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function uploadData() {
+            var xmlh;
+            if (window.XMLHttpRequest) {
+                xmlh = new XMLHttpRequest();
+            } else {
+                xmlh = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlh.onreadystatechange = function () {
+                debugger;
+                if (xmlh.readyState == 4) {
+                    alert(xmlh.responseText)
+                    if (xmlh.status == 200) {
+                        //xmlh.responseText
+                    }
+                }
+            }
+            xmlh.open("post", "/jaxrs/data/upload");
+
+            var formData = new FormData();
+            var file = document.getElementById("file").files[0];
+            formData.append("file", file);
+            xmlh.send(formData);
+        }
+        function setSecret() {
+            var xmlh;
+            if (window.XMLHttpRequest) {
+                xmlh = new XMLHttpRequest();
+            } else {
+                xmlh = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlh.onreadystatechange = function () {
+                if (xmlh.readyState == 4) {
+                    alert(xmlh.responseText)
+                    if (xmlh.status == 200) {
+                        //xmlh.responseText
+                    }
+                }
+            }
+            xmlh.open("post", "/jaxrs/secret");
+            xmlh.setRequestHeader("Content-Type", "application/json");
+            var secret = document.getElementById("secret").value;
+            xmlh.send(JSON.stringify({ secret: secret }));
+        }
+        function stop() {
+            var xmlh;
+            if (window.XMLHttpRequest) {
+                xmlh = new XMLHttpRequest();
+            } else {
+                xmlh = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlh.onreadystatechange = function () {
+                if (xmlh.readyState == 4) {
+                    alert(xmlh.responseText)
+                    if (xmlh.status == 200) {
+                        // nothing
+                    }
+                }
+            }
+            xmlh.open("get", "/jaxrs/server/stop");
+            xmlh.setRequestHeader("Content-Type", "application/json");
+            xmlh.send();
+        }
+    </script>
 </head>
-<body></body>
+
+<body>
+    <input type="password" id="secret" />
+    <button onclick="setSecret()">设置初始密码</button>
+    <br />
+    <input type="file" id="file" />
+    <button onclick="uploadData()">上传初始数据</button>
+    <br />
+    <button onclick="stop()">完成</button>
+</body>
+
 </html>

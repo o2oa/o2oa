@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
@@ -470,9 +472,11 @@
 						<target>11</target>
 						<compilerArgs>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
 						</compilerArgs>
 					</configuration>
 				</plugin>
@@ -533,7 +537,8 @@
 						<docencoding>UTF-8</docencoding>
 						<additionalOptions>
 							<!-- 解决jdk1.8以后编译出错问题-->
-							<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
+							<!--
+							<additionalOption>-Xdoclint:none</additionalOption>-->
 							<additionalparam>-Xdoclint:none</additionalparam>
 						</additionalOptions>
 					</configuration>
@@ -558,12 +563,6 @@
 							<goals>
 								<goal>sign</goal>
 							</goals>
-							<!--							<configuration>-->
-							<!--								<gpgArguments>-->
-							<!--									<arg>&#45;&#45;pinentry-mode</arg>-->
-							<!--									<arg>loopback</arg>-->
-							<!--								</gpgArguments>-->
-							<!--							</configuration>-->
 						</execution>
 					</executions>
 				</plugin>

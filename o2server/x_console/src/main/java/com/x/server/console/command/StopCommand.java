@@ -3,18 +3,22 @@ package com.x.server.console.command;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang3.BooleanUtils;
-
-import com.x.base.core.project.config.ApplicationServer;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.StorageServer;
-import com.x.base.core.project.config.WebServer;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.server.console.server.Servers;
 
 public class StopCommand {
 
+	protected StopCommand() {
+		// nothing
+	}
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(StopCommand.class);
+
 	private static final Consumer<Matcher> consumer = matcher -> {
+
+		stopInitServer();
+
 		switch (matcher.group(1)) {
 		case "application":
 			stopApplicationServer();
@@ -33,96 +37,71 @@ public class StopCommand {
 			break;
 		default:
 			stopAll();
-
 			break;
 		}
 	};
+
+	protected static void stopAll() {
+		try {
+			stopApplicationServer();
+			stopCenterServer();
+			stopWebServer();
+			stopStorageServer();
+			stopDataServer();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
 
 	public static Consumer<Matcher> consumer() {
 		return consumer;
 	}
 
+	protected static void stopInitServer() {
+		try {
+			Servers.stopInitServer();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
 	private static void stopDataServer() {
 		try {
-			if (BooleanUtils.isFalse(Servers.dataServerIsRunning())) {
-				System.out.println("data server is not running.");
-			} else {
-				Servers.stopDataServer();
-			}
+			Servers.stopDataServer();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 
 	private static void stopStorageServer() {
 		try {
-			if (BooleanUtils.isFalse(Servers.storageServerIsRunning())) {
-				System.out.println("storage server is not running.");
-			} else {
-				Servers.stopStorageServer();
-			}
+			Servers.stopStorageServer();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 
 	private static void stopApplicationServer() {
 		try {
-			if (BooleanUtils.isFalse(Servers.applicationServerIsRunning())) {
-				System.out.println("application server is not running.");
-			} else {
-				Servers.stopApplicationServer();
-			}
+			Servers.stopApplicationServer();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 
 	private static void stopCenterServer() {
 		try {
-			if (BooleanUtils.isFalse(Servers.centerServerIsRunning())) {
-				System.out.println("center server is not running.");
-			} else {
-				Servers.stopCenterServer();
-			}
+			Servers.stopCenterServer();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 
 	private static void stopWebServer() {
 		try {
-			if (BooleanUtils.isFalse(Servers.webServerIsRunning())) {
-				System.out.println("web server is not running.");
-			} else {
-				Servers.stopWebServer();
-			}
+			Servers.stopWebServer();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected static void stopAll() {
-		try {
-			WebServer webServer = Config.currentNode().getWeb();
-			if ((null != webServer) && (BooleanUtils.isTrue(webServer.getEnable()))) {
-				stopWebServer();
-			}
-			ApplicationServer applicationServer = Config.currentNode().getApplication();
-			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
-				stopApplicationServer();
-			}
-			stopCenterServer();
-			StorageServer storageServer = Config.currentNode().getStorage();
-			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
-				stopStorageServer();
-			}
-			DataServer dataServer = Config.currentNode().getData();
-			if ((null != dataServer) && (BooleanUtils.isTrue(dataServer.getEnable()))) {
-				stopDataServer();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 

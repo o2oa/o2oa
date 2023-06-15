@@ -1,24 +1,16 @@
 package com.x.program.init.jaxrs.data;
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Date;
-import java.util.Map.Entry;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.h2.tools.RunScript;
 
 import com.itextpdf.io.codec.Base64.InputStream;
-import com.nimbusds.jose.util.StandardCharset;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
