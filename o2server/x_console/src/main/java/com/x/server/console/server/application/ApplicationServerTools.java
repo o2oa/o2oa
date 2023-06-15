@@ -116,7 +116,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			WebAppContext webContext = CenterServerTools.webContext(Config.currentNode().getCenter());
 			handlers.addHandler(webContext);
 			webContext.start();
-			Servers.centerServer = server;
+			//Servers.centerServer = server;
 			System.out.println("****************************************");
 			System.out.println("* center server is started in the application server.");
 			System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");

@@ -39,13 +39,15 @@ public class Commands {
 			Pair.of(CommandFactory.exit_pattern, ExitCommand.consumer()));
 
 	public static void execute(String cmd) {
-		Optional<Pair<Matcher, Consumer<Matcher>>> opt = PATTERN_COMMANDS.stream()
-				.map(p -> Pair.of(p.first().matcher(cmd), p.second())).filter(p -> p.first().matches()).findFirst();
-		if (opt.isPresent()) {
-			opt.get().second().accept(opt.get().first());
-		} else {
-			LOGGER.print("unknown command: {}", cmd);
-		}
+		new Thread(() -> {
+			Optional<Pair<Matcher, Consumer<Matcher>>> opt = PATTERN_COMMANDS.stream()
+					.map(p -> Pair.of(p.first().matcher(cmd), p.second())).filter(p -> p.first().matches()).findFirst();
+			if (opt.isPresent()) {
+				opt.get().second().accept(opt.get().first());
+			} else {
+				LOGGER.print("unknown command: {}", cmd);
+			}
+		}).start();
 	}
 
 }

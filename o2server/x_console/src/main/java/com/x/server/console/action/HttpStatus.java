@@ -44,32 +44,32 @@ public class HttpStatus extends Thread {
 					File file = new File(Config.dir_logs(true),
 							"centerServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ center server thread pool size:%d, idle:%d, detail:%s.",
-							Servers.centerServer.getThreadPool().getThreads(),
-							Servers.centerServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+							Servers.getCenterServer().getThreadPool().getThreads(),
+							Servers.getCenterServer().getThreadPool().getIdleThreads(), file.getAbsolutePath()));
 					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-						Servers.centerServer.dump(writer);
+						Servers.getCenterServer().dump(writer);
 					}
 				}
 				if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
 					File file = new File(Config.dir_logs(true),
 							"applicationServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ application server thread pool size:%d, idle:%d, detail:%s.",
-							Servers.applicationServer.getThreadPool().getThreads(),
-							Servers.applicationServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+							Servers.getApplicationServer().getThreadPool().getThreads(),
+							Servers.getApplicationServer().getThreadPool().getIdleThreads(), file.getAbsolutePath()));
 					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-						Servers.applicationServer.dump(writer);
+						Servers.getApplicationServer().dump(writer);
 					}
 				}
 				if (BooleanUtils.isTrue(Servers.webServerIsRunning())) {
 					File file = new File(Config.dir_logs(true), "webServer_" + DateTools.compact(new Date()) + ".txt");
 					list.add(String.format("  +++ web server thread pool size:%d, idle:%d, detail:%s.",
-							Servers.webServer.getThreadPool().getThreads(),
-							Servers.webServer.getThreadPool().getIdleThreads(), file.getAbsolutePath()));
+							Servers.getWebServer().getThreadPool().getThreads(),
+							Servers.getWebServer().getThreadPool().getIdleThreads(), file.getAbsolutePath()));
 					try (FileOutputStream stream = new FileOutputStream(file);
 							OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-						Servers.webServer.dump(writer);
+						Servers.getWebServer().dump(writer);
 					}
 				}
 				LOGGER.print(StringUtils.join(list, StringUtils.LF));

@@ -7,14 +7,11 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -36,7 +33,6 @@ import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ZipTools;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.Servers;
@@ -68,7 +64,7 @@ public class WebServerTools extends JettySeverTools {
 
 	private static Server startInApplication() throws Exception {
 		WebAppContext webContext = webContext();
-		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
 		webContext.start();
@@ -76,7 +72,7 @@ public class WebServerTools extends JettySeverTools {
 		System.out.println("* web server is started in the application server.");
 		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
 		System.out.println("****************************************");
-		return Servers.applicationServer;
+		return Servers.getApplicationServer();
 	}
 
 	private static Server startStandalone(WebServer webServer) throws Exception {

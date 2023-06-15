@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -19,22 +18,18 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import com.google.gson.JsonObject;
 import com.x.base.core.project.x_base_core_project;
 import com.x.base.core.project.x_program_init;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.JarTools;
@@ -45,33 +40,22 @@ public class InitServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitServerTools.class);
 
-	public static void start() throws Exception {
+	public static Server start() throws Exception {
 
-		if (initNecessary()) {
+		ApplicationServer applicationServer = Config.currentNode().getApplication();
 
-			ApplicationServer applicationServer = Config.currentNode().getApplication();
+		cleanWorkDirectory();
 
-			cleanWorkDirectory();
+		Path war = Paths.get(Config.dir_store().toString(), x_program_init.class.getSimpleName() + PathTools.DOT_WAR);
+		Path dir = Config.path_servers_initServer_work(true).resolve(x_program_init.class.getSimpleName());
 
-			Path war = Paths.get(Config.dir_store().toString(),
-					x_program_init.class.getSimpleName() + PathTools.DOT_WAR);
-			Path dir = Config.path_servers_initServer_work(true).resolve(x_program_init.class.getSimpleName());
+		modified(war, dir);
 
-			modified(war, dir);
-
-			startStandalone(applicationServer);
-
-		}
+		return startStandalone(applicationServer);
 
 	}
 
-	private static boolean initNecessary() throws Exception {
-		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
-		String value = XGsonBuilder.extractString(jsonObject, "password");
-		return StringUtils.isBlank(value);
-	}
-
-	private static void startStandalone(ApplicationServer applicationServer) throws Exception {
+	private static Server startStandalone(ApplicationServer applicationServer) throws Exception {
 		HandlerList handlers = new HandlerList();
 
 		QuickStartWebApp webApp = webContext();
@@ -105,11 +89,8 @@ public class InitServerTools extends JettySeverTools {
 		LOGGER.print("* port: {}.", applicationServer.getPort());
 		LOGGER.print("****************************************");
 
-		// 等待停止信号
-		LinkedBlockingQueue<String> stopSignalQueue = new LinkedBlockingQueue<>();
-		new Resource(Config.RESOURCE_INITSERVERSTOPSIGNAL, stopSignalQueue);
-		stopSignalQueue.take();
-		server.stop();
+		return server;
+
 	}
 
 	public static QuickStartWebApp webContext() throws Exception {

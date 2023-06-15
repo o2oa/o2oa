@@ -439,7 +439,7 @@ public class NodeAgent extends Thread {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
 		// File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
-			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+			GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 			for (Handler handler : hanlderList.getHandlers()) {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {

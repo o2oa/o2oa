@@ -71,7 +71,7 @@ public class CenterServerTools extends JettySeverTools {
 
 	public static Server startInApplication(CenterServer centerServer) throws Exception {
 		WebAppContext webContext = webContext(centerServer);
-		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
 		webContext.start();
@@ -79,7 +79,7 @@ public class CenterServerTools extends JettySeverTools {
 		LOGGER.print("* center server is started in the application server.");
 		LOGGER.print("* port: {}.", Config.currentNode().getApplication().getPort());
 		LOGGER.print("****************************************");
-		return Servers.applicationServer;
+		return Servers.getApplicationServer();
 	}
 
 	private static Server startStandalone(CenterServer centerServer) throws Exception, IOException {
