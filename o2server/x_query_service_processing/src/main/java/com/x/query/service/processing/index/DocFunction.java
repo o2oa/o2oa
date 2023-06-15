@@ -464,7 +464,7 @@ public class DocFunction {
         StringBuilder builder = new StringBuilder();
         builder.append(storageObject.getName());
         try {
-            StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+            StorageMapping mapping = ThisApplication.context().storageMappings().get(storageObject.getClass(),
                     storageObject.getStorage());
             if (null != mapping) {
                 try (InputStream input = new ByteArrayInputStream(storageObject.readContent(mapping))) {
