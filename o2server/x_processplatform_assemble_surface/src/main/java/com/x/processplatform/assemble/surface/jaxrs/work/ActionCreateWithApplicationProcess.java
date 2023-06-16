@@ -73,6 +73,9 @@ class ActionCreateWithApplicationProcess extends BaseCreateAction {
             workId = this.createWork(process.getId(), wi.getData());
         }
         // 设置Work信息
+        if(BooleanUtils.isTrue(wi.getSkipDraftCheck())){
+            this.updateWorkDraftCheck(workId);
+        }
         if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {
             updateWork(identity, workId, wi.getTitle(), wi.getParentWork());
             // 驱动工作,使用非队列方式
