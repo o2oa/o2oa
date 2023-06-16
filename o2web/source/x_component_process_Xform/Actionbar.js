@@ -43,7 +43,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
         },
         /**
-         * @summary 重新加载操作条.
+         * @summary 重新加载操作条。会触发afterLoad事件
          * @example
          * this.form.get("name").reload(); //显示操作条
          */
