@@ -136,6 +136,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 this.textarea = this.node.getElement("textarea");
             }
             var input = this.node.getFirst();
+            if( !input && this.nodeHtml ){
+                this.node.set("html", this.nodeHtml);
+                input = this.node.getFirst();
+            }
             input.set(this.json.properties);
 
             //this.node = input;

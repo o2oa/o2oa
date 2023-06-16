@@ -133,6 +133,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		if (!this.json.preprocessing) this._resetNodeEdit();
 
 		var select = this.node.getFirst();
+		if( !select && this.nodeHtml ){
+			this.node.set("html", this.nodeHtml);
+			select = this.node.getFirst();
+		}
+
 		this.areaNode = this.node;
 		this.areaNode.set({
 			"id": this.json.id,
