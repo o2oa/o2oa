@@ -546,8 +546,9 @@ MWF.xApplication.Meeting.Main = new Class({
     //    if (this.currentView) this.currentView.reload();
     //},
     addMeeting: function(date, hour, minute, room, processData, latest){
-        MWF.UD.getPublicData("meetingConfig", function(json){
-            var process = (json) ? json.process : null;
+        o2.Actions.load("x_meeting_assemble_control").ConfigAction.getSystemConfig(function(json){
+            var jsonData = json.data;
+            var process = (jsonData) ? jsonData.process : null;
             if (process){
                 this.loadMeetingProcess(process, processData, latest);
             }else{
@@ -579,6 +580,21 @@ MWF.xApplication.Meeting.Main = new Class({
         }.bind(this));
     },
     afterStartProcess: function(data, title, processName){
+		if (data.work){
+			this.startProcessDraft(data, title, processName);
+		}else{
+			this.startProcessInstance(data, title, processName);
+		}
+	},
+	startProcessDraft: function(data, title, processName){
+		var work = data.work;
+		var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
+			"onPostClose": function(){
+			}.bind(this)
+		};
+		this.desktop.openApplication(null, "process.Work", options);
+	},
+    startProcessInstance: function(data, title, processName){
         var workInfors = [];
         var currentTask = [];
 
