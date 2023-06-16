@@ -78,14 +78,14 @@ MWF.xApplication.process.FormDesigner.Module.WpsOffice = MWF.FCWpsOffice = new C
         }
     },
     setIcon: function(){
-        if (this.json.officeType=="word"){
-            this.setIconNode("word", "Word", "#2b5797", 90);
+        if (this.json.officeType=="docx"){
+            this.setIconNode("docx", "Word", "#2b5797", 90);
         }
-        if (this.json.officeType=="excel"){
-            this.setIconNode("excel", "Excel", "#1e7145", 86);
+        if (this.json.officeType=="xlsx"){
+            this.setIconNode("xlsx", "Excel", "#1e7145", 86);
         }
-        if (this.json.officeType=="ppt"){
-            this.setIconNode("ppt", "PowerPoint", "#d04525", 130);
+        if (this.json.officeType=="pptx"){
+            this.setIconNode("pptx", "PowerPoint", "#d04525", 130);
         }
         if (this.json.officeType=="other"){
             this.setIconNode("office", "Office", "#f36523", 96);
