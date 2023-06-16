@@ -493,10 +493,11 @@ MWF.xApplication.process.Work.Processor = new Class({
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
                 if( this.options.useDefaultOpinion ){
-                    if( this.inputTextarea.get("value") === this.getDefaultOpinion( this.selectedRoute ) ||
+                    if( this.inputTextarea.get("value") === ( this.lastDefaultOpinion || "" ) ||
                         this.inputTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")
                     ){
-                        this.inputTextarea.set("value", this.getDefaultOpinion(node) || (MWF.xApplication.process.Work.LP.inputText || "") );
+                        this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                        this.inputTextarea.set("value", this.lastDefaultOpinion || (MWF.xApplication.process.Work.LP.inputText || "") );
                     }
                 }
 
@@ -511,6 +512,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             } else { //取消选中当前路由
                 if( this.options.useDefaultOpinion ) {
                     if (this.inputTextarea.get("value") === this.getDefaultOpinion(this.selectedRoute)) {
+                        this.lastDefaultOpinion = "";
                         this.inputTextarea.set("value", MWF.xApplication.process.Work.LP.inputText || "");
                     }
                 }
@@ -524,9 +526,11 @@ MWF.xApplication.process.Work.Processor = new Class({
             }
         } else {
             if( this.options.useDefaultOpinion ) {
-                if (this.inputTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")) {
-                    var defaultOpinion1 = this.getDefaultOpinion(node);
-                    if (defaultOpinion1) this.inputTextarea.set("value", defaultOpinion1);
+                if ( (this.inputTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")) ||
+                    (this.inputTextarea.get("value") === this.lastDefaultOpinion )
+                ) {
+                    this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                    if (this.lastDefaultOpinion) this.inputTextarea.set("value", this.lastDefaultOpinion);
                 }
             }
 

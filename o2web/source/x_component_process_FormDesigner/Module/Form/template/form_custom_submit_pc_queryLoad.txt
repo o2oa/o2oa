@@ -811,10 +811,11 @@ window.O2Processor = new Class({
                 this.selectedRoute.setStyles(this.css.routeNode);
                 this.selectedRoute.removeClass("mainColor_bg");
 
-                if( this.getData("inputTextarea") === this.getDefaultOpinion( this.selectedRoute ) ||
+                if( this.getData("inputTextarea") === this.lastDefaultOpinion ||
                     this.getData("inputTextarea") === ""
                 ){
-                    this.setData( "inputTextarea", this.getDefaultOpinion(node) || "" );
+                    this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                    this.setData( "inputTextarea", this.lastDefaultOpinion || "" );
                 }
 
                 this.selectedRoute = node;
@@ -824,6 +825,7 @@ window.O2Processor = new Class({
 
             }else{
                 if ( this.getData("inputTextarea") === this.getDefaultOpinion(this.selectedRoute)) {
+                    this.lastDefaultOpinion = "";
                     this.setData( "inputTextarea", "");
                 }
 
@@ -834,9 +836,9 @@ window.O2Processor = new Class({
                 this.selectedRoute = null;
             }
         }else{
-            if (this.getData("inputTextarea") === "") {
-                var defaultOpinion1 = this.getDefaultOpinion(node);
-                if (defaultOpinion1) this.setData( "inputTextarea", defaultOpinion1);
+            if (this.getData("inputTextarea") === "" || this.getData("inputTextarea") === this.lastDefaultOpinion ) {
+                this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                if (this.lastDefaultOpinion) this.setData( "inputTextarea", this.lastDefaultOpinion);
             }
 
             this.selectedRoute = node;
