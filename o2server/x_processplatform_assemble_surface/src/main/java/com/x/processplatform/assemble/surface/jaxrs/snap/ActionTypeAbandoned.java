@@ -20,9 +20,10 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionTypeAbandoned extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeAbandoned.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeAbandoned.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -54,6 +55,9 @@ class ActionTypeAbandoned extends BaseAction {
 	}
 
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = -5281750474924703683L;
+
 	}
 
 }
