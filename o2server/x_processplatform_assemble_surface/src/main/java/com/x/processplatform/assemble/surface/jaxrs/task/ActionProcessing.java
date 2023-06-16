@@ -113,6 +113,7 @@ class ActionProcessing extends BaseAction {
 				} else {
 					processingTask();
 				}
+				manualAfterProcessing();
 				wo = Wo.copier.copy(rec);
 			} catch (Exception e) {
 				exception = e;
@@ -135,6 +136,13 @@ class ActionProcessing extends BaseAction {
 		}
 		result.setData(wo);
 		return result;
+	}
+
+	private void manualAfterProcessing() throws Exception {
+		ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "manual", "after", "processing"), task, task.getJob())
+				.getData(WrapBoolean.class);
 	}
 
 	private void startSignalThreadIfAsyncSupported(EffectivePerson effectivePerson, String id,

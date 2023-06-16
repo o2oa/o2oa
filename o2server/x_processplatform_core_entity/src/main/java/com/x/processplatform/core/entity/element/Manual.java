@@ -81,6 +81,8 @@ public class Manual extends Activity {
 			this.allowAddTask = this.getProperties().getAllowAddTask();
 			this.goBackConfig = this.getProperties().getGoBackConfig();
 			this.allowGoBack = this.getProperties().getAllowGoBack();
+			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
+			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
 		}
 	}
 
@@ -190,6 +192,44 @@ public class Manual extends Activity {
 	public void setGoBackConfig(GoBackConfig goBackConfig) {
 		this.goBackConfig = goBackConfig;
 		this.properties.setGoBackConfig(goBackConfig);
+	}
+
+	public static final String MANUALAFTERPROCESSINGSCRIPT_FIELDNAME = "manualAfterProcessingScript";
+	@Transient
+	@FieldDescribe("人工环节工作流转后执行脚本.")
+	// @since 8.1.0
+	private String manualAfterProcessingScript;
+
+	public String getManualAfterProcessingScript() {
+		if (null != this.manualAfterProcessingScript) {
+			return this.manualAfterProcessingScript;
+		} else {
+			return this.getProperties().getManualAfterProcessingScript();
+		}
+	}
+
+	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
+		this.manualAfterProcessingScript = manualAfterProcessingScript;
+		this.properties.setManualAfterProcessingScript(manualAfterProcessingScript);
+	}
+
+	public static final String MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME = "manualAfterProcessingScriptText";
+	@Transient
+	@FieldDescribe("人工环节工作流转后执行脚本文本.")
+	// @since 8.1.0
+	private String manualAfterProcessingScriptText;
+
+	public String getManualAfterProcessingScriptText() {
+		if (null != this.manualAfterProcessingScriptText) {
+			return this.manualAfterProcessingScriptText;
+		} else {
+			return this.getProperties().getManualAfterProcessingScriptText();
+		}
+	}
+
+	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
+		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
+		this.properties.setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
 	}
 
 	public ManualTaskIdentityMatrix identitiesToManualTaskIdentityMatrix(List<String> identities) {

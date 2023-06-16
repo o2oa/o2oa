@@ -20,6 +20,12 @@ public class ProcessProperties extends JsonProperties {
 
 	@FieldDescribe("待办执行后脚本文本.")
 	private String manualAfterTaskScriptText;
+	
+	@FieldDescribe("工作流转后执行脚本.")
+	private String manualAfterProcessingScript;
+
+	@FieldDescribe("工作流转后执行脚本文本.")
+	private String manualAfterProcessingScriptText;
 
 	@FieldDescribe("人工活动有停留脚本.")
 	private String manualStayScript;
@@ -128,5 +134,21 @@ public class ProcessProperties extends JsonProperties {
 
 	public void setTargetAssignDataScriptText(String targetAssignDataScriptText) {
 		this.targetAssignDataScriptText = targetAssignDataScriptText;
+	}
+
+	public String getManualAfterProcessingScript() {
+		return manualAfterProcessingScript;
+	}
+
+	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
+		this.manualAfterProcessingScript = manualAfterProcessingScript;
+	}
+
+	public String getManualAfterProcessingScriptText() {
+		return manualAfterProcessingScriptText;
+	}
+
+	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
+		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
 	}
 }
