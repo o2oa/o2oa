@@ -411,7 +411,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			// aeiObjects.business().organization().identity().listObject(null)
 
 		} else {
-			if (taskCompleteds.isEmpty()) {
+			if (matrix.isEmpty()) {
 				// 在添加分支的情况下需要在这里重新计算matrix
 				matrix = manual.identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects, manual));
 			}
