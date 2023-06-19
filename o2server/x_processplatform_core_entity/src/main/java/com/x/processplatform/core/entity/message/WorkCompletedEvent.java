@@ -30,7 +30,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class WorkCompletedEvent extends SliceJpaObject {
 
-    private static final String TABLE = PersistenceProperties.Message.WorkCompletedEvent.table;
+    private static final long serialVersionUID = -4700820656587964782L;
+
+	private static final String TABLE = PersistenceProperties.Message.WorkCompletedEvent.table;
 
     public static final String TYPE_UPDATE = "update";
     public static final String TYPE_CREATE = "create";
