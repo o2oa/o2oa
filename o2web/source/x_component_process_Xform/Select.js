@@ -38,6 +38,24 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this.field = true;
 		this.fieldModuleLoaded = false;
     },
+	/**
+	 * @summary 重新加载组件。会执行postLoad事件。
+	 * @example
+	 * this.form.get("fieldId").reload(); //重新加载事件
+	 */
+	reload: function(){
+		if (this.areaNode){
+			this.node = this.areaNode;
+			this.areaNode.empty();
+			this.areaNode = null;
+		}
+		this._beforeReloaded();
+		this._loadUserInterface();
+		this._loadStyles();
+		this._afterLoaded();
+		this._afterReloaded();
+		this.fireEvent("postLoad");
+	},
     _loadNode: function(){
         if (this.isReadonly()){
             this._loadNodeRead();
