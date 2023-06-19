@@ -23,7 +23,8 @@ MWF.xDesktop.MessageV2 = new Class({
 			'</div>';
 	},
 	load: function(){
-		var path = this.desktop.path+this.desktop.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-message-mobile.html" : "/layout-message-pc.html");
+		//var path = this.desktop.path+this.desktop.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-message-mobile.html" : "/layout-message-pc.html");
+		var path = this.desktop.path+this.desktop.options.style+"/layout-message-pc.html";
 		this.container.loadHtml(path, {"bind": {"lp": o2.LP.desktop}, "module": this}, function(){
 			MWF.require("MWF.widget.ScrollBar", function(){
 				new MWF.widget.ScrollBar(this.scrollNode, {

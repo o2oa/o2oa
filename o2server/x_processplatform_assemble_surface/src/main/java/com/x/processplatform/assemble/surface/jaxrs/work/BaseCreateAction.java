@@ -49,12 +49,11 @@ class BaseCreateAction extends BaseAction {
 
 	/**
 	 * 如果不是草稿那么需要进行设置
-	 *
-	 * @param wi
 	 * @param identity
 	 * @param workId
+	 * @param title
+	 * @param parentWork
 	 * @throws Exception
-	 * @throws ExceptionWorkNotExist
 	 */
 	protected void updateWork(String identity, String workId, String title, String parentWork) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -77,6 +76,23 @@ class BaseCreateAction extends BaseAction {
 				Unit unit = organization.unit().getObject(work.getCreatorUnit());
 				work.setCreatorUnitLevelName(unit.getLevelName());
 			}
+			emc.commit();
+		}
+	}
+
+	/**
+	 * 标志工作跳过新建检查
+	 * @param workId
+	 * @throws Exception
+	 */
+	protected void updateWorkDraftCheck(String workId) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new ExceptionWorkNotExist(workId);
+			}
+			emc.beginTransaction(Work.class);
+			work.setDataChanged(true);
 			emc.commit();
 		}
 	}
