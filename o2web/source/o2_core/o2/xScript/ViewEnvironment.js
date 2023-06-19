@@ -4832,7 +4832,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.startProcess
          */
-        "startProcess": function (app, process, data, identity, callback, target, latest, afterCreated) {
+        "startProcess": function (app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck) {
 
             if (arguments.length > 2) {
                 for (var i = 2; i < arguments.length; i++) {
@@ -4886,6 +4886,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function (data, title, processName) {
                                 var application;
                                 if (data.work){
