@@ -58,6 +58,7 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProc
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 
@@ -113,6 +114,7 @@ class ActionProcessing extends BaseAction {
 				} else {
 					processingTask();
 				}
+				manualAfterProcessing();
 				wo = Wo.copier.copy(rec);
 			} catch (Exception e) {
 				exception = e;
@@ -135,6 +137,21 @@ class ActionProcessing extends BaseAction {
 		}
 		result.setData(wo);
 		return result;
+	}
+
+	/**
+	 * 调用人工环节工作流转后执行脚本
+	 * 
+	 * @throws Exception
+	 */
+	private void manualAfterProcessing() throws Exception {
+		ActionManualAfterProcessingWi req = new ActionManualAfterProcessingWi();
+		req.setTask(task);
+		req.setRecord(rec);
+		ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "manual", "after", "processing"), req, task.getJob())
+				.getData(WrapBoolean.class);
 	}
 
 	private void startSignalThreadIfAsyncSupported(EffectivePerson effectivePerson, String id,

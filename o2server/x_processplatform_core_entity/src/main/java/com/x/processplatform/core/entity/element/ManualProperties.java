@@ -3,6 +3,8 @@ package com.x.processplatform.core.entity.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -25,6 +27,28 @@ public class ManualProperties extends JsonProperties {
 
 	@FieldDescribe("回退配置.")
 	private GoBackConfig goBackConfig;
+
+	@FieldDescribe("人工环节工作流转后执行脚本.")
+	private String manualAfterProcessingScript;
+
+	@FieldDescribe("人工环节工作流转后执行脚本文本.")
+	private String manualAfterProcessingScriptText;
+
+	public String getManualAfterProcessingScript() {
+		return manualAfterProcessingScript;
+	}
+
+	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
+		this.manualAfterProcessingScript = manualAfterProcessingScript;
+	}
+
+	public String getManualAfterProcessingScriptText() {
+		return manualAfterProcessingScriptText;
+	}
+
+	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
+		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
+	}
 
 	public Boolean getAllowGoBack() {
 		return allowGoBack;
