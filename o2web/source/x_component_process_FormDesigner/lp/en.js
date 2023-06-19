@@ -22,6 +22,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "no":"SerialNumber",
         "updateTime":"UpdateTime",
         "op":"action",
+        "person":"person",
         "resume" : "Resume",
         "resumeConfirm" : "Resume Confirmation",
         "resumeInfo" : "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current form needs to be manually saved to take effect.",
