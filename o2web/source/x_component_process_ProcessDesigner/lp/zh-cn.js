@@ -466,6 +466,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manualAfterTask": "待办处理后",
 		"eventInfo10": "判断是否满足条件进入下一个活动",
 
+		"eventInfo11": "执行所有流程流转任务，直到在某个活动停留或结束",
+		"afterProcess": "活动流转完成",
+
 		"updataTime": "更新时间",
 		"num": "顺序号",
 		"defaultOpinion": "默认意见",
