@@ -37,6 +37,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this.form = form;
         this.field = true;
 		this.fieldModuleLoaded = false;
+		this.nodeHtml = this.node.get("html");
     },
 	/**
 	 * @summary 重新加载组件。会执行postLoad事件。
