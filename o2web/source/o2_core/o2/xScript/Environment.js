@@ -3875,6 +3875,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
+         * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查。
          * @example
          //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");
@@ -3890,7 +3891,7 @@ MWF.xScript.Environment = function(ev){
               }
         });
          */
-        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated){
+        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
                     if (typeOf(arguments[i])=="boolean"){
@@ -3943,6 +3944,7 @@ MWF.xScript.Environment = function(ev){
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function(data, title, processName){
                                 var application;
                                 if (data.work){
