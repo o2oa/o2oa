@@ -22,6 +22,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "no":"No.",
             "updateTime":"Fecha de actualización",
             "op":"Acciones",
+            "person":"Operador",
             "resume" : "Restaurar",
             "resumeConfirm" : "Confirmación",
             "resumeInfo" : "¿Está seguro de que desea restaurar el formulario? Después de confirmar la restauración, se actualizará el formulario actual y deberá guardarlo manualmente para que surta efecto.",
