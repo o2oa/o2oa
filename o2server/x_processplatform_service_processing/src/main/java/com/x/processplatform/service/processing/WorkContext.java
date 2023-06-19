@@ -35,6 +35,11 @@ public class WorkContext {
 	private Task task;
 	private TaskCompleted taskCompleted;
 	private Route route;
+	private Record record;
+
+	public void bindRecord(Record record) {
+		this.record = record;
+	}
 
 	public void bindTask(Task task) {
 		this.task = task;
@@ -68,6 +73,10 @@ public class WorkContext {
 	public WorkContext(Work work, Business business) {
 		this.business = business;
 		this.work = work;
+	}
+
+	public String getRecord() {
+		return gson.toJson(record);
 	}
 
 	public String getWork() {

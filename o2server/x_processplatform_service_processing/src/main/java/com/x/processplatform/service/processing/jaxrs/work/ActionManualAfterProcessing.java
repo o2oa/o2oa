@@ -10,9 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -21,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -28,6 +27,7 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
@@ -53,20 +53,9 @@ class ActionManualAfterProcessing extends BaseAction {
 
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Wi extends ActionManualAfterProcessingWi {
 
-		private static final long serialVersionUID = 6857844608423951314L;
-
-		@FieldDescribe("待办.")
-		private Task task;
-
-		public Task getTask() {
-			return task;
-		}
-
-		public void setTask(Task task) {
-			this.task = task;
-		}
+		private static final long serialVersionUID = 94631246819740586L;
 
 	}
 
@@ -80,8 +69,11 @@ class ActionManualAfterProcessing extends BaseAction {
 
 		private Task task;
 
+		private Record record;
+
 		CallableImpl(Wi wi) {
 			this.task = wi.getTask();
+			this.record = wi.getRecord();
 		}
 
 		public ActionResult<Wo> call() throws Exception {
@@ -91,7 +83,7 @@ class ActionManualAfterProcessing extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				Work work = this.getWork(business, task);
-				callManualAfterProcessingScript(business, task, work);
+				callManualAfterProcessingScript(business, task, record, work);
 			}
 			Wo wo = new Wo();
 			wo.setValue(true);
@@ -122,26 +114,30 @@ class ActionManualAfterProcessing extends BaseAction {
 			return work;
 		}
 
-		private void callManualAfterProcessingScript(Business business, Task task, Work work) throws Exception {
+		private void callManualAfterProcessingScript(Business business, Task task, Record record, Work work)
+				throws Exception {
 			Manual manual = business.element().get(task.getActivity(), Manual.class);
 			Process process = business.element().get(task.getProcess(), Process.class);
 			if ((null != manual) && (null != process)) {
 				boolean processHasManualAfterProcessingScript = processHasManualAfterProcessingScript(process);
 				boolean hasManualAfterProcessingScript = hasManualAfterProcessingScript(manual);
 				if (processHasManualAfterProcessingScript || hasManualAfterProcessingScript) {
-					evalCallManualAfterProcessingScript(business, task, manual, process,
+					evalCallManualAfterProcessingScript(business, task, record, manual, process,
 							processHasManualAfterProcessingScript, hasManualAfterProcessingScript, work);
 				}
 			}
 		}
 
-		private void evalCallManualAfterProcessingScript(Business business, Task task, Manual manual, Process process,
-				boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
+		private void evalCallManualAfterProcessingScript(Business business, Task task, Record record, Manual manual,
+				Process process, boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
 				throws Exception {
 			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
 					new ProcessingAttributes());
 			ScriptContext scriptContext = aeiObjects.scriptContext();
-			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
+			WorkContext workContext = (WorkContext) scriptContext
+					.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
+			workContext.bindTask(task);
+			workContext.bindRecord(record);
 			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 			if (processHasManualBeforeTaskScript) {
 				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
