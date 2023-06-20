@@ -141,7 +141,9 @@ class ActionAssignCreate extends BaseAction {
 			toAttachment.setFromJob(formAttachment.getJob());
 			toAttachment.setFromId(formAttachment.getId());
 			toAttachment.setFromPath(formAttachment.path());
+			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
 		} else {
+			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
 			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName());
 		}
 	}
