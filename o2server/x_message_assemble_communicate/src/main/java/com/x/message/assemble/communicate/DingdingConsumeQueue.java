@@ -1,6 +1,7 @@
 package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +93,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			if (retTitle.length() > 46) {
 				retTitle = retTitle.substring(0, 46);
 			}
-			Random r = new Random();
+			Random r = new SecureRandom();
 			int i = r.nextInt(9999-1000) + 1000;
 			retTitle = retTitle + i;
 		}
@@ -101,7 +102,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 判断打开地址
-	 * 
+	 *
 	 * @param message
 	 * @return
 	 */
@@ -126,7 +127,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 标志消息消费成功
-	 * 
+	 *
 	 * @param id
 	 * @throws Exception
 	 */
@@ -143,7 +144,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 文档打开的url
-	 * 
+	 *
 	 * @param messageBody
 	 * @return
 	 */
@@ -160,7 +161,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 工作打开的url
-	 * 
+	 *
 	 * @param messageBody
 	 * @return
 	 */
@@ -197,7 +198,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 是否需要把钉钉消息转成markdown格式消息 根据是否配置了钉钉工作链接、是否是工作消息（目前只支持工作消息）
-	 * 
+	 *
 	 * @param messageType 消息类型 判断是否是工作消息
 	 * @return
 	 */
