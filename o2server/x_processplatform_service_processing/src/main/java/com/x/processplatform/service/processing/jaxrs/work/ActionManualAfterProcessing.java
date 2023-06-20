@@ -28,6 +28,9 @@ import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
+/**
+ * 此方法不会修改数据,使用noblocking方式执行.
+ */
 class ActionManualAfterProcessing extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManualAfterProcessing.class);
