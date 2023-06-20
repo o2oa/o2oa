@@ -686,7 +686,6 @@ MWF.xScript.Environment = function(ev){
          * 如果传入true，则发起异步请求获取附件列表，返回Promise对象；如果传入false, 则发起同步请求获取附件列表；
          * 如果不传入参数，则直接返回本地缓存中的attachmentList对象。
          * @param {Function} [error] 获取附件对象数组出错时的回调。
-         * @return {(Review[])} 当前流程实例的所有附件对象数组，异步请求时返回请求的Promise对象.
          * @return {WorkAttachmentData[]} 附件数据.
          * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
