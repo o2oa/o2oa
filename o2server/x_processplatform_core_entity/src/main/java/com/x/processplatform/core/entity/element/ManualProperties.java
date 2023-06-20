@@ -3,8 +3,6 @@ package com.x.processplatform.core.entity.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;

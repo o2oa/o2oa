@@ -153,7 +153,7 @@ public class Manual extends Activity {
 
 	public void setProcessingTaskOnceUnderSamePerson(Boolean processingTaskOnceUnderSamePerson) {
 		this.processingTaskOnceUnderSamePerson = processingTaskOnceUnderSamePerson;
-		this.properties.setProcessingTaskOnceUnderSamePerson(processingTaskOnceUnderSamePerson);
+		this.getProperties().setProcessingTaskOnceUnderSamePerson(processingTaskOnceUnderSamePerson);
 	}
 
 	public static final String ALLOWGOBACK_FIELDNAME = "allowGoBack";
@@ -210,7 +210,7 @@ public class Manual extends Activity {
 
 	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
 		this.manualAfterProcessingScript = manualAfterProcessingScript;
-		this.properties.setManualAfterProcessingScript(manualAfterProcessingScript);
+		this.getProperties().setManualAfterProcessingScript(manualAfterProcessingScript);
 	}
 
 	public static final String MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME = "manualAfterProcessingScriptText";
@@ -229,7 +229,7 @@ public class Manual extends Activity {
 
 	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
 		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
-		this.properties.setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
+		this.getProperties().setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
 	}
 
 	public ManualTaskIdentityMatrix identitiesToManualTaskIdentityMatrix(List<String> identities) {

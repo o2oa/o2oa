@@ -284,7 +284,7 @@ class ActionProcessing extends BaseAction {
 		// 加签也记录流程意见和路由决策
 		this.rec.getProperties().setOpinion(this.task.getOpinion());
 		this.rec.getProperties().setRouteName(this.task.getRouteName());
-		RecordBuilder.processing(rec);
+		rec.setId(RecordBuilder.processing(rec));
 		this.processingUpdateTaskCompleted();
 		this.processingUpdateTask();
 	}
@@ -318,7 +318,7 @@ class ActionProcessing extends BaseAction {
 			// 加签也记录流程意见和路由决策
 			this.rec.getProperties().setOpinion(this.task.getOpinion());
 			this.rec.getProperties().setRouteName(this.task.getRouteName());
-			RecordBuilder.processing(rec);
+			rec.setId(RecordBuilder.processing(rec));
 			this.processingUpdateTaskCompleted();
 			this.processingUpdateTask();
 		} else {
@@ -395,7 +395,7 @@ class ActionProcessing extends BaseAction {
 		if (!records.isEmpty()) {
 			records.stream().forEach(r -> {
 				try {
-					RecordBuilder.processing(r);
+					r.setId(RecordBuilder.processing(r));
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
@@ -460,7 +460,7 @@ class ActionProcessing extends BaseAction {
 			// 加签也记录流程意见和路由选择
 			this.rec.getProperties().setOpinion(this.task.getOpinion());
 			this.rec.getProperties().setRouteName(this.task.getRouteName());
-			RecordBuilder.processing(rec);
+			rec.setId(RecordBuilder.processing(rec));
 			this.processingUpdateTaskCompleted();
 			this.processingUpdateTask();
 		} else {
