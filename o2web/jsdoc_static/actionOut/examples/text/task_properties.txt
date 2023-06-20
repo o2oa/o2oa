@@ -15,8 +15,10 @@
 				"opinion": " ",
 				"startTime": "2022-07-27 13:29:35",
 				"completedTime": "2022-07-27 13:29:35",
-				"serialVersionUID": 1,
-				"serialVersionUID": 1
+                "activity": "ce6ede22-d49d-44a7-a0a0-776951cb7348",
+                "activityToken": "cc9afcf8-388d-44d2-8801-97d0bc742674",
+                "activityName": "拟稿",
+                "activityType": "manual"
 			}
 		],		//上一人工环节待办对象列表.
 		"prevTask": {
@@ -27,13 +29,12 @@
 			"opinion": " ",
 			"startTime": "2022-07-27 13:29:35",
 			"completedTime": "2022-07-27 13:29:35",
-			"serialVersionUID": 1,
-			"serialVersionUID": 1
+            "activity": "ce6ede22-d49d-44a7-a0a0-776951cb7348",
+            "activityToken": "cc9afcf8-388d-44d2-8801-97d0bc742674",
+            "activityName": "拟稿",
+            "activityType": "manual"
 		},		//上一人工环节最近待办对象.
 		"pauseStartTime": "2022-07-27 13:29:35",		//待办计时暂停工作时间时长(分钟).
 		"pauseWorkTimeMinutes": 1,		//待办计时暂停工作时间时长(分钟).
 		"pauseMinutes": 1,		//待办计时暂停自然时间时长(分钟).
-		"serialVersionUID": 1,
-		"serialVersionUID": 1,
-		"serialVersionUID": 1
 	}
