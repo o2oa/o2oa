@@ -176,6 +176,10 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     _loadNodeEdit: function(){
         if (!this.json.preprocessing) this._resetNodeEdit();
         var input = this.node.getFirst();
+        if( !input && this.nodeHtml ){
+            this.node.set("html", this.nodeHtml);
+            input = this.node.getFirst();
+        }
         input.set(this.json.properties);
 
         if( this.form.json.textareaDisableResize )input.setStyle("resize","none");

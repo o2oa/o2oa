@@ -223,6 +223,8 @@ public class Process extends SliceJpaObject {
 			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
 			this.targetAssignDataScript = this.getProperties().getTargetAssignDataScript();
 			this.targetAssignDataScriptText = this.getProperties().getTargetAssignDataScriptText();
+			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
+			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
 		}
 	}
 
@@ -678,6 +680,44 @@ public class Process extends SliceJpaObject {
 	@FieldDescribe("人工活动有停留脚本文本.")
 	@Transient
 	private String manualStayScriptText;
+
+	public static final String MANUALAFTERPROCESSINGSCRIPT_FIELDNAME = "manualAfterProcessingScript";
+	@Transient
+	@FieldDescribe("人工环节工作流转后执行脚本.")
+	// @since 8.1.0
+	private String manualAfterProcessingScript;
+
+	public String getManualAfterProcessingScript() {
+		if (null != this.manualAfterProcessingScript) {
+			return this.manualAfterProcessingScript;
+		} else {
+			return this.getProperties().getManualAfterProcessingScript();
+		}
+	}
+
+	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
+		this.manualAfterProcessingScript = manualAfterProcessingScript;
+		this.properties.setManualAfterProcessingScript(manualAfterProcessingScript);
+	}
+
+	public static final String MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME = "manualAfterProcessingScriptText";
+	@Transient
+	@FieldDescribe("人工环节工作流转后执行脚本文本.")
+	// @since 8.1.0
+	private String manualAfterProcessingScriptText;
+
+	public String getManualAfterProcessingScriptText() {
+		if (null != this.manualAfterProcessingScriptText) {
+			return this.manualAfterProcessingScriptText;
+		} else {
+			return this.getProperties().getManualAfterProcessingScriptText();
+		}
+	}
+
+	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
+		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
+		this.properties.setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
+	}
 
 	public static final String TARGETASSIGNDATASCRIPT_FIELDNAME = "targetAssignDataScript";
 	@FieldDescribe("数据执行前脚本.")

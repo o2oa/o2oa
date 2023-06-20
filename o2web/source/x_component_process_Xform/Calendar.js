@@ -116,7 +116,9 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         this.fieldModuleLoaded = true;
         return value;
     },
-
+    _beforeReloaded: function(){
+        this.calendar = null;
+    },
 	clickSelect: function(){
 
         var _self = this;

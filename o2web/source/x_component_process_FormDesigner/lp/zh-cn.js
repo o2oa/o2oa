@@ -22,6 +22,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "no":"序号",
             "updateTime":"更新时间",
             "op":"操作",
+            "person":"更新人",
             "resume" : "恢复",
             "resumeConfirm" : "恢复确认",
             "resumeInfo" : "您确认是否需要执行表单恢复操作？确认恢复后当前表单会更新，需要手动保存当前表单才会生效。",

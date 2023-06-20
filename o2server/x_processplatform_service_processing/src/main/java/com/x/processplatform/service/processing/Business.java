@@ -22,6 +22,7 @@ public class Business {
 	public static final String EVENT_MANUALSTAY = "manualStay";
 	public static final String EVENT_MANUALBEFORETASK = "manualBeforeTask";
 	public static final String EVENT_MANUALAFTERTASK = "manualAfterTask";
+	public static final String EVENT_MANUALAFTERPROCESSING = "manualAfterProcessing";
 	public static final String EVENT_BEFOREARRIVE = "beforeArrive";
 	public static final String EVENT_AFTERARRIVE = "afterArrive";
 	public static final String EVENT_BEFOREEXECUTE = "beforeExecute";

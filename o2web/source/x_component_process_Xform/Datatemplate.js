@@ -288,7 +288,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		/*
-		 * @summary 重新加载数据表格。
+		 * @summary 重新加载数据表格。会触发load和postLoad事件。
 		 * @example
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
