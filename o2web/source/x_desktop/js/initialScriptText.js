@@ -3420,9 +3420,30 @@ bind.workContext = {
      */
     "getReviewListByJob": function(){return this.getJobReviewList();},
 
+    /**
+     * @summary 获取当前工作所在活动对象。
+     * @method getActivity
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(Activity)} 当前工作所在活动.
+     * @o2syntax
+     * var activity = this.workContext.getActivity();
+     */
     "getActivity": function(){return JSON.parse(bind.java_workContext.getActivity());},       //活动对象字符串
+
+    /**
+     * @summary 根据当前工作的job获取当前工作的所有worklog。
+     * @method getReadCompletedListByJob
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(WorkLog[])} 当前工作的worklog对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
+     * @o2syntax
+     * var workLogList = this.workContext.getWorkLogList();
+     */
     "getWorkLogList": function(){return JSON.parse(bind.java_workContext.getWorkLogList());}, //WorkLogList对象数组的字符串
     "getRecordList": function(){return JSON.parse(bind.java_workContext.getRecordList());}, //RecordList对象数组的字符串，需要新增
+    "getRecord": function(){return JSON.parse(bind.java_workContext.getRecord());}, //最后一条Record对象，（在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record）
     "getAttachmentList": function(){return JSON.parse(bind.java_workContext.getAttachmentList());},   //附件对象数组的字符串
     "getRouteList": function(){return JSON.parse(bind.java_workContext.getRouteList());},      //可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）
 
