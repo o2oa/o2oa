@@ -697,7 +697,7 @@ public class Process extends SliceJpaObject {
 
 	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
 		this.manualAfterProcessingScript = manualAfterProcessingScript;
-		this.properties.setManualAfterProcessingScript(manualAfterProcessingScript);
+		this.getProperties().setManualAfterProcessingScript(manualAfterProcessingScript);
 	}
 
 	public static final String MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME = "manualAfterProcessingScriptText";
@@ -716,7 +716,7 @@ public class Process extends SliceJpaObject {
 
 	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
 		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
-		this.properties.setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
+		this.getProperties().setManualAfterProcessingScriptText(manualAfterProcessingScriptText);
 	}
 
 	public static final String TARGETASSIGNDATASCRIPT_FIELDNAME = "targetAssignDataScript";

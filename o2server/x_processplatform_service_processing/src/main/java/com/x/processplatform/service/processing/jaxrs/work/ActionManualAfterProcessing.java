@@ -1,8 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
 import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,7 +22,6 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WorkContext;
@@ -43,13 +38,13 @@ class ActionManualAfterProcessing extends BaseAction {
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		String executorSeed = wi.getTask().getJob();
+		this.processing(wi.getTask(), wi.getRecord());
 
-		if (StringUtils.isEmpty(executorSeed)) {
-			throw new ExceptionEmptyJob();
-		}
-
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(wi)).get(300, TimeUnit.SECONDS);
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = new Wo();
+		wo.setValue(true);
+		result.setData(wo);
+		return result;
 
 	}
 
@@ -65,101 +60,79 @@ class ActionManualAfterProcessing extends BaseAction {
 
 	}
 
-	private class CallableImpl implements Callable<ActionResult<Wo>> {
+	private void processing(Task task, Record record) throws Exception {
 
-		private Task task;
-
-		private Record record;
-
-		CallableImpl(Wi wi) {
-			this.task = wi.getTask();
-			this.record = wi.getRecord();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Work work = this.getWork(business, task);
+			callManualAfterProcessingScript(business, task, record, work);
 		}
 
-		public ActionResult<Wo> call() throws Exception {
+	}
 
-			ActionResult<Wo> result = new ActionResult<>();
-
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				Work work = this.getWork(business, task);
-				callManualAfterProcessingScript(business, task, record, work);
-			}
-			Wo wo = new Wo();
-			wo.setValue(true);
-			result.setData(wo);
-			return result;
+	/**
+	 * 获取work,如果没有(删除,完成)那么取同一job的work,如果还没有,那么取workCompleted转换成work
+	 * 
+	 * @param business
+	 * @param task
+	 * @return
+	 * @throws Exception
+	 */
+	private Work getWork(Business business, Task task) throws Exception {
+		Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
+		if (null == work) {
+			work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, task.getJob());
 		}
-
-		/**
-		 * 获取work,如果没有(删除,完成)那么取同一job的work,如果还没有,那么取workCompleted转换成work
-		 * 
-		 * @param business
-		 * @param task
-		 * @return
-		 * @throws Exception
-		 */
-		private Work getWork(Business business, Task task) throws Exception {
-			Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
-			if (null == work) {
-				work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, task.getJob());
-			}
-			if (null == work) {
-				WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
-						WorkCompleted.job_FIELDNAME, task.getJob());
-				if (null != workCompleted) {
-					work = XGsonBuilder.convert(workCompleted, Work.class);
-				}
-			}
-			return work;
-		}
-
-		private void callManualAfterProcessingScript(Business business, Task task, Record record, Work work)
-				throws Exception {
-			Manual manual = business.element().get(task.getActivity(), Manual.class);
-			Process process = business.element().get(task.getProcess(), Process.class);
-			if ((null != manual) && (null != process)) {
-				boolean processHasManualAfterProcessingScript = processHasManualAfterProcessingScript(process);
-				boolean hasManualAfterProcessingScript = hasManualAfterProcessingScript(manual);
-				if (processHasManualAfterProcessingScript || hasManualAfterProcessingScript) {
-					evalCallManualAfterProcessingScript(business, task, record, manual, process,
-							processHasManualAfterProcessingScript, hasManualAfterProcessingScript, work);
-				}
+		if (null == work) {
+			WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
+					WorkCompleted.job_FIELDNAME, task.getJob());
+			if (null != workCompleted) {
+				work = XGsonBuilder.convert(workCompleted, Work.class);
 			}
 		}
+		return work;
+	}
 
-		private void evalCallManualAfterProcessingScript(Business business, Task task, Record record, Manual manual,
-				Process process, boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
-				throws Exception {
-			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-					new ProcessingAttributes());
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			WorkContext workContext = (WorkContext) scriptContext
-					.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
-			workContext.bindTask(task);
-			workContext.bindRecord(record);
-			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
-			if (processHasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
-						Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
+	private void callManualAfterProcessingScript(Business business, Task task, Record record, Work work)
+			throws Exception {
+		Manual manual = business.element().get(task.getActivity(), Manual.class);
+		Process process = business.element().get(task.getProcess(), Process.class);
+		if ((null != manual) && (null != process)) {
+			boolean processHasManualAfterProcessingScript = processHasManualAfterProcessingScript(process);
+			boolean hasManualAfterProcessingScript = hasManualAfterProcessingScript(manual);
+			if (processHasManualAfterProcessingScript || hasManualAfterProcessingScript) {
+				evalCallManualAfterProcessingScript(business, task, record, manual, process,
+						processHasManualAfterProcessingScript, hasManualAfterProcessingScript, work);
 			}
-			if (hasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
-						Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
-			}
-			workDataHelper.update(aeiObjects.getData());
-			business.entityManagerContainer().commit();
-		}
-
-		private boolean hasManualAfterProcessingScript(Manual manual) {
-			return ((null != manual) && (StringUtils.isNotEmpty(manual.getManualAfterProcessingScript())
-					|| StringUtils.isNotEmpty(manual.getManualAfterProcessingScriptText())));
-		}
-
-		private boolean processHasManualAfterProcessingScript(Process process) {
-			return ((null != process) && (StringUtils.isNotEmpty(process.getManualAfterProcessingScript())
-					|| StringUtils.isNotEmpty(process.getManualAfterProcessingScriptText())));
 		}
 	}
 
+	private void evalCallManualAfterProcessingScript(Business business, Task task, Record record, Manual manual,
+			Process process, boolean processHasManualAfterProcessingScript, boolean hasManualAfterProcessingScript,
+			Work work) throws Exception {
+		AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
+				new ProcessingAttributes());
+		ScriptContext scriptContext = aeiObjects.scriptContext();
+		WorkContext workContext = (WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
+		workContext.bindTask(task);
+		workContext.bindRecord(record);
+		if (processHasManualAfterProcessingScript) {
+			JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
+					Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
+		}
+		if (hasManualAfterProcessingScript) {
+			JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
+					Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
+		}
+	}
+
+	private boolean hasManualAfterProcessingScript(Manual manual) {
+		return ((null != manual) && (StringUtils.isNotEmpty(manual.getManualAfterProcessingScript())
+				|| StringUtils.isNotEmpty(manual.getManualAfterProcessingScriptText())));
+	}
+
+	private boolean processHasManualAfterProcessingScript(Process process) {
+		return ((null != process) && (StringUtils.isNotEmpty(process.getManualAfterProcessingScript())
+				|| StringUtils.isNotEmpty(process.getManualAfterProcessingScriptText())));
+	}
 }
