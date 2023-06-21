@@ -148,10 +148,10 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
 						work.getProcess()));
-		// 是否可以提醒
+		// 是否可以提醒,如果自己有待办那么意味着当前自己在处理,不需要提醒
 		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
-				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-
+				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob())
+				&& (!wo.getAllowProcessing()));
 		// 相互之间有影响的重新计算.
 		recalculate(wo, work);
 
