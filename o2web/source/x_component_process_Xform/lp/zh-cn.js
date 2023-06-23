@@ -433,7 +433,19 @@ MWF.xApplication.process.Xform.LP = {
     "creatorPerson": "创建人",
     "creatorUnit": "创建组织",
     "score": "关联度",
-    "updateTime": "更新时间"
+    "updateTime": "更新时间",
+
+    "documentType": "文档类型",
+    "processName": "流程名称",
+    "draftTime": "拟稿时间",
+    "draftPerson": "拟稿人",
+    "categoryName": "分类",
+    "publishPerson": "发布人",
+    "publishTime": "发布时间",
+    "document": "信息",
+    "work": "工作",
+    "cancelAssociatedTitle": "取消关联文档",
+    "cancelAssociated": "确定要取消和文档“{title}”的关联?"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

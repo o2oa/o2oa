@@ -375,7 +375,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "Read Log",
         "writingBoard": "writingBoard",
         "tinymceEditor": "TinyMCE",
-        "relatedLink": "Related Link"
+        "relatedLink": "Related Link",
+        "associatedDocument": "Associated Document"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -973,6 +974,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "Expand Html",
         "collapseHtml": "Collapse Html",
         "relativedLinkField": "Selectable Field：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
+        "documentListShow": "Document List",
+        "associatedDocumentField": "Selectable Field：title,createTime,creatorPerson,type,processOrCategoryName",
 
         "fileTemplate": "File Template",
         "systemTemplate": "System Template",

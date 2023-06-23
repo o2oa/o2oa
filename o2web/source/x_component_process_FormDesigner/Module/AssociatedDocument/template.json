@@ -1,0 +1,102 @@
+{
+	"id": "",
+	"name": "",
+	"type": "AssociatedDocument",
+	"mode": "default", //script table or text
+	"buttonText": "选择关联文档",
+	"textStyle": "<div style=\"margin-top: 3px; margin-left: 4px; width: 21px; height: 24px; margin-right: 5px; background: url('../x_component_process_Xform/$Form/default/icon/doc_work.png') center center / 21px 24px no-repeat; float: left;\">\n</div>\n<div style=\"float: left;\">{title}</div>\n<div data-o2-action='delete' style=\"margin-top: 7px; margin-left: 5px; width: 16px; height: 16px; margin-right: 5px; background: url('../x_component_process_Xform/$Form/default/icon/delete1.png') center center / 16px 16px no-repeat; float: left;\">\n</div>",
+	"displayScript": {
+		"html": "return '<div style=\"margin-top: 3px; margin-left: 4px; width: 21px; height: 24px; margin-right: 5px; background: url(\\'../x_component_process_Xform/$Form/default/icon/doc_work.png\\') center center / 21px 24px no-repeat; float: left;\">'+\n'</div>'+\n'<div style=\"float: left;\">'+this.line.data.title+'</div>'+\n'<div data-o2-action=\"delete\" style=\"margin-top: 7px; margin-left: 5px; width: 16px; height: 16px; margin-right: 5px; background: url(\\'../x_component_process_Xform/$Form/default/icon/delete1.png\\') center center / 16px 16px no-repeat; float: left;\">'+\n'</div>'",
+		"code": "return '<div style=\"margin-top: 3px; margin-left: 4px; width: 21px; height: 24px; margin-right: 5px; background: url(\\'../x_component_process_Xform/$Form/default/icon/doc_work.png\\') center center / 21px 24px no-repeat; float: left;\">'+\n'</div>'+\n'<div style=\"float: left;\">'+this.line.data.title+'</div>'+\n'<div data-o2-action=\"delete\" style=\"margin-top: 7px; margin-left: 5px; width: 16px; height: 16px; margin-right: 5px; background: url(\\'../x_component_process_Xform/$Form/default/icon/delete1.png\\') center center / 16px 16px no-repeat; float: left;\">'+\n'</div>'"
+	},
+	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+			"code": "",
+			"html": ""
+		},
+		"load": {
+			"code": "",
+			"html": ""
+		},
+		"beforeLoadView": {
+			"code": "",
+			"html": ""
+		},
+		"loadView" : {
+			"code": "",
+			"html": ""
+		},
+		"select": {
+			"code": "",
+			"html": ""
+		},
+		"unselect": {
+			"code": "",
+			"html": ""
+		},
+		"openDocument": {
+			"code": "",
+			"html": ""
+		},
+		"selectResult": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

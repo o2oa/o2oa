@@ -373,7 +373,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "阅读记录",
         "writingBoard": "手写板",
         "tinymceEditor": "Tinymce编辑器",
-        "relatedLink": "相关推荐"
+        "relatedLink": "相关推荐",
+        "associatedDocument": "关联文档"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -971,6 +972,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "展开节点HTML",
         "collapseHtml": "折叠节点HTML",
         "relativedLinkField": "可选字段：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
+        "documentListShow": "文档列表展现",
+        "associatedDocumentField": "可选字段：title,createTime,creatorPerson,type,processOrCategoryName",
+        "associatedDocumentScriptNote": "\n通过this.line可以获取当前条目数据",
 
         "fileTemplate": "文件模板",
         "systemTemplate": "系统模板",

@@ -417,7 +417,19 @@ MWF.xApplication.process.Xform.LP = {
     "creatorPerson": "Creador",
     "creatorUnit": "Organización creadora",
     "score": "Relevancia",
-    "updateTime": "Hora de actualización"
+    "updateTime": "Hora de actualización",
+
+    "documentType": "Tipo de documento",
+    "processName": "Nombre del proceso",
+    "draftTime": "Tiempo de borrador",
+    "draftPerson": "Autor de la propuesta",
+    "categoryName": "Clasificado",
+    "publishPerson": "Editor",
+    "publishTime": "Publishing time",
+    "document": "Información",
+    "work": "Trabajo",
+    "cancelAssociatedTitle": "Cancelar documento asociado",
+    "cancelAssociated": "¿Está seguro de la asociación que desea cancelar con el documento '{title}'?"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

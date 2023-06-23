@@ -1357,6 +1357,49 @@
   "goBack_activity_info": {
     "color": "#999999",
     "font-size": "12px"
+  },
+  "associatedDocumentItem":{
+    "overflow": "hidden",
+    "cursor": "pointer",
+    "line-height": "30px",
+    "height": "30px",
+    "background": "#fff"
+  },
+  "associatedDocumentItem_over":{
+    "background": "#eaf0f5"
+},
+  "associatedDocumentCmsIcon":{
+    "margin-top": "3px",
+    "margin-left": "4px",
+    "width": "21px",
+    "height": "24px",
+    "margin-right": "5px",
+    "background": "url(../x_component_process_Xform/$Form/default/icon/doc_cms.png) no-repeat center center",
+    "background-size": "21px 24px",
+    "float": "left"
+  },
+  "associatedDocumentWorkIcon":{
+    "margin-top": "3px",
+    "margin-left": "4px",
+    "width": "21px",
+    "height": "24px",
+    "margin-right": "5px",
+    "background": "url(../x_component_process_Xform/$Form/default/icon/doc_work.png) no-repeat center center",
+    "background-size": "21px 24px",
+    "float": "left"
+  },
+  "associatedDocumentText": {
+    "float": "left"
+  },
+  "associatedDocumentDelete": {
+    "margin-top": "7px",
+    "margin-left": "5px",
+    "width": "16px",
+    "height": "16px",
+    "margin-right": "5px",
+    "background": "url(../x_component_process_Xform/$Form/default/icon/delete1.png) no-repeat center center",
+    "background-size": "16px 16px",
+    "float": "left"
   }
 
 }
