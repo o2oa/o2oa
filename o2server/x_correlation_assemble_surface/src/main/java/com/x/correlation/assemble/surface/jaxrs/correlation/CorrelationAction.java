@@ -24,79 +24,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-@Tag(name = "FileAction", description = "文件接口.")
-@Path("file")
-@JaxrsDescribe("文件接口.")
+@Path("correlation")
+@JaxrsDescribe("关联内容.")
 public class CorrelationAction extends StandardJaxrsAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(CorrelationAction.class);
-	private static final String OPERATIONID_PREFIX = "FileAction::";
+	private static final Logger LOGGER = LoggerFactory.getLogger(CorrelationAction.class);
 
-	@Operation(summary = "列示指定应用标识下所有可见的文件.", operationId = OPERATIONID_PREFIX + "listWithApplication", responses = {
-			@ApiResponse(content = {
-					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithApplication.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "列示指定应用标识下所有可见的文件.", action = ActionListWithApplication.class)
+	@JaxrsMethodDescribe(value = "列示指定应用标识下所有可见的文件.", action = ActionGet.class)
 	@GET
-	@Path("list/application/{applicationFlag}")
+	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithApplication().execute(effectivePerson, applicationFlag);
+			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@Operation(summary = "根据应用标识和文件标识访问文件内容,设定使用流输出.", operationId = OPERATIONID_PREFIX + "download", responses = {
-			@ApiResponse(content = {
-					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionDownload.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "根据应用标识和文件标识访问文件内容,设定使用流输出.", action = ActionDownload.class)
-	@GET
-	@Path("{flag}/application/{applicationFlag}/download")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionDownload().execute(effectivePerson, flag, applicationFlag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@Operation(summary = "根据应用标识和文件标识访问文件内容.", operationId = OPERATIONID_PREFIX + "content", responses = {
-			@ApiResponse(content = {
-					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCreate.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "根据应用标识和文件标识访问文件内容.", action = ActionCreate.class)
-	@GET
-	@Path("{flag}/application/{applicationFlag}/content")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void content(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCreate().execute(effectivePerson, flag, applicationFlag);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

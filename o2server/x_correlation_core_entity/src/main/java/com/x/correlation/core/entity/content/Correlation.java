@@ -9,9 +9,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -23,7 +26,7 @@ import com.x.correlation.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Correlation", description = "相关内容.")
+@Schema(name = "Correlation", description = "关联内容.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Content.Correlation.TABLE, uniqueConstraints = {
@@ -64,11 +67,35 @@ public class Correlation extends SliceJpaObject {
 
 	@PostLoad
 	public void postLoad() {
-		// nothing
+		this.title = this.getProperties().getTitle();
 	}
 
 	public Correlation() {
 		// nothing
+	}
+
+	@Transient
+	@FieldDescribe("标题.")
+	private String title;
+
+	public String getString() {
+		return this.title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+		this.getProperties().setTitle(title);
+	}
+
+	public CorrelationProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new CorrelationProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(CorrelationProperties properties) {
+		this.properties = properties;
 	}
 
 	public static final String FROMTYPE_FIELDNAME = "fromType";
@@ -105,6 +132,15 @@ public class Correlation extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + PERSON_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String person;
+
+	public static final String PROPERTIES_FIELDNAME = "properties";
+	@Schema(description = "属性存储字段.")
+	@FieldDescribe("属性存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private CorrelationProperties properties;
 
 	public String getFromType() {
 		return fromType;
