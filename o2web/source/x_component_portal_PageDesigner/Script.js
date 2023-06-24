@@ -220,6 +220,8 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadImporterScript(v); break;
             case "Relatedlink":
                 this.loadRelatedlinkScript(v); break;
+            case "AssociatedDocument":
+                this.loadAssociatedDocumentScript(v); break;
             case "Documenteditor":
                 this.loadDocumenteditorScript(v); break;
             case "Common":
@@ -476,6 +478,11 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.loadEventsScript(data);
     },
     loadRelatedlinkScript: function(data){
+        this.addScriptItem(data.displayScript, "code", data, "displayScript");
+        this.loadEventsScript(data);
+    },
+    loadAssociatedDocumentScript:function(data){
+        this.addScriptItem(data.textStyleScript, "code", data, "textStyleScript");
         this.addScriptItem(data.displayScript, "code", data, "displayScript");
         this.loadEventsScript(data);
     },
