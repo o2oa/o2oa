@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
@@ -52,10 +54,12 @@
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
+		<module>x_correlation_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
+		<module>x_correlation_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_core_express</module>
@@ -78,7 +82,8 @@
 		<module>x_processplatform_assemble_bam</module>
 		<module>x_processplatform_assemble_designer</module>
 		<module>x_processplatform_assemble_surface</module>
-		<module>x_processplatform_service_processing</module>
+		<module>x_correlation_assemble_surface</module>
+		<module>x_correlation_service_processing</module>
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
@@ -469,9 +474,11 @@
 						<target>11</target>
 						<compilerArgs>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
 						</compilerArgs>
 					</configuration>
 				</plugin>
@@ -532,7 +539,8 @@
 						<docencoding>UTF-8</docencoding>
 						<additionalOptions>
 							<!-- 解决jdk1.8以后编译出错问题-->
-							<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
+							<!--
+							<additionalOption>-Xdoclint:none</additionalOption>-->
 							<additionalparam>-Xdoclint:none</additionalparam>
 						</additionalOptions>
 					</configuration>
@@ -1126,6 +1134,16 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_express</artifactId>
 				<version>8.0</version>
 			</dependency>
 			<dependency>
