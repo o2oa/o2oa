@@ -15,11 +15,11 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
-class ActionListWithJob extends BaseAction {
+class ActionListWithJobWithSite extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJobWithSite.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job, String site) throws Exception {
 
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
@@ -33,8 +33,8 @@ class ActionListWithJob extends BaseAction {
 		}
 
 		List<Wo> wos = ThisApplication.context().applications()
-				.getQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
-						Applications.joinQueryUri("correlation", "list", "type", "processplatform", "job", job), job)
+				.getQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class, Applications
+						.joinQueryUri("correlation", "list", "type", "processplatform", "job", job, "site", site), job)
 				.getDataAsList(Wo.class);
 		result.setData(wos);
 		return result;

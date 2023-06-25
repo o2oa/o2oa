@@ -1,38 +1,91 @@
 package com.x.processplatform.assemble.surface;
 
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
-import com.x.processplatform.assemble.surface.factory.content.*;
-import com.x.processplatform.assemble.surface.factory.element.*;
+import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
+import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
+import com.x.processplatform.assemble.surface.factory.content.JobFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
+import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
+import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationFactory;
+import com.x.processplatform.assemble.surface.factory.element.BeginFactory;
+import com.x.processplatform.assemble.surface.factory.element.CancelFactory;
+import com.x.processplatform.assemble.surface.factory.element.ChoiceFactory;
+import com.x.processplatform.assemble.surface.factory.element.DelayFactory;
+import com.x.processplatform.assemble.surface.factory.element.EmbedFactory;
+import com.x.processplatform.assemble.surface.factory.element.EndFactory;
+import com.x.processplatform.assemble.surface.factory.element.FileFactory;
+import com.x.processplatform.assemble.surface.factory.element.FormFactory;
+import com.x.processplatform.assemble.surface.factory.element.InvokeFactory;
+import com.x.processplatform.assemble.surface.factory.element.ManualFactory;
+import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
+import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
+import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
+import com.x.processplatform.assemble.surface.factory.element.PublishFactory;
+import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
+import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
+import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
+import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.OutputStream;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class Business {
 
 	public static final String WORK_CREATE_TYPE_ASSIGN = "assign";
 
-	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" };
+	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">",
+			"\\" };
 	public static final String[] FILENAME_SENSITIVES_EMPTY = new String[] { "", "", "", "", "", "", "", "", "", "" };
 
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
@@ -42,7 +95,7 @@ public class Business {
 
 	private Organization organization;
 
-	public Organization organization() throws Exception {
+	public Organization organization() {
 		if (null == this.organization) {
 			this.organization = new Organization(ThisApplication.context());
 		}
@@ -768,23 +821,16 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator)) {
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformCreator))) {
 			return true;
 		}
-		Application application = this.application().pick(taskCompleted.getApplication());
-		if (null != application) {
-			if (effectivePerson.isPerson(application.getControllerList())) {
-				return true;
-			}
+		Application app = this.application().pick(taskCompleted.getApplication());
+		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+			return true;
 		}
-		Process process = this.process().pick(taskCompleted.getProcess());
-		if (null != process) {
-			if (effectivePerson.isPerson(process.getControllerList())) {
-				return true;
-			}
-		}
-		return false;
+		Process pro = this.process().pick(taskCompleted.getProcess());
+		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Read read) throws Exception {
@@ -797,23 +843,16 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator)) {
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformCreator))) {
 			return true;
 		}
-		Application application = this.application().pick(read.getApplication());
-		if (null != application) {
-			if (effectivePerson.isPerson(application.getControllerList())) {
-				return true;
-			}
+		Application app = this.application().pick(read.getApplication());
+		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+			return true;
 		}
-		Process process = this.process().pick(read.getProcess());
-		if (null != process) {
-			if (effectivePerson.isPerson(process.getControllerList())) {
-				return true;
-			}
-		}
-		return false;
+		Process p = this.process().pick(read.getProcess());
+		return ((null != p) && (effectivePerson.isPerson(p.getControllerList())));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, ReadCompleted readCompleted) throws Exception {
@@ -826,8 +865,8 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator)) {
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformCreator))) {
 			return true;
 		}
 		Application application = this.application().pick(readCompleted.getApplication());
@@ -855,23 +894,16 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator)) {
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformCreator))) {
 			return true;
 		}
-		Application application = this.application().pick(review.getApplication());
-		if (null != application) {
-			if (effectivePerson.isPerson(application.getControllerList())) {
-				return true;
-			}
+		Application app = this.application().pick(review.getApplication());
+		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+			return true;
 		}
-		Process process = this.process().pick(review.getProcess());
-		if (null != process) {
-			if (effectivePerson.isPerson(process.getControllerList())) {
-				return true;
-			}
-		}
-		return false;
+		Process pro = this.process().pick(review.getProcess());
+		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
 	}
 
 	public boolean readable(EffectivePerson effectivePerson, Work work) throws Exception {
@@ -1010,64 +1042,77 @@ public class Business {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		Work work = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
+		Work checkWork = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
 				Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
-		WorkCompleted workCompleted = null;
-		String job = null;
+		WorkCompleted checkWorkCompleted = null;
+		String checkJob = null;
 		String creatorPerson = null;
 		String applicationId = null;
 		String processId = null;
-		if (null == work) {
-			workCompleted = emc.fetch(workOrWorkCompleted, WorkCompleted.class, ListTools.toList(Work.job_FIELDNAME,
-					Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
-			if (null == workCompleted) {
+		if (null == checkWork) {
+			checkWorkCompleted = emc.fetch(workOrWorkCompleted, WorkCompleted.class,
+					ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME, Work.process_FIELDNAME,
+							Work.creatorPerson_FIELDNAME));
+			if (null == checkWorkCompleted) {
 				List<WorkCompleted> os = emc.fetchEqual(WorkCompleted.class,
 						ListTools.toList(WorkCompleted.job_FIELDNAME, WorkCompleted.application_FIELDNAME,
 								WorkCompleted.process_FIELDNAME, WorkCompleted.creatorPerson_FIELDNAME),
 						WorkCompleted.work_FIELDNAME, workOrWorkCompleted);
 				if (os.size() == 1) {
-					workCompleted = os.get(0);
+					checkWorkCompleted = os.get(0);
 				}
 			}
-			if (null != workCompleted) {
-				job = workCompleted.getJob();
-				creatorPerson = workCompleted.getCreatorPerson();
-				applicationId = workCompleted.getApplication();
-				processId = workCompleted.getProcess();
+			if (null != checkWorkCompleted) {
+				checkJob = checkWorkCompleted.getJob();
+				creatorPerson = checkWorkCompleted.getCreatorPerson();
+				applicationId = checkWorkCompleted.getApplication();
+				processId = checkWorkCompleted.getProcess();
 			}
 		} else {
-			job = work.getJob();
-			creatorPerson = work.getCreatorPerson();
-			applicationId = work.getApplication();
-			processId = work.getProcess();
+			checkJob = checkWork.getJob();
+			creatorPerson = checkWork.getCreatorPerson();
+			applicationId = checkWork.getApplication();
+			processId = checkWork.getProcess();
 		}
-		if (StringUtils.isEmpty(job)) {
+		if (StringUtils.isEmpty(checkJob)) {
 			return false;
 		}
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Review.job_FIELDNAME, job) == 0) {
-			if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-					Task.job_FIELDNAME, job) == 0) {
-				if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						Read.job_FIELDNAME, job) == 0) {
-					if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
-						if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-								effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-							Application a = application().pick(applicationId);
-							Process p = process().pick(processId);
-							if (BooleanUtils.isFalse(canManageApplicationOrProcess(effectivePerson, a, p))) {
-								return false;
-							}
-						}
-					}
-				}
+		return readableWithJobApplicationProcessCorrelation(effectivePerson, checkJob, applicationId, processId);
+	}
+
+	private boolean readableWithJobApplicationProcessCorrelation(EffectivePerson effectivePerson, String job,
+			String applicationId, String processId) throws Exception {
+		if ((emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+				Review.job_FIELDNAME, job) == 0)
+				&& (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						Task.job_FIELDNAME, job) == 0)
+				&& (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						Read.job_FIELDNAME, job) == 0)
+				&& (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0)
+				&& (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0)) {
+			Application a = application().pick(applicationId);
+			Process p = process().pick(processId);
+			if (BooleanUtils.isFalse(canManageApplicationOrProcess(effectivePerson, a, p))) {
+				return hasBeenCorrelation(effectivePerson, job);
 			}
 		}
 		return true;
+	}
+
+	private boolean hasBeenCorrelation(EffectivePerson effectivePerson, String job) throws Exception {
+		ActionReadableTypeProcessPlatformWi req = new ActionReadableTypeProcessPlatformWi();
+		req.setPerson(effectivePerson.getDistinguishedName());
+		req.setJob(job);
+		ActionReadableTypeProcessPlatformWo resp = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+						Applications.joinQueryUri("correlation", "readable", "type", "processplatform"), req, job)
+				.getData(ActionReadableTypeProcessPlatformWo.class);
+		return resp.getValue();
 	}
 
 	public boolean readableWithJob(EffectivePerson effectivePerson, String job) throws Exception {
@@ -1100,27 +1145,7 @@ public class Business {
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
 		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Review.job_FIELDNAME, job) == 0) {
-			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-					effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
-				if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-					if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME,
-							effectivePerson.getDistinguishedName(), Task.job_FIELDNAME, job) == 0) {
-						if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME,
-								effectivePerson.getDistinguishedName(), Read.job_FIELDNAME, job) == 0) {
-							Application application = application().pick(applicationId);
-							Process process = process().pick(processId);
-							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
-								return false;
-							}
-						}
-					}
-				}
-			}
-		}
-		return true;
+		return readableWithJobApplicationProcessCorrelation(effectivePerson, job, applicationId, processId);
 	}
 
 	public boolean editable(EffectivePerson effectivePerson, Work work) throws Exception {
@@ -1150,18 +1175,19 @@ public class Business {
 		String application = null, process = null;
 
 		Work work = this.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
-		if(work==null){
-			WorkCompleted workCompleted = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
-			if(workCompleted!=null){
+		if (work == null) {
+			WorkCompleted workCompleted = this.entityManagerContainer().firstEqual(WorkCompleted.class,
+					Work.job_FIELDNAME, job);
+			if (workCompleted != null) {
 				application = workCompleted.getApplication();
 				process = workCompleted.getProcess();
 			}
-		}else{
+		} else {
 			application = work.getApplication();
 			process = work.getProcess();
 		}
-		if (StringUtils.isNotBlank(application) && BooleanUtils.isTrue(
-				this.canManageApplicationOrProcess(effectivePerson, application, process))) {
+		if (StringUtils.isNotBlank(application)
+				&& BooleanUtils.isTrue(this.canManageApplicationOrProcess(effectivePerson, application, process))) {
 			return true;
 		}
 		return false;
@@ -1213,9 +1239,8 @@ public class Business {
 		}
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
-				zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-						FILENAME_SENSITIVES_KEY,
-						FILENAME_SENSITIVES_EMPTY)));
+				zos.putNextEntry(new ZipEntry(
+						StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY, FILENAME_SENSITIVES_EMPTY)));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						entry.getValue().getStorage());
 				entry.getValue().readContent(mapping, zos);
@@ -1223,8 +1248,7 @@ public class Business {
 
 			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
-					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-							FILENAME_SENSITIVES_KEY,
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY,
 							FILENAME_SENSITIVES_EMPTY)));
 					zos.write(entry.getValue());
 				}

@@ -19,12 +19,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.correlation.core.entity.content.Correlation;
-import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
-import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWo;
 
-class ActionReadableTypeProcessPlatform extends BaseAction {
+class ActionReadableTypeCms extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReadableTypeProcessPlatform.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReadableTypeCms.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
@@ -37,8 +37,8 @@ class ActionReadableTypeProcessPlatform extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Correlation> os = emc.fetchEqualAndEqual(Correlation.class,
 					Arrays.asList(Correlation.FROMTYPE_FIELDNAME, Correlation.FROMBUNDLE_FIELDNAME),
-					Correlation.TARGETTYPE_FIELDNAME, Correlation.TYPE_PROCESSPLATFORM,
-					Correlation.TARGETBUNDLE_FIELDNAME, wi.getJob());
+					Correlation.TARGETTYPE_FIELDNAME, Correlation.TYPE_CMS, Correlation.TARGETBUNDLE_FIELDNAME,
+					wi.getDoucment());
 			Set<String> processPlatformSet = new HashSet<>();
 			Set<String> cmsSet = new HashSet<>();
 
@@ -60,10 +60,10 @@ class ActionReadableTypeProcessPlatform extends BaseAction {
 			Optional<Pair<String, List<String>>> opt = pairs.stream().filter(p -> {
 				try {
 					if ((StringUtils.equalsIgnoreCase(p.first(), Correlation.TYPE_PROCESSPLATFORM)
-							&& (emc.countEqualAndIn(com.x.processplatform.core.entity.content.Review.class,
+							&& (emc.countEqualAndEqual(com.x.processplatform.core.entity.content.Review.class,
 									com.x.processplatform.core.entity.content.Review.person_FIELDNAME, wi.getPerson(),
 									com.x.processplatform.core.entity.content.Review.job_FIELDNAME, p.second()) > 0))
-							|| (emc.countEqualAndIn(com.x.cms.core.entity.Review.class,
+							|| (emc.countEqualAndEqual(com.x.cms.core.entity.Review.class,
 									com.x.cms.core.entity.Review.permissionObj_FIELDNAME, wi.getPerson(),
 									com.x.cms.core.entity.Review.docId_FIELDNAME, p.second()) > 0)) {
 						return true;
@@ -80,13 +80,13 @@ class ActionReadableTypeProcessPlatform extends BaseAction {
 		}
 	}
 
-	public static class Wi extends ActionReadableTypeProcessPlatformWi {
+	public static class Wi extends ActionReadableTypeCmsWi {
 
 		private static final long serialVersionUID = 6266609364542899147L;
 
 	}
 
-	public static class Wo extends ActionReadableTypeProcessPlatformWo {
+	public static class Wo extends ActionReadableTypeCmsWo {
 
 		private static final long serialVersionUID = -1905429989738754325L;
 

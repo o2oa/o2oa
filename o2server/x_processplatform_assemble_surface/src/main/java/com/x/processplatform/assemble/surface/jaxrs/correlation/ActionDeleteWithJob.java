@@ -7,6 +7,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -42,17 +43,12 @@ class ActionDeleteWithJob extends BaseAction {
 		}
 
 		if (ListTools.isNotEmpty(wi.getIdList())) {
-			try {
-				Wo wo = ThisApplication.context().applications()
-						.postQuery(
-								effectivePerson.getDebugger(), x_correlation_service_processing.class, Applications
-										.joinQueryUri("correlation", "type", "processplatform", "job", job, "delete"),
-								req, job)
-						.getData(Wo.class);
-				result.setData(wo);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
+			Wo wo = ThisApplication.context().applications()
+					.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+							Applications.joinQueryUri("correlation", "delete", "type", "processplatform", "job", job),
+							req, job)
+					.getData(Wo.class);
+			result.setData(wo);
 		}
 		return result;
 	}
@@ -61,6 +57,7 @@ class ActionDeleteWithJob extends BaseAction {
 
 		private static final long serialVersionUID = 6571915741994756275L;
 
+		@FieldDescribe("取消关联目标.")
 		private List<String> idList;
 
 		public List<String> getIdList() {

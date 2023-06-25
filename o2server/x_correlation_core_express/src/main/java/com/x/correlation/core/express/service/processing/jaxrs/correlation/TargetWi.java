@@ -8,25 +8,36 @@ public class TargetWi extends GsonPropertyObject {
 	private static final long serialVersionUID = 395825437810549953L;
 
 	@FieldDescribe("关联目标类型.")
-	private String targetType;
+	private String type;
 
 	@FieldDescribe("关联目标标识.")
-	private String targetBundle;
+	private String bundle;
 
-	public String getTargetType() {
-		return targetType;
+	@FieldDescribe("关联内容框标识.")
+	private String site;
+
+	public String getSite() {
+		return site;
 	}
 
-	public void setTargetType(String targetType) {
-		this.targetType = targetType;
+	public void setSite(String site) {
+		this.site = site;
 	}
 
-	public String getTargetBundle() {
-		return targetBundle;
+	public String getType() {
+		return type;
 	}
 
-	public void setTargetBundle(String targetBundle) {
-		this.targetBundle = targetBundle;
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getBundle() {
+		return bundle;
+	}
+
+	public void setBundle(String bundle) {
+		this.bundle = bundle;
 	}
 
 }

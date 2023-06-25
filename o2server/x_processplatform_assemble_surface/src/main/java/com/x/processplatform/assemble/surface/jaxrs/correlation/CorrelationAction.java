@@ -32,7 +32,7 @@ public class CorrelationAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CorrelationAction.class);
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取记录.", action = ActionListWithJob.class)
+	@JaxrsMethodDescribe(value = "根据任务标识列示关联内容.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -50,7 +50,26 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "分页列示根据工作或完成工作标识获取的记录.", action = ActionCreateWithJob.class)
+	@JaxrsMethodDescribe(value = "根据任务标识关联内容框标识列示关联内容.", action = ActionListWithJobWithSite.class)
+	@GET
+	@Path("list/job/{job}/site/{site}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithJobWithSite(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("关联内容框标识") @PathParam("site") String site) {
+		ActionResult<List<ActionListWithJobWithSite.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithJobWithSite().execute(effectivePerson, job, site);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据任务标识创建关联内容.", action = ActionCreateWithJob.class)
 	@POST
 	@Path("job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -68,7 +87,7 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "分页列示根据工作或完成工作标识获取的记录.", action = ActionDeleteWithJob.class)
+	@JaxrsMethodDescribe(value = "删除关联内容.", action = ActionDeleteWithJob.class)
 	@POST
 	@Path("job/{job}/delete")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -40,7 +40,7 @@ public class CorrelationAction extends StandardJaxrsAction {
 	public void createTypeProcessPlatform(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("流程平台任务标识") @PathParam("job") String job,
 			JsonElement jsonElement) {
-		ActionResult<List<ActionCreateTypeProcessPlatform.Wo>> result = new ActionResult<>();
+		ActionResult<ActionCreateTypeProcessPlatform.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateTypeProcessPlatform().execute(effectivePerson, job, jsonElement);
@@ -106,18 +106,35 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据id删除多个流程平台关联内容.", action = ActionDeleteTypeProcessPlatform.class)
+	@JaxrsMethodDescribe(value = "判断流程平台指定job的任务是否通过被关联具有阅读权限.", action = ActionReadableTypeProcessPlatform.class)
 	@POST
-	@Path("readable/type/processplatform/job/{job}")
+	@Path("readable/type/processplatform")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void readableTypeProcessPlatform(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("流程平台任务标识") @PathParam("job") String job,
-			JsonElement jsonElement) {
-		ActionResult<ActionDeleteTypeProcessPlatform.Wo> result = new ActionResult<>();
+			@Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionReadableTypeProcessPlatform.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteTypeProcessPlatform().execute(effectivePerson, job, jsonElement);
+			result = new ActionReadableTypeProcessPlatform().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "判断内容平台指定document的任务是否通过被关联具有阅读权限.", action = ActionReadableTypeCms.class)
+	@POST
+	@Path("readable/type/cms")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void readableTypeCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionReadableTypeCms.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReadableTypeCms().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -143,6 +160,25 @@ public class CorrelationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示流程平台指定job标识指定关联内容框标识的关联内容.", action = ActionListTypeProcessPlatformWithSite.class)
+	@GET
+	@Path("list/type/processplatform/job/{job}/site/{site}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listTypeProcessPlatformWithSite(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("任务标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("关联内容框标识") @PathParam("site") String site) {
+		ActionResult<List<ActionListTypeProcessPlatformWithSite.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListTypeProcessPlatformWithSite().execute(effectivePerson, job, site);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示内容管理指定document标识的关联内容.", action = ActionListTypeCms.class)
 	@GET
 	@Path("list/type/cms/document/{document}")
@@ -154,6 +190,25 @@ public class CorrelationAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListTypeCms().execute(effectivePerson, document);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示内容管理指定document标识指定关联内容框标识的关联内容.", action = ActionListTypeCmsWithSite.class)
+	@GET
+	@Path("list/type/cms/document/{document}/site/{site}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listTypeCmsWithSite(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("内容管理文档标识") @PathParam("document") String document,
+			@JaxrsParameterDescribe("关联内容框标识") @PathParam("site") String site) {
+		ActionResult<List<ActionListTypeCmsWithSite.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListTypeCmsWithSite().execute(effectivePerson, document, site);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -9,6 +9,9 @@ public class ActionCreateTypeProcessPlatformWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -6174739726994185000L;
 
+	@FieldDescribe("用户.")
+	private String person;
+
 	@FieldDescribe("关联目标.")
 	private List<TargetWi> targetList;
 
@@ -18,6 +21,14 @@ public class ActionCreateTypeProcessPlatformWi extends GsonPropertyObject {
 
 	public void setTargetList(List<TargetWi> targetList) {
 		this.targetList = targetList;
+	}
+
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
 	}
 
 }

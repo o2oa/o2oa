@@ -2,6 +2,8 @@ package com.x.correlation.core.entity.content;
 
 import static com.x.base.core.entity.StorageType.processPlatform;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -67,7 +69,10 @@ public class Correlation extends SliceJpaObject {
 
 	@PostLoad
 	public void postLoad() {
-		this.title = this.getProperties().getTitle();
+		this.targetTitle = this.getProperties().getTargetTitle();
+		this.targetCategory = this.getProperties().getTargetCategory();
+		this.targetStartTime = this.getProperties().getTargetStartTime();
+		this.targetCreatorPerson = this.getProperties().getTargetCreatorPerson();
 	}
 
 	public Correlation() {
@@ -75,16 +80,55 @@ public class Correlation extends SliceJpaObject {
 	}
 
 	@Transient
-	@FieldDescribe("标题.")
-	private String title;
+	@FieldDescribe("关联内容标题.")
+	private String targetTitle;
 
-	public String getString() {
-		return this.title;
+	@Transient
+	@FieldDescribe("关联内容分类,processPlatform:流程名称,cms:应用名称.")
+	private String targetCategory;
+
+	@Transient
+	@FieldDescribe("关联内容创建时间")
+	private Date targetStartTime;
+
+	@Transient
+	@FieldDescribe("关联内容创建人")
+	private String targetCreatorPerson;
+
+	public String getTargetTitle() {
+		return this.targetTitle;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-		this.getProperties().setTitle(title);
+	public void setTargetTitle(String targetTitle) {
+		this.targetTitle = targetTitle;
+		this.getProperties().setTargetTitle(targetTitle);
+	}
+
+	public String getTargetCategory() {
+		return this.targetCategory;
+	}
+
+	public void setTargetCategory(String targetCategory) {
+		this.targetCategory = targetCategory;
+		this.getProperties().setTargetCategory(targetCategory);
+	}
+
+	public Date getTargetStartTime() {
+		return this.targetStartTime;
+	}
+
+	public void setTargetStartTime(Date targetStartTime) {
+		this.targetStartTime = targetStartTime;
+		this.getProperties().setTargetStartTime(targetStartTime);
+	}
+
+	public String getTargetCreatorPerson() {
+		return this.targetCreatorPerson;
+	}
+
+	public void setTargetCreatorPerson(String targetCreatorPerson) {
+		this.targetCreatorPerson = targetCreatorPerson;
+		this.getProperties().setTargetCreatorPerson(targetCreatorPerson);
 	}
 
 	public CorrelationProperties getProperties() {
@@ -115,15 +159,15 @@ public class Correlation extends SliceJpaObject {
 	public static final String FROMBUNDLE_FIELDNAME = "fromBundle";
 	@FieldDescribe("源标识.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + FROMBUNDLE_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true)
 	@Index(name = TABLE + IndexNameMiddle + FROMBUNDLE_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
 	private String fromBundle;
 
 	public static final String TARGETBUNDLE_FIELDNAME = "targetBundle";
 	@FieldDescribe("关联目标标识.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + TARGETBUNDLE_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true)
 	@Index(name = TABLE + IndexNameMiddle + TARGETBUNDLE_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
 	private String targetBundle;
 
 	public static final String PERSON_FIELDNAME = "person";
@@ -133,6 +177,13 @@ public class Correlation extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String person;
 
+	public static final String SITE_FIELDNAME = "site";
+	@FieldDescribe("关联内容框分类.")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + SITE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + SITE_FIELDNAME)
+	private String site;
+
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@Schema(description = "属性存储字段.")
 	@FieldDescribe("属性存储字段.")
@@ -141,6 +192,14 @@ public class Correlation extends SliceJpaObject {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private CorrelationProperties properties;
+
+	public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
+	}
 
 	public String getFromType() {
 		return fromType;

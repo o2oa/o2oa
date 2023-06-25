@@ -11,6 +11,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -49,19 +50,15 @@ class ActionCreateWithJob extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			req.setTargetList(readTarget(effectivePerson, business, wi.getTargetList()));
+			req.setPerson(effectivePerson.getDistinguishedName());
 		}
 
 		if (ListTools.isNotEmpty(wi.getTargetList())) {
-			try {
-				Wo wo = ThisApplication.context().applications()
-						.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
-								Applications.joinQueryUri("correlation", "type", "processplatform", "job", job), req,
-								job)
-						.getData(Wo.class);
-				result.setData(wo);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
+			Wo wo = ThisApplication.context().applications()
+					.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+							Applications.joinQueryUri("correlation", "type", "processplatform", "job", job), req, job)
+					.getData(Wo.class);
+			result.setData(wo);
 		}
 		return result;
 	}
@@ -71,10 +68,11 @@ class ActionCreateWithJob extends BaseAction {
 		List<TargetWi> list = new ArrayList<>();
 		if (ListTools.isNotEmpty(targets)) {
 			for (TargetWi targetWi : targets) {
-				if (StringUtils.equalsIgnoreCase(targetWi.getTargetType(), Correlation.TYPE_PROCESSPLATFORM)) {
-					list.add(readTargetProcessPlatform(effectivePerson, business, targetWi.getTargetBundle()));
-				} else if (StringUtils.equalsIgnoreCase(targetWi.getTargetType(), Correlation.TYPE_CMS)) {
-					list.add(readTargetCms(effectivePerson, business, targetWi.getTargetBundle()));
+				if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_PROCESSPLATFORM)) {
+					list.add(readTargetProcessPlatform(effectivePerson, business, targetWi.getBundle(),
+							targetWi.getSite()));
+				} else if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_CMS)) {
+					list.add(readTargetCms(effectivePerson, business, targetWi.getBundle(), targetWi.getSite()));
 				} else {
 					throw new ExceptionAccessDenied(effectivePerson);
 				}
@@ -83,8 +81,8 @@ class ActionCreateWithJob extends BaseAction {
 		return list;
 	}
 
-	private TargetWi readTargetProcessPlatform(EffectivePerson effectivePerson, Business business, String bundle)
-			throws Exception {
+	private TargetWi readTargetProcessPlatform(EffectivePerson effectivePerson, Business business, String bundle,
+			String site) throws Exception {
 		Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, bundle);
 		if (null == work) {
 			WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
@@ -94,20 +92,23 @@ class ActionCreateWithJob extends BaseAction {
 			}
 		}
 		TargetWi targetWi = new TargetWi();
-		targetWi.setTargetType(Correlation.TYPE_PROCESSPLATFORM);
-		targetWi.setTargetBundle(bundle);
+		targetWi.setType(Correlation.TYPE_PROCESSPLATFORM);
+		targetWi.setBundle(bundle);
+		targetWi.setSite(site);
 		return targetWi;
 	}
 
-	private TargetWi readTargetCms(EffectivePerson effectivePerson, Business business, String bundle) throws Exception {
+	private TargetWi readTargetCms(EffectivePerson effectivePerson, Business business, String bundle, String site)
+			throws Exception {
 		Document document = business.entityManagerContainer().firstEqual(Document.class, JpaObject.id_FIELDNAME,
 				bundle);
 		if (null == document) {
 			throw new ExceptionEntityExist(bundle);
 		}
 		TargetWi targetWi = new TargetWi();
-		targetWi.setTargetType(Correlation.TYPE_CMS);
-		targetWi.setTargetBundle(bundle);
+		targetWi.setType(Correlation.TYPE_CMS);
+		targetWi.setBundle(bundle);
+		targetWi.setSite(site);
 		return targetWi;
 	}
 
@@ -115,6 +116,7 @@ class ActionCreateWithJob extends BaseAction {
 
 		private static final long serialVersionUID = 8167538341492974963L;
 
+		@FieldDescribe("关联目标.")
 		private List<TargetWi> targetList;
 
 		public List<TargetWi> getTargetList() {
