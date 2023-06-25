@@ -975,7 +975,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "collapseHtml": "Collapse Html",
         "relativedLinkField": "Selectable Field：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
         "documentListShow": "Document List",
-        "associatedDocumentField": "Selectable Field：title,createTime,creatorPerson,type,processOrCategoryName",
+        "associatedDocumentField": "Selectable Field：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
 
         "fileTemplate": "File Template",
         "systemTemplate": "System Template",

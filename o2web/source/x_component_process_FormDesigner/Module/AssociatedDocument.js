@@ -23,10 +23,13 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		this.containerNode = null;
 	},
 	_resetModuleDomNode: function(){
-		this.contentNode = this.node.getElement(".MWFADContent");
-		this.buttonContainer = this.node.getElement(".MWFADButtonContainer");
-		this.buttonArea = this.node.getElement(".MWFADButtonArea");
-		this.buttonNode = this.node.getElement(".MWFADBbutton");
+		// this.contentNode = this.node.getElement(".MWFADContent");
+		// this.buttonContainer = this.node.getElement(".MWFADButtonContainer");
+		// this.buttonArea = this.node.getElement(".MWFADButtonArea");
+		// this.buttonNode = this.node.getElement(".MWFADBbutton");
+		this.node.empty();
+		this.loadContent();
+		this.loadButton();
 	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {

@@ -46,17 +46,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
          * @event MWF.xApplication.process.Xform.AssociatedDocument#deleteDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        /**
-         * 打开关联文档前执行的事件。可以通过this.event获取打开的记录。
-         * @event MWF.xApplication.process.Xform.AssociatedDocument#openDocument
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
+        // /**
+        //  * 打开关联文档前执行的事件。
+        //  * @event MWF.xApplication.process.Xform.AssociatedDocument#openDocument
+        //  * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+        //  */
         "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult","deleteDocument","openDocument"]
     },
 
 	_loadUserInterface: function(){
 	    debugger;
-	    console.log(this.json);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -77,7 +76,14 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             this.button.addEvent("click", function(){
                 this.selectedData = null;
                 this.selectView(function(data){
-                    this.doResult(data);
+                    var d = data.map(function (d) {
+                        return {
+                            "type": d.type === "process" ? "processPlatform" : "cms",
+                            "site": this.json.site || this.json.id,
+                            "bundle": d.bundle
+                        }
+                    }.bind(this))
+                    this.selectDocument(d);
                 }.bind(this));
             }.bind(this));
         }
@@ -89,68 +95,91 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
         this.documentListNode = this.node.getElement(".MWFADContent");
         this.documentListNode.setStyles( this.json.documentListNodeStyles || {} );
-        this.documentListNode.empty();
+
+        this.loadAssociatedDocument();
 	},
-    doResult: function(data){
+    selectDocument: function(data){
 	    debugger;
-	    console.log(data);
+        o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(this.form.businessData.work.job, {
+            targetList: data
+        }, function (json) {
+            this.loadAssociatedDocument();
+        }.bind(this));
+    },
+    loadAssociatedDocument: function(){
+        this.documentListNode.empty();
+	    o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(this.form.businessData.work.job, (this.json.site || this.json.id), function (json) {
+	        debugger;
+            this.documentList = json.data;
+            this.showDocumentList();
+        }.bind(this));
+    },
+    showDocumentList: function(){
+	    debugger;
+        this.documentList.each(function(d){
+            if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
+        })
         this.documentListNode.empty();
 	    switch (this.json.mode) {
             case "text":
-                this.loadDocumentListText(data);  break;
+                this.loadDocumentListText();  break;
             case "script":
-                this.loadDocumentListScript(data);  break;
+                this.loadDocumentListScript();  break;
             case "default":
             default:
-                this.loadDocumentListDefault(data);  break;
+                this.loadDocumentListDefault();  break;
         }
     },
-    loadDocumentListDefault: function(data){
-        data.each(function (d) {
+    loadDocumentListDefault: function(){
+        this.documentList.each(function (d) {
             var itemNode = new Element("div", {
                 styles:  this.form.css.associatedDocumentItem
             }).inject( this.documentListNode );
             var iconNode = new Element("div", {
-                styles:  this.form.css[ d.type === "process" ? "associatedDocumentWorkIcon" : "associatedDocumentCmsIcon" ]
+                styles:  this.form.css[ d.targetType === "processPlatform" ? "associatedDocumentWorkIcon" : "associatedDocumentCmsIcon" ]
             }).inject( itemNode );
-            var textNode = new Element("div", {
-                styles:  this.form.css.associatedDocumentText,
-                text: d.data.title
-            }).inject( itemNode );
+
             var deleteNode;
             if( !this.isReadonly() ){
                 deleteNode = new Element("div", {
                     styles:  this.form.css.associatedDocumentDelete
                 }).inject( itemNode );
+                deleteNode.hide();
             }
+
+            var textNode = new Element("div", {
+                styles:  this.form.css.associatedDocumentText,
+                text: d.targetTitle
+            }).inject( itemNode );
             this._loadDocument(d, itemNode, deleteNode)
         }.bind(this))
     },
-    loadDocumentListText: function(data){
+    loadDocumentListText: function(){
         var lp = MWF.xApplication.process.Xform.LP;
-        data.each(function (d) {
+        this.documentList.each(function (d) {
             var html = this.json.textStyle;
             if (this.json.textStyleScript && this.json.textStyleScript.code) {
                 this.form.Macro.environment.line = d;
                 html = this.form.Macro.exec(this.json.textStyleScript.code, this);
             }
-            html = html.replace(/\{title\}/g, o2.txt(d.data.title));
-            html = html.replace(/\{createTime\}/g, (d.type === "process") ? d.data.createTime : d.data.publishTime);
-            html = html.replace(/\{creatorPerson\}/g, o2.txt((d.type === "process") ? d.data.creatorPerson : d.data.creatorPerson));
-            html = html.replace(/\{type\}/g, o2.txt((d.type === "process") ? lp.work : lp.document));
-            html = html.replace(/\{processOrCategoryName\}/g, o2.txt((d.type === "process") ? d.data.processName : d.data.categoryName));
+            html = html.replace(/\{targetTitle\}/g, o2.txt(d.targetTitle));
+            html = html.replace(/\{targetStartTime\}/g, (d.targetType === "processPlatform") ? d.targetStartTime : d.targetStartTime);
+            html = html.replace(/\{targetCreatorPersonCn\}/g, o2.txt((d.targetType === "processPlatform") ? d.targetCreatorPersonCn : d.targetCreatorPersonCn));
+            html = html.replace(/\{targetType\}/g, o2.txt((d.targetType === "processPlatform") ? lp.work : lp.document));
+            html = html.replace(/\{targetCategory\}/g, o2.txt((d.targetType === "processPlatform") ? d.targetCategory : d.targetCategory));
             var itemNode = new Element("div", {
                 styles:  this.form.css.associatedDocumentItem,
                 html: html
             }).inject(this.documentListNode);
             var deleteNode = itemNode.getElement("[data-o2-action='delete']");
-            this._loadDocument(d, itemNode, deleteNode)
+            deleteNode.hide();
+            this._loadDocument(d, itemNode, deleteNode);
         }.bind(this))
     },
-    loadDocumentListScript: function(data){
+    loadDocumentListScript: function(){
         if (this.json.displayScript && this.json.displayScript.code){
             var code = this.json.displayScript.code;
-            data.each(function(d){
+            this.documentList.each(function(d){
                 var itemNode = new Element("div", {
                     styles:  this.form.css.associatedDocumentItem,
                 }).inject(this.documentListNode);
@@ -164,27 +193,33 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     r.inject(itemNode);
                 }
                 var deleteNode = itemNode.getElement("[data-o2-action='delete']");
-                this._loadDocument(d, itemNode, deleteNode)
+                deleteNode.hide();
+                this._loadDocument(d, itemNode, deleteNode);
             }.bind(this));
         }
     },
     _loadDocument: function(d, itemNode, deleteNode){
         itemNode.addEvents({
             "mouseover": function () {
+                deleteNode.show();
                 itemNode.setStyles( this.form.css.associatedDocumentItem_over )
             }.bind(this),
             "mouseout": function () {
+                deleteNode.hide();
                 itemNode.setStyles( this.form.css.associatedDocumentItem )
             }.bind(this),
-            "click": function () {
-                itemNode.setStyles( this.form.css.associatedDocumentItem_over )
+            "click": function (e) {
+                this.openDoc(e, d);
             }.bind(this),
         });
         if( deleteNode ){
             if( !this.isReadonly() ){
-                deleteNode.addEvent("click", function (ev) {
-                    this.cancelAssociated(ev, d, itemNode);
-                }.bind(this));
+                deleteNode.addEvents({
+                    "click": function (ev) {
+                        this.cancelAssociated(ev, d, itemNode);
+                        ev.stopPropagation();
+                    }.bind(this)
+                });
             }else{
                 deleteNode.hide();
             }
@@ -195,32 +230,38 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
     cancelAssociated: function(e, d, itemNode){
 	    var lp = MWF.xApplication.process.Xform.LP;
-        this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.data.title)), 370, 120, function () {
-            itemNode.destroy();
-            this.close();
+	    var _self = this;
+        this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
+            o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(_self.form.businessData.work.job, {
+                idList: [d.id]
+            },function (json) {
+                itemNode.destroy();
+                _self.documentList.erase(d);
+                this.close();
+                //this.showDocumentList();
+            }.bind(this));
         }, function () {
             this.close();
         }, null, null, this.form.json.confirmStyle);
     },
-    createInforNode: function(itemNode, data){
+    createInforNode: function(itemNode, d){
 	    debugger;
         var lp = MWF.xApplication.process.Xform.LP;
         var inforNode = new Element("div");
-        var d = data.data;
         var html = "";
         var lineStyle = "clear: both; overflow:hidden";
         var titleStyle = "width:60px; float:left; font-weight: bold";
         var contentStyle = "width:120px; float:left; margin-left:10px";
-        if( data.type === "process" ){
+        if( d.targetType === "processPlatform" ){
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.documentType+": </div><div style='"+contentStyle+"'>"+lp.work+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.processName+": </div><div style='"+contentStyle+"'>"+d.processName+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftPerson +": </div><div style='"+contentStyle+"'>"+d.creatorPerson+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftTime +": </div><div style='"+contentStyle+"'>"+d.createTime+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.processName+": </div><div style='"+contentStyle+"'>"+d.targetCategory+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftPerson +": </div><div style='"+contentStyle+"'>"+d.targetCreatorPersonCn+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.draftTime +": </div><div style='"+contentStyle+"'>"+d.targetStartTime+"</div></div>";
         }else{
             html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.documentType+": </div><div style='"+contentStyle+"'>"+lp.document+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.categoryName+": </div><div style='"+contentStyle+"'>"+d.categoryName+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishPerson+": </div><div style='"+contentStyle+"'>"+d.creatorPerson+"</div></div>";
-            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishTime+": </div><div style='"+contentStyle+"'>"+d.publishTime+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.categoryName+": </div><div style='"+contentStyle+"'>"+d.targetCategory+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishPerson+": </div><div style='"+contentStyle+"'>"+d.targetCreatorPersonCn+"</div></div>";
+            html += "<div style='"+lineStyle+"'><div style='"+titleStyle+"'>"+lp.publishTime+": </div><div style='"+contentStyle+"'>"+d.targetStartTime+"</div></div>";
         }
 
         inforNode.set("html", html);
@@ -249,6 +290,14 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 }.bind(this));
             }
 
+            debugger;
+            var selectedJobs = this.documentList.map(function (d) {
+                return d.targetBundle;
+            });
+
+            var disableSelectJobs = Array.clone(selectedJobs);
+            disableSelectJobs.push( this.form.businessData.work.job );
+
             var viewJson = {
                 "application": viewData.appName,
                 "viewName": viewData.name,
@@ -260,8 +309,12 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 "isExpand": this.json.isExpand || "no",
                 "showActionbar" : this.json.actionbar === "show",
                 "filter": filter,
-                "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
-                "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
+                // "defaultSelectedScript" : function (obj) {
+                //     return selectedJobs.contains(obj.data.bundle);
+                // },
+                "selectedAbleScript" : function (obj) {
+                    return !disableSelectJobs.contains(obj.data.bundle);
+                }
             };
 
             this.fireEvent("beforeLoadView", [viewJson]);
@@ -377,6 +430,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 //     this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
                 // }.bind(this));
             }.bind(this));
+        }
+    },
+    openDoc: function(e, d){
+	    debugger;
+	    if( d.targetType === "processPlatform" ){
+            this.form.Macro.environment.form.openJob(d.targetBundle, null, null, function ( app ) {
+                this.fireEvent("openDocument", [app]); //options 传入的事件
+            }.bind(this));
+        }else{
+            this.form.Macro.environment.form.openDocument(d.targetBundle);
         }
     }
 	

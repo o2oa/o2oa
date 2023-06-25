@@ -1362,7 +1362,7 @@
     "overflow": "hidden",
     "cursor": "pointer",
     "line-height": "30px",
-    "height": "30px",
+    "min-height": "30px",
     "background": "#fff"
   },
   "associatedDocumentItem_over":{
@@ -1373,7 +1373,6 @@
     "margin-left": "4px",
     "width": "21px",
     "height": "24px",
-    "margin-right": "5px",
     "background": "url(../x_component_process_Xform/$Form/default/icon/doc_cms.png) no-repeat center center",
     "background-size": "21px 24px",
     "float": "left"
@@ -1383,13 +1382,13 @@
     "margin-left": "4px",
     "width": "21px",
     "height": "24px",
-    "margin-right": "5px",
     "background": "url(../x_component_process_Xform/$Form/default/icon/doc_work.png) no-repeat center center",
     "background-size": "21px 24px",
     "float": "left"
   },
   "associatedDocumentText": {
-    "float": "left"
+    "margin-left": "32px",
+    "margin-right": "30px"
   },
   "associatedDocumentDelete": {
     "margin-top": "7px",
@@ -1399,7 +1398,7 @@
     "margin-right": "5px",
     "background": "url(../x_component_process_Xform/$Form/default/icon/delete1.png) no-repeat center center",
     "background-size": "16px 16px",
-    "float": "left"
+    "float": "right"
   }
 
 }

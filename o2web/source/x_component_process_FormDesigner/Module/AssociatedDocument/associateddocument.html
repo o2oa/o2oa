@@ -10,6 +10,10 @@
 		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
 		  </tr>
 			<tr>
+				<td class="editTableTitle">{{$.lp.site}}:</td>
+				<td class="editTableValue"><input type="text" name="site" value="text{$.site}" class="editTableInput"/><br>{{$.lp.defaultSiteInfo}}</td>
+			</tr>
+			<tr>
 				<td class="editTableTitle">{{$.lp.readonly}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}

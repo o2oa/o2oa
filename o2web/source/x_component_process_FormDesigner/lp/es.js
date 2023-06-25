@@ -969,7 +969,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "collapseHtml": "HTML para colapsar nodo",
         "relativedLinkField": "Campo opcional: flag, title, createTime, updateTime, creatorPerson, creatorUnit, score",
         "documentListShow": "Lista de documentos",
-        "associatedDocumentField": "Campo opcional：title,createTime,creatorPerson,type,processOrCategoryName",
+        "associatedDocumentField": "Campo opcional：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
 
         "fileTemplate": "Plantilla de archivo",
         "systemTemplate": "Plantilla del sistema",
