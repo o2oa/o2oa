@@ -1001,9 +1001,7 @@ class ActionInputAll extends BaseAction {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		for (List<DutyItem> list : ListTools.batch(dutyItems, 200)) {
 			for (DutyItem o : list) {
-				if (StringUtils.isNotEmpty(o.getUnique()) && this.getDuty(business, o)) {
-
-				} else {
+				if (!this.getDuty(business, o)) {
 					logger.info("正在保存职务:{}." + o.getName());
 					UnitDuty dutyObject = new UnitDuty();
 					o.copyTo(dutyObject);
