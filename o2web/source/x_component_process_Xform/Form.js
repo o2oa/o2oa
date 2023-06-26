@@ -309,11 +309,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var rulesStr = match[0];
                 if( rulesStr.indexOf( "@media" ) === -1 ){
                     if (rulesStr.indexOf(",") != -1) {
-                        var rules = rulesStr.split(/\s*,\s*/g);
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
                         rules = rules.map(function (r) {
                             return prefix + r;
                         });
-                        var rule = rules.join(", ");
+                        var rule = rules.join(",");
                         cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
                         rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
 
