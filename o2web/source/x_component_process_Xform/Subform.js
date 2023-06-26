@@ -132,15 +132,38 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     },
     loadCss: function () {
         if (this.subformData.json.css && this.subformData.json.css.code) {
-            var cssText = this.form.parseCSS(this.subformData.json.css.code);
+
+            var cssText = this.subformData.json.css.code;
+
+            //删除注释
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
+            cssText = this.form.parseCSS(cssText);
+
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
             var id = this.form.json.id.replace(/\-/g, "");
+            var prefix = ".css" + id + " ";
+
             while ((match = rex.exec(cssText)) !== null) {
-                var prefix = ".css" + id + " ";
-                var rule = prefix + match[0];
-                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                rex.lastIndex = rex.lastIndex + prefix.length;
+                var rulesStr = match[0];
+                if( rulesStr.indexOf( "@media" ) === -1 ){
+                    if (rulesStr.indexOf(",") != -1) {
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
+                        rules = rules.map(function (r) {
+                            return prefix + r;
+                        });
+                        var rule = rules.join(",");
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
+
+                    } else {
+                        var rule = prefix + match[0];
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + prefix.length;
+                    }
+                }
             }
 
             var styleNode = $("style" + this.form.json.id);

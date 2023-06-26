@@ -1425,6 +1425,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
+
+            //删除注释
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
             cssText = this.parseCSS(cssText);
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
@@ -1432,25 +1436,24 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var prefix = ".css" + id + " ";
 
             while ((match = rex.exec(cssText)) !== null) {
-                // var rule = prefix + match[0];
-                // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                // rex.lastIndex = rex.lastIndex + prefix.length;
-
 				var rulesStr = match[0];
-				if (rulesStr.indexOf(",")!=-1){
-					var rules = rulesStr.split(/\s*,\s*/g);
-					rules = rules.map(function(r){
-						return prefix + r;
-					});
-					var rule = rules.join(", ");
-					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-					rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+                if( rulesStr.indexOf( "@media" ) === -1 ){
+                    if (rulesStr.indexOf(",")!=-1){
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
+                        rules = rules.map(function(r){
+                            return prefix + r;
+                        });
+                        var rule = rules.join(",");
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
 
-				}else{
-					var rule = prefix + match[0];
-					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-					rex.lastIndex = rex.lastIndex + prefix.length;
-				}
+                    }else{
+                        var rule = prefix + match[0];
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + prefix.length;
+                    }
+                }
             }
 
             var styleNode = document.createElement("style");
