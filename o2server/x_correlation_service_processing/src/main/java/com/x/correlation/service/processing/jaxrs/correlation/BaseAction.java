@@ -91,7 +91,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Correlation readTargetCms(EffectivePerson effectivePerson, Business business, String bundle, String site)
 			throws Exception {
 		Correlation correlation = new Correlation();
-		correlation.setTargetType(Correlation.TYPE_PROCESSPLATFORM);
+		correlation.setTargetType(Correlation.TYPE_CMS);
 		correlation.setTargetBundle(bundle);
 		correlation.setSite(site);
 		Document document = business.entityManagerContainer().firstEqual(Document.class, JpaObject.id_FIELDNAME,

@@ -25,6 +25,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
+import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -68,7 +69,7 @@ class ActionManageListWithDateHour extends BaseAction {
 		}
 		if (BooleanUtils.isTrue(isExcludeDraft)) {
 			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
-					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+					cb.equal(root.get(Task_.workCreateType), Work.WORKCREATETYPE_ASSIGN)));
 		}
 
 		cq.select(root).where(p);
