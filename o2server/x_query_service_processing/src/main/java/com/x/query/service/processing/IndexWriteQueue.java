@@ -148,7 +148,6 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 					builder.add(query, BooleanClause.Occur.MUST);
 					builder.add(idQuery, BooleanClause.Occur.MUST);
 					BooleanQuery q = builder.build();
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!qqqq:" + q.toString());
 					indexWriter.deleteDocuments(q);
 				} catch (IOException e) {
 					LOGGER.error(e);
@@ -167,7 +166,6 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 			indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			ids.stream().forEach(o -> {
 				try {
-					System.out.println("!!!!!!!!!!!!!!!!!!delete:" + o);
 					indexWriter.deleteDocuments(new Term(Indexs.FIELD_ID, o));
 				} catch (IOException e) {
 					LOGGER.error(e);
