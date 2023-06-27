@@ -11,16 +11,18 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageGet extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -37,8 +39,7 @@ class ActionManageGet extends BaseAction {
 			}
 			Wo wo = Wo.copier.copy(work);
 			/* 添加权限 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			wo.setControl(control);
+			wo.setControl(new WorkControlBuilder(effectivePerson, business, work).enableAll().build());
 			result.setData(wo);
 			return result;
 		}
@@ -53,7 +54,7 @@ class ActionManageGet extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -63,17 +64,14 @@ class ActionManageGet extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
-	}
-
-	public static class WoControl extends WorkControl {
 	}
 
 }

@@ -23,8 +23,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -59,9 +60,7 @@ class ActionManageGetAssignment extends BaseAction {
 			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			wo.setControl(control);
+			wo.setControl(new WorkControlBuilder(effectivePerson, business, work).enableAll().build());
 		}
 
 		final String job = work.getJob();
@@ -167,7 +166,7 @@ class ActionManageGetAssignment extends BaseAction {
 		private List<WoReview> reviewList = new ArrayList<>();
 
 		@FieldDescribe("权限")
-		private WoControl control;
+		private Control control;
 
 		public List<WoTask> getTaskList() {
 			return taskList;
@@ -209,11 +208,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.reviewList = reviewList;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 	}
@@ -227,7 +226,7 @@ class ActionManageGetAssignment extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -237,11 +236,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -255,7 +254,7 @@ class ActionManageGetAssignment extends BaseAction {
 				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -265,11 +264,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -286,7 +285,7 @@ class ActionManageGetAssignment extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -296,11 +295,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -315,7 +314,7 @@ class ActionManageGetAssignment extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -325,11 +324,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -344,7 +343,7 @@ class ActionManageGetAssignment extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -354,19 +353,14 @@ class ActionManageGetAssignment extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
-	}
-
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = 2948539010433309335L;
 	}
 
 }

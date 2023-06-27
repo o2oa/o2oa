@@ -11,7 +11,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionGetWithWorkCompletedFromItem extends BaseAction {
@@ -29,7 +30,8 @@ class ActionGetWithWorkCompletedFromItem extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
@@ -37,12 +39,6 @@ class ActionGetWithWorkCompletedFromItem extends BaseAction {
 			result.setData(this.getData(business, workCompleted.getJob()));
 			return result;
 		}
-	}
-
-	public static class WoControl extends WorkCompletedControl {
-
-		private static final long serialVersionUID = -4480592204063404889L;
-
 	}
 
 }

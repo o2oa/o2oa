@@ -16,7 +16,8 @@ import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 
@@ -39,30 +40,26 @@ class ActionManageListNext extends BaseAction {
 					|| effectivePerson.isPerson(application.getControllerList())) {
 				EqualsTerms equalsTerms = new EqualsTerms();
 				equalsTerms.put("application", application.getId());
-				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equalsTerms, null, null, null, null,
-						null, null, null, true, DESC);
+				result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equalsTerms, null,
+						null, null, null, null, null, null, true, DESC);
 			} else {
 				List<String> ids = business.process().listControllableProcess(effectivePerson, application);
 				if (ListTools.isNotEmpty(ids)) {
 					InTerms inTerms = new InTerms();
 					inTerms.put("process", ids);
-					result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, inTerms, null,
-							null, null, null, true, DESC);
+					result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null, null,
+							inTerms, null, null, null, null, true, DESC);
 				}
 			}
 			/* 添加权限 */
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
 					WorkCompleted o = emc.find(wo.getId(), WorkCompleted.class);
-					WoControl control = business.getControl(effectivePerson, o, WoControl.class);
-					wo.setControl(control);
+					wo.setControl(new WorkCompletedControlBuilder(effectivePerson, business, o).enableAll().build());
 				}
 			}
 			return result;
 		}
-	}
-
-	public static class WoControl extends WorkCompletedControl {
 	}
 
 	public static class Wo extends WorkCompleted {
@@ -74,7 +71,7 @@ class ActionManageListNext extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -84,11 +81,11 @@ class ActionManageListNext extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 

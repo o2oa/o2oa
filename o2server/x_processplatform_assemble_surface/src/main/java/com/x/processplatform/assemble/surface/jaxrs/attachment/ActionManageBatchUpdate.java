@@ -32,7 +32,7 @@ class ActionManageBatchUpdate extends BaseAction {
 					effectivePerson.getDistinguishedName());
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "",""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			// 天谷印章扩展

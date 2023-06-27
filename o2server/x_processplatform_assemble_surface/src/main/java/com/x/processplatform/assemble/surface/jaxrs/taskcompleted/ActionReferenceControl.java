@@ -14,8 +14,9 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -27,7 +28,7 @@ class ActionReferenceControl extends BaseAction {
 			Business business = new Business(emc);
 			TaskCompleted taskCompleted = emc.find(id, TaskCompleted.class);
 			if (null == taskCompleted) {
-				throw new ExceptionEntityNotExist(id,TaskCompleted.class);
+				throw new ExceptionEntityNotExist(id, TaskCompleted.class);
 			}
 			if (!business.readable(effectivePerson, taskCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
@@ -35,12 +36,12 @@ class ActionReferenceControl extends BaseAction {
 			Wo wo = Wo.copier.copy(taskCompleted);
 			for (Work o : business.work().listWithJobObject(taskCompleted.getJob())) {
 				WoWork w = WoWork.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoWorkControl.class));
+				w.setControl(new WorkControlBuilder(effectivePerson, business, o).enableAll().build());
 				wo.getWorkList().add(w);
 			}
 			for (WorkCompleted o : business.workCompleted().listWithJobObject(taskCompleted.getJob())) {
 				WoWorkCompleted w = WoWorkCompleted.copier.copy(o);
-				w.setControl(business.getControl(effectivePerson, o, WoWorkCompletedControl.class));
+				w.setControl(new WorkCompletedControlBuilder(effectivePerson, business, o).enableAll().build());
 				wo.getWorkCompletedList().add(w);
 			}
 			result.setData(wo);
@@ -83,16 +84,16 @@ class ActionReferenceControl extends BaseAction {
 		private static final long serialVersionUID = -5668264661685818057L;
 
 		@FieldDescribe("权限对象")
-		private WoWorkControl control;
+		private Control control;
 
 		static WrapCopier<Work, WoWork> copier = WrapCopierFactory.wo(Work.class, WoWork.class,
 				JpaObject.singularAttributeField(Work.class, true, true), null);
 
-		public WoWorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoWorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -106,22 +107,16 @@ class ActionReferenceControl extends BaseAction {
 				WoWorkCompleted.class, JpaObject.singularAttributeField(WorkCompleted.class, true, true), null);
 
 		@FieldDescribe("权限对象")
-		private WoWorkCompletedControl control;
+		private Control control;
 
-		public WoWorkCompletedControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoWorkCompletedControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
-	}
-
-	public static class WoWorkControl extends WorkControl {
-	}
-
-	public static class WoWorkCompletedControl extends WorkCompletedControl {
 	}
 
 }

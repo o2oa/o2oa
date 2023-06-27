@@ -1,0 +1,124 @@
+package com.x.processplatform.assemble.surface;
+
+import java.util.Arrays;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.BooleanUtils;
+
+import com.x.base.core.project.bean.tuple.Pair;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+
+public class WorkCompletedControlBuilder {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkCompletedControlBuilder.class);
+
+	private EffectivePerson effectivePerson;
+	private Business business;
+	private WorkCompleted workCompleted;
+
+	public WorkCompletedControlBuilder(EffectivePerson effectivePerson, Business business,
+			WorkCompleted workCompleted) {
+		this.effectivePerson = effectivePerson;
+		this.business = business;
+		this.workCompleted = workCompleted;
+	}
+
+	// 是否可以看到
+	private boolean ifAllowVisit = false;
+	// 是否可以处理待阅
+	private boolean ifAllowReadProcessing = false;
+	// 是否可以回滚
+	private boolean ifAllowRollback = false;
+
+	public WorkCompletedControlBuilder enableAllowVisit() {
+		this.ifAllowVisit = true;
+		return this;
+	}
+
+	public WorkCompletedControlBuilder enableAllowReadProcessing() {
+		this.ifAllowReadProcessing = true;
+		return this;
+	}
+
+	public WorkCompletedControlBuilder enableAllowRollback() {
+		this.ifAllowRollback = true;
+		return this;
+	}
+
+	public WorkCompletedControlBuilder enableAll() {
+		enableAllowVisit();
+		enableAllowReadProcessing();
+		enableAllowRollback();
+		return this;
+	}
+
+	private Boolean canManage;
+
+	private boolean canManage() throws Exception {
+		if (null == canManage) {
+			this.canManage = business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+					workCompleted.getApplication(), workCompleted.getProcess());
+		}
+		return this.canManage;
+	}
+
+	private Boolean readable;
+
+	private boolean readable() throws Exception {
+		if (null == readable) {
+			this.readable = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+					effectivePerson.getDistinguishedName(), workCompleted.getJob())
+					|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), workCompleted.getJob());
+		}
+		return this.readable;
+	}
+
+	private Boolean hasReadWithJob;
+
+	private boolean hasReadWithJob() throws Exception {
+		if (null == hasReadWithJob) {
+			this.hasReadWithJob = business.ifPersonHasReadWithJob(effectivePerson.getDistinguishedName(),
+					workCompleted.getJob());
+		}
+		return this.hasReadWithJob;
+	}
+
+	public Control build() {
+		Control control = new Control();
+		if (null == workCompleted) {
+			return control;
+		}
+		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowVisit, this::computeAllowVisit),
+				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
+				Pair.of(ifAllowRollback, this::computeAllowRollback)).stream().filter(Pair::first)
+				.forEach(o -> o.second().accept(control));
+		return control;
+	}
+
+	private void computeAllowVisit(Control control) {
+		try {
+			control.setAllowVisit(canManage() || readable());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowReadProcessing(Control control) {
+		try {
+			control.setAllowReadProcessing(hasReadWithJob());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowRollback(Control control) {
+		try {
+			control.setAllowRollback(canManage() || BooleanUtils.isTrue(workCompleted.getAllowRollback()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+}

@@ -7,35 +7,37 @@ public class Control extends GsonPropertyObject {
 	private static final long serialVersionUID = -4033469981088793137L;
 
 	// 是否可以看到
-	private Boolean allowVisit = false;
+	private Boolean allowVisit;
 	// 是否可以直接流转
-	private Boolean allowProcessing = false;
+	private Boolean allowProcessing;
 	// 是否可以处理待阅
-	private Boolean allowReadProcessing = false;
+	private Boolean allowReadProcessing;
 	// 是否可以保存数据
-	private Boolean allowSave = false;
+	private Boolean allowSave;
 	// 是否可以重置处理人
-	private Boolean allowReset = false;
+	private Boolean allowReset;
 	// 是否可以加签
-	private Boolean allowAddTask = false;
+	private Boolean allowAddTask;
 	// 是否可以调度
-	private Boolean allowReroute = false;
+	private Boolean allowReroute;
 	// 是否可以删除
-	private Boolean allowDelete = false;
+	private Boolean allowDelete;
 	// 是否可以增加会签分支
-	private Boolean allowAddSplit = false;
+	private Boolean allowAddSplit;
 	// 是否可以召回
-	private Boolean allowRetract = false;
+	private Boolean allowRetract;
 	// 是否可以回滚
-	private Boolean allowRollback = false;
+	private Boolean allowRollback;
 	// 是否可以提醒
-	private Boolean allowPress = false;
+	private Boolean allowPress;
 	// 是否可以待办挂起(暂停待办计时)
-	private Boolean allowPause = false;
+	private Boolean allowPause;
 	// 是否可以取消待办挂起(恢复待办计时)
-	private Boolean allowResume = false;
+	private Boolean allowResume;
 	// 是否可以退回
-	private Boolean allowGoBack = false;
+	private Boolean allowGoBack;
+	// 是否可以重置待阅处理人
+	private Boolean allowReadReset;
 
 	public Boolean getAllowVisit() {
 		return allowVisit;
@@ -157,8 +159,12 @@ public class Control extends GsonPropertyObject {
 		this.allowGoBack = allowGoBack;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Boolean getAllowReadReset() {
+		return allowReadReset;
+	}
+
+	public void setAllowReadReset(Boolean allowReadReset) {
+		this.allowReadReset = allowReadReset;
 	}
 
 }

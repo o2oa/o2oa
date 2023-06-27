@@ -23,8 +23,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -73,7 +74,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 
 	private String uploadWork(Business business, EffectivePerson effectivePerson, Work work, String site,
 			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
-		Control control = business.getControl(effectivePerson, work, Control.class);
+		Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 		if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 			throw new ExceptionAccessDenied(effectivePerson, work);
 		}
@@ -108,7 +109,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 
 	private String uploadWorkCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted,
 			String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
-		if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
+		if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 				workCompleted.getApplication(), workCompleted.getProcess()))) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
@@ -207,16 +208,11 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	@Schema(name="com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompleted$Wo")
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompleted$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -1370726528985836188L;
 
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = 547408977744326609L;
 	}
 
 }

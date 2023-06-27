@@ -11,7 +11,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform.WorkExtensionEvent;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -20,8 +19,9 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -53,7 +53,7 @@ class ActionDownloadWithWorkStream extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 			// 生成当前用户针对work的权限控制,并判断是否可以访问
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -81,12 +81,6 @@ class ActionDownloadWithWorkStream extends BaseAction {
 		Wo wo = new Wo(bytes, this.contentType(true, fileName), this.contentDisposition(true, fileName));
 		result.setData(wo);
 		return result;
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = -754320243488525906L;
-
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWithWorkStream$Wo")

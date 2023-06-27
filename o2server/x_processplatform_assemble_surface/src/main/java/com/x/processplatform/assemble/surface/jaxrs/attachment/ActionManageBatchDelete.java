@@ -30,7 +30,7 @@ class ActionManageBatchDelete extends BaseAction {
 			LOGGER.print("execute:{},.", effectivePerson::getDistinguishedName);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			if (ListTools.isNotEmpty(wi.getIdList())) {
@@ -47,7 +47,6 @@ class ActionManageBatchDelete extends BaseAction {
 					}
 				}
 			}
-
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

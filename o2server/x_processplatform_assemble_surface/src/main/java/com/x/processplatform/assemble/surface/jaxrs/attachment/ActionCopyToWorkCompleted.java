@@ -22,7 +22,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -51,11 +50,10 @@ class ActionCopyToWorkCompleted extends BaseAction {
 			if ((null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
 				for (WiAttachment w : wi.getAttachmentList()) {
 					Attachment o = emc.find(w.getId(), Attachment.class);

@@ -25,7 +25,6 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -34,6 +33,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
@@ -42,6 +42,7 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
@@ -122,7 +123,21 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
+				Work work = emc.find(flag, Work.class);
+				if (null != work) {
+					value = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+							effectivePerson.getDistinguishedName(), work.getJob())
+							|| business.ifPersonCanManageApplicationOrProcess(effectivePerson, work.getApplication(),
+									work.getProcess());
+				} else {
+					WorkCompleted workCompleted = emc.flag(flag, WorkCompleted.class);
+					if (null != workCompleted) {
+						value = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+								effectivePerson.getDistinguishedName(), workCompleted.getJob())
+								|| business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+										workCompleted.getApplication(), workCompleted.getProcess());
+					}
+				}
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -175,7 +190,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Integer currentReadIndex = -1;
 
 		@FieldDescribe("权限对象")
-		private WoControl control;
+		private Control control;
 
 		@FieldDescribe("表单对象")
 		private WoForm form;
@@ -252,11 +267,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.readList = readList;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -482,113 +497,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public static WrapCopier<Attachment, WoAttachment> copier = WrapCopierFactory.wo(Attachment.class,
 				WoAttachment.class, null, JpaObject.FieldsInvisible);
-
-	}
-
-	public static class WoControl extends GsonPropertyObject {
-
-		private static final long serialVersionUID = 8893705274927330795L;
-
-		/* 是否可以看到 */
-		private Boolean allowVisit;
-		/* 是否可以直接流转 */
-		private Boolean allowProcessing;
-		/* 是否可以处理待阅 */
-		private Boolean allowReadProcessing;
-		/* 是否可以保存数据 */
-		private Boolean allowSave;
-		/* 是否可以重置处理人 */
-		private Boolean allowReset;
-		/* 是否可以待阅处理人 */
-		private Boolean allowReadReset;
-		/* 是否可以召回 */
-		private Boolean allowRetract;
-		/* 是否可以调度 */
-		private Boolean allowReroute;
-		/* 是否可以删除 */
-		private Boolean allowDelete;
-		/* 是否可以删除 */
-		private Boolean allowAddSplit;
-
-		public Boolean getAllowSave() {
-			return allowSave;
-		}
-
-		public void setAllowSave(Boolean allowSave) {
-			this.allowSave = allowSave;
-		}
-
-		public Boolean getAllowReset() {
-			return allowReset;
-		}
-
-		public void setAllowReset(Boolean allowReset) {
-			this.allowReset = allowReset;
-		}
-
-		public Boolean getAllowRetract() {
-			return allowRetract;
-		}
-
-		public void setAllowRetract(Boolean allowRetract) {
-			this.allowRetract = allowRetract;
-		}
-
-		public Boolean getAllowReroute() {
-			return allowReroute;
-		}
-
-		public void setAllowReroute(Boolean allowReroute) {
-			this.allowReroute = allowReroute;
-		}
-
-		public Boolean getAllowProcessing() {
-			return allowProcessing;
-		}
-
-		public void setAllowProcessing(Boolean allowProcessing) {
-			this.allowProcessing = allowProcessing;
-		}
-
-		public Boolean getAllowDelete() {
-			return allowDelete;
-		}
-
-		public void setAllowDelete(Boolean allowDelete) {
-			this.allowDelete = allowDelete;
-		}
-
-		public Boolean getAllowVisit() {
-			return allowVisit;
-		}
-
-		public void setAllowVisit(Boolean allowVisit) {
-			this.allowVisit = allowVisit;
-		}
-
-		public Boolean getAllowReadProcessing() {
-			return allowReadProcessing;
-		}
-
-		public void setAllowReadProcessing(Boolean allowReadProcessing) {
-			this.allowReadProcessing = allowReadProcessing;
-		}
-
-		public Boolean getAllowReadReset() {
-			return allowReadReset;
-		}
-
-		public void setAllowReadReset(Boolean allowReadReset) {
-			this.allowReadReset = allowReadReset;
-		}
-
-		public Boolean getAllowAddSplit() {
-			return allowAddSplit;
-		}
-
-		public void setAllowAddSplit(Boolean allowAddSplit) {
-			this.allowAddSplit = allowAddSplit;
-		}
 
 	}
 

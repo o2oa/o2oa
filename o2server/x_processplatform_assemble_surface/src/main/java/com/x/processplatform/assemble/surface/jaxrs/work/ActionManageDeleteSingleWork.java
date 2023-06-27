@@ -53,6 +53,8 @@ class ActionManageDeleteSingleWork extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 4375604053946031856L;
+
 	}
 
 }

@@ -57,7 +57,8 @@ class ActionUploadWithUrl extends BaseAction {
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getSite());
 			}
 			String person = effectivePerson.getDistinguishedName();
-			if (StringUtils.isNotEmpty(wi.getPerson()) && business.canManageApplication(effectivePerson, null)) {
+			if (StringUtils.isNotEmpty(wi.getPerson())
+					&& business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
 				Person p = business.organization().person().getObject(wi.getPerson());
 				if (p != null) {
 					person = p.getDistinguishedName();

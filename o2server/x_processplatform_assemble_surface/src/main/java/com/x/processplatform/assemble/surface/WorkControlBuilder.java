@@ -1,79 +1,506 @@
 package com.x.processplatform.assemble.surface;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.BooleanUtils;
+
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.PropertyTools;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.util.WorkLogTree;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
+import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
 public class WorkControlBuilder {
 
-	public WorkControlBuilder build() {
-		return new WorkControlBuilder();
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkControlBuilder.class);
+
+	private EffectivePerson effectivePerson;
+	private Business business;
+	private Work work;
+
+	public WorkControlBuilder(EffectivePerson effectivePerson, Business business, Work work) {
+		this.effectivePerson = effectivePerson;
+		this.business = business;
+		this.work = work;
 	}
 
-	public Control of(Business business, EffectivePerson effectivePerson, Work work) {
+	// 是否可以看到
+	private boolean ifAllowVisit = false;
+	// 是否可以直接流转
+	private boolean ifAllowProcessing = false;
+	// 是否可以处理待阅
+	private boolean ifAllowReadProcessing = false;
+	// 是否可以保存数据
+	private boolean ifAllowSave = false;
+	// 是否可以重置处理人
+	private boolean ifAllowReset = false;
+	// 是否可以加签
+	private boolean ifAllowAddTask = false;
+	// 是否可以调度
+	private boolean ifAllowReroute = false;
+	// 是否可以删除
+	private boolean ifAllowDelete = false;
+	// 是否可以增加会签分支
+	private boolean ifAllowAddSplit = false;
+	// 是否可以召回
+	private boolean ifAllowRetract = false;
+	// 是否可以回滚
+	private boolean ifAllowRollback = false;
+	// 是否可以提醒
+	private boolean ifAllowPress = false;
+	// 是否可以待办挂起(暂停待办计时)
+	private boolean ifAllowPause = false;
+	// 是否可以取消待办挂起(恢复待办计时)
+	private boolean ifAllowResume = false;
+	// 是否可以退回
+	private boolean ifAllowGoBack = false;
+	// 是否可以重置待阅处理人
+	private boolean ifAllowReadReset = false;
+
+	public WorkControlBuilder enableAllowVisit() {
+		this.ifAllowVisit = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowProcessing() {
+		this.ifAllowProcessing = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowReadProcessing() {
+		this.ifAllowReadProcessing = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowSave() {
+		this.ifAllowSave = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowReset() {
+		this.ifAllowReset = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowAddTask() {
+		this.ifAllowAddTask = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowReroute() {
+		this.ifAllowReroute = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowDelete() {
+		this.ifAllowDelete = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowAddSplit() {
+		this.ifAllowAddSplit = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowRetract() {
+		this.ifAllowRetract = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowRollback() {
+		this.ifAllowRollback = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowPress() {
+		this.ifAllowPress = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowPause() {
+		this.ifAllowPause = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowResume() {
+		this.ifAllowResume = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowGoBack() {
+		this.ifAllowGoBack = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowReadReset() {
+		this.ifAllowReadReset = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAll() {
+		enableAllowVisit();
+		enableAllowProcessing();
+		enableAllowReadProcessing();
+		enableAllowSave();
+		enableAllowReset();
+		enableAllowAddTask();
+		enableAllowReroute();
+		enableAllowDelete();
+		enableAllowAddSplit();
+		enableAllowRetract();
+		enableAllowRollback();
+		enableAllowPress();
+		enableAllowPause();
+		enableAllowResume();
+		enableAllowGoBack();
+		enableAllowReadReset();
+		return this;
+	}
+
+	private Boolean canManage = null;
+
+	private boolean canManage() throws Exception {
+		if (null == canManage) {
+			this.canManage = this.business.ifPersonCanManageApplicationOrProcess(this.effectivePerson,
+					this.work.getApplication(), this.work.getProcess());
+		}
+		return this.canManage;
+	}
+
+	private Boolean readable = null;
+
+	private boolean readable() throws Exception {
+		if (null == readable) {
+			this.readable = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+					effectivePerson.getDistinguishedName(), work.getJob())
+					|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), work.getJob());
+		}
+		return this.readable;
+	}
+
+	private Boolean hasTaskWithWork = null;
+
+	private boolean hasTaskWithWork() throws Exception {
+		if (null == hasTaskWithWork) {
+			this.hasTaskWithWork = business.ifPersonHasTaskWithWork(effectivePerson.getDistinguishedName(),
+					work.getId());
+		}
+		return this.hasTaskWithWork;
+	}
+
+	private Boolean hasReadWithJob = null;
+
+	private boolean hasReadWithJob() throws Exception {
+		if (null == hasReadWithJob) {
+			this.hasReadWithJob = business.ifPersonHasReadWithJob(effectivePerson.getDistinguishedName(),
+					work.getJob());
+		}
+		return this.hasReadWithJob;
+	}
+
+	private Activity activity = null;
+
+	private Activity activity() throws Exception {
+		if (null == activity) {
+			this.activity = business.getActivity(work);
+		}
+		return this.activity;
+	}
+
+	private Boolean hasTaskCompletedWithJob = null;
+
+	private boolean hasTaskCompletedWithJob() throws Exception {
+		if (null == hasTaskCompletedWithJob) {
+			this.hasTaskCompletedWithJob = business
+					.ifPersonHasTaskCompletedWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+		}
+		return this.hasTaskCompletedWithJob;
+	}
+
+	private Boolean hasPauseTaskWithWork = null;
+
+	private boolean hasPauseTaskWithWork() throws Exception {
+		if (null == hasPauseTaskWithWork) {
+			this.hasPauseTaskWithWork = business.ifPersonHasPauseTaskWithWork(effectivePerson.getDistinguishedName(),
+					work.getId());
+		}
+		return this.hasPauseTaskWithWork;
+	}
+
+	private WorkLogTree workLogTree = null;
+
+	private WorkLogTree workLogTree() throws Exception {
+		if (null == this.workLogTree) {
+			this.workLogTree = new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
+					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.JOB_FIELDNAME, work.getJob()));
+		}
+		return this.workLogTree;
+	}
+
+	private Long taskCountWithWork = null;
+
+	private Long taskCountWithWork() throws Exception {
+		if (null == taskCountWithWork) {
+			this.taskCountWithWork = business.entityManagerContainer().countEqual(Task.class, Task.work_FIELDNAME,
+					work.getId());
+		}
+		return this.taskCountWithWork;
+	}
+
+	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
+
+	public Control build() {
 		Control control = new Control();
 		if (null == work) {
 			return control;
 		}
-		Activity activity = business.getActivity(work);
-		boolean canManage = business.canManageApplicationOrProcess(effectivePerson, work.getApplication(),
-				work.getProcess());
-		boolean readable = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-				effectivePerson.getDistinguishedName(), work.getJob())
-				|| business.ifJobHasBeenCorrelation(effectivePerson.getDistinguishedName(), work.getJob());
-
-		// 是否可以看到
-		control.setAllowVisit(canManage || readable);
-		// 是否可以直接流转
-		wo.setAllowProcessing(this.hasTaskWithWork(business, effectivePerson, work.getId()));
-		// 是否可以处理待阅
-		wo.setAllowReadProcessing(this.hasReadWithJob(business, effectivePerson, work.getJob()));
-		// 是否可以保存数据
-		wo.setAllowSave(
-				this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(), work.getProcess())
-						|| this.hasTaskWithWork(business, effectivePerson, work.getId()));
-		// 是否可以重置处理人
-		wo.setAllowReset(PropertyTools.getOrElse(activity, Manual.allowReset_FIELDNAME, Boolean.class, false)
-				&& this.hasTaskWithWork(business, effectivePerson, work.getId()));
-		// 是否可以加签,默认可以加签
-		wo.setAllowAddTask(PropertyTools.getOrElse(activity, Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
-				&& wo.getAllowSave());
-		// 是否可以调度
-		wo.setAllowReroute(PropertyTools.getOrElse(activity, Activity.allowReroute_FIELDNAME, Boolean.class, false)
-				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
-						work.getProcess()));
-		// 是否可以删除
-		wo.setAllowDelete(PropertyTools.getOrElse(activity, Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-				&& wo.getAllowSave());
-		// 是否可以挂起待办,暂停待办计时
-		if (PropertyTools.getOrElse(activity, Manual.allowPause_FIELDNAME, Boolean.class, false) && wo.getAllowSave()) {
-			// 如果已经处于挂起状态,那么允许恢复
-			if (this.hasPauseTaskWithWork(business, effectivePerson, work.getId())) {
-				wo.setAllowResume(true);
-			} else {
-				wo.setAllowPause(true);
-			}
-		}
-
-		// 是否可以增加会签分支
-		setAllowAddSplit(effectivePerson, business, activity, work, wo);
-		// 是否可以召回
-		setAllowRetract(business, effectivePerson, work, wo, activity);
-		// 是否可以退回
-		setAllowGoBack(business, work, wo, activity);
-		// 是否可以回滚
-		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
-				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
-						work.getProcess()));
-		// 是否可以提醒
-		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
-				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-
-		// 相互之间有影响的重新计算.
-		recalculate(wo, work);
+		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowVisit, this::computeAllowVisit),
+				Pair.of(ifAllowProcessing, this::computeAllowProcessing),
+				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
+				Pair.of(ifAllowSave, this::computeAllowSave), Pair.of(ifAllowReset, this::computeAllowReset),
+				Pair.of(ifAllowAddTask, this::comupoteAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
+				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
+				Pair.of(ifAllowRetract, this::computeAllowRetract),
+				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
+				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
+				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
+				Pair.of(ifAllowReadReset, this::computeAllowReadReset)).stream().filter(Pair::first)
+				.forEach(o -> o.second().accept(control));
+		recalculate(work, control);
 		return control;
 	}
 
+	private void computeAllowVisit(Control control) {
+		try {
+			control.setAllowVisit(canManage() || readable());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowProcessing(Control control) {
+		try {
+			control.setAllowProcessing(hasTaskWithWork());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowReadProcessing(Control control) {
+		try {
+			control.setAllowReadProcessing(hasReadWithJob());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowSave(Control control) {
+		try {
+			control.setAllowSave(canManage() || hasTaskWithWork());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowReset(Control control) {
+		try {
+			control.setAllowReadReset(
+					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+							&& hasTaskWithWork());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void comupoteAllowAddTask(Control control) {
+		try {
+			control.setAllowAddTask(
+					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
+							&& (canManage() || hasTaskWithWork()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowReroute(Control control) {
+		try {
+			control.setAllowReroute(canManage()
+					&& PropertyTools.getOrElse(activity(), Activity.allowReroute_FIELDNAME, Boolean.class, false));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowDelete(Control control) {
+		try {
+			control.setAllowDelete(
+					PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& (canManage() || hasTaskWithWork()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowAddSplit(Control control) {
+		try {
+			control.setAllowAddSplit(
+					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+							&& hasTaskWithWork());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	/**
+	 * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
+	 * 3.回溯活动如果经过一些非人工环节那么也可以召回.
+	 * 
+	 * @param business
+	 * @param effectivePerson
+	 * @param work
+	 * @param wo
+	 * @param activity
+	 * @throws Exception
+	 */
+	private void computeAllowRetract(Control control) {
+		try {
+			control.setAllowRetract(false);
+			if (BooleanUtils
+					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
+					&& (business.entityManagerContainer().countEqualAndEqualAndNotEqual(TaskCompleted.class,
+							TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
+							work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME, false) == 0)) {
+				Node node = this.workLogTree().location(work);
+				if (null != node) {
+					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
+							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
+							ActivityType.split, ActivityType.publish);
+					for (Node o : ups) {
+						if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
+								o.getWorkLog().getFromActivityToken())) {
+							control.setAllowRetract(true);
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowReadReset(Control control) {
+		try {
+			control.setAllowReadReset(canManage());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowRollback(Control control) {
+		try {
+			control.setAllowRollback(canManage()
+					&& PropertyTools.getOrElse(activity(), Manual.allowRollback_FIELDNAME, Boolean.class, false));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowPress(Control control) {
+		try {
+			control.setAllowPress(PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
+					&& hasTaskCompletedWithJob());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowPause(Control control) {
+		try {
+			control.setAllowPause(false);
+			if (PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false)
+					&& control.getAllowSave()) {
+				// 如果已经处于挂起状态,那么允许恢复
+				control.setAllowPause(!hasPauseTaskWithWork());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowResume(Control control) {
+		try {
+			control.setAllowResume(false);
+			if (PropertyTools.getOrElse(activity(), Manual.allowPause_FIELDNAME, Boolean.class, false)
+					&& control.getAllowSave()) {
+				// 如果已经处于挂起状态,那么允许恢复
+				control.setAllowResume(hasPauseTaskWithWork());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowGoBack(Control control) {
+		try {
+			control.setAllowGoBack(false);
+			if (activity().getClass().isAssignableFrom(Manual.class)) {
+				Manual manual = (Manual) activity;
+				if (BooleanUtils.isNotFalse(manual.getAllowGoBack())
+						&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+								|| taskCountWithWork() <= 1)) {
+					control.setAllowGoBack(true);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private boolean hasTaskCompletedWithActivityToken(EffectivePerson effectivePerson, Business business,
+			String activityToken) {
+		return this.hasTaskCompletedWithActivityToken.computeIfAbsent(activityToken, k -> {
+			try {
+				return business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return false;
+		});
+	}
+
+	/**
+	 * 在退回处理过程中如果有getGoBackStore说明下一步需要jump,那么禁用以下功能.
+	 * 
+	 * @param wo
+	 * @param work
+	 */
+	private void recalculate(Work work, Control ctrl) {
+		if (null != work.getGoBackStore()) {
+			ctrl.setAllowAddTask(false);
+			ctrl.setAllowReset(false);
+			ctrl.setAllowPause(false);
+			ctrl.setAllowAddSplit(false);
+			ctrl.setAllowRetract(false);
+			ctrl.setAllowGoBack(false);
+			ctrl.setAllowRollback(false);
+		}
+		// 如果没有权限处理那么设置为false
+		ctrl.setAllowGoBack(ctrl.getAllowProcessing() && ctrl.getAllowGoBack());
+	}
 }

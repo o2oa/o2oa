@@ -1,5 +1,10 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -12,11 +17,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.apache.commons.lang3.BooleanUtils;
 
-import java.util.Date;
-import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionOnlineInfo extends BaseAction {
 

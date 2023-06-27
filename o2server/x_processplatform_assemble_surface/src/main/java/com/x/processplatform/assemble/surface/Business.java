@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -74,16 +73,12 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 
 public class Business {
-
-//	public static final String WORK_CREATE_TYPE_ASSIGN = "assign";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
 
@@ -500,75 +495,75 @@ public class Business {
 		return o;
 	}
 
-	public Boolean canManageApplication(EffectivePerson effectivePerson, Application application) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
-			return true;
-		} else {
-			if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-					OrganizationDefinition.ProcessPlatformManager))) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	public Boolean canManageApplication(EffectivePerson effectivePerson, Application application) throws Exception {
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
+//			return true;
+//		} else {
+//			if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//					OrganizationDefinition.ProcessPlatformManager))) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	public Boolean canManageApplicationOrProcess(EffectivePerson effectivePerson, String applicationId,
+//			String processId) throws Exception {
+//		Application app = this.application().pick(applicationId);
+//		Process pro = this.process().pick(processId);
+//		return this.canManageApplicationOrProcess(effectivePerson, app, pro);
+//	}
+//
+//	public boolean canManageApplicationOrProcess(EffectivePerson effectivePerson, Application application,
+//			Process process) throws Exception {
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		} else if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
+//			return true;
+//		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
+//			return true;
+//		} else {
+//			if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//					OrganizationDefinition.ProcessPlatformManager))) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
-	public Boolean canManageApplicationOrProcess(EffectivePerson effectivePerson, String applicationId,
-			String processId) throws Exception {
-		Application app = this.application().pick(applicationId);
-		Process pro = this.process().pick(processId);
-		return this.canManageApplicationOrProcess(effectivePerson, app, pro);
-	}
-
-	public boolean canManageApplicationOrProcess(EffectivePerson effectivePerson, Application application,
-			Process process) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		} else if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
-			return true;
-		} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
-			return true;
-		} else {
-			if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-					OrganizationDefinition.ProcessPlatformManager))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Task task, Class<T> clz)
-			throws Exception {
-		T control = clz.getDeclaredConstructor().newInstance();
-		/* 是否可以直接流转(管理员),正常处理必须到complex界面. */
-		control.setAllowProcessing(false);
-		/* 是否可以重置处理人(管理员 或(本人待办并且活动设置允许重置)) */
-		control.setAllowReset(false);
-		/* 是否可删除(管理员) */
-		control.setAllowDelete(false);
-		Activity activity = this.getActivity(task.getActivity(), task.getActivityType());
-		Application app = application().pick(task.getApplication());
-		Process pro = process().pick(task.getProcess());
-		/* 设置allowProcessing */
-		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
-			control.setAllowProcessing(true);
-		}
-		/* 设置 allowReset */
-		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
-			control.setAllowReset(true);
-		} else if (effectivePerson.isPerson(task.getPerson())) {
-			if (Objects.equals(activity.getActivityType(), ActivityType.manual)
-					&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && null != task) {
-				control.setAllowReset(true);
-			}
-		}
-		/* 设置 allowDelete */
-		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
-			control.setAllowDelete(true);
-		}
-		return control;
-	}
+//	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Task task, Class<T> clz)
+//			throws Exception {
+//		T control = clz.getDeclaredConstructor().newInstance();
+//		/* 是否可以直接流转(管理员),正常处理必须到complex界面. */
+//		control.setAllowProcessing(false);
+//		/* 是否可以重置处理人(管理员 或(本人待办并且活动设置允许重置)) */
+//		control.setAllowReset(false);
+//		/* 是否可删除(管理员) */
+//		control.setAllowDelete(false);
+//		Activity activity = this.getActivity(task.getActivity(), task.getActivityType());
+//		Application app = application().pick(task.getApplication());
+//		Process pro = process().pick(task.getProcess());
+//		/* 设置allowProcessing */
+//		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
+//			control.setAllowProcessing(true);
+//		}
+//		/* 设置 allowReset */
+//		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
+//			control.setAllowReset(true);
+//		} else if (effectivePerson.isPerson(task.getPerson())) {
+//			if (Objects.equals(activity.getActivityType(), ActivityType.manual)
+//					&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && null != task) {
+//				control.setAllowReset(true);
+//			}
+//		}
+//		/* 设置 allowDelete */
+//		if (this.canManageApplicationOrProcess(effectivePerson, app, pro)) {
+//			control.setAllowDelete(true);
+//		}
+//		return control;
+//	}
 
 //	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, TaskCompleted taskCompleted,
 //			Class<T> clz) throws Exception {
@@ -584,34 +579,34 @@ public class Business {
 //		return control;
 //	}
 
-	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Read read, Class<T> clz)
-			throws Exception {
-		T control = clz.getDeclaredConstructor().newInstance();
-		/* 是否允许标志为已阅(管理员 或 待阅人本人) */
-		control.setAllowProcessing(false);
-		/* 是否允许重置待阅的处理人,只有管理员可以 */
-		control.setAllowReadReset(false);
-		/* 是否可删除(管理员) */
-		control.setAllowDelete(false);
-		Application application = application().pick(read.getApplication());
-		Process process = process().pick(read.getProcess());
-		/* 设置allowProcessing */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowProcessing(true);
-		} else if (effectivePerson.isPerson(read.getPerson())) {
-			control.setAllowProcessing(true);
-		}
-		/* 设置 allowReadReset */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowReadReset(true);
-		}
-		/* 设置 allowDelete */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowDelete(true);
-		}
-		return control;
-
-	}
+//	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Read read, Class<T> clz)
+//			throws Exception {
+//		T control = clz.getDeclaredConstructor().newInstance();
+//		/* 是否允许标志为已阅(管理员 或 待阅人本人) */
+//		control.setAllowProcessing(false);
+//		/* 是否允许重置待阅的处理人,只有管理员可以 */
+//		control.setAllowReadReset(false);
+//		/* 是否可删除(管理员) */
+//		control.setAllowDelete(false);
+//		Application application = application().pick(read.getApplication());
+//		Process process = process().pick(read.getProcess());
+//		/* 设置allowProcessing */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowProcessing(true);
+//		} else if (effectivePerson.isPerson(read.getPerson())) {
+//			control.setAllowProcessing(true);
+//		}
+//		/* 设置 allowReadReset */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowReadReset(true);
+//		}
+//		/* 设置 allowDelete */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowDelete(true);
+//		}
+//		return control;
+//
+//	}
 //
 //	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, ReadCompleted readCompleted,
 //			Class<T> clz) throws Exception {
@@ -642,153 +637,153 @@ public class Business {
 //	}
 
 	/* 列表中简式权限 */
-	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Work work, Class<T> clz)
-			throws Exception {
-		T control = clz.getDeclaredConstructor().newInstance();
-		Activity activity = this.getActivity(work);
-		Long taskCount = task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
-		Long readCount = read().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
-		Application application = application().pick(work.getApplication());
-		Process process = process().pick(work.getProcess());
-		Long taskCompletedCount = taskCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
-				work.getJob());
-		Long readCompletedCount = readCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
-				work.getJob());
-		Long reviewCount = review().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
-		/* 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
-		control.setAllowVisit(false);
-		/* 工作是否可以流转(有task的人) */
-		control.setAllowProcessing(false);
-		/* 工作是否可以处理待阅(有read的人) */
-		control.setAllowReadProcessing(false);
-		/* 工作是否可保存(管理员 或者 有本人的task) */
-		control.setAllowSave(false);
-		/* 工作是否可重置(有本人待办 并且 活动设置允许重置 */
-		control.setAllowReset(false);
-		/* 工作是否可以撤回(当前人是上一个处理人 并且 还没有其他人处理过) */
-		control.setAllowRetract(false);
-		/* 工作是否可调度(管理员 并且 此活动在流程设计中允许调度) */
-		control.setAllowReroute(false);
-		/* 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
-		control.setAllowDelete(false);
-		/* 设置allowVisit */
-		if ((taskCount > 0) || (readCount > 0) || (taskCompletedCount > 0) || (readCompletedCount > 0)
-				|| (reviewCount > 0)) {
-			control.setAllowVisit(true);
-		} else if (effectivePerson.isPerson(work.getCreatorPerson())) {
-			control.setAllowVisit(true);
-		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowVisit(true);
-		}
-		/* 设置allowProcessing */
-		if (taskCount > 0) {
-			control.setAllowProcessing(true);
-		}
-		/* 设置allowReadProcessing */
-		if (readCount > 0) {
-			control.setAllowReadProcessing(true);
-		}
-		/* 设置 allowSave */
-		if (taskCount > 0) {
-			control.setAllowSave(true);
-		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowSave(true);
-		}
-		/* 设置 allowReset */
-		if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
-				&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && taskCount > 0) {
-			control.setAllowReset(true);
-		}
-		/* 设置 allowRetract */
-		if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
-				&& BooleanUtils.isTrue(((Manual) activity).getAllowRetract())) {
-			/* 标志文件还没有处理过 */
-			if (0 == taskCompleted().countWithPersonWithActivityToken(effectivePerson.getDistinguishedName(),
-					work.getActivityToken())) {
-				/* 找到到达当前活动的workLog */
-				WorkLog workLog = workLog().getWithArrivedActivityTokenObject(work.getActivityToken());
-				if (null != workLog) {
-					/* 查找上一个环节的已办,如果只有一个,且正好是当前人的,那么可以召回 */
-					List<TaskCompleted> taskCompletedList = taskCompleted()
-							.listWithActivityTokenObject(workLog.getFromActivityToken());
-					if (taskCompletedList.size() == 1 && StringUtils.equals(effectivePerson.getDistinguishedName(),
-							taskCompletedList.get(0).getPerson())) {
-						control.setAllowRetract(true);
-					}
-				}
-			}
-		}
-		/* 设置 allowReroute */
-		if (effectivePerson.isManager()) {
-			/** 管理员可以调度 */
-			control.setAllowReroute(true);
-		} else if (organization().person().hasRole(effectivePerson, OrganizationDefinition.ProcessPlatformManager)) {
-			/** 有流程管理角色的可以 */
-			control.setAllowReroute(true);
-		} else if (null != activity && BooleanUtils.isTrue(activity.getAllowReroute())) {
-			/** 如果活动设置了可以调度 */
-			if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
-				/** 如果是流程的管理员那么可以调度 */
-				control.setAllowReroute(true);
-			} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
-				/** 如果是应用的管理员那么可以调度 */
-				control.setAllowReroute(true);
-			}
-		}
-		/* 设置 allowDelete */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowDelete(true);
-		} else if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
-				&& BooleanUtils.isTrue(((Manual) activity).getAllowDeleteWork())) {
-			// if (null != task && StringUtils.equals(work.getCreatorPerson(),
-			// effectivePerson.getDistinguishedName())) {
-			// control.setAllowDelete(true);
-			// }
-			if (taskCount > 0) {
-				control.setAllowDelete(true);
-			}
-		}
-		return control;
-	}
+//	public <T extends WorkControl> T getControl(EffectivePerson effectivePerson, Work work, Class<T> clz)
+//			throws Exception {
+//		T control = clz.getDeclaredConstructor().newInstance();
+//		Activity activity = this.getActivity(work);
+//		Long taskCount = task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+//		Long readCount = read().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+//		Application application = application().pick(work.getApplication());
+//		Process process = process().pick(work.getProcess());
+//		Long taskCompletedCount = taskCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
+//				work.getJob());
+//		Long readCompletedCount = readCompleted().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
+//				work.getJob());
+//		Long reviewCount = review().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob());
+//		/* 工作是否可以打开(管理员 或 有task,taskCompleted,read,readCompleted,review的人) */
+//		control.setAllowVisit(false);
+//		/* 工作是否可以流转(有task的人) */
+//		control.setAllowProcessing(false);
+//		/* 工作是否可以处理待阅(有read的人) */
+//		control.setAllowReadProcessing(false);
+//		/* 工作是否可保存(管理员 或者 有本人的task) */
+//		control.setAllowSave(false);
+//		/* 工作是否可重置(有本人待办 并且 活动设置允许重置 */
+//		control.setAllowReset(false);
+//		/* 工作是否可以撤回(当前人是上一个处理人 并且 还没有其他人处理过) */
+//		control.setAllowRetract(false);
+//		/* 工作是否可调度(管理员 并且 此活动在流程设计中允许调度) */
+//		control.setAllowReroute(false);
+//		/* 工作是否可删除(管理员 或者 此活动在流程设计中允许删除且当前待办人是文件的创建者) */
+//		control.setAllowDelete(false);
+//		/* 设置allowVisit */
+//		if ((taskCount > 0) || (readCount > 0) || (taskCompletedCount > 0) || (readCompletedCount > 0)
+//				|| (reviewCount > 0)) {
+//			control.setAllowVisit(true);
+//		} else if (effectivePerson.isPerson(work.getCreatorPerson())) {
+//			control.setAllowVisit(true);
+//		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowVisit(true);
+//		}
+//		/* 设置allowProcessing */
+//		if (taskCount > 0) {
+//			control.setAllowProcessing(true);
+//		}
+//		/* 设置allowReadProcessing */
+//		if (readCount > 0) {
+//			control.setAllowReadProcessing(true);
+//		}
+//		/* 设置 allowSave */
+//		if (taskCount > 0) {
+//			control.setAllowSave(true);
+//		} else if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowSave(true);
+//		}
+//		/* 设置 allowReset */
+//		if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
+//				&& BooleanUtils.isTrue(((Manual) activity).getAllowReset()) && taskCount > 0) {
+//			control.setAllowReset(true);
+//		}
+//		/* 设置 allowRetract */
+//		if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
+//				&& BooleanUtils.isTrue(((Manual) activity).getAllowRetract())) {
+//			/* 标志文件还没有处理过 */
+//			if (0 == taskCompleted().countWithPersonWithActivityToken(effectivePerson.getDistinguishedName(),
+//					work.getActivityToken())) {
+//				/* 找到到达当前活动的workLog */
+//				WorkLog workLog = workLog().getWithArrivedActivityTokenObject(work.getActivityToken());
+//				if (null != workLog) {
+//					/* 查找上一个环节的已办,如果只有一个,且正好是当前人的,那么可以召回 */
+//					List<TaskCompleted> taskCompletedList = taskCompleted()
+//							.listWithActivityTokenObject(workLog.getFromActivityToken());
+//					if (taskCompletedList.size() == 1 && StringUtils.equals(effectivePerson.getDistinguishedName(),
+//							taskCompletedList.get(0).getPerson())) {
+//						control.setAllowRetract(true);
+//					}
+//				}
+//			}
+//		}
+//		/* 设置 allowReroute */
+//		if (effectivePerson.isManager()) {
+//			/** 管理员可以调度 */
+//			control.setAllowReroute(true);
+//		} else if (organization().person().hasRole(effectivePerson, OrganizationDefinition.ProcessPlatformManager)) {
+//			/** 有流程管理角色的可以 */
+//			control.setAllowReroute(true);
+//		} else if (null != activity && BooleanUtils.isTrue(activity.getAllowReroute())) {
+//			/** 如果活动设置了可以调度 */
+//			if ((null != process) && effectivePerson.isPerson(process.getControllerList())) {
+//				/** 如果是流程的管理员那么可以调度 */
+//				control.setAllowReroute(true);
+//			} else if ((null != application) && effectivePerson.isPerson(application.getControllerList())) {
+//				/** 如果是应用的管理员那么可以调度 */
+//				control.setAllowReroute(true);
+//			}
+//		}
+//		/* 设置 allowDelete */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowDelete(true);
+//		} else if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
+//				&& BooleanUtils.isTrue(((Manual) activity).getAllowDeleteWork())) {
+//			// if (null != task && StringUtils.equals(work.getCreatorPerson(),
+//			// effectivePerson.getDistinguishedName())) {
+//			// control.setAllowDelete(true);
+//			// }
+//			if (taskCount > 0) {
+//				control.setAllowDelete(true);
+//			}
+//		}
+//		return control;
+//	}
 
-	public <T extends WorkCompletedControl> T getControl(EffectivePerson effectivePerson, WorkCompleted workCompleted,
-			Class<T> clz) throws Exception {
-		T control = clz.newInstance();
-		/* 完成工作是否可见:管理员或者有taskCompleted,或者有read,或者有readCompleted或者有review */
-		control.setAllowVisit(false);
-		/* 完成工作是否有待阅需要处理:当前人是否有待阅 */
-		control.setAllowReadProcessing(false);
-		/* 完成工作是否可以删除:管理员 */
-		control.setAllowDelete(false);
-		Application application = application().pick(workCompleted.getApplication());
-		Process process = process().pick(workCompleted.getProcess());
-		/* 设置 allowViist */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowVisit(true);
-		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
-			control.setAllowVisit(true);
-		} else if (taskCompleted().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
-				workCompleted) > 0) {
-			control.setAllowVisit(true);
-		} else if (read().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(), workCompleted) > 0) {
-			control.setAllowVisit(true);
-		} else if (readCompleted().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
-				workCompleted) > 0) {
-			control.setAllowVisit(true);
-		} else if (review().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
-				workCompleted) > 0) {
-			control.setAllowVisit(true);
-		}
-		/* 设置 allowReadProcessing */
-		if (read().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(), workCompleted) > 0) {
-			control.setAllowReadProcessing(true);
-		}
-		/* 设置 allowDelete */
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
-			control.setAllowDelete(true);
-		}
-		return control;
-	}
+//	public <T extends WorkCompletedControl> T getControl(EffectivePerson effectivePerson, WorkCompleted workCompleted,
+//			Class<T> clz) throws Exception {
+//		T control = clz.newInstance();
+//		/* 完成工作是否可见:管理员或者有taskCompleted,或者有read,或者有readCompleted或者有review */
+//		control.setAllowVisit(false);
+//		/* 完成工作是否有待阅需要处理:当前人是否有待阅 */
+//		control.setAllowReadProcessing(false);
+//		/* 完成工作是否可以删除:管理员 */
+//		control.setAllowDelete(false);
+//		Application application = application().pick(workCompleted.getApplication());
+//		Process process = process().pick(workCompleted.getProcess());
+//		/* 设置 allowViist */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowVisit(true);
+//		} else if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
+//			control.setAllowVisit(true);
+//		} else if (taskCompleted().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
+//				workCompleted) > 0) {
+//			control.setAllowVisit(true);
+//		} else if (read().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(), workCompleted) > 0) {
+//			control.setAllowVisit(true);
+//		} else if (readCompleted().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
+//				workCompleted) > 0) {
+//			control.setAllowVisit(true);
+//		} else if (review().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(),
+//				workCompleted) > 0) {
+//			control.setAllowVisit(true);
+//		}
+//		/* 设置 allowReadProcessing */
+//		if (read().countWithPersonWithWorkCompleted(effectivePerson.getDistinguishedName(), workCompleted) > 0) {
+//			control.setAllowReadProcessing(true);
+//		}
+//		/* 设置 allowDelete */
+//		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+//			control.setAllowDelete(true);
+//		}
+//		return control;
+//	}
 
 	public boolean readable(EffectivePerson effectivePerson, Task task) throws Exception {
 		if (null == task) {
@@ -1058,7 +1053,7 @@ public class Business {
 						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0)) {
 			Application a = application().pick(applicationId);
 			Process p = process().pick(processId);
-			if (BooleanUtils.isFalse(canManageApplicationOrProcess(effectivePerson, a, p))) {
+			if (BooleanUtils.isFalse(ifPersonCanManageApplicationOrProcess(effectivePerson, a, p))) {
 				return hasBeenCorrelation(effectivePerson, job);
 			}
 		}
@@ -1119,8 +1114,8 @@ public class Business {
 		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob()) > 0) {
 			return true;
 		}
-		if (BooleanUtils.isTrue(
-				this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess()))) {
+		if (BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, work.getApplication(),
+				work.getProcess()))) {
 			return true;
 		}
 		return false;
@@ -1148,7 +1143,7 @@ public class Business {
 			proId = w.getProcess();
 		}
 		return (StringUtils.isNotBlank(appId)
-				&& BooleanUtils.isTrue(this.canManageApplicationOrProcess(effectivePerson, appId, proId)));
+				&& BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, appId, proId)));
 	}
 
 	public boolean controllerable(EffectivePerson effectivePerson, Application application, Process process,
@@ -1156,7 +1151,7 @@ public class Business {
 		if (ListTools.isEmpty(attachment.getControllerIdentityList(), attachment.getControllerUnitList())) {
 			return true;
 		}
-		if (this.canManageApplicationOrProcess(effectivePerson, application, process)) {
+		if (this.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 			return true;
 		}
 		if (!ListTools.isEmpty(attachment.getControllerIdentityList())) {
@@ -1228,6 +1223,45 @@ public class Business {
 		return opt.isPresent();
 	}
 
+	public boolean ifPersonCanManageApplicationOrProcess(EffectivePerson effectivePerson, String applicationId,
+			String processId) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformManager))) {
+			return true;
+		}
+		Application app = null;
+		if (StringUtils.isNotBlank(applicationId)) {
+			app = this.application().pick(applicationId);
+		}
+		Process pro = null;
+		if (StringUtils.isNotBlank(processId)) {
+			pro = this.process().pick(processId);
+		}
+		if ((null != app) || (null != pro)) {
+			return this.ifPersonCanManageApplicationOrProcess(effectivePerson, app, pro);
+		}
+		return false;
+	}
+
+	public boolean ifPersonCanManageApplicationOrProcess(EffectivePerson effectivePerson, Application app, Process pro)
+			throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformManager))) {
+			return true;
+		}
+		if ((null == app) && (null == pro)) {
+			return false;
+		}
+		return (effectivePerson.isManager() || ((null != pro) && effectivePerson.isPerson(pro.getControllerList()))
+				|| ((null != app) && effectivePerson.isPerson(app.getControllerList())));
+	}
+
 	private boolean hasTaskOrReadOrTaskCompletedOrReadCompletedOrReviewWithPersonWithJob(
 			Triple<Class<? extends JpaObject>, String, String> param) {
 		try {
@@ -1248,6 +1282,24 @@ public class Business {
 						Applications.joinQueryUri("correlation", "readable", "type", "processplatform"), req, job)
 				.getData(ActionReadableTypeProcessPlatformWo.class);
 		return resp.getValue();
+	}
+
+	public boolean ifPersonHasReadWithJob(String person, String job) throws Exception {
+		return emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, person, Read.job_FIELDNAME, job) > 0;
+	}
+
+	public boolean ifPersonHasTaskWithWork(String person, String workId) throws Exception {
+		return emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId) > 0;
+	}
+
+	public boolean ifPersonHasPauseTaskWithWork(String person, String work) throws Exception {
+		return emc.countEqualAndEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, work,
+				Task.pause_FIELDNAME, true) > 0;
+	}
+
+	public boolean ifPersonHasTaskCompletedWithJob(String person, String job) throws Exception {
+		return emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME, person,
+				TaskCompleted.job_FIELDNAME, job) > 0;
 	}
 
 }

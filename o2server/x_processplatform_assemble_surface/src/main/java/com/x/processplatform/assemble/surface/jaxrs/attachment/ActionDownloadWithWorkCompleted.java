@@ -12,7 +12,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform.WorkCompletedExtensionEvent;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,8 +19,9 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -51,7 +51,8 @@ class ActionDownloadWithWorkCompleted extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			Control control = business.getControl(effectivePerson, workCompleted, Control.class);
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
@@ -84,12 +85,6 @@ class ActionDownloadWithWorkCompleted extends BaseAction {
 		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
 		result.setData(wo);
 		return result;
-	}
-
-	public static class Control extends WorkCompletedControl {
-
-		private static final long serialVersionUID = 1723086282400850454L;
-
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWithWorkCompleted$Wo")

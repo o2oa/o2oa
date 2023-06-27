@@ -21,8 +21,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -51,13 +52,10 @@ class ActionCopyToWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (effectivePerson.isNotManager()) {
-				Control control = business.getControl(effectivePerson, work, Control.class);
-				if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
-					throw new ExceptionAccessDenied(effectivePerson, work);
-				}
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowProcessing().build();
+			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-
 			if (ListTools.isNotEmpty(wi.getAttachmentList())) {
 				for (WiAttachment w : wi.getAttachmentList()) {
 					Attachment o = emc.find(w.getId(), Attachment.class);
@@ -85,11 +83,6 @@ class ActionCopyToWork extends BaseAction {
 
 		result.setData(wos);
 		return result;
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = -7984236444647769198L;
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWork$Wi")

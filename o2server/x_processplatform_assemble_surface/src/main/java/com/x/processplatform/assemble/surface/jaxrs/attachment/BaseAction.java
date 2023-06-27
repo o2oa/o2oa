@@ -11,12 +11,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.config.ProcessPlatform;
-import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.exception.ExceptionFileNameInvalid;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -26,6 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ProcessPlatform;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.exception.ExceptionFileNameInvalid;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -37,6 +35,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Attachment_;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -270,9 +270,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 				&& ListTools.isEmpty(attachment.getControllerIdentityList())) {
 			value = true;
 		} else if (ListTools.containsAny(identities, attachment.getControllerIdentityList())
-					|| ListTools.containsAny(units, attachment.getControllerUnitList())) {
-				value = true;
-		} else if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(), attachment.getProcess()))) {
+				|| ListTools.containsAny(units, attachment.getControllerUnitList())) {
+			value = true;
+		} else if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+				attachment.getApplication(), attachment.getProcess()))) {
 			value = true;
 		}
 		return value;
@@ -313,21 +314,25 @@ abstract class BaseAction extends StandardJaxrsAction {
 	 * @throws Exception
 	 */
 	protected void verifyConstraint(long size, String fileName, String callback) throws Exception {
-		if(!StringTools.isFileName(fileName)){
+		if (!StringTools.isFileName(fileName)) {
 			throw new ExceptionFileNameInvalid(fileName);
 		}
-		if (Config.general().getAttachmentConfig().getFileSize() != null && Config.general().getAttachmentConfig().getFileSize() > 0) {
+		if (Config.general().getAttachmentConfig().getFileSize() != null
+				&& Config.general().getAttachmentConfig().getFileSize() > 0) {
 			size = size / (1024 * 1024);
 			if (size > Config.general().getAttachmentConfig().getFileSize()) {
 				if (StringUtils.isNotEmpty(callback)) {
-					throw new ExceptionAttachmentInvalidCallback(callback, fileName, Config.general().getAttachmentConfig().getFileSize());
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName,
+							Config.general().getAttachmentConfig().getFileSize());
 				} else {
-					throw new ExceptionAttachmentInvalid(fileName, Config.general().getAttachmentConfig().getFileSize());
+					throw new ExceptionAttachmentInvalid(fileName,
+							Config.general().getAttachmentConfig().getFileSize());
 				}
 			}
 		}
 		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
-		if ((Config.general().getAttachmentConfig().getFileTypeIncludes() != null && !Config.general().getAttachmentConfig().getFileTypeIncludes().isEmpty())
+		if ((Config.general().getAttachmentConfig().getFileTypeIncludes() != null
+				&& !Config.general().getAttachmentConfig().getFileTypeIncludes().isEmpty())
 				&& (!ListTools.contains(Config.general().getAttachmentConfig().getFileTypeIncludes(), fileType))) {
 			if (StringUtils.isNotEmpty(callback)) {
 				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
@@ -335,7 +340,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				throw new ExceptionAttachmentInvalid(fileName);
 			}
 		}
-		if ((Config.general().getAttachmentConfig().getFileTypeExcludes() != null && !Config.general().getAttachmentConfig().getFileTypeExcludes().isEmpty())
+		if ((Config.general().getAttachmentConfig().getFileTypeExcludes() != null
+				&& !Config.general().getAttachmentConfig().getFileTypeExcludes().isEmpty())
 				&& (ListTools.contains(Config.general().getAttachmentConfig().getFileTypeExcludes(), fileType))) {
 			if (StringUtils.isNotEmpty(callback)) {
 				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
@@ -345,8 +351,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected byte[] read(EffectivePerson effectivePerson, StorageMapping mapping, Work work, WorkCompleted workCompleted,
-						Attachment attachment) throws Exception {
+	protected byte[] read(EffectivePerson effectivePerson, StorageMapping mapping, Work work,
+			WorkCompleted workCompleted, Attachment attachment) throws Exception {
 		byte[] bytes = null;
 		if (work != null) {
 			Optional<ProcessPlatform.WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
@@ -369,8 +375,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return bytes;
 	}
 
-	protected byte[] extensionService(EffectivePerson effectivePerson, Attachment attachment, ProcessPlatform.WorkExtensionEvent event)
-			throws Exception {
+	protected byte[] extensionService(EffectivePerson effectivePerson, Attachment attachment,
+			ProcessPlatform.WorkExtensionEvent event) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setPerson(effectivePerson.getDistinguishedName());
@@ -388,7 +394,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected byte[] extensionService(EffectivePerson effectivePerson, Attachment attachment,
-									ProcessPlatform.WorkCompletedExtensionEvent event) throws Exception {
+			ProcessPlatform.WorkCompletedExtensionEvent event) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setPerson(effectivePerson.getDistinguishedName());

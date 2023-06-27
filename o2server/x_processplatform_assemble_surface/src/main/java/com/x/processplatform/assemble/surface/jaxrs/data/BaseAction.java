@@ -25,7 +25,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Data.DataWork;
@@ -355,11 +354,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (!business.editable(effectivePerson, job)) {
 			throw new ExceptionJobAccessDenied(effectivePerson.getDistinguishedName(), job);
 		}
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = 7690414994902239024L;
 	}
 
 }
