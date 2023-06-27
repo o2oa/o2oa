@@ -901,6 +901,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "Multiple values are separated by half-width commas (,)",
         "defaultFilter": "Default Filter",
         "customFilter": "Custom Filter",
+        "filterCond": "Filter",
+        "filterNote": "Note: return the filter condition array of the view, please refer to the format ",
 
         "titleStyle": "Title Style",
         "dataStyle": "Data Style",

@@ -277,18 +277,10 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
 
     selectView: function(callback){
-        var viewData = this.json.queryView;
-
-        if (viewData){
-            var filter = null;
-            if (this.json.filterList && this.json.filterList.length){
-                filter = [];
-                this.json.filterList.each(function(entry){
-                    entry.value = this.form.Macro.exec(entry.code.code, this);
-                    //delete entry.code;
-                    filter.push(entry);
-                }.bind(this));
-            }
+        var viewDataList = this.json.queryView;
+        if( !viewDataList )return;
+        viewDataList = typeOf(viewDataList) === "array" ? viewDataList : [viewDataList];
+        if (viewDataList.length){
 
             debugger;
             var selectedJobs = this.documentList.map(function (d) {
@@ -298,26 +290,37 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             var disableSelectJobs = Array.clone(selectedJobs);
             disableSelectJobs.push( this.form.businessData.work.job );
 
-            var viewJson = {
-                "application": viewData.appName,
-                "viewName": viewData.name,
-                "viewId": viewData.id,
-                "isTitle": this.json.isTitle || "yes",
-                "select": this.json.select || "single",
-                "titleStyles": this.json.titleStyles,
-                "itemStyles": this.json.itemStyles,
-                "isExpand": this.json.isExpand || "no",
-                "showActionbar" : this.json.actionbar === "show",
-                "filter": filter,
-                // "defaultSelectedScript" : function (obj) {
-                //     return selectedJobs.contains(obj.data.bundle);
-                // },
-                "selectedAbleScript" : function (obj) {
-                    return !disableSelectJobs.contains(obj.data.bundle);
+            var viewJsonList = [];
+            viewDataList.each(function (viewData) {
+                var filter = null;
+                var filterList = (this.json.viewFilterScriptList || []).filter(function (f) {
+                    return f.id === viewData.id;
+                });
+                if( filterList.length ){
+                    filter = this.form.Macro.exec(filterList[0].script.code, this);
                 }
-            };
 
-            this.fireEvent("beforeLoadView", [viewJson]);
+                var viewJson = {
+                    "application": viewData.appName,
+                    "viewName": viewData.name,
+                    "viewId": viewData.id,
+                    "isTitle": this.json.isTitle || "yes",
+                    "select": this.json.select || "single",
+                    "titleStyles": this.json.titleStyles,
+                    "itemStyles": this.json.itemStyles,
+                    "isExpand": this.json.isExpand || "no",
+                    "showActionbar" : this.json.actionbar === "show",
+                    "filter": filter,
+                    // "defaultSelectedScript" : function (obj) {
+                    //     return selectedJobs.contains(obj.data.bundle);
+                    // },
+                    "selectedAbleScript" : function (obj) {
+                        return !disableSelectJobs.contains(obj.data.bundle);
+                    }
+                };
+                viewJsonList.push( viewJson );
+            }.bind(this));
+            this.fireEvent("beforeLoadView", [viewDataList]);
 
             var options = {};
             // var width = options.width || "850";
@@ -363,12 +366,18 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                             "text": MWF.LP.process.button.ok,
                             "action": function(){
                                 //if (callback) callback(_self.view.selectedItems);
-                                var data = _self.view.getData();
-                                data.each(function (d) {
-                                    d.type = _self.view.json.type;
-                                }.bind(this))
-                                _self.fireEvent("selectResult", [data]);
-                                if (callback) callback(data);
+
+                                var array = [];
+                                _self.viewList.each(function (view) {
+                                    var data = view.getData();
+                                    data.each(function (d) {
+                                        d.type = view.json.type;
+                                    }.bind(this));
+                                    array = array.concat(data);
+                                });
+
+                                _self.fireEvent("selectResult", [array]);
+                                if (callback) callback(array);
                                 this.close();
                             }
                         },
@@ -381,30 +390,64 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                         if(layout.mobile){
                             dlg.node.setStyle("z-index",200);
                         }
+
+                        MWF.require("MWF.widget.Tab", null, false);
+
+                        this.tab = new MWF.widget.Tab(dlg.content, {"style": "script"});
+                        this.tab.load();
+
                         MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
                             // this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
                             //     "style": "select"
                             // }, this.form.app, this.form.Macro );
-                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
-                                "style": "select",
-                                "onLoadView": function(){
-                                    this.fireEvent("loadView");
-                                }.bind(this),
-                                "onSelect": function(item){
-                                    this.fireEvent("select", [item]);
-                                }.bind(this),
-                                "onUnselect": function(item){
-                                    this.fireEvent("unselect", [item]);
-                                }.bind(this),
-                                "onOpenDocument": function(options, item){
-                                    this.openOptions = {
-                                        "options": options,
-                                        "item": item
-                                    };
-                                    this.fireEvent("openViewDocument", [this.openOptions]);
-                                    this.openOptions = null;
-                                }.bind(this)
-                            }, this.form.app, this.form.Macro);
+
+                            this.viewList = [];
+                            viewJsonList.each(function (viewJson, index) {
+
+                                var tabViewNode = Element("div", {"styles": {"height": "100%"}});
+                                var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
+                                //this.viewArea.inject(this.pageViewNode);
+
+                                debugger;
+                                var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
+
+                                //this.viewPage.showTabIm();
+                                var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                                viewPage.addEvent("postShow", function () {
+                                    if( viewPage.Viewer )return;
+
+                                    pageViewNode.setStyle("height", viewHeight);
+
+                                    var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
+                                        "style": "select",
+                                        "onLoadView": function(){
+                                            this.fireEvent("loadView");
+                                        }.bind(this),
+                                        "onSelect": function(item){
+                                            this.fireEvent("select", [item]);
+                                        }.bind(this),
+                                        "onUnselect": function(item){
+                                            this.fireEvent("unselect", [item]);
+                                        }.bind(this),
+                                        "onOpenDocument": function(options, item){
+                                            this.openOptions = {
+                                                "options": options,
+                                                "item": item
+                                            };
+                                            this.fireEvent("openViewDocument", [this.openOptions]);
+                                            this.openOptions = null;
+                                        }.bind(this)
+                                    }, this.form.app, this.form.Macro);
+
+                                    viewPage.Viewer = view;
+                                    this.viewList.push(view);
+                                }.bind(this));
+
+                                if( index === 0 )viewPage.showTabIm()
+
+                            }.bind(this))
+
+
                         }.bind(this));
                     }.bind(this)
                 });

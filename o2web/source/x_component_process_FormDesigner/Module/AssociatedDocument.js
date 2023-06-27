@@ -27,6 +27,7 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		// this.buttonContainer = this.node.getElement(".MWFADButtonContainer");
 		// this.buttonArea = this.node.getElement(".MWFADButtonArea");
 		// this.buttonNode = this.node.getElement(".MWFADBbutton");
+		debugger;
 		this.node.empty();
 		this.loadContent();
 		this.loadButton();
@@ -137,6 +138,52 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 		}
 
 
+	},
+	_checkView: function(callback, name, oldValue, newValue){
+		debugger;
+		if( name !== "queryView" )return;
+		if( !oldValue ){
+			oldValue = [];
+		}else{
+			oldValue = typeOf(oldValue) === "array" ? oldValue : [oldValue];
+		}
+		if( !newValue ){
+			newValue = [];
+		}else{
+			newValue = typeOf(newValue) === "array" ? newValue : [newValue];
+		}
+		if( !this.json.viewFilterScriptList )this.json.viewFilterScriptList = [];
+		var list = [];
+		newValue.each(function (n) {
+			var vf = this.json.viewFilterScriptList.filter(function (viewFilter) {
+				return n.id === viewFilter.id;
+			}.bind(this));
+			if( vf.length ){
+				list.push( vf[0] );
+			}else{
+				list.push({
+					id: n.id,
+					title: n.name + MWF.xApplication.process.FormDesigner.LP.propertyTemplate.filterCond,
+					script: {"code": "", "html": ""}
+				})
+			}
+		}.bind(this));
+
+		this.json.viewFilterScriptList.each(function (vf) {
+			var ns = newValue.filter(function (n) {
+				return n.id === vf.id;
+			});
+			if( !ns.length ){
+				var id1 = "scriptArea_"+vf.id;
+				if( this.property[ id1 ] ){
+					this.property[ id1 ].destroy();
+					this.property[ id1 ] = null;
+				}
+			}
+		}.bind(this))
+
+		this.json.viewFilterScriptList = list;
+		this.property.loadScriptListArea();
 	},
 	setButtonPosition: function () {
 		var position = ["leftTop","centerTop","rightTop"].contains( this.json.buttonPosition ) ? "top" : "bottom";

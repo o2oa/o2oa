@@ -419,7 +419,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     setContentHeight: function(){
-        var size = this.node.getSize();
+        var size;
+        if( !this.node.offsetParent === null ){
+            size = this.node.getStyle("height");
+        }else{
+            size = this.node.getSize()
+        }
         var searchSize = this.searchAreaNode.getComputedSize();
         var h = size.y-searchSize.totalHeight;
         //if (this.exportAreaNode){

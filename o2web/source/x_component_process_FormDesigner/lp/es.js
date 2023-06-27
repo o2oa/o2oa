@@ -899,6 +899,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "Múltiples valores separados por coma (,)",
         "defaultFilter": "Filtro predefinido",
         "customFilter": "Datos de filtro personalizados",
+        "filterCond": "Filtro",
+        "filterNote": "Nota: devuelva la matriz de condición de filtro de la vista, consulte el formato ",
 
         "titleStyle": "Estilo del título",
         "dataStyle": "Estilo de los datos",

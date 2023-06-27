@@ -899,6 +899,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "多值用半角逗号(,)隔开",
         "defaultFilter": "默认过滤条件",
         "customFilter": "自定义过滤数据",
+        "filterCond": "过滤条件",
+        "filterNote": "注：返回视图的过滤条件数组，格式请查看",
 
         "titleStyle": "标题样式",
         "dataStyle": "数据样式",
