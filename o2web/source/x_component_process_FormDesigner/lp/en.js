@@ -375,7 +375,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "Read Log",
         "writingBoard": "writingBoard",
         "tinymceEditor": "TinyMCE",
-        "relatedLink": "Related Link"
+        "relatedLink": "Related Link",
+        "associatedDocument": "Associated Document"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -900,6 +901,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "Multiple values are separated by half-width commas (,)",
         "defaultFilter": "Default Filter",
         "customFilter": "Custom Filter",
+        "filterCond": "Filter",
+        "filterNote": "Note: return the filter condition array of the view, please refer to the format ",
 
         "titleStyle": "Title Style",
         "dataStyle": "Data Style",
@@ -973,6 +976,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "Expand Html",
         "collapseHtml": "Collapse Html",
         "relativedLinkField": "Selectable Field：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
+        "documentListShow": "Document List",
+        "associatedDocumentField": "Selectable Field：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
 
         "fileTemplate": "File Template",
         "systemTemplate": "System Template",

@@ -265,4 +265,9 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.relatedLink,
     "className": "Relatedlink"
   }
+//  "associatedDocument": {
+//    "icon": "associatedDocument.png",
+//    "text": MWF.xApplication.cms.FormDesigner.LP.modules.associatedDocument,
+//    "className": "AssociatedDocument"
+//  }
 }

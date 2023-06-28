@@ -590,5 +590,19 @@
     "tableContentCellStyles_title": {
       "font-size": "14px"
     }
+  },
+  "associatedDocument": {
+    "buttonStyles": {
+      "color" : "#777",
+      "border-radius": "5px",
+      "border": "1px solid #ccc",
+      "cursor": "pointer",
+      "height": "26px",
+      "line-height": "26px",
+      "padding": "0px 5px",
+      "background-color": "#efefef",
+      "margin" : "5px",
+      "display": "inline-block"
+    }
   }
 }

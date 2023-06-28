@@ -1005,7 +1005,8 @@ o2.xDesktop.Default.StartMenu = new Class({
             "   <div class='layout_start_item_badge'></div>";
     },
     load: function(){
-        var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+        //var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+        var view = this.layout.path+this.layout.options.style+ "/layout-menu-pc.html";
         this.container.loadHtml(view, {"module": this}, function(){
             this.maskNode.setStyle("z-index", o2.xDesktop.zIndexPool.applyZindex());
             this.node.setStyle("z-index", o2.xDesktop.zIndexPool.applyZindex());

@@ -117,6 +117,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadPersonInput();
                     this.loadFormFieldInput();
                     this.loadScriptArea();
+                    this.loadScriptListArea();
                     this.loadCssArea();
                     this.loadHtmlEditorArea();
                     this.loadTreeData();
@@ -1938,8 +1939,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             queryviewNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "QueryView",
-                    "count": 1,
-                    "names": [this.data[node.get("name")]],
+                    "count": node.dataset["count"] || 1,
+                    "names": typeOf(this.data[node.get("name")]) === "array" ? this.data[node.get("name")] : [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
                 });
             }.bind(this));
@@ -2274,23 +2275,39 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     saveViewItem: function(node, ids){
         var name = node.get("name");
         var oldValue = this.data[name];
-        if (ids[0]){
-            var view = ids[0].data;
-            var data = {
-                "name": view.name,
-                "alias": view.alias,
-                "id": view.id,
-                "appName" : view.appName || view.applicationName || view.query,
-                "appId": view.appId,
-                "application": view.application || view.query
-            };
-            this.data[node.get("name")] = data;
+        var count = (node.dataset["count"] || 1).toInt();
+        if( !ids )ids = [];
+        if( count === 1 ){
+            if (ids[0]){
+                var view = ids[0].data;
+                this.data[node.get("name")] = {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            }else{
+                this.data[node.get("name")] = null;
+            }
         }else{
-            this.data[node.get("name")] = null;
+            this.data[node.get("name")] = ids.map(function (id) {
+                var view = id.data;
+                return {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            })
         }
+
         this.checkHistory(name, oldValue, this.data[name]);
 
-        if (this.module._checkView) this.module._checkView();
+        if (this.module._checkView) this.module._checkView(null, name, oldValue, this.data[name]);
     },
     removeViewItem: function(node, item){
 
@@ -2408,6 +2425,54 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.checkHistory(name, oldValue, this.data[name]);
     },
 
+
+    loadScriptListArea: function(){
+        var scriptAreas = this.propertyContent.getElements(".MWFScriptListArea");
+        scriptAreas.each(function (node) {
+            this._loadScriptListArea(node)
+        }.bind(this));
+        var formulaAreas = this.propertyContent.getElements(".MWFFormulaListArea");
+        formulaAreas.each(function (node) {
+            this._loadScriptListArea(node, "formula")
+        }.bind(this));
+
+    },
+    _loadScriptListArea: function(node, style){
+        node.empty();
+        var name = node.get("name");
+        if( !this.data[name] )this.data[name] = [];
+        this.data[name].each(function (d, index) {
+            var contentNode = new Element("div").inject(node);
+            var title = d.title;
+            if( !d.script ){
+                d.script = {"code": "", "html": ""};
+            }
+            var scriptContent = d.script;
+            var mode = node.dataset["mode"];
+            MWF.require("MWF.widget.ScriptArea", function(){
+                var scriptArea = new MWF.widget.ScriptArea(contentNode, {
+                    "title": title,
+                    "isbind": false,
+                    "mode": mode || "javascript",
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                        if (this.module.form.scriptDesigner) this.module.form.scriptDesigner.addScriptItem(this.data[name][index].script, "code", this.data[name][index], "script");
+                        var oldValue = this.data[name][index].script.code;
+                        var json = scriptArea.toJson();
+                        this.data[name][index].script.code = json.code;
+                        this.checkHistory(name+"."+index+".script.code", oldValue, json.code);
+                    }.bind(this),
+                    "onSave": function(){
+                        this.designer.saveForm();
+                    }.bind(this),
+                    "style": style || "default",
+                    "runtime": "web"
+                });
+                scriptArea.load(scriptContent);
+                this["scriptArea_"+d.id] = scriptArea;
+            }.bind(this));
+        }.bind(this))
+    },
 
 	loadScriptArea: function(){
 		var scriptAreas = this.propertyContent.getElements(".MWFScriptArea");

@@ -285,6 +285,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.relatedLink,
     "className": "Relatedlink"
   },
+//  "associatedDocument": {
+//    "icon": "associatedDocument.png",
+//    "text": MWF.xApplication.cms.FormDesigner.LP.modules.associatedDocument,
+//    "className": "AssociatedDocument"
+//  },
   "elcontainer": {
     "fontIcon": "el-icon-s-grid",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_container,

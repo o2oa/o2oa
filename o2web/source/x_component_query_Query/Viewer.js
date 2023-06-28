@@ -419,7 +419,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     setContentHeight: function(){
-        var size = this.node.getSize();
+        var size;
+        if( !this.node.offsetParent === null ){
+            size = this.node.getStyle("height");
+        }else{
+            size = this.node.getSize()
+        }
         var searchSize = this.searchAreaNode.getComputedSize();
         var h = size.y-searchSize.totalHeight;
         //if (this.exportAreaNode){
@@ -840,10 +845,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if (this.viewJson.group.column){
             this.gridJson.each( function( d ){
                 d.list.each( function( v ){
-                    if( selectedAbleScript ){
-                        v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "groupData" : d ,"view": this });
-                    }else{
-                        v.$selectedEnable = true;
+                    switch (typeOf(selectedAbleScript)) {
+                        case "string":
+                            if( selectedAbleScript ){
+                                v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "groupData" : d ,"view": this });
+                            }else{
+                                v.$selectedEnable = true;
+                            }
+                            break;
+                        case "function":
+                            v.$selectedEnable =  selectedAbleScript({ "data" : v, "groupData" : d ,"view": this });
+                            break;
+                        default:
+                            v.$selectedEnable = true;
                     }
                     if( v.$selectedEnable ){
                         d.$selectedEnable = true;
@@ -853,10 +867,19 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }.bind(this))
         }else{
             this.gridJson.each( function( v ){
-                if( selectedAbleScript ){
-                    v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "view": this });
-                }else{
-                    v.$selectedEnable = true;
+                switch (typeOf(selectedAbleScript)) {
+                    case "string":
+                        if( selectedAbleScript ){
+                            v.$selectedEnable = this.Macro.exec( selectedAbleScript, { "data" : v, "view": this });
+                        }else{
+                            v.$selectedEnable = true;
+                        }
+                        break;
+                    case "function":
+                        v.$selectedEnable =  selectedAbleScript({ "data" : v, "view": this });
+                        break;
+                    default:
+                        v.$selectedEnable = true;
                 }
                 if( v.$selectedEnable )this.viewSelectedEnable = true;
             }.bind(this))
@@ -2208,8 +2231,15 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
             // if ( flag ==="single" || flag==="multi"){
             //
             // }
-            selectedFlag = this.view.Macro.exec( defaultSelectedScript,
-                {"node" : this.node, "data" : this.data, "view": this.view, "row" : this});
+            switch (typeOf(defaultSelectedScript)) {
+                case "string":
+                    selectedFlag = this.view.Macro.exec( defaultSelectedScript,
+                        {"node" : this.node, "data" : this.data, "view": this.view, "row" : this});
+                    break;
+                case "function":
+                    selectedFlag =  defaultSelectedScript({"node" : this.node, "data" : this.data, "view": this.view, "row" : this});
+                    break;
+            }
         }
         //判断是不是在selectedItems中，用户手工选择
         if( !this.isSelected && this.view.selectedItems.length ){
