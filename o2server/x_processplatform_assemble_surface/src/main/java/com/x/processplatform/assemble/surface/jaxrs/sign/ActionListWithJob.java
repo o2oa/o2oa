@@ -29,7 +29,7 @@ import com.x.processplatform.core.entity.content.DocSignStatus;
 
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 
@@ -61,7 +61,7 @@ class ActionListWithJob extends BaseAction {
 				}
 				SortTools.asc(wos, DocSign.createTime_FIELDNAME);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
 		}, ThisApplication.threadPool());
@@ -75,7 +75,7 @@ class ActionListWithJob extends BaseAction {
 				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build();
 				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());

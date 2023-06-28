@@ -18,7 +18,6 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Activity;
 
 class ActionTypeSuspend extends BaseAction {
 
