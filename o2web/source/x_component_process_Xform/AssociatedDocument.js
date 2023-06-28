@@ -270,7 +270,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             });
         }
     },
-
+    getBundle: function(){
+	   return this.form.businessData.work.job;
+    },
     selectView: function(callback){
         var viewDataList = this.json.queryView;
         if( !viewDataList )return;
@@ -282,7 +284,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             });
 
             var disableSelectJobs = Array.clone(selectedJobs);
-            disableSelectJobs.push( this.form.businessData.work.job );
+            disableSelectJobs.push( this.getBundle() );
 
             var viewJsonList = [];
             viewDataList.each(function (viewData) {
