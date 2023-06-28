@@ -40,7 +40,7 @@ class ActionManageListWithDateHour extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))
 					&& (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(date)) && hour >= 0 && hour < 24)) {
 				Date startTime = DateTools.getAdjustTimeDay(DateTools.floorDate(DateTools.parse(date), 0), 0, hour, 0,
 						0);

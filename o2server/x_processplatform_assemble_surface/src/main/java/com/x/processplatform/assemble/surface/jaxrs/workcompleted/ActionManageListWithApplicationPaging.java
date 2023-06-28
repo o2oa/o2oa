@@ -63,7 +63,7 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application, Wi wi) throws Exception{
 		Predicate p = null;
-		if (business.canManageApplication(effectivePerson, application)) {
+		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application,null)) {
 			p = this.toFilterPredicate(business, application.getId(), wi);
 		}else{
 			List<String> processList = business.process().listControllableProcess(effectivePerson, application);

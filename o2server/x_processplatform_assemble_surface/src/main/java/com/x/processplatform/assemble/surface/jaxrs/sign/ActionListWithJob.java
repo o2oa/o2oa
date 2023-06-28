@@ -21,6 +21,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignStatus;
@@ -62,7 +64,7 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return wos;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
@@ -70,12 +72,13 @@ class ActionListWithJob extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithJob(effectivePerson, job);
+				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
 				logger.error(e);
 			}
 			return value;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends DocSign {

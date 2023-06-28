@@ -42,7 +42,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
 				List<Wo> wos = emc.fetchDescPaging(Task.class, Wo.copier, p, page, size, Task.startTime_FIELDNAME);

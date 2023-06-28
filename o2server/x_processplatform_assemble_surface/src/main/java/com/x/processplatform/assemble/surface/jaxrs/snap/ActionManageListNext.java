@@ -20,7 +20,7 @@ class ActionManageListNext extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}

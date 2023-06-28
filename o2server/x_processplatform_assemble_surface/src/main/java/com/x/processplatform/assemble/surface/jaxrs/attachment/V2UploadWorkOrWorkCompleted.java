@@ -24,6 +24,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -46,8 +47,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 
-		CompletableFuture<Boolean> checkControlFuture = this.readableWithWorkOrWorkCompletedFuture(effectivePerson,
-				workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
 
 		if (BooleanUtils
 				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
@@ -192,20 +192,6 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		attachment.setActivityToken(end.getId());
 		attachment.setActivityType(end.getActivityType());
 		return attachment;
-	}
-
-	protected CompletableFuture<Boolean> readableWithWorkOrWorkCompletedFuture(EffectivePerson effectivePerson,
-			String flag) {
-		return CompletableFuture.supplyAsync(() -> {
-			Boolean value = false;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-			return value;
-		}, ThisApplication.threadPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompleted$Wo")

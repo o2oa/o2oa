@@ -6,18 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -36,7 +39,8 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 				fileName = fileName + ".zip";
 			}
 		}
-		fileName = StringUtils.replaceEach(fileName, Business.FILENAME_SENSITIVES_KEY, Business.FILENAME_SENSITIVES_EMPTY);
+		fileName = StringUtils.replaceEach(fileName, Business.FILENAME_SENSITIVES_KEY,
+				Business.FILENAME_SENSITIVES_EMPTY);
 		return fileName;
 	}
 
@@ -59,8 +63,10 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			throws Exception {
 		Work work = business.entityManagerContainer().fetch(workId, Work.class);
 		if (work != null) {
-			if (!business.readable(effectivePerson, work)) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+						work.getId());
 			}
 			return Pair.of(work.getTitle(), work.getJob());
 		} else {
@@ -68,7 +74,9 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityExist(workId);
 			}
-			if (!business.readable(effectivePerson, workCompleted)) {
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}

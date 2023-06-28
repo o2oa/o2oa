@@ -41,7 +41,7 @@ class ActionManageListRelative extends BaseAction {
 			Process process = business.process().pick(work.getProcess());
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> ids = this.listRelative(business, work);

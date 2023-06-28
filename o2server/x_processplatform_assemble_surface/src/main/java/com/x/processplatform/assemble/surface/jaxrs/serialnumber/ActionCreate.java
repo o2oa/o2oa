@@ -39,7 +39,7 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionEntityNotExist(wi.getProcess());
 			}
 			Application application = business.application().pick(process.getApplication());
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			SerialNumber serialNumber = Wi.copier.copy(wi);

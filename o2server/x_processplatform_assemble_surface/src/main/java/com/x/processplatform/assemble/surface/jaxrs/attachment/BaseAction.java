@@ -32,6 +32,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Attachment_;
@@ -40,7 +42,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
 	protected static final String OFD_ATT_KEY = ".ofd";
 
@@ -73,6 +75,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	public static class CacheResultObject extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -1071169661372205135L;
+
 		private byte[] bytes;
 		private String name;
 		private String person;
@@ -103,10 +107,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	// public static Ehcache cachePreviewPdf =
-	// ApplicationCache.instance().getCache(PreviewPdfResultObject.class);
-
 	public static class PreviewPdfResultObject extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 7589263971880126815L;
 
 		private byte[] bytes;
 		private String name;
@@ -139,6 +142,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	public static class PreviewImageResultObject extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 2119185075125829853L;
 
 		private byte[] bytes;
 		private String name;
@@ -284,9 +289,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithJob(effectivePerson, job);
+				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());
@@ -297,9 +303,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
+				Control control = new JobControlBuilder(effectivePerson, business, flag).enableAllowVisit().build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());

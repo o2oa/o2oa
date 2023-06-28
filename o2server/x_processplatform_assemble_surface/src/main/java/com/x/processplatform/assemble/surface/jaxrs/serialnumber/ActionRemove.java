@@ -24,7 +24,7 @@ class ActionRemove extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.canManageApplication(effectivePerson, application)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(SerialNumber.class);
@@ -38,5 +38,8 @@ class ActionRemove extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6587064524386680060L;
+
 	}
 }

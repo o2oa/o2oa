@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -19,6 +21,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -41,8 +44,9 @@ class ActionListWithJob extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithJob(effectivePerson, job)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(
+					new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build().getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 		}
 

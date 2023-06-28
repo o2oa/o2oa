@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.correlation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -26,6 +27,8 @@ import com.x.correlation.core.express.service.processing.jaxrs.correlation.Actio
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -46,8 +49,9 @@ class ActionCreateWithJob extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, job)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(
+					new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build().getAllowSave())) {
+				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 			req.setTargetList(readTarget(effectivePerson, business, wi.getTargetList()));
 			req.setPerson(effectivePerson.getDistinguishedName());

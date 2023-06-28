@@ -33,7 +33,7 @@ class ActionDeleteByTask extends BaseAction {
 			wo.setValue(true);
 			DocSign docSign = emc.firstEqual(DocSign.class, DocSign.taskId_FIELDNAME, taskId);
 			if (null != docSign) {
-				if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null)
+				if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")
 						&& !docSign.getPerson().equals(effectivePerson.getDistinguishedName()))) {
 					throw new ExceptionAccessDenied(effectivePerson, taskId);
 				}

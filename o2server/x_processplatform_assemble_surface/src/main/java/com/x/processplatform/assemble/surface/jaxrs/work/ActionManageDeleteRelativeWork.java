@@ -20,11 +20,14 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageDeleteRelativeWork extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDeleteRelativeWork.class);
 
 	/* 为了和后面的全部删除对应,所以返回的是数组 */
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -36,7 +39,7 @@ class ActionManageDeleteRelativeWork extends BaseAction {
 			Process process = business.process().pick(work.getProcess());
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<Wo> wos = ThisApplication.context().applications()
@@ -49,6 +52,8 @@ class ActionManageDeleteRelativeWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7848336872352149678L;
 
 	}
 }

@@ -16,6 +16,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,23 +35,27 @@ class ActionOnlineInfo extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if(business.editable(effectivePerson, attachment.getJob())){
+			if (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+					effectivePerson.getDistinguishedName(), attachment.getJob())
+					|| business.ifPersonCanManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
+							attachment.getProcess())) {
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 				boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
 				wo.setCanEdit(canEdit);
 				wo.setCanRead(true);
-			}else{
-				wo.setCanRead(business.readableWithJob(effectivePerson, attachment.getJob()));
+			} else {
+				wo.setCanRead(new JobControlBuilder(effectivePerson, business, attachment.getJob()).enableAllowVisit()
+						.build().getAllowVisit());
 			}
 
-			if(BooleanUtils.isTrue(wo.getCanRead())) {
+			if (BooleanUtils.isTrue(wo.getCanRead())) {
 				attachment.copyTo(wo);
 				wo.setOwnerId(attachment.getPerson());
 				wo.setOwnerName(OrganizationDefinition.name(attachment.getPerson()));
 				wo.setUserId(effectivePerson.getDistinguishedName());
 				wo.setUserName(effectivePerson.getName());
-			}else{
+			} else {
 				wo.setId(id);
 			}
 			result.setData(wo);

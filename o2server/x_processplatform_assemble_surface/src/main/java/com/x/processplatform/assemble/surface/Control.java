@@ -6,6 +6,8 @@ public class Control extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -4033469981088793137L;
 
+	// 是否可以管理
+	private Boolean allowManage;
 	// 是否可以看到
 	private Boolean allowVisit;
 	// 是否可以直接流转
@@ -20,6 +22,8 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowAddTask;
 	// 是否可以调度
 	private Boolean allowReroute;
+	// 是否可以挂起
+	private Boolean allowSuspend;
 	// 是否可以删除
 	private Boolean allowDelete;
 	// 是否可以增加会签分支
@@ -38,6 +42,14 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowGoBack;
 	// 是否可以重置待阅处理人
 	private Boolean allowReadReset;
+
+	public Boolean getAllowManage() {
+		return allowManage;
+	}
+
+	public void setAllowManage(Boolean allowManage) {
+		this.allowManage = allowManage;
+	}
 
 	public Boolean getAllowVisit() {
 		return allowVisit;
@@ -165,6 +177,14 @@ public class Control extends GsonPropertyObject {
 
 	public void setAllowReadReset(Boolean allowReadReset) {
 		this.allowReadReset = allowReadReset;
+	}
+
+	public Boolean getAllowSuspend() {
+		return allowSuspend;
+	}
+
+	public void setAllowSuspend(Boolean allowSuspend) {
+		this.allowSuspend = allowSuspend;
 	}
 
 }

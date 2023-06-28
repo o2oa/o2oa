@@ -57,7 +57,8 @@ class ActionManageGetAssignment extends BaseAction {
 			Process process = business.process().pick(work.getProcess());
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils
+					.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			wo.setControl(new WorkControlBuilder(effectivePerson, business, work).enableAll().build());

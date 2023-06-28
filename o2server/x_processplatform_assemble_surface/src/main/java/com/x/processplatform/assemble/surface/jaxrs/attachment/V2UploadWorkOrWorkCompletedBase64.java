@@ -51,8 +51,7 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 
 		byte[] bytes = Base64.decode(wi.getContent());
 
-		CompletableFuture<Boolean> checkControlFuture = this.readableWithWorkOrWorkCompletedFuture(effectivePerson,
-				workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
 
 		if (BooleanUtils
 				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
@@ -191,20 +190,6 @@ class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 		attachment.setActivityToken(end.getId());
 		attachment.setActivityType(end.getActivityType());
 		return attachment;
-	}
-
-	protected CompletableFuture<Boolean> readableWithWorkOrWorkCompletedFuture(EffectivePerson effectivePerson,
-			String flag) {
-		return CompletableFuture.supplyAsync(() -> {
-			Boolean value = false;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-			return value;
-		}, ThisApplication.threadPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompletedBase64$Wi")

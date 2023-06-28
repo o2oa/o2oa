@@ -26,12 +26,19 @@ public class WorkCompletedControlBuilder {
 		this.workCompleted = workCompleted;
 	}
 
+	// 是否可以管理
+	private boolean ifAllowManage = false;
 	// 是否可以看到
 	private boolean ifAllowVisit = false;
 	// 是否可以处理待阅
 	private boolean ifAllowReadProcessing = false;
 	// 是否可以回滚
 	private boolean ifAllowRollback = false;
+
+	public WorkCompletedControlBuilder enableAllowManage() {
+		this.ifAllowManage = true;
+		return this;
+	}
 
 	public WorkCompletedControlBuilder enableAllowVisit() {
 		this.ifAllowVisit = true;
@@ -49,6 +56,7 @@ public class WorkCompletedControlBuilder {
 	}
 
 	public WorkCompletedControlBuilder enableAll() {
+		enableAllowManage();
 		enableAllowVisit();
 		enableAllowReadProcessing();
 		enableAllowRollback();
@@ -91,11 +99,20 @@ public class WorkCompletedControlBuilder {
 		if (null == workCompleted) {
 			return control;
 		}
-		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowVisit, this::computeAllowVisit),
+		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
+				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
 				Pair.of(ifAllowRollback, this::computeAllowRollback)).stream().filter(Pair::first)
 				.forEach(o -> o.second().accept(control));
 		return control;
+	}
+
+	private void computeAllowManage(Control control) {
+		try {
+			control.setAllowVisit(canManage());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private void computeAllowVisit(Control control) {

@@ -22,6 +22,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -42,12 +44,11 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
 			job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+			Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			}
 		}
 
 		final String workLogJob = job;

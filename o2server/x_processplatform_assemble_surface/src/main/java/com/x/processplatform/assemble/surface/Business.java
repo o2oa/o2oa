@@ -785,366 +785,366 @@ public class Business {
 //		return control;
 //	}
 
-	public boolean readable(EffectivePerson effectivePerson, Task task) throws Exception {
-		if (null == task) {
-			return false;
-		}
-		if (effectivePerson.isPerson(task.getPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator))) {
-			return true;
-		}
-		Application app = this.application().pick(task.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(task.getProcess());
-		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, Task task) throws Exception {
+//		if (null == task) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(task.getPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformCreator))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(task.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(task.getProcess());
+//		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, TaskCompleted taskCompleted) throws Exception {
-		if (null == taskCompleted) {
-			return false;
-		}
-		if (effectivePerson.isPerson(taskCompleted.getPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator))) {
-			return true;
-		}
-		Application app = this.application().pick(taskCompleted.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(taskCompleted.getProcess());
-		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, TaskCompleted taskCompleted) throws Exception {
+//		if (null == taskCompleted) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(taskCompleted.getPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformCreator))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(taskCompleted.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(taskCompleted.getProcess());
+//		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, Read read) throws Exception {
-		if (null == read) {
-			return false;
-		}
-		if (effectivePerson.isPerson(read.getPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator))) {
-			return true;
-		}
-		Application app = this.application().pick(read.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process p = this.process().pick(read.getProcess());
-		return ((null != p) && (effectivePerson.isPerson(p.getControllerList())));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, Read read) throws Exception {
+//		if (null == read) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(read.getPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformCreator))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(read.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process p = this.process().pick(read.getProcess());
+//		return ((null != p) && (effectivePerson.isPerson(p.getControllerList())));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, ReadCompleted readCompleted) throws Exception {
-		if (null == readCompleted) {
-			return false;
-		}
-		if (effectivePerson.isPerson(readCompleted.getPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator))) {
-			return true;
-		}
-		Application app = this.application().pick(readCompleted.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(readCompleted.getProcess());
-		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, ReadCompleted readCompleted) throws Exception {
+//		if (null == readCompleted) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(readCompleted.getPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformCreator))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(readCompleted.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(readCompleted.getProcess());
+//		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, Review review) throws Exception {
-		if (null == review) {
-			return false;
-		}
-		if (effectivePerson.isPerson(review.getPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformCreator))) {
-			return true;
-		}
-		Application app = this.application().pick(review.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(review.getProcess());
-		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, Review review) throws Exception {
+//		if (null == review) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(review.getPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformCreator))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(review.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(review.getProcess());
+//		return ((null != pro) && (effectivePerson.isPerson(pro.getControllerList())));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, Work work) throws Exception {
-		if (null == work) {
-			return false;
-		}
-		if (effectivePerson.isPerson(work.getCreatorPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Task.job_FIELDNAME, work.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Read.job_FIELDNAME, work.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Review.job_FIELDNAME, work.getJob()) > 0) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformManager))) {
-			return true;
-		}
-		Application app = this.application().pick(work.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(work.getProcess());
-		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, Work work) throws Exception {
+//		if (null == work) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(work.getCreatorPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+//				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+//				effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Task.job_FIELDNAME, work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Read.job_FIELDNAME, work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Review.job_FIELDNAME, work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformManager))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(work.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(work.getProcess());
+//		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
+//	}
 
-	public boolean readable(EffectivePerson effectivePerson, WorkCompleted workCompleted) throws Exception {
-		if (null == workCompleted) {
-			return false;
-		}
-		if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
-			return true;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, workCompleted.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-				effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, workCompleted.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Read.job_FIELDNAME, workCompleted.getJob()) > 0) {
-			return true;
-		}
-		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Review.job_FIELDNAME, workCompleted.getJob()) > 0) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformManager))) {
-			return true;
-		}
-		Application app = this.application().pick(workCompleted.getApplication());
-		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
-			return true;
-		}
-		Process pro = this.process().pick(workCompleted.getProcess());
-		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
-	}
+//	public boolean readable(EffectivePerson effectivePerson, WorkCompleted workCompleted) throws Exception {
+//		if (null == workCompleted) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(workCompleted.getCreatorPerson())) {
+//			return true;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+//				effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, workCompleted.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+//				effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, workCompleted.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Read.job_FIELDNAME, workCompleted.getJob()) > 0) {
+//			return true;
+//		}
+//		if (emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Review.job_FIELDNAME, workCompleted.getJob()) > 0) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
+//				OrganizationDefinition.ProcessPlatformManager))) {
+//			return true;
+//		}
+//		Application app = this.application().pick(workCompleted.getApplication());
+//		if ((null != app) && (effectivePerson.isPerson(app.getControllerList()))) {
+//			return true;
+//		}
+//		Process pro = this.process().pick(workCompleted.getProcess());
+//		return (null != pro) && (effectivePerson.isPerson(pro.getControllerList()));
+//	}
 
-	public boolean readableWithWork(EffectivePerson effectivePerson, String workId, PromptException entityException)
-			throws Exception {
-		Work w = emc.fetch(workId, Work.class, ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME,
-				Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
-		if (null == w) {
-			if (null != entityException) {
-				throw entityException;
-			} else {
-				return false;
-			}
-		}
-		if (effectivePerson.isPerson(w.getCreatorPerson())) {
-			return true;
-		}
-		return readableWithJobApplicationProcessCorrelation(effectivePerson, w.getApplication(), w.getProcess(),
-				w.getJob());
-	}
+//	public boolean readableWithWork(EffectivePerson effectivePerson, String workId, PromptException entityException)
+//			throws Exception {
+//		Work w = emc.fetch(workId, Work.class, ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME,
+//				Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
+//		if (null == w) {
+//			if (null != entityException) {
+//				throw entityException;
+//			} else {
+//				return false;
+//			}
+//		}
+//		if (effectivePerson.isPerson(w.getCreatorPerson())) {
+//			return true;
+//		}
+//		return readableWithJobApplicationProcessCorrelation(effectivePerson, w.getApplication(), w.getProcess(),
+//				w.getJob());
+//	}
 
-	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted)
-			throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		Work checkWork = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
-				Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
-		WorkCompleted checkWorkCompleted = null;
-		String checkJob = null;
-		String creatorPerson = null;
-		String applicationId = null;
-		String processId = null;
-		if (null == checkWork) {
-			checkWorkCompleted = emc.fetch(workOrWorkCompleted, WorkCompleted.class,
-					ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME, Work.process_FIELDNAME,
-							Work.creatorPerson_FIELDNAME));
-			if (null == checkWorkCompleted) {
-				List<WorkCompleted> os = emc.fetchEqual(WorkCompleted.class,
-						ListTools.toList(WorkCompleted.job_FIELDNAME, WorkCompleted.application_FIELDNAME,
-								WorkCompleted.process_FIELDNAME, WorkCompleted.creatorPerson_FIELDNAME),
-						WorkCompleted.work_FIELDNAME, workOrWorkCompleted);
-				if (os.size() == 1) {
-					checkWorkCompleted = os.get(0);
-				}
-			}
-			if (null != checkWorkCompleted) {
-				checkJob = checkWorkCompleted.getJob();
-				creatorPerson = checkWorkCompleted.getCreatorPerson();
-				applicationId = checkWorkCompleted.getApplication();
-				processId = checkWorkCompleted.getProcess();
-			}
-		} else {
-			checkJob = checkWork.getJob();
-			creatorPerson = checkWork.getCreatorPerson();
-			applicationId = checkWork.getApplication();
-			processId = checkWork.getProcess();
-		}
-		if (StringUtils.isEmpty(checkJob)) {
-			return false;
-		}
-		if (effectivePerson.isPerson(creatorPerson)) {
-			return true;
-		}
-		return readableWithJobApplicationProcessCorrelation(effectivePerson, checkJob, applicationId, processId);
-	}
+//	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted)
+//			throws Exception {
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		Work checkWork = emc.fetch(workOrWorkCompleted, Work.class, ListTools.toList(Work.job_FIELDNAME,
+//				Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME));
+//		WorkCompleted checkWorkCompleted = null;
+//		String checkJob = null;
+//		String creatorPerson = null;
+//		String applicationId = null;
+//		String processId = null;
+//		if (null == checkWork) {
+//			checkWorkCompleted = emc.fetch(workOrWorkCompleted, WorkCompleted.class,
+//					ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME, Work.process_FIELDNAME,
+//							Work.creatorPerson_FIELDNAME));
+//			if (null == checkWorkCompleted) {
+//				List<WorkCompleted> os = emc.fetchEqual(WorkCompleted.class,
+//						ListTools.toList(WorkCompleted.job_FIELDNAME, WorkCompleted.application_FIELDNAME,
+//								WorkCompleted.process_FIELDNAME, WorkCompleted.creatorPerson_FIELDNAME),
+//						WorkCompleted.work_FIELDNAME, workOrWorkCompleted);
+//				if (os.size() == 1) {
+//					checkWorkCompleted = os.get(0);
+//				}
+//			}
+//			if (null != checkWorkCompleted) {
+//				checkJob = checkWorkCompleted.getJob();
+//				creatorPerson = checkWorkCompleted.getCreatorPerson();
+//				applicationId = checkWorkCompleted.getApplication();
+//				processId = checkWorkCompleted.getProcess();
+//			}
+//		} else {
+//			checkJob = checkWork.getJob();
+//			creatorPerson = checkWork.getCreatorPerson();
+//			applicationId = checkWork.getApplication();
+//			processId = checkWork.getProcess();
+//		}
+//		if (StringUtils.isEmpty(checkJob)) {
+//			return false;
+//		}
+//		if (effectivePerson.isPerson(creatorPerson)) {
+//			return true;
+//		}
+//		return readableWithJobApplicationProcessCorrelation(effectivePerson, checkJob, applicationId, processId);
+//	}
 
-	private boolean readableWithJobApplicationProcessCorrelation(EffectivePerson effectivePerson, String job,
-			String applicationId, String processId) throws Exception {
-		if ((emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-				Review.job_FIELDNAME, job) == 0)
-				&& (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						Task.job_FIELDNAME, job) == 0)
-				&& (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						Read.job_FIELDNAME, job) == 0)
-				&& (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
-						effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0)
-				&& (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
-						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0)) {
-			Application a = application().pick(applicationId);
-			Process p = process().pick(processId);
-			if (BooleanUtils.isFalse(ifPersonCanManageApplicationOrProcess(effectivePerson, a, p))) {
-				return hasBeenCorrelation(effectivePerson, job);
-			}
-		}
-		return true;
-	}
+//	private boolean readableWithJobApplicationProcessCorrelation(EffectivePerson effectivePerson, String job,
+//			String applicationId, String processId) throws Exception {
+//		if ((emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//				Review.job_FIELDNAME, job) == 0)
+//				&& (emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//						Task.job_FIELDNAME, job) == 0)
+//				&& (emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+//						Read.job_FIELDNAME, job) == 0)
+//				&& (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+//						effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0)
+//				&& (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
+//						effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0)) {
+//			Application a = application().pick(applicationId);
+//			Process p = process().pick(processId);
+//			if (BooleanUtils.isFalse(ifPersonCanManageApplicationOrProcess(effectivePerson, a, p))) {
+//				return hasBeenCorrelation(effectivePerson, job);
+//			}
+//		}
+//		return true;
+//	}
 
-	private boolean hasBeenCorrelation(EffectivePerson effectivePerson, String job) throws Exception {
-		ActionReadableTypeProcessPlatformWi req = new ActionReadableTypeProcessPlatformWi();
-		req.setPerson(effectivePerson.getDistinguishedName());
-		req.setJob(job);
-		ActionReadableTypeProcessPlatformWo resp = ThisApplication.context().applications()
-				.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
-						Applications.joinQueryUri("correlation", "readable", "type", "processplatform"), req, job)
-				.getData(ActionReadableTypeProcessPlatformWo.class);
-		return resp.getValue();
-	}
+//	private boolean hasBeenCorrelation(EffectivePerson effectivePerson, String job) throws Exception {
+//		ActionReadableTypeProcessPlatformWi req = new ActionReadableTypeProcessPlatformWi();
+//		req.setPerson(effectivePerson.getDistinguishedName());
+//		req.setJob(job);
+//		ActionReadableTypeProcessPlatformWo resp = ThisApplication.context().applications()
+//				.postQuery(effectivePerson.getDebugger(), x_correlation_service_processing.class,
+//						Applications.joinQueryUri("correlation", "readable", "type", "processplatform"), req, job)
+//				.getData(ActionReadableTypeProcessPlatformWo.class);
+//		return resp.getValue();
+//	}
 
-	public boolean readableWithJob(EffectivePerson effectivePerson, String job) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		String creatorPerson = null;
-		String applicationId = null;
-		String processId = null;
-		List<Work> works = emc.fetchEqual(Work.class,
-				ListTools.toList(Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME),
-				Work.job_FIELDNAME, job);
-		if (works.isEmpty()) {
-			List<WorkCompleted> workCompleteds = emc.fetchEqual(
-					WorkCompleted.class, ListTools.toList(WorkCompleted.application_FIELDNAME,
-							WorkCompleted.process_FIELDNAME, WorkCompleted.creatorPerson_FIELDNAME),
-					WorkCompleted.job_FIELDNAME, job);
-			if (workCompleteds.isEmpty()) {
-				return false;
-			} else {
-				creatorPerson = workCompleteds.get(0).getCreatorPerson();
-				applicationId = workCompleteds.get(0).getApplication();
-				processId = workCompleteds.get(0).getProcess();
-			}
-		} else {
-			creatorPerson = works.get(0).getCreatorPerson();
-			applicationId = works.get(0).getApplication();
-			processId = works.get(0).getProcess();
-		}
-		if (effectivePerson.isPerson(creatorPerson)) {
-			return true;
-		}
-		return readableWithJobApplicationProcessCorrelation(effectivePerson, job, applicationId, processId);
-	}
+//	public boolean readableWithJob(EffectivePerson effectivePerson, String job) throws Exception {
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		String creatorPerson = null;
+//		String applicationId = null;
+//		String processId = null;
+//		List<Work> works = emc.fetchEqual(Work.class,
+//				ListTools.toList(Work.application_FIELDNAME, Work.process_FIELDNAME, Work.creatorPerson_FIELDNAME),
+//				Work.job_FIELDNAME, job);
+//		if (works.isEmpty()) {
+//			List<WorkCompleted> workCompleteds = emc.fetchEqual(
+//					WorkCompleted.class, ListTools.toList(WorkCompleted.application_FIELDNAME,
+//							WorkCompleted.process_FIELDNAME, WorkCompleted.creatorPerson_FIELDNAME),
+//					WorkCompleted.job_FIELDNAME, job);
+//			if (workCompleteds.isEmpty()) {
+//				return false;
+//			} else {
+//				creatorPerson = workCompleteds.get(0).getCreatorPerson();
+//				applicationId = workCompleteds.get(0).getApplication();
+//				processId = workCompleteds.get(0).getProcess();
+//			}
+//		} else {
+//			creatorPerson = works.get(0).getCreatorPerson();
+//			applicationId = works.get(0).getApplication();
+//			processId = works.get(0).getProcess();
+//		}
+//		if (effectivePerson.isPerson(creatorPerson)) {
+//			return true;
+//		}
+//		return readableWithJobApplicationProcessCorrelation(effectivePerson, job, applicationId, processId);
+//	}
 
-	public boolean editable(EffectivePerson effectivePerson, Work work) throws Exception {
-		if (null == work) {
-			return false;
-		}
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob()) > 0) {
-			return true;
-		}
-		if (BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, work.getApplication(),
-				work.getProcess()))) {
-			return true;
-		}
-		return false;
-	}
+//	public boolean editable(EffectivePerson effectivePerson, Work work) throws Exception {
+//		if (null == work) {
+//			return false;
+//		}
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), work.getJob()) > 0) {
+//			return true;
+//		}
+//		if (BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, work.getApplication(),
+//				work.getProcess()))) {
+//			return true;
+//		}
+//		return false;
+//	}
 
-	public boolean editable(EffectivePerson effectivePerson, String job) throws Exception {
-		if (effectivePerson.isManager()) {
-			return true;
-		}
-		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), job) > 0) {
-			return true;
-		}
-		String appId = null;
-		String proId = null;
-
-		Work w = this.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
-		if (w == null) {
-			WorkCompleted wc = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
-			if (wc != null) {
-				appId = wc.getApplication();
-				proId = wc.getProcess();
-			}
-		} else {
-			appId = w.getApplication();
-			proId = w.getProcess();
-		}
-		return (StringUtils.isNotBlank(appId)
-				&& BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, appId, proId)));
-	}
+//	public boolean editable(EffectivePerson effectivePerson, String job) throws Exception {
+//		if (effectivePerson.isManager()) {
+//			return true;
+//		}
+//		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), job) > 0) {
+//			return true;
+//		}
+//		String appId = null;
+//		String proId = null;
+//
+//		Work w = this.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
+//		if (w == null) {
+//			WorkCompleted wc = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
+//			if (wc != null) {
+//				appId = wc.getApplication();
+//				proId = wc.getProcess();
+//			}
+//		} else {
+//			appId = w.getApplication();
+//			proId = w.getProcess();
+//		}
+//		return (StringUtils.isNotBlank(appId)
+//				&& BooleanUtils.isTrue(this.ifPersonCanManageApplicationOrProcess(effectivePerson, appId, proId)));
+//	}
 
 	public boolean controllerable(EffectivePerson effectivePerson, Application application, Process process,
 			Attachment attachment) throws Exception {

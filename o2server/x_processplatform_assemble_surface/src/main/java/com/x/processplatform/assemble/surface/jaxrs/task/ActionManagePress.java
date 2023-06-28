@@ -38,7 +38,7 @@ class ActionManagePress extends BaseAction {
 			Application application = business.application().pick(task.getApplication());
 			Process process = business.process().pick(task.getProcess());
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}

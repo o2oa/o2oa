@@ -3,6 +3,8 @@ package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,6 +17,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -30,8 +33,10 @@ class ActionReferenceControl extends BaseAction {
 			if (null == taskCompleted) {
 				throw new ExceptionEntityNotExist(id, TaskCompleted.class);
 			}
-			if (!business.readable(effectivePerson, taskCompleted)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Control control = new JobControlBuilder(effectivePerson, business, taskCompleted.getJob())
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, taskCompleted);
 			}
 			Wo wo = Wo.copier.copy(taskCompleted);
 			for (Work o : business.work().listWithJobObject(taskCompleted.getJob())) {

@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.correlation;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,6 +20,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionDeleteTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionDeleteTypeProcessPlatformWo;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
 class ActionDeleteWithJob extends BaseAction {
@@ -36,8 +39,9 @@ class ActionDeleteWithJob extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, job)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(
+					new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build().getAllowSave())) {
+				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 			req.setIdList(wi.getIdList());
 		}

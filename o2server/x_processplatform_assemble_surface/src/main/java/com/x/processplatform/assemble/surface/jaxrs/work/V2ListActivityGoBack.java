@@ -24,6 +24,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -57,7 +59,9 @@ class V2ListActivityGoBack extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.editable(effectivePerson, work)) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowGoBack().build();
+
+			if (BooleanUtils.isNotTrue(control.getAllowGoBack())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

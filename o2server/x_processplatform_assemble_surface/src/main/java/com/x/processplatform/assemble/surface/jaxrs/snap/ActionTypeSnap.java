@@ -19,9 +19,12 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionTypeSnap extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSnap.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSnap.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
@@ -33,8 +36,8 @@ class ActionTypeSnap extends BaseAction {
 
 			job = work.getJob();
 
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, work.getApplication(),
-					work.getProcess()))) {
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+					work.getApplication(), work.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

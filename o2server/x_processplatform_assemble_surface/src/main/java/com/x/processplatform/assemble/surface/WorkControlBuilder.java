@@ -37,6 +37,8 @@ public class WorkControlBuilder {
 		this.work = work;
 	}
 
+	// 是否可以管理
+	private boolean ifAllowManage = false;
 	// 是否可以看到
 	private boolean ifAllowVisit = false;
 	// 是否可以直接流转
@@ -51,6 +53,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowAddTask = false;
 	// 是否可以调度
 	private boolean ifAllowReroute = false;
+	// 是否可以挂起
+	private boolean ifAllowSuspend = false;
 	// 是否可以删除
 	private boolean ifAllowDelete = false;
 	// 是否可以增加会签分支
@@ -69,6 +73,11 @@ public class WorkControlBuilder {
 	private boolean ifAllowGoBack = false;
 	// 是否可以重置待阅处理人
 	private boolean ifAllowReadReset = false;
+
+	public WorkControlBuilder enableAllowManage() {
+		this.ifAllowManage = true;
+		return this;
+	}
 
 	public WorkControlBuilder enableAllowVisit() {
 		this.ifAllowVisit = true;
@@ -102,6 +111,11 @@ public class WorkControlBuilder {
 
 	public WorkControlBuilder enableAllowReroute() {
 		this.ifAllowReroute = true;
+		return this;
+	}
+
+	public WorkControlBuilder enableAllowSuspend() {
+		this.ifAllowSuspend = true;
 		return this;
 	}
 
@@ -151,6 +165,7 @@ public class WorkControlBuilder {
 	}
 
 	public WorkControlBuilder enableAll() {
+		enableAllowManage();
 		enableAllowVisit();
 		enableAllowProcessing();
 		enableAllowReadProcessing();
@@ -158,6 +173,7 @@ public class WorkControlBuilder {
 		enableAllowReset();
 		enableAllowAddTask();
 		enableAllowReroute();
+		enableAllowSuspend();
 		enableAllowDelete();
 		enableAllowAddSplit();
 		enableAllowRetract();
@@ -267,12 +283,14 @@ public class WorkControlBuilder {
 		if (null == work) {
 			return control;
 		}
-		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowVisit, this::computeAllowVisit),
+		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
+				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowProcessing, this::computeAllowProcessing),
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
 				Pair.of(ifAllowSave, this::computeAllowSave), Pair.of(ifAllowReset, this::computeAllowReset),
 				Pair.of(ifAllowAddTask, this::comupoteAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
-				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
+				Pair.of(ifAllowSuspend, this::computeAllowSuspend), Pair.of(ifAllowDelete, this::computeAllowDelete),
+				Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
@@ -281,6 +299,14 @@ public class WorkControlBuilder {
 				.forEach(o -> o.second().accept(control));
 		recalculate(work, control);
 		return control;
+	}
+
+	private void computeAllowManage(Control control) {
+		try {
+			control.setAllowManage(canManage());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private void computeAllowVisit(Control control) {
@@ -339,6 +365,15 @@ public class WorkControlBuilder {
 		try {
 			control.setAllowReroute(canManage()
 					&& PropertyTools.getOrElse(activity(), Activity.allowReroute_FIELDNAME, Boolean.class, false));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowSuspend(Control control) {
+		try {
+			control.setAllowSuspend(canManage()
+					&& PropertyTools.getOrElse(activity(), Activity.allowSuspend_FIELDNAME, Boolean.class, false));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

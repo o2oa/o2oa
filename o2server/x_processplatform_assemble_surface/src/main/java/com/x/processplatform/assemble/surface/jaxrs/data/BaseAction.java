@@ -337,23 +337,4 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return em.createQuery(cq).getResultList();
 	}
 
-	/**
-	 * ActionUpdateWithJob的权限校验方法
-	 *
-	 * @param effectivePerson
-	 * @param job
-	 * @throws Exception
-	 * @throws ExceptionJobNotExist
-	 * @throws ExceptionWorkAccessDenied
-	 */
-	protected void checkUpdateWithJobControl(EffectivePerson effectivePerson, Business business, String job)
-			throws Exception {
-		if (!business.job().jobExist(job)) {
-			throw new ExceptionJobNotExist(job);
-		}
-		if (!business.editable(effectivePerson, job)) {
-			throw new ExceptionJobAccessDenied(effectivePerson.getDistinguishedName(), job);
-		}
-	}
-
 }

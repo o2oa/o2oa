@@ -29,7 +29,7 @@ class ActionList extends BaseAction {
 				throw new ExceptionApplicationNotExist(applicationFlag);
 			}
 			equals.put("application", application.getId());
-			if (!business.canManageApplication(effectivePerson, application)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> ids = business.serialNumber().listWithApplication(application);

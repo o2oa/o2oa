@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.correlation;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -13,6 +15,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionListTypeProcessPlatformWo;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
 class ActionListWithJob extends BaseAction {
@@ -27,8 +30,9 @@ class ActionListWithJob extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (!business.readableWithJob(effectivePerson, job)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(
+					new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build().getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 		}
 
