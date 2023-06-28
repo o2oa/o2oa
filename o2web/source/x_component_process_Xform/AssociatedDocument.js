@@ -55,7 +55,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
 
 	_loadUserInterface: function(){
-	    debugger;
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -99,7 +98,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.loadAssociatedDocument();
 	},
     selectDocument: function(data){
-	    debugger;
         o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(this.form.businessData.work.job, {
             targetList: data
         }, function (json) {
@@ -109,13 +107,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     loadAssociatedDocument: function(){
         this.documentListNode.empty();
 	    o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(this.form.businessData.work.job, (this.json.site || this.json.id), function (json) {
-	        debugger;
             this.documentList = json.data;
             this.showDocumentList();
         }.bind(this));
     },
     showDocumentList: function(){
-	    debugger;
         this.documentList.each(function(d){
             if(d.targetCreatorPerson)d.targetCreatorPersonCn = d.targetCreatorPerson.split("@")[0];
         })
@@ -245,7 +241,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }, null, null, this.form.json.confirmStyle);
     },
     createInforNode: function(itemNode, d){
-	    debugger;
         var lp = MWF.xApplication.process.Xform.LP;
         var inforNode = new Element("div");
         var html = "";
@@ -282,7 +277,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         viewDataList = typeOf(viewDataList) === "array" ? viewDataList : [viewDataList];
         if (viewDataList.length){
 
-            debugger;
             var selectedJobs = this.documentList.map(function (d) {
                 return d.targetBundle;
             });
@@ -408,7 +402,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                                 var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
                                 //this.viewArea.inject(this.pageViewNode);
 
-                                debugger;
                                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
                                 //this.viewPage.showTabIm();
@@ -476,7 +469,6 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
     },
     openDoc: function(e, d){
-	    debugger;
 	    if( d.targetType === "processPlatform" ){
             this.form.Macro.environment.form.openJob(d.targetBundle, null, null, function ( app ) {
                 this.fireEvent("openDocument", [app]); //options 传入的事件
