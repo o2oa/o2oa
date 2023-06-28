@@ -6,6 +6,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -106,5 +112,23 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		return correlation;
 	}
+	
+	protected boolean processPlatformHasReview(Business business, String person, List<String> jobs) throws Exception {
+		return business.entityManagerContainer().countEqualAndIn(com.x.processplatform.core.entity.content.Review.class,
+				com.x.processplatform.core.entity.content.Review.person_FIELDNAME, person,
+				com.x.processplatform.core.entity.content.Review.job_FIELDNAME, jobs) > 0;
+	}
+
+	protected boolean cmsHasReviewOrPermissionAny(Business business, String person, List<String> ids) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(com.x.cms.core.entity.Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<com.x.cms.core.entity.Review> root = cq.from(com.x.cms.core.entity.Review.class);
+		Predicate p = cb.or(cb.equal(root.get(com.x.cms.core.entity.Review_.permissionObj), person), cb.equal(
+				root.get(com.x.cms.core.entity.Review_.permissionObj), com.x.cms.core.entity.Review.PERMISSION_ANY));
+		p = cb.and(p, root.get(com.x.cms.core.entity.Review_.docId).in(ids));
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0;
+	}
+
 
 }

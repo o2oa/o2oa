@@ -21,6 +21,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWo;
+import com.x.correlation.service.processing.Business;
 
 class ActionReadableTypeCms extends BaseAction {
 
@@ -41,7 +42,7 @@ class ActionReadableTypeCms extends BaseAction {
 					wi.getDoucment());
 			Set<String> processPlatformSet = new HashSet<>();
 			Set<String> cmsSet = new HashSet<>();
-
+			Business business = new Business(emc);
 			os.forEach(o -> {
 				if (StringUtils.equalsIgnoreCase(o.getFromType(), Correlation.TYPE_PROCESSPLATFORM)) {
 					processPlatformSet.add(o.getFromBundle());
@@ -59,14 +60,10 @@ class ActionReadableTypeCms extends BaseAction {
 
 			Optional<Pair<String, List<String>>> opt = pairs.stream().filter(p -> {
 				try {
-					if ((StringUtils.equalsIgnoreCase(p.first(), Correlation.TYPE_PROCESSPLATFORM)
-							&& (emc.countEqualAndEqual(com.x.processplatform.core.entity.content.Review.class,
-									com.x.processplatform.core.entity.content.Review.person_FIELDNAME, wi.getPerson(),
-									com.x.processplatform.core.entity.content.Review.job_FIELDNAME, p.second()) > 0))
-							|| (emc.countEqualAndEqual(com.x.cms.core.entity.Review.class,
-									com.x.cms.core.entity.Review.permissionObj_FIELDNAME, wi.getPerson(),
-									com.x.cms.core.entity.Review.docId_FIELDNAME, p.second()) > 0)) {
-						return true;
+					if (StringUtils.equalsIgnoreCase(p.first(), Correlation.TYPE_PROCESSPLATFORM)) {
+						return processPlatformHasReview(business, wi.getPerson(), p.second());
+					} else if (StringUtils.equalsIgnoreCase(p.first(), Correlation.TYPE_CMS)) {
+						return cmsHasReviewOrPermissionAny(business, wi.getPerson(), p.second());
 					}
 				} catch (Exception e) {
 					LOGGER.error(e);
