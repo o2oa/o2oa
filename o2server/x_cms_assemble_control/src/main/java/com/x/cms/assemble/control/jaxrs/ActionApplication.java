@@ -15,6 +15,7 @@ import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAction;
 import com.x.cms.assemble.control.jaxrs.categoryinfo.CategoryInfoAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.commend.DocumentCommendAction;
 import com.x.cms.assemble.control.jaxrs.comment.DocumentCommentInfoAction;
+import com.x.cms.assemble.control.jaxrs.correlation.CorrelationAction;
 import com.x.cms.assemble.control.jaxrs.data.DataAction;
 import com.x.cms.assemble.control.jaxrs.designer.DesignerAction;
 import com.x.cms.assemble.control.jaxrs.document.DocumentAction;
@@ -90,7 +91,8 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(DesignerAction.class);
 
 		this.classes.add(ReviewAction.class);
-		
+		this.classes.add(CorrelationAction.class);
+
 		return this.classes;
 	}
 
