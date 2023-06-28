@@ -34,6 +34,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
@@ -42,7 +43,6 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
@@ -53,7 +53,7 @@ import com.x.query.core.entity.Item_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
 	static DataItemConverter<Item> itemConverter = new DataItemConverter<>(Item.class);
 
@@ -118,28 +118,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
+	protected CompletableFuture<Boolean> checkControlVisitFuture(EffectivePerson effectivePerson, String flag) {
 		return CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				Work work = emc.find(flag, Work.class);
-				if (null != work) {
-					value = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-							effectivePerson.getDistinguishedName(), work.getJob())
-							|| business.ifPersonCanManageApplicationOrProcess(effectivePerson, work.getApplication(),
-									work.getProcess());
-				} else {
-					WorkCompleted workCompleted = emc.flag(flag, WorkCompleted.class);
-					if (null != workCompleted) {
-						value = business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-								effectivePerson.getDistinguishedName(), workCompleted.getJob())
-								|| business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-										workCompleted.getApplication(), workCompleted.getProcess());
-					}
-				}
+				Control control = new JobControlBuilder(effectivePerson, business, flag).enableAllowVisit().build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());
