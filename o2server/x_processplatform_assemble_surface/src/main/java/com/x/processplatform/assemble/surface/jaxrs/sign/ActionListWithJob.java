@@ -72,7 +72,7 @@ class ActionListWithJob extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build();
+				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
 				value = control.getAllowVisit();
 			} catch (Exception e) {
 				LOGGER.error(e);

@@ -44,7 +44,7 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (BooleanUtils.isTrue(
-					new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build().getAllowVisit())) {
+					new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build().getAllowVisit())) {
 				wo.setWorkList(this.listWork(business, job));
 				wo.setWorkCompletedList(this.listWorkCompleted(business, job));
 			}

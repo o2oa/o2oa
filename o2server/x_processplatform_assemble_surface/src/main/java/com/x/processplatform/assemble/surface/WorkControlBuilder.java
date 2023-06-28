@@ -288,7 +288,7 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowProcessing, this::computeAllowProcessing),
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
 				Pair.of(ifAllowSave, this::computeAllowSave), Pair.of(ifAllowReset, this::computeAllowReset),
-				Pair.of(ifAllowAddTask, this::comupoteAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
+				Pair.of(ifAllowAddTask, this::computeAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
 				Pair.of(ifAllowSuspend, this::computeAllowSuspend), Pair.of(ifAllowDelete, this::computeAllowDelete),
 				Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
@@ -351,7 +351,7 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private void comupoteAllowAddTask(Control control) {
+	private void computeAllowAddTask(Control control) {
 		try {
 			control.setAllowAddTask(
 					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
@@ -494,7 +494,7 @@ public class WorkControlBuilder {
 			control.setAllowGoBack(false);
 			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (BooleanUtils.isNotFalse(manual.getAllowGoBack())
+				if (hasTaskWithWork() && BooleanUtils.isNotFalse(manual.getAllowGoBack())
 						&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
 								|| taskCountWithWork() <= 1)) {
 					control.setAllowGoBack(true);
@@ -527,15 +527,27 @@ public class WorkControlBuilder {
 	 */
 	private void recalculate(Work work, Control ctrl) {
 		if (null != work.getGoBackStore()) {
-			ctrl.setAllowAddTask(false);
-			ctrl.setAllowReset(false);
-			ctrl.setAllowPause(false);
-			ctrl.setAllowAddSplit(false);
-			ctrl.setAllowRetract(false);
-			ctrl.setAllowGoBack(false);
-			ctrl.setAllowRollback(false);
+			if (null != ctrl.getAllowAddTask()) {
+				ctrl.setAllowAddTask(false);
+			}
+			if (null != ctrl.getAllowReset()) {
+				ctrl.setAllowReset(false);
+			}
+			if (null != ctrl.getAllowPause()) {
+				ctrl.setAllowPause(false);
+			}
+			if (null != ctrl.getAllowAddSplit()) {
+				ctrl.setAllowAddSplit(false);
+			}
+			if (null != ctrl.getAllowRetract()) {
+				ctrl.setAllowRetract(false);
+			}
+			if (null != ctrl.getAllowGoBack()) {
+				ctrl.setAllowGoBack(false);
+			}
+			if (null != ctrl.getAllowRollback()) {
+				ctrl.setAllowRollback(false);
+			}
 		}
-		// 如果没有权限处理那么设置为false
-		ctrl.setAllowGoBack(ctrl.getAllowProcessing() && ctrl.getAllowGoBack());
 	}
 }

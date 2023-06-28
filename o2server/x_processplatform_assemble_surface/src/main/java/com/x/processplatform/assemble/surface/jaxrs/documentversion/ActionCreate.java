@@ -42,8 +42,8 @@ class ActionCreate extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build()
-					.getAllowVisit())) {
+			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit()
+					.build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

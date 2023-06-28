@@ -62,7 +62,7 @@ class V2ListActivityGoBack extends BaseAction {
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowGoBack().build();
 
 			if (BooleanUtils.isNotTrue(control.getAllowGoBack())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 
 			Manual manual = (Manual) business.getActivity(work.getActivity(), ActivityType.manual);

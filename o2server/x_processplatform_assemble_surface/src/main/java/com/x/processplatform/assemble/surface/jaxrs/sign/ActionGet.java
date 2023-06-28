@@ -31,7 +31,7 @@ class ActionGet extends BaseAction {
 				throw new ExceptionEntityNotExist(id, DocSign.class);
 			}
 			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, docSign.getJob())
-					.enableAllowSave().build().getAllowVisit())) {
+					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 			Wo wo = Wo.copier.copy(docSign);

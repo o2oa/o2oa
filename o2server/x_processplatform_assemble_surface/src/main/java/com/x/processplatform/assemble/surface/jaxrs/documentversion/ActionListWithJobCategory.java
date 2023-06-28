@@ -37,7 +37,7 @@ class ActionListWithJobCategory extends BaseAction {
 			Business business = new Business(emc);
 
 			if (BooleanUtils.isNotTrue(
-					new JobControlBuilder(effectivePerson, business, job).enableAllowSave().build().getAllowVisit())) {
+					new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDeniedOrEntityNotExist(effectivePerson);
 			}
 

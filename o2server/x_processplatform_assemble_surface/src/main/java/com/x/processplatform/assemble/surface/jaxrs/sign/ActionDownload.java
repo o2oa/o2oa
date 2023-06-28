@@ -32,7 +32,7 @@ class ActionDownload extends BaseAction {
 				throw new IllegalStateException(scrawlId + "附件不存在！");
 			}
 			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, signScrawl.getJob())
-					.enableAllowSave().build().getAllowVisit())) {
+					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, scrawlId);
 			}
 		}

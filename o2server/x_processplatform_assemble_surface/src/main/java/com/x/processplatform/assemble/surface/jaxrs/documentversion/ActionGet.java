@@ -35,9 +35,9 @@ class ActionGet extends StandardJaxrsAction {
 			if (null == documentVersion) {
 				throw new ExceptionEntityNotExist(id, DocumentVersion.class);
 			}
-			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, documentVersion.getJob()).enableAllowSave().build()
-					.getAllowVisit())) {
-				throw new ExceptionAccessDenied(effectivePerson,id);
+			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, documentVersion.getJob())
+					.enableAllowVisit().build().getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 			Wo wo = Wo.copier.copy(documentVersion);
 			result.setData(wo);

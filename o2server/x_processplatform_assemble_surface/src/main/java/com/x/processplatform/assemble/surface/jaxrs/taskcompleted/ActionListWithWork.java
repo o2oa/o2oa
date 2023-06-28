@@ -37,7 +37,7 @@ class ActionListWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 
-			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build()
+			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build()
 					.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
