@@ -113,7 +113,8 @@ public class ActionSendGetPrivateInfoMessage extends BaseAction {
         if (logger.isDebugEnabled()) {
             logger.debug("encode url : {}", o2oaUrl);
         }
-        String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
+        String oauthUrl = Config.qiyeweixin().getOauth2Address();
+        String url = oauthUrl + "/connect/oauth2/authorize?appid=" + corpId
                 + "&response_type=code&scope=snsapi_privateinfo&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
                 + "&#wechat_redirect";
         if (logger.isDebugEnabled()) {
