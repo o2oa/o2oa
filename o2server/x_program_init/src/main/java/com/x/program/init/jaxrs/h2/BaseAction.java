@@ -1,4 +1,4 @@
-package com.x.program.init.jaxrs.data;
+package com.x.program.init.jaxrs.h2;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 

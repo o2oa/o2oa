@@ -1,4 +1,4 @@
-package com.x.program.init.jaxrs.data;
+package com.x.program.init.jaxrs.restore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -23,11 +23,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path("data")
-@JaxrsDescribe("数据")
-public class DataAction extends StandardJaxrsAction {
+@Path("restore")
+@JaxrsDescribe("数据恢复")
+public class RestoreAction extends StandardJaxrsAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestoreAction.class);
 
 	@JaxrsMethodDescribe(value = "上传dataDump数据包.", action = ActionUpload.class)
 	@POST

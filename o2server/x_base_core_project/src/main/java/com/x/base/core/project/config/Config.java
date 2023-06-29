@@ -127,6 +127,7 @@ public class Config {
 	public static final String DIR_LOCAL_DUMP = "local/dump";
 	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
 	public static final String DIR_LOCAL_REPOSITORY_INDEX = "local/repository/index";
+	public static final String DIR_LOCAL_REPOSITORY_DATA = "local/repository/data";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
@@ -159,7 +160,7 @@ public class Config {
 	public static final String RESOURCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
 
 	public static final String RESOURCE_INITSERVERSTOPSIGNAL = "initServerStopSignal";
-	
+
 	public static final String RESOURCE_CONSOLECOMMANDQUEUE = "consoleCommandQueue";
 
 	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
@@ -1456,6 +1457,14 @@ public class Config {
 
 	public static Path path_local_repository_index(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_INDEX);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_local_repository_data(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}

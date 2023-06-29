@@ -42,7 +42,7 @@ public class CommandFactory {
 	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)", Pattern.CASE_INSENSITIVE);
+	public static final Pattern control_pattern = Pattern.compile("^ {0,}ctl {0,}(.*)$", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {

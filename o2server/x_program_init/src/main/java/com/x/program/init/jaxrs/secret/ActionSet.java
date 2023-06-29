@@ -18,10 +18,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.program.init.MissionSetSecret;
+import com.x.program.init.ThisApplication;
 
-class ActionCreate extends BaseAction {
+class ActionSet extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSet.class);
 
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
@@ -35,6 +37,9 @@ class ActionCreate extends BaseAction {
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
+		MissionSetSecret missionSetSecret = new MissionSetSecret();
+		missionSetSecret.setSecret(wi.getSecret());
+		ThisApplication.setMissionSetSecret(missionSetSecret);
 		return result;
 	}
 

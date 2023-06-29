@@ -1,5 +1,6 @@
 package com.x.server.console.command;
 
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.H2Tools;
 import com.x.server.console.server.Servers;
 
 public class StartCommand {
@@ -49,9 +51,7 @@ public class StartCommand {
 	};
 
 	private static void initIfNecessary() throws Exception {
-		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
-		String value = XGsonBuilder.extractString(jsonObject, "password");
-		if (StringUtils.isBlank(value)) {
+		if (initIfNecessarySetPassword() || initIfNecessaryUpgradeLocalRepositoryDataH2()) {
 			Servers.startInitServer();
 			// 等待停止信号
 			LinkedBlockingQueue<String> stopSignalQueue = new LinkedBlockingQueue<>();
@@ -59,6 +59,19 @@ public class StartCommand {
 			stopSignalQueue.take();
 			Servers.stopInitServer();
 		}
+	}
+
+	private static boolean initIfNecessarySetPassword() throws Exception {
+		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
+		String value = XGsonBuilder.extractString(jsonObject, "password");
+		return StringUtils.isBlank(value);
+	}
+
+	private static boolean initIfNecessaryUpgradeLocalRepositoryDataH2() {
+		Optional<String> jarVersion = H2Tools.jarVersion();
+		Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
+		return ((jarVersion.isPresent() && localRepositoryDataH2Version.isPresent())
+				&& (!StringUtils.equals(jarVersion.get(), localRepositoryDataH2Version.get())));
 	}
 
 	public static Consumer<Matcher> consumer() {
