@@ -585,6 +585,10 @@
     }
   },
   "associatedDocument": {
+    "styles": {
+      "border": "1px solid #ccc",
+      "padding": "5px"
+    },
     "buttonStyles": {
       "color" : "#777",
       "border-radius": "5px",

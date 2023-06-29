@@ -90,10 +90,12 @@ MWF.xApplication.process.FormDesigner.Module.AssociatedDocument = MWF.FCAssociat
 	},
 	clearTemplateStyles: function(styles){
 		if (styles){
+			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.buttonStyles) this.removeStyles(styles.buttonStyles, "buttonStyles");
 		}
 	},
 	setTemplateStyles: function(styles){
+		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.buttonStyles) this.copyStyles(styles.buttonStyles, "buttonStyles");
 	},
 	setAllStyles: function(){
