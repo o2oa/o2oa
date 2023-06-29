@@ -129,15 +129,16 @@ public class ActionExportTopUnitStatistic extends BaseAction {
 				// 先创建表头
 				row = sheet.createRow(0);
 				row.createCell(0).setCellValue("公司");
-				row.createCell(1).setCellValue("月份");
-				row.createCell(2).setCellValue("上班打卡次数");
-				row.createCell(3).setCellValue("下班打卡次数");
-				row.createCell(4).setCellValue("出勤人天数");
-				row.createCell(5).setCellValue("请假或外出报备人天数");
-				row.createCell(6).setCellValue("缺勤人天数");
-				row.createCell(7).setCellValue("迟到次数");
-				row.createCell(8).setCellValue("工时不足人次");
-				row.createCell(9).setCellValue("异常打卡人次");
+				row.createCell(1).setCellValue("部门");
+				row.createCell(2).setCellValue("月份");
+				row.createCell(3).setCellValue("上班打卡次数");
+				row.createCell(4).setCellValue("下班打卡次数");
+				row.createCell(5).setCellValue("出勤人天数");
+				row.createCell(6).setCellValue("请假或外出报备人天数");
+				row.createCell(7).setCellValue("缺勤人天数");
+				row.createCell(8).setCellValue("迟到次数");
+				row.createCell(9).setCellValue("工时不足人次");
+				row.createCell(10).setCellValue("异常打卡人次");
 
 				logger.info("一共有"+statisticUnitForMonth_list.size()+"条请求记录可以输出。");
 				for (int i = 0; i < statisticUnitForMonth_list.size(); i++) {
@@ -150,15 +151,20 @@ public class ActionExportTopUnitStatistic extends BaseAction {
 							topUnitName = topUnitName.split("@")[0];
 						}
 						row.createCell(0).setCellValue(topUnitName);
-						row.createCell(1).setCellValue(statisticUnitForMonth.getStatisticYear()+"-"+statisticUnitForMonth.getStatisticMonth());
-						row.createCell(2).setCellValue(statisticUnitForMonth.getOnDutyCount());
-						row.createCell(3).setCellValue(statisticUnitForMonth.getOffDutyCount());
-						row.createCell(4).setCellValue(statisticUnitForMonth.getOnDutyEmployeeCount());
-						row.createCell(5).setCellValue(statisticUnitForMonth.getOnSelfHolidayCount());
-						row.createCell(6).setCellValue(statisticUnitForMonth.getAbsenceDayCount());
-						row.createCell(7).setCellValue(statisticUnitForMonth.getLateCount());
-						row.createCell(8).setCellValue(statisticUnitForMonth.getLackOfTimeCount());
-						row.createCell(9).setCellValue(statisticUnitForMonth.getAbNormalDutyCount());
+						String unitName = statisticUnitForMonth.getUnitName();
+						if(StringUtils.isNotEmpty(unitName) && StringUtils.contains(unitName,"@")){
+							unitName = unitName.split("@")[0];
+						}
+						row.createCell(1).setCellValue(unitName);
+						row.createCell(2).setCellValue(statisticUnitForMonth.getStatisticYear()+"-"+statisticUnitForMonth.getStatisticMonth());
+						row.createCell(3).setCellValue(statisticUnitForMonth.getOnDutyCount());
+						row.createCell(4).setCellValue(statisticUnitForMonth.getOffDutyCount());
+						row.createCell(5).setCellValue(statisticUnitForMonth.getOnDutyEmployeeCount());
+						row.createCell(6).setCellValue(statisticUnitForMonth.getOnSelfHolidayCount());
+						row.createCell(7).setCellValue(statisticUnitForMonth.getAbsenceDayCount());
+						row.createCell(8).setCellValue(statisticUnitForMonth.getLateCount());
+						row.createCell(9).setCellValue(statisticUnitForMonth.getLackOfTimeCount());
+						row.createCell(10).setCellValue(statisticUnitForMonth.getAbNormalDutyCount());
 					}
 				}
 			}
