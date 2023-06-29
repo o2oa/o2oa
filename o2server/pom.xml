@@ -54,10 +54,12 @@
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
+		<module>x_correlation_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
+		<module>x_correlation_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_core_express</module>
@@ -80,7 +82,7 @@
 		<module>x_processplatform_assemble_bam</module>
 		<module>x_processplatform_assemble_designer</module>
 		<module>x_processplatform_assemble_surface</module>
-		<module>x_processplatform_service_processing</module>
+		<module>x_correlation_service_processing</module>
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
@@ -1128,6 +1130,16 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_express</artifactId>
 				<version>8.0</version>
 			</dependency>
 			<dependency>

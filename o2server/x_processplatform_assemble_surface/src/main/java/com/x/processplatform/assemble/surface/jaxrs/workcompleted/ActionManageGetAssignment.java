@@ -22,8 +22,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -45,7 +46,6 @@ class ActionManageGetAssignment extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		WorkCompleted workCompleted = null;
-		WoControl control = null;
 		Wo wo = new Wo();
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -54,11 +54,11 @@ class ActionManageGetAssignment extends BaseAction {
 			Process process = business.process().pick(workCompleted.getProcess());
 			Application application = business.application().pick(workCompleted.getApplication());
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			control = business.getControl(effectivePerson, workCompleted, WoControl.class);
-			wo.setControl(control);
+			wo.setControl(
+					new WorkCompletedControlBuilder(effectivePerson, business, workCompleted).enableAll().build());
 		}
 		final String job = workCompleted.getJob();
 		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
@@ -135,11 +135,13 @@ class ActionManageGetAssignment extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 539178103140972334L;
+
 		private List<WoTaskCompleted> taskCompletedList = new ArrayList<>();
 		private List<WoRead> readList = new ArrayList<>();
 		private List<WoReadCompleted> readCompletedList = new ArrayList<>();
 		private List<WoReview> reviewList = new ArrayList<>();
-		private WoControl control;
+		private Control control;
 
 		public List<WoTaskCompleted> getTaskCompletedList() {
 			return taskCompletedList;
@@ -173,11 +175,11 @@ class ActionManageGetAssignment extends BaseAction {
 			this.reviewList = reviewList;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -190,13 +192,13 @@ class ActionManageGetAssignment extends BaseAction {
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
 				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
 
-		private WoControl control;
+		private Control control;
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 	}
@@ -207,13 +209,13 @@ class ActionManageGetAssignment extends BaseAction {
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class, null,
 				JpaObject.FieldsInvisible);
-		private WoControl control;
+		private Control control;
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 	}
@@ -224,13 +226,13 @@ class ActionManageGetAssignment extends BaseAction {
 
 		static WrapCopier<ReadCompleted, WoReadCompleted> copier = WrapCopierFactory.wo(ReadCompleted.class,
 				WoReadCompleted.class, null, JpaObject.FieldsInvisible);
-		private WoControl control;
+		private Control control;
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 	}
@@ -242,18 +244,15 @@ class ActionManageGetAssignment extends BaseAction {
 		static WrapCopier<Review, WoReview> copier = WrapCopierFactory.wo(Review.class, WoReview.class, null,
 				JpaObject.FieldsInvisible);
 
-		private WoControl control;
+		private Control control;
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
-	}
-
-	public static class WoControl extends WorkCompletedControl {
 	}
 
 }

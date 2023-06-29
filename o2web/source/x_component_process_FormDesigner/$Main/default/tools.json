@@ -242,6 +242,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.relatedLink,
     "className": "Relatedlink"
   },
+  "associatedDocument": {
+    "icon": "associatedDocument.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.associatedDocument,
+    "className": "AssociatedDocument"
+  },
 
   "SmartBI": {
     "icon": "smartbi.png",

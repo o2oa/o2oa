@@ -38,7 +38,7 @@ class ActionManageListWithDate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				if (DateTools.isDateTimeOrDate(date)) {
 					Date startTime = DateTools.floorDate(DateTools.parse(date), 0);
 					Date endTime = DateTools.getAdjustTimeDay(startTime, 1, 0, 0, 0);

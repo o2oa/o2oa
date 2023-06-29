@@ -19,9 +19,12 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionTypeAbandonedWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeAbandonedWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeAbandonedWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> workCompletedId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -29,7 +32,7 @@ class ActionTypeAbandonedWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}

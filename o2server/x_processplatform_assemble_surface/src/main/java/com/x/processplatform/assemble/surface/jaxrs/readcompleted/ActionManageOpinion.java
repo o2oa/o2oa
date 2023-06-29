@@ -40,7 +40,8 @@ public class ActionManageOpinion extends BaseAction {
 			}
 			Process process = business.process().pick(readCompleted.getProcess());
 			Application application = business.application().pick(readCompleted.getApplication());
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils
+					.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(ReadCompleted.class);

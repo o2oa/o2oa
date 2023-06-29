@@ -21,11 +21,14 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageDeleteSingleWork extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDeleteSingleWork.class);
 
 	/* 为了和后面的全部删除对应,所以返回的是数组 */
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = new ArrayList<>();
@@ -38,7 +41,7 @@ class ActionManageDeleteSingleWork extends BaseAction {
 			Process process = business.process().pick(work.getProcess());
 			Application application = business.application().pick(work.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
@@ -52,6 +55,8 @@ class ActionManageDeleteSingleWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 4375604053946031856L;
 
 	}
 

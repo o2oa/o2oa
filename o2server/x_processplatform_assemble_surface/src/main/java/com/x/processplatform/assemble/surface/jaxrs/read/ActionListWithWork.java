@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -18,19 +20,20 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListWithWork extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -43,8 +46,9 @@ class ActionListWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 
-			if (!business.readableWithJob(effectivePerson, work.getJob())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build()
+					.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 
 			List<Wo> wos = Wo.copier.copy(emc.listEqual(Read.class, Read.work_FIELDNAME, workId));

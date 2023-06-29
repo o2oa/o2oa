@@ -35,6 +35,20 @@ public class CacheGuavaImpl implements Cache {
 		LOGGER.debug("new CacheGuavaImpl instance:{}.", this.name);
 	}
 
+	public CacheGuavaImpl(String name, long maximumSize, long expireAfterWriteMinutes, long expireAfterAccessMinutes) {
+		this.name = name;
+		try {
+			cache = com.google.common.cache.CacheBuilder.newBuilder().maximumSize(maximumSize).recordStats()
+					.expireAfterWrite(expireAfterWriteMinutes, TimeUnit.MINUTES)
+					.expireAfterAccess(expireAfterAccessMinutes, TimeUnit.MINUTES).build();
+			this.notifyReceiveQueue = new CacheGuavaNotifyReceiveQueue(cache);
+			this.notifyReceiveQueue.start();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		LOGGER.debug("new CacheGuavaImpl instance:{}.", this.name);
+	}
+
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) {
 		if ((null != category) && (null != key) && (null != o)) {

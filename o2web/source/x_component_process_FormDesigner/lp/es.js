@@ -373,7 +373,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "L.R.",
         "writingBoard": "P.E.",
         "tinymceEditor": "Tinymce",
-        "relatedLink": "recomendación"
+        "relatedLink": "recomendación",
+        "associatedDocument": "Un documento asociado"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -898,6 +899,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "Múltiples valores separados por coma (,)",
         "defaultFilter": "Filtro predefinido",
         "customFilter": "Datos de filtro personalizados",
+        "filterCond": "Filtro",
+        "filterNote": "Nota: devuelva la matriz de condición de filtro de la vista, consulte el formato ",
 
         "titleStyle": "Estilo del título",
         "dataStyle": "Estilo de los datos",
@@ -967,6 +970,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "HTML para expandir nodo",
         "collapseHtml": "HTML para colapsar nodo",
         "relativedLinkField": "Campo opcional: flag, title, createTime, updateTime, creatorPerson, creatorUnit, score",
+        "documentListShow": "Lista de documentos",
+        "associatedDocumentField": "Campo opcional：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
 
         "fileTemplate": "Plantilla de archivo",
         "systemTemplate": "Plantilla del sistema",

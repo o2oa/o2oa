@@ -14,8 +14,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoCallback;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -33,7 +34,7 @@ class ActionUploadCallback extends BaseAction {
 				throw new ExceptionWorkNotExistCallback(callback, workId);
 			}
 			/** 统计待办数量判断用户是否可以上传附件 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowProcessing().build();
 			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
 				throw new ExceptionWorkAccessDeniedCallback(callback, effectivePerson.getDistinguishedName(),
 						work.getTitle(), work.getId());
@@ -91,8 +92,9 @@ class ActionUploadCallback extends BaseAction {
 	}
 
 	public static class WoObject extends WoId {
+
+		private static final long serialVersionUID = -6126855595194424970L;
+
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }

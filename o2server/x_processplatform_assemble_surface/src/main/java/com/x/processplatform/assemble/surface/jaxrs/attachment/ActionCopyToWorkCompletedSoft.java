@@ -21,8 +21,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -51,7 +51,7 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 			if ((null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
@@ -62,7 +62,8 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 					if (null == o) {
 						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
 					}
-					if (!business.readableWithJob(effectivePerson, o.getJob())) {
+					if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, o.getJob())
+							.enableAllowVisit().build().getAllowVisit())) {
 						throw new ExceptionAccessDenied(effectivePerson, o.getJob());
 					}
 					ReqAttachment q = new ReqAttachment();

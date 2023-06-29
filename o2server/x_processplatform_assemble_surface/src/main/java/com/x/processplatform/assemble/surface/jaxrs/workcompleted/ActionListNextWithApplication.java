@@ -12,7 +12,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 
@@ -29,21 +30,17 @@ class ActionListNextWithApplication extends BaseAction {
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("creatorPerson", effectivePerson.getDistinguishedName());
 			equals.put("application", application.getId());
-			ActionResult<List<Wo>> result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, null,
-					null, null, null, null, null, true, DESC);
+			ActionResult<List<Wo>> result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME,
+					equals, null, null, null, null, null, null, null, true, DESC);
 			/* 添加权限 */
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
 					WorkCompleted o = emc.find(wo.getId(), WorkCompleted.class);
-					WoControl control = business.getControl(effectivePerson, o, WoControl.class);
-					wo.setControl(control);
+					wo.setControl(new WorkCompletedControlBuilder(effectivePerson, business, o).enableAll().build());
 				}
 			}
 			return result;
 		}
-	}
-
-	public static class WoControl extends WorkCompletedControl {
 	}
 
 	public static class Wo extends WorkCompleted {
@@ -55,7 +52,7 @@ class ActionListNextWithApplication extends BaseAction {
 
 		private Long rank;
 
-		private WoControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -65,11 +62,11 @@ class ActionListNextWithApplication extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 

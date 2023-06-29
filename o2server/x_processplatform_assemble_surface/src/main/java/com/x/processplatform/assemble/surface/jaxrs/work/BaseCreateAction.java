@@ -24,8 +24,8 @@ import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -200,7 +200,7 @@ class BaseCreateAction extends BaseAction {
 
 		private Long rank;
 
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -210,11 +210,11 @@ class BaseCreateAction extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -230,7 +230,7 @@ class BaseCreateAction extends BaseAction {
 
 		private Long rank;
 
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -240,11 +240,11 @@ class BaseCreateAction extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 

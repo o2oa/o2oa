@@ -30,7 +30,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

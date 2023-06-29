@@ -9,6 +9,7 @@ import com.x.processplatform.assemble.surface.jaxrs.application.ApplicationActio
 import com.x.processplatform.assemble.surface.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.assemble.surface.jaxrs.control.ControlAction;
+import com.x.processplatform.assemble.surface.jaxrs.correlation.CorrelationAction;
 import com.x.processplatform.assemble.surface.jaxrs.data.DataAction;
 import com.x.processplatform.assemble.surface.jaxrs.documentversion.DocumentVersionAction;
 import com.x.processplatform.assemble.surface.jaxrs.draft.DraftAction;
@@ -77,5 +78,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(SnapAction.class);
 		classes.add(AnonymousAction.class);
 		classes.add(SignAction.class);
+		classes.add(CorrelationAction.class);
 	}
 }

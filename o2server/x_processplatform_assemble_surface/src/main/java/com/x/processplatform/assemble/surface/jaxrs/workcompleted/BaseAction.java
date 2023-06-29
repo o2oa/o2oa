@@ -23,7 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
@@ -111,7 +111,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private List<WoWorkLog> workLogList = new ArrayList<>();
 
 		@FieldDescribe("权限")
-		private WoControl control;
+		private Control control;
 
 		@FieldDescribe("当前待阅索引")
 		private Integer currentReadIndex = -1;
@@ -167,11 +167,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.readList = readList;
 		}
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -324,10 +324,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		public void setOpinion(String opinion) {
 			this.opinion = opinion;
 		}
-	}
-
-	public static class WoControl extends WorkCompletedControl {
-
 	}
 
 	public static class WoForm extends Form {

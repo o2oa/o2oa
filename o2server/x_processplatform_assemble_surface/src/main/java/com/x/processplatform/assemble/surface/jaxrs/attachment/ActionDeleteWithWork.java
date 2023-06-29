@@ -14,8 +14,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -28,7 +29,7 @@ class ActionDeleteWithWork extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		Attachment attachment = null;
@@ -42,7 +43,7 @@ class ActionDeleteWithWork extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -55,11 +56,6 @@ class ActionDeleteWithWork extends BaseAction {
 		wo.setId(attachment.getId());
 		result.setData(wo);
 		return result;
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = -5255219368448264103L;
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDeleteWithWork$Wo")

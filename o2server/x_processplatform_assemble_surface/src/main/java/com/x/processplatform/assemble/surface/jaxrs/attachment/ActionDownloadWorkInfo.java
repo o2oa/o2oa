@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
@@ -11,9 +13,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -27,25 +29,15 @@ class ActionDownloadWorkInfo extends BaseAction {
 		LOGGER.debug("execute:{}, workId:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> workId,
 				() -> flag);
 
+		Wo wo = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Work work = emc.find(workId, Work.class);
-			if (work == null) {
-				WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
-				if (null == workCompleted) {
-					throw new Exception("workId: " + workId + " not exist in work or workCompleted");
-				}
-				if (!business.readable(effectivePerson, workCompleted)) {
-					throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
-							workCompleted.getTitle(), workCompleted.getId());
-				}
-			} else {
-				if (!business.readable(effectivePerson, work)) {
-					throw new ExceptionAccessDenied(effectivePerson, work);
-				}
+			Control control = new JobControlBuilder(effectivePerson, business, workId).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workId);
 			}
-			Wo wo = null;
 
 			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
 			if (generalFile != null) {

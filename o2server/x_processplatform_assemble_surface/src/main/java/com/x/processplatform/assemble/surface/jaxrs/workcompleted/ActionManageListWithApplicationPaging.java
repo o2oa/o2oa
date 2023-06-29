@@ -1,5 +1,18 @@
 package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,17 +33,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.element.Application;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 class ActionManageListWithApplicationPaging extends BaseAction {
 
@@ -61,7 +63,7 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application, Wi wi) throws Exception{
 		Predicate p = null;
-		if (business.canManageApplication(effectivePerson, application)) {
+		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application,null)) {
 			p = this.toFilterPredicate(business, application.getId(), wi);
 		}else{
 			List<String> processList = business.process().listControllableProcess(effectivePerson, application);

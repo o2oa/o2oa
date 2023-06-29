@@ -19,14 +19,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionUploadWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUploadWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUploadWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition, String extraParam) throws Exception {
@@ -39,7 +40,7 @@ class ActionUploadWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -67,11 +68,11 @@ class ActionUploadWithWork extends BaseAction {
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
 			attachment.saveContent(mapping, bytes, fileName);
 			attachment.setType((new Tika()).detect(bytes, fileName));
-			logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
 			if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
 					&& ExtractTextTools.available(bytes)) {
 				attachment.setText(ExtractTextTools.image(bytes));
-				logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+				LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 						attachment.getText());
 			}
 
@@ -105,8 +106,8 @@ class ActionUploadWithWork extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -5924606976588092494L;
+
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }

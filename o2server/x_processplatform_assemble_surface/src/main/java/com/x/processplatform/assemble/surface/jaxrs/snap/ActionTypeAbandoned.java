@@ -14,8 +14,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionTypeAbandoned extends BaseAction {
@@ -31,7 +32,7 @@ class ActionTypeAbandoned extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowDelete().build();
 			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -51,12 +52,6 @@ class ActionTypeAbandoned extends BaseAction {
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -2577413577740827608L;
-
-	}
-
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = -5281750474924703683L;
 
 	}
 

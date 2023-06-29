@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.tika.Tika;
@@ -33,7 +34,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -70,8 +74,18 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 			if ((null == work) && (null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workOrWorkCompleted, Work.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (null != work) {
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, work);
+				}
+			}
+			if (null != workCompleted) {
+				Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+						.enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+					throw new ExceptionAccessDenied(effectivePerson, workCompleted);
+				}
 			}
 		}
 		if (null != work) {

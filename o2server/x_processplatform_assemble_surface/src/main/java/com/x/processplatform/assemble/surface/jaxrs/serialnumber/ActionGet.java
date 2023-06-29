@@ -26,7 +26,7 @@ class ActionGet extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.canManageApplication(effectivePerson, application)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = Wo.copier.copy(o);

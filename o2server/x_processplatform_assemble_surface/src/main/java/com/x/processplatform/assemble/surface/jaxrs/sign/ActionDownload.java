@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.sign;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -11,12 +12,12 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
 
 class ActionDownload extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String scrawlId)
-			throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String scrawlId) throws Exception {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		DocSignScrawl signScrawl = null;
@@ -27,10 +28,11 @@ class ActionDownload extends BaseAction {
 			if (null == signScrawl) {
 				throw new ExceptionEntityNotExist(scrawlId, DocSignScrawl.class);
 			}
-			if(StringUtils.isBlank(signScrawl.getStorage())){
-				throw new IllegalStateException(scrawlId+"附件不存在！");
+			if (StringUtils.isBlank(signScrawl.getStorage())) {
+				throw new IllegalStateException(scrawlId + "附件不存在！");
 			}
-			if(!business.readableWithJob(effectivePerson, signScrawl.getJob())){
+			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, signScrawl.getJob())
+					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, scrawlId);
 			}
 		}

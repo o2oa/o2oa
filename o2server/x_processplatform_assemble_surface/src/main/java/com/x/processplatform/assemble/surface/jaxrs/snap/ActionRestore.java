@@ -17,9 +17,12 @@ import com.x.processplatform.core.entity.content.Snap;
 
 class ActionRestore extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRestore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRestore.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -41,8 +44,8 @@ class ActionRestore extends BaseAction {
 	}
 
 	private boolean allow(EffectivePerson effectivePerson, Business business, Snap snap) throws Exception {
-		return (business.canManageApplicationOrProcess(effectivePerson, snap.getApplication(), snap.getProcess())
-				|| effectivePerson.isNotPerson(snap.getPerson()));
+		return (business.ifPersonCanManageApplicationOrProcess(effectivePerson, snap.getApplication(),
+				snap.getProcess()) || effectivePerson.isNotPerson(snap.getPerson()));
 	}
 
 	public static class Wo extends WoId {

@@ -23,7 +23,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -46,7 +45,7 @@ class ActionManageBatchUpload extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -217,10 +216,4 @@ class ActionManageBatchUpload extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchUpload$WoControl")
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = 3610556328798966861L;
-
-	}
 }

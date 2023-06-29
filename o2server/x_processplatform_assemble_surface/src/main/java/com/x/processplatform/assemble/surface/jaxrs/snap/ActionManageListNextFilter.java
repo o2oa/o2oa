@@ -26,7 +26,7 @@ class ActionManageListNextFilter extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "",""))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			p = manageFilter(business, wi);

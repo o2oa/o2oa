@@ -24,7 +24,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -57,7 +60,8 @@ class ActionUploadWithUrl extends BaseAction {
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getSite());
 			}
 			String person = effectivePerson.getDistinguishedName();
-			if (StringUtils.isNotEmpty(wi.getPerson()) && business.canManageApplication(effectivePerson, null)) {
+			if (StringUtils.isNotEmpty(wi.getPerson())
+					&& business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
 				Person p = business.organization().person().getObject(wi.getPerson());
 				if (p != null) {
 					person = p.getDistinguishedName();
@@ -70,6 +74,11 @@ class ActionUploadWithUrl extends BaseAction {
 			if (null == work) {
 				WorkCompleted workCompleted = emc.find(wi.getWorkId(), WorkCompleted.class);
 				if (workCompleted != null) {
+					Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+							.enableAllowManage().build();
+					if (BooleanUtils.isNotTrue(control.getAllowManage())) {
+						throw new ExceptionAccessDenied(effectivePerson, workCompleted.getId());
+					}
 					Process process = business.process().pick(workCompleted.getProcess());
 					if (null == process) {
 						throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
@@ -81,13 +90,14 @@ class ActionUploadWithUrl extends BaseAction {
 					attachment = this.concreteAttachment(workCompleted, person, wi.getSite(), ends.get(0));
 				}
 			} else {
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+				if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+					throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
+				}
 				attachment = this.concreteAttachment(work, person, wi.getSite());
 			}
 			if (attachment == null) {
 				throw new ExceptionEntityNotExist(wi.getWorkId());
-			}
-			if (!business.editable(effectivePerson, attachment.getJob())) {
-				throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
 			}
 			byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
 			if (bytes == null || bytes.length == 0) {

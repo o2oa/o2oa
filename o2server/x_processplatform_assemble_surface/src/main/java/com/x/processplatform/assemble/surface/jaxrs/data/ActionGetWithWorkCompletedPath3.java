@@ -11,19 +11,20 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionGetWithWorkCompletedPath3 extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkCompletedPath3.class);
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String id, String path0, String path1,
 			String path2, String path3) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -31,13 +32,14 @@ class ActionGetWithWorkCompletedPath3 extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-				Data data =  workCompleted.getProperties().getData();
+				Data data = workCompleted.getProperties().getData();
 				Object o = data.find(new String[] { path0, path1, path2, path3 });
 				result.setData(gson.toJsonTree(o));
 			} else {
@@ -47,9 +49,4 @@ class ActionGetWithWorkCompletedPath3 extends BaseAction {
 		}
 	}
 
-	public static class WoControl extends WorkCompletedControl {
-
-		private static final long serialVersionUID = -5690415864280655065L;
-		
-	}
 }

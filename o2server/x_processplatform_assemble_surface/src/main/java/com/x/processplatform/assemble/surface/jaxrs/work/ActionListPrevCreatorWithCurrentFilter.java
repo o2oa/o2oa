@@ -21,12 +21,11 @@ import com.x.base.core.project.jaxrs.LikeTerms;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 
 class ActionListPrevCreatorWithCurrentFilter extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrevCreatorWithCurrentFilter.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement)
@@ -85,8 +84,8 @@ class ActionListPrevCreatorWithCurrentFilter extends BaseAction {
 		private List<String> activityNameList;
 
 		@FieldDescribe("工作状态")
-		@FieldTypeDescribe(fieldType="enum",fieldValue="start|processing|hanging",fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
-		
+		@FieldTypeDescribe(fieldType = "enum", fieldValue = "start|processing|hanging", fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
+
 		private List<WorkStatus> workStatusList;
 
 		@FieldDescribe("关键字")
@@ -152,9 +151,6 @@ class ActionListPrevCreatorWithCurrentFilter extends BaseAction {
 		@FieldDescribe("排序号")
 		private Long rank;
 
-		@FieldDescribe("权限")
-		private WorkControl control;
-
 		public Long getRank() {
 			return rank;
 		}
@@ -163,17 +159,6 @@ class ActionListPrevCreatorWithCurrentFilter extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
-			return control;
-		}
-
-		public void setControl(WorkControl control) {
-			this.control = control;
-		}
-
 	}
 
-	public static class WoControl extends WorkControl {
-
-	}
 }
