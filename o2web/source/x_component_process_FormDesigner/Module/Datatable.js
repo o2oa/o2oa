@@ -357,8 +357,19 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 	_setEditStyle_custom: function(name, obj, oldValue){
 		if (name=="id"){
 			if (oldValue && this.json.id!=oldValue){
+				debugger;
 				var reg = new RegExp("^"+oldValue, "i");
 				this.containers.each(function(container){
+					var id = container.json.id;
+					var newId = id.replace(reg, this.json.id);
+					container.json.id = newId;
+
+					delete this.form.json.moduleList[id];
+					this.form.json.moduleList[newId] = container.json;
+					container._setEditStyle("id");
+				}.bind(this));
+
+				this.elements.each(function(container){
 					var id = container.json.id;
 					var newId = id.replace(reg, this.json.id);
 					container.json.id = newId;
