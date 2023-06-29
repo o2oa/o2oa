@@ -82,6 +82,7 @@
 		<module>x_processplatform_assemble_bam</module>
 		<module>x_processplatform_assemble_designer</module>
 		<module>x_processplatform_assemble_surface</module>
+		<module>x_processplatform_service_processing</module>
 		<module>x_correlation_service_processing</module>
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
