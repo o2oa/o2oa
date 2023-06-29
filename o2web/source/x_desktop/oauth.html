@@ -88,7 +88,8 @@
                     if (layout.isQywx()) {
                         action.qywxOauthServer(function (json) {
                             var qywxConfig = json.data || {};
-                            var url = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect?state=STATE";
+                            var qrConnectAddress = qywxConfig.qrConnectAddress || "https://open.work.weixin.qq.com";
+                            var url = qrConnectAddress + "/wwopen/sso/qrConnect?state=STATE";
                             var corpId = qywxConfig.corpId;
                             if (corpId) {
                                 url += "&appid=" + corpId;
@@ -106,7 +107,8 @@
                     } else if (layout.isDingding()) { //钉钉单点登录
                         action.dingdingOauthServer(function (json) {
                             var dingdingConfig = json.data || {};
-                            var url = "https://oapi.dingtalk.com/connect/qrconnect?response_type=code&scope=snsapi_login&state=STATE";
+                            var oapiAddress = dingdingConfig.oapiAddress || "https://oapi.dingtalk.com";
+                            var url = oapiAddress + "/connect/qrconnect?response_type=code&scope=snsapi_login&state=STATE";
                             var appId = dingdingConfig.scanLoginAppId;
                             if (appId) {
                                 url += "&appid=" + appId;
