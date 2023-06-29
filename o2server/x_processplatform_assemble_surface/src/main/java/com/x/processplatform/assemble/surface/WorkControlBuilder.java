@@ -379,11 +379,16 @@ public class WorkControlBuilder {
 		}
 	}
 
+	/**
+	 * 管理员可以删除,或者活动设置了可以删除&&有待办
+	 * 
+	 * @param control
+	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(
-					PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& (canManage() || hasTaskWithWork()));
+			control.setAllowDelete(canManage()
+					|| (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& hasTaskWithWork()));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
