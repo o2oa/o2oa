@@ -372,8 +372,9 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
             this.loadSubform();
         }.bind(this));
     },
-    show: function () {
+    show: function ( defaultRoute ) {
         if (this.json.submitScript && this.json.submitScript.code) {
+            this.form.Macro.environment.defaultRoute = defaultRoute;
             this.form.Macro.exec(this.json.submitScript.code, this);
         }
         // this.fireSubFormEvent("load");

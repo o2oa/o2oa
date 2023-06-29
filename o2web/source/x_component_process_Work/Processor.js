@@ -230,6 +230,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         return obj;
     },
     setRouteGroupList: function () {
+        debugger;
         var _self = this;
         //var keys = Object.keys( this.routeGroupObject );
         //var length = keys.length;
@@ -254,7 +255,8 @@ MWF.xApplication.process.Work.Processor = new Class({
             list.push(this.splitByStartNumber(k).name)
         }.bind(this));
 
-        var flag = false;
+        var flag = true;
+        var matchRoutes = [];
         list.each(function (routeGroupName) {
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {
@@ -279,8 +281,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             if (keys.length === 1) {
                 this.selectRouteGroup(routeGroupNode);
                 flag = false;
-            } else {
-                flag = true;
+            }else if( matchRoutes.length === 0 && this.options.defaultRoute ){
+                matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
+                if( matchRoutes.length ){
+                    this.selectRouteGroup(routeGroupNode);
+                }
+                flag = false;
             }
         }.bind(this))
         if (flag) {
