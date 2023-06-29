@@ -4,10 +4,18 @@ this.define("loadProcessor", function( defaultRoute ){
     if( !this.processor ){
         this.processor = new O2Processor(this);
     }
+    if( !defaultRoute && this.defaultRoute ){
+        defaultRoute = this.defaultRoute;
+    }
+    if( this.defaultRoute )this.defaultRoute = "";
     this.processor.load( defaultRoute );
 });
 
 this.define("popupProcessor", function( defaultRoute ){
+    if( !defaultRoute && this.defaultRoute ){
+        defaultRoute = this.defaultRoute;
+    }
+    if( this.defaultRoute )this.defaultRoute = "";
     if( !this.processor ){
         this.processor = new O2Processor(this);
         this.processor.load( defaultRoute );
@@ -112,6 +120,28 @@ window.O2Processor = new Class({
                     this.lastAutoOpinion = op.opinion;
                     this.setData( "inputTextarea", op.opinion );
                 }
+            }
+        }
+        if( defaultRoute ){
+            var flag = true;
+
+            if( this.routeGroupNodeList && this.routeGroupNodeList.length ){
+                 for( var i=0; i<this.routeGroupNodeList.length; i++ ){
+                      var routeGroupNode = this.routeGroupNodeList[i];
+                      var routeList = routeGroupNode.retrieve( "routeList" );
+                      var matchRoutes = routeList.filter(function(r){ return r.id === defaultRoute || r.name === defaultRoute; }.bind(this));
+                      if( matchRoutes.length ){
+                           this.selectRouteGroup(routeGroupNode);
+                           break;
+                      }
+                 }
+            }
+
+            if( this.selectedRoute ){
+                if( this.selectedRoute.retrieve("route") === defaultRoute || this.selectedRoute.retrieve("routeName") === defaultRoute )flag = false;
+            }
+            if( flag && this.routeNodeMap && this.routeNodeMap[defaultRoute]){
+                this.selectRoute( this.routeNodeMap[defaultRoute] );
             }
         }
     },
@@ -639,6 +669,7 @@ window.O2Processor = new Class({
         var _self = this;
 
         this.routeGroupNodeMap = {};
+        this.routeGroupNodeList = [];
 
         //根据决策组的排序号进行排序
         var keys = this.routeGroupNameList;
@@ -654,7 +685,8 @@ window.O2Processor = new Class({
         }.bind(this));
 
         debugger;
-        var flag = false;
+        var flag = true;
+        var matchRoutes = [];
         list.each( function( routeGroupName ){
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {"styles": this.css.routeGroupNode, "text": routeGroupName}).inject(this.routeGroupArea);
@@ -662,6 +694,7 @@ window.O2Processor = new Class({
             routeGroupNode.store( "routeGroupName", routeGroupName );
 
             this.routeGroupNodeMap[routeGroupName] = routeGroupNode;
+            this.routeGroupNodeList.push( routeGroupNode );
 
             routeGroupNode.addEvents({
                 "mouseover": function(e){_self.overRouteGroup(this);},
@@ -669,11 +702,16 @@ window.O2Processor = new Class({
                 "click": function(e){_self.selectRouteGroup(this);}
             });
 
+
             if ( keys.length === 1 ){  //如果决策组只有1个，则默认选中
                 this.selectRouteGroup(routeGroupNode);
                 flag = false;
-            }else{
-                flag = true;
+            }else if( matchRoutes.length === 0 && this.defaultRoute ){
+                matchRoutes = routeList.filter(function(r){ return r.id === this.defaultRoute || r.name === this.defaultRoute; }.bind(this));
+                if( matchRoutes.length ){
+                    this.selectRouteGroup(routeGroupNode);
+                }
+                flag = false;
             }
         }.bind(this));
         if( flag ){
