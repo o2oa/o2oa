@@ -1492,6 +1492,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
         }.bind(this));
         this.setAttachmentBusinessData();
+
+        this.addEvent("change", function () {
+            if(this.validationMode)this.validationMode();
+        }.bind(this))
+
         //}.bind(this));
     },
     setAttachmentBusinessData: function () {
