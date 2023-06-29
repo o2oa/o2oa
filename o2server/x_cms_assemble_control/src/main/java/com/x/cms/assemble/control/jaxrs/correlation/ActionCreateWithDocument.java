@@ -3,11 +3,9 @@ package com.x.cms.assemble.control.jaxrs.correlation;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -19,15 +17,10 @@ import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
-import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class ActionCreateWithDocument extends BaseAction {
@@ -53,7 +46,7 @@ class ActionCreateWithDocument extends BaseAction {
 			if (!business.isDocumentEditor(effectivePerson, null, null, document)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			req.setTargetList(readTarget(effectivePerson, business, wi.getTargetList()));
+			req.setTargetList(wi.getTargetList());
 			req.setPerson(effectivePerson.getDistinguishedName());
 		}
 
@@ -65,54 +58,6 @@ class ActionCreateWithDocument extends BaseAction {
 			result.setData(wo);
 		}
 		return result;
-	}
-
-	private List<TargetWi> readTarget(EffectivePerson effectivePerson, Business business, List<TargetWi> targets)
-			throws Exception {
-		List<TargetWi> list = new ArrayList<>();
-		if (ListTools.isNotEmpty(targets)) {
-			for (TargetWi targetWi : targets) {
-				if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_PROCESSPLATFORM)) {
-					list.add(readTargetProcessPlatform(effectivePerson, business, targetWi.getBundle(),
-							targetWi.getSite()));
-				} else if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_CMS)) {
-					list.add(readTargetCms(effectivePerson, business, targetWi.getBundle(), targetWi.getSite()));
-				} else {
-					throw new ExceptionAccessDenied(effectivePerson);
-				}
-			}
-		}
-		return list;
-	}
-
-	private TargetWi readTargetProcessPlatform(EffectivePerson effectivePerson, Business business, String bundle,
-			String site) throws Exception {
-		Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, bundle);
-		if (null == work) {
-			WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
-					WorkCompleted.job_FIELDNAME, bundle);
-			if (null == workCompleted) {
-				throw new ExceptionEntityExist(bundle);
-			}
-		}
-		TargetWi targetWi = new TargetWi();
-		targetWi.setType(Correlation.TYPE_PROCESSPLATFORM);
-		targetWi.setBundle(bundle);
-		targetWi.setSite(site);
-		return targetWi;
-	}
-
-	private TargetWi readTargetCms(EffectivePerson effectivePerson, Business business, String bundle, String site)
-			throws Exception {
-		Document document = business.entityManagerContainer().find(bundle, Document.class);
-		if (null == document) {
-			throw new ExceptionEntityExist(bundle);
-		}
-		TargetWi targetWi = new TargetWi();
-		targetWi.setType(Correlation.TYPE_CMS);
-		targetWi.setBundle(bundle);
-		targetWi.setSite(site);
-		return targetWi;
 	}
 
 	public static class Wi extends GsonPropertyObject {
