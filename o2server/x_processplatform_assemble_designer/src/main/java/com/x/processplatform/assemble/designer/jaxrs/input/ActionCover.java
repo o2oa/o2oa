@@ -305,9 +305,11 @@ class ActionCover extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(cls);
 		Root<T> root = cq.from(cls);
-		Predicate p = cb.not(root.get(JpaObject.id_FIELDNAME)
-				.in(ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, true, true)));
-		p = cb.and(p, cb.equal(root.get(FormField.form_FIELDNAME), formId));
+		Predicate p = cb.equal(root.get(FormField.form_FIELDNAME), formId);
+		if(ListTools.isNotEmpty(list)){
+			p = cb.and(p, cb.not(root.get(JpaObject.id_FIELDNAME)
+					.in(ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, true, true))));
+		}
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -318,9 +320,11 @@ class ActionCover extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(cls);
 		Root<T> root = cq.from(cls);
-		Predicate p = cb.not(root.get(JpaObject.id_FIELDNAME)
-				.in(ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, true, true)));
-		p = cb.and(p, cb.equal(root.get("process"), processId));
+		Predicate p = cb.equal(root.get("process"), processId);
+		if(ListTools.isNotEmpty(list)){
+			p = cb.and(p, cb.not(root.get(JpaObject.id_FIELDNAME)
+					.in(ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, true, true))));
+		}
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
