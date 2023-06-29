@@ -33,17 +33,18 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	protected void checkAllowVisitProcessPlatform(String person, String job) throws Exception {
-		WrapBoolean resp = ThisApplication.context().applications().getQuery(x_processplatform_assemble_surface.class,
-				Applications.joinQueryUri(job, "allow", "visit", "person", person)).getData(WrapBoolean.class);
+		WrapBoolean resp = ThisApplication.context().applications()
+				.getQuery(x_processplatform_assemble_surface.class,
+						Applications.joinQueryUri("job", job, "allow", "visit", "person", person))
+				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionAccessDenied(person, job);
 		}
 	}
 
 	protected void checkPermissionReadFromCms(String person, String document) throws Exception {
-		WrapBoolean resp = ThisApplication.context().applications()
-				.getQuery(x_cms_assemble_control.class,
-						Applications.joinQueryUri(document, "permission", "read", "person", person))
+		WrapBoolean resp = ThisApplication.context().applications().getQuery(x_cms_assemble_control.class,
+				Applications.joinQueryUri("document", "cipher", document, "permission", "read", "person", person))
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionAccessDenied(person, document);
