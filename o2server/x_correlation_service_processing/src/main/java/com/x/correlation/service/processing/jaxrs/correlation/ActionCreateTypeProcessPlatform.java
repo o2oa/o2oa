@@ -6,10 +6,7 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -34,8 +31,8 @@ class ActionCreateTypeProcessPlatform extends BaseAction {
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			this.checkFromProcessPlatform(business, wi.getPerson(), job);
-			List<Correlation> targets = this.readTarget(effectivePerson, business, wi.getTargetList());
+			this.checkAllowVisitProcessPlatform(wi.getPerson(), job);
+			List<Correlation> targets = this.readTarget(wi.getPerson(), business, wi.getTargetList());
 			Map<String, Correlation> exists = this.exists(business, Correlation.TYPE_PROCESSPLATFORM, job);
 			emc.beginTransaction(Correlation.class);
 			targets.stream().forEach(o -> exists.compute(o.getTargetType() + o.getTargetBundle(), (k, v) -> {
@@ -72,9 +69,6 @@ class ActionCreateTypeProcessPlatform extends BaseAction {
 	public static class Wo extends ActionCreateTypeProcessPlatformWo {
 
 		private static final long serialVersionUID = 8119049505336942577L;
-
-		static WrapCopier<Correlation, Wo> copier = WrapCopierFactory.wo(Correlation.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
 
 	}
 

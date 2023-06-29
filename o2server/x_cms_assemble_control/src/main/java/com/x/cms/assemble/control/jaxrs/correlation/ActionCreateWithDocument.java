@@ -1,10 +1,15 @@
 package com.x.cms.assemble.control.jaxrs.correlation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityExist;
@@ -15,20 +20,15 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.correlation.core.entity.content.Correlation;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWi;
-import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionCreateWithDocument extends BaseAction {
 
@@ -132,7 +132,7 @@ class ActionCreateWithDocument extends BaseAction {
 
 	}
 
-	public static class Wo extends ActionCreateTypeProcessPlatformWo {
+	public static class Wo extends ActionCreateTypeCmsWo {
 
 		private static final long serialVersionUID = -6712098733513365965L;
 
