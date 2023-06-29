@@ -454,10 +454,16 @@ public class WorkControlBuilder {
 		}
 	}
 
+	/**
+	 * 条件为1.允许提醒,2.有已办,3.非只有当前人一条待办.
+	 * 
+	 * @param control
+	 */
 	private void computeAllowPress(Control control) {
 		try {
-			control.setAllowPress(PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
-					&& hasTaskCompletedWithJob());
+			boolean tag = PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
+					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork()));
+			control.setAllowPress(tag);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
