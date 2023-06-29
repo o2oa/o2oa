@@ -23,11 +23,15 @@ public class ExceptionAccessDenied extends LanguagePromptException {
 	public ExceptionAccessDenied(EffectivePerson effectivePerson, JpaObject jpa) {
 		super("用户:{} 访问对象 class:{}, id:{}, 权限不足.", effectivePerson.getDistinguishedName(),
 				(null == jpa) ? null : jpa.getClass().getName(), (null == jpa) ? null : jpa.getId());
-		this.setLanguageKey(this.getClass().getName()+"_1");
+		this.setLanguageKey(this.getClass().getName() + "_1");
 	}
 
 	public ExceptionAccessDenied(EffectivePerson effectivePerson, String message) {
 		super(defaultMessage, effectivePerson.getDistinguishedName(), Objects.toString(message, ""));
+		this.setLanguageKey(this.getClass().getName() + "_2");
 	}
 
+	public ExceptionAccessDenied(String person, String flag) {
+		super("用户:{} 访问对象 id:{}, 权限不足.", person, flag);
+	}
 }

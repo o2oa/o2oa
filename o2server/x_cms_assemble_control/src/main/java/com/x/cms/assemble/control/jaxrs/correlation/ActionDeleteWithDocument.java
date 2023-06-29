@@ -1,9 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.correlation;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -13,14 +16,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionDeleteTypeCmsWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionDeleteTypeProcessPlatformWi;
-import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionDeleteTypeProcessPlatformWo;
-
-import java.util.List;
 
 class ActionDeleteWithDocument extends BaseAction {
 
@@ -76,7 +76,7 @@ class ActionDeleteWithDocument extends BaseAction {
 
 	}
 
-	public static class Wo extends ActionDeleteTypeProcessPlatformWo {
+	public static class Wo extends ActionDeleteTypeCmsWo {
 
 		private static final long serialVersionUID = -6712098733513365965L;
 

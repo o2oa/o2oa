@@ -58,7 +58,7 @@ public class CorrelationAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createTypeCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("内容管理文档标识") @PathParam("document") String document, JsonElement jsonElement) {
-		ActionResult<List<ActionCreateTypeCms.Wo>> result = new ActionResult<>();
+		ActionResult<ActionCreateTypeCms.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateTypeCms().execute(effectivePerson, document, jsonElement);
