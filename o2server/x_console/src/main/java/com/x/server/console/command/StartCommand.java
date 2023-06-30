@@ -1,5 +1,9 @@
 package com.x.server.console.command;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
@@ -28,37 +32,48 @@ public class StartCommand {
 
 	private static final Consumer<Matcher> consumer = matcher -> {
 
-		switch (matcher.group(1)) {
-		case "application":
-			startApplicationServer();
-			break;
-		case "center":
-			startCenterServer();
-			break;
-		case "web":
-			startWebServer();
-			break;
-		case "storage":
-			startStorageServer();
-			break;
-		case "data":
-			startDataServer();
-			break;
-		default:
-			startAll();
-			break;
+		if (initIfNecessary(StringUtils.equalsIgnoreCase(matcher.group(1), "init"))) {
+			switch (matcher.group(1)) {
+			case "application":
+				startApplicationServer();
+				break;
+			case "center":
+				startCenterServer();
+				break;
+			case "web":
+				startWebServer();
+				break;
+			case "storage":
+				startStorageServer();
+				break;
+			case "data":
+				startDataServer();
+				break;
+			default:
+				startAll();
+				break;
+			}
 		}
 	};
 
-	private static void initIfNecessary() throws Exception {
-		if (initIfNecessarySetPassword() || initIfNecessaryUpgradeLocalRepositoryDataH2()) {
-			Servers.startInitServer();
-			// 等待停止信号
-			LinkedBlockingQueue<String> stopSignalQueue = new LinkedBlockingQueue<>();
-			new Resource(Config.RESOURCE_INITSERVERSTOPSIGNAL, stopSignalQueue);
-			stopSignalQueue.take();
-			Servers.stopInitServer();
+	private static boolean initIfNecessary(boolean force) {
+		try {
+			if (force || initIfNecessarySetPassword() || initIfNecessaryUpgradeLocalRepositoryDataH2()) {
+				Servers.startInitServer();
+				// 等待停止信号
+				LinkedBlockingQueue<String> stopSignalQueue = new LinkedBlockingQueue<>();
+				new Resource(Config.RESOURCE_INITSERVERSTOPSIGNAL, stopSignalQueue);
+				stopSignalQueue.take();
+				Servers.stopInitServer();
+			}
+			return true;
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			LOGGER.error(ie);
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
+		return false;
 	}
 
 	private static boolean initIfNecessarySetPassword() throws Exception {
@@ -67,11 +82,15 @@ public class StartCommand {
 		return StringUtils.isBlank(value);
 	}
 
-	private static boolean initIfNecessaryUpgradeLocalRepositoryDataH2() {
-		Optional<String> jarVersion = H2Tools.jarVersion();
-		Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
-		return ((jarVersion.isPresent() && localRepositoryDataH2Version.isPresent())
-				&& (!StringUtils.equals(jarVersion.get(), localRepositoryDataH2Version.get())));
+	private static boolean initIfNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
+		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
+		if (Files.exists(path)) {
+			Optional<String> jarVersion = H2Tools.jarVersion();
+			Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
+			return ((jarVersion.isPresent() && localRepositoryDataH2Version.isPresent())
+					&& (!StringUtils.equals(jarVersion.get(), localRepositoryDataH2Version.get())));
+		}
+		return false;
 	}
 
 	public static Consumer<Matcher> consumer() {
@@ -80,7 +99,6 @@ public class StartCommand {
 
 	private static void startApplicationServer() {
 		try {
-			initIfNecessary();
 			Servers.startApplicationServer();
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -89,7 +107,6 @@ public class StartCommand {
 
 	private static void startCenterServer() {
 		try {
-			initIfNecessary();
 			Servers.startCenterServer();
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -98,7 +115,6 @@ public class StartCommand {
 
 	private static void startWebServer() {
 		try {
-			initIfNecessary();
 			Servers.startWebServer();
 		} catch (Exception e) {
 			LOGGER.error(e);

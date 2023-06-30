@@ -18,7 +18,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
@@ -48,9 +47,7 @@ public class Main {
 		ResourceFactory.init();
 		CommandFactory.printStartHelp();
 		Hadoop.init();// 初始化hadoop环境
-		// new Resource(Config.RESOURCE_CONSOLECOMMANDQUEUE, commandQueue);//
-		// 将命令队列注册到jndi
-
+		Config.resource_commandQueue(commandQueue);// 将命令队列注册到jndi
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -66,7 +63,7 @@ public class Main {
 		if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
 			commandQueue.put("start");
 		}
-		// CommandThreads.join();
+		CommandThreads.join();
 	}
 
 	private static void startNodeAgent() throws Exception {

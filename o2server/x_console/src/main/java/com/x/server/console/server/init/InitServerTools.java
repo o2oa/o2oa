@@ -18,6 +18,7 @@ import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.x.base.core.project.x_program_init;
@@ -117,7 +118,9 @@ public class InitServerTools extends JettySeverTools {
 		webApp.setAutoPreconfigure(false);
 		webApp.setDisplayName(x_program_init.class.getSimpleName());
 		webApp.setContextPath("/");
-		webApp.setResourceBase(dir.toAbsolutePath().toString());
+		ResourceCollection resources = new ResourceCollection(new String[] { dir.toAbsolutePath().toString(),
+				Config.path_servers_webServer_x_init(true).toAbsolutePath().toString() });
+		webApp.setBaseResource(resources);
 		webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
 		webApp.setExtraClasspath(calculateExtraClassPath(x_program_init.class));
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
@@ -125,7 +128,7 @@ public class InitServerTools extends JettySeverTools {
 		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 				BooleanUtils.toStringTrueFalse(false));
-		webApp.setWelcomeFiles(new String[] { "init.html" });
+		webApp.setWelcomeFiles(new String[] { "index.html","sample.html" });
 		return webApp;
 	}
 

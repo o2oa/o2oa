@@ -2,6 +2,7 @@ package com.x.program.init.jaxrs.restore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -40,6 +41,23 @@ public class RestoreAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionUpload().execute(effectivePerson, part);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "取消上传dataDump数据包.", action = ActionUploadCancel.class)
+	@GET
+	@Path("upload/cancel")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void uploadCancel(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionUploadCancel.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUploadCancel().execute(effectivePerson);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

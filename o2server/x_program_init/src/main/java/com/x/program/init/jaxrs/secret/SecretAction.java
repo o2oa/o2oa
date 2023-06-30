@@ -46,7 +46,7 @@ public class SecretAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "设置初始密钥.", action = ActionSetCancel.class)
+	@JaxrsMethodDescribe(value = "取消设置初始密钥.", action = ActionSetCancel.class)
 	@GET
 	@Path("set/cancel")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

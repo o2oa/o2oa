@@ -147,6 +147,7 @@ public class Config {
 	public static final String DIR_SERVERS_CENTERSERVER_WEBAPPS = "servers/centerServer/webapps";
 	public static final String DIR_SERVERS_CENTERSERVER_WORK = "servers/centerServer/work";
 	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
+	public static final String DIR_SERVERS_WEBSERVER_X_INIT = "servers/webServer/x_init";
 	public static final String DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG = "servers/webServer/x_desktop/res/config";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
@@ -161,7 +162,7 @@ public class Config {
 
 	public static final String RESOURCE_INITSERVERSTOPSIGNAL = "initServerStopSignal";
 
-	public static final String RESOURCE_CONSOLECOMMANDQUEUE = "consoleCommandQueue";
+	public static final String RESOURCE_COMMANDQUEUE = "commandQueue";
 
 	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
 
@@ -355,6 +356,14 @@ public class Config {
 		return new File(base(), DIR_LOCAL_TEMP);
 	}
 
+	public static Path path_local_temp(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_TEMP);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
 	public static File dir_local_temp_classes() throws IOException, URISyntaxException {
 		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
 	}
@@ -510,6 +519,14 @@ public class Config {
 
 	public static Path path_servers_webServer(boolean force) throws Exception {
 		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_webServer_x_init(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_INIT);
 		if (!Files.exists(path) && force) {
 			Files.createDirectories(path);
 		}
@@ -1333,6 +1350,19 @@ public class Config {
 			return (Map<String, Date>) o;
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static synchronized LinkedBlockingQueue<String> resource_commandQueue() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_COMMANDQUEUE);
+		if (null != o) {
+			return (LinkedBlockingQueue<String>) o;
+		}
+		return null;
+	}
+
+	public static synchronized void resource_commandQueue(LinkedBlockingQueue<String> commandQueue) throws Exception {
+		initialContext().rebind(RESOURCE_COMMANDQUEUE, commandQueue);
 	}
 
 	public static boolean isWindowsJava8() throws Exception {

@@ -10,8 +10,14 @@ public class Missions {
 	}
 
 	public static void execute() {
-		Stream.<Mission>of(ThisApplication.getMissionUpgradeH2(), ThisApplication.getMissionRestore(),
+		Stream.<Mission>of(ThisApplication.getMissionH2Upgrade(), ThisApplication.getMissionRestore(),
 				ThisApplication.getMissionSetSecret()).filter(Objects::nonNull).forEach(Mission::execute);
+	}
+
+	public interface Mission {
+
+		public void execute();
+
 	}
 
 }

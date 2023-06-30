@@ -129,7 +129,7 @@ public class WebServerTools extends JettySeverTools {
 		moveNonDefaultDirectoryToWebroot();
 		context.setContextPath("/");
 		ResourceCollection resources = new ResourceCollection(
-				new String[] { Config.path_servers_webServer(true).toString(),
+				new String[] { Config.path_servers_webServer(true).toAbsolutePath().toString(),
 						Config.path_webroot(true).toAbsolutePath().toString() });
 		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);

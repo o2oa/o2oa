@@ -17,6 +17,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.ResourceFactory;
 
 /*
 @author zhourui
@@ -42,6 +43,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_EN = "en";
 	private static final String CMD_DE = "de";
 	private static final String CMD_GC = "gc";
+	private static final String CMD_INITRESOURCEFACTORY = "initResourceFactory";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -82,6 +84,8 @@ public class ActionControl extends ActionBase {
 				de(cmd);
 			} else if (cmd.hasOption(CMD_GC)) {
 				gc();
+			} else if (cmd.hasOption(CMD_INITRESOURCEFACTORY)) {
+				initResourceFactory();
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", displayOptions());
@@ -109,6 +113,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(enOption());
 		options.addOption(deOption());
 		options.addOption(gcOption());
+		options.addOption(initrfOption());
 		return options;
 	}
 
@@ -203,6 +208,11 @@ public class ActionControl extends ActionBase {
 
 	private static Option gcOption() {
 		return Option.builder(CMD_GC).longOpt("jvm garbage collection").hasArg(false).desc("垃圾收集.").build();
+	}
+
+	private static Option initrfOption() {
+		return Option.builder(CMD_INITRESOURCEFACTORY).longOpt("init resource factory").hasArg(false).desc("初始资源工厂.")
+				.build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -323,6 +333,11 @@ public class ActionControl extends ActionBase {
 	private void gc() {
 		GarbageCollection garbageCollection = new GarbageCollection();
 		garbageCollection.execute();
+	}
+
+	private void initResourceFactory() throws Exception {
+		ResourceFactory.destory();
+		ResourceFactory.init();
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {

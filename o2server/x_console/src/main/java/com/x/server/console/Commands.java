@@ -27,17 +27,11 @@ public class Commands {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Commands.class);
 
-	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)", Pattern.CASE_INSENSITIVE);
-
 	private static final List<Pair<Pattern, Consumer<Matcher>>> PATTERN_COMMANDS = Arrays.asList(
-			// Pair.of(CommandFactory.test_pattern, TestCommand.consumer()),
-			// Pair.of(CommandFactory.create_encrypt_key_pattern, TestCommand.consumer()),
 			Pair.of(CommandFactory.start_pattern, StartCommand.consumer()),
 			Pair.of(CommandFactory.stop_pattern, StopCommand.consumer()),
 			Pair.of(CommandFactory.help_pattern, HelpCommand.consumer()),
 			Pair.of(CommandFactory.version_pattern, VersionCommand.consumer()),
-			// Pair.of(CommandFactory.convert_dataItem_pattern,
-			// convert_dataItem_pattern.consumer()),
 			Pair.of(CommandFactory.control_pattern, ControlCommand.consumer()),
 			Pair.of(CommandFactory.setPassword_pattern, SetPasswordCommand.consumer()),
 			Pair.of(CommandFactory.restart_pattern, RestartCommand.consumer()),

@@ -22,8 +22,10 @@ public class H2Tools {
 
 	private static final Pattern VERSION_FILENAME_PATTERN = Pattern.compile("^h2-(.+).jar$");
 
+	public static final String DATABASE = "X";
+	public static final String USER = "sa";
 	public static final String FILENAME_H2_VERSION = "h2.version";
-
+	public static final String FILENAME_DATABASE = "X.mv.db";
 	public static final String DEFAULT_VERSION = "1.4.200";
 
 	public static Optional<String> jarVersion() {

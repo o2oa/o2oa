@@ -14,7 +14,7 @@ class ActionUpgradeCancel extends BaseAction {
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson) {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
-		ThisApplication.setMissionUpgradeH2(null);
+		ThisApplication.setMissionH2Upgrade(null);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

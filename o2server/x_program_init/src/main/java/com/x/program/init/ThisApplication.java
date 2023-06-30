@@ -15,16 +15,16 @@ public class ThisApplication {
 		// nothing
 	}
 
-	private static MissionUpgradeH2 missionUpgradeH2;
+	private static MissionH2Upgrade missionH2Upgrade;
 	private static MissionRestore missionRestore;
 	private static MissionSetSecret missionSetSecret;
 
-	public static MissionUpgradeH2 getMissionUpgradeH2() {
-		return missionUpgradeH2;
+	public static MissionH2Upgrade getMissionH2Upgrade() {
+		return missionH2Upgrade;
 	}
 
-	public static void setMissionUpgradeH2(MissionUpgradeH2 missionUpgradeH2) {
-		ThisApplication.missionUpgradeH2 = missionUpgradeH2;
+	public static void setMissionH2Upgrade(MissionH2Upgrade missionH2Upgrade) {
+		ThisApplication.missionH2Upgrade = missionH2Upgrade;
 	}
 
 	public static MissionRestore getMissionRestore() {

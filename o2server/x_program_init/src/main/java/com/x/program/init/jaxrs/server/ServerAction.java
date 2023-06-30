@@ -43,16 +43,16 @@ public class ServerAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "停止init服务器.", action = ActionTest.class)
+	@JaxrsMethodDescribe(value = "执行init服务器任务.", action = ActionExecute.class)
 	@GET
-	@Path("test")
+	@Path("execute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void test(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionTest.Wo> result = new ActionResult<>();
+		ActionResult<ActionExecute.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionTest().execute(request, effectivePerson);
+			result = new ActionExecute().execute(request, effectivePerson);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

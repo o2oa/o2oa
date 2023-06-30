@@ -12,6 +12,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.program.init.Missions;
 
 class ActionExecute extends BaseAction {
 
@@ -23,7 +24,7 @@ class ActionExecute extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		new Thread(() -> {
 			try {
-				Thread.sleep(1000);
+				Missions.execute();
 				@SuppressWarnings("unchecked")
 				LinkedBlockingQueue<String> queue = (LinkedBlockingQueue<String>) resource(
 						Config.RESOURCE_INITSERVERSTOPSIGNAL);
