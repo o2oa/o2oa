@@ -367,6 +367,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 					delete this.form.json.moduleList[id];
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
+					if(container.property && container.property.propertyContent){
+						var input = container.property.propertyContent.getElement("input[name='id']");
+						if(input)input.set("value", newId)
+					}
 				}.bind(this));
 
 				this.elements.each(function(container){
@@ -377,6 +381,10 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 					delete this.form.json.moduleList[id];
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
+					if(container.property && container.property.propertyContent){
+						var input = container.property.propertyContent.getElement("input[name='id']");
+						if(input)input.set("value", newId)
+					}
 				}.bind(this));
 			}
 		}
