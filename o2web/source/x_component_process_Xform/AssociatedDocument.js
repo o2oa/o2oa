@@ -197,11 +197,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     _loadDocument: function(d, itemNode, deleteNode){
         itemNode.addEvents({
             "mouseover": function () {
-                deleteNode.show();
+                if(deleteNode)deleteNode.show();
                 itemNode.setStyles( this.form.css.associatedDocumentItem_over )
             }.bind(this),
             "mouseout": function () {
-                deleteNode.hide();
+                if(deleteNode)deleteNode.hide();
                 itemNode.setStyles( this.form.css.associatedDocumentItem )
             }.bind(this),
             "click": function (e) {
