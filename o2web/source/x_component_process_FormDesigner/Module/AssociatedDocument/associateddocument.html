@@ -116,8 +116,8 @@
 				<tr>
 					<td class="editTableTitle">{{$.lp.select}}:</td>
 					<td class="editTableValue">
-						<input type="radio" name="select" value="single" text{($.select!='multi')?'checked':''}/>{{$.lp.singleChoice}}
-						<input type="radio" name="select" value="multi" text{($.select=='multi')?'checked':''}/>{{$.lp.multipleChoice}}
+						<input type="radio" name="select" value="single" text{($.select=='single')?'checked':''}/>{{$.lp.singleChoice}}
+						<input type="radio" name="select" value="multi" text{($.select!='multi')?'checked':''}/>{{$.lp.multipleChoice}}
 					</td>
 				</tr>
 				<tr>
