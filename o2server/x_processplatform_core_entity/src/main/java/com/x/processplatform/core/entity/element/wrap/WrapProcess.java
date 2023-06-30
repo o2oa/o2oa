@@ -33,9 +33,9 @@ public class WrapProcess extends Process {
 	private List<WrapMerge> mergeList = new ArrayList<>();
 	private List<WrapRoute> routeList = new ArrayList<>();
 	private List<WrapParallel> parallelList = new ArrayList<>();
+	private List<WrapPublish> publishList = new ArrayList<>();
 	private List<WrapService> serviceList = new ArrayList<>();
 	private List<WrapSplit> splitList = new ArrayList<>();
-	private List<WrapPublish> publishList = new ArrayList<>();
 
 	public List<WrapAgent> getAgentList() {
 		return agentList;
