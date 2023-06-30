@@ -429,6 +429,11 @@ public class Business {
 		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
 		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
 		if(document!=null){
+			if( ListTools.isNotEmpty( document.getManagerList() )) {
+				if( document.getManagerList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
+					return true;
+				}
+			}
 			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
 				if( document.getAuthorPersonList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
 					return true;
