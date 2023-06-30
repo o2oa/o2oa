@@ -368,7 +368,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
 					if(container.property && container.property.propertyContent){
-						var input = container.property.propertyContent.getElement("input[name='id']");
+						var pid = container.property.data.pid;
+						var input = container.property.propertyContent.getElement("input[name='"+pid+"id']");
 						if(input)input.set("value", newId);
 					}
 				}.bind(this));
@@ -382,7 +383,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 					this.form.json.moduleList[newId] = container.json;
 					container._setEditStyle("id");
 					if(container.property && container.property.propertyContent){
-						var input = container.property.propertyContent.getElement("input[name='id']");
+						var pid = container.property.data.pid;
+						var input = container.property.propertyContent.getElement("input[name='"+pid+"id']");
 						if(input)input.set("value", newId);
 					}
 				}.bind(this));
