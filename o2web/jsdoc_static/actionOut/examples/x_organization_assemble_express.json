@@ -111,5 +111,40 @@
     "unitList": [
       "开发部@kfb@U"
     ]
+  },
+  "PersonData": {
+    "id": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
+    "genderType": "text:person_genderType",
+    "signature": "",
+    "pinyin": "zhangsan",
+    "pinyinInitial": "zs",
+    "description": "",
+    "name": "张三",
+    "employee": "1111",
+    "unique": "zhangsan",
+    "distinguishedName": "张三@zhangsan@P",
+    "orderNumber": 14214946,
+    "controllerList": [
+      "3455b82a-399c-4ee4-b9b9-e70ae40fbaf1",
+      "8e527447-635c-4775-8107-239096fc3ec4"
+    ],
+    "superior": "",
+    "changePasswordTime": "2023-04-04",
+    "lastLoginTime": "2023-04-07",
+    "lastLoginClient": "",
+    "ipAddress": "",
+    "mail": "",
+    "weixin": "",
+    "qq": "",
+    "mobile": "13812345678",
+    "officePhone": "",
+    "failureTime": "2022-12-15 14:10:23",
+    "failureCount": 2,
+    "woIdentityList": "text:personData_woIdentityList",
+    "woRoleList": "text:personData_woRoleList",
+    "woGroupList": "text:personData_woGroupList",
+    "woPersonAttributeList": "text:personData_woPersonAttributeList",
+    "createTime": "2018-06-14 12:35:46",
+    "updateTime": "2023-04-07 17:56:32"
   }
 }

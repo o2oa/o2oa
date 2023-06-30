@@ -1470,7 +1470,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @return {Promise|PersonData} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员对象。
-         * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+         * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
          * @o2syntax
          * //同步执行，返回人员对象。
          * var person = this.org.getPersonData( name );

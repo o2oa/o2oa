@@ -1,0 +1,17 @@
+[
+      {
+        "id": "4de87a00-66a2-4c6a-94d7-4a2afdeb9e42",
+        "pinyin": "bssmanager",
+        "pinyinInitial": "bssmanager",
+        "name": "BSSManager",
+        "unique": "BSSManagerSystemRole",
+        "distinguishedName": "BSSManager@BSSManagerSystemRole@R",
+        "orderNumber": 15329841,
+        "personList": [
+          "97941ea3-e3eb-4db7-aaf6-1263b048d909"
+        ],
+        "groupList": [],
+        "createTime": "2018-06-27 10:17:21",
+        "updateTime": "2023-06-30 16:52:00"
+      }
+    ]
