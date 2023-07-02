@@ -5,13 +5,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.google.gson.JsonObject;
 import com.x.base.core.project.config.Config;
@@ -24,6 +23,10 @@ import com.x.server.console.server.Servers;
 
 public class StartCommand {
 
+	private static final String PATTERN_TEXT = "^ {0,}start {0,}(data|storage|center|application|web|all|admin|) {0,}$";
+
+	public static final Pattern PATTERN = Pattern.compile(PATTERN_TEXT, Pattern.CASE_INSENSITIVE);
+
 	private StartCommand() {
 		// nothing
 	}
@@ -31,70 +34,71 @@ public class StartCommand {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartCommand.class);
 
 	private static final Consumer<Matcher> consumer = matcher -> {
-
-		if (initIfNecessary(StringUtils.equalsIgnoreCase(matcher.group(1), "init"))) {
-			switch (matcher.group(1)) {
-			case "application":
-				startApplicationServer();
-				break;
-			case "center":
-				startCenterServer();
-				break;
-			case "web":
-				startWebServer();
-				break;
-			case "storage":
-				startStorageServer();
-				break;
-			case "data":
-				startDataServer();
-				break;
-			default:
-				startAll();
-				break;
-			}
-		}
-	};
-
-	private static boolean initIfNecessary(boolean force) {
 		try {
-			if (force || initIfNecessarySetPassword() || initIfNecessaryUpgradeLocalRepositoryDataH2()) {
-				Servers.startInitServer();
-				// 等待停止信号
-				LinkedBlockingQueue<String> stopSignalQueue = new LinkedBlockingQueue<>();
-				new Resource(Config.RESOURCE_INITSERVERSTOPSIGNAL, stopSignalQueue);
-				stopSignalQueue.take();
-				Servers.stopInitServer();
+			String arg = matcher.group(1);
+			if (!StringUtils.endsWithIgnoreCase(arg, "skipAdmin")
+					&& (StringUtils.equalsIgnoreCase(arg, "admin") || ifAdminServerNecessary())) {
+				startAdminServer();
 			}
-			return true;
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-			LOGGER.error(ie);
+			if (StringUtils.equalsIgnoreCase(arg, "application")
+					|| StringUtils.equalsIgnoreCase(arg, "applicationSkipAdmin")) {
+				startApplicationServer();
+			} else if (StringUtils.equalsIgnoreCase(arg, "center")
+					|| StringUtils.equalsIgnoreCase(arg, "centerSkipAdmin")) {
+				startCenterServer();
+			} else if (StringUtils.equalsIgnoreCase(arg, "web") || StringUtils.equalsIgnoreCase(arg, "webSkipAdmin")) {
+				startWebServer();
+			} else if (StringUtils.equalsIgnoreCase(arg, "storage")
+					|| StringUtils.equalsIgnoreCase(arg, "storageSkipAdmin")) {
+				startStorageServer();
+			} else if (StringUtils.equalsIgnoreCase(arg, "data")
+					|| StringUtils.equalsIgnoreCase(arg, "dataSkipAdmin")) {
+				startDataServer();
+			} else {
+				startAll();
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		return false;
+	};
+
+	private static boolean ifAdminServerNecessary() throws Exception {
+		return (ifAdminServerNecessarySetPassword() || ifAdminServerNecessaryUpgradeLocalRepositoryDataH2());
 	}
 
-	private static boolean initIfNecessarySetPassword() throws Exception {
+	private static boolean ifAdminServerNecessarySetPassword() throws Exception {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
 	}
 
-	private static boolean initIfNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
+	private static boolean ifAdminServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
 		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
 		if (Files.exists(path)) {
 			Optional<String> jarVersion = H2Tools.jarVersion();
 			Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
 			return ((jarVersion.isPresent() && localRepositoryDataH2Version.isPresent())
-					&& (!StringUtils.equals(jarVersion.get(), localRepositoryDataH2Version.get())));
+					&& (!StringUtils.equalsIgnoreCase(jarVersion.get(), localRepositoryDataH2Version.get())));
 		}
 		return false;
 	}
 
 	public static Consumer<Matcher> consumer() {
 		return consumer;
+	}
+
+	private static void startAdminServer() {
+		try {
+			Servers.startAdminServer();
+			// 等待停止信号
+			Servers.getAdminServer().join();
+			Servers.stopAdminServer();
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			LOGGER.error(ie);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private static void startApplicationServer() {

@@ -23,7 +23,6 @@ public class ExitCommand extends StopCommand {
 	}
 
 	private static void exit() {
-		stopInitServer();
 		stopAll();
 		if (null != Main.getNodeAgent()) {
 			try {

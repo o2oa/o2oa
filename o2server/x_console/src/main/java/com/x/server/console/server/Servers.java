@@ -4,19 +4,15 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.ftpserver.FtpServer;
 import org.eclipse.jetty.server.Server;
 
-import com.x.base.core.project.config.ApplicationServer;
-import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.StorageServer;
-import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.server.admin.AdminServerTools;
 import com.x.server.console.server.application.ApplicationServerTools;
 import com.x.server.console.server.center.CenterServerTools;
 import com.x.server.console.server.data.DataServerTools;
 import com.x.server.console.server.data.DataTcpWebServer;
-import com.x.server.console.server.init.InitServerTools;
 import com.x.server.console.server.storage.StorageServerTools;
 import com.x.server.console.server.web.WebServerTools;
 
@@ -28,12 +24,16 @@ public class Servers {
 
 	}
 
-	private static Server initServer;
+	private static Server adminServer;
 	private static Server centerServer;
 	private static Server webServer;
 	private static Server applicationServer;
 	private static FtpServer storageServer;
 	private static DataTcpWebServer dataServer;
+
+	public static Server getAdminServer() {
+		return adminServer;
+	}
 
 	public static Server getCenterServer() {
 		return centerServer;
@@ -47,11 +47,11 @@ public class Servers {
 		return webServer;
 	}
 
-	public static boolean initServerIsStarted() {
-		if (null == initServer) {
+	public static boolean adminServerIsStarted() {
+		if (null == adminServer) {
 			return false;
 		}
-		return initServer.isStarted();
+		return adminServer.isStarted();
 	}
 
 	public static boolean webServerIsStarted() {
@@ -75,11 +75,11 @@ public class Servers {
 		return centerServer.isStarted();
 	}
 
-	public static boolean initServerIsRunning() {
-		if (null == initServer) {
+	public static boolean adminServerIsRunning() {
+		if (null == adminServer) {
 			return false;
 		}
-		return initServer.isRunning();
+		return adminServer.isRunning();
 	}
 
 	public static boolean webServerIsRunning() {
@@ -117,26 +117,11 @@ public class Servers {
 		return (dataServer.isRunning());
 	}
 
-	public static void startInitServer() throws Exception {
-		if (initServerIsRunning()) {
-			LOGGER.info("init server is running.");
+	public static void startAdminServer() throws Exception {
+		if (adminServerIsRunning()) {
+			LOGGER.info("admin server is running.");
 		} else {
-			WebServer server = Config.currentNode().getWeb();
-			if (null == server) {
-				LOGGER.info("web server is not configured.");
-			} else if (!BooleanUtils.isTrue(server.getEnable())) {
-				LOGGER.info("web server is not enable.");
-			} else {
-				initServer = InitServerTools.start();
-			}
-		}
-	}
-
-	public static void stopInitServer() throws Exception {
-		if (!initServerIsRunning()) {
-			LOGGER.info("init server is not running.");
-		} else {
-			initServer.stop();
+			adminServer = AdminServerTools.start();
 		}
 	}
 
@@ -144,22 +129,7 @@ public class Servers {
 		if (webServerIsRunning()) {
 			LOGGER.info("web server is running.");
 		} else {
-			WebServer server = Config.currentNode().getWeb();
-			if (null == server) {
-				LOGGER.info("web server is not configured.");
-			} else if (!BooleanUtils.isTrue(server.getEnable())) {
-				LOGGER.info("web server is not enable.");
-			} else {
-				webServer = WebServerTools.start(server);
-			}
-		}
-	}
-
-	public static void stopWebServer() throws Exception {
-		if (!webServerIsRunning()) {
-			LOGGER.info("web server is not running.");
-		} else {
-			webServer.stop();
+			webServer = WebServerTools.start();
 		}
 	}
 
@@ -167,22 +137,7 @@ public class Servers {
 		if (applicationServerIsRunning()) {
 			LOGGER.info("application server is running.");
 		} else {
-			ApplicationServer server = Config.currentNode().getApplication();
-			if (null == server) {
-				LOGGER.info("application server is not configured.");
-			} else if (!BooleanUtils.isTrue(server.getEnable())) {
-				LOGGER.info("application server is not enable.");
-			} else {
-				applicationServer = ApplicationServerTools.start(server);
-			}
-		}
-	}
-
-	public static void stopApplicationServer() throws Exception {
-		if (!applicationServerIsRunning()) {
-			LOGGER.info("application server is not running.");
-		} else {
-			applicationServer.stop();
+			applicationServer = ApplicationServerTools.start();
 		}
 	}
 
@@ -190,46 +145,16 @@ public class Servers {
 		if (centerServerIsRunning()) {
 			LOGGER.info("center server is running.");
 		} else {
-			CenterServer server = Config.currentNode().getCenter();
-			if (null == server) {
-				LOGGER.info("center server is not configured.");
-			} else if (!BooleanUtils.isTrue(server.getEnable())) {
-				LOGGER.info("center server is not enable.");
-			} else {
-				centerServer = CenterServerTools.start(server);
-			}
+			centerServer = CenterServerTools.start();
 		}
 
-	}
-
-	public static void stopCenterServer() throws Exception {
-		if (!centerServerIsRunning()) {
-			LOGGER.info("center server is not running.");
-		} else {
-			centerServer.stop();
-		}
 	}
 
 	public static void startStorageServer() throws Exception {
 		if (storageServerIsRunning()) {
 			LOGGER.info("storage server is running.");
 		} else {
-			StorageServer server = Config.currentNode().getStorage();
-			if (null == server) {
-				LOGGER.info("storagae server is not configured.");
-			} else if (!BooleanUtils.isTrue(server.getEnable())) {
-				LOGGER.info("storagae server is not enable.");
-			} else {
-				storageServer = StorageServerTools.start(server);
-			}
-		}
-	}
-
-	public static void stopStorageServer() {
-		if (!storageServerIsRunning()) {
-			LOGGER.info("storage server is not running.");
-		} else {
-			storageServer.stop();
+			storageServer = StorageServerTools.start();
 		}
 	}
 
@@ -243,15 +168,43 @@ public class Servers {
 			} else if (!BooleanUtils.isTrue(server.getEnable())) {
 				LOGGER.info("data server is not enable.");
 			} else {
-				dataServer = DataServerTools.start(server);
+				dataServer = DataServerTools.start();
 			}
 		}
 	}
 
+	public static void stopAdminServer() throws Exception {
+		if (adminServerIsRunning()) {
+			adminServer.stop();
+		}
+	}
+
+	public static void stopWebServer() throws Exception {
+		if (webServerIsRunning()) {
+			webServer.stop();
+		}
+	}
+
+	public static void stopApplicationServer() throws Exception {
+		if (applicationServerIsRunning()) {
+			applicationServer.stop();
+		}
+	}
+
+	public static void stopCenterServer() throws Exception {
+		if (centerServerIsRunning()) {
+			centerServer.stop();
+		}
+	}
+
+	public static void stopStorageServer() {
+		if (storageServerIsRunning()) {
+			storageServer.stop();
+		}
+	}
+
 	public static void stopDataServer() {
-		if (!dataServerIsRunning()) {
-			LOGGER.info("data server is not running.");
-		} else {
+		if (dataServerIsRunning()) {
 			dataServer.stop();
 		}
 	}

@@ -73,7 +73,9 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	public static Server start(ApplicationServer applicationServer) throws Exception {
+	public static Server start() throws Exception {
+
+		ApplicationServer applicationServer = Config.currentNode().getApplication();
 
 		List<ClassInfo> officialClassInfos = listOfficial();
 

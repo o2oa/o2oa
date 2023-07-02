@@ -28,7 +28,7 @@ public class Commands {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Commands.class);
 
 	private static final List<Pair<Pattern, Consumer<Matcher>>> PATTERN_COMMANDS = Arrays.asList(
-			Pair.of(CommandFactory.start_pattern, StartCommand.consumer()),
+			Pair.of(StartCommand.PATTERN, StartCommand.consumer()),
 			Pair.of(CommandFactory.stop_pattern, StopCommand.consumer()),
 			Pair.of(CommandFactory.help_pattern, HelpCommand.consumer()),
 			Pair.of(CommandFactory.version_pattern, VersionCommand.consumer()),

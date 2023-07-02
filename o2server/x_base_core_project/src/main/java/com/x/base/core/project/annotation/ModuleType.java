@@ -2,7 +2,7 @@ package com.x.base.core.project.annotation;
 
 public enum ModuleType {
 
-	BASE, CENTER, ENTITY, EXPRESS, ASSEMBLE, SERVICE, INIT;
+	BASE, CENTER, ENTITY, EXPRESS, ASSEMBLE, SERVICE, ADMIN;
 
-	public static int lengh = 16;
+	public static final int LENGH = 16;
 }

@@ -147,12 +147,12 @@ public class Config {
 	public static final String DIR_SERVERS_CENTERSERVER_WEBAPPS = "servers/centerServer/webapps";
 	public static final String DIR_SERVERS_CENTERSERVER_WORK = "servers/centerServer/work";
 	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
-	public static final String DIR_SERVERS_WEBSERVER_X_INIT = "servers/webServer/x_init";
+	public static final String DIR_SERVERS_WEBSERVER_X_ADMIN = "servers/webServer/x_admin";
 	public static final String DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG = "servers/webServer/x_desktop/res/config";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
 	public static final String DIR_WEBROOT = "webroot";
-	public static final String DIR_SERVERS_INITSERVER_WORK = "servers/initServer/work";
+	public static final String DIR_SERVERS_ADMINSERVER_WORK = "servers/adminServer/work";
 
 	public static final String RESOURCE_CONTAINERENTITIES = "containerEntities";
 
@@ -160,7 +160,7 @@ public class Config {
 
 	public static final String RESOURCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
 
-	public static final String RESOURCE_INITSERVERSTOPSIGNAL = "initServerStopSignal";
+	public static final String RESOURCE_ADMINSERVERSTOPSIGNALQUEUE = "adminServerStopSignalQueue";
 
 	public static final String RESOURCE_COMMANDQUEUE = "commandQueue";
 
@@ -525,8 +525,8 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_servers_webServer_x_init(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_INIT);
+	public static Path path_servers_webServer_x_admin(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_ADMIN);
 		if (!Files.exists(path) && force) {
 			Files.createDirectories(path);
 		}
@@ -1509,8 +1509,8 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_servers_initServer_work(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_SERVERS_INITSERVER_WORK);
+	public static Path path_servers_adminServer_work(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_ADMINSERVER_WORK);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}

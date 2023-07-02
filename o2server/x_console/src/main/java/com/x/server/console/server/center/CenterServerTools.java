@@ -48,7 +48,7 @@ public class CenterServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CenterServerTools.class);
 
-	public static Server start(CenterServer centerServer) throws Exception {
+	public static Server start() throws Exception {
 
 		cleanWorkDirectory();
 
@@ -58,7 +58,10 @@ public class CenterServerTools extends JettySeverTools {
 
 		modified(war, dir);
 
-		if (Objects.equals(Config.currentNode().getApplication().getPort(), centerServer.getPort())) {
+		CenterServer centerServer = Config.currentNode().getCenter();
+
+		if ((null == centerServer) || BooleanUtils.isNotTrue(centerServer.getEnable())
+				|| Objects.equals(Config.currentNode().getApplication().getPort(), centerServer.getPort())) {
 			return null;
 		} else {
 			return startStandalone(centerServer);

@@ -1,8 +1,10 @@
 package com.x.server.console.server.data;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.h2.tools.Server;
 
 import com.x.base.core.project.config.Config;
@@ -19,15 +21,23 @@ public class DataServerTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataServerTools.class);
 
-	public static DataTcpWebServer start(DataServer dataServer) throws Exception {
+	public static DataTcpWebServer start() throws Exception {
+
+		DataServer dataServer = Config.currentNode().getData();
+		if (null == dataServer) {
+			LOGGER.info("data server is not configured.");
+			return null;
+		} else if (!BooleanUtils.isTrue(dataServer.getEnable())) {
+			LOGGER.info("data server is not enable.");
+			return null;
+		}
+
 		// File dataBaseDir = new File(Config.base(), "local/repository/data");
 		// FileUtils.forceMkdir(dataBaseDir);
 		Path dataBaseDir = Config.path_local_repository_data(true);
 		Optional<String> opt = H2Tools.jarVersion();
-		if (opt.isPresent()) {
+		if (opt.isPresent() && (!Files.exists(dataBaseDir.resolve(H2Tools.FILENAME_DATABASE)))) {
 			H2Tools.localRepositoryDataH2Version(opt.get());
-		} else {
-			throw new IllegalStateException("can not get h2 jar version.");
 		}
 		Server tcpServer = null;
 		Server webServer = null;

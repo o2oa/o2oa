@@ -41,7 +41,7 @@ public class WebServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebServerTools.class);
 
-	public static Server start(WebServer webServer) throws Exception {
+	public static Server start() throws Exception {
 
 		// 更新web服务配置信息
 		WebServers.updateWebServerConfigJson();
@@ -54,7 +54,10 @@ public class WebServerTools extends JettySeverTools {
 		// 覆盖 webServer
 		coverToWebServer();
 
-		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
+		WebServer webServer = Config.currentNode().getWeb();
+
+		if ((null == webServer) || BooleanUtils.isNotTrue(webServer.getEnable())
+				|| Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
 			return startInApplication();
 		} else {
 			return startStandalone(webServer);
