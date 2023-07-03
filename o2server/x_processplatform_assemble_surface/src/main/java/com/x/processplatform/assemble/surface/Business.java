@@ -569,6 +569,26 @@ public class Business {
 		return false;
 	}
 
+	public boolean ifPersonCanManageApplicationOrProcess(String person, String applicationId, String processId)
+			throws Exception {
+		if (BooleanUtils.isTrue(organization().person().hasRole(person, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformManager))) {
+			return true;
+		}
+		Application app = null;
+		if (StringUtils.isNotBlank(applicationId)) {
+			app = this.application().pick(applicationId);
+		}
+		Process pro = null;
+		if (StringUtils.isNotBlank(processId)) {
+			pro = this.process().pick(processId);
+		}
+		if ((null != app) || (null != pro)) {
+			return this.ifPersonCanManageApplicationOrProcess(person, app, pro);
+		}
+		return false;
+	}
+
 	public boolean ifPersonCanManageApplicationOrProcess(EffectivePerson effectivePerson, Application app, Process pro)
 			throws Exception {
 		if (effectivePerson.isManager()) {
@@ -581,8 +601,20 @@ public class Business {
 		if ((null == app) && (null == pro)) {
 			return false;
 		}
-		return (effectivePerson.isManager() || ((null != pro) && effectivePerson.isPerson(pro.getControllerList()))
-				|| ((null != app) && effectivePerson.isPerson(app.getControllerList())));
+		return ((null != pro) && effectivePerson.isPerson(pro.getControllerList()))
+				|| ((null != app) && effectivePerson.isPerson(app.getControllerList()));
+	}
+
+	public boolean ifPersonCanManageApplicationOrProcess(String person, Application app, Process pro) throws Exception {
+		if (BooleanUtils.isTrue(organization().person().hasRole(person, OrganizationDefinition.Manager,
+				OrganizationDefinition.ProcessPlatformManager))) {
+			return true;
+		}
+		if ((null == app) && (null == pro)) {
+			return false;
+		}
+		return ((null != pro) && pro.getControllerList().contains(person))
+				|| ((null != app) && app.getControllerList().contains(person));
 	}
 
 	private boolean hasTaskOrReadOrTaskCompletedOrReadCompletedOrReviewWithPersonWithJob(

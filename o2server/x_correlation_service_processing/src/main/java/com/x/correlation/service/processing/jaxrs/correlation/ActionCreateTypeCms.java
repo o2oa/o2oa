@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -14,6 +15,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWo;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWo;
 import com.x.correlation.service.processing.Business;
 
 class ActionCreateTypeCms extends BaseAction {
@@ -33,10 +35,11 @@ class ActionCreateTypeCms extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			this.checkPermissionReadFromCms(wi.getPerson(), document);
-			List<Correlation> targets = this.readTarget(wi.getPerson(), business, wi.getTargetList());
+			Pair<List<Correlation>, List<TargetWo>> pair = this.readTarget(wi.getPerson(), business,
+					wi.getTargetList());
 			Map<String, Correlation> exists = this.exists(business, Correlation.TYPE_CMS, document);
 			emc.beginTransaction(Correlation.class);
-			targets.stream().forEach(o -> exists.compute(o.getTargetType() + o.getTargetBundle(), (k, v) -> {
+			pair.first().stream().forEach(o -> exists.compute(o.getTargetType() + o.getTargetBundle(), (k, v) -> {
 				try {
 					if (null == v) {
 						o.setFromType(Correlation.TYPE_CMS);
@@ -55,7 +58,8 @@ class ActionCreateTypeCms extends BaseAction {
 			}));
 			emc.commit();
 			Wo wo = new Wo();
-			wo.setValue(true);
+			wo.setSuccessList(pair.first());
+			wo.setFailureList(pair.second());
 			result.setData(wo);
 			return result;
 		}
