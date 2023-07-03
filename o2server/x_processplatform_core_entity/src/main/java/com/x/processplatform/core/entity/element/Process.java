@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -142,6 +143,20 @@ public class Process extends SliceJpaObject {
 		this.getProperties().setUpdateTableList(updateTableList);
 	}
 
+	public static final String formFieldList_FIELDNAME = "formFieldList";
+	@FieldDescribe("需要记录数据变化的表单字段.")
+	@Transient
+	private List<String> formFieldList;
+
+	public List<String> getFormFieldList() {
+		return formFieldList == null ? new ArrayList<>() : formFieldList;
+	}
+
+	public void setFormFieldList(List<String> formFieldList) {
+		this.formFieldList = formFieldList;
+		this.getProperties().setFormFieldList(formFieldList);
+	}
+
 	public Boolean getProjectionFully() {
 		return BooleanUtils.isTrue(this.projectionFully);
 	}
@@ -225,6 +240,7 @@ public class Process extends SliceJpaObject {
 			this.targetAssignDataScriptText = this.getProperties().getTargetAssignDataScriptText();
 			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
+			this.formFieldList = this.getProperties().getFormFieldList();
 		}
 	}
 
