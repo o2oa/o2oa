@@ -17,7 +17,6 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 			this.documentList = json.data;
 			this.showDocumentList();
 		}.bind(this));
-		console.log(111)
 	},
 	cancelAssociated: function(e, d, itemNode){
 		var lp = MWF.xApplication.cms.Xform.LP;
