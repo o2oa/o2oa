@@ -297,6 +297,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         },
 
         getExcelData: function(){
+            debugger;
             var data = this.json[this.json.$id];
             if( !data )return "";
             if( !this.json.options )this._loadOptions();

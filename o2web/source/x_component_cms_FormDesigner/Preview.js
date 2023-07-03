@@ -20,7 +20,7 @@ MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
 
         this.form = form;
 		// this.data = form._getFormData();
-        this.data = this.form.data;
+        this.data = Object.clone( this.form.data );
 	},
     loadFormData: function(node){
         MWF.getJSON("../x_desktop/res/preview/cmsdoc.json", function(json){

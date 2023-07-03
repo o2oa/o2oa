@@ -48,6 +48,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
         }
     },
     _checkVmodel: function(text){
+        debugger;
         if (text){
             this.vModels = [];
             var reg = /(?:v-model)(?:.lazy|.number|.trim)?(?:\s*=\s*)(?:["'])?([^"']*)/g;
@@ -170,6 +171,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             this.json = Object.merge(d, this.json);
         }
         if (this.json.$id===this.json.id) this.form.Macro.environment.data.check(this.json.$id);
+        debugger;
         this.json[this.json.$id] = this._getBusinessData();
         this._appendVueData();
         return this.json;
