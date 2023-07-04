@@ -315,7 +315,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
 		reload: function(){
-			debugger;
 			this.reloading = true;
 			this._removeEl();
 
@@ -1474,7 +1473,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}.bind(this));
 		},
 		__setData: function(data, fireChange, operation){
-			debugger;
             // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
 			if( this.isShowAllSection ){
 				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
@@ -1545,7 +1543,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
-			debugger;
 			// if( this.isSectionMergeEdit() ){
 			// 	//合并且编辑，不允许setAllSectionData
 			// 	throw new Error("The data table is in merge editing state, you can use the 'setData' method to set the data");
@@ -2843,7 +2840,6 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					//该字段是合集数值字段
 					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
-						debugger;
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
 							if( this.sectionLine )this.sectionLine._loadTotal();

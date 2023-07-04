@@ -14,7 +14,6 @@ Object.assign(o2.APP$Elinput.prototype, {
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        debugger;
         this.json[this.json.$id] = value;
         this.__setReadonly(value);
         this.fieldModuleLoaded = true;
@@ -23,7 +22,6 @@ Object.assign(o2.APP$Elinput.prototype, {
     __setData: function(data){
         var old = this.getInputData();
         this._setBusinessData(data);
-        debugger;
         this.json[this.json.$id] = data;
         this.__setReadonly(data);
         if (old!==data) this.fireEvent("change");
@@ -34,7 +32,6 @@ Object.assign(o2.APP$Elinput.prototype, {
         if (this.isReadonly()) this.node.set("text", data);
     },
     getInputData: function(){
-        debugger;
         return this.json[this.json.$id];
     },
     // _getVueModelBindId: function(){
@@ -45,7 +42,6 @@ Object.assign(o2.APP$Elinput.prototype, {
     //     }
     // },
     _loadNodeEdit: function(){
-        debugger;
         var id = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
         this.json["$id"] = (id.indexOf("-")!==-1) ? id.replace(/-/g, "_") : id;
         this.node.appendHTML(this._createElementHtml(), "before");
