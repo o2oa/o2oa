@@ -512,11 +512,6 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	public static final String routeList_FIELDNAME = "routeList";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由,多值.")
@@ -1105,14 +1100,6 @@ public class Manual extends Activity {
 
 	public void setAfterInquireScriptText(String afterInquireScriptText) {
 		this.afterInquireScriptText = afterInquireScriptText;
-	}
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 	public Boolean getAllowReset() {

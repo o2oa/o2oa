@@ -36,8 +36,8 @@ class ActionTypeSuspend extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			job = work.getJob();
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSuspend().build();
-			if (BooleanUtils.isNotTrue(control.getAllowSuspend())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

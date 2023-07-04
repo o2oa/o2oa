@@ -53,8 +53,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowAddTask = false;
 	// 是否可以调度
 	private boolean ifAllowReroute = false;
-	// 是否可以挂起
-	private boolean ifAllowSuspend = false;
+//	// 是否可以挂起
+//	private boolean ifAllowSuspend = false;
 	// 是否可以删除
 	private boolean ifAllowDelete = false;
 	// 是否可以增加会签分支
@@ -71,8 +71,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowResume = false;
 	// 是否可以退回
 	private boolean ifAllowGoBack = false;
-	// 是否可以重置待阅处理人
-	private boolean ifAllowReadReset = false;
+//	// 是否可以重置待阅处理人
+//	private boolean ifAllowReadReset = false;
 
 	public WorkControlBuilder enableAllowManage() {
 		this.ifAllowManage = true;
@@ -114,10 +114,10 @@ public class WorkControlBuilder {
 		return this;
 	}
 
-	public WorkControlBuilder enableAllowSuspend() {
-		this.ifAllowSuspend = true;
-		return this;
-	}
+//	public WorkControlBuilder enableAllowSuspend() {
+//		this.ifAllowSuspend = true;
+//		return this;
+//	}
 
 	public WorkControlBuilder enableAllowDelete() {
 		this.ifAllowDelete = true;
@@ -159,10 +159,10 @@ public class WorkControlBuilder {
 		return this;
 	}
 
-	public WorkControlBuilder enableAllowReadReset() {
-		this.ifAllowReadReset = true;
-		return this;
-	}
+//	public WorkControlBuilder enableAllowReadReset() {
+//		this.ifAllowReadReset = true;
+//		return this;
+//	}
 
 	public WorkControlBuilder enableAll() {
 		enableAllowManage();
@@ -173,7 +173,7 @@ public class WorkControlBuilder {
 		enableAllowReset();
 		enableAllowAddTask();
 		enableAllowReroute();
-		enableAllowSuspend();
+//		enableAllowSuspend();
 		enableAllowDelete();
 		enableAllowAddSplit();
 		enableAllowRetract();
@@ -182,7 +182,7 @@ public class WorkControlBuilder {
 		enableAllowPause();
 		enableAllowResume();
 		enableAllowGoBack();
-		enableAllowReadReset();
+//		enableAllowReadReset();
 		return this;
 	}
 
@@ -289,13 +289,11 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
 				Pair.of(ifAllowSave, this::computeAllowSave), Pair.of(ifAllowReset, this::computeAllowReset),
 				Pair.of(ifAllowAddTask, this::computeAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
-				Pair.of(ifAllowSuspend, this::computeAllowSuspend), Pair.of(ifAllowDelete, this::computeAllowDelete),
-				Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
+				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
-				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
-				Pair.of(ifAllowReadReset, this::computeAllowReadReset)).stream().filter(Pair::first)
+				Pair.of(ifAllowGoBack, this::computeAllowGoBack)).stream().filter(Pair::first)
 				.forEach(o -> o.second().accept(control));
 		recalculate(work, control);
 		return control;
@@ -369,15 +367,6 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private void computeAllowSuspend(Control control) {
-		try {
-			control.setAllowSuspend(canManage()
-					&& PropertyTools.getOrElse(activity(), Activity.allowSuspend_FIELDNAME, Boolean.class, false));
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-	}
-
 	/**
 	 * 管理员可以删除,或者活动设置了可以删除&&有待办
 	 * 
@@ -441,13 +430,13 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private void computeAllowReadReset(Control control) {
-		try {
-			control.setAllowReadReset(canManage());
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-	}
+//	private void computeAllowReadReset(Control control) {
+//		try {
+//			control.setAllowReadReset(canManage());
+//		} catch (Exception e) {
+//			LOGGER.error(e);
+//		}
+//	}
 
 	private void computeAllowRollback(Control control) {
 		try {
