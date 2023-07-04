@@ -36,6 +36,7 @@ public class MissionSetSecret implements Mission {
 		try {
 			this.changeInternalDataServerPassword(Config.token().getPassword(), getSecret());
 			this.changeTokenPassword(getSecret());
+			Config.resource_commandQueue().add("ctl -flushConfig");
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
 		} catch (Exception e) {
 			throw new ExceptionMissionExecute(e);
@@ -45,9 +46,10 @@ public class MissionSetSecret implements Mission {
 	private void changeInternalDataServerPassword(String oldPassword, String newPassword)
 			throws IOException, URISyntaxException, SQLException {
 		org.h2.Driver.load();
-		Path path = Config.path_local_repository_data(true).resolve(H2Tools.DATABASE);
+		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
 		if (Files.exists(path)) {
-			try (Connection conn = DriverManager.getConnection("jdbc:h2:" + path.toAbsolutePath().toString(),
+			try (Connection conn = DriverManager.getConnection("jdbc:h2:"
+					+ Config.path_local_repository_data(true).resolve(H2Tools.DATABASE).toAbsolutePath().toString(),
 					H2Tools.USER, oldPassword)) {
 				RunScript.execute(conn,
 						new StringReader("ALTER USER " + H2Tools.USER + " SET PASSWORD '" + newPassword + "'"));
