@@ -1,4 +1,4 @@
-package com.x.server.console;
+package com.x.server.console.command;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,14 +10,7 @@ import java.util.regex.Pattern;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.command.ControlCommand;
-import com.x.server.console.command.ExitCommand;
-import com.x.server.console.command.HelpCommand;
-import com.x.server.console.command.RestartCommand;
-import com.x.server.console.command.SetPasswordCommand;
-import com.x.server.console.command.StartCommand;
-import com.x.server.console.command.StopCommand;
-import com.x.server.console.command.VersionCommand;
+import com.x.server.console.CommandFactory;
 
 public class Commands {
 
@@ -29,13 +22,12 @@ public class Commands {
 
 	private static final List<Pair<Pattern, Consumer<Matcher>>> PATTERN_COMMANDS = Arrays.asList(
 			Pair.of(StartCommand.PATTERN, StartCommand.consumer()),
-			Pair.of(CommandFactory.stop_pattern, StopCommand.consumer()),
-			Pair.of(CommandFactory.help_pattern, HelpCommand.consumer()),
-			Pair.of(CommandFactory.version_pattern, VersionCommand.consumer()),
-			Pair.of(CommandFactory.control_pattern, ControlCommand.consumer()),
-			Pair.of(CommandFactory.setPassword_pattern, SetPasswordCommand.consumer()),
-			Pair.of(CommandFactory.restart_pattern, RestartCommand.consumer()),
-			Pair.of(CommandFactory.exit_pattern, ExitCommand.consumer()));
+			Pair.of(StopCommand.PATTERN, StopCommand.consumer()), Pair.of(HelpCommand.PATTERN, HelpCommand.consumer()),
+			Pair.of(VersionCommand.PATTERN, VersionCommand.consumer()),
+			Pair.of(ControlCommand.PATTERN, ControlCommand.consumer()),
+			Pair.of(SetPasswordCommand.PATTERN, SetPasswordCommand.consumer()),
+			Pair.of(RestartCommand.PATTERN, RestartCommand.consumer()),
+			Pair.of(ExitCommand.PATTERN, ExitCommand.consumer()));
 
 	public static void execute(String cmd) {
 		new Thread(() -> {

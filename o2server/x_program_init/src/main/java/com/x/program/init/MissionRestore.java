@@ -30,7 +30,7 @@ public class MissionRestore implements Mission {
 			}
 			ZipTools.unZip(path.toFile(), null, Config.path_local_dump(true).resolve("dumpData_" + getStamp()).toFile(),
 					true, StandardCharsets.UTF_8);
-			if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
+			if (BooleanUtils.isNotTrue(Config.externalDataSources().enable())) {
 				Config.resource_commandQueue().add("start dataSkipInit");
 				Thread.sleep(2000);
 				Config.resource_commandQueue().add("ctl -initResourceFactory");

@@ -2,12 +2,17 @@ package com.x.server.console.command;
 
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.server.console.server.Servers;
 
 public class StopCommand {
+
+	public static final String PATTERN_TEXT = "^ {0,}stop {0,}(.*)$";
+
+	public static final Pattern PATTERN = Pattern.compile(PATTERN_TEXT, Pattern.CASE_INSENSITIVE);
 
 	protected StopCommand() {
 		// nothing

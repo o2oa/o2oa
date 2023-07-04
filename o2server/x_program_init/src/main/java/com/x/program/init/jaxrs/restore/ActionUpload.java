@@ -3,7 +3,6 @@ package com.x.program.init.jaxrs.restore;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -25,9 +24,9 @@ class ActionUpload extends BaseAction {
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, final FormDataBodyPart part) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
-		String stamp = DateTools.format(new Date(), DateTools.format_yyyyMMddHHmmss);
+		String stamp = DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss);
 		Path path = Config.dir_local_temp().toPath().resolve(stamp + ".zip");
-		Files.copy(part.getValueAs(InputStream.class), path, StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(part.getValueAs(InputStream.class), path);
 		MissionRestore missionRestore = new MissionRestore();
 		missionRestore.setStamp(stamp);
 		ThisApplication.setMissionRestore(missionRestore);
