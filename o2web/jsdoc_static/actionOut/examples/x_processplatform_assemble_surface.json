@@ -29,7 +29,8 @@
     "embedCompleted": true,
     "activityType": "text:work_activityType",
     "destinationActivityType": "text:work_activityType",
-    "workStatus": "text:work_workStatus"
+    "workStatus": "text:work_workStatus",
+    "goBackStore": "text:work_goBackStore"
   },
   "WorkParsed" : {
     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",
