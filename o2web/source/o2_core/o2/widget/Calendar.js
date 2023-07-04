@@ -549,6 +549,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	setPosition: function(){
+		debugger;
 		if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale===1) ){
 			var postY = "bottom";
 			var postX = "left";
