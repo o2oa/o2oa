@@ -445,7 +445,10 @@ MWF.xApplication.process.Xform.LP = {
     "document": "信息",
     "work": "工作",
     "cancelAssociatedTitle": "取消关联文档",
-    "cancelAssociated": "确定要取消和文档“{title}”的关联?"
+    "cancelAssociated": "确定要取消和文档“{title}”的关联?",
+    "associatedResult": "关联结果",
+    "selectDocNote": "请先选择文档",
+    "associatedDocument": "关联文档"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

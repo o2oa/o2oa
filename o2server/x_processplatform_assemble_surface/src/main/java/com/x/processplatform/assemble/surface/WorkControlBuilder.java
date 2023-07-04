@@ -1,7 +1,9 @@
 package com.x.processplatform.assemble.surface;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -53,8 +55,6 @@ public class WorkControlBuilder {
 	private boolean ifAllowAddTask = false;
 	// 是否可以调度
 	private boolean ifAllowReroute = false;
-	// 是否可以挂起
-	private boolean ifAllowSuspend = false;
 	// 是否可以删除
 	private boolean ifAllowDelete = false;
 	// 是否可以增加会签分支
@@ -71,8 +71,6 @@ public class WorkControlBuilder {
 	private boolean ifAllowResume = false;
 	// 是否可以退回
 	private boolean ifAllowGoBack = false;
-	// 是否可以重置待阅处理人
-	private boolean ifAllowReadReset = false;
 
 	public WorkControlBuilder enableAllowManage() {
 		this.ifAllowManage = true;
@@ -111,11 +109,6 @@ public class WorkControlBuilder {
 
 	public WorkControlBuilder enableAllowReroute() {
 		this.ifAllowReroute = true;
-		return this;
-	}
-
-	public WorkControlBuilder enableAllowSuspend() {
-		this.ifAllowSuspend = true;
 		return this;
 	}
 
@@ -159,11 +152,6 @@ public class WorkControlBuilder {
 		return this;
 	}
 
-	public WorkControlBuilder enableAllowReadReset() {
-		this.ifAllowReadReset = true;
-		return this;
-	}
-
 	public WorkControlBuilder enableAll() {
 		enableAllowManage();
 		enableAllowVisit();
@@ -173,7 +161,6 @@ public class WorkControlBuilder {
 		enableAllowReset();
 		enableAllowAddTask();
 		enableAllowReroute();
-		enableAllowSuspend();
 		enableAllowDelete();
 		enableAllowAddSplit();
 		enableAllowRetract();
@@ -182,7 +169,6 @@ public class WorkControlBuilder {
 		enableAllowPause();
 		enableAllowResume();
 		enableAllowGoBack();
-		enableAllowReadReset();
 		return this;
 	}
 
@@ -278,6 +264,20 @@ public class WorkControlBuilder {
 
 	private Map<String, Boolean> hasTaskCompletedWithActivityToken = new HashMap<>();
 
+	private boolean hasTaskCompletedWithActivityToken(EffectivePerson effectivePerson, Business business,
+			String activityToken) {
+		return this.hasTaskCompletedWithActivityToken.computeIfAbsent(activityToken, k -> {
+			try {
+				return business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return false;
+		});
+	}
+
 	public Control build() {
 		Control control = new Control();
 		if (null == work) {
@@ -289,13 +289,11 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),
 				Pair.of(ifAllowSave, this::computeAllowSave), Pair.of(ifAllowReset, this::computeAllowReset),
 				Pair.of(ifAllowAddTask, this::computeAllowAddTask), Pair.of(ifAllowReroute, this::computeAllowReroute),
-				Pair.of(ifAllowSuspend, this::computeAllowSuspend), Pair.of(ifAllowDelete, this::computeAllowDelete),
-				Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
+				Pair.of(ifAllowDelete, this::computeAllowDelete), Pair.of(ifAllowAddSplit, this::computeAllowAddSplit),
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
-				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
-				Pair.of(ifAllowReadReset, this::computeAllowReadReset)).stream().filter(Pair::first)
+				Pair.of(ifAllowGoBack, this::computeAllowGoBack)).stream().filter(Pair::first)
 				.forEach(o -> o.second().accept(control));
 		recalculate(work, control);
 		return control;
@@ -343,9 +341,8 @@ public class WorkControlBuilder {
 
 	private void computeAllowReset(Control control) {
 		try {
-			control.setAllowReadReset(
-					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork());
+			control.setAllowReset(PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+					&& hasTaskWithWork());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -370,15 +367,6 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private void computeAllowSuspend(Control control) {
-		try {
-			control.setAllowSuspend(canManage()
-					&& PropertyTools.getOrElse(activity(), Activity.allowSuspend_FIELDNAME, Boolean.class, false));
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-	}
-
 	/**
 	 * 管理员可以删除,或者活动设置了可以删除&&有待办
 	 * 
@@ -396,11 +384,41 @@ public class WorkControlBuilder {
 
 	private void computeAllowAddSplit(Control control) {
 		try {
-			control.setAllowAddSplit(
-					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork());
+			control.setAllowAddSplit(false);
+			if (BooleanUtils
+					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
+					&& BooleanUtils.isTrue(work.getSplitting())) {
+				Node node = this.workLogTree().location(work);
+				if (null != node) {
+					computeAllowAddSplitLoopNode(control, node);					
+				}
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowAddSplitLoopNode(Control control, Node node) {
+		Nodes nodes = new Nodes();
+		nodes.add(node);
+		for (int i = 0; i < work.getSplitTokenList().size(); i++) {
+			List<Node> temps = new ArrayList<>();
+			for (Node n : nodes) {
+				Nodes ups = n.upTo(ActivityType.split);
+				temps.addAll(ups);
+				for (Node u : ups) {
+					Nodes manuals = u.upTo(ActivityType.manual);
+					for (Node m : manuals) {
+						if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
+								m.getWorkLog().getFromActivityToken())) {
+							control.setAllowAddSplit(true);
+							return;
+						}
+					}
+				}
+			}
+			nodes.clear();
+			nodes.addAll(temps);
 		}
 	}
 
@@ -437,14 +455,6 @@ public class WorkControlBuilder {
 					}
 				}
 			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-	}
-
-	private void computeAllowReadReset(Control control) {
-		try {
-			control.setAllowReadReset(canManage());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -516,20 +526,6 @@ public class WorkControlBuilder {
 		}
 	}
 
-	private boolean hasTaskCompletedWithActivityToken(EffectivePerson effectivePerson, Business business,
-			String activityToken) {
-		return this.hasTaskCompletedWithActivityToken.computeIfAbsent(activityToken, k -> {
-			try {
-				return business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-			return false;
-		});
-	}
-
 	/**
 	 * 在退回处理过程中如果有getGoBackStore说明下一步需要jump,那么禁用以下功能.
 	 * 
@@ -538,27 +534,34 @@ public class WorkControlBuilder {
 	 */
 	private void recalculate(Work work, Control ctrl) {
 		if (null != work.getGoBackStore()) {
-			if (null != ctrl.getAllowAddTask()) {
-				ctrl.setAllowAddTask(false);
-			}
-			if (null != ctrl.getAllowReset()) {
-				ctrl.setAllowReset(false);
-			}
-			if (null != ctrl.getAllowPause()) {
-				ctrl.setAllowPause(false);
-			}
-			if (null != ctrl.getAllowAddSplit()) {
-				ctrl.setAllowAddSplit(false);
-			}
-			if (null != ctrl.getAllowRetract()) {
-				ctrl.setAllowRetract(false);
-			}
-			if (null != ctrl.getAllowGoBack()) {
-				ctrl.setAllowGoBack(false);
-			}
-			if (null != ctrl.getAllowRollback()) {
-				ctrl.setAllowRollback(false);
-			}
+			recalculateHasGoBackStore(ctrl);
+		}
+	}
+
+	private void recalculateHasGoBackStore(Control ctrl) {
+		if (null != ctrl.getAllowAddTask()) {
+			ctrl.setAllowAddTask(false);
+		}
+		if (null != ctrl.getAllowReset()) {
+			ctrl.setAllowReset(false);
+		}
+		if (null != ctrl.getAllowPause()) {
+			ctrl.setAllowPause(false);
+		}
+		if (null != ctrl.getAllowResume()) {
+			ctrl.setAllowResume(false);
+		}
+		if (null != ctrl.getAllowAddSplit()) {
+			ctrl.setAllowAddSplit(false);
+		}
+		if (null != ctrl.getAllowRetract()) {
+			ctrl.setAllowRetract(false);
+		}
+		if (null != ctrl.getAllowGoBack()) {
+			ctrl.setAllowGoBack(false);
+		}
+		if (null != ctrl.getAllowRollback()) {
+			ctrl.setAllowRollback(false);
 		}
 	}
 }

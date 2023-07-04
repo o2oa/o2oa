@@ -102,13 +102,13 @@ public class JobAction extends StandardJaxrsAction {
 	@Path("{job}/allow/visit/person/{person}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void allowVisit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void allowVisitWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
 			@JaxrsParameterDescribe("标识") @PathParam("person") String person) {
 		ActionResult<ActionAllowVisitWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionAllowVisitWithPerson().execute(effectivePerson, job);
+			result = new ActionAllowVisitWithPerson().execute(effectivePerson, job, person);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

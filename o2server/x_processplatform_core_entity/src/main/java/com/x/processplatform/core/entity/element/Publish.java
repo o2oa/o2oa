@@ -381,11 +381,6 @@ public class Publish extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由.")
@@ -558,16 +553,6 @@ public class Publish extends Activity {
 	@Override
 	public String getProcess() {
 		return process;
-	}
-
-	@Override
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	@Override
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 	@Override
