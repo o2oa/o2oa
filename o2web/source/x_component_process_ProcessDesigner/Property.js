@@ -61,6 +61,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadConditionInput();
                     this.loadFormSelect();
                     this.loadSerial();
+                    this.loadArrayList();
                     this.loadSericalActivitySelect();
                     this.loadApplicationSelector();
                     this.loadProcessSelector();
@@ -873,6 +874,27 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         }else{
             if (callback) callback();
         }
+    },
+
+    loadArrayList: function(){
+        var arrays = this.propertyContent.getElements(".MWFArraylist");
+        arrays.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var arr = this.data[name];
+            if (!arr) arr = [];
+            MWF.require("MWF.widget.Arraylist", function(){
+                var arraylist = new MWF.widget.Arraylist(node, {
+                    "title": title,
+                    "onChange": function(){
+                        var oldValue = this.data[name];
+                        this.data[name] = arraylist.toArray();
+                    }.bind(this)
+                });
+                arraylist.load(arr);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
     },
 
     loadSerial: function(){

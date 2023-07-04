@@ -291,6 +291,20 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"mappingTableEnabled": "流转结束后将数据存储到数据表",
 		"queryTable": "数据表",
 
+		"data": "数据",
+		"dataTrace": "业务数据跟踪",
+		"dataTraceInfo": "启用业务数据跟踪可以记录指定业务字段的每次变化情况，可以在表单设计中设置查看业务数据的历史变化记录",
+		"dataTraceInfo2": "",
+		"dataTraceFields": "跟踪字段",
+		"dataTraceDisabled": "无",
+		"dataTraceCustom": "自定义",
+		"dataTraceAll": "所有",
+		"dataTraceDisabledInfo": "不跟踪任何业务数据字段",
+		"dataTraceCustomInfo": "在下面的设置中定义要跟踪的业务字段",
+		"dataTraceAllInfo": "跟踪所有业务数据字段（不包括数据表格、数据模板和长文本（Lob）类型的数据）",
+		"dataTraceFieldNames": "字段名称",
+
+
 		"allowReroute": "是否允许调度",
 		"allowRerouteTo": "允许调度到此活动",
 

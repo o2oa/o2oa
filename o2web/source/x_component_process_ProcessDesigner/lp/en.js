@@ -291,6 +291,19 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"mappingTableEnabled": "Store the data in the query table after work completed",
 		"queryTable": "tables",
 
+		"data": "data",
+		"dataTrace": "Business data trace",
+		"dataTraceInfo": "Enabling business data tracking can record every change of the specified business field, and you can set to view the historical change records of business data in the form design",
+		"dataTraceInfo2": "",
+		"dataTraceFields": "Trace Fields",
+		"dataTraceDisabled": "None",
+		"dataTraceCustom": "Custom",
+		"dataTraceAll": "All",
+		"dataTraceDisabledInfo": "Do not trace any business data fields",
+		"dataTraceCustomInfo": "Define the business fields to be traced in the following settings",
+		"dataTraceAllInfo": "Trace all business data fields (excluding data tables, data templates and long text (Lob) type data)",
+		"dataTraceFieldNames": "Field Names",
+
 		"allowReroute": "Allow Reroute",
 		"allowRerouteTo": "Allow Reroute to here",
 
