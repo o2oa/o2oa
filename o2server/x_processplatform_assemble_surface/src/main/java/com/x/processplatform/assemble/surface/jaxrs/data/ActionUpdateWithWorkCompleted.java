@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -56,9 +57,10 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
 		}
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId()), jsonElement,
+						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId()), dataWi,
 						workCompleted.getJob())
 				.getData(Wo.class);
 		result.setData(wo);

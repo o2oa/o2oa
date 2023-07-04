@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -46,9 +47,10 @@ class ActionCreateWithWork extends BaseAction {
 				throw new ExceptionDataAlreadyExist(work.getTitle(), work.getId());
 			}
 		}
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "work", work.getId()), jsonElement, work.getJob())
+						Applications.joinQueryUri("data", "work", work.getId()), dataWi, work.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;

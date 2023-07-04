@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
@@ -28,6 +29,7 @@ class ActionCreateWithWork extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -36,35 +38,35 @@ class ActionCreateWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
 			executorSeed = work.getJob();
+			work.copyTo(wi);
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					Work work = emc.find(id, Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(id, Work.class);
-					}
-					if (business.item().countWithJobWithPath(work.getJob()) > 0) {
-						throw new ExceptionDataAlreadyExist(work.getTitle(), work.getId());
-					}
-
-					wo.setId(work.getId());
-					DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
-					List<Item> adds = converter.disassemble(jsonElement);
-					emc.beginTransaction(Item.class);
-					emc.beginTransaction(Work.class);
-					for (Item o : adds) {
-						fill(o, work);
-						business.entityManagerContainer().persist(o);
-					}
-					/* 标识数据已经被修改 */
-					work.setDataChanged(true);
-					emc.commit();
+		Callable<String> callable = () -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Work work = emc.find(id, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				return "";
+				if (business.item().countWithJobWithPath(work.getJob()) > 0) {
+					throw new ExceptionDataAlreadyExist(work.getTitle(), work.getId());
+				}
+
+				wo.setId(work.getId());
+				DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
+				List<Item> adds = converter.disassemble(wi.getJsonElement());
+				emc.beginTransaction(Item.class);
+				emc.beginTransaction(Work.class);
+				for (Item o : adds) {
+					fill(o, work);
+					business.entityManagerContainer().persist(o);
+				}
+				/* 标识数据已经被修改 */
+				work.setDataChanged(true);
+
+				emc.commit();
 			}
+			return "";
 		};
 
 		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
@@ -72,6 +74,11 @@ class ActionCreateWithWork extends BaseAction {
 		result.setData(wo);
 		return result;
 
+	}
+
+	public static class Wi extends DataWi {
+
+		private static final long serialVersionUID = 6768987004644534271L;
 	}
 
 	public static class Wo extends WoId {

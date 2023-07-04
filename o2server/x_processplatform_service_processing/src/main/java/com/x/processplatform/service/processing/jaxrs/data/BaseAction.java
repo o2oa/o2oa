@@ -1,9 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -497,6 +497,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}.getType());
 		}
 		return list;
+	}
+
+	protected void createDataRecord(Business business, DataWi wi) throws Exception{
+		Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
+		if (null != process && ListTools.isNotEmpty(process.getFormFieldList())) {
+			Map<String, JsonElement> itemMap = new HashMap<>();
+			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
+				if(process.getFormFieldList().contains(fromEntry.getKey())){
+					itemMap.put(fromEntry.getKey(), fromEntry.getValue());
+				}
+			}
+		}
 	}
 
 }
