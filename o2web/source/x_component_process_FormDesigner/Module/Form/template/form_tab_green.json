@@ -222,7 +222,7 @@
               "action": "addTask",
               "text": "加签",
               "id": "action_addTask",
-              "control": "allowReset",
+              "control": "allowAddTask",
               "condition": "",
               "read": true,
               "system": true
@@ -811,7 +811,7 @@
               "action": "addTask",
               "text": "加签",
               "id": "action_addTask",
-              "control": "allowReset",
+              "control": "allowAddTask",
               "condition": "",
               "read": true,
               "system": true
