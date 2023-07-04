@@ -22,7 +22,9 @@ public class StopCommand {
 
 	private static final Consumer<Matcher> consumer = matcher -> {
 
-		switch (matcher.group(1)) {
+		String arg = matcher.group(1);
+
+		switch (arg) {
 		case "init":
 			stopInitServer();
 			break;
