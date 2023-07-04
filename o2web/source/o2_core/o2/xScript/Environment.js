@@ -642,17 +642,21 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
-         *        "allowVisit": true,             //是否允许访问
+         *        "allowVisit": true,             //是否允许访问工作
          *        "allowProcessing": true,        //是否允许流转
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人
-         *        "allowRetract": false,          //是否允许撤回
          *        "allowReroute": false,          //是否允许调度
          *        "allowDelete": true,             //是否允许删除流程实例
-         *        "allowRollback": false,         //是否允许流程回溯
-         *        "allowAddSplit": false,         //是否允许增加分支
-         *        "allowPress": false,             //是否允许催办
+         *        "allowAddSplit": false,         //是否允许添加拆分分支
+         *        "allowRetract": false,          //是否允许撤回
+         *        "allowRollback": false,         //是否允许回溯流程
+         *        "allowPress": false,             //是否允许发送办理提醒
+         *        "allowGoBack": false,         //是否允许回退
+         *        "allowAddTask": false,          //是否允许加签
+         *        "allowPause": false,         //是否允许待办挂起
+         *        "allowResume": false,             //是否允许待办从挂起状态恢复
          * }</code></pre>
          * @o2syntax
          * var control = this.workContext.getControl();
