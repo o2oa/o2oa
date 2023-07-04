@@ -2821,7 +2821,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }
         }
     },
-	
 	setEditNodeEvent: function(){
 		var property = this;
 	//	var inputs = this.process.propertyListNode.getElements(".editTableInput");
