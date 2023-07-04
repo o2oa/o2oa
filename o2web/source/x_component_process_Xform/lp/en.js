@@ -433,6 +433,9 @@ MWF.xApplication.process.Xform.LP = {
     "document": "Document",
     "work": "Work",
     "cancelAssociatedTitle": "Disassociate Document",
-    "cancelAssociated": "Are you sure you want to cancel the association with document '{title}'?"
+    "cancelAssociated": "Are you sure you want to cancel the association with document '{title}'?",
+    "associatedResult": "Associated Result",
+    "selectDocNote": "Please select a document first",
+    "associatedDocument": "Associated Document"
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

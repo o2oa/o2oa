@@ -8,6 +8,17 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 		o2.Actions.load("x_cms_assemble_control").CorrelationAction.createWithDocument(this.form.businessData.document.id, {
 			targetList: data
 		}, function (json) {
+		    this.status = "showResult";
+            if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+            var okNode = this.dlg.button.getFirst();
+            if(okNode){
+                okNode.hide();
+                var cancelButton = okNode.getNext();
+                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+            }
+            if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
+                this.showCreateResult(json.data.failureList, json.data.successList);
+            }
 			this.loadAssociatedDocument();
 		}.bind(this));
 	},
