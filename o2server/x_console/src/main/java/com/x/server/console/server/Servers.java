@@ -8,11 +8,11 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.server.admin.AdminServerTools;
 import com.x.server.console.server.application.ApplicationServerTools;
 import com.x.server.console.server.center.CenterServerTools;
 import com.x.server.console.server.data.DataServerTools;
 import com.x.server.console.server.data.DataTcpWebServer;
+import com.x.server.console.server.init.InitServerTools;
 import com.x.server.console.server.storage.StorageServerTools;
 import com.x.server.console.server.web.WebServerTools;
 
@@ -24,15 +24,15 @@ public class Servers {
 
 	}
 
-	private static Server adminServer;
+	private static Server initServer;
 	private static Server centerServer;
 	private static Server webServer;
 	private static Server applicationServer;
 	private static FtpServer storageServer;
 	private static DataTcpWebServer dataServer;
 
-	public static Server getAdminServer() {
-		return adminServer;
+	public static Server getInitServer() {
+		return initServer;
 	}
 
 	public static Server getCenterServer() {
@@ -47,11 +47,11 @@ public class Servers {
 		return webServer;
 	}
 
-	public static boolean adminServerIsStarted() {
-		if (null == adminServer) {
+	public static boolean initServerIsStarted() {
+		if (null == initServer) {
 			return false;
 		}
-		return adminServer.isStarted();
+		return initServer.isStarted();
 	}
 
 	public static boolean webServerIsStarted() {
@@ -75,11 +75,11 @@ public class Servers {
 		return centerServer.isStarted();
 	}
 
-	public static boolean adminServerIsRunning() {
-		if (null == adminServer) {
+	public static boolean initServerIsRunning() {
+		if (null == initServer) {
 			return false;
 		}
-		return adminServer.isRunning();
+		return initServer.isRunning();
 	}
 
 	public static boolean webServerIsRunning() {
@@ -117,11 +117,11 @@ public class Servers {
 		return (dataServer.isRunning());
 	}
 
-	public static void startAdminServer() throws Exception {
-		if (adminServerIsRunning()) {
-			LOGGER.info("admin server is running.");
+	public static void startInitServer() throws Exception {
+		if (initServerIsRunning()) {
+			LOGGER.info("init server is running.");
 		} else {
-			adminServer = AdminServerTools.start();
+			initServer = InitServerTools.start();
 		}
 	}
 
@@ -173,9 +173,9 @@ public class Servers {
 		}
 	}
 
-	public static void stopAdminServer() throws Exception {
-		if (adminServerIsRunning()) {
-			adminServer.stop();
+	public static void stopInitServer() throws Exception {
+		if (initServerIsRunning()) {
+			initServer.stop();
 		}
 	}
 

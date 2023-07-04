@@ -18,8 +18,8 @@ public class StopCommand {
 	private static final Consumer<Matcher> consumer = matcher -> {
 
 		switch (matcher.group(1)) {
-		case "admin":
-			stopAdminServer();
+		case "init":
+			stopInitServer();
 			break;
 		case "application":
 			stopApplicationServer();
@@ -44,7 +44,7 @@ public class StopCommand {
 
 	protected static void stopAll() {
 		try {
-			stopAdminServer();
+			stopInitServer();
 			stopApplicationServer();
 			stopCenterServer();
 			stopWebServer();
@@ -59,9 +59,9 @@ public class StopCommand {
 		return consumer;
 	}
 
-	protected static void stopAdminServer() {
+	protected static void stopInitServer() {
 		try {
-			Servers.stopAdminServer();
+			Servers.stopInitServer();
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

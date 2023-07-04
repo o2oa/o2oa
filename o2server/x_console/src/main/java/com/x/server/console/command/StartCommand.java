@@ -23,7 +23,7 @@ import com.x.server.console.server.Servers;
 
 public class StartCommand {
 
-	private static final String PATTERN_TEXT = "^ {0,}start {0,}(data|storage|center|application|web|all|admin|) {0,}$";
+	private static final String PATTERN_TEXT = "^ {0,}start {0,}(data|storage|center|application|web|all|init|) {0,}$";
 
 	public static final Pattern PATTERN = Pattern.compile(PATTERN_TEXT, Pattern.CASE_INSENSITIVE);
 
@@ -36,23 +36,22 @@ public class StartCommand {
 	private static final Consumer<Matcher> consumer = matcher -> {
 		try {
 			String arg = matcher.group(1);
-			if (!StringUtils.endsWithIgnoreCase(arg, "skipAdmin")
-					&& (StringUtils.equalsIgnoreCase(arg, "admin") || ifAdminServerNecessary())) {
-				startAdminServer();
+			if (!StringUtils.endsWithIgnoreCase(arg, "skipInit")
+					&& (StringUtils.equalsIgnoreCase(arg, "init") || ifInitServerNecessary())) {
+				startInitServer();
 			}
 			if (StringUtils.equalsIgnoreCase(arg, "application")
-					|| StringUtils.equalsIgnoreCase(arg, "applicationSkipAdmin")) {
+					|| StringUtils.equalsIgnoreCase(arg, "applicationSkipInit")) {
 				startApplicationServer();
 			} else if (StringUtils.equalsIgnoreCase(arg, "center")
-					|| StringUtils.equalsIgnoreCase(arg, "centerSkipAdmin")) {
+					|| StringUtils.equalsIgnoreCase(arg, "centerSkipInit")) {
 				startCenterServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "web") || StringUtils.equalsIgnoreCase(arg, "webSkipAdmin")) {
+			} else if (StringUtils.equalsIgnoreCase(arg, "web") || StringUtils.equalsIgnoreCase(arg, "webSkipInit")) {
 				startWebServer();
 			} else if (StringUtils.equalsIgnoreCase(arg, "storage")
-					|| StringUtils.equalsIgnoreCase(arg, "storageSkipAdmin")) {
+					|| StringUtils.equalsIgnoreCase(arg, "storageSkipInit")) {
 				startStorageServer();
-			} else if (StringUtils.equalsIgnoreCase(arg, "data")
-					|| StringUtils.equalsIgnoreCase(arg, "dataSkipAdmin")) {
+			} else if (StringUtils.equalsIgnoreCase(arg, "data") || StringUtils.equalsIgnoreCase(arg, "dataSkipInit")) {
 				startDataServer();
 			} else {
 				startAll();
@@ -62,17 +61,17 @@ public class StartCommand {
 		}
 	};
 
-	private static boolean ifAdminServerNecessary() throws Exception {
-		return (ifAdminServerNecessarySetPassword() || ifAdminServerNecessaryUpgradeLocalRepositoryDataH2());
+	private static boolean ifInitServerNecessary() throws Exception {
+		return (ifInitServerNecessarySetPassword() || ifInitServerNecessaryUpgradeLocalRepositoryDataH2());
 	}
 
-	private static boolean ifAdminServerNecessarySetPassword() throws Exception {
+	private static boolean ifInitServerNecessarySetPassword() throws Exception {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
 	}
 
-	private static boolean ifAdminServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
+	private static boolean ifInitServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
 		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
 		if (Files.exists(path)) {
 			Optional<String> jarVersion = H2Tools.jarVersion();
@@ -87,12 +86,12 @@ public class StartCommand {
 		return consumer;
 	}
 
-	private static void startAdminServer() {
+	private static void startInitServer() {
 		try {
-			Servers.startAdminServer();
+			Servers.startInitServer();
 			// 等待停止信号
-			Servers.getAdminServer().join();
-			Servers.stopAdminServer();
+			Servers.getInitServer().join();
+			Servers.stopInitServer();
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
 			LOGGER.error(ie);
