@@ -343,9 +343,8 @@ public class WorkControlBuilder {
 
 	private void computeAllowReset(Control control) {
 		try {
-			control.setAllowReadReset(
-					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork());
+			control.setAllowReset(PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+					&& hasTaskWithWork());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -397,7 +396,7 @@ public class WorkControlBuilder {
 	private void computeAllowAddSplit(Control control) {
 		try {
 			control.setAllowAddSplit(
-					PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
+					PropertyTools.getOrElse(activity(), Manual.allowAddSplit_FIELDNAME, Boolean.class, false)
 							&& hasTaskWithWork());
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -546,6 +545,9 @@ public class WorkControlBuilder {
 			}
 			if (null != ctrl.getAllowPause()) {
 				ctrl.setAllowPause(false);
+			}
+			if (null != ctrl.getAllowResume()) {
+				ctrl.setAllowResume(false);
 			}
 			if (null != ctrl.getAllowAddSplit()) {
 				ctrl.setAllowAddSplit(false);
