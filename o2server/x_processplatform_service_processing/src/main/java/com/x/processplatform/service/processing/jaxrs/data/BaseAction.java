@@ -1,12 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
-import java.util.*;
-
-import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -19,21 +12,18 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.core.entity.content.Data.DataWork;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.util.*;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -501,10 +491,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected void createDataRecord(Business business, DataWi wi) throws Exception{
 		Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
-		if (null != process && ListTools.isNotEmpty(process.getFormFieldList())) {
+		if (null != process && ListTools.isNotEmpty(process.getDataTraceFieldList())) {
 			Map<String, JsonElement> itemMap = new HashMap<>();
 			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
-				if(process.getFormFieldList().contains(fromEntry.getKey())){
+				if(process.getDataTraceFieldList().contains(fromEntry.getKey())){
 					itemMap.put(fromEntry.getKey(), fromEntry.getValue());
 				}
 			}

@@ -48,8 +48,11 @@ public class ProcessProperties extends JsonProperties {
 	@FieldDescribe("数据脚本文本.")
 	private String targetAssignDataScriptText;
 
-	@FieldDescribe("需要记录数据变化的表单字段.")
-	private List<String> formFieldList;
+	@FieldDescribe("需要记录数据变化的字段.")
+	private List<String> dataTraceFieldList;
+
+	@FieldDescribe("需要记录数据变化的字段配置方式：all|所有、custom|依据dataTraceFieldList配置的字段.")
+	private String dataTraceFieldType;
 
 	public String getMaintenanceIdentity() {
 		return maintenanceIdentity;
@@ -139,12 +142,12 @@ public class ProcessProperties extends JsonProperties {
 		this.targetAssignDataScriptText = targetAssignDataScriptText;
 	}
 
-	public List<String> getFormFieldList() {
-		return formFieldList;
+	public List<String> getDataTraceFieldList() {
+		return dataTraceFieldList;
 	}
 
-	public void setFormFieldList(List<String> formFieldList) {
-		this.formFieldList = formFieldList;
+	public void setDataTraceFieldList(List<String> dataTraceFieldList) {
+		this.dataTraceFieldList = dataTraceFieldList;
 	}
 
 	public String getManualAfterProcessingScript() {
@@ -161,5 +164,13 @@ public class ProcessProperties extends JsonProperties {
 
 	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
 		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
+	}
+
+	public String getDataTraceFieldType() {
+		return dataTraceFieldType;
+	}
+
+	public void setDataTraceFieldType(String dataTraceFieldType) {
+		this.dataTraceFieldType = dataTraceFieldType;
 	}
 }
