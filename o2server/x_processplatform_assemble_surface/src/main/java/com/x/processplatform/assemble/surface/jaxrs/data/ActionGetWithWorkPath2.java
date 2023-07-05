@@ -11,17 +11,19 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionGetWithWorkPath2 extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkPath2.class);
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String id, String path0, String path1,
 			String path2) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -29,9 +31,10 @@ class ActionGetWithWorkPath2 extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
+				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+						work.getId());
 			}
 			result.setData(this.getData(business, work.getJob(), path0, path1, path2));
 			return result;

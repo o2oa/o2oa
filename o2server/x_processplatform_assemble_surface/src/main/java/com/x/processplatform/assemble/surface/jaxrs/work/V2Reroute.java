@@ -27,8 +27,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
@@ -43,19 +44,22 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Rerout
 
 class V2Reroute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Reroute.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reroute.class);
 
 	private EffectivePerson effectivePerson;
 	private Work work;
 	private WorkLog workLog;
 	private Record record;
-	// private Activity activity;
 	private Activity destinationActivity;
 	private String series = StringTools.uniqueToken();
 	private List<String> existTaskIds = new ArrayList<>();
 	private Wi wi;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
+
 		this.effectivePerson = effectivePerson;
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -72,7 +76,7 @@ class V2Reroute extends BaseAction {
 			}
 			// activity = business.getActivity(work);
 			destinationActivity = business.getActivity(wi.getActivity(), ActivityType.valueOf(wi.getActivityType()));
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowReroute().build();
 			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
 				throw new ExceptionRerouteDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						destinationActivity.getName());
@@ -187,6 +191,8 @@ class V2Reroute extends BaseAction {
 
 	public static class Wi extends V2RerouteWi {
 
+		private static final long serialVersionUID = -8201594262401019064L;
+
 	}
 
 	public static class Wo extends Record {
@@ -195,10 +201,6 @@ class V2Reroute extends BaseAction {
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
-	}
-
-	public static class WoControl extends WorkControl {
-
 	}
 
 }

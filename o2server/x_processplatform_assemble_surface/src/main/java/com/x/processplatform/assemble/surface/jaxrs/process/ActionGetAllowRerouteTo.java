@@ -3,8 +3,6 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.processplatform.core.entity.element.*;
-import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -19,6 +17,22 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Publish;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

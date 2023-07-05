@@ -179,9 +179,13 @@ abstract class V2Base extends StandardJaxrsAction {
 			this.endTime = endTime;
 		}
 
-		public List<String> getActivityNameList() { return activityNameList; }
+		public List<String> getActivityNameList() {
+			return activityNameList;
+		}
 
-		public void setActivityNameList(List<String> activityNameList) { this.activityNameList = activityNameList; }
+		public void setActivityNameList(List<String> activityNameList) {
+			this.activityNameList = activityNameList;
+		}
 
 		public List<String> getCreatorPersonList() {
 			return creatorPersonList;
@@ -449,7 +453,7 @@ abstract class V2Base extends StandardJaxrsAction {
 		}
 		if (BooleanUtils.isTrue(wi.getExcludeDraft())) {
 			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
-					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+					cb.equal(root.get(Task_.workCreateType), Work.WORKCREATETYPE_ASSIGN)));
 		}
 		String key = StringTools.escapeSqlLikeKey(wi.getKey());
 		if (StringUtils.isNotEmpty(key)) {

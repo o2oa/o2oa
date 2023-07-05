@@ -1,0 +1,11 @@
+{
+        "manualTaskIdentityMatrix": { //回退相关后续处理人
+            "matrix": [
+                [
+                    "张三@zhangsan@I"
+                ]
+            ]
+        },
+        "activity": "db1f894f-86c8-4b73-8f08-c2dd00a075a1", //回退的活动
+        "ActivityType": "manual" //回退的活动类型
+    }

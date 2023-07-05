@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -12,7 +14,10 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,8 +38,14 @@ class ActionChangeSite extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new ExceptionEntityNotExist(workId, Work.class);
+			}
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workId);
 			}
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);

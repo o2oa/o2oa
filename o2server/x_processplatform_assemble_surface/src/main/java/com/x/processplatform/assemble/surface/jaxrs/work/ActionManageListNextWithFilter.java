@@ -23,17 +23,22 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionManageListNextWithFilter extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageListNextWithFilter.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag,
 			JsonElement jsonElement) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}, count:{}, applicationFlag:{}, jsonElement:{}.",
+				effectivePerson::getDistinguishedName, () -> id, () -> count, () -> applicationFlag, () -> jsonElement);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -47,9 +52,9 @@ class ActionManageListNextWithFilter extends BaseAction {
 			}
 			equals.put("application", application.getId());
 			if (ListTools.isNotEmpty(wi.getProcessList())) {
-				if(BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
+				if (BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
 					ins.put("process", business.process().listEditionProcess(wi.getProcessList()));
-				}else{
+				} else {
 					ins.put("process", wi.getProcessList());
 				}
 			}
@@ -75,14 +80,13 @@ class ActionManageListNextWithFilter extends BaseAction {
 				}
 			}
 
-			result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, likes, ins, null, null, null,
-					null, true, DESC);
+			result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, likes, ins,
+					null, null, null, null, true, DESC);
 			/* 添加权限 */
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
 					Work o = emc.find(wo.getId(), Work.class);
-					WorkControl control = business.getControl(effectivePerson, o, WoControl.class);
-					wo.setControl(control);
+					wo.setControl(new WorkControlBuilder(effectivePerson, business, o).enableAll().build());
 				}
 			}
 			return result;
@@ -90,6 +94,8 @@ class ActionManageListNextWithFilter extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -5622078876162107245L;
 
 		@FieldDescribe("流程")
 		private List<String> processList;
@@ -107,7 +113,7 @@ class ActionManageListNextWithFilter extends BaseAction {
 		private List<String> activityNameList;
 
 		@FieldDescribe("工作状态")
-		@FieldTypeDescribe(fieldType="enum",fieldValue="start|processing|hanging",fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
+		@FieldTypeDescribe(fieldType = "enum", fieldValue = "start|processing|hanging", fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
 
 		private List<WorkStatus> workStatusList;
 
@@ -183,7 +189,7 @@ class ActionManageListNextWithFilter extends BaseAction {
 		private Long rank;
 
 		@FieldDescribe("权限")
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -193,17 +199,13 @@ class ActionManageListNextWithFilter extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
-
-	}
-
-	public static class WoControl extends WorkControl {
 
 	}
 }

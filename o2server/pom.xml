@@ -54,10 +54,12 @@
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
+		<module>x_correlation_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
+		<module>x_correlation_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_core_express</module>
@@ -81,6 +83,7 @@
 		<module>x_processplatform_assemble_designer</module>
 		<module>x_processplatform_assemble_surface</module>
 		<module>x_processplatform_service_processing</module>
+		<module>x_correlation_service_processing</module>
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
@@ -429,7 +432,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
+			<artifactId>solr-hdfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.jsqlparser</groupId>
@@ -620,7 +627,7 @@
 			<dependency>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa</artifactId>
-				<version>3.2.0</version>
+				<version>3.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -890,17 +897,17 @@
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-queryparser</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-highlighter</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-grouping</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
@@ -909,14 +916,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-core</artifactId>
-				<version>8.11.2</version>
-				<exclusions>
-					<exclusion>
-						<groupId>*</groupId>
-						<artifactId>*</artifactId>
-					</exclusion>
-				</exclusions>
+				<artifactId>solr-hdfs</artifactId>
+				<version>9.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-solrj</artifactId>
+				<version>9.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>
@@ -1130,6 +1136,16 @@
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_express</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
 				<version>8.0</version>
 			</dependency>
@@ -1171,7 +1187,7 @@
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-client</artifactId>
-				<version>3.3.4</version>
+				<version>3.3.5</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.mail</groupId>

@@ -374,7 +374,7 @@ layout.addReady(function(){
                                 key = key+"[]";
                                 break;
                         }
-                        arr.push({ label: key, filterText: filterText, key, kind: kind, insertText: insertText, detail: keyType, documentation: text, range: oRange});
+                        arr.push({ label: key, filterText: filterText, key: key, kind: kind, insertText: insertText, detail: keyType, documentation: text, range: oRange});
                 }
             }
         });

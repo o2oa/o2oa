@@ -133,7 +133,8 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("encode url : {}", o2oaUrl);
 			}
-			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
+			String oauthUrl = Config.qiyeweixin().getOauth2Address();
+			String url = oauthUrl + "/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
 					+ "&#wechat_redirect";
 			if (LOGGER.isDebugEnabled()) {
@@ -183,7 +184,8 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("encode url : {}" , o2oaUrl);
 			}
-			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
+			String oauthUrl = Config.qiyeweixin().getOauth2Address();
+			String url = oauthUrl + "/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
 					+ "&#wechat_redirect";
 			if (LOGGER.isDebugEnabled()) {

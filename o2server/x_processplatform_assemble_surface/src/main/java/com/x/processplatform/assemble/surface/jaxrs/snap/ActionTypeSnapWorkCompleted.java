@@ -19,9 +19,12 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionTypeSnapWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSnapWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSnapWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> workCompletedId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -29,7 +32,7 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
@@ -37,8 +40,10 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 		}
 
 		Wo wo = ThisApplication.context().applications()
-				.getQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class, Applications
-						.joinQueryUri("snap", "workcompleted", workCompletedId, "type", "snapworkcompleted"), job)
+				.getQuery(
+						effectivePerson.getDebugger(), x_processplatform_service_processing.class, Applications
+								.joinQueryUri("snap", "workcompleted", workCompletedId, "type", "snapworkcompleted"),
+						job)
 				.getData(Wo.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);

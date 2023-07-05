@@ -30,7 +30,7 @@ class ActionManageListWithPerson extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				String person = business.organization().person().get(credential);
 				if (StringUtils.isNotEmpty(person)) {
 					List<Read> list = business.read().listWithPersonObject(person);
@@ -47,7 +47,7 @@ class ActionManageListWithPerson extends BaseAction {
 	public static class Wo extends Read {
 
 		private static final long serialVersionUID = -5642624566077026662L;
-		
+
 		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,
 				JpaObject.singularAttributeField(Read.class, true, true), null);
 

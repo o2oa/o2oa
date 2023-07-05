@@ -3,7 +3,7 @@
   <div class="systemconfig_item_info" v-html="lp._resource.componentResourceInfo"></div>
   <div class="componentsArea">
     <div class="componentItem" v-for="(componentItem, index) in components" :key="componentItem.id">
-      <div class="componentItemTitle">{{componentItem.title}}</div>
+      <div class="componentItemTitle" :title="componentItem.title">{{componentItem.title}}</div>
       <div class="componentItemName">{{componentItem.name.substring(componentItem.name.indexOf(".")+1, componentItem.name.length)}}</div>
       <div class="componentItemIcon">
         <BaseIcon :value="componentItem"/>
@@ -198,6 +198,8 @@ function changePath(e){
   line-height: 30px;
   font-weight: bold;
   font-size: 18px;
+  word-break: keep-all;
+  overflow: hidden;
 }
 .componentItemName{
   height: 20px;

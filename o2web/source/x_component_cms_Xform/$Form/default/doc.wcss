@@ -27,16 +27,17 @@
         "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
         "margin": "0.2cm auto 0 auto",
         "background": "#ffffff",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "transform": "scale(1)"
     },
 
     "doc_layout_page_content": {
-        "overflow": "hidden",
+        "overflow": "visible",
         "width": "15.6cm",
         "min-height": "22.5cm",
         "position": "relative",
         "font-size": "16pt",
-        "font-family": "'仿宋', serif",
+        "font-family": "'仿宋_GB2312', serif",
         "line-height": "1.02cm",
         "letter-spacing": "-0.01cm"
     },
@@ -68,7 +69,9 @@
     "doc_layout_redline": {},
     "doc_layout_subject": {},
     "doc_layout_mainSend": {},
-    "doc_layout_filetext": {},
+    "doc_layout_filetext": {
+      "word-break": "break-all"
+    },
     "doc_layout_attachment": {},
     "doc_layout_attachment_title_td": {},
     "doc_layout_attachment_title": {},

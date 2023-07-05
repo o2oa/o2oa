@@ -1003,6 +1003,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     _loadNodeEdit: function(){
         if (!this.json.preprocessing) this._resetNodeEdit();
         var input = this.node.getFirst();
+        if( !input && this.nodeHtml ){
+            this.node.set("html", this.nodeHtml);
+            input = this.node.getFirst();
+        }
         input.set(this.json.properties);
         this.node.set({
             "id": this.json.id,
@@ -1518,6 +1522,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             empowerChecker.load(data, callback);
         }else{
             if( callback )callback( data );
+        }
+    },
+    _beforeReloaded: function(){
+        this.selector = null;
+        if (this.combox) {
+            this.combox.clear();
+            this.combox = null;
         }
     },
 

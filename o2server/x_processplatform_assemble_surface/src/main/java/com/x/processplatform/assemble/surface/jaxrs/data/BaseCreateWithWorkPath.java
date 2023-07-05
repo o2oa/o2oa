@@ -7,6 +7,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class BaseCreateWithWorkPath extends BaseAction {
@@ -18,7 +20,7 @@ class BaseCreateWithWorkPath extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());

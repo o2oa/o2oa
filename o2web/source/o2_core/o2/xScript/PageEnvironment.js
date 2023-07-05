@@ -2236,7 +2236,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.startProcess
              */
-            "startProcess": function (app, process, data, identity, callback, target, latest, afterCreated) {
+            "startProcess": function (app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck) {
                 if (arguments.length > 2) {
                     for (var i = 2; i < arguments.length; i++) {
                         if (typeOf(arguments[i]) == "boolean") {
@@ -2289,6 +2289,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                 "workData": data,
                                 "identity": identity,
                                 "latest": latest,
+                                "skipDraftCheck": skipDraftCheck,
                                 "onStarted": function (data, title, processName) {
                                     var application;
                                     if (data.work) {

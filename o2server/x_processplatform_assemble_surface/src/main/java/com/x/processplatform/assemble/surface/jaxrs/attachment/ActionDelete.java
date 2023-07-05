@@ -37,7 +37,7 @@ class ActionDelete extends BaseAction {
 			}
 			Long taskCount = business.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
 					attachment.getJob());
-			if (taskCount < 0 && BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+			if (taskCount < 0 && BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					attachment.getApplication(), attachment.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}

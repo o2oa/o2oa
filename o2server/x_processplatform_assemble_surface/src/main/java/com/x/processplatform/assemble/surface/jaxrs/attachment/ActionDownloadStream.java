@@ -1,18 +1,15 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ProcessPlatform;
-import com.x.base.core.project.config.ProcessPlatform.WorkExtensionEvent;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -22,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
@@ -48,10 +46,10 @@ class ActionDownloadStream extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (!business.readableWithJob(effectivePerson, attachment.getJob())) {
+			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, attachment.getJob())
+					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
-
 			if ((!Config.processPlatform().getExtensionEvents().getWorkAttachmentDownloadEvents().isEmpty()) || (!Config
 					.processPlatform().getExtensionEvents().getWorkCompletedAttachmentDownloadEvents().isEmpty())) {
 				List<Work> workList = business.work().listWithJobObject(attachment.getJob());

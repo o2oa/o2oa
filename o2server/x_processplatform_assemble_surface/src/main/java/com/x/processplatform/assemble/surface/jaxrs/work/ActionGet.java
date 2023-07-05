@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -12,6 +14,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +33,8 @@ class ActionGet extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityExist(id, Work.class);
 			}
-			if (!business.readable(effectivePerson, work)) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = Wo.copier.copy(work);

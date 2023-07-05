@@ -14,6 +14,8 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.core.entity.element.Agent;
@@ -29,14 +31,21 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Publish;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
+import net.sf.jsqlparser.statement.alter.AlterSystemOperation;
+
 class ActionUpgrade extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpgrade.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 		ActionResult<Wo> result = new ActionResult<>();
 		WrapProcess wrapIn = this.convertToWrapIn(jsonElement, WrapProcess.class);
 		Process process;
@@ -88,6 +97,7 @@ class ActionUpgrade extends BaseAction {
 			jpaObjects.addAll(createManual(wrapIn.getManualList(), newProcess));
 			jpaObjects.addAll(createMerge(wrapIn.getMergeList(), newProcess));
 			jpaObjects.addAll(createParallel(wrapIn.getParallelList(), newProcess));
+			jpaObjects.addAll(createPublish(wrapIn.getPublishList(), newProcess));
 			jpaObjects.addAll(createService(wrapIn.getServiceList(), newProcess));
 			jpaObjects.addAll(createSplit(wrapIn.getSplitList(), newProcess));
 			jpaObjects.addAll(createRoute(wrapIn.getRouteList(), newProcess));
@@ -103,6 +113,7 @@ class ActionUpgrade extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);

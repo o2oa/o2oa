@@ -814,7 +814,22 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
             }.bind(this));
         }.bind(this));
     },
-    afterStartProcess: function(data, title, processName){
+    afterStartProcess: function(data, title, processName, workData){
+        if (data.work){
+            this.startProcessDraft(data, title, processName, workData);
+        }else{
+            this.startProcessInstance(data, title, processName, workData);
+        }
+    },
+    startProcessDraft: function(data, title, processName){
+        var work = data.work;
+        var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false,
+            "onPostClose": function(){
+            }.bind(this)
+        };
+        this.desktop.openApplication(null, "process.Work", options);
+    },
+    startProcessInstance: function(data, title, processName, workData){
         var workInfors = [];
         var currentTask = [];
         var createUnit = "";

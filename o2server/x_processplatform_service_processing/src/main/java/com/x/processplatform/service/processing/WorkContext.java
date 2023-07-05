@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,12 @@ public class WorkContext {
 	private Task task;
 	private TaskCompleted taskCompleted;
 	private Route route;
+	private Record record;
+
+
+	public void bindRecord(Record record) {
+		this.record = record;
+	}
 
 	public void bindTask(Task task) {
 		this.task = task;
@@ -68,6 +75,33 @@ public class WorkContext {
 	public WorkContext(Work work, Business business) {
 		this.business = business;
 		this.work = work;
+	}
+
+	/**
+	 * 返回record,如果没有绑定进来返回recordList最后一条
+	 * 
+	 * @param record
+	 */
+	public String getRecord() {
+		if (null != this.record) {
+			return gson.toJson(record);
+		}
+		try {
+			List<Record> list = new ArrayList<>();
+			if (null != this.aeiObjects) {
+				list.addAll(aeiObjects.getRecords());
+				list.addAll(aeiObjects.getCreateRecords());
+			}
+			Optional<Record> opt = list.stream()
+					.filter(o -> StringUtils.equals(o.getJob(), this.aeiObjects.getWork().getJob()))
+					.max(Comparator.nullsFirst(Comparator.comparing(Record::getCreateTime)));
+			if (opt.isPresent()) {
+				return gson.toJson(opt.get());
+			}
+		} catch (Exception e) {
+			throw new IllegalStateException("getRecord error.", e);
+		}
+		return gson.toJson(null);
 	}
 
 	public String getWork() {

@@ -30,17 +30,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = PersistenceProperties.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) },
-		indexes = {
-				@javax.persistence.Index(name = Review.TABLE + Review.IndexNameMiddle + Review.docId_FIELDNAME,
-						columnList = Review.ColumnNamePrefix + Review.docId_FIELDNAME+","+
-								Review.ColumnNamePrefix + Review.permissionObj_FIELDNAME)})
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN,
+						JpaObject.SEQUENCECOLUMN }) }, indexes = {
+								@javax.persistence.Index(name = Review.TABLE + Review.IndexNameMiddle
+										+ Review.docId_FIELDNAME, columnList = Review.ColumnNamePrefix
+												+ Review.docId_FIELDNAME + "," + Review.ColumnNamePrefix
+												+ Review.permissionObj_FIELDNAME) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+
 public class Review extends SliceJpaObject {
 
 	private static final long serialVersionUID = -570048661936488247L;
 
 	public static final String TABLE = PersistenceProperties.Review.table;
+
+	public static final String PERMISSION_ANY = "*";
 
 	@Override
 	public String getId() {

@@ -1,5 +1,6 @@
 package com.x.base.core.project.tools;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -292,7 +293,7 @@ public class ListTools {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param list     原始字符串List
 	 * @param includes 需要包含的字符串List,可以使用*在结尾作为通配符
 	 * @param excludes 需要剔除的字符串List,可以使用*在结尾作为通配符
@@ -458,7 +459,7 @@ public class ListTools {
 		}
 		int size = (int) (list.size() * rate);
 		if (size > 0) {
-			Random r = new Random();
+			Random r = new SecureRandom();
 			HashSet<Integer> set = new HashSet<>();
 			for (;;) {
 				set.add(r.nextInt(list.size()));
@@ -489,7 +490,7 @@ public class ListTools {
 
 	/**
 	 * 判断两个字符串集合是否内容一致
-	 * 
+	 *
 	 * @param list1
 	 * @param list2
 	 * @return

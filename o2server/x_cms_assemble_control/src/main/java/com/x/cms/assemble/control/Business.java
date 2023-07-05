@@ -1,10 +1,12 @@
 package com.x.cms.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.cms.assemble.control.factory.*;
 import com.x.cms.assemble.control.factory.portal.PortalFactory;
 import com.x.cms.assemble.control.factory.process.ProcessFactory;
@@ -13,6 +15,9 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -424,6 +429,11 @@ public class Business {
 		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
 		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
 		if(document!=null){
+			if( ListTools.isNotEmpty( document.getManagerList() )) {
+				if( document.getManagerList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
+					return true;
+				}
+			}
 			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
 				if( document.getAuthorPersonList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
 					return true;
@@ -439,8 +449,15 @@ public class Business {
 					return true;
 				}
 			}
+			if(appInfo == null){
+				appInfo = this.emc.find(document.getAppId(), AppInfo.class);
+			}
+			if(categoryInfo == null){
+				categoryInfo = this.emc.find(document.getCategoryId(), CategoryInfo.class);
+			}
 		}
 		boolean publishFlag = document == null ? true : false;
+
 		if (categoryInfo != null) {
 			Set<String> catePersonList = new HashSet<>(categoryInfo.getManageablePersonList());
 			Set<String> cateUnitList = new HashSet<>(categoryInfo.getManageableUnitList());
@@ -520,7 +537,18 @@ public class Business {
 		if(count > 0){
 			return true;
 		}
-		return false;
+		return ifDocumentHasBeenCorrelation(person.getDistinguishedName(), document.getId());
+	}
+
+	public boolean ifDocumentHasBeenCorrelation(String person, String docId) throws Exception {
+		ActionReadableTypeCmsWi req = new ActionReadableTypeCmsWi();
+		req.setPerson(person);
+		req.setDoucment(docId);
+		ActionReadableTypeProcessPlatformWo resp = ThisApplication.context().applications()
+				.postQuery(x_correlation_service_processing.class,
+						Applications.joinQueryUri("correlation", "readable", "type", "cms"), req, docId)
+				.getData(ActionReadableTypeProcessPlatformWo.class);
+		return resp.getValue();
 	}
 
 	/**

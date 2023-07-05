@@ -28,6 +28,17 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         this.field = true;
         this.fieldModuleLoaded = false;
     },
+    /**
+     * @summary 重新加载组件。会执行postLoad事件。
+     * @example
+     * this.form.get("fieldId").reload(); //重新加载事件
+     */
+    reload: function(){
+        this.node.empty();
+        this._loadUserInterface();
+        this._loadStyles();
+        this.fireEvent("postLoad");
+    },
     _loadUserInterface: function(){
         this.field = true;
         this.node.empty();

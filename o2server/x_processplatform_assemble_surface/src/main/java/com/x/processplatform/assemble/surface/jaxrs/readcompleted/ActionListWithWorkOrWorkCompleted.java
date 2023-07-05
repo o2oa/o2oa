@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,6 +17,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,15 +29,19 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
-		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName, () -> workOrWorkCompleted);
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Control control = new JobControlBuilder(effectivePerson, business, workOrWorkCompleted).enableAllowVisit()
+					.build();
+
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
 			}
 
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);

@@ -35,6 +35,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "End", description = "流程平台结束活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -384,11 +385,6 @@ public class End extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	public static final String allowRollback_FIELDNAME = "allowRollback";
 	@FieldDescribe("允许回滚")
 	@CheckPersist(allowEmpty = true)
@@ -493,16 +489,6 @@ public class End extends Activity {
 
 	public String getExtension() {
 		return extension;
-	}
-
-	@Override
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	@Override
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 	public void setExtension(String extension) {

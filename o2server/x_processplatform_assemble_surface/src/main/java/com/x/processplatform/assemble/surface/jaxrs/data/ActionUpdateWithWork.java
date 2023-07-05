@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,7 +14,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +41,8 @@ class ActionUpdateWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			if (!business.editable(effectivePerson, work)) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
+			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}

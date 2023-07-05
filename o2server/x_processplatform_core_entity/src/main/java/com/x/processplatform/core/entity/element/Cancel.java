@@ -35,6 +35,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Cancel", description = "流程平台取消活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -382,11 +383,6 @@ public class Cancel extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
 	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
@@ -471,14 +467,6 @@ public class Cancel extends Activity {
 
 	public String getExtension() {
 		return extension;
-	}
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 	public void setExtension(String extension) {

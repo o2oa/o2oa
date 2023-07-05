@@ -761,8 +761,8 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
-     * @return {PersonData|PersonData[]} 返回人员对象。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+     * @return {PersonData} 返回人员对象。
+     * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
      * @o2syntax
      * //返回人员对象。
      * var person = this.org.getPersonData( name );
@@ -3216,11 +3216,6 @@ bind.service = {
  * @o2syntax
  * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
  * var context = this.workContext;
- * @borrows module:workContext.getActivity as getActivity
- * @borrows module:workContext.getWorkLogList as getWorkLogList
- * @borrows module:workContext.getRecordList as getRecordList
- * @borrows module:workContext.getAttachmentList as getAttachmentList
- * @borrows module:workContext.getRouteList as getRouteList
  */
 bind.workContext = {
     /**
@@ -3420,10 +3415,82 @@ bind.workContext = {
      */
     "getReviewListByJob": function(){return this.getJobReviewList();},
 
+    /**
+     * 获取当前流程实例所在的活动节点对象：activity对象。
+     * @method getActivity
+     * @static
+     * @return {(Activity|Null)} 当前流程实例所在的活动节点对象，如果当前流程实例已流转完成，则返回null.
+     * <pre><code class='language-js'>{
+     *      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
+     *      "name": "办理",  //节点名称
+     *      "description": "", //节点描述
+     *      "alias": "",  //节点别名
+     *      "resetRange": "department", //重置处理人范围
+     *      "resetCount": 0,  //重置处理人数字
+     *      "allowReset": true, //是否允许重置
+     *      "manualMode": "single", //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+     *      "customData": { //节点上的自定义属性，如果没有设置，不输出该值
+     *
+     *      }
+     * }</code></pre>
+     * @o2syntax
+     * var activity = this.workContext.getActivity();
+     */
     "getActivity": function(){return JSON.parse(bind.java_workContext.getActivity());},       //活动对象字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(WorkLog)。
+     * @method getWorkLogList
+     * @static
+     * @return {WorkLog[]} 流程记录对象.
+     * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties]
+     * @o2syntax
+     * var workLogList = this.workContext.getWorkLogList();
+     */
     "getWorkLogList": function(){return JSON.parse(bind.java_workContext.getWorkLogList());}, //WorkLogList对象数组的字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(Record)。
+     * @method getRecordList
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * var recordList = this.workContext.getRecordList();
+     */
     "getRecordList": function(){return JSON.parse(bind.java_workContext.getRecordList());}, //RecordList对象数组的字符串，需要新增
+
+    /**
+     * @summary 最后一条Record对象，在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record。
+     * @method getRecord
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * var record = this.workContext.getRecord();
+     */
+    "getRecord": function(){return JSON.parse(bind.java_workContext.getRecord());}, //最后一条Record对象，（在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record）
+
+    /**
+     * @summary 获取当前流程实例的附件对象列表。
+     * @method getAttachmentList
+     * @static
+     * @return {WorkAttachmentData[]} 附件数据.
+     * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
+     * @o2syntax
+     * //获取附件列表
+     * var attachmentList = this.workContext.getAttachmentList();
+     */
     "getAttachmentList": function(){return JSON.parse(bind.java_workContext.getAttachmentList());},   //附件对象数组的字符串
+
+    /**
+     * @summary 获取可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）。
+     * @method getRouteList
+     * @static
+     * @return {String[]} 路由字符串数组.
+     * @o2syntax
+     * var routeList = this.workContext.getRouteList();
+     */
     "getRouteList": function(){return JSON.parse(bind.java_workContext.getRouteList());},      //可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）
 
     /**

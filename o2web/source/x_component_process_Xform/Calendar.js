@@ -116,7 +116,9 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         this.fieldModuleLoaded = true;
         return value;
     },
-
+    _beforeReloaded: function(){
+        this.calendar = null;
+    },
 	clickSelect: function(){
 
         var _self = this;
@@ -177,7 +179,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                                 var overflowY = parent.getStyle("overflow-y");
                                 if(  overflow === "auto" || overflow === "scroll" || overflowY === "auto" || overflowY === "scroll" ){
                                     _self.scrollFun = function( e ){
-                                        if (this.container.position ) {
+                                        if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale===1) ){
                                             if( this.postX === "right" ){
                                                 if( this.postY === "bottom" ){
                                                     this.container.position({
@@ -211,6 +213,29 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                                                     });
                                                 }
                                             }
+                                        }else{
+                                            var p = this.node.getPosition(this.options.target || null);
+                                            var size = this.node.getSize();
+                                            var containerSize = this.container.getSize();
+                                            var bodySize = (this.options.target) ? this.options.target.getSize() : $(document.body).getSize(); //$(document.body).getSize();
+
+                                            bodySize.x = bodySize.x * layout.userLayout.scale;
+                                            bodySize.y = bodySize.y * layout.userLayout.scale;
+
+                                            var left = p.x;
+                                            left = left * layout.userLayout.scale;
+                                            if ((left + containerSize.x + 40) > bodySize.x){
+                                                left = bodySize.x - containerSize.x - 40;
+                                            }
+
+                                            var top = p.y+size.y+2;
+                                            top = top * layout.userLayout.scale;
+                                            if( top + containerSize.y > bodySize.y ){
+                                                top = bodySize.y - containerSize.y ;
+                                            }
+
+                                            this.container.setStyle("top", top);
+                                            this.container.setStyle("left", left);
                                         }
                                     }.bind(this);
                                     _self.scrollParentNode = parent;

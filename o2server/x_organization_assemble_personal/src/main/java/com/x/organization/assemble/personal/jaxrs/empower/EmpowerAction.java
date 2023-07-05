@@ -383,7 +383,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "管理员删除授权", action = ActionManagerDelete.class)
 	@DELETE
-	@Path("/manager/{id}")
+	@Path("manager/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -401,7 +401,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "管理员删除授权 MockDeleteToGet", action = ActionManagerDelete.class)
 	@GET
-	@Path("/manager/{id}/mockdeletetoget")
+	@Path("manager/{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerDeleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,

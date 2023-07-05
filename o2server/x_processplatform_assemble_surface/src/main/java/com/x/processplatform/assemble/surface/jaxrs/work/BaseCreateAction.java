@@ -24,8 +24,8 @@ import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -49,12 +49,11 @@ class BaseCreateAction extends BaseAction {
 
 	/**
 	 * 如果不是草稿那么需要进行设置
-	 *
-	 * @param wi
 	 * @param identity
 	 * @param workId
+	 * @param title
+	 * @param parentWork
 	 * @throws Exception
-	 * @throws ExceptionWorkNotExist
 	 */
 	protected void updateWork(String identity, String workId, String title, String parentWork) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -77,6 +76,23 @@ class BaseCreateAction extends BaseAction {
 				Unit unit = organization.unit().getObject(work.getCreatorUnit());
 				work.setCreatorUnitLevelName(unit.getLevelName());
 			}
+			emc.commit();
+		}
+	}
+
+	/**
+	 * 标志工作跳过新建检查
+	 * @param workId
+	 * @throws Exception
+	 */
+	protected void updateWorkDraftCheck(String workId) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new ExceptionWorkNotExist(workId);
+			}
+			emc.beginTransaction(Work.class);
+			work.setDataChanged(true);
 			emc.commit();
 		}
 	}
@@ -184,7 +200,7 @@ class BaseCreateAction extends BaseAction {
 
 		private Long rank;
 
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -194,11 +210,11 @@ class BaseCreateAction extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
@@ -214,7 +230,7 @@ class BaseCreateAction extends BaseAction {
 
 		private Long rank;
 
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -224,11 +240,11 @@ class BaseCreateAction extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 

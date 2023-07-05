@@ -15,7 +15,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -43,7 +42,7 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					attachment.getApplication(), attachment.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}

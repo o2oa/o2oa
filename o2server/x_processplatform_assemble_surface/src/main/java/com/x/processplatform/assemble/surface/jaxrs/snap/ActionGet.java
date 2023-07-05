@@ -16,9 +16,12 @@ import com.x.processplatform.core.entity.content.Snap;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -35,7 +38,7 @@ class ActionGet extends BaseAction {
 	}
 
 	private boolean allow(EffectivePerson effectivePerson, Business business, Snap snap) throws Exception {
-		return (business.canManageApplicationOrProcess(effectivePerson, snap.getApplication(), snap.getProcess())
+		return (business.ifPersonCanManageApplicationOrProcess(effectivePerson, snap.getApplication(), snap.getProcess())
 				|| effectivePerson.isNotPerson(snap.getPerson()));
 	}
 

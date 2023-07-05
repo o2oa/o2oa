@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -18,6 +20,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -43,8 +46,9 @@ class ActionListWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 
-			if (!business.readableWithJob(effectivePerson, work.getJob())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build()
+					.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 
 			List<Wo> wos = Wo.copier.copy(emc.listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME, workId));

@@ -16,13 +16,14 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -37,7 +38,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	private static final String TASKLIST_FIELDNAME = "taskList";
 	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
@@ -68,9 +69,11 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted);
+				Control control = new JobControlBuilder(effectivePerson, business, workLogJob).enableAllowVisit()
+						.build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());
@@ -146,7 +149,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList()));
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -158,7 +161,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -170,7 +173,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -182,7 +185,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					.sorted(Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -196,7 +199,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}

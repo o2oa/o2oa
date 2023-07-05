@@ -2129,7 +2129,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                 starter.load();
             })
         },
-        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated){
+        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
                     if (typeOf(arguments[i])=="boolean"){
@@ -2181,6 +2181,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function(data, title, processName){
                                 var application;
                                 if (data.work){

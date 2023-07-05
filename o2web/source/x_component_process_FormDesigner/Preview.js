@@ -23,7 +23,7 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
         this.form = form;
 		//this.data = Object.clone((form._getFormData) ? form._getFormData() : form._getPageData());
 
-        this.data = this.form.data;
+        this.data = Object.clone( this.form.data );
         //this.data = Object.clone((form._getFormData) ? form._getFormData() : form._getPageData());
         //this.form.reload();
         //this.data = Object.clone(data);
