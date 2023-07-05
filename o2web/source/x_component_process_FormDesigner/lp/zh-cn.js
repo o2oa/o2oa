@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "notDoubleDotId": "元素标识符不能包含连续的两个点号",
         "history": "历史",
         "componentTree": "组件树",
+        "invalidElementUIId": "由于Element组件的数据需要做双向绑定，标识请不要和配置项重名，如下：",
 
 		"button":{
 			"ok": "确定",

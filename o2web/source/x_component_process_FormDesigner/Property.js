@@ -3007,6 +3007,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	},
 	
 	setValue: function(name, value, obj, notCheckHistory){
+	    debugger;
 		if (name==="id"){
 			if (value!==this.module.json.id) {
                 if (!value) {
@@ -3043,6 +3044,20 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         var json = this.module.form.json.moduleList[this.module.json.id];
                         this.module.form.json.moduleList[value] = json;
                         delete this.module.form.json.moduleList[this.module.json.id];
+                    }
+                }
+
+                if( this.alertMode )return;
+                if( (this.module.json.type || "").substr(0, 2) === "El" ){
+                    for( var key in this.module.json ){
+                        if( value === key ){
+                            var text =  Object.keys(this.module.json).join(", ");
+                            this.alertMode = true;
+                            this.designer.alert("error", "center", MWF.APPFD.LP.invalidElementUIId, text, 800, 300, function(){
+                                this.alertMode = false;
+                            }.bind(this));
+                            return false;
+                        }
                     }
                 }
 

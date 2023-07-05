@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "notDoubleDotId": "Element identifier cannot contain two consecutive dots",
     "history": "History",
     "componentTree": "Component Tree",
+    "invalidElementUIId": "Dado que los datos del componente Element deben vincularse en dos direcciones, no tenga el mismo nombre que el elemento de configuración:",
 
     "button":{
         "ok": "OK",
