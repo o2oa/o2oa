@@ -24,32 +24,6 @@ public class CommandFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandFactory.class);
 
-//	public static final Pattern test_pattern = Pattern.compile("^ {0,}test {0,}$", Pattern.CASE_INSENSITIVE);
-//
-////	public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key {0,}$",
-////			Pattern.CASE_INSENSITIVE);
-//
-////	public static final Pattern start_pattern = Pattern
-////			.compile("^ {0,}start {0,}(data|storage|center|application|web|all|admin|) {0,}$", Pattern.CASE_INSENSITIVE);
-//
-//
-//
-////	public static final Pattern help_pattern = Pattern.compile("^ {0,}help {0,}$", Pattern.CASE_INSENSITIVE);
-//
-//	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
-//
-//	public static final Pattern restart_pattern = Pattern.compile("^ {0,}restart {0,}$", Pattern.CASE_INSENSITIVE);
-//
-////	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
-//
-//	public static final Pattern setPassword_pattern = Pattern.compile("^ {0,}setPassword (.+) (.+)$",
-//			Pattern.CASE_INSENSITIVE);
-//
-//	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
-//			Pattern.CASE_INSENSITIVE);
-//
-//	public static final Pattern control_pattern = Pattern.compile("^ {0,}ctl {0,}(.*)$", Pattern.CASE_INSENSITIVE);
-
 	public static void printStartHelp() {
 		try {
 			printStartImage();

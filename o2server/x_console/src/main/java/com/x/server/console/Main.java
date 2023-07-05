@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,6 +44,7 @@ public class Main {
 		String base = getBasePath().toString();
 		pid(base);
 		scanWar(base);
+		cleanCommandSwap(base);
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
 		Log4j2Configuration.reconfigure();
@@ -64,6 +68,17 @@ public class Main {
 			commandQueue.put("start");
 		}
 		CommandThreads.join();
+	}
+
+	private static void cleanCommandSwap(String base) {
+		try (RandomAccessFile raf = new RandomAccessFile(new File(base, "command.swap"), "rw");
+				FileChannel channel = raf.getChannel()) {
+			FileLock lock = channel.lock(); // 锁定文件
+			channel.truncate(0); // 清空文件
+			lock.release(); // 释放文件锁
+		} catch (IOException e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private static void startNodeAgent() throws Exception {

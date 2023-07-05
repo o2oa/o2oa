@@ -38,6 +38,12 @@ public class Commands {
 			} else {
 				LOGGER.print("unknown command: {}", cmd);
 			}
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				LOGGER.error(e);
+			}
 		}).start();
 	}
 

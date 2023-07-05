@@ -12,7 +12,9 @@ import com.x.base.core.project.tools.Crypto;
 
 public class ExternalDataSource extends ConfigObject {
 
-    // 无需保存
+    private static final long serialVersionUID = -2098883883740436217L;
+
+	// 无需保存
     private transient String _password;
 
     public ExternalDataSource() {
