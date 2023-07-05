@@ -27,9 +27,7 @@ import com.x.portal.core.entity.File;
 import com.x.portal.core.entity.File_;
 import com.x.portal.core.entity.Portal;
 
-class ActionContent extends StandardJaxrsAction {
-
-	private CacheCategory cache = new CacheCategory(File.class);
+class ActionContent extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String portalFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
