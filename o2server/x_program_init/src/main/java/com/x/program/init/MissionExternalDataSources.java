@@ -2,18 +2,15 @@ package com.x.program.init;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.AbstractMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.google.common.collect.ImmutableMap;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.tools.ZipTools;
 import com.x.program.init.Missions.Mission;
 
-public class MissionExternalDataSource implements Mission {
+public class MissionExternalDataSources implements Mission {
 
 	public static final String TYPE_MYSQL = "mysql";
 	public static final String TYPE_POSTGRESQL = "postgresql";
@@ -29,16 +26,14 @@ public class MissionExternalDataSource implements Mission {
 	public static final String TYPE_OSCAR = "oscar";
 	public static final String TYPE_INFORMIX = "informix";
 
-//	Map<String, ExternalDataSource> immutableMap = ImmutableMap.ofEntries(new AbstractMap.SimpleEntry<>(1, "USA"));
+	private ExternalDataSources externalDataSources;
 
-	private String stamp;
-
-	public String getStamp() {
-		return stamp;
+	public ExternalDataSources getExternalDataSources() {
+		return externalDataSources;
 	}
 
-	public void setStamp(String stamp) {
-		this.stamp = stamp;
+	public void setExternalDataSources(ExternalDataSources externalDataSources) {
+		this.externalDataSources = externalDataSources;
 	}
 
 	@Override

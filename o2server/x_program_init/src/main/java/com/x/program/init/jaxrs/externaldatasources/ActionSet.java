@@ -1,6 +1,7 @@
 package com.x.program.init.jaxrs.externaldatasources;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,6 +17,7 @@ class ActionSet extends BaseAction {
 
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		MissionSetSecret missionSetSecret = new MissionSetSecret();
@@ -29,22 +31,21 @@ class ActionSet extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = 7892218945591687635L;
+		private static final long serialVersionUID = -1359701091994600065L;
 
 	}
 
 	public static class Wi extends GsonPropertyObject {
 
-		private static final long serialVersionUID = -5726130517002102825L;
+		private static final long serialVersionUID = -1714043928097428688L;
+		private ExternalDataSources externalDataSources;
 
-		private String secret;
-
-		public String getSecret() {
-			return secret;
+		public ExternalDataSources getExternalDataSources() {
+			return externalDataSources;
 		}
 
-		public void setSecret(String secret) {
-			this.secret = secret;
+		public void setExternalDataSources(ExternalDataSources externalDataSources) {
+			this.externalDataSources = externalDataSources;
 		}
 
 	}
