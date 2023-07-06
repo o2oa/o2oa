@@ -135,6 +135,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
+			 * 导出前触发。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#beforeExport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 导出excel的时候触发，this.event指向导出的数据，您可以通过修改this.event来修改数据。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#export
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -175,6 +180,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * }
 			 */
 			/**
+			 * 导入前触发。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#beforeImport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 在导入excel，数据校验成功将要设置回数据表格的时候触发，this.event指向整理过的导入数据，格式见{@link DatatableData}。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -185,7 +195,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport", "afterImport"]
+				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine", "editLine",
+				"completeLineEdit", "cancelLineEdit", "beforeExport", "export", "beforeImport", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -2819,7 +2830,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					// }else if(this.options.isEdited){
 					// 	this.data[templateJsonId] = module.getData();
 					// }
-					if(this.options.isEdited) {
+					if(this.options.isEdited ) {
 						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
 							if( module.json.compute === "save" && module.getInputData ){
 								this.data[templateJsonId] = module.getInputData();
@@ -2827,6 +2838,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 								this.data[templateJsonId] = module.getData();
 							}
 						}
+					}else if(!hasData && module.getValue ){
+						this.data[templateJsonId] = module.getValue();
 					}
 					this.allField[id] = module;
 					this.allField_templateId[templateJsonId] = module;
@@ -3531,7 +3544,7 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 				this.all_templateId[templateJsonId] = module;
 
 				if (module.field) {
-					if(this.options.isEdited) {
+					if(this.options.isEdited ) {
 						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
 							if( module.json.compute === "save" && module.getInputData ){
 								this.data[templateJsonId] = module.getInputData();
@@ -3539,6 +3552,8 @@ MWF.xApplication.process.Xform.DatatablePC.ImporterLine =  new Class({
 								this.data[templateJsonId] = module.getData();
 							}
 						}
+					}else if(!hasData && module.getValue ){
+						this.data[templateJsonId] = module.getValue();
 					}
 					this.allField[id] = module;
 					this.allField_templateId[templateJsonId] = module;
@@ -3629,6 +3644,17 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		this.columnJsonList = [];
 	},
 	exportToExcel : function () {
+		MWF.require("MWF.widget.Mask", null, false);
+		this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+		// 适配移动端
+		if (layout.mobile) {
+			this.mask.load();
+		} else {
+			this.mask.loadNode(this.form.app.content);
+		}
+
+		this.datatable.fireEvent("beforeExport");
+
 		this.getColumnList();
 
 		var resultArr = [];
@@ -3668,7 +3694,14 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 				arg.data || rstArr,
 				arg.title || excelName,
 				arg.colWidthArray || colWidthArr,
-				this.getDateIndexArray()  //日期格式列下标
+				this.getDateIndexArray(),  //日期格式列下标
+				null,
+				function () {
+					if (this.mask) {
+						this.mask.hide();
+						this.mask = null;
+					}
+				}.bind(this)
 			);
 		}.bind(this))
 
@@ -3876,6 +3909,18 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 	},
 
 	exportWithImportDataToExcel : function ( importedData ) {
+		MWF.require("MWF.widget.Mask", null, false);
+		this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+		// 适配移动端
+		if (layout.mobile) {
+			this.mask.load();
+		} else {
+			this.mask.loadNode(this.form.app.content);
+		}
+
+
+		this.datatable.fireEvent("beforeExport");
+
 		this.getColumnList();
 
 		var resultArr = [];
@@ -3911,7 +3956,14 @@ MWF.xApplication.process.Xform.DatatablePC.Exporter = new Class({
 		    arg.data || resultArr,
 		    arg.title || excelName,
 		    arg.colWidthArray || colWidthArr,
-		    this.getDateIndexArray() //日期格式列下标
+		    this.getDateIndexArray(), //日期格式列下标
+			null,
+			function () {
+				if (this.mask) {
+					this.mask.hide();
+					this.mask = null;
+				}
+			}.bind(this)
 		 );
 	}
 });
@@ -3943,11 +3995,23 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		return true;
 	},
 	importFromExcel : function () {
+		this.datatable.fireEvent("beforeImport");
+
 		this.getColumnList();
 		var dateColArray = this.getDateIndexArray(); //日期列
 		var orgTitleArray = this.getOrgTitleArray();
 
 		this.excelUtil.upload( dateColArray, function (data) {
+
+			MWF.require("MWF.widget.Mask", null, false);
+			this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+			// 适配移动端
+			if (layout.mobile) {
+				this.mask.load();
+			} else {
+				this.mask.loadNode(this.form.app.content);
+			}
+
 			this.importedData = data;
 			if( !this.checkCount() )return;
 
@@ -4113,6 +4177,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		this.datatable.fireEvent("change", [{lines: this.datatable.lineList, type : "import"}]);
 
+		if (this.mask) {
+			this.mask.hide();
+			this.mask = null;
+		}
+
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
@@ -4189,6 +4258,11 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 				dlg = null;
 			}.bind(this)
 		});
+
+		if (this.mask) {
+			this.mask.hide();
+			this.mask = null;
+		}
 
 	},
 	checkCount: function(){
