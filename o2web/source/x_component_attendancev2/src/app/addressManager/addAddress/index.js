@@ -160,6 +160,7 @@ export default content({
         this.map.addOverlay(marker);
     },
     close() {
+        this.$topParent.publishEvent('address', {});
         this.$parent.closeFormVm();
     },
     async submitAdd() {

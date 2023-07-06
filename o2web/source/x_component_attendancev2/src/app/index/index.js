@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { personalAction } from "../../utils/actions";
+import { EventBus } from "../../utils/eventBus";
 import template from "./template.html";
 import style from "./style.scope.css";
 import myMenu from "../menu";
@@ -29,7 +30,27 @@ export default content({
       },
     };
   },
-
+  async beforeRender() {
+    await this.loadCurrentPersonInfo();
+    const menu = this.getCurrentPersonMenu();
+    this.bind.menu.menuData = menu;
+    if (menu.length) {
+      this.bind.menu.currentMenu = menu[0].sub[0];
+    }
+    this._initEventBus();
+  },
+  // 初始化 EventBus
+  _initEventBus() {
+    this.eventBus = new EventBus();
+  },
+  // 添加监听
+  listenEventBus(eventName, callback) {
+    this.eventBus.subscribe(eventName, callback);
+  },
+  // 发送事件
+  publishEvent(eventName, data) {
+    this.eventBus.publish(eventName, data);
+  },
   // 打开 打卡地点表单
   async openBDMapConfigForm(bind) {
     this.closeFormVm();
@@ -43,6 +64,7 @@ export default content({
     const bindData = bind || {};
     const c = (await import('../addressManager/addAddress/index.js')).default;
     this.openFomVm(c, bindData);
+    debugger;
   },
   // 打开班次表单
   async openShiftForm(bind) {
@@ -70,14 +92,7 @@ export default content({
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
   },
-  async beforeRender() {
-    await this.loadCurrentPersonInfo();
-    const menu = this.getCurrentPersonMenu();
-    this.bind.menu.menuData = menu;
-    if (menu.length) {
-      this.bind.menu.currentMenu = menu[0].sub[0];
-    }
-  },
+  
   async loadCurrentPersonInfo() {
     content.myDutyList = [];
     this.bind.admin = "";

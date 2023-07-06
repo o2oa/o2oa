@@ -78,6 +78,7 @@ export default content({
         setJSONValue(key, value, this.bind);
     },
     closeShift() {
+        this.$topParent.publishEvent('shift', {});
         this.$parent.closeFormVm();
     },
     async submitAdd() {

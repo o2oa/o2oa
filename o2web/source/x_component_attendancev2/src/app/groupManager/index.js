@@ -23,6 +23,13 @@ export default content({
   },
   afterRender() {
     this.loadGroupList();
+    this.listenEventBus();
+  },
+  listenEventBus() {
+    this.$topParent.listenEventBus('group', (data) => {
+      console.log('接收到了group消息', data);
+      this.loadGroupList();
+    });
   },
   // 班次信息展现 
   formatAttendanceTime(group) {

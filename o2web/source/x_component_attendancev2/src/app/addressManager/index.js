@@ -17,6 +17,7 @@ export default content({
     };
   },
   afterRender() {
+    this.listenEventBus();
     this.loadWorkAddressData();
   },
   async openBdAKConfig() {
@@ -26,12 +27,14 @@ export default content({
     this.$parent.openBDMapConfigForm({bind: {"baiduAccountKey": bdKey}});
   },
   async clickAdd() {
+    debugger;
      // 添加
     //  const content = (await import(`./addAddress/index.js`)).default;
     //  this.addAddressVm = await content.generate(".form", {}, this);
      this.$parent.openAddressForm({});
   },
   clickDeleteItem(id, name) {
+    debugger;
     var _self = this;
     const c = lpFormat(lp, "workAddressForm.confirmDelete", { name: name });
     o2.api.page.confirm(
@@ -68,5 +71,11 @@ export default content({
     if (this.configBdAKVm) {
       this.configBdAKVm.destroy();
     }
-  }
+  },
+  listenEventBus() {
+    this.$topParent.listenEventBus('address', (data) => {
+      console.log('接收到了address消息', data);
+      this.loadWorkAddressData();
+    });
+  },
 });

@@ -26,6 +26,7 @@ export default content({
   },
   afterRender() {
     // let a = [...new Array(2).keys()];
+    this.listenEventBus();
     this.loadShiftList();
   },
   async addShift() {
@@ -116,5 +117,11 @@ export default content({
       this.addShiftVm.destroy();
     }
     this.loadShiftList();
+  },
+  listenEventBus() {
+    this.$topParent.listenEventBus('shift', (data) => {
+      console.log('接收到了shift消息', data);
+      this.loadShiftList();
+    });
   },
 });
