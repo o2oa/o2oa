@@ -193,10 +193,8 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
 
 
     _createVueApp: function(callback){
-        debugger;
         if (!this.vm){
             this._loadVue(function(){
-                console.log("window.Vue="+window.Vue, "window.ELEMENT="+window.ELEMENT);
                 this._mountVueApp(callback);
             }.bind(this));
         }else{
@@ -207,12 +205,15 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     _loadVue: function(callback){
         var flag = (o2.session.isDebugger || !this.form.app.inBrowser);
         var vue = flag ? "vue_develop" : "vue";
-        var vueName = flag ? "Vue" : "Cn";
-        if (!window.Vue || window.Vue.name!==vueName){
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
+        //var vueName = flag ? "Vue" : "Cn";
+        // if (!window.Vue || window.Vue.name!==vueName  ){
+        //     console.log('load vue ad elementui --- ' + this.tmpUUID);
+        //     o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        // }else{
+        //     console.log('loaded vue ad elementui --- ' + this.tmpUUID);
+        //     if (callback) callback();
+        // }
+        o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     // _loadVue: function(callback){
     //     if (!window.Vue){
