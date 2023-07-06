@@ -129,15 +129,17 @@ export default content({
   },
   // 添加
   async addGroup() {
-    const content = (await import(`./editGroup/index.js`)).default;
-    this.addGroupVm = await content.generate(".form", {}, this);
+    // const content = (await import(`./editGroup/index.js`)).default;
+    // this.addGroupVm = await content.generate(".form", {}, this);
+    this.$parent.openGroupForm({});
   },
   // 修改
   async clickEditGroup(id) {
     const group = this.bind.groupList.find((g)=> g.id === id);
     if (group) {
-      const content = (await import(`./editGroup/index.js`)).default;
-      this.addGroupVm = await content.generate(".form", {bind: {updateId: group.id}}, this);
+      // const content = (await import(`./editGroup/index.js`)).default;
+      // this.addGroupVm = await content.generate(".form", {bind: {updateId: group.id}}, this);
+      this.$parent.openGroupForm({bind: {updateId: group.id}});
     }
     
   },

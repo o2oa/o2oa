@@ -29,6 +29,47 @@ export default content({
       },
     };
   },
+
+  // 打开 打卡地点表单
+  async openBDMapConfigForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../addressManager/bdAkConfig/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
+  // 打开 打卡地点表单
+  async openAddressForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../addressManager/addAddress/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
+  // 打开班次表单
+  async openShiftForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../shiftManager/addShift/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
+  // 打开考勤组表单
+  async openGroupForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../groupManager/editGroup/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
+  // 打开编辑表单页面
+  async openFomVm(c, bindData) {
+    this.formVm = await c.generate("#form", bindData, this);
+    this.dom.querySelector("#form").classList.add("index_page_form_container");
+  },
+  // 关闭表单
+  closeFormVm() {
+    if (this.formVm) {
+      this.formVm.destroy();
+    }
+    this.dom.querySelector("#form").classList.remove("index_page_form_container");
+  },
   async beforeRender() {
     await this.loadCurrentPersonInfo();
     const menu = this.getCurrentPersonMenu();
@@ -59,8 +100,7 @@ export default content({
         content.myDutyList = dutyList;
       }
     }
-  }
-  ,
+  },
   // 普通菜单数据
   getCurrentPersonMenu() {
     const menus = this.menuDataAll();
@@ -72,7 +112,6 @@ export default content({
     }
     return menus.filter((menu) => menu.access <= access);
   },
- 
   menuDataAll() {
     return [
       {
@@ -83,16 +122,19 @@ export default content({
             id: "1-1",
             title: lp.menu.myStatistic,
             action: "myAttendance",
+            icon: "o2icon-icon_tongji"
           },
           {
             id: "1-2",
             title: lp.menu.myAppealList,
             action: "appealManager",
+            icon: "o2icon-icon_kaoiqinyichang"
           },
           {
             id: "1-3",
             title: lp.menu.leavemanager,
             action: "leaveManager",
+            icon: "o2icon-icon_shijian"
           },
         ],
       },
@@ -104,16 +146,19 @@ export default content({
             id: "2-1",
             title: lp.menu.detailStatisticFilter,
             action: "detailStatisticManager",
+            icon: "o2icon-icon_huizong"
           },
           {
             id: "2-2",
             title: lp.menu.detailFilter,
             action: "detailManager",
+            icon: "o2icon-icon_meirihuizong"
           },
           {
             id: "2-3",
             title: lp.menu.recordList,
             action: "recordManager",
+            icon: "o2icon-icon_yuanshijilu"
           },
         ],
       },
@@ -125,26 +170,31 @@ export default content({
             id: "3-1",
             title: lp.menu.shiftManager,
             action: "shiftManager",
+            icon: "o2icon-icon_banciguanli"
           },
           {
             id: "3-2",
             title: lp.menu.groupmanager,
             action: "groupManager",
+            icon: "o2icon-icon_kaoqinzu"
           },
           {
             id: "3-3",
             title: lp.menu.addressmanger,
             action: "addressManager",
+            icon: "o2icon-icon_changsuo"
           },
           {
             id: "3-4",
             title: lp.menu.leavemanager,
             action: "leaveManager",
+            icon: "o2icon-icon_qingjia"
           },
           {
             id: "3-5",
             title: lp.menu.configmanager,
             action: "configManager",
+            icon: "o2icon-icon_peizhi"
           },
         ],
       },

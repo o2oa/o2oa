@@ -1,11 +1,11 @@
 <!-- 表单 -->
-<div class="cc-mask cc-mask-show">
-  <div class="s-dialog">
-      <div class="s-dialog-header">
+<div style="height: 100%;">
+    <div class="o2-form">
+      <div class="o2-form-header">
           <span class="title">{{$.fTitle}}</span>
           <button class="close" @click="close"><i class="o2icon-icon_close"></i></button>
       </div>
-      <div class="s-dialog-content">
+      <div class="o2-form-content">
             <div class="form-alert">点击地图定位工作场所地址</div>
            <div class="bd-map">
             <!-- 放百度地图 -->
@@ -19,7 +19,7 @@
            <o-textarea oo-prop="{'label':$.lp.workAddressForm.desc, 'placeholder': $.lp.workAddressForm.descPlaceholder , 'value': $.form.description}"
            oo-model="form.description"></o-textarea>
       </div>
-      <div class="s-dialog-footer">
+      <div class="o2-form-footer">
           <span>
               <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
               <button class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>

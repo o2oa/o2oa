@@ -78,7 +78,7 @@ export default content({
         setJSONValue(key, value, this.bind);
     },
     closeShift() {
-        this.$parent.closeShift();
+        this.$parent.closeFormVm();
     },
     async submitAdd() {
         debugger

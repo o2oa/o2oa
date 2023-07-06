@@ -8,10 +8,9 @@
         </div>
         <ul class="index_page_nav_menu" oo-if="menu.value.sub" >
           <li class="index_page_nav_menu" oo-each="menu.value.sub" oo-item="subMenu">
-            <div class="index_page_nav_menu_title_container">
-              <!-- 图标？？ -->
-              <div oo-if="$.currentMenu.id == subMenu.value.id" class="index_page_nav_menu_title title_sub title_selected"  @click="this.clickMenu(subMenu.value)">{{subMenu.value.title}}</div>
-              <div oo-else class="index_page_nav_menu_title title_sub" @click="this.clickMenu(subMenu.value)" >{{subMenu.value.title}}</div>
+            <div class="{{this.loadSubMenuClass(subMenu.value, $.currentMenu)}}">
+              <div class="index_page_nav_menu_icon"><i class="{{subMenu.value.icon}}"></i></div>
+              <div class="index_page_nav_sub_menu_title" @click="this.clickMenu(subMenu.value)" >{{subMenu.value.title}}</div>
             </div>
           </li>
         </ul>  

@@ -19,7 +19,7 @@ export default content({
     afterRender() {
     },
     close() {
-        this.$parent.closeBDAkConfig();
+        this.$parent.closeFormVm();
     },
     async submitAdd() {
         if (isEmpty(this.bind.baiduAccountKey)) {

@@ -160,7 +160,7 @@ export default content({
         this.map.addOverlay(marker);
     },
     close() {
-        this.$parent.closeAddForm();
+        this.$parent.closeFormVm();
     },
     async submitAdd() {
         let myForm = this.bind.form;

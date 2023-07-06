@@ -21,13 +21,15 @@ export default content({
   },
   async openBdAKConfig() {
     const bdKey = (await getPublicData("baiduAccountKey")) || "";
-    const content = (await import('./bdAkConfig/index.js')).default;
-    this.configBdAKVm = await content.generate(".form", {bind: {"baiduAccountKey": bdKey}} , this);
+    // const content = (await import('./bdAkConfig/index.js')).default;
+    // this.configBdAKVm = await content.generate(".form", {bind: {"baiduAccountKey": bdKey}} , this);
+    this.$parent.openBDMapConfigForm({bind: {"baiduAccountKey": bdKey}});
   },
   async clickAdd() {
      // 添加
-     const content = (await import(`./addAddress/index.js`)).default;
-     this.addAddressVm = await content.generate(".form", {}, this);
+    //  const content = (await import(`./addAddress/index.js`)).default;
+    //  this.addAddressVm = await content.generate(".form", {}, this);
+     this.$parent.openAddressForm({});
   },
   clickDeleteItem(id, name) {
     var _self = this;

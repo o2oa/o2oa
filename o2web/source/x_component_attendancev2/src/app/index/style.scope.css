@@ -2,19 +2,19 @@
 :root {
   /* 考勤颜色变量 */
   /* 正常 */
-  --att-record-status-normal-color: #4A90E2;
+  --att-record-status-normal-color: #4a90e2;
   /* 早退 */
-  --att-record-status-early-color: #8B572A;
+  --att-record-status-early-color: #8b572a;
   /* 迟到 */
-  --att-record-status-late-color: #F5A623;
+  --att-record-status-late-color: #f5a623;
   /* 严重迟到 */
-  --att-record-status-serilate-color: #FF8080;
+  --att-record-status-serilate-color: #ff8080;
   /* 未打卡 */
   --att-record-status-nosign-color: #fb4747;
   /* 外勤 */
-  --att-record-status-fieldwork-color: #E233FF;
+  --att-record-status-fieldwork-color: #e233ff;
   /* 申诉 */
-  --att-record-status-appeal-color: #4FB2E3;
+  --att-record-status-appeal-color: #4fb2e3;
   /* 外出请假 */
   --att-record-status-leave-color: #78c06e;
 }
@@ -36,7 +36,7 @@
   margin-right: 10px;
 }
 .padding-bottom {
-  padding-bottom: 10px!important;
+  padding-bottom: 10px !important;
 }
 .flex {
   display: flex;
@@ -55,7 +55,7 @@
 }
 /* 早退 */
 .color-early {
-  color:var(--att-record-status-early-color);
+  color: var(--att-record-status-early-color);
 }
 /* 迟到 */
 .color-late {
@@ -95,6 +95,9 @@
   background-color: #ffffff !important;
   border-color: #f23030 !important;
 }
+.white-bg {
+  background-color: white;
+}
 .att {
   background-color: white;
   height: 100%;
@@ -106,24 +109,18 @@
   cursor: pointer;
   margin-left: 10px;
 }
-/* 主页顶层样式 */
-.manager-box {
-  position: relative;
-  height: 100%;
-  overflow: auto;
-}
 /* table */
 .att_table thead {
   width: 100%;
   height: 40px;
-  background-color: rgb(247, 247, 247);
+  background-color: #F0F0F0;
   color: rgb(102, 102, 102);
   font-weight: normal;
   line-height: 40px;
   font-size: 15px;
 }
 .att_table th {
-  background-color: rgb(247, 247, 247);
+  background-color: #F0F0F0;
   text-align: center;
   line-height: 24px;
   padding: 8px 0px;
@@ -148,7 +145,6 @@
   overflow: hidden;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
-
 .att .primary_color {
   color: var(--el-color-primary);
 }
@@ -172,32 +168,43 @@
 /* index */
 .index_page_header_container {
   display: flex;
-  height: 48px;
-  padding: 0 18px;
+  margin: 20px 30px;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #eee;
 }
 .index_page_header_title {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
   line-height: 24px;
-  color: #171a1d;
-  margin-right: 4px;
+  color: #333;
 }
 .index_page_content_container {
   display: flex;
-  height: calc(100% - 50px);
+  height: 100%;
 }
 .index_page_nav_container {
   flex-shrink: 0;
   overflow: auto;
+  width: 260px;
+  padding: 20px;
+  box-shadow: inset -1px 0 0 rgb(126 134 142 / 16%);
 }
 .index_page_route_container {
   flex-grow: 1;
   overflow: hidden;
   position: relative;
-  min-width: 670px;
+  /* min-width: 670px; */
+  background-color: #f0f0f0;
+}
+.index_page_form_container {
+  width: 500px;
+  box-shadow: 0px -2px 4px 0px rgba(0,0,0,0.25);
+}
+/* 主页顶层样式 */
+.manager-box {
+  position: relative;
+  overflow: auto;
+  margin: 10px;
+  height: calc(100% - 20px);
 }
 
 /* mask */
@@ -234,7 +241,7 @@
   height: 100%;
   top: 0px;
   border-radius: 5px;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   left: 0px;
   z-index: 1025;
 }
@@ -250,7 +257,7 @@
 }
 .o2-mask-loadingBar {
   width: 160px;
-  height:60px;
+  height: 60px;
   position: absolute;
   text-align: center;
   opacity: 1;
@@ -258,6 +265,53 @@
   left: 0px;
   font-size: 12px;
   z-index: 1026;
+}
+.o2-form {
+  background-color: #F7F7F7;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.o2-form-header {
+  padding: 20px;
+  padding-bottom: 10px;
+  padding-right: 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.o2-form-footer {
+  background-color: #ffffff;
+  padding: 20px;
+  padding-top: 10px;
+  padding-right: 16px;
+  text-align: right;
+  border-top: 1px solid #eee;
+}
+.o2-form-header .title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #333333;
+}
+.o2-form-header .close {
+  position: absolute;
+  top: 6px;
+  right: 0;
+  padding: 0;
+  width: 54px;
+  height: 54px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999999;
+}
+.o2-form-content {
+  padding: 20px;
+  overflow: auto;
+  flex: 1;
 }
 
 /* dialog */
@@ -392,13 +446,12 @@
   font-size: 14px;
 }
 
-
 .tag-container {
-  display: flex; 
+  display: flex;
   flex-wrap: wrap;
 }
 .tag-item {
-  display: flex; 
+  display: flex;
   align-items: center;
   margin-left: 10px;
   margin-top: 8px;
@@ -407,7 +460,6 @@
   border-radius: 4px !important;
   padding: 5px;
 }
-
 
 /* 灰色背景的卡片 */
 .a-card {
