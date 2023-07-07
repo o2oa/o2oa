@@ -258,7 +258,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     this.fireEvent("beforeLoad");
                     if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
 
-                    this.loadContent(callback)
+                    this.loadContent(callback);
                 }
 
             }.bind(this));
@@ -331,6 +331,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this._loadHtml();
             this._loadForm();
             this.fireEvent("beforeModulesLoad");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeModulesLoad");
             this._loadModules(this.node);
 
             if (!this.options.readonly) {
@@ -348,14 +349,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     });
                 }.bind(this));
             }
-            this.fireEvent("afterModulesLoad");
-            this.fireEvent("postLoad");
-            this.fireEvent("afterLoad");
-            if (this.app && this.app.fireEvent) {
-                this.app.fireEvent("afterModulesLoad");
-                this.app.fireEvent("postLoad");
-                this.app.fireEvent("afterLoad");
-            }
             // 移动端表单 展现底部工具栏
             debugger;
             if (this.json.mode === "Mobile") {
@@ -366,11 +359,34 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 } else {
                     if (callback) callback();
                 }
+            }else {
+                if (callback) callback();
             }
-            // 告诉移动端表单加载完成
-            // if (this.app && this.app.mobile) {
-            //     if (callback) callback();
-            // }
+
+            //this.fireEvent("afterModulesLoad");
+            this.fireEvent("postLoad");
+            //this.fireEvent("afterLoad");
+            if (this.app && this.app.fireEvent) {
+                //this.app.fireEvent("afterModulesLoad");
+                this.app.fireEvent("postLoad");
+                //this.app.fireEvent("afterLoad");
+            }
+            this.checkSubformLoaded(true);
+        },
+        checkSubformLoaded: function (isAllSubformLoaded) {
+            if (isAllSubformLoaded) {
+                this.isAllSubformLoaded = true;
+            }
+            if (!this.isAllSubformLoaded) return;
+            if ((!this.subformCount || this.subformCount === this.subformLoadedCount)){
+                //this.container.setStyle("opacity", 1);
+                this.fireEvent("afterModulesLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
+
+                this.fireEvent("afterLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
+                this.isLoaded = true;
+            }
         },
         autoSave: function () {
             //this.autoSaveTimerID = window.setInterval(function(){
