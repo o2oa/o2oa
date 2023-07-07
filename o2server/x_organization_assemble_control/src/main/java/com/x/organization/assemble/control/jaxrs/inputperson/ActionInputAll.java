@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.inputperson;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1000,9 +1001,7 @@ class ActionInputAll extends BaseAction {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		for (List<DutyItem> list : ListTools.batch(dutyItems, 200)) {
 			for (DutyItem o : list) {
-				if (StringUtils.isNotEmpty(o.getUnique()) && this.getDuty(business, o)) {
-
-				} else {
+				if (!this.getDuty(business, o)) {
 					logger.info("正在保存职务:{}." + o.getName());
 					UnitDuty dutyObject = new UnitDuty();
 					o.copyTo(dutyObject);
@@ -1215,7 +1214,7 @@ class ActionInputAll extends BaseAction {
 
 	// 生成随机数
 	private String getCard() {
-		Random rand = new Random();// 生成随机数
+		Random rand = new SecureRandom();// 生成随机数
 		String cardNnumer = "";
 		for (int a = 0; a < 8; a++) {
 			cardNnumer += rand.nextInt(10);// 生成6位数字

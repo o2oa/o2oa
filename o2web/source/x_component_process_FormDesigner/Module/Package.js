@@ -80,3 +80,4 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.SmartBI", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.PdfView", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.OfdView", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Relatedlink", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.AssociatedDocument", null, false);

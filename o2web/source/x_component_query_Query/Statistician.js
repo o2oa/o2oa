@@ -2,7 +2,7 @@ MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
-MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
+MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,

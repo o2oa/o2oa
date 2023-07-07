@@ -28,6 +28,9 @@ public class ActionGetConversation extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			IMConversation conversation = emc.find(conversationId, IMConversation.class);
+			if (conversation == null) {
+				throw new ExceptionConversationNotExist();
+			}
 			Wo wo = Wo.copier.copy(conversation);
 			IMConversationExt ext = business.imConversationFactory()
 					.getConversationExt(effectivePerson.getDistinguishedName(), wo.getId());

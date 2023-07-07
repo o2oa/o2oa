@@ -288,6 +288,43 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "执行人工活动流转完成事件.", action = ActionManualAfterProcessing.class)
+	@POST
+	@Path("manual/after/processing")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manualAfterProcessing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionManualAfterProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManualAfterProcessing().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "创建工作序列号.", action = ActionCreateSerial.class)
+	@POST
+	@Path("process/{processId}/name/{name}/serial")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createWorkSerial(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("流程标识") @PathParam("processId") String processId,
+			@JaxrsParameterDescribe("编号名称") @PathParam("name") String name) {
+		ActionResult<ActionCreateSerial.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreateSerial().execute(effectivePerson, processId, name);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "V2_调度.", action = V2Reroute.class)
 	@PUT
 	@Path("v2/{id}/reroute")
@@ -360,25 +397,6 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "创建工作序列号.", action = ActionCreateSerial.class)
-	@POST
-	@Path("process/{processId}/name/{name}/serial")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void createWorkSerial(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("流程标识") @PathParam("processId") String processId,
-			@JaxrsParameterDescribe("编号名称") @PathParam("name") String name) {
-		ActionResult<ActionCreateSerial.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCreateSerial().execute(effectivePerson, processId, name);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "V2_添加待办身份矩阵,before(在指定位置前添加),after(在指定位置后添加),top(添加在最前),bottom(添加到最后),extend(与指定位置同一行进行扩展)", action = V2AddManualTaskIdentityMatrix.class)
 	@POST
 	@Path("v2/{id}/add/manual/task/identity/matrix")
@@ -415,4 +433,5 @@ public class WorkAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
 }

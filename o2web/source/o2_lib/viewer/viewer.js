@@ -1446,7 +1446,7 @@
 
       if(isDingding){
 
-        var xtoken = Cookie.read(o2.tokenName);
+        var xtoken = layout.session.token;
         var url =  o2.filterUrl(this.image.src + "?"+o2.tokenName+"=" + xtoken);
         var fileName = this.image.alt;
         o2.load("/o2_lib/dingding/dingtalk.open-2.10.3.js",function(){

@@ -65,7 +65,7 @@ class ActionListPrevManual extends BaseAction {
 				throw new ExceptionEntityNotExist(process.getApplication(), Application.class);
 			}
 			if (effectivePerson.isNotPerson(person)
-					&& (!business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+					&& (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<WorkLog> workLogs = this.workLogs(business, job);

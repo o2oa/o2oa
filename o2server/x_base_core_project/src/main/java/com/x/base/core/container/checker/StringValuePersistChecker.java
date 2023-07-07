@@ -72,14 +72,24 @@ public class StringValuePersistChecker extends AbstractChecker {
 		}
 	}
 
+	/**
+	 * 取消simply校验,因为其他语言比如西语在目前的校验规则下全是特殊字符.
+	 * 
+	 * @param field
+	 * @param value
+	 * @param jpa
+	 * @param checkPersist
+	 * @param checkPersistType
+	 * @throws Exception
+	 */
 	private void simply(Field field, String value, JpaObject jpa, CheckPersist checkPersist,
 			CheckPersistType checkPersistType) throws Exception {
-		if (checkPersist.simplyString() && StringUtils.isNotEmpty(value)) {
-			if (!StringTools.isSimply(value)) {
-				throw new Exception("check persist stirngValue simply error, class:" + jpa.getClass().getName()
-						+ ", field:" + field.getName() + ", value:" + value + ".");
-			}
-		}
+//		if (checkPersist.simplyString() && StringUtils.isNotEmpty(value)) {
+//			if (!StringTools.isSimply(value)) {
+//				throw new Exception("check persist stirngValue simply error, class:" + jpa.getClass().getName()
+//						+ ", field:" + field.getName() + ", value:" + value + ".");
+//			}
+//		}
 	}
 
 	private void fileName(Field field, String value, JpaObject jpa, CheckPersist checkPersist,

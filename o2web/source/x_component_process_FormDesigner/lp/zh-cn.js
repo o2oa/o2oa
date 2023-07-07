@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "notDoubleDotId": "元素标识符不能包含连续的两个点号",
         "history": "历史",
         "componentTree": "组件树",
+        "invalidElementUIId": "由于Element组件的数据需要做双向绑定，标识请不要和配置项重名，如下：",
 
 		"button":{
 			"ok": "确定",
@@ -22,6 +23,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "no":"序号",
             "updateTime":"更新时间",
             "op":"操作",
+            "person":"更新人",
             "resume" : "恢复",
             "resumeConfirm" : "恢复确认",
             "resumeInfo" : "您确认是否需要执行表单恢复操作？确认恢复后当前表单会更新，需要手动保存当前表单才会生效。",
@@ -374,7 +376,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "阅读记录",
         "writingBoard": "手写板",
         "tinymceEditor": "Tinymce编辑器",
-        "relatedLink": "相关推荐"
+        "relatedLink": "相关推荐",
+        "associatedDocument": "关联文档"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -911,6 +914,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "多值用半角逗号(,)隔开",
         "defaultFilter": "默认过滤条件",
         "customFilter": "自定义过滤数据",
+        "filterCond": "过滤条件",
+        "filterNote": "注：返回视图的过滤条件数组，格式请查看",
 
         "titleStyle": "标题样式",
         "dataStyle": "数据样式",
@@ -984,6 +989,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "展开节点HTML",
         "collapseHtml": "折叠节点HTML",
         "relativedLinkField": "可选字段：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
+        "documentListShow": "文档列表展现",
+        "associatedDocumentField": "可选字段：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
+        "associatedDocumentScriptNote": "\n通过this.line可以获取当前条目数据",
 
         "fileTemplate": "文件模板",
         "systemTemplate": "系统模板",

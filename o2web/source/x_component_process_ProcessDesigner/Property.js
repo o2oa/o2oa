@@ -830,17 +830,23 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         }.bind(this), true);
                     }.bind(this));
 
-                    var viewNode = new Element("div", {"styles": this.process.css.propertyViewFormNode}).inject(node);
-                    viewNode.addEvent("click", function (e) {
+                    var openNode = new Element("div", {"styles": this.process.css.propertyOpenFormNode}).inject(node);
+                    openNode.addEvent("click", function(e){
                         var name = node.get("name");
-                        if(this.data[name] && this.data[name]!=="none"){
-                            layout.openApplication(null, "process.FormDesigner", {
-                                "style": layout.desktop.formDesignerStyle || "default",
-                                "appId": "process.FormDesigner"+this.data[name],
-                                "id": this.data[name]
-                            });
+                        var formId = this.data[name];
+                        if( formId && formId !== "none" ){
+                            o2.Actions.load("x_processplatform_assemble_designer").FormAction.get(formId, function () {
+                                var options = {
+                                    "style": layout.desktop.formDesignerStyle || "default",
+                                    "appId": "process.FormDesigner"+formId,
+                                    "id": formId
+                                };
+                                layout.openApplication(null, "process.FormDesigner", options);
+                            }.bind(this), function () {
+                                return true;
+                            })
                         }
-                    }.bind(this))
+                    }.bind(this));
                 }.bind(this));
             }.bind(this));
         }

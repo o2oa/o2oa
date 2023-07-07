@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
          *          [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
          *          [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
          * 	    ],
-         *     "rowList": [], //导入的行对象，数据格式常见本章API的afterCreateRowData说明。
+         *     "rowList": [], //导入的行对象数组，数据格式常见本章API的afterCreateRowData说明。
          *     "validted" : true  //是否校验通过，可以在本事件中修改该参数，确定是否强制导入
          * }
          */
@@ -60,7 +60,7 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
          * {
          *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
          *     "data": {}, //前台组织好的需要导入的数据
-         *     "rowList: [], //前台组织好的行对行
+         *     "rowList": [], //前台组织的行对象数组
          *     "count" : 10, //导入总数量
          *     "failCount": 0, //失败数量
          *     "distribution": "" //导入时候时的错误信息

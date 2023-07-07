@@ -21,6 +21,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.form = form;
         this.field = true;
         this.fieldModuleLoaded = false;
+        this.nodeHtml = this.node.get("html");
     },
 	_loadUserInterface: function(){
         if ( this.isSectionMergeRead() ) { //区段合并显示
@@ -74,6 +75,28 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 return (fun) ? fun(this, event) : null;
             }.bind(this));
         }
+    },
+    /**
+     * @summary 重新加载组件。会执行postLoad事件。
+     * @example
+     * this.form.get("fieldId").reload(); //重新加载事件
+     */
+    reload: function(){
+        if( this.iconNode ){
+            this.iconNode.destroy();
+            this.iconNode = null;
+        }
+        if( this.descriptionNode ){
+            this.descriptionNode.destroy();
+            this.descriptionNode = null;
+        }
+        this.node.empty();
+        this._beforeReloaded();
+        this._loadUserInterface();
+        this._loadStyles();
+        this._afterLoaded();
+        this._afterReloaded();
+        this.fireEvent("postLoad");
     },
     _loadNode: function(){
         if (this.isReadonly()){
@@ -173,6 +196,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     _loadNodeEdit: function(){
 	    if (!this.json.preprocessing) this._resetNodeEdit();
 	    var input = this.node.getFirst();
+        if( !input && this.nodeHtml ){
+            this.node.set("html", this.nodeHtml);
+            input = this.node.getFirst();
+        }
         input.set(this.json.properties);
 		this.node.set({
 			"id": this.json.id,
@@ -290,6 +317,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             this.loadDescription();
         }
 	},
+    _beforeReloaded: function(){},
+    _afterReloaded: function(){},
     /**
      * @summary 判断组件是否只读.
      * @example

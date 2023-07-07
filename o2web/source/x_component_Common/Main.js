@@ -467,12 +467,12 @@ MWF.xApplication.Common.Main = new Class({
 	setUncurrent: function () {
 		if (this.desktop.currentApp == this) {
 			this.window.setUncurrent();
-			this.taskitem.unSelected();
+			if (this.taskitem) this.taskitem.unSelected();
 			this.desktop.currentApp = null;
 			this.fireAppEvent("uncurrent");
 		}else{
 			this.window.setUncurrent();
-			this.taskitem.unSelected();
+			if (this.taskitem) this.taskitem.unSelected();
 		}
 	},
 	minSize: function () {
@@ -821,7 +821,7 @@ MWF.xApplication.Common.Main = new Class({
 			dlg.show();
 		}.bind(this));
 	},
-	alert: function (type, e, title, text, width, height) {
+	alert: function (type, e, title, text, width, height, callback) {
 		MWF.require("MWF.widget.Dialog", function () {
 			var size = $(document.body).getSize();
 			debugger;
@@ -883,6 +883,7 @@ MWF.xApplication.Common.Main = new Class({
 					{
 						"text": MWF.LP.process.button.ok,
 						"action": function () {
+							if( typeOf(callback) === "function" )callback();
 							this.close();
 						}
 					}

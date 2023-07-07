@@ -154,15 +154,25 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 }
 
                 var setup = editorConfig.setup;
+                var _self = this;
                 editorConfig.setup = function(editor) {
                     this.form.app.addEvent("queryClose", function () {
-                        try{ editor.destroy(); }catch (e) {}
+                        try{
+                            editor.destroy();
+                            _self.editor = null;
+                        }catch (e) {}
                     });
                     this.form.app.addEvent("queryReload", function () {
-                        try{ editor.destroy(); }catch (e) {}
+                        try{
+                            editor.destroy();
+                            _self.editor = null;
+                        }catch (e) {}
                     });
                     this.form.addEvent("reloadReadForm", function () {
-                        try{ editor.destroy(); }catch (e) {}
+                        try{
+                            editor.destroy();
+                            _self.editor = null;
+                        }catch (e) {}
                     });
                     this._loadEvents(editor);
                     if(setup)setup(editor);
@@ -239,7 +249,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
          * @return 组件的数据.
          */
         getData: function () {
-            return this.editor ? this.editor.getContent() : this._getBusinessData();
+            return (this.editor && this.editor.getContent) ? this.editor.getContent() : this._getBusinessData();
         },
         /**
          * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -257,10 +267,13 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
          */
         setData: function (data) {
             this._setBusinessData(data);
-            if (this.editor) this.editor.setContent(data);
+            if (this.editor && this.editor.setContent) this.editor.setContent(data);
         },
         destroy: function(){
-            if( this.editor )this.editor.destroy();
+            if( this.editor ){
+                this.editor.destroy();
+                this.editor = null;
+            }
         },
         createErrorNode: function (text) {
             var node = new Element("div");

@@ -28,32 +28,32 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 		]
 	},
-	
+
 	initialize: function(designer, container, options){
 		this.setOptions(options);
-		
+
 		this.path = "../x_component_process_FormDesigner/Module/Form/";
 		this.cssPath = "../x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
-		
+
 		this.container = null;
 		this.form = this;
         this.moduleType = "form";
-		
+
 		this.moduleList = [];
 		this.moduleNodeList = [];
-		
+
 		this.moduleContainerNodeList = [];
 		this.moduleElementNodeList = [];
 		this.moduleComponentNodeList = [];
 
 	//	this.moduleContainerList = [];
 		this.dataTemplate = {};
-		
+
 		this.designer = designer;
 		this.container = container;
-		
+
 		this.selectedModules = [];
 	},
     reload: function(data){
@@ -472,12 +472,12 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		this.loadDomTree();
 	},
-	
+
 	loadDomTree: function(){
 		MWF.require("MWF.widget.Tree", function(){
 			this.domTree = new MWF.widget.Tree(this.designer.propertyDomArea, {"style": "domtree"});
 			this.domTree.load();
-			
+
 			this.createFormTreeNode();
 			this.parseModules(this, this.node);
 		}.bind(this));
@@ -535,7 +535,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			module = this.loadModule(obj.json, obj.dom, parent);
 		}.bind(this));
 	},
-	
+
 	getDomjson: function(dom){
 		var mwfType = dom.get("MWFtype");
 		switch (mwfType) {
@@ -552,7 +552,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				}
 		}
 	},
-	
+
 	loadModule: function(json, dom, parent){
 		if( !json ){
 			var module;
@@ -595,7 +595,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			return module;
 		}
 	},
-	
+
 	setNodeEvents: function(){
 		this.node.addEvent("click", function(e){
 			this.selected();
@@ -679,11 +679,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this.unSelectedMulti();
 
 		this.currentSelectedModule = this;
-		
+
 		if (this.treeNode){
 			this.treeNode.selectNode();
 		}
-		
+
 		this.showProperty();
     //    this.isFocus = true;
 	},
@@ -694,7 +694,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if (this.multimoduleActionsArea) this.multimoduleActionsArea.setStyle("display", "none");
 	},
 	unSelectAll: function(){
-		
+
 	},
 	_beginSelectMulti: function(){
 		if (this.currentSelectedModule) this.currentSelectedModule.unSelected();
@@ -718,7 +718,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 				"padding": "1px",
 				"padding-right": "0px",
 				"border": "1px solid #AAA",
-				"box-shadow": "0px 2px 5px #999", 
+				"box-shadow": "0px 2px 5px #999",
 				"z-index": 10001
 			}
 		}).inject(this.form.container, "after");
@@ -734,7 +734,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.multimoduleActionsArea.setStyle("display", "block");
 		}
 	},
-	
+
 	_getFirstMultiSelectedModule: function(){
 		var firstModule = null;
 		this.selectedModules.each(function(module){
@@ -753,8 +753,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		});
 		return firstModule;
 	},
-	
-	
+
+
 	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
@@ -764,7 +764,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 					if (callback) callback();
 				}.bind(this)
 			});
-			this.property.load();	
+			this.property.load();
 		}else{
 			this.property.show();
 			if (callback) callback();
@@ -773,12 +773,12 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     hideProperty: function(){
         if (this.property) this.property.hide();
     },
-	
+
 	unSelected: function(){
 		this.currentSelectedModule = null;
         this.hideProperty();
 	},
-	
+
 	_dragIn: function(module){
 		if (!this.Component) module.inContainer = this;
 		module.parentContainer = this;
@@ -1221,6 +1221,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	loadVersionList : function(){
 		var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
 			"<th>"+MWF.APPFD.LP.version["no"]+"</th>" +
+			"<th>"+MWF.APPFD.LP.version["person"]+"</th>" +
 			"<th>"+MWF.APPFD.LP.version["updateTime"]+"</th>" +
 			"<th>"+MWF.APPFD.LP.version["op"]+"</th>" +
 			"</tr></table>";
@@ -1232,6 +1233,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.versionList.each(function (version,index) {
 				var node = new Element("tr").inject(this.versionTable);
 				var html = "<td>"+(index+1)+"</td>" +
+					"<td>"+version.person+"</td>" +
 					"<td>"+version.updateTime+"</td>" +
 					"<td></td>";
 				node.set("html", html);
@@ -1302,7 +1304,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var y = this.container.getStyle("height");
         y = (y) ? y.toInt()-2 : this.container.getSize().y-2;
 		this.node.setStyle("min-height", ""+y+"px");
-		
+
 		if (this.initialStyles) this.node.setStyles(this.initialStyles);
 		this.node.setStyle("border", border);
 
@@ -1423,6 +1425,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
+
+            //删除注释
+            cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
+
             cssText = this.parseCSS(cssText);
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
@@ -1430,25 +1436,24 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var prefix = ".css" + id + " ";
 
             while ((match = rex.exec(cssText)) !== null) {
-                // var rule = prefix + match[0];
-                // cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                // rex.lastIndex = rex.lastIndex + prefix.length;
-
 				var rulesStr = match[0];
-				if (rulesStr.indexOf(",")!=-1){
-					var rules = rulesStr.split(/\s*,\s*/g);
-					rules = rules.map(function(r){
-						return prefix + r;
-					});
-					var rule = rules.join(", ");
-					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-					rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+                if( rulesStr.indexOf( "@media" ) === -1 ){
+                    if (rulesStr.indexOf(",")!=-1){
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
+                        rules = rules.map(function(r){
+                            return prefix + r;
+                        });
+                        var rule = rules.join(",");
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
 
-				}else{
-					var rule = prefix + match[0];
-					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-					rex.lastIndex = rex.lastIndex + prefix.length;
-				}
+                    }else{
+                        var rule = prefix + match[0];
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + prefix.length;
+                    }
+                }
             }
 
             var styleNode = document.createElement("style");
@@ -1600,5 +1605,5 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
     	// 	if (this.options.fields.indexOf(o.type))
 	// 	}.bind(this))
 	// }
-	
+
 });

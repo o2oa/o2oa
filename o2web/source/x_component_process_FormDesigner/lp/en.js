@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "notDoubleDotId": "Element identifier cannot contain two consecutive dots",
     "history": "History",
     "componentTree": "Component Tree",
+    "invalidElementUIId": "Dado que los datos del componente Element deben vincularse en dos direcciones, no tenga el mismo nombre que el elemento de configuración:",
 
     "button":{
         "ok": "OK",
@@ -22,6 +23,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "no":"SerialNumber",
         "updateTime":"UpdateTime",
         "op":"action",
+        "person":"person",
         "resume" : "Resume",
         "resumeConfirm" : "Resume Confirmation",
         "resumeInfo" : "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current form needs to be manually saved to take effect.",
@@ -376,7 +378,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "Read Log",
         "writingBoard": "writingBoard",
         "tinymceEditor": "TinyMCE",
-        "relatedLink": "Related Link"
+        "relatedLink": "Related Link",
+        "associatedDocument": "Associated Document"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -911,6 +914,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterValueInfo": "Multiple values are separated by half-width commas (,)",
         "defaultFilter": "Default Filter",
         "customFilter": "Custom Filter",
+        "filterCond": "Filter",
+        "filterNote": "Note: return the filter condition array of the view, please refer to the format ",
 
         "titleStyle": "Title Style",
         "dataStyle": "Data Style",
@@ -984,6 +989,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "expandHtml": "Expand Html",
         "collapseHtml": "Collapse Html",
         "relativedLinkField": "Selectable Field：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
+        "documentListShow": "Document List",
+        "associatedDocumentField": "Selectable Field：targetTitle,targetStartTime,targetCreatorPersonCn,targetType,targetCategory",
 
         "fileTemplate": "File Template",
         "systemTemplate": "System Template",
@@ -1550,7 +1557,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "setReaded": "Mark as read",
         "readed": "Readed",
         "addTask": "Add Task",
-        "addTaskTitle": "Add task to current activity"
+        "addTaskTitle": "Add task to current activity",
+        "goBack": "Go Back",
+        "goBackTitle": "Go back to a past event"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

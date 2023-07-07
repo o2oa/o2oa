@@ -23,7 +23,29 @@
 			</tr>
 		</table>
 		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.fileTemplate}}:</td>
+				<td class="editTableValue">
+					<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.result!='script')?'checked':''}/>{{$.lp.textValue}}
+					<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+				</td>
+			</tr>
+		</table>
 
+		<div id="templateArea" style="display: text{($.templateType=='value')?'block':'none'};">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue" colspan="2">
+						<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="templateScriptArea" style="display: text{($.templateType=='script')?'block':'none'};">
+			<div class="MWFScriptArea" name="templeteScript" title="{{$.lp.editScript}} (S)"></div>
+		</div>
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 
 	</div>

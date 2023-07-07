@@ -198,15 +198,13 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 // 上班打卡
                 List<AttendanceV2CheckInRecord> onDutyList = recordList.stream().filter(
                                 (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)
-                                        && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) || (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && StringUtils.isNotEmpty(r.getLeaveDataId())))
-                                        && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                                        && AttendanceV2Helper.isRecordAttendance(r)
                         )
                         .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
                 // 下班打卡
                 List<AttendanceV2CheckInRecord> offDutyList = recordList.stream().filter(
                                 (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)
-                                        && (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) || (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && StringUtils.isNotEmpty(r.getLeaveDataId())))
-                                        && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                                        && AttendanceV2Helper.isRecordAttendance(r)
                         )
                         .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
                 // 工作时长
@@ -243,38 +241,46 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 v2Detail.setLateTimes(lateMinute > 0 ? 1 : 0);
                 v2Detail.setLeaveEarlierTimeDuration(earlyMinute);
                 v2Detail.setLeaveEarlierTimes(earlyMinute > 0 ? 1 : 0);
+                // 工作时长
                 v2Detail.setWorkTimeDuration(workTimeDuration);
                 // 出勤天数
                 List<AttendanceV2CheckInRecord> attendanceList = recordList.stream().filter(
-                                (r) -> (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned) && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)))
+                                AttendanceV2Helper::isRecordAttendance)
                         .collect(Collectors.toList());
                 v2Detail.setAttendance(attendanceList.size() > 0 ? 1 : 0);
                 if (!isWorkDay) {
                     v2Detail.setRest(1);
+                    // 重新计算会导致数据错误 需要填入 0
+                    v2Detail.setLeaveDays(0);
+                    v2Detail.setAbsenteeismDays(0);
+                    v2Detail.setOnDutyAbsenceTimes(0);
+                    v2Detail.setOffDutyAbsenceTimes(0);
                 } else {
+                    v2Detail.setRest(0);
                     if (leaveList.size() > 0) { // 请假
                         v2Detail.setLeaveDays(1);
+                        v2Detail.setAbsenteeismDays(0); // 重新计算会导致数据错误 需要填入 0
                     } else {
+                        v2Detail.setLeaveDays(0); // 重新计算会导致数据错误 需要填入 0
                         // 旷工 有正常打卡记录就不算旷工？
                         v2Detail.setAbsenteeismDays(attendanceList.size() > 0 ? 0 : 1);
                     }
                     // 上班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOnDutyList = recordList.stream().filter(
                                     (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)
-                                            && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                                            && StringUtils.isEmpty(r.getLeaveDataId())
+                                            && AttendanceV2Helper.isRecordNotSign(r)
                             )
                             .collect(Collectors.toList());
                     v2Detail.setOnDutyAbsenceTimes(noCheckInOnDutyList.size());
                     // 下班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOffDutyList = recordList.stream().filter(
                                     (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)
-                                            && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                                            && StringUtils.isEmpty(r.getLeaveDataId())
+                                            &&  AttendanceV2Helper.isRecordNotSign(r)
                             )
                             .collect(Collectors.toList());
                     v2Detail.setOffDutyAbsenceTimes(noCheckInOffDutyList.size());
                 }
+                // 外勤次数
                 v2Detail.setFieldWorkTimes(fieldWorkList.size());
                 v2Detail.setRecordIdList(recordList.stream().map(AttendanceV2CheckInRecord::getId).collect(Collectors.toList()));
                 v2Detail.setGroupId(group.getId());
@@ -307,7 +313,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
      * @param config             配置
      * @param recordList
      * @param fieldWorkMarkError 外勤是否标记为异常数据
-     * @param isWorkDay 是否工作日
+     * @param isWorkDay          是否工作日
      * @throws Exception
      */
     private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList, boolean fieldWorkMarkError, boolean isWorkDay) throws Exception {
@@ -317,7 +323,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
             for (AttendanceV2CheckInRecord record : recordList) {
                 List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
                 // 异常打卡 新增AttendanceV2AppealInfo记录
-                if (isWorkDay && record.checkResultException(fieldWorkMarkError) ) {
+                if (isWorkDay && record.checkResultException(fieldWorkMarkError)) {
                     if (appealList != null && !appealList.isEmpty()) {
                         logger.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
                         continue;

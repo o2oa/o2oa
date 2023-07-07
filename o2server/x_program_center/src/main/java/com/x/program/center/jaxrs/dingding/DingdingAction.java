@@ -71,7 +71,7 @@ public class DingdingAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取钉钉回调的EncodingAESKey.", action = ActionCallbackAESKey.class)
+	@JaxrsMethodDescribe(value = "随机生成一个钉钉回调的EncodingAESKey.", action = ActionCallbackAESKey.class)
 	@GET
 	@Path("get/callback/aes")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

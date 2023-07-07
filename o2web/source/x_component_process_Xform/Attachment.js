@@ -1413,6 +1413,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         this.fieldModuleLoaded = true;
     },
+    /*
+     * @summary 重新加载附件。会触发queryLoadController、loadController和postLoadController事件。
+     * @example
+     *  this.form.get("fieldId").reload(); //重新加载
+     */
     reload: function(){
         this.node.empty();
         if (this.form.businessData.work.startTime){
@@ -1487,6 +1492,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
         }.bind(this));
         this.setAttachmentBusinessData();
+
+        this.addEvent("change", function () {
+            if(this.validationMode)this.validationMode();
+        }.bind(this))
+
         //}.bind(this));
     },
     setAttachmentBusinessData: function () {
@@ -1683,7 +1693,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         // }).inject(this.form.app.content);
 
         var _self = this;
-        this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteAttachmentTitle, MWF.xApplication.process.Xform.LP.deleteAttachment + "( " + names.join(", ") + " )", 300, 120, function () {
+        this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.deleteAttachmentTitle, MWF.xApplication.process.Xform.LP.deleteAttachment + "( " + o2.txt(names.join(", ")) + " )", 300, 120, function () {
             while (attachments.length) {
                 var attachment = attachments.shift();
                 _self.deleteAttachment(attachment);
@@ -2008,14 +2018,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
@@ -2095,14 +2105,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                        var xtoken = Cookie.read(o2.tokenName);
+                        var xtoken = layout.session.token;
                         // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });

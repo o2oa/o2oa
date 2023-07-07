@@ -28,6 +28,16 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     Extends: MWF.APP$ElSelector,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input失去焦点且值有修改是触发，或点击建议面板的选项后且值有修改时触发。this.event[0]为组件值
+         * @event MWF.xApplication.process.Xform.Elautocomplete#change
+         * @see {@link https://element.eleme.io/#/zh-CN/component/input#dai-shu-ru-jian-yi|input组件的带输入建议章节}
+         */
+        /**
+         * 点击建议面板的选项后时触发。this.event[0]为选中的选项
+         * @event MWF.xApplication.process.Xform.Elautocomplete#select
+         * @see {@link https://element.eleme.io/#/zh-CN/component/input#input-methods|input组件的Input Method章节}
+         */
         "elEvents": ["select", "change"]
     },
     /**
@@ -52,6 +62,26 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!this.json.prefixIcon) this.json.prefixIcon = "";
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
+    },
+    _createEventFunction: function(methods, k){
+        methods["$loadElEvent_"+k.camelCase()] = function(){
+            this.validationMode();
+            if (k==="change") this._setBusinessData(this.getInputData());
+            if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                this.form.Macro.fire(this.json.events[k].code, this, arguments);
+            }
+            if(k==="select"){
+                var arr = [];
+                var d = this._getBusinessData();
+                if( arguments[0] && arguments[0].value )arr.push(arguments[0].value);
+                if( (d||"") !== (arr[0] || "")){
+                    if (this.json.events && this.json.events["change"] && this.json.events["change"].code){
+                        this.form.Macro.fire(this.json.events["change"].code, this, arr);
+                    }
+                }
+                this._setBusinessData(arr[0]);
+            }
+        }.bind(this);
     },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};

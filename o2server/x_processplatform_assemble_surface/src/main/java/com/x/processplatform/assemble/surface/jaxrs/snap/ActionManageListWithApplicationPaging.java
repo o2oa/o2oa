@@ -1,5 +1,18 @@
 package com.x.processplatform.assemble.surface.jaxrs.snap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,24 +33,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.content.Snap_;
 import com.x.processplatform.core.entity.element.Application;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 class ActionManageListWithApplicationPaging extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageListWithApplicationPaging.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag, JsonElement jsonElement)
-			throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag,
+			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}, applicationFlag:{}, jsonElement:{}.",
+				effectivePerson::getDistinguishedName, () -> page, () -> size, () -> applicationFlag,
+				() -> jsonElement);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -47,11 +54,11 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.bindFilterPredicate(effectivePerson, business, application, wi);
-			if(p != null){
+			if (p != null) {
 				List<Wo> wos = emc.fetchDescPaging(Snap.class, Wo.copier, p, page, size, Snap.startTime_FIELDNAME);
 				result.setData(wos);
 				result.setCount(emc.count(Snap.class, p));
-			}else{
+			} else {
 				result.setData(new ArrayList<>());
 				result.setCount(0L);
 			}
@@ -59,18 +66,19 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		}
 	}
 
-	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application, Wi wi) throws Exception{
+	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application,
+			Wi wi) throws Exception {
 		Predicate p = null;
-		if (business.canManageApplication(effectivePerson, application)) {
+		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 			p = this.toFilterPredicate(business, application.getId(), wi);
-		}else{
+		} else {
 			List<String> processList = business.process().listControllableProcess(effectivePerson, application);
-			if(ListTools.isNotEmpty(processList)){
-				if(ListTools.isEmpty(wi.getProcessList())){
+			if (ListTools.isNotEmpty(processList)) {
+				if (ListTools.isEmpty(wi.getProcessList())) {
 					wi.setProcessList(processList);
-				}else{
+				} else {
 					wi.getProcessList().retainAll(processList);
-					if(ListTools.isEmpty(wi.getProcessList())){
+					if (ListTools.isEmpty(wi.getProcessList())) {
 						return null;
 					}
 				}
@@ -80,7 +88,7 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate toFilterPredicate(Business business, String appId,  Wi wi) throws Exception {
+	private Predicate toFilterPredicate(Business business, String appId, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Snap.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Snap> cq = cb.createQuery(Snap.class);
@@ -88,9 +96,9 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		Predicate p = cb.equal(root.get(Snap_.application), appId);
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Snap_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Snap_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
@@ -100,10 +108,10 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getJobList())) {
 			p = cb.and(p, root.get(Snap_.job).in(wi.getJobList()));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Snap_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Snap_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCredentialList())) {
@@ -116,7 +124,16 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		}
 		if (StringUtils.isNoneBlank(wi.getKey())) {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p,cb.like(root.get(Snap_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.and(p, cb.like(root.get(Snap_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = cb.and(p, cb.like(root.get(Snap_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(Snap_.activityName).in(wi.getActivityNameList()));
 		}
 		return p;
 	}
@@ -150,6 +167,12 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		@FieldDescribe("关键字")
 		private String key;
+
+		@FieldDescribe("标题")
+		private String title;
+
+		@FieldDescribe("活动名称")
+		private List<String> activityNameList;
 
 		public List<String> getProcessList() {
 			return processList == null ? Collections.emptyList() : processList;
@@ -221,6 +244,22 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 		public void setKey(String key) {
 			this.key = key;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public List<String> getActivityNameList() {
+			return activityNameList;
+		}
+
+		public void setActivityNameList(List<String> activityNameList) {
+			this.activityNameList = activityNameList;
 		}
 	}
 

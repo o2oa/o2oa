@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -32,7 +33,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -53,13 +57,16 @@ class ActionUploadWorkInfo extends BaseAction {
 				if (null == workCompleted) {
 					throw new Exception("workId: " + workId + " not exist in work or workCompleted");
 				}
-				if (!business.readable(effectivePerson, workCompleted)) {
+				Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+						.enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 					throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 							workCompleted.getTitle(), workCompleted.getId());
 				}
 				title = workCompleted.getTitle();
 			} else {
-				if (!business.readable(effectivePerson, work)) {
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+				if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 				title = work.getTitle();
@@ -75,8 +82,8 @@ class ActionUploadWorkInfo extends BaseAction {
 					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 				}
 			}
-			String id = saveHtml(flag, workHtml, effectivePerson.getDistinguishedName(), title,
-					wi.getPageWidth(), business);
+			String id = saveHtml(flag, workHtml, effectivePerson.getDistinguishedName(), title, wi.getPageWidth(),
+					business);
 			Wo wo = new Wo();
 			wo.setId(id);
 			result.setData(wo);

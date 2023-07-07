@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.sign;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -12,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.DocSign;
 
 class ActionGetByTask extends BaseAction {
@@ -27,7 +30,8 @@ class ActionGetByTask extends BaseAction {
 			if (null == docSign) {
 				throw new ExceptionEntityNotExist(taskId, DocSign.class);
 			}
-			if (!business.readableWithJob(effectivePerson, docSign.getJob())) {
+			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, docSign.getJob())
+					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, taskId);
 			}
 			Wo wo = Wo.copier.copy(docSign);

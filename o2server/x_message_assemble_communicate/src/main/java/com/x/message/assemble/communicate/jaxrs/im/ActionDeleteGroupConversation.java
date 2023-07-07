@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
@@ -70,6 +71,9 @@ public class ActionDeleteGroupConversation extends BaseAction {
             emc.delete(IMConversation.class, conversation.getId());
             emc.commit();
             LOGGER.info("删除群聊成功==============================================");
+            // 发送消息
+            sendConversationMsg(conversation.getPersonList(), conversation, MessageConnector.TYPE_IM_CONVERSATION_DELETE);
+
             Wo wo = new Wo();
             wo.setValue(true);
             result.setData(wo);

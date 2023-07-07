@@ -1,0 +1,84 @@
+[   //身份对象
+      {
+        "woUnit": { //身份所在组织
+          "id": "e56ef746-a923-494b-bdfe-81ab65c523da",
+          "name": "综合部",
+          "unique": "zhb",
+          "distinguishedName": "综合部@zhb@U",
+          "typeList": [
+            "department"
+          ],
+          "pinyin": "zonghebu",
+          "pinyinInitial": "zhb",
+          "description": "",
+          "shortName": "da",
+          "level": 2,
+          "levelName": "演示公司/综合部",
+          "levelOrderNumber": "0053522524/0053522721",
+          "superior": "0f98a161-df27-45f0-833b-e29105ba82f7",
+          "orderNumber": 53522721,
+          "controllerList": [
+            "5a272f71-02b3-4abb-a0e4-f11e23d9b824"
+          ],
+          "createTime": "2019-09-12 11:25:21",
+          "updateTime": "2022-08-01 15:36:39"
+        },
+        "woUnitDutyList": [ //身份拥有的职务
+          {
+            "woUnit": { //该职务绑定的组织
+              "id": "e56ef746-a923-494b-bdfe-81ab65c523da",
+              "name": "综合部",
+              "unique": "zhb",
+              "distinguishedName": "综合部@zhb@U",
+              "typeList": [
+                "department"
+              ],
+              "pinyin": "zonghebu",
+              "pinyinInitial": "zhb",
+              "description": "",
+              "shortName": "da",
+              "level": 2,
+              "levelName": "演示公司/综合部",
+              "levelOrderNumber": "0053522524/0053522721",
+              "superior": "0f98a161-df27-45f0-833b-e29105ba82f7",
+              "orderNumber": 53522721,
+              "controllerList": [
+                "5a272f71-02b3-4abb-a0e4-f11e23d9b824"
+              ],
+              "createTime": "2019-09-12 11:25:21",
+              "updateTime": "2022-08-01 15:36:39"
+            },
+            "id": "d14dbd1a-1db8-492b-9cf3-f1a2117f815d",
+            "pinyin": "bumenlingdao",
+            "pinyinInitial": "bmld",
+            "description": "",
+            "name": "部门领导",
+            "unique": "d14dbd1a-1db8-492b-9cf3-f1a2117f815d",
+            "distinguishedName": "部门领导@d14dbd1a-1db8-492b-9cf3-f1a2117f815d@UD",
+            "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
+            "orderNumber": 173379080,
+            "identityList": [
+              "b7c7db79-0241-4989-b31a-fbba5c17ada2"
+            ],
+            "createTime": "2023-06-30 16:51:21",
+            "updateTime": "2023-06-30 16:51:30"
+          }
+        ],
+        "id": "b7c7db79-0241-4989-b31a-fbba5c17ada2",
+        "pinyin": "zhangsan",
+        "pinyinInitial": "zs",
+        "description": "",
+        "name": "张三",
+        "unique": "zhb_zhangsan",
+        "distinguishedName": "张三@zhb_zhangsan@I",
+        "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
+        "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
+        "unitName": "综合部",
+        "unitLevel": 2,
+        "unitLevelName": "演示公司/综合部",
+        "orderNumber": 144603421,
+        "major": true, //是否为主身份
+        "createTime": "2022-08-01 15:37:01",
+        "updateTime": "2022-08-01 15:37:01"
+      }
+    ]

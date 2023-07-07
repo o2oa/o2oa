@@ -27,7 +27,7 @@
                     <span class="operator_link" oo-if="g.value.status === 0"
                         @click="this.startProcess(g.value)">{{$.lp.appeal.startProcess}}</span>
                     <span class="operator_link" oo-if="g.value.jobId"
-                        @click="this.openJob(g.value.jobId)">{{$.lp.appeal.openJob}}</span>
+                        @click="this.openJob(g.value.jobId, g.value.id)">{{$.lp.appeal.openJob}}</span>
                     
                 </td>
             </tr>

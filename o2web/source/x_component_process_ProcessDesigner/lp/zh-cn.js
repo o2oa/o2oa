@@ -34,7 +34,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"saveRouteOrgNoName" : "标识和标题不能为空",
 		"saveRouteOrgNumberId" : "标识不能为纯数字",
 		"saveRouteOrgDoubleDotId" : "标识不能包含连续两个点号",
-		"processCopyError": "活动粘贴失败，请重新复制后重试"
+		"processCopyError": "活动粘贴失败，请重新复制后重试",
+		"routeNameConfilct": "一个活动不能有两个同名路由！"
 	},
 	"menu": {
 		"newRoute": "新建路由",
@@ -419,8 +420,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 
 		"backConfig": "退回配置",
 		"allowBack": "允许退回",
-		"multiTaskEnable": "多人处理时是否允许退回",
-		"multiTaskEnableInfo": "多人处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
+		"multiTaskEnable": "多人并行时是否允许退回",
+		"multiTaskEnableInfo": "多人并行处理时执行退回会取消其他未处理人的待办，直接退回到指定活动",
 		"backType": "退回方式",
 		"backPrev": "逐级退回",
 		"backAny": "任意活动退回",
@@ -464,6 +465,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"eventInfo9": "处理待办，转已办",
 		"manualAfterTask": "待办处理后",
 		"eventInfo10": "判断是否满足条件进入下一个活动",
+
+		"eventInfo11": "执行所有流程流转任务，直到在某个活动停留或结束",
+		"afterProcess": "活动流转完成",
 
 		"updataTime": "更新时间",
 		"num": "顺序号",
@@ -522,6 +526,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dutyRange": "职务范围",
 		"all": "所有",
 		"all2": "全部",
+		"groupRange": "群组范围",
+		"specifyGroup": "指定群组",
 		"specifyDuty": "指定职务",
 		"category": "分类",
 		"byUnit": "按组织",

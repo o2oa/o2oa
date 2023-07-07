@@ -311,19 +311,20 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 }
             }
 
-            if (this.json.filterActivityAlias){
-                if (this.json.filterActivityAlias.length){
-                    filterActivityAlias = this.json.filterActivityAlias;
-                    //flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
-                    if(log.fromActivityAlias){
-                        if(isExactMatch(this.json.filterActivityAliasExactMatch)){ //精确匹配
-                            flag = filterActivityAlias.split(/[;|,|\n]/gm).contains(log.fromActivityAlias); //用;,和空格分隔成数组
-                        }else{
-                            flag = (filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
-                        }
+            if (this.json.filterActivityAlias && this.json.filterActivityAlias.length){
+                filterActivityAlias = this.json.filterActivityAlias;
+                //flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
+                if(log.fromActivityAlias){
+                    if(isExactMatch(this.json.filterActivityAliasExactMatch)){ //精确匹配
+                        flag = filterActivityAlias.split(/[;|,|\n]/gm).contains(log.fromActivityAlias); //用;,和空格分隔成数组
+                    }else{
+                        flag = (filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
                     }
+                }else{
+                    flag = false;
                 }
             }
+
             if (this.json.filterPerson && this.json.filterPerson.length){
                 if(isExactMatch(this.json.filterPersonExactMatch)) { //精确匹配
                     flag = false;

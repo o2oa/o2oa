@@ -1,5 +1,18 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,24 +33,13 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.Application;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 class ActionManageListWithApplicationPaging extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageListWithApplicationPaging.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag, JsonElement jsonElement)
-			throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag,
+			JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -47,11 +49,11 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.bindFilterPredicate(effectivePerson, business, application, wi);
-			if(p != null){
+			if (p != null) {
 				List<Wo> wos = emc.fetchDescPaging(Work.class, Wo.copier, p, page, size, Work.startTime_FIELDNAME);
 				result.setData(wos);
 				result.setCount(emc.count(Work.class, p));
-			}else{
+			} else {
 				result.setData(new ArrayList<>());
 				result.setCount(0L);
 			}
@@ -59,18 +61,19 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		}
 	}
 
-	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application, Wi wi) throws Exception{
+	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application,
+			Wi wi) throws Exception {
 		Predicate p = null;
-		if (business.canManageApplication(effectivePerson, application)) {
+		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 			p = this.toFilterPredicate(business, application.getId(), wi);
-		}else{
+		} else {
 			List<String> processList = business.process().listControllableProcess(effectivePerson, application);
-			if(ListTools.isNotEmpty(processList)){
-				if(ListTools.isEmpty(wi.getProcessList())){
+			if (ListTools.isNotEmpty(processList)) {
+				if (ListTools.isEmpty(wi.getProcessList())) {
 					wi.setProcessList(processList);
-				}else{
+				} else {
 					wi.getProcessList().retainAll(processList);
-					if(ListTools.isEmpty(wi.getProcessList())){
+					if (ListTools.isEmpty(wi.getProcessList())) {
 						return null;
 					}
 				}
@@ -80,54 +83,54 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate toFilterPredicate(Business business, String appId,  Wi wi) throws Exception {
+	private Predicate toFilterPredicate(Business business, String appId, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Work.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Work> cq = cb.createQuery(Work.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), appId);
 
-		if(null != wi.getWorkThroughManual()){
+		if (null != wi.getWorkThroughManual()) {
 			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
 		}
-		if(StringUtils.isNotBlank(wi.getWorkCreateType())){
+		if (StringUtils.isNotBlank(wi.getWorkCreateType())) {
 			p = cb.and(p, cb.equal(root.get(Work_.workCreateType), wi.getWorkCreateType()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
+		if (StringUtils.isNotBlank(wi.getStringValue01())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue02), wi.getStringValue02()));
+		if (StringUtils.isNotBlank(wi.getStringValue02())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue02), wi.getStringValue02()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue03), wi.getStringValue03()));
+		if (StringUtils.isNotBlank(wi.getStringValue03())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue03), wi.getStringValue03()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue04), wi.getStringValue04()));
+		if (StringUtils.isNotBlank(wi.getStringValue04())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue05())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue05), wi.getStringValue05()));
+		if (StringUtils.isNotBlank(wi.getStringValue05())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue05), wi.getStringValue05()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue06), wi.getStringValue06()));
+		if (StringUtils.isNotBlank(wi.getStringValue06())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue06), wi.getStringValue06()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue07), wi.getStringValue07()));
+		if (StringUtils.isNotBlank(wi.getStringValue07())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue07), wi.getStringValue07()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue08), wi.getStringValue08()));
+		if (StringUtils.isNotBlank(wi.getStringValue08())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue08), wi.getStringValue08()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue09), wi.getStringValue09()));
+		if (StringUtils.isNotBlank(wi.getStringValue09())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue09), wi.getStringValue09()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
+		if (StringUtils.isNotBlank(wi.getStringValue10())) {
+			p = cb.and(p, cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
 		}
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
@@ -137,10 +140,10 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getJobList())) {
 			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Work_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCredentialList())) {
@@ -155,22 +158,22 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
 		}
 		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
-			if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())){
+			if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())) {
 				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.start));
-			} else if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())){
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())) {
 				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.processing));
-			} else if(wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())){
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())) {
 				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.hanging));
 			}
 		}
 		if (StringUtils.isNoneBlank(wi.getKey())) {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p,cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.and(p, cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
 			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
-			p = cb.and(p,cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.and(p, cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 
 		return p;
@@ -290,9 +293,13 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			this.credentialList = credentialList;
 		}
 
-		public String getTitle() { return title; }
+		public String getTitle() {
+			return title;
+		}
 
-		public void setTitle(String title) { this.title = title; }
+		public void setTitle(String title) {
+			this.title = title;
+		}
 
 		public List<String> getActivityNameList() {
 			return activityNameList;

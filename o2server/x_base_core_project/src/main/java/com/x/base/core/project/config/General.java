@@ -1,9 +1,11 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -21,7 +23,8 @@ public class General extends ConfigObject {
     private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
     private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
     private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
-            File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName());
+            File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName(),
+            FileWriter.class.getName(), java.lang.System.class.getName());
     private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
     private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
     private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -180,10 +183,11 @@ public class General extends ConfigObject {
         private Integer fileSize = DEFAULT_FILE_SIZE;
 
         @FieldDescribe("只允许上传的文件后缀")
-        private List<String> fileTypeIncludes = new ArrayList<>();
+        private List<String> fileTypeIncludes = Arrays.asList("doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf",
+                "xapp", "text", "zip", "rar", "mp3", "mp4", "png", "jpg", "gif");
 
         @FieldDescribe("不允许上传的文件后缀")
-        private List<String> fileTypeExcludes = Arrays.asList("jsp", "exe", "sh", "tmp", "html", "htm", "xhtml");
+        private List<String> fileTypeExcludes = Collections.EMPTY_LIST;
 
         public Integer getFileSize() {
             return fileSize;

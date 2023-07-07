@@ -4,12 +4,104 @@ MWF.require("MWF.widget.Common", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
 MWF.require("o2.widget.Dialog", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
-MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
+/** @classdesc Importer 数据中心的导入模型。
+ * @class
+ * @o2cn 导入模型
+ * @o2category QueryImporter
+ * @o2range {QueryImporter}
+ * @hideconstructor
+ * @example
+ * //在导入模型的事件中获取该类
+ * var view = this.target;
+ * */
+MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
+    /** @lends MWF.xApplication.query.Query.Importer# */
+    {
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
-        "moduleEvents": ["queryLoad", "beforeImport", "afterImport", "validImport", "beforeCreateRowData", "afterCreateRowData"]
+        "moduleEvents": [
+            /**
+             * 加载importer（导入模型对象）的时候执行。可通过this.target获取当前对象。
+             * @event MWF.xApplication.query.Query.Importer#queryLoad
+             */
+            "queryLoad",
+            /**
+             * 导入前触发，this.event指向导入的数据，您可以通过修改this.event来修改数据。
+             * @event MWF.xApplication.query.Query.Importer#beforeImport
+             * @example
+             * <caption>this.event数据格式如下：</caption>
+             *[
+             *  [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+             *  [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+             *]
+             */
+            "beforeImport",
+            /**
+             * 前台校验成功，并且后台执行完导入后触发，this.event指向后台返回的导入结果。
+             * @event MWF.xApplication.query.Query.Importer#afterImport
+             * @example
+             * <caption>this.event格式如下：</caption>
+             * {
+             *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
+             *     "data": {}, //前台组织好的需要导入的数据
+             *     "rowList": [], //前台组织的行对象数组
+             *     "count" : 10, //导入总数量
+             *     "failCount": 0, //失败数量
+             *     "distribution": "" //导入时候时的错误信息
+             * }
+             */
+            "afterImport",
+            /**
+             * 数据已经生成，前台进行数据校验时触发，this.event指向导入的数据。
+             * @event MWF.xApplication.query.Query.Importer#validImport
+             * @example
+             * <caption>this.event数据格式如下：</caption>
+             * {
+             *     "data" : [
+             *          [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+             *          [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+             * 	    ],
+             *     "rowList": [], //导入的行对象，数据格式常见本章API的afterCreateRowData说明。
+             *     "validted" : true  //是否校验通过，可以在本事件中修改该参数，确定是否强制导入
+             * }
+             */
+            "validImport",
+            /**
+             * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importData来修改数据。
+             * @event MWF.xApplication.query.Query.Importer#beforeCreateRowData
+             */
+            "beforeCreateRowData",
+            /**
+             * 创建每行需要导入的数据后触发，this.event指向当前行对象。
+             * @event MWF.xApplication.query.Query.Importer#afterCreateRowData
+             * @example
+             * <caption>this.event格式如下：</caption>
+             * {
+             *     "importData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
+             *     "data" : {//根据导入模型生成的业务数据
+             *  	   {
+             *  	    "subject", "标题一", //subject为导入模型列配置的路径
+             *  	 	"name" : "张三",
+             *  	    ...
+             *     },
+             *     "document": { //如果导入目标是内容管理，则包含document对象
+             *          "title": "标题一"
+             *          "identity": "xxx@xxx@I"
+             *          ...
+             *     },
+             *     "work": { //如果导入目标是流程管理，则包含work对象
+             *          "title": "标题一"
+             *          "identity": "xxx@xxx@I"
+             *          ...
+             *     },
+             *     "errorTextList" : [],  //错误信息
+             *     "errorTextListExcel": [] //在出错界面导出Excel时的错误信息
+             * }
+             */
+            "afterCreateRowData"
+         ]
     },
     initialize: function(container, json, options, app, parentMacro){
 
@@ -144,18 +236,21 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                     if( this.importedData.length > 0 )this.importedData.shift();
 
                     this.fireEvent("beforeImport", [this.importedData]);
+                    Promise.resolve( this.importedData.promise ).then(function () {
+                        this.listAllOrgDataByImport( function () {
+                            this.importedData.each( function( lineData, lineIndex ){
+                                this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                            }.bind(this));
 
-                    this.listAllOrgDataByImport( function () {
-                        this.importedData.each( function( lineData, lineIndex ){
-                            this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                            var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
+                            Promise.resolve(isValid).then(function ( isValid ) {
+                                if( isValid ){
+                                    this.doImportData();
+                                }else{
+                                    this.openImportedErrorDlg();
+                                }
+                            }.bind(this));
                         }.bind(this));
-
-                        var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
-                        if( isValid ){
-                            this.doImportData();
-                        }else{
-                            this.openImportedErrorDlg();
-                        }
                     }.bind(this));
                 }.bind(this)
             });
@@ -175,6 +270,8 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         // }.bind(this));
 
         //再次校验数据（计算的内容）
+        var date = new Date();
+
         var flag = true;
         this.rowList.each( function(row, index){
             if( row.errorTextList.length )flag = false;
@@ -187,30 +284,37 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        flag = arg.validted;
+        Promise.resolve( arg.promise ).then(function(){
+            flag = arg.validted;
 
-        if( !flag ){
-            this.openImportedErrorDlg();
-            return;
-        }
+            if( !flag ){
+                this.openImportedErrorDlg();
+                return;
+            }
 
-        var data = this.getData();
+            var data = this.getData();
 
-        this.lookupAction.getUUID(function(json){
-            this.recordId = json.data;
-            this.lookupAction.executImportModel(this.json.id, {
-                "recordId": this.recordId,
-                "data" : data
-            }, function () {
-                this.showImportingStatus( data )
-            }.bind(this), function (xhr) {
-                var requestJson = JSON.parse(xhr.responseText);
-                this.app.notice(requestJson.message, "error");
-                this.progressBar.close();
+            this.lookupAction.getUUID(function(json){
+                this.recordId = json.data;
+                this.lookupAction.executImportModel(this.json.id, {
+                    "recordId": this.recordId,
+                    "data" : data
+                }, function () {
+                    //this.showImportingStatus( data, date )
+                    this.progressBar.showImporting( this.recordId, function( data ){
+                        data.data = data;
+                        data.rowList = this.rowList;
+                        this.fireEvent("afterImport", data);
+                        return data;
+                    }.bind(this), date);
+
+                }.bind(this), function (xhr) {
+                    var requestJson = JSON.parse(xhr.responseText);
+                    this.app.notice(requestJson.message, "error");
+                    this.progressBar.close();
+                }.bind(this))
             }.bind(this))
         }.bind(this))
-
-
     },
     objectToString: function (obj, type) {
         if(!obj)return "";
@@ -301,7 +405,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        return arg.validted;
+        return Promise.resolve( arg.promise ).then(function () {
+            return arg.validted;
+        });
     },
     //校验Excel中的数据
     checkImportedData : function(){
@@ -318,7 +424,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         };
         this.fireEvent( "validImport", [arg] );
 
-        return arg.validted;
+        return Promise.resolve( arg.promise ).then(function () {
+            return arg.validted;
+        });
     },
     getOrgData : function( str, ignoreNone, isParse ){
         str = str.trim();
@@ -458,13 +566,13 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
     },
 
-    showImportingStatus: function( improtedData ){
-        this.progressBar.showImporting( this.recordId, function( data ){
-            data.data = improtedData;
-            data.rowList = this.rowList;
-            this.fireEvent("afterImport", data)
-        }.bind(this));
-    },
+    // showImportingStatus: function( improtedData, date ){
+    //     this.progressBar.showImporting( this.recordId, function( data ){
+    //         data.data = improtedData;
+    //         data.rowList = this.rowList;
+    //         this.fireEvent("afterImport", data)
+    //     }.bind(this), date);
+    // },
 
     exportWithImportDataToExcel : function ( importData ) {
 
@@ -500,9 +608,14 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
                 this.rowList.each( function( row, lineIndex ){
                     var lineData = row.importedData;
                     var array = [];
-                    lineData.each( function (d, i) {
-                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
-                    });
+                    for( var i=0; i<lineData.length; i++ ){
+                        var d = ( lineData[i] || '' ).replace(/&#10;/g, "\n");
+                        array.push( d );
+                    }
+                    // lineData.each( function (d, i) {
+                    //     array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                    // });
+
                     array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
                     resultArr.push( array );
                 }.bind(this));
@@ -1429,11 +1542,11 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
         this.status = "check";
         // this.setSize();
     },
-    showImporting: function( recordId, callback ){
+    showImporting: function( recordId, callback, date ){
         // this.node.show();
         this.setContentHtml();
         this.recordId = recordId;
-        this.currentDate = new Date();
+        this.currentDate = date || new Date();
         this.intervalId = window.setInterval( function(){
             this.actions.getImportModelRecordStatus( this.recordId, function( json ){
                 var data = json.data;
@@ -1446,9 +1559,16 @@ MWF.xApplication.query.Query.Importer.ProgressBar = new Class({
                     this.setMessageText( this.lp.importDataContent.replace( "{count}", data.executeCount));
                     this.updateProgress( data );
                 }else{ //已经结束, 状态有 "导入成功","部分成功","导入失败"
-                    if(this.intervalId)window.clearInterval( this.intervalId );
-                    this.transferComplete( data );
                     if( callback )callback( data );
+                    if( data.promise && typeOf(data.promise.then) === "function" ){
+                        Promise.resolve( data.promise ).then(function () {
+                            if(this.intervalId)window.clearInterval( this.intervalId );
+                            this.transferComplete( data );
+                        }.bind(this))
+                    }else{
+                        if(this.intervalId)window.clearInterval( this.intervalId );
+                        this.transferComplete( data );
+                    }
                 }
             }.bind(this), null)
         }.bind(this), 500 );

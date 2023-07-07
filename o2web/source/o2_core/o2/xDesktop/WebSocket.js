@@ -170,6 +170,8 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "im_create":
                             case "im_revoke":
+                            case "im_conv_update":
+                            case "im_conv_delete":
                                 this.receiveIMMessage(data);
                                 break;
                             case "cms_publish" :
@@ -281,7 +283,7 @@ MWF.xDesktop.WebSocket = new Class({
         //if (layout.desktop.top.userPanel) layout.desktop.top.userPanel.receiveChatMessage(data);
     },
     openWork: function(id, e){
-        o2.Actions.get("x_processplatform_assemble_surface").loadWork(id, function(){
+        o2.Actions.get("x_processplatform_assemble_surface").loadWorkV2(id, function(){
             var options = {"workId": id, "appId": "process.Work"+id};
             layout.desktop.openApplication(e, "process.Work", options);
         }.bind(this), function(){
@@ -330,13 +332,13 @@ MWF.xDesktop.WebSocket = new Class({
         var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
-            this.openWork(read.work,e);
+            this.openWork(read.work || read.workCompleted,e);
         }.bind(this));
 
         messageItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
-            this.openWork(read.work,e);
+            this.openWork(read.work || read.workCompleted,e);
         }.bind(this));
     },
     receiveCustomMessage: function(data){
@@ -357,6 +359,14 @@ MWF.xDesktop.WebSocket = new Class({
     /// im消息处理
     receiveIMMessage: function(data){
         var imBody = data.body;
+        // 更新会话或删除会话
+        if (data.type === "im_conv_update" || data.type === "im_conv_delete") {
+             // 执行im callback 刷新页面信息
+             if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
+                this.imListenerMap["im_conversation"](imBody);
+                }
+                return;
+        }
         // 撤回消息
         if (data.type == "im_revoke") {
             // 执行im callback 刷新页面信息

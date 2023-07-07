@@ -196,7 +196,7 @@ var exec = function(code, _self){
         var f = eval("(function(){return function(){\n"+code+"\n}})();");
         returnValue = f.apply(_self);
     }catch(e){
-        console.log("exec", new _Error("exec script error"));
+        console.log("exec", new Error("exec script error"));
         console.log(e);
     }
     return returnValue;
@@ -761,8 +761,8 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
-     * @return {PersonData|PersonData[]} 返回人员对象。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+     * @return {PersonData} 返回人员对象。
+     * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
      * @o2syntax
      * //返回人员对象。
      * var person = this.org.getPersonData( name );
@@ -1658,12 +1658,12 @@ bind.includedScripts = includedScripts;
  * @o2category server.common
  * @o2ordernumber 175
  *
- * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。<b>流程设计中的脚本只支持字符串。</b>
+ * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
  * <pre><code class='language-js'>
  *
  * //如果需要引用其他应用的脚本配置，将options设置为Object;
  * this.include({
- *       //type: 应用类型。可以为 portal  process  cms  service。默认为process
+ *       //type: 应用类型。可以为 portal  process  cms  service。流程脚本默认为process，服务管理中默认为service
  *       type : "portal",
  *       application : "首页", // 门户、流程、CMS的名称、别名、id。 引用服务管理的脚本则忽略该参数。
  *       name : "initScript" // 脚本配置的名称、别名或id
@@ -1751,7 +1751,7 @@ bind.include = function( optionsOrName , callback ){
     var application = type === "service" ? "service" : options.application;
 
     if (!name || !type || !application){
-        console.log("include", new _Error("can not find script. missing script name or application"));
+        console.log("include", new Error("can not find script. missing script name or application"));
         return false;
     }
 
@@ -1824,7 +1824,7 @@ bind.include = function( optionsOrName , callback ){
  * var dict = new this.Dict( options )
  * @example
  * var dict = new this.Dict({
- *     //type: 应用类型。可以为process  cms portal service。默认为process。
+ *     //type: 应用类型。可以为process  cms portal service。流程脚本默认为process，服务管理中默认为service。
  *    type : "cms",
  *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
@@ -3216,11 +3216,6 @@ bind.service = {
  * @o2syntax
  * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
  * var context = this.workContext;
- * @borrows module:workContext.getActivity as getActivity
- * @borrows module:workContext.getWorkLogList as getWorkLogList
- * @borrows module:workContext.getRecordList as getRecordList
- * @borrows module:workContext.getAttachmentList as getAttachmentList
- * @borrows module:workContext.getRouteList as getRouteList
  */
 bind.workContext = {
     /**
@@ -3420,10 +3415,82 @@ bind.workContext = {
      */
     "getReviewListByJob": function(){return this.getJobReviewList();},
 
+    /**
+     * 获取当前流程实例所在的活动节点对象：activity对象。
+     * @method getActivity
+     * @static
+     * @return {(Activity|Null)} 当前流程实例所在的活动节点对象，如果当前流程实例已流转完成，则返回null.
+     * <pre><code class='language-js'>{
+     *      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
+     *      "name": "办理",  //节点名称
+     *      "description": "", //节点描述
+     *      "alias": "",  //节点别名
+     *      "resetRange": "department", //重置处理人范围
+     *      "resetCount": 0,  //重置处理人数字
+     *      "allowReset": true, //是否允许重置
+     *      "manualMode": "single", //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+     *      "customData": { //节点上的自定义属性，如果没有设置，不输出该值
+     *
+     *      }
+     * }</code></pre>
+     * @o2syntax
+     * var activity = this.workContext.getActivity();
+     */
     "getActivity": function(){return JSON.parse(bind.java_workContext.getActivity());},       //活动对象字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(WorkLog)。
+     * @method getWorkLogList
+     * @static
+     * @return {WorkLog[]} 流程记录对象.
+     * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties]
+     * @o2syntax
+     * var workLogList = this.workContext.getWorkLogList();
+     */
     "getWorkLogList": function(){return JSON.parse(bind.java_workContext.getWorkLogList());}, //WorkLogList对象数组的字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(Record)。
+     * @method getRecordList
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * var recordList = this.workContext.getRecordList();
+     */
     "getRecordList": function(){return JSON.parse(bind.java_workContext.getRecordList());}, //RecordList对象数组的字符串，需要新增
+
+    /**
+     * @summary 最后一条Record对象，在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record。
+     * @method getRecord
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * var record = this.workContext.getRecord();
+     */
+    "getRecord": function(){return JSON.parse(bind.java_workContext.getRecord());}, //最后一条Record对象，（在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record）
+
+    /**
+     * @summary 获取当前流程实例的附件对象列表。
+     * @method getAttachmentList
+     * @static
+     * @return {WorkAttachmentData[]} 附件数据.
+     * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
+     * @o2syntax
+     * //获取附件列表
+     * var attachmentList = this.workContext.getAttachmentList();
+     */
     "getAttachmentList": function(){return JSON.parse(bind.java_workContext.getAttachmentList());},   //附件对象数组的字符串
+
+    /**
+     * @summary 获取可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）。
+     * @method getRouteList
+     * @static
+     * @return {String[]} 路由字符串数组.
+     * @o2syntax
+     * var routeList = this.workContext.getRouteList();
+     */
     "getRouteList": function(){return JSON.parse(bind.java_workContext.getRouteList());},      //可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）
 
     /**

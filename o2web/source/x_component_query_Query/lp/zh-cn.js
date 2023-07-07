@@ -18,6 +18,9 @@ MWF.xApplication.query.Query.LP = {
     "no": "否",
     "and": "并且",
     "or": "或者",
+    "form": {
+        "exportExcel": "导出Excel"
+    },
     "chart": {
 	    "bar": "柱状图",
         "pie": "饼状图",
@@ -244,6 +247,10 @@ MWF.xApplication.query.Query.LP = {
 
     "deleteDocument": "删除后无法恢复，确定要删除该导入记录？",
     "deleteDocumentTitle": "删除导入记录确认",
-    "deleteDocumentOK": "成功删除导入记录"
+    "deleteDocumentOK": "成功删除导入记录",
+
+    "noPermission": "您无权限访问此文档。",
+    "associationSuccess": "关联成功。",
+    "associationResult": "关联结果"
 
 };

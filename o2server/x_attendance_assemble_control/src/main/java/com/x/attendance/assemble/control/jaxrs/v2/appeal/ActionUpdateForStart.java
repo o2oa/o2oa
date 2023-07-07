@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
@@ -8,6 +9,8 @@ import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -25,7 +28,7 @@ import java.util.List;
  */
 public class ActionUpdateForStart extends BaseAction {
 
-    ActionResult<Wo> execute(EffectivePerson person, String id) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson person, String id, JsonElement jsonElement) throws Exception {
 
         if (StringUtils.isEmpty(id)) {
             throw new ExceptionEmptyParameter("id");
@@ -38,6 +41,7 @@ public class ActionUpdateForStart extends BaseAction {
             if (!person.getDistinguishedName().equals(info.getUserId())) {
                 throw new ExceptionPersonNotEqual();
             }
+
             // 申诉次数限制查询
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
             AttendanceV2Config config;
@@ -62,7 +66,9 @@ public class ActionUpdateForStart extends BaseAction {
                     throw new ExceptionOverAppealMaxTimes();
                 }
             }
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             emc.beginTransaction(AttendanceV2AppealInfo.class);
+            info.setJobId(wi.getJob()); // 设置 job  前端根据 job 显示打开流程的按钮
             info.setStatus(AttendanceV2AppealInfo.status_TYPE_PROCESSING); // 审批中
             info.setStartTime(DateTools.now());
             emc.check(info, CheckPersistType.all);
@@ -72,6 +78,19 @@ public class ActionUpdateForStart extends BaseAction {
             wo.setValue(true);
             result.setData(wo);
             return result;
+        }
+    }
+
+    public static class Wi extends GsonPropertyObject {
+        @FieldDescribe("流程返回的 job")
+        private String job;
+
+        public String getJob() {
+            return job;
+        }
+
+        public void setJob(String job) {
+            this.job = job;
         }
     }
 

@@ -310,11 +310,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var rulesStr = match[0];
                 if( rulesStr.indexOf( "@media" ) === -1 ){
                     if (rulesStr.indexOf(",") != -1) {
-                        var rules = rulesStr.split(/\s*,\s*/g);
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
                         rules = rules.map(function (r) {
                             return prefix + r;
                         });
-                        var rule = rules.join(", ");
+                        var rule = rules.join(",");
                         cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
                         rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
 
@@ -469,24 +470,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }else if (this.json.languageType=="default") {
             var name = "lp-"+o2.language;
-
+            var p1, p2;
             if (this.options.macro==="PageContext"){
-                var portal = this.app.portal.id;
+                var portal = (this.app.portal && this.app.portal.id) ? this.app.portal.id : this.json.application;
                 // languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
                 //     return this.Macro.exec(d.data.text, this);
                 // }.bind(this), function(){});
 
-                languageJson = this.workAction.getScriptByNameV2(portal, name).then(function(d){
-                    return this.Macro.exec(d.data.text, this);
-                }.bind(this), function(){});
-            }else{
-                var application = (this.businessData.work || this.businessData.workCompleted).application;
-                var p1 = this.workAction.getDictRoot(name, application, function(d){
+                p1 = this.workAction.getDictRoot(name, portal, function(d){
                     return d.data;
                 }, function(){
                     return true;
                 });
-                var p2 = new Promise(function(resolve, reject){
+
+                p2 = new Promise(function(resolve, reject){
+                    this.workAction.getScriptByNameV2(portal, name, function(d){
+                        if (d.data.text) {
+                            resolve(this.Macro.exec(d.data.text, this));
+                        }
+                    }.bind(this), function(){reject("");});
+                }.bind(this));
+                languageJson = Promise.any([p1, p2]);
+            }else{
+                var application = (this.businessData.work || this.businessData.workCompleted).application;
+                p1 = this.workAction.getDictRoot(name, application, function(d){
+                    return d.data;
+                }, function(){
+                    return true;
+                });
+                p2 = new Promise(function(resolve, reject){
                     this.workAction.getScriptByNameV2(name, application, function(d){
                         if (d.data.text) {
                             resolve(this.Macro.exec(d.data.text, this));
@@ -2415,9 +2427,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else if (this.json.submitFormType === "select") {
-            this.processWork_custom();
+            this.processWork_custom( defaultRoute );
         } else if (this.json.submitFormType === "script") {
-            this.processWork_custom();
+            this.processWork_custom( defaultRoute );
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
@@ -2428,7 +2440,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
-    processWork_custom: function () {
+    processWork_custom: function ( defaultRoute ) {
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
@@ -2444,7 +2456,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-
+        debugger;
         if (!this.submitFormModule) {
             if (!MWF["APPSubmitform"]) {
                 MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
@@ -2459,12 +2471,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 submitScript: this.json.submitScript
             }, this);
             this.submitFormModule.addEvent("afterModulesLoad", function () {
-                this.submitFormModule.show();
+                this.submitFormModule.show( defaultRoute );
                 this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
             }.bind(this))
             this.submitFormModule.load();
         } else {
-            this.submitFormModule.show();
+            this.submitFormModule.show( defaultRoute );
             this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
         }
     },
@@ -2539,10 +2551,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "text": MWF.LP.process.button.cancel,
                         "action": function () {
                             this.processDlg.close();
-                            if (this.processor) this.processor.destroy();
                         }.bind(this)
                     }
                 ],
+                "onQueryClose": function(){
+                    if (this.processor) this.processor.destroy();
+                }.bind(this),
                 "onPostLoad": function () {
                     processNode.setStyle("opacity", 1);
                     processor.options.mediaNode = this.content;
@@ -2695,6 +2709,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }.bind(this));
                     }else{
                         _self.submitWork(routeName, opinion, medias, function () {
+                            debugger;
                             this.destroy();
                             processNode.destroy();
                             if (_self.processDlg) _self.processDlg.close();
@@ -2806,10 +2821,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ]
             };
-            if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
-                opt.html = text;
-            }else{
-                opt.text = text
+
+
+            if (typeOf(text).toLowerCase() === "object") {
+                if( text.html )opt.html = text.html;
+                if( text.text )opt.text = text.text;
+            } else {
+                if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
+                    opt.html = text;
+                }else{
+                    opt.text = text
+                }
             }
 
             var dlg = new MWF.xDesktop.Dialog(opt);
@@ -3643,8 +3665,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var idsStr = (ids.length>8) ? ids.slice(0,8).join(', ')+' ...' : ids.join(', ');
         var itemInfo = new Element('div', {styles: this.css.goBack_activity_info, text: '处理人：'+idsStr, title: ids.join(',')}).inject(itemContent);
 
-        itemContent.addEvent("click", function(e){
-            var radio = this.getPrevious('div').getElement('input');
+
+        item.addEvent("click", function(e){
+            // var radio = this.getPrevious('div').getElement('input');
+            var radio = this.getElement('input');
             radio.click();
 
             var items = area.getElements(".item");
@@ -3681,8 +3705,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-        var wayNode = node.getElement('.item').getLast().getFirst();
-        var wayCheckNode = wayNode.querySelector('input[checked]');
+        var wayNode = check.getParent().getParent().getLast().getFirst();
+
+        // var wayNode = node.getElement('.item').getLast().getFirst();
+        var wayCheckNode = wayNode.querySelector('input:checked');
         var opinionNode = node.querySelector('textarea');
 
         var activity = check.value;
@@ -3788,7 +3814,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-            var xtoken = Cookie.read(o2.tokenName);
+            var xtoken = layout.session.token;
             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
         }
         window.open(downloadUrl);
@@ -4688,7 +4714,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4696,7 +4722,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4865,7 +4891,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);
@@ -4873,7 +4899,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
             if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                var xtoken = Cookie.read(o2.tokenName);
+                var xtoken = layout.session.token;
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
             window.open(url);

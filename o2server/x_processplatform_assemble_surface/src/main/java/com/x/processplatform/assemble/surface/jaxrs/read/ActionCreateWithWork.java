@@ -18,8 +18,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCreateWithWorkWi;
 
@@ -47,11 +48,9 @@ class ActionCreateWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (effectivePerson.isNotManager()) {
-				Control control = business.getControl(effectivePerson, work, Control.class);
-				if (BooleanUtils.isFalse(control.getAllowVisit())) {
-					throw new ExceptionAccessDenied(effectivePerson, work);
-				}
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+			if (BooleanUtils.isFalse(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}
 
@@ -67,12 +66,6 @@ class ActionCreateWithWork extends BaseAction {
 	public static class Wi extends ActionCreateWithWorkWi {
 
 		private static final long serialVersionUID = -2119863985965620324L;
-
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = 1697269385547270643L;
 
 	}
 

@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.read;
 
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -19,7 +18,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionManageResetWi;
 
@@ -31,7 +29,8 @@ class ActionManageReset extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -43,8 +42,8 @@ class ActionManageReset extends BaseAction {
 			if (null == read) {
 				throw new ExceptionEntityNotExist(id, Read.class);
 			}
-			Control control = business.getControl(effectivePerson, read, Control.class);
-			if (BooleanUtils.isNotTrue(control.getAllowReadReset())) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, read.getApplication(),
+					read.getProcess())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> identities = business.organization().identity().list(wi.getIdentityList());
@@ -79,9 +78,5 @@ class ActionManageReset extends BaseAction {
 
 	}
 
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = -2418810794381419686L;
-
-	}
+ 
 }

@@ -75,6 +75,8 @@ public class Crypto {
 		byte[] bt = null;
 		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
 			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
+		}else if(StringUtils.equalsIgnoreCase(type, AES)){
+			bt = encryptAes(data.getBytes(), DigestUtils.md5(key));
 		} else {
 			bt = encrypt(data.getBytes(), key.getBytes());
 		}
@@ -153,6 +155,9 @@ public class Crypto {
 		byte[] bt = null;
 		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
 			bt = decryptSm4(buf, key);
+			return new String(bt, StandardCharsets.UTF_8);
+		}else if (StringUtils.equalsIgnoreCase(type, AES)) {
+			bt = decryptAes(buf, DigestUtils.md5(key));
 			return new String(bt, StandardCharsets.UTF_8);
 		} else {
 			bt = decrypt(buf, key.getBytes());

@@ -3,6 +3,8 @@ package com.x.processplatform.assemble.surface.jaxrs.review;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,8 +21,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 /**
@@ -30,11 +33,12 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
  *
  */
 class ActionCreateWithWorkCompleted extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWorkCompleted.class);
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
+		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		WorkCompleted workCompleted = null;
@@ -44,8 +48,9 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(wi.getWorkCompleted(), WorkCompleted.class);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
-			if (!control.getAllowVisit()) {
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
 			List<String> people = business.organization().person().list(wi.getPersonList());
@@ -62,6 +67,8 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6222459992132813639L;
 
 		@FieldDescribe("已完成工作")
 		private String workCompleted;
@@ -88,9 +95,9 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
-	}
 
-	public static class WoControl extends WorkCompletedControl {
+		private static final long serialVersionUID = -2975931994110720014L;
+
 	}
 
 }

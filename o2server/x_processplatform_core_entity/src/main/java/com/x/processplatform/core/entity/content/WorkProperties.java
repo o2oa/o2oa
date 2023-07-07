@@ -169,18 +169,18 @@ public class WorkProperties extends JsonProperties {
 
 		private static final long serialVersionUID = 2334994291846390241L;
 
-		private String way;
+		// private String way;
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 		private String activity;
 		private ActivityType ActivityType;
 
-		public String getWay() {
-			return way;
-		}
-
-		public void setWay(String way) {
-			this.way = way;
-		}
+//		public String getWay() {
+//			return way;
+//		}
+//
+//		public void setWay(String way) {
+//			this.way = way;
+//		}
 
 		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 			return manualTaskIdentityMatrix;

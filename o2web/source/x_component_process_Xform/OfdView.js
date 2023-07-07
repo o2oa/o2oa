@@ -11,6 +11,7 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         this.node.store("module", this);
         this.json = json;
         this.form = form;
+        this.fileTemplate = false;
 
         if (this.json.isReadonly || this.form.json.isReadonly){
             this.mode  = "read";
@@ -31,13 +32,17 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         if(this.mode !== "read"){
             this.createUpload();
         }
-
+        if(this.json.template && (this.json.templateType === "value" && this.json.template !=="")){
+            this.fileTemplate = true;
+        }
+        if(this.json.templeteScript && (this.json.templateType === "script" && this.json.templeteScript !=="")){
+            this.fileTemplate = true;
+        }
         this.data = this.getData();
         this.documentId = this.data.documentId;
-        if(this.data.documentId === ""){
+        if(this.data.documentId === "" && !this.fileTemplate){
             this.createEmpty();
         }else {
-
             this.loadOfdView();
         }
     },
@@ -111,13 +116,20 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         this._setBusinessData(data);
     },
     loadOfdView: function(){
-
+        debugger
         this.iframeNode = new Element("div").inject(this.node);
         this.iframeNode.setStyles({
             "height": "100%"
         });
-        var host = o2.Actions.getHost( "x_processplatform_assemble_surface" );
-        var fileUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/download/" + this.documentId);
+        var fileUrl;
+        if(this.json.template && (this.json.templateType === "value" && this.json.template !=="")){
+            fileUrl = this.json.template;
+        }else if(this.json.templeteScript && (this.json.templateType === "script" && this.json.templeteScript !=="")){
+            fileUrl = this.form.Macro.exec(this.json.templeteScript.code, this);
+        }else {
+            var host = o2.Actions.getHost( "x_processplatform_assemble_surface" );
+            fileUrl = o2.filterUrl(host + "/x_processplatform_assemble_surface/jaxrs/attachment/download/" + this.documentId);
+        }
 
         if(this.iframe){
             this.iframe.set("src","../o2_lib/ofdjs/index.html?file=" + fileUrl);
@@ -135,7 +147,23 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
 
         this.fireEvent("afterOpen");
     },
+    loadOfdViewByUrl : function (fileUrl){
+        if(this.iframe){
+            this.iframe.set("src","../o2_lib/ofdjs/index.html?file=" + fileUrl);
+        }else {
+            this.iframe = new Element("iframe").inject(this.iframeNode);
+            this.iframe.set("src","../o2_lib/ofdjs/index.html?file=" + fileUrl);
+            this.iframe.set("scrolling","no");
+            this.iframe.set("frameborder",0);
+            this.iframe.setStyles({
+                "height" : "100%",
+                "width" : "100%"
+            });
+        }
+        if(this.emptyNode) this.emptyNode.hide();
 
+        this.fireEvent("afterOpen");
+    },
     hide: function(){
         this.node.hide();
     },

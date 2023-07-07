@@ -37,6 +37,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Agent", description = "流程平台脚本活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -389,11 +390,6 @@ public class Agent extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由.")
@@ -456,14 +452,6 @@ public class Agent extends Activity {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private AgentProperties properties;
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
-	}
 
 	public String getDisplayLogScript() {
 		return displayLogScript;

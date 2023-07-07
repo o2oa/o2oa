@@ -1,24 +1,6 @@
 package com.x.base.core.project.tools;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.StringTokenizer;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import com.x.base.core.project.logger.MessageFormatter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -29,7 +11,16 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import com.x.base.core.project.logger.MessageFormatter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringTools {
 
@@ -92,7 +83,7 @@ public class StringTools {
 
 	public static final String TWO_HYPHENS = "--";
 
-	private static final Random random = new Random();
+	private static final SecureRandom random = new SecureRandom();
 
 	public static int utf8Length(String str) {
 		if (StringUtils.isEmpty(str)) {
@@ -146,7 +137,7 @@ public class StringTools {
 
 	/**
 	 * 截断超长文件名,尽量保留后缀
-	 * 
+	 *
 	 * @param str
 	 * @param len
 	 * @return
@@ -582,7 +573,7 @@ public class StringTools {
 
 	/**
 	 * 文本搜索
-	 * 
+	 *
 	 * @param keyword        搜索关键字
 	 * @param content        文本
 	 * @param caseSensitive  大小写敏感

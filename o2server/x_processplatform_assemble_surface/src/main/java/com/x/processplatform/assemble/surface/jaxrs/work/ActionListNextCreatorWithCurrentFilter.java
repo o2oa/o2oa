@@ -19,7 +19,7 @@ import com.x.base.core.project.jaxrs.LikeTerms;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionListNextCreatorWithCurrentFilterWi;
 
@@ -74,6 +74,8 @@ class ActionListNextCreatorWithCurrentFilter extends BaseAction {
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionListNextCreatorWithCurrentFilter$Wi")
 	public static class Wi extends ActionListNextCreatorWithCurrentFilterWi {
 
+		private static final long serialVersionUID = 1526371510822728742L;
+
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionListNextCreatorWithCurrentFilter$Wo")
@@ -90,7 +92,7 @@ class ActionListNextCreatorWithCurrentFilter extends BaseAction {
 
 		@FieldDescribe("权限.")
 		@Schema(description = "权限.")
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -100,20 +102,13 @@ class ActionListNextCreatorWithCurrentFilter extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
-
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionListNextCreatorWithCurrentFilter$WoControl")
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = 8347046567472555562L;
 
 	}
 }

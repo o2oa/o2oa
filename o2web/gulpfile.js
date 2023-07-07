@@ -42,7 +42,7 @@ try{
     };
 }
 
-var supportedLanguage = ["zh-cn", "en"];
+var supportedLanguage = ["zh-cn", "en", "es"];
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src", "lp"]

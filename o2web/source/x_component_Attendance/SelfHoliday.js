@@ -104,7 +104,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                         "clazz":"mainColor_bg",
                         "value" : lp.query,
                         "event" : { "click" : function(){
-                            var filterData =  _self.filter.getResult( true,",",true,true,true);
+                            var filterData =  _self.filter.getResult( true,",",true,true,false);
                             this.loadView( filterData );
                         }.bind(this)}
                     }

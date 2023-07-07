@@ -169,7 +169,7 @@ public class ActionExportUnitSubNestedStatistic extends BaseAction {
 						row.createCell(2).setCellValue(empName);
 						row.createCell(3).setCellValue(statisticPersonForMonth.getStatisticYear()+"-"+statisticPersonForMonth.getStatisticMonth());
 						row.createCell(4).setCellValue(statisticPersonForMonth.getOnDutyTimes());
-						row.createCell(5).setCellValue(statisticPersonForMonth.getOnDutyTimes());
+						row.createCell(5).setCellValue(statisticPersonForMonth.getOffDutyTimes());
 						row.createCell(6).setCellValue(statisticPersonForMonth.getOnDutyDayCount());
 						row.createCell(7).setCellValue(statisticPersonForMonth.getOnSelfHolidayCount());
 						row.createCell(8).setCellValue(statisticPersonForMonth.getAbsenceDayCount());

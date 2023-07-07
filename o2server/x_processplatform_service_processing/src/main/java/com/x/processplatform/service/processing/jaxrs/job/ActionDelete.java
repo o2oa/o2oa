@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -15,6 +16,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.message.WorkCompletedEvent;
+import com.x.processplatform.core.entity.message.WorkEvent;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 
@@ -44,15 +47,18 @@ public class ActionDelete extends BaseAction {
 					deleteSignScrawl(business, job);
 					deleteSign(business, job);
 					emc.beginTransaction(Work.class);
-					for (Work o : emc.listEqual(Work.class, Work.job_FIELDNAME, job)) {
+					List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
+					for (Work o : works) {
 						emc.remove(o);
 						MessageFactory.work_delete(o);
 						Wo wo = new Wo();
 						wo.setId(o.getId());
 						wos.add(wo);
 					}
+					List<WorkCompleted> workCompleteds = emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+							job);
 					emc.beginTransaction(WorkCompleted.class);
-					for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
+					for (WorkCompleted o : workCompleteds) {
 						emc.remove(o);
 						MessageFactory.workCompleted_delete(o);
 						Wo wo = new Wo();
@@ -60,6 +66,19 @@ public class ActionDelete extends BaseAction {
 						wos.add(wo);
 					}
 					emc.commit();
+					if (!works.isEmpty()) {
+						// 创建Work删除事件
+						emc.beginTransaction(WorkEvent.class);
+						emc.persist(WorkEvent.deleteEventInstance(works.get(0)), CheckPersistType.all);
+						emc.commit();
+					}
+					if (!workCompleteds.isEmpty()) {
+						// 创建WorkCompleted删除事件
+						emc.beginTransaction(WorkCompletedEvent.class);
+						emc.persist(WorkCompletedEvent.deleteEventInstance(workCompleteds.get(0)),
+								CheckPersistType.all);
+						emc.commit();
+					}
 				}
 				ActionResult<List<Wo>> result = new ActionResult<>();
 				result.setData(wos);

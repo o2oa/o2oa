@@ -5,6 +5,7 @@ import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.message.MessageConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -36,6 +37,11 @@ public class ActionConversationUpdate extends BaseAction {
 				throw new ExceptionEmptyId();
 			}
 			IMConversation conversation = emc.find(wi.getId(), IMConversation.class);
+			if (conversation == null) {
+				throw new ExceptionConversationNotExist();
+			}
+			// 有成员变化的情况 所以所有老成员都要收到消息
+			List<String> oldMembers = conversation.getPersonList();
 			if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {
 				throw new ExceptionSingleConvNotUpdate();
 			}
@@ -60,7 +66,8 @@ public class ActionConversationUpdate extends BaseAction {
 			conversation.setUpdateTime(new Date());
 			emc.check(conversation, CheckPersistType.all);
 			emc.commit();
-
+			// 发送消息
+			sendConversationMsg(oldMembers, conversation, MessageConnector.TYPE_IM_CONVERSATION_UPDATE);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = Wo.copier.copy(conversation);
 			result.setData(wo);

@@ -42,7 +42,7 @@ class ActionManageDownload extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
 					attachment.getApplication(), attachment.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}

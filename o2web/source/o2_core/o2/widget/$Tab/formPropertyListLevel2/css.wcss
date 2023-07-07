@@ -38,7 +38,7 @@
 		"float": "left",
 		"height": "17px",
 		"line-height": "16px",
-		"width": "65px",
+		"min-width": "65px",
 		"cursor": "pointer",
 		
 		"background": "#eeeeee",
@@ -76,7 +76,7 @@
 		"margin-right": "-12px",
 		"float": "left",
 		"height": "18px",
-		"width": "65px",
+		"min-width": "65px",
 		"background": "#eeeeee",
 		//"background": "url("+o2.session.path+"/widget/$Tab/moduleList/tabNodeCurrentBg.gif) center center",
 		

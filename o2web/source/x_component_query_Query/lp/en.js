@@ -18,6 +18,9 @@ MWF.xApplication.query.Query.LP = {
     "no": "No",
     "and": "and",
     "or": "Or",
+    "form": {
+        "exportExcel": "Export Excel"
+    },
     "chart": {
         "bar": "Histogram",
         "pie": "Pie Chart",
@@ -240,5 +243,9 @@ MWF.xApplication.query.Query.LP = {
 
     "deleteDocument": "It cannot be restored after deletion. Are you sure you want to delete the import record?",
     "deleteDocumentTitle": "Delete Import Record Confirmation",
-    "deleteDocumentOK": "The import record was successfully deleted"
+    "deleteDocumentOK": "The import record was successfully deleted",
+
+    "noPermission": "You do not have permission to access this document.",
+    "associationSuccess": "Association succeeded.",
+    "associationResult": "Association Result"
 };

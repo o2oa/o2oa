@@ -19,12 +19,11 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -49,13 +48,12 @@ class ActionEditText extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			Application application = business.application().pick(work.getApplication());
-			Process process = business.process().pick(work.getProcess());
-			if (!business.controllerable(effectivePerson, application, process, attachment)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
+					attachment.getProcess())) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 		}
@@ -66,12 +64,6 @@ class ActionEditText extends BaseAction {
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = 6785812363805038434L;
-
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionEditText$Wi")

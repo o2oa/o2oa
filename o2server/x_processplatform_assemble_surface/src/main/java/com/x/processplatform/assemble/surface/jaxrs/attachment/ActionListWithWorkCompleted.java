@@ -16,7 +16,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -38,7 +39,8 @@ class ActionListWithWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			Control control = business.getControl(effectivePerson, workCompleted, Control.class);
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted).enableAllowVisit()
+					.build();
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
@@ -52,13 +54,6 @@ class ActionListWithWorkCompleted extends BaseAction {
 		}
 	}
 
-	public static class Control extends WorkCompletedControl {
-
-		private static final long serialVersionUID = -6595034048563092613L;
-		
-	}
-
-	
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWorkCompleted$Wo")
 	public static class Wo extends Attachment {
 

@@ -45,7 +45,26 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
         this.form = form;
         this.field = true;
 		this.fieldModuleLoaded = false;
+		this.nodeHtml = this.node.get("html");
     },
+	/**
+	 * @summary 重新加载组件。会执行postLoad事件。
+	 * @example
+	 * this.form.get("fieldId").reload(); //重新加载事件
+	 */
+	reload: function(){
+		if (this.areaNode){
+			this.node = this.areaNode;
+			this.areaNode.empty();
+			this.areaNode = null;
+		}
+		this._beforeReloaded();
+		this._loadUserInterface();
+		this._loadStyles();
+		this._afterLoaded();
+		this._afterReloaded();
+		this.fireEvent("postLoad");
+	},
     _loadNode: function(){
         if (this.isReadonly()){
             this._loadNodeRead();
@@ -140,6 +159,11 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		if (!this.json.preprocessing) this._resetNodeEdit();
 
 		var select = this.node.getFirst();
+		if( !select && this.nodeHtml ){
+			this.node.set("html", this.nodeHtml);
+			select = this.node.getFirst();
+		}
+
 		this.areaNode = this.node;
 		this.areaNode.set({
 			"id": this.json.id,

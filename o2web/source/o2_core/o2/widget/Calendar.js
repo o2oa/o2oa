@@ -436,17 +436,36 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 	outsideClick: function(e) {
 		if(this.visible) {
-			var elementCoords = this.container.getCoordinates();
-			var targetCoords  = this.node.getCoordinates();
-			var page = e.page;
+			var elementCoords, targetCoords, page;
 			if (layout.userLayout && layout.userLayout.scale && layout.userLayout.scale!==1){
-				page.x = page.x/layout.userLayout.scale;
-				page.y = page.y/layout.userLayout.scale;
+				elementCoords = this.container.getCoordinates( this.options.target );
+				targetCoords  = this.node.getCoordinates( this.options.target );
+				var containerSize = this.options.target.getPosition();
+				page = e.page;
+
+				elementCoords.left = elementCoords.left * layout.userLayout.scale;
+				elementCoords.top = elementCoords.top * layout.userLayout.scale;
+
+				targetCoords.left = targetCoords.left * layout.userLayout.scale;
+				targetCoords.top = targetCoords.top * layout.userLayout.scale;
+
+				containerSize.x = containerSize.x * layout.userLayout.scale
+				containerSize.y = containerSize.y * layout.userLayout.scale;
+
+				page.x = page.x / layout.userLayout.scale - containerSize.x;
+				page.y = page.y / layout.userLayout.scale - containerSize.y;
+
+			}else{
+				elementCoords = this.container.getCoordinates();
+				targetCoords  = this.node.getCoordinates();
+				page = e.page;
 			}
+
 			if(((page.x < elementCoords.left || page.x > (elementCoords.left + elementCoords.width)) ||
 				(page.y < elementCoords.top || page.y > (elementCoords.top + elementCoords.height))) &&
 				((page.x < targetCoords.left || page.x > (targetCoords.left + targetCoords.width)) ||
 					(page.y < targetCoords.top || page.y > (targetCoords.top + targetCoords.height))) ) this.hide();
+
 		}
 	},
 
@@ -549,6 +568,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	setPosition: function(){
+		debugger;
 		if (this.container.position && (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale===1) ){
 			var postY = "bottom";
 			var postX = "left";
@@ -607,19 +627,25 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			var containerSize = this.container.getSize();
 			var bodySize = (this.options.target) ? this.options.target.getSize() : $(document.body).getSize(); //$(document.body).getSize();
 
+			bodySize.x = bodySize.x * layout.userLayout.scale;
+			bodySize.y = bodySize.y * layout.userLayout.scale;
+
 			var left = p.x;
+			left = left * layout.userLayout.scale;
 			if ((left + containerSize.x + 40) > bodySize.x){
 				left = bodySize.x - containerSize.x - 40;
 			}
 
 			var top = p.y+size.y+2;
+			top = top * layout.userLayout.scale;
 			if( top + containerSize.y > bodySize.y ){
 				top = bodySize.y - containerSize.y ;
 			}
 
+			//console.log( "layout.userLayout.scale="+layout.userLayout.scale, "p=", p, "size=", size, "containerSize=", containerSize, "bodySize=", bodySize, "top=", top, "left=", left );
+
 			this.container.setStyle("top", top);
 			this.container.setStyle("left", left);
-
 		}
 	},
 	showYear: function(year){
@@ -797,7 +823,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			tds[i].set("text", tmpDate.getDate());
 			tds[i].addClass("gray_"+this.options.style);
 			tds[i].setStyles(this.css["gray_"+this.options.style]);
-			tds[i].store("dateValue", tmpDate.toString())
+			tds[i].store("dateValue", tmpDate.toString());
+			tds[i].removeClass("today_"+this.options.style);
+			tds[i].removeClass("current_"+this.options.style);
+			tds[i].removeClass("past_"+this.options.style);
+			if( this.options.todayClass ){
+				tds[i].removeClass( this.options.todayClass );
+			}
 		}
 
 		for (var i=day; i<tds.length; i++){
@@ -840,6 +872,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				tds[i].setStyle("border", "0px solid #AAA");
 				if( this.options.todayClass ){
 					tds[i].addClass( this.options.todayClass );
+				}
+			}else{
+				tds[i].removeClass("today_"+this.options.style);
+				if( this.options.todayClass ){
+					tds[i].removeClass( this.options.todayClass );
 				}
 			}
 			if (tmp.diff(this.today)>0){

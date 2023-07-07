@@ -12,10 +12,10 @@ MWF.xApplication.cms.Xform.TinyMCEEditor = MWF.CMSTinyMCEEditor = new Class({
         return this.form.businessData.document.id +"_"+this.json.id.split(".").join("_") + "_" + (layout.mobile ? "mobile" : "pc");
     },
     getText: function () {
-        return this.editor ? this.editor.getContent({format: 'text'}) : "";
+        return (this.editor && this.editor.getContent) ? this.editor.getContent({format: 'text'}) : "";
     },
     getImages: function () {
-        if( !this.editor )return [];
+        if( !this.editor || !this.editor.getBody || !this.editor.getBody() )return [];
         return this.editor.getBody().getElementsByTagName("img");
     },
     getImageIds: function () {

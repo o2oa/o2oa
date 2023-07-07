@@ -81,6 +81,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				if (layout.desktop && layout.desktop.socket && layout.desktop.socket.addImListener) {
 					layout.desktop.socket.addImListener("im_revoke", this.revokeMsgCallback.bind(this));
 					layout.desktop.socket.addImListener("im_create", this.createNewMsgCallback.bind(this));
+					layout.desktop.socket.addImListener("im_conversation", this.conversationMsgCallback.bind(this));
 				}
 				//启动监听
 				// this.startListening();
@@ -121,30 +122,6 @@ MWF.xApplication.IMV2.Main = new Class({
 	createNewMsgCallback: function(msg) {
 		this.reciveNewMessage();
 	},
-	// 监听ws消息
-	// startListening: function () {
-	// 	if (layout.desktop && layout.desktop.message) {
-	// 		this.messageNumber = layout.desktop.message.items.length;
-	// 		//查询ws消息 如果增加
-	// 		if (this.listener) {
-	// 			clearInterval(this.listener);
-	// 		}
-	// 		this.listener = setInterval(function () {
-	// 			var newNumber = layout.desktop.message.items.length;
-	// 			//判断是否有新的ws消息
-	// 			if (newNumber > this.messageNumber) {
-	// 				this.reciveNewMessage();
-	// 				this.messageNumber = newNumber;
-	// 			}
-	// 		}.bind(this), 1000);
-	// 	}
-	// },
-	// // 关闭监听
-	// closeListening: function () {
-	// 	if (this.listener) {
-	// 		clearInterval(this.listener);
-	// 	}
-	// },
 	// 接收新的消息 会话列表更新 或者 聊天窗口更新
 	reciveNewMessage: function () {
 		//查询会话数据
@@ -153,7 +130,52 @@ MWF.xApplication.IMV2.Main = new Class({
 		if (this.chatNodeBox) {
 			this.chatNodeBox._checkNewMessage();
 		}
-		
+	},
+	// 收到会话变更或删除消息
+	conversationMsgCallback: function(conv) {
+		console.log("会话消息处理", conv);
+		if (conv && conv.id) {
+			//  查询会话
+			o2.Actions.load("x_message_assemble_communicate").ImAction.conversation(conv.id, function (json) {
+				if (json && json.data) {
+					var newConv = json.data;
+					var personList = newConv.personList || [];
+					var distinguishedName = layout.session.user.distinguishedName;
+					if (personList.indexOf(distinguishedName) > -1) { // 成员存在 更新会话
+						for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+							var cv = this.conversationNodeItemList[i];
+							if (cv.data.id == conv.id) {
+								cv.refreshData(conv);
+							}
+						}
+					} else { // 被踢出了 删除会话
+						this._deleteConversation(conv)
+					}
+				}
+				
+			}.bind(this), function(err){
+				console.error(err);
+				// 出错 可能是会话删除了
+				this._deleteConversation(conv);
+				return true;
+			}.bind(this));
+		}
+	},
+	// 删除会话
+	_deleteConversation(conv) {
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var item = this.conversationNodeItemList[i];
+			if (item.data.id === conv.id) {
+				item.node.destroy();
+				this.conversationNodeItemList.splice(i, 1);
+				break;
+			}
+		}
+		// 当前聊天窗口 关闭
+		if (this.conversationId && this.conversationId === conv.id) {
+			this.chatNode.empty();
+			this.conversationId = null;
+		}
 	},
 	//加载会话列表
 	loadConversationList: function (list) {
@@ -186,7 +208,8 @@ MWF.xApplication.IMV2.Main = new Class({
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
 				"mask": true,
-				"height": "200",
+				"width": '500',
+				"height": "210",
 				"content": settingNode,
 				"onQueryClose": function () {
 					settingNode.destroy();

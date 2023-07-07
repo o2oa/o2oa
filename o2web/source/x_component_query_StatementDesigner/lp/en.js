@@ -30,6 +30,12 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "nativeSql": "SQL",
     "nativeSqlScript": "SQL Script",
 
+    "queryParameter": "Query Parameter",
+    "filterList": "Filter conditions",
+    "pageNo": "page no",
+    "perPage": "count",
+    "size": "",
+
     "statementCategory": "Access Object Type",
     "scriptTitle": "Create JPQL by script",
     "sqlScriptTitle": "Create SQL by script",

@@ -97,4 +97,23 @@ public class JobAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "返回指定job是否allowVisit.", action = ActionAllowVisitWithPerson.class)
+	@GET
+	@Path("{job}/allow/visit/person/{person}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void allowVisitWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("job") String job,
+			@JaxrsParameterDescribe("标识") @PathParam("person") String person) {
+		ActionResult<ActionAllowVisitWithPerson.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAllowVisitWithPerson().execute(effectivePerson, job, person);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

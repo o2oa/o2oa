@@ -21,13 +21,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignStatus;
 
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 
@@ -59,10 +61,10 @@ class ActionListWithJob extends BaseAction {
 				}
 				SortTools.asc(wos, DocSign.createTime_FIELDNAME);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
@@ -70,12 +72,13 @@ class ActionListWithJob extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithJob(effectivePerson, job);
+				Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
+				value = control.getAllowVisit();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends DocSign {

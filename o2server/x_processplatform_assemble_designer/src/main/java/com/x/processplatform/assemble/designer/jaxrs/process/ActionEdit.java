@@ -82,7 +82,7 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			cacheNotify();
 			// 保存历史版本
-			ThisApplication.processVersionQueue.send(new ProcessVersion(process.getId(), jsonElement));
+			ThisApplication.processVersionQueue.send(new ProcessVersion(process.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 			Wo wo = new Wo();
 			wo.setId(process.getId());
 			result.setData(wo);

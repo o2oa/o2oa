@@ -9,6 +9,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
+import com.x.base.core.project.tools.FileTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
@@ -64,7 +65,7 @@ public class ActionFileUpdate extends BaseAction {
 			throw new ExceptionFileInfoNotExists( old_attId );
 		}
 
-		this.verifyConstraint(bytes.length, fileName, null);
+		FileTools.verifyConstraint(bytes.length, fileName, null);
 
 		StorageMapping mapping = ThisApplication.context().storageMappings().get( FileInfo.class, attachment.getStorage());
 

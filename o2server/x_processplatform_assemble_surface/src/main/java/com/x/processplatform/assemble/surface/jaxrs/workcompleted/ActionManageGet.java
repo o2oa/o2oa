@@ -11,7 +11,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -32,13 +33,12 @@ class ActionManageGet extends BaseAction {
 			Process process = business.process().pick(workCompleted.getProcess());
 			Application application = business.application().pick(workCompleted.getApplication());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = Wo.copier.copy(workCompleted);
 			/* 添加权限 */
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
-			wo.setControl(control);
+			wo.setControl(new WorkCompletedControlBuilder(effectivePerson, business, workCompleted).enableAll().build());
 			result.setData(wo);
 			return result;
 		}
@@ -52,18 +52,15 @@ class ActionManageGet extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("权限对象")
-		private WoControl control;
+		private Control control;
 
-		public WoControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WoControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
-	}
-
-	public static class WoControl extends WorkCompletedControl {
 	}
 }

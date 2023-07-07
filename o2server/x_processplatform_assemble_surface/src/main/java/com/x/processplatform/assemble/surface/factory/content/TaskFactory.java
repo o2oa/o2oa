@@ -128,16 +128,13 @@ public class TaskFactory extends AbstractFactory {
 		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
 		Root<Task> root = cq.from(Task.class);
 		Predicate p = cb.equal(root.get(Task_.person), person);
-		if(BooleanUtils.isTrue(isExcludeDraft)){
-			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
-					cb.isNull(root.get(Task_.first)),
-					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
+		if (BooleanUtils.isTrue(isExcludeDraft)) {
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Work.WORKCREATETYPE_ASSIGN)));
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Task_.createTime)));
 		return em.createQuery(cq).getResultList();
 	}
-
-
 
 	/**
 	 * 统计指定人员在指定应用的待办,数量

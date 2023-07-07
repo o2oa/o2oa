@@ -47,6 +47,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
     reload: function(){
         if (this.app && this.app.content){
             this.node.empty();
+            this.isSetContentSize = false;
             this.load();
         }
     },
@@ -185,14 +186,16 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             "styles": this.css.elementContentListNode
         }).inject(this.elementContentNode);
 
-        this.setContentSizeFun = this.setContentSize.bind(this);
-        this.app.addEvent("resize", this.setContentSizeFun);
-        this.app.addEvent("close", function(){
-            if (this.setContentSizeFun){
-                this.app.removeEvent("resize", this.setContentSizeFun);
-                this.setContentSizeFun = null;
-            }
-        }.bind(this));
+        if( !this.setContentSizeFun ){
+            this.setContentSizeFun = this.setContentSize.bind(this);
+            this.app.addEvent("resize", this.setContentSizeFun);
+            this.app.addEvent("close", function(){
+                if (this.setContentSizeFun){
+                    this.app.removeEvent("resize", this.setContentSizeFun);
+                    this.setContentSizeFun = null;
+                }
+            }.bind(this));
+        }
     },
     setContentSize: function(){
         if (this.elementContentListNode){

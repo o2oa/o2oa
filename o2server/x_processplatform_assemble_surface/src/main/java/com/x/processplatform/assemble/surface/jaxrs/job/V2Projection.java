@@ -14,9 +14,10 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
@@ -40,7 +41,8 @@ class V2Projection extends BaseAction {
 
 			if (null != work) {
 				job = work.getJob();
-				ControlOfWork controlOfWork = business.getControl(effectivePerson, work, ControlOfWork.class);
+				Control controlOfWork = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit()
+						.build();
 				if (BooleanUtils.isNotTrue(controlOfWork.getAllowVisit())) {
 					throw new ExceptionAccessDenied(effectivePerson);
 				}
@@ -52,8 +54,8 @@ class V2Projection extends BaseAction {
 				WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
 				if (null != workCompleted) {
 					job = workCompleted.getJob();
-					ControlOfWorkCompleted controlOfWorkCompleted = business.getControl(effectivePerson, workCompleted,
-							ControlOfWorkCompleted.class);
+					Control controlOfWorkCompleted = new WorkCompletedControlBuilder(effectivePerson, business,
+							workCompleted).enableAllowVisit().build();
 					if (BooleanUtils.isNotTrue(controlOfWorkCompleted.getAllowVisit())) {
 						throw new ExceptionAccessDenied(effectivePerson);
 					}
@@ -70,19 +72,6 @@ class V2Projection extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
 		return result;
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.job.V2Projection$ControlOfWork")
-	public static class ControlOfWork extends WorkControl {
-
-		private static final long serialVersionUID = -7502336484666914474L;
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.job.V2Projection$ControlOfWorkCompleted")
-	public static class ControlOfWorkCompleted extends WorkCompletedControl {
-
-		private static final long serialVersionUID = -1496905228538215987L;
-
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.job.V2Projection$Wo")

@@ -136,13 +136,13 @@
     <div class="o2_statement_statementRunContentNode">
         <div class="o2_statement_statementRunLeftNode">
             <div class="o2_statement_statementRunTitleNode">
-                <div style="float:left;">查询参数(parameter)</div>
+                <div style="float:left;">{{$.lp.queryParameter}}(parameter)</div>
                 <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html#where" target="o2statement"></a>
             </div>
             <div class="o2_statement_statementRunJsonNode"></div>
 
             <div class="o2_statement_statementRunTitleNode">
-                <div style="float:left;">过滤条件(filterList)</div>
+                <div style="float:left;">{{$.lp.filterList}}(filterList)</div>
                 <a style="float:left;color:blue;margin-left:20px;cursor:pointer;" data-o2-events="click:addFilterSample">添加样例</a>
                 <a class="o2_statement_help" href="../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html#filterlist" target="o2statement"></a>
             </div>
@@ -157,10 +157,10 @@
 <!--                            <option value="data">data</option>-->
 <!--                            <option value="count">count</option>-->
 <!--                        </select></td>-->
-                        <td style="width: 40px; text-align: right;">页码</td>
-                        <td style="width: calc( 50% - 40px );"><input value="1" type="number" style="width: 60px;" class="o2_statement_statementRunPageNoInput"></td>
-                        <td style="width: 50px; text-align: right;">每页</td>
-                        <td style="width: calc( 50% - 50px );"><input value="20" type="number" style="width: 60px;" class="o2_statement_statementRunPageSizeInput">条</td>
+                        <td style="width: 60px; text-align: right;">{{$.lp.pageNo}}</td>
+                        <td style="width: calc( 50% - 60px );"><input value="1" type="number" style="width: 60px;" class="o2_statement_statementRunPageNoInput"></td>
+                        <td style="width: 50px; text-align: right;">{{$.lp.perPage}}</td>
+                        <td style="width: calc( 50% - 50px );"><input value="20" type="number" style="width: 60px;" class="o2_statement_statementRunPageSizeInput">{{$.lp.size}}</td>
                     </tr>
                 </table>
             </div>

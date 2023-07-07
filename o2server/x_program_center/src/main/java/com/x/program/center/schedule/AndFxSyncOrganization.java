@@ -16,7 +16,7 @@ import org.quartz.JobExecutionException;
 /**
  * @author sword
  */
-public class AndFxSyncOrganization implements Job {
+public class AndFxSyncOrganization extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AndFxSyncOrganization.class);
 
@@ -24,7 +24,7 @@ public class AndFxSyncOrganization implements Job {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-			if (BooleanUtils.isTrue(Config.andFx().getForceSyncEnable())) {
+			if (pirmaryCenter() && BooleanUtils.isTrue(Config.andFx().getForceSyncEnable())) {
 				Business business = new Business(emc);
 				SyncOrganization o = new SyncOrganization();
 				o.execute(business);

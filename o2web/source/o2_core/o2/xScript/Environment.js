@@ -309,6 +309,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getTaskList": function(callback, error){
+            if( ev.work.completedTime )return [];
             return _getWorkContextList("listTaskByWork", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
@@ -378,7 +379,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getTaskCompletedList": function(callback, error){
-            return _getWorkContextList("listTaskCompletedByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listTaskCompletedByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
@@ -446,7 +447,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getReadList": function(callback, error){
-            return _getWorkContextList("listReadByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listReadByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
@@ -514,7 +515,7 @@ MWF.xScript.Environment = function(ev){
          * });
          */
         "getReadCompletedList": function(callback, error){
-            return _getWorkContextList("listReadCompletedByWork", ev.work.id, callback, error);
+            return _getWorkContextList("listReadCompletedByWorkOrWorkCompleted", ev.work.id, callback, error);
             // var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
             // var ecb = (error && o2.typeOf(error)==="function") ? error : null;
             // var list;
@@ -641,17 +642,21 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
-         *        "allowVisit": true,             //是否允许访问
+         *        "allowVisit": true,             //是否允许访问工作
          *        "allowProcessing": true,        //是否允许流转
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人
-         *        "allowRetract": false,          //是否允许撤回
          *        "allowReroute": false,          //是否允许调度
          *        "allowDelete": true,             //是否允许删除流程实例
-         *        "allowRollback": false,         //是否允许流程回溯
-         *        "allowAddSplit": false,         //是否允许增加分支
-         *        "allowPress": false,             //是否允许催办
+         *        "allowAddSplit": false,         //是否允许添加拆分分支
+         *        "allowRetract": false,          //是否允许撤回
+         *        "allowRollback": false,         //是否允许回溯流程
+         *        "allowPress": false,             //是否允许发送办理提醒
+         *        "allowGoBack": false,         //是否允许回退
+         *        "allowAddTask": false,          //是否允许加签
+         *        "allowPause": false,         //是否允许待办挂起
+         *        "allowResume": false,             //是否允许待办从挂起状态恢复
          * }</code></pre>
          * @o2syntax
          * var control = this.workContext.getControl();
@@ -685,7 +690,6 @@ MWF.xScript.Environment = function(ev){
          * 如果传入true，则发起异步请求获取附件列表，返回Promise对象；如果传入false, 则发起同步请求获取附件列表；
          * 如果不传入参数，则直接返回本地缓存中的attachmentList对象。
          * @param {Function} [error] 获取附件对象数组出错时的回调。
-         * @return {(Review[])} 当前流程实例的所有附件对象数组，异步请求时返回请求的Promise对象.
          * @return {WorkAttachmentData[]} 附件数据.
          * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
@@ -1037,7 +1041,7 @@ MWF.xScript.Environment = function(ev){
                 return v;
             };
 
-            var promise = orgActions.listRoleWithPerson(data, cb, null, !!async);
+            var promise = orgActions.personHasRole(data, cb, null, !!async);
             return (!!async) ? promise : v;
 
             // var v = false;
@@ -3167,18 +3171,28 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 确认框标题栏显示文本。
-         * @param {String} text - 确认框的内容显示文本。
+         * @param {String|Object} text - 确认框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 确认框的宽度。
          * @param {String} height - 确认框的高度。
          * @param {Function} ok - 点击“确定”按钮后的回调函数。
          * @param {Function} cancel - 点击“取消”按钮后的回调函数。
          * @example
-         this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
-            //执行删除代码
-            this.close();
-        }, function(){
-            this.close();
-        });
+         *this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
+         * @example
+         * //使用html传入内容, v8.1开始支持
+         *this.form.confirm("wran", "删除确认", {
+         *     html: "您确定要删除吗！<br/>"
+         *}, 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
          */
         "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
             if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
@@ -3208,11 +3222,16 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 信息框标题栏显示文本。
-         * @param {String} text - 信息框的内容显示文本。
+         * @param {String|Object} text - 信息框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 信息框宽度。
          * @param {String} height - 信息框的高度。
          * @example
-         this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * @example
+         * //使用html传入内容
+         * this.form.alert("wran", "必填提醒", {
+         *     html: "请填写标题！<br/>"
+         * }, 300, 100);
          */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);
@@ -3646,7 +3665,7 @@ MWF.xScript.Environment = function(ev){
          *   "forceFormId": "xxxxxx", //不管编辑还是阅读都用此表单id打开，优先使用。6.0版本之前使用 printFormId。
          *   "readFormId": "xxxxxx", //强制的阅读表单id，优先于表单的readFormId。6.0版本之前使用 formId。
          *   "editFormId": "xxxxxx", //强制的编辑表单id，优先于表单的formId。6.0版本之前使用 formEditId。
-         *    "saveOnClose" : true, //关闭的时候是否自动保存
+         *    "saveOnClose" : true, //关闭草稿的时候是否自动保存
          *    "onPostPublish" : function( documentData ){ //发布前执行方法，但数据已经准备好，该事件在桌面模式打开有效
          *       //documentData 为文档数据
          *    },
@@ -3874,6 +3893,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
+         * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查。
          * @example
          //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");
@@ -3889,7 +3909,7 @@ MWF.xScript.Environment = function(ev){
               }
         });
          */
-        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated){
+        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
                     if (typeOf(arguments[i])=="boolean"){
@@ -3942,6 +3962,7 @@ MWF.xScript.Environment = function(ev){
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function(data, title, processName){
                                 var application;
                                 if (data.work){

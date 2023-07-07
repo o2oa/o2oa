@@ -3,6 +3,8 @@ package com.x.file.assemble.control.jaxrs.attachment;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.exception.ExceptionFileNameInvalid;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,6 +50,9 @@ class ActionUpdate extends BaseAction {
 			}
 			if (null != wi.getEditorList()) {
 				editorList = business.organization().person().list(wi.getEditorList());
+			}
+			if(StringUtils.isNotBlank(wi.getName()) && StringTools.isFileName(wi.getName())){
+				throw new ExceptionFileNameInvalid(wi.getName());
 			}
 			/* 从共享用户和共享编辑者里面去掉当前用户和创建者 */
 			shareList = ListUtils.subtract(shareList,

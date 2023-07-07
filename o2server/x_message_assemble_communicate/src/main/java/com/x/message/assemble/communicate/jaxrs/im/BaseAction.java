@@ -20,9 +20,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
     public static final String IM_CONFIG_KEY_NAME = "imConfig"; // 这个配置会已对象写入到 web.json ，已imConfig作为key名称
 
-
-
-
+    // 发送会话消息
+    public void sendConversationMsg(List<String> persons, IMConversation conversation, String messageType) {
+        for (String person : persons) {
+            String title = "会话的消息";
+            MessageConnector.send(messageType, title, person, conversation);
+        }
+    }
+    // 发送聊天消息
     public void sendWsMessage(IMConversation conversation, IMMsg msg, String messageType, EffectivePerson effectivePerson) {
         // 发送消息
         List<String> persons = conversation.getPersonList();

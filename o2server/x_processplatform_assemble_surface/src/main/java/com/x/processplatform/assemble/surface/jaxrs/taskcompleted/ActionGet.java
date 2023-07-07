@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -12,13 +14,18 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -26,7 +33,9 @@ class ActionGet extends BaseAction {
 			if (null == taskCompleted) {
 				throw new ExceptionEntityNotExist(id, TaskCompleted.class);
 			}
-			if (!business.readable(effectivePerson, taskCompleted)) {
+			Control control = new JobControlBuilder(effectivePerson, business, taskCompleted.getJob())
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, taskCompleted);
 			}
 			Wo wo = Wo.copier.copy(taskCompleted);

@@ -34,7 +34,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"saveRouteOrgNoName": "Name and title cannot be empty",
 		"saveRouteOrgNumberId" : "Identifier cannot be a pure number",
 		"saveRouteOrgDoubleDotId" : "The ID cannot contain two consecutive dots",
-		"processCopyError": "Activity paste failed, please copy again and try again"
+		"processCopyError": "Activity paste failed, please copy again and try again",
+		"routeNameConfilct": "An activity cannot have two routes with the same name!"
 	},
 	"menu": {
 		"newRoute": "Create Route",
@@ -450,6 +451,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"eventInfo9": "Process task, generate taskComplete",
 		"manualAfterTask": "manualAfterTask",
 		"eventInfo10": "Determine whether the conditions are met and enter the next activity",
+
+		"eventInfo11": "Execute all process flow tasks until staying or ending in an activity",
+		"afterProcess": "Activity flow complete",
 
 		"updataTime": "UpdataTime",
 		"num": "SerialNumber",

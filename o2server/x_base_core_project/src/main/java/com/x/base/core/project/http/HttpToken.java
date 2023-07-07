@@ -214,7 +214,8 @@ public class HttpToken {
 		if (StringUtils.isEmpty(token)) {
 			String value = request.getHeader(X_AUTHORIZATION);
 			// 如果使用oauth bearer 通过此传递认证信息.需要进行判断,格式为 Bearer xxxxxxx
-			if (!StringUtils.contains(value, " ")) {
+			// wps格式为WPS-2:xxxx
+			if (!StringUtils.contains(value, " ") && !StringUtils.contains(value, ":")) {
 				token = value;
 			}
 		}

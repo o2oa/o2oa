@@ -32,7 +32,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             "readonly": false,
             "cssPath": "",
             "autoSave": false,
-            "saveOnClose": false,
+            "saveOnClose": null,
             "showAttachment": true,
             "moduleEvents": [
                 /**
@@ -336,7 +336,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (!this.options.readonly) {
                 if (this.options.autoSave) this.autoSave();
                 this.app.addEvent("queryClose", function () {
-                    if (this.options.saveOnClose && this.businessData.document.docStatus == "draft") this.saveDocument(null, true);
+                    if (this.options.saveOnClose && this.businessData.document.docStatus == "draft") this.saveDocument(null, true, true);
                     //if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
                     Object.each(this.forms, function (module, id) {
                         if (module.json && module.json.type == "Htmleditor" && module.editor) {
@@ -710,8 +710,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }
             }
         },
-
-
         _loadBusinessData: function () {
             if (!this.businessData) {
                 this.businessData = {
@@ -854,7 +852,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                             name = dn.split("@")[0];
                         }
                         result.push({
-                            permission: t == "author" ? "作者" : "阅读",
+                            permission: t === "author" ? "作者" : "阅读",
                             permissionObjectType: type,
                             permissionObjectName: name,
                             permissionObjectCode: dn
@@ -932,7 +930,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             data.isNewDocument = false;
             return data;
         },
-        saveDocument: function (callback, sync) {
+        saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");
             if (this.businessData.document.docStatus == "published") {
                 if (!this.formValidation("publish")) {
@@ -970,7 +968,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             this.documentAction.saveDocument(documentData, function () {
                 //this.documentAction.saveData(function(json){
-                this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
+                if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
                 this.businessData.data.isNew = false;
                 this.fireEvent("afterSave");
                 if (callback && typeof callback === "function") callback();
@@ -982,8 +980,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         // 重新加载阅读表单
         _reloadReadForm: function() {
-            this.fireEvent("reloadReadForm");
             if (this.app.inBrowser) {
+                this.fireEvent("reloadReadForm");
                 this.modules.each(function (module) {
                     MWF.release(module);
                 });

@@ -48,7 +48,7 @@ class ActionManageListCountWithProcess extends BaseAction {
 			List<Wo> wos = new ArrayList<>();
 			for (Wo wo : list) {
 				Process process = business.process().pick(wo.getValue());
-				if (process != null && business.canManageApplicationOrProcess(effectivePerson, application, process)){
+				if (process != null && business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)){
 					String name = process.getName();
 					if (process.getEditionNumber() != null) {
 						name = name + "V" + process.getEditionNumber();

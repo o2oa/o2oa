@@ -6,10 +6,12 @@ public class AndFx extends ConfigObject {
 
 	@FieldDescribe("是否启用.")
 	private Boolean enable;
-	@FieldDescribe("强制拉入同步cron,例如在每天的8点和12点进行同步：10 45 8,12 * * ?.")
+	@FieldDescribe("人员组织同步cron表达式,例如在每天的8点和12点进行同步：10 45 8,12 * * ?.")
 	private String forceSyncCron;
-	@FieldDescribe("是否开启强制拉入同步,默认false")
+	@FieldDescribe("是否开启人员组织同步,默认false")
 	private Boolean forceSyncEnable;
+	@FieldDescribe("是否同步离职人员,默认false（即人员离职需要在O2手工删除）")
+	private Boolean syncDeleteUser;
 	@FieldDescribe("移动办公认证api服务地址")
 	private String ssoApi;
 	@FieldDescribe("移动办公统一认证sourceId")
@@ -52,6 +54,7 @@ public class AndFx extends ConfigObject {
 	public static final Boolean default_enable = false;
 	public static final String default_forceSyncCron = "10 45 8,12 * * ?";
 	public static final Boolean default_forceSyncEnable = false;
+	public static final Boolean default_syncDeleteUser = true;
 	public static final String default_ssoApi = "https://token.cmpassport.com:8300/uniapi/uniTokenValidate";
 	public static final String default_sourceId = "001311";
 	public static final String default_sourceKey = "";
@@ -74,6 +77,7 @@ public class AndFx extends ConfigObject {
 		this.enable = default_enable;
 		this.forceSyncCron = default_forceSyncCron;
 		this.forceSyncEnable = default_forceSyncEnable;
+		this.syncDeleteUser = default_syncDeleteUser;
 		this.ssoApi = default_ssoApi;
 		this.sourceId = default_sourceId;
 		this.sourceKey = default_sourceKey;
@@ -252,5 +256,13 @@ public class AndFx extends ConfigObject {
 
 	public void setForceSyncEnable(Boolean forceSyncEnable) {
 		this.forceSyncEnable = forceSyncEnable;
+	}
+
+	public Boolean getSyncDeleteUser() {
+		return syncDeleteUser;
+	}
+
+	public void setSyncDeleteUser(Boolean syncDeleteUser) {
+		this.syncDeleteUser = syncDeleteUser;
 	}
 }

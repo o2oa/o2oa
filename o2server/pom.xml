@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
@@ -52,10 +54,12 @@
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
+		<module>x_correlation_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
+		<module>x_correlation_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
 		<module>x_cms_core_express</module>
@@ -79,6 +83,7 @@
 		<module>x_processplatform_assemble_designer</module>
 		<module>x_processplatform_assemble_surface</module>
 		<module>x_processplatform_service_processing</module>
+		<module>x_correlation_service_processing</module>
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
@@ -333,6 +338,10 @@
 			<artifactId>commons-email</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 		</dependency>
@@ -422,7 +431,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
+			<artifactId>solr-hdfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.jsqlparser</groupId>
@@ -465,9 +478,11 @@
 						<target>11</target>
 						<compilerArgs>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED</arg>
 							<arg>--add-exports</arg>
-							<arg>jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
+							<arg>
+								jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED</arg>
 						</compilerArgs>
 					</configuration>
 				</plugin>
@@ -528,7 +543,8 @@
 						<docencoding>UTF-8</docencoding>
 						<additionalOptions>
 							<!-- 解决jdk1.8以后编译出错问题-->
-							<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
+							<!--
+							<additionalOption>-Xdoclint:none</additionalOption>-->
 							<additionalparam>-Xdoclint:none</additionalparam>
 						</additionalOptions>
 					</configuration>
@@ -553,12 +569,6 @@
 							<goals>
 								<goal>sign</goal>
 							</goals>
-							<!--							<configuration>-->
-							<!--								<gpgArguments>-->
-							<!--									<arg>&#45;&#45;pinentry-mode</arg>-->
-							<!--									<arg>loopback</arg>-->
-							<!--								</gpgArguments>-->
-							<!--							</configuration>-->
 						</execution>
 					</executions>
 				</plugin>
@@ -616,7 +626,7 @@
 			<dependency>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa</artifactId>
-				<version>3.2.0</version>
+				<version>3.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -671,7 +681,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
-				<version>1.8</version>
+				<version>1.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
@@ -682,6 +692,16 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-compress</artifactId>
 				<version>1.20</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-configuration2</artifactId>
+				<version>2.9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
@@ -876,17 +896,17 @@
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-queryparser</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-highlighter</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
 				<artifactId>lucene-grouping</artifactId>
-				<version>9.4.1</version>
+				<version>9.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
@@ -895,14 +915,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-core</artifactId>
-				<version>8.11.2</version>
-				<exclusions>
-					<exclusion>
-						<groupId>*</groupId>
-						<artifactId>*</artifactId>
-					</exclusion>
-				</exclusions>
+				<artifactId>solr-hdfs</artifactId>
+				<version>9.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-solrj</artifactId>
+				<version>9.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>
@@ -1116,6 +1135,16 @@
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_entity</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
+				<artifactId>x_correlation_core_express</artifactId>
+				<version>8.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
 				<version>8.0</version>
 			</dependency>
@@ -1157,7 +1186,7 @@
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-client</artifactId>
-				<version>3.3.4</version>
+				<version>3.3.5</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.mail</groupId>

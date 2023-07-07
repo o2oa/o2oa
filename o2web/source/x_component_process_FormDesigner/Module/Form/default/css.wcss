@@ -83,12 +83,12 @@
 	    "background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
 	    "cursor": "pointer"
 	},
-	"propertyAddNode": {
-		"float": "right",
-		"height": "24px",
+	"propertyOpenFormNode": {
 		"width": "24px",
-		"cursor": "pointer",
-		"background": "url(../x_component_process_ProcessDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
+		"height": "24px",
+		"float": "right",
+		"background": "url(../x_component_process_ProcessDesigner/$Process/default/icon/form.png) no-repeat center center",
+		"cursor": "pointer"
 	},
 	"processIconNode": {
         "width": "32px",

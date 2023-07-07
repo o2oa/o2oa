@@ -41,7 +41,7 @@ class ActionGet extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Draft.class);
 			}
 			if ((!effectivePerson.isPerson(draft.getPerson())) && (!business
-					.canManageApplicationOrProcess(effectivePerson, draft.getApplication(), draft.getProcess()))) {
+					.ifPersonCanManageApplicationOrProcess(effectivePerson, draft.getApplication(), draft.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, draft);
 			}
 			Application application = business.application().pick(draft.getApplication());

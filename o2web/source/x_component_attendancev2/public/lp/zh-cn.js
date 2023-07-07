@@ -292,13 +292,14 @@ MWF.xApplication.attendancev2.LP = {
     fieldWork: "外勤打卡",
 
     status0: "待处理",
-    status1: "审批中",
+    status1: "流转中",
     status2: "审批通过",
     status3: "审批不通过",
 
     startProcess: "发起申诉",
     openJob: "查看申诉",
     startProcessNoConfigError: "没有配置申诉流程，无法启动流程！",
+    notfoundJobError: "没有找到对应的流程数据，是否还原当前的数据状态？",
   },
 
   // 原始打卡记录

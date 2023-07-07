@@ -1024,12 +1024,16 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.sort+"</td><td id='formApplicationSort'></td></tr>";
         var flag = typeOf(this.config.ignoreTitle) === "boolean" ? this.config.ignoreTitle : false;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.ignoreTitle+"</td><td id='formApplicationIgnoreTitle' class='formValue'>"+(flag ? lp.ignoreTitleSelectText[0] : lp.ignoreTitleSelectText[1] )+"</td></tr>";
-        var flag = typeOf(this.config.latest) === "boolean" ? this.config.latest : true;
+        flag = typeOf(this.config.latest) === "boolean" ? this.config.latest : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.latest+"</td><td id='formApplicationLatest' class='formValue'>"+(flag ? lp.checkDraftSelectText[0] : lp.checkDraftSelectText[1] )+"</td></tr>";
-        var flag = typeOf(this.data.allowWaitPublish) === "boolean" ? this.data.allowWaitPublish : false;
+        flag = typeOf(this.data.allowWaitPublish) === "boolean" ? this.data.allowWaitPublish : false;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.delayView+"</td><td id='formApplicationDelay' class='formValue'>"+(flag ? lp.showDelayDocumentSelectText[0] : lp.showDelayDocumentSelectText[1] )+"</td></tr>";
-        var flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
+        flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? lp.showAllDocumentSelectText[0] : lp.showAllDocumentSelectText[1] )+"</td></tr>";
+
+        flag = typeOf(this.config.saveDraftOnClose) === "boolean" ? this.config.saveDraftOnClose : true;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.saveDraftOnClose+"</td><td id='saveDraftOnClose' class='formValue'>"+(flag ? lp.saveDraftOnClose[0] : lp.saveDraftOnClose[1] )+"</td></tr>";
+
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.defaultEditForm+"</td><td class='formValue'><div id='formDefaultEditForm'></div><span style='color: #aaaaaa;'>"+this.app.lp.application.editformNote+"</span></td></tr>";
@@ -1087,6 +1091,14 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             value : ( typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true ).toString(),
             selectValue : [ "true", "false" ],
             selectText : lp.showAllDocumentSelectText
+        });
+
+        this.saveDraftOnCloseSelect = new MDomItem( this.propertyContentNode.getElement("#saveDraftOnClose"), {
+            type : "select",
+            defaultValue : "false",
+            value : ( typeOf(this.config.saveDraftOnClose) === "boolean" ? this.config.saveDraftOnClose : true ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : lp.saveDraftOnClose
         });
 
         this.app.restActions.listForm(this.data.id, function(json){
@@ -1160,6 +1172,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.delaySelect.editMode();
         this.ignoreTitleSelect.editMode();
         this.allDocumentViewSelect.editMode();
+        this.saveDraftOnCloseSelect.editMode();
         this.defaultEditForm.editMode();
         this.defaultReadForm.editMode();
         //this.typeInput.editMode();
@@ -1176,6 +1189,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.delaySelect.readMode();
         this.ignoreTitleSelect.readMode();
         this.allDocumentViewSelect.readMode();
+        this.saveDraftOnCloseSelect.readMode();
         this.defaultEditForm.readMode();
         this.defaultReadForm.readMode();
         //this.typeInput.readMode();
@@ -1238,6 +1252,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.config.ignoreTitle = this.ignoreTitleSelect.getValue() !== "false";
         this.config.latest = this.latestSelect.getValue() !== "false";
+        this.config.saveDraftOnClose = this.saveDraftOnCloseSelect.getValue() !== "false";
 
         this.data.allowWaitPublish = this.delaySelect.getValue() === "true";
 
@@ -1258,6 +1273,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.delaySelect.save();
             this.ignoreTitleSelect.save();
             this.allDocumentViewSelect.save();
+            this.saveDraftOnCloseSelect.save();
             this.defaultEditForm.save();
             this.defaultReadForm.save();
             //this.typeInput.save();

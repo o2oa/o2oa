@@ -421,6 +421,21 @@ MWF.xApplication.process.Xform.LP = {
     "creatorPerson": "Creator",
     "creatorUnit": "Create organization",
     "score": "match degree",
-    "updateTime": "Update Time"
+    "updateTime": "Update Time",
+
+    "documentType": "Document type",
+    "processName": "Process name",
+    "draftTime": "Draft time",
+    "draftPerson": "Draft person ",
+    "categoryName": "Category Name",
+    "publishPerson": "Publisher",
+    "publishTime": "Publish time",
+    "document": "Document",
+    "work": "Work",
+    "cancelAssociatedTitle": "Disassociate Document",
+    "cancelAssociated": "Are you sure you want to cancel the association with document '{title}'?",
+    "associatedResult": "Associated Result",
+    "selectDocNote": "Please select a document first",
+    "associatedDocument": "Associated Document"
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -34,7 +34,7 @@ class ActionDelete extends BaseAction {
 			if (null == docSign) {
 				throw new ExceptionEntityNotExist(id, DocSign.class);
 			}
-			if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null)
+			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")
 					&& !docSign.getPerson().equals(effectivePerson.getDistinguishedName()))) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
