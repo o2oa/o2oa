@@ -98,6 +98,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 	}
 
+	public static class PersonExtend {
+		public static final String TABLE = "ORG_PERSONEXTEND";
+	}
+
 	public static class Log {
 
 		private Log() {

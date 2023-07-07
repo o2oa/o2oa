@@ -21,7 +21,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
@@ -43,12 +42,12 @@ import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
 	protected SnapProperties snap(Business business, String job, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocumentVersion> documentVersions, List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<DocumentVersion> documentVersions,
+			List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
 			throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
@@ -59,7 +58,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				mergeReadCompleted(business, job, properties, readCompleteds),
 				mergeReview(business, job, properties, reviews), mergeWorkLog(business, job, properties, workLogs),
 				mergeRecord(business, job, properties, records),
-				mergeAttachment(business, job, properties, attachments),
+				// mergeAttachment(business, job, properties, attachments),
 				mergeDocumentVersion(business, job, properties, documentVersions),
 				mergeDocSign(business, job, properties, docSigns),
 				mergeDocSignScrawl(business, job, properties, docSignScrawls)).get();
@@ -71,9 +70,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected SnapProperties snap(Business business, String job, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
-			throws InterruptedException, ExecutionException {
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<DocSign> docSigns,
+			List<DocSignScrawl> docSignScrawls) throws InterruptedException, ExecutionException {
 		SnapProperties properties = new SnapProperties();
 		properties.setJob(job);
 		properties.setWorkCompleted(workCompleted);
@@ -85,7 +83,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		futures.add(mergeReview(business, job, properties, reviews));
 		futures.add(mergeWorkLog(business, job, properties, workLogs));
 		futures.add(mergeRecord(business, job, properties, records));
-		futures.add(mergeAttachment(business, job, properties, attachments));
+		// futures.add(mergeAttachment(business, job, properties, attachments));
 		futures.add(mergeDocSign(business, job, properties, docSigns));
 		futures.add(mergeDocSignScrawl(business, job, properties, docSignScrawls));
 		if (BooleanUtils.isNotTrue(workCompleted.getMerged())) {
@@ -98,27 +96,25 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected void clean(Business business, List<Item> items, List<Work> works, List<Task> tasks,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocumentVersion> documentVersions, List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<DocumentVersion> documentVersions,
+			List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
 			throws InterruptedException, ExecutionException {
 		CompletableFuture.allOf(deleteItem(business, items), deleteWork(business, works), deleteTask(business, tasks),
 				deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
 				deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
 				deleteWorkLog(business, workLogs), deleteRecord(business, records),
-				deleteAttachment(business, attachments), deleteDocumentVersion(business, documentVersions),
-				deleteDocSign(business, docSigns), deleteDocSignScrawl(business, docSignScrawls)).get();
+				deleteDocumentVersion(business, documentVersions), deleteDocSign(business, docSigns),
+				deleteDocSignScrawl(business, docSignScrawls)).get();
 	}
 
 	protected void clean(Business business, List<Item> items, WorkCompleted workCompleted,
 			List<TaskCompleted> taskCompleteds, List<Read> reads, List<ReadCompleted> readCompleteds,
-			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<Attachment> attachments,
-			List<DocSign> docSigns, List<DocSignScrawl> docSignScrawls)
-			throws InterruptedException, ExecutionException {
+			List<Review> reviews, List<WorkLog> workLogs, List<Record> records, List<DocSign> docSigns,
+			List<DocSignScrawl> docSignScrawls) throws InterruptedException, ExecutionException {
 		CompletableFuture.allOf(deleteItem(business, items), deleteWork(business, workCompleted),
 				deleteTaskCompleted(business, taskCompleteds), deleteRead(business, reads),
 				deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
-				deleteWorkLog(business, workLogs), deleteRecord(business, records),
-				deleteAttachment(business, attachments), deleteDocSign(business, docSigns),
+				deleteWorkLog(business, workLogs), deleteRecord(business, records), deleteDocSign(business, docSigns),
 				deleteDocSignScrawl(business, docSignScrawls)).get();
 	}
 
@@ -133,7 +129,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setData(gson.fromJson(jsonElement, Data.class));
 				items.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -149,7 +145,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setWorkList(os);
 				works.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -165,7 +161,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setTaskList(os);
 				tasks.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -181,7 +177,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setTaskCompletedList(os);
 				taskCompleteds.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -197,7 +193,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setReadList(os);
 				reads.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -213,7 +209,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setReadCompletedList(os);
 				readCompleteds.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -229,7 +225,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setReviewList(os);
 				reviews.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -245,7 +241,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setWorkLogList(os);
 				workLogs.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -261,32 +257,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setRecordList(os);
 				records.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
-			}
-		}, ThisApplication.threadPool());
-	}
-
-	private CompletableFuture<Void> mergeAttachment(Business business, String job, SnapProperties snapProperties,
-			List<Attachment> attachments) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				List<Attachment> os = business.entityManagerContainer()
-						.listEqual(Attachment.class, Attachment.job_FIELDNAME, job).stream()
-						.sorted(Comparator.comparing(Attachment::getCreateTime, Comparator.nullsLast(Date::compareTo)))
-						.collect(Collectors.toList());
-				snapProperties.setAttachmentList(os);
-				attachments.addAll(os);
-				for (Attachment attachment : os) {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							attachment.getStorage());
-					if (null != mapping) {
-						byte[] bytes = attachment.readContent(mapping);
-						snapProperties.getAttachmentContentMap().put(attachment.getId(),
-								Base64.encodeBase64URLSafeString(bytes));
-					}
-				}
-			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -302,7 +273,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setDocumentVersionList(os);
 				documentVersions.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -318,7 +289,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				snapProperties.setDocSignList(os);
 				docSigns.addAll(os);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -335,7 +306,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				docSignScrawls.addAll(os);
 				for (DocSignScrawl docSignScrawl : os) {
 					if (StringUtils.isNotBlank(docSignScrawl.getStorage())) {
-						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
 								docSignScrawl.getStorage());
 						if (null != mapping) {
 							byte[] bytes = docSignScrawl.readContent(mapping);
@@ -345,7 +316,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -358,7 +329,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -372,7 +343,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.work_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -384,7 +355,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().remove(workCompleted);
 				MessageFactory.workCompleted_delete(workCompleted);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -398,7 +369,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -412,7 +383,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -426,7 +397,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -440,7 +411,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -454,7 +425,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -467,7 +438,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -480,25 +451,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
-			}
-		}, ThisApplication.threadPool());
-	}
-
-	private CompletableFuture<Void> deleteAttachment(Business business, List<Attachment> attachments) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				business.entityManagerContainer().beginTransaction(Attachment.class);
-				for (Attachment o : attachments) {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null != mapping) {
-						o.deleteContent(mapping);
-					}
-					business.entityManagerContainer().remove(o);
-				}
-			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -511,7 +464,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -524,7 +477,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -544,7 +497,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -557,7 +510,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -571,7 +524,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.work_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -586,7 +539,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.workCompleted_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -600,7 +553,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.task_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -615,7 +568,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.taskCompleted_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -629,7 +582,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.read_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -644,7 +597,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.readCompleted_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -658,7 +611,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.review_delete(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -672,7 +625,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -685,26 +638,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
-			}
-		}, ThisApplication.threadPool());
-	}
-
-	protected CompletableFuture<Void> deleteAttachment(Business business, String job) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				business.entityManagerContainer().beginTransaction(Attachment.class);
-				for (Attachment o : business.entityManagerContainer().listEqual(Attachment.class,
-						Attachment.job_FIELDNAME, job)) {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null != mapping) {
-						o.deleteContent(mapping);
-					}
-					business.entityManagerContainer().remove(o);
-				}
-			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -718,7 +652,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -732,7 +666,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -753,7 +687,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(o);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
