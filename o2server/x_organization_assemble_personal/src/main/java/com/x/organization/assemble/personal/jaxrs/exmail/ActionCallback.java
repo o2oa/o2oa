@@ -23,6 +23,9 @@ class ActionCallback extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msgSignature, String timestamp, String nonce,
 			String body) throws Exception {
+
+		LOGGER.debug("execute:{}, msgSignature:{}, timestamp:{}, nonce:{}, body:{}.",
+				effectivePerson::getDistinguishedName, () -> msgSignature, () -> timestamp, () -> nonce, () -> body);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		if (BooleanUtils.isTrue(Config.exmail().getEnable())) {
