@@ -1,0 +1,19 @@
+{
+  "name": "x_init",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "o2-build": "vite build --outDir ../../../target/o2server/servers/webServer/x_init",
+    "o2-deploy": "vite build --outDir ../../dest/x_init"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.3.9"
+  }
+}
