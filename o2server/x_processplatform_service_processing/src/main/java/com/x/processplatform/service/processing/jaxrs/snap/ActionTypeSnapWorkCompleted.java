@@ -15,7 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
 import com.x.processplatform.core.entity.content.Read;
@@ -73,11 +72,10 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 				List<Review> reviews = new ArrayList<>();
 				List<WorkLog> workLogs = new ArrayList<>();
 				List<Record> records = new ArrayList<>();
-				List<Attachment> attachments = new ArrayList<>();
 				List<DocSign> docSigns = new ArrayList<>();
 				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				snap.setProperties(snap(business, workCompleted.getJob(), items, workCompleted, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments, docSigns, docSignScrawls));
+						readCompleteds, reviews, workLogs, records, docSigns, docSignScrawls));
 				snap.setType(Snap.TYPE_SNAPWORKCOMPLETED);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
