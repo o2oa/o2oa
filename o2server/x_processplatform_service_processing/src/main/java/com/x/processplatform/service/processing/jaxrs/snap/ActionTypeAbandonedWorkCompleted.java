@@ -15,7 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
 import com.x.processplatform.core.entity.content.Read;
@@ -27,7 +26,6 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
-import com.x.processplatform.core.entity.message.WorkEvent;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
@@ -75,17 +73,16 @@ class ActionTypeAbandonedWorkCompleted extends BaseAction {
 				List<Review> reviews = new ArrayList<>();
 				List<WorkLog> workLogs = new ArrayList<>();
 				List<Record> records = new ArrayList<>();
-				List<Attachment> attachments = new ArrayList<>();
 				List<DocSign> docSigns = new ArrayList<>();
 				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				snap.setProperties(snap(business, workCompleted.getJob(), items, workCompleted, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments, docSigns, docSignScrawls));
+						readCompleteds, reviews, workLogs, records, docSigns, docSignScrawls));
 				snap.setType(Snap.TYPE_ABANDONEDWORKCOMPLETED);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
 				emc.commit();
 				clean(business, items, workCompleted, taskCompleteds, reads, readCompleteds, reviews, workLogs, records,
-						attachments, docSigns, docSignScrawls);
+						docSigns, docSignScrawls);
 				emc.commit();
 				// 创建已完成工作删除事件
 				emc.beginTransaction(WorkCompletedEvent.class);
