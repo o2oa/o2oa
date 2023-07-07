@@ -159,6 +159,8 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         var pcdata = JSON.decode(MWF.decodeJsonString(form.data));
         var mobiledata = JSON.decode(MWF.decodeJsonString(form.mobileData));
 
+        var isSameApp = pcdata.application === id;
+
         var oldName = pcdata.json.name;
 
         var i=1;
@@ -167,9 +169,9 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
             mobiledata.json.name = oldName+"_copy"+i;
             i++;
         }
-        pcdata.id = "";
+        if (!isSameApp) pcdata.id = "";
         pcdata.isNewForm = true;
-        pcdata.json.id = "";
+        if (!isSameApp) pcdata.json.id = "";
         pcdata.json.application = id;
         pcdata.json.applicationName = name;
         pcdata.json.alias = "";
