@@ -30,7 +30,7 @@ class ActionUpdate extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(o.getApplication());
 			}
-			if (!business.canManageApplication(effectivePerson, application)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(SerialNumber.class);
@@ -52,5 +52,8 @@ class ActionUpdate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 4452600520934700209L;
+
 	}
 }

@@ -34,6 +34,10 @@ public class ActionCreateWithApplicationProcessWi extends GsonPropertyObject {
 	@Schema(description = "允许启动非当但版本流程,默认否并自动升级到当前版本流程.")
 	private Boolean allowEdition;
 
+	@FieldDescribe("是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查).")
+	@Schema(description = "是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查).")
+	private Boolean skipDraftCheck = false;
+
 	public String getTitle() {
 		return title;
 	}
@@ -82,4 +86,11 @@ public class ActionCreateWithApplicationProcessWi extends GsonPropertyObject {
 		this.allowEdition = allowEdition;
 	}
 
+	public Boolean getSkipDraftCheck() {
+		return skipDraftCheck;
+	}
+
+	public void setSkipDraftCheck(Boolean skipDraftCheck) {
+		this.skipDraftCheck = skipDraftCheck;
+	}
 }

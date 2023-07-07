@@ -309,11 +309,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var rulesStr = match[0];
                 if( rulesStr.indexOf( "@media" ) === -1 ){
                     if (rulesStr.indexOf(",") != -1) {
-                        var rules = rulesStr.split(/\s*,\s*/g);
+                        //var rules = rulesStr.split(/\s*,\s*/g);
+                        var rules = rulesStr.split(/,/g);
                         rules = rules.map(function (r) {
                             return prefix + r;
                         });
-                        var rule = rules.join(", ");
+                        var rule = rules.join(",");
                         cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
                         rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
 
@@ -2414,9 +2415,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else if (this.json.submitFormType === "select") {
-            this.processWork_custom();
+            this.processWork_custom( defaultRoute );
         } else if (this.json.submitFormType === "script") {
-            this.processWork_custom();
+            this.processWork_custom( defaultRoute );
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
@@ -2427,7 +2428,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
-    processWork_custom: function () {
+    processWork_custom: function ( defaultRoute ) {
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
@@ -2443,7 +2444,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-
+        debugger;
         if (!this.submitFormModule) {
             if (!MWF["APPSubmitform"]) {
                 MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
@@ -2458,12 +2459,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 submitScript: this.json.submitScript
             }, this);
             this.submitFormModule.addEvent("afterModulesLoad", function () {
-                this.submitFormModule.show();
+                this.submitFormModule.show( defaultRoute );
                 this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
             }.bind(this))
             this.submitFormModule.load();
         } else {
-            this.submitFormModule.show();
+            this.submitFormModule.show( defaultRoute );
             this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
         }
     },

@@ -642,17 +642,21 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
-         *        "allowVisit": true,             //是否允许访问
+         *        "allowVisit": true,             //是否允许访问工作
          *        "allowProcessing": true,        //是否允许流转
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人
-         *        "allowRetract": false,          //是否允许撤回
          *        "allowReroute": false,          //是否允许调度
          *        "allowDelete": true,             //是否允许删除流程实例
-         *        "allowRollback": false,         //是否允许流程回溯
-         *        "allowAddSplit": false,         //是否允许增加分支
-         *        "allowPress": false,             //是否允许催办
+         *        "allowAddSplit": false,         //是否允许添加拆分分支
+         *        "allowRetract": false,          //是否允许撤回
+         *        "allowRollback": false,         //是否允许回溯流程
+         *        "allowPress": false,             //是否允许发送办理提醒
+         *        "allowGoBack": false,         //是否允许回退
+         *        "allowAddTask": false,          //是否允许加签
+         *        "allowPause": false,         //是否允许待办挂起
+         *        "allowResume": false,             //是否允许待办从挂起状态恢复
          * }</code></pre>
          * @o2syntax
          * var control = this.workContext.getControl();
@@ -686,7 +690,6 @@ MWF.xScript.Environment = function(ev){
          * 如果传入true，则发起异步请求获取附件列表，返回Promise对象；如果传入false, 则发起同步请求获取附件列表；
          * 如果不传入参数，则直接返回本地缓存中的attachmentList对象。
          * @param {Function} [error] 获取附件对象数组出错时的回调。
-         * @return {(Review[])} 当前流程实例的所有附件对象数组，异步请求时返回请求的Promise对象.
          * @return {WorkAttachmentData[]} 附件数据.
          * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
          * @o2syntax
@@ -3875,6 +3878,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
+         * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查。
          * @example
          //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");
@@ -3890,7 +3894,7 @@ MWF.xScript.Environment = function(ev){
               }
         });
          */
-        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated){
+        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated, skipDraftCheck){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
                     if (typeOf(arguments[i])=="boolean"){
@@ -3943,6 +3947,7 @@ MWF.xScript.Environment = function(ev){
                             "workData": data,
                             "identity": identity,
                             "latest": latest,
+                            "skipDraftCheck": skipDraftCheck,
                             "onStarted": function(data, title, processName){
                                 var application;
                                 if (data.work){

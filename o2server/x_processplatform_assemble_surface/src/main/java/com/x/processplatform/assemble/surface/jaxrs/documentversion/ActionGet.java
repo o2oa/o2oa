@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.documentversion;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -13,6 +15,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,8 +35,9 @@ class ActionGet extends StandardJaxrsAction {
 			if (null == documentVersion) {
 				throw new ExceptionEntityNotExist(id, DocumentVersion.class);
 			}
-			if (!business.readableWithJob(effectivePerson, documentVersion.getJob())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, documentVersion.getJob())
+					.enableAllowVisit().build().getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 			Wo wo = Wo.copier.copy(documentVersion);
 			result.setData(wo);

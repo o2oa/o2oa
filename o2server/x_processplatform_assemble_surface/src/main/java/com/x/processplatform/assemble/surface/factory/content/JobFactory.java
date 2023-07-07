@@ -65,7 +65,7 @@ public class JobFactory extends AbstractFactory {
 		}
 	}
 
-	public String findAWorkOrWorkCompleted(String job) throws Exception {
+	public String findWorkOrWorkCompleted(String job) throws Exception {
 		String id = "";
 		List<Work> ws = this.entityManagerContainer().fetchEqualAscPaging(Work.class,
 				ListTools.toList(Work.id_FIELDNAME), Work.job_FIELDNAME, job, 1, 1, JpaObject.sequence_FIELDNAME);

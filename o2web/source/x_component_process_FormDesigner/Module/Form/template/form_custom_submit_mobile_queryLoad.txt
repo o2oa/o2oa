@@ -4,10 +4,18 @@ this.define("loadProcessorMobile", function( defaultRoute ){
     if( !this.processor ){
         this.processor = new O2ProcessorMobile(this);
     }
+    if( !defaultRoute && this.defaultRoute ){
+        defaultRoute = this.defaultRoute;
+    }
+    if( this.defaultRoute )this.defaultRoute = "";
     this.processor.load( defaultRoute );
 });
 
 this.define("popupProcessorMobile", function( defaultRoute ){
+    if( !defaultRoute && this.defaultRoute ){
+        defaultRoute = this.defaultRoute;
+    }
+    if( this.defaultRoute )this.defaultRoute = "";
     if( !this.processor ){
         this.processor = new O2ProcessorMobile(this);
     }
@@ -68,6 +76,28 @@ window.O2ProcessorMobile = new Class({
                     this.lastAutoOpinion = op.opinion;
                     this.setData( "inputTextarea", op.opinion );
                 }
+            }
+        }
+        if(  defaultRoute ){
+            var flag = true;
+
+            if( this.routeGroupNodeList && this.routeGroupNodeList.length ){
+                 for( var i=0; i<this.routeGroupNodeList.length; i++ ){
+                      var routeGroupNode = this.routeGroupNodeList[i];
+                      var routeList = routeGroupNode.retrieve( "routeList" );
+                      var matchRoutes = routeList.filter(function(r){ return r.id === defaultRoute || r.name === defaultRoute; }.bind(this));
+                      if( matchRoutes.length ){
+                           this.selectRouteGroup(routeGroupNode);
+                           break;
+                      }
+                 }
+            }
+
+            if( this.selectedRoute ){
+                if( this.selectedRoute.retrieve("route") === defaultRoute || this.selectedRoute.retrieve("routeName") === defaultRoute)flag = false;
+            }
+            if( flag && this.routeNodeMap && this.routeNodeMap[defaultRoute]){
+                this.selectRoute( this.routeNodeMap[defaultRoute] );
             }
         }
     },
@@ -415,6 +445,7 @@ window.O2ProcessorMobile = new Class({
         var _self = this;
 
         this.routeGroupNodeMap = {};
+        this.routeGroupNodeList = [];
 
         //根据决策组的排序号进行排序
         var keys = this.routeGroupNameList;
@@ -430,7 +461,8 @@ window.O2ProcessorMobile = new Class({
         }.bind(this));
 
         debugger;
-        var flag = false;
+        var flag = true;
+        var matchRoutes = [];
         list.each(function (routeGroupName) {
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {
@@ -441,6 +473,7 @@ window.O2ProcessorMobile = new Class({
             routeGroupNode.store("routeGroupName", routeGroupName);
 
             this.routeGroupNodeMap[routeGroupName] = routeGroupNode;
+            this.routeGroupNodeList.push( routeGroupNode );
 
             routeGroupNode.addEvents({
                 "mouseover": function (e) {
@@ -457,8 +490,12 @@ window.O2ProcessorMobile = new Class({
             if (keys.length === 1) {  //如果决策组只有1个，则默认选中
                 this.selectRouteGroup(routeGroupNode);
                 flag = false;
-            } else {
-                flag = true;
+            }else if( matchRoutes.length === 0 && this.defaultRoute ){
+                matchRoutes = routeList.filter(function(r){ return r.id === this.defaultRoute || r.name === this.defaultRoute; }.bind(this));
+                if( matchRoutes.length ){
+                    this.selectRouteGroup(routeGroupNode);
+                }
+                flag = false;
             }
         }.bind(this));
         if(flag){
@@ -603,10 +640,11 @@ window.O2ProcessorMobile = new Class({
                 this.selectedRoute.setStyles(this.css.routeNode);
                 this.selectedRoute.removeClass("mainColor_bg");
 
-                if( this.getData("inputTextarea") === this.getDefaultOpinion( this.selectedRoute ) ||
+                if( this.getData("inputTextarea") === this.lastDefaultOpinion ||
                     this.getData("inputTextarea") === ""
                 ){
-                    this.setData( "inputTextarea", this.getDefaultOpinion(node) || "" );
+                    this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                    this.setData( "inputTextarea", this.lastDefaultOpinion );
                 }
 
                 this.selectedRoute = node;
@@ -616,6 +654,7 @@ window.O2ProcessorMobile = new Class({
 
             } else {
                 if ( this.getData("inputTextarea") === this.getDefaultOpinion(this.selectedRoute)) {
+                    this.lastDefaultOpinion = "";
                     this.setData( "inputTextarea", "");
                 }
 
@@ -626,9 +665,9 @@ window.O2ProcessorMobile = new Class({
                 this.selectedRoute = null;
             }
         } else {
-            if (this.getData("inputTextarea") === "") {
-                var defaultOpinion1 = this.getDefaultOpinion(node);
-                if (defaultOpinion1) this.setData( "inputTextarea", defaultOpinion1);
+            if (this.getData("inputTextarea") === "" || this.getData("inputTextarea") === this.lastDefaultOpinion ) {
+                this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
+                if (this.lastDefaultOpinion) this.setData( "inputTextarea", this.lastDefaultOpinion);
             }
 
             this.selectedRoute = node;

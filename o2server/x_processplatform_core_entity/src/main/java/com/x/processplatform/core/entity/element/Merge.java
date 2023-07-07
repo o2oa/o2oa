@@ -37,6 +37,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Merge", description = "流程平台合并活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -387,11 +388,6 @@ public class Merge extends Activity {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
-
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
 
 	public static final String route_FIELDNAME = "route";
 	@IdReference(Route.class)
@@ -752,14 +748,6 @@ public class Merge extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
-	}
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 }

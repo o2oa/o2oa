@@ -44,6 +44,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_DE = "de";
 	private static final String CMD_GC = "gc";
 	private static final String CMD_INITRESOURCEFACTORY = "initResourceFactory";
+	private static final String CMD_FLUSHCONFIG = "flushConfig";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -86,6 +87,8 @@ public class ActionControl extends ActionBase {
 				gc();
 			} else if (cmd.hasOption(CMD_INITRESOURCEFACTORY)) {
 				initResourceFactory();
+			} else if (cmd.hasOption(CMD_FLUSHCONFIG)) {
+				flushConfig();
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", displayOptions());
@@ -113,7 +116,8 @@ public class ActionControl extends ActionBase {
 		options.addOption(enOption());
 		options.addOption(deOption());
 		options.addOption(gcOption());
-		options.addOption(initrfOption());
+		options.addOption(initResourceFactoryOption());
+		options.addOption(flushConfigOption());
 		return options;
 	}
 
@@ -210,9 +214,13 @@ public class ActionControl extends ActionBase {
 		return Option.builder(CMD_GC).longOpt("jvm garbage collection").hasArg(false).desc("垃圾收集.").build();
 	}
 
-	private static Option initrfOption() {
+	private static Option initResourceFactoryOption() {
 		return Option.builder(CMD_INITRESOURCEFACTORY).longOpt("init resource factory").hasArg(false).desc("初始资源工厂.")
 				.build();
+	}
+
+	private static Option flushConfigOption() {
+		return Option.builder(CMD_FLUSHCONFIG).longOpt("flush config").hasArg(false).desc("重置Config对象.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -338,6 +346,10 @@ public class ActionControl extends ActionBase {
 	private void initResourceFactory() throws Exception {
 		ResourceFactory.destory();
 		ResourceFactory.init();
+	}
+
+	private void flushConfig() {
+		Config.flush();
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {

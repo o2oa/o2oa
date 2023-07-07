@@ -23,8 +23,7 @@ import com.x.server.console.server.Servers;
 
 public class StartCommand {
 
-	private static final String PATTERN_TEXT = "^ {0,}start {0,}(data|storage|center|application|web|all|init|) {0,}$";
-
+	private static final String PATTERN_TEXT = "^ {0,}start {0,}(.*)$";
 	public static final Pattern PATTERN = Pattern.compile(PATTERN_TEXT, Pattern.CASE_INSENSITIVE);
 
 	private StartCommand() {

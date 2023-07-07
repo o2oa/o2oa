@@ -1,50 +1,58 @@
 package com.x.portal.assemble.designer.jaxrs.portalcategory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Portal_;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 class ActionList extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionList.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+		LOGGER.debug(effectivePerson.getDistinguishedName());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = new ArrayList<>();
 			Business business = new Business(emc);
-			List<String> list = new ArrayList<>(this.listPortalCategory(business, effectivePerson));
-			Map<String, Long> counted = list.stream()
-					.collect(Collectors.groupingBy(o -> Objects.toString(o), Collectors.counting()));
-			LinkedHashMap<String, Long> sorted = counted.entrySet().stream()
-					.sorted(Map.Entry.<String, Long>comparingByKey()).collect(Collectors.toMap(Map.Entry::getKey,
-							Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-			for (Entry<String, Long> en : sorted.entrySet()) {
+			List<Wo> wos = new ArrayList<>();
+			List<Wo> allWos = this.countPortCategory(business);
+			List<Wo> defaultWos = allWos.stream().filter(o -> (StringUtils.isBlank(o.getPortalCategory()) || Portal.CATEGORY_DEFAULT.equals(o.portalCategory))).collect(Collectors.toList());
+			if(defaultWos.size() > 0) {
 				Wo wo = new Wo();
-				wo.setProtalCategory(en.getKey());
-				wo.setCount(en.getValue());
+				wo.setPortalCategory(Portal.CATEGORY_DEFAULT);
+				wo.setCount(defaultWos.stream().collect(Collectors.summingLong(Wo::getCount)));
 				wos.add(wo);
 			}
+			wos.addAll(allWos);
+			wos.removeAll(defaultWos);
 			result.setData(wos);
 			return result;
 		}
+	}
+
+	private List<Wo> countPortCategory(Business business) throws Exception{
+		EntityManager em = business.entityManagerContainer().get(Portal.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Wo> cq = cb.createQuery(Wo.class);
+		Root<Portal> root = cq.from(Portal.class);
+		Predicate p = cb.conjunction();
+		Path<String> path = root.get(Portal_.portalCategory);
+		cq.multiselect(path, cb.count(root)).where(p).groupBy(path).orderBy(cb.asc(path));
+		return em.createQuery(cq).getResultList();
 	}
 
 	private List<String> listPortalCategory(Business business, EffectivePerson effectivePerson) throws Exception {
@@ -55,10 +63,17 @@ class ActionList extends BaseAction {
 		return em.createQuery(cq.select(root.get(Portal_.portalCategory))).getResultList();
 	}
 
-	public class Wo extends GsonPropertyObject {
+	public static class Wo extends GsonPropertyObject {
+		public Wo(){}
+
+		public Wo(String date, Long count){
+			this.portalCategory = date;
+			this.count = count;
+		}
 
 		@FieldDescribe("门户分类")
-		private String protalCategory;
+		private String portalCategory;
+
 		@FieldDescribe("数量")
 		private Long count;
 
@@ -70,13 +85,14 @@ class ActionList extends BaseAction {
 			this.count = count;
 		}
 
-		public String getProtalCategory() {
-			return protalCategory;
+		public String getPortalCategory() {
+			return portalCategory;
 		}
 
-		public void setProtalCategory(String protalCategory) {
-			this.protalCategory = protalCategory;
+		public void setPortalCategory(String portalCategory) {
+			this.portalCategory = portalCategory;
 		}
+
 	}
 
 }

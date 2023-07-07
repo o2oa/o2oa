@@ -1,0 +1,22 @@
+[
+      {
+        "id": "f2637ec1-d3be-4076-8dde-df88892cb4da",
+        "pinyin": "yunweiqunzu",
+        "pinyinInitial": "ywqz",
+        "description": "",
+        "name": "运维群组",
+        "unique": "f2637ec1-d3be-4076-8dde-df88892cb4da",
+        "distinguishedName": "运维群组@f2637ec1-d3be-4076-8dde-df88892cb4da@G",
+        "orderNumber": 97928948,
+        "personList": [
+          "3455b82a-399c-4ee4-b9b9-e70ae40fbaf1",
+          "5d2699d4-e411-4027-a87e-435371823d5d",
+          "97941ea3-e3eb-4db7-aaf6-1263b048d909"
+        ],
+        "groupList": [],
+        "unitList": [],
+        "identityList": [],
+        "createTime": "2021-02-07 10:29:09",
+        "updateTime": "2023-06-30 16:52:19"
+      }
+    ]

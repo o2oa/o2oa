@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -15,6 +16,9 @@ import com.x.base.core.project.tools.Crypto;
 import com.x.server.console.CommandThreads;
 
 public class RestartCommand extends StopCommand {
+
+	private static final String PATTERN_TEXT = "^ {0,}restart {0,}$";
+	public static final Pattern PATTERN = Pattern.compile(PATTERN_TEXT, Pattern.CASE_INSENSITIVE);
 
 	private static final Consumer<Matcher> consumer = matcher -> restart();
 

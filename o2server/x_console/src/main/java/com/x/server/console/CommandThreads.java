@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.command.Commands;
 
 public class CommandThreads {
 
@@ -81,18 +83,17 @@ public class CommandThreads {
 	 * @throws InterruptedException
 	 */
 	private static void fromFile(LinkedBlockingQueue<String> commandQueue) throws InterruptedException {
-		try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw");
-				FileChannel channel = raf.getChannel()) {
+		try (RandomAccessFile file = new RandomAccessFile(Config.base() + "/command.swap", "rw");
+				FileChannel channel = file.getChannel()) {
 			FileLock lock = channel.lock(); // 锁定文件
-			long fileSize = channel.size();
-			if (fileSize > 0) {
-				byte[] fileBytes = new byte[(int) fileSize];
-				raf.read(fileBytes);
-				String fileCmd = new String(fileBytes, StandardCharsets.UTF_8);
-				commandQueue.put(fileCmd);
-				channel.truncate(0); // 清空文件
-				lock.release(); // 释放文件锁
+			if (file.length() > 0) {
+				ByteBuffer buffer = ByteBuffer.allocate((int) file.length());
+				channel.read(buffer);
+				buffer.flip();
+				commandQueue.put(new String(buffer.array(), StandardCharsets.UTF_8));
+				file.setLength(0); // 清空文件
 			}
+			lock.release(); // 释放文件锁
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}

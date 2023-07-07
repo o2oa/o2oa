@@ -31,7 +31,7 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Draft.class);
 			}
 			if ((!effectivePerson.isPerson(draft.getPerson())) && (!business
-					.canManageApplicationOrProcess(effectivePerson, draft.getApplication(), draft.getProcess()))) {
+					.ifPersonCanManageApplicationOrProcess(effectivePerson, draft.getApplication(), draft.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson, draft);
 			}
 			emc.beginTransaction(Draft.class);

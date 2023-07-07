@@ -1232,6 +1232,8 @@ o2.xApplication.systemconfig.LP = {
             "syncCron": "同步检查回调信号定时",
             "forceSyncCron": "强制同步定时",
             "apiAddress": "API服务地址",
+            "qrConnectAddress": "扫码登录服务地址",
+            "oauth2Address": "oAuth2服务地址",
             "syncSecret": "通讯录同步Secret",
             "token": "回调Token",
             "encodingAesKey": "回调EncodingAesKey",

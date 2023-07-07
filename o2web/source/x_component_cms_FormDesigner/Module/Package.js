@@ -57,6 +57,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Statement", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.StatementSelector", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Importer", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Relatedlink", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.AssociatedDocument", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.SmartBI", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.WritingBoard", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elbutton", null, false);

@@ -29,6 +29,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.message.WorkEvent;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
@@ -90,6 +91,9 @@ class ActionTypeSuspend extends BaseAction {
 				emc.commit();
 				clean(business, items, works, tasks, taskCompleteds, reads, readCompleteds, reviews, workLogs, records,
 						attachments, documentVersions, docSigns, docSignScrawls);
+				// 创建删除事件
+				emc.beginTransaction(WorkEvent.class);
+				emc.persist(WorkEvent.deleteEventInstance(work), CheckPersistType.all);
 				emc.commit();
 				Wo wo = new Wo();
 				wo.setId(snap.getId());

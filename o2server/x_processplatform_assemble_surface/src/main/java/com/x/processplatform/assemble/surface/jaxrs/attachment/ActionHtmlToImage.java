@@ -32,8 +32,9 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.FileTools;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionHtmlToImageWi;
@@ -70,7 +71,7 @@ class ActionHtmlToImage extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(wi.getWorkId(), Work.class);
 			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -179,12 +180,6 @@ class ActionHtmlToImage extends BaseAction {
 	public static class Wi extends ActionHtmlToImageWi {
 
 		private static final long serialVersionUID = -4349899902435225796L;
-
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = -2434594947861029787L;
 
 	}
 

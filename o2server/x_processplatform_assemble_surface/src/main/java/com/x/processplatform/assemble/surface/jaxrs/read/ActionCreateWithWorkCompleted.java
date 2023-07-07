@@ -18,8 +18,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCreateWithWorkCompletedWi;
 
@@ -48,11 +49,10 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (effectivePerson.isNotManager()) {
-				Control control = business.getControl(effectivePerson, workCompleted, Control.class);
-				if (BooleanUtils.isFalse(control.getAllowVisit())) {
-					throw new ExceptionAccessDenied(effectivePerson, workCompleted);
-				}
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowVisit().build();
+			if (BooleanUtils.isFalse(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
 		}
 		List<Wo> wos = ThisApplication.context().applications()
@@ -68,12 +68,6 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 	public static class Wi extends ActionCreateWithWorkCompletedWi {
 
 		private static final long serialVersionUID = -3824171286310523782L;
-
-	}
-
-	public static class Control extends WorkCompletedControl {
-
-		private static final long serialVersionUID = -1999162775568546412L;
 
 	}
 

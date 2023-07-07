@@ -281,6 +281,9 @@ public class QueueImportData extends AbstractQueue<String> {
 				for (ImportRecordItem item : itemList) {
 					JsonObject document = gson.fromJson(item.getData(), JsonObject.class);
 					document.remove("srcData");
+					if(!document.has("skipDraftCheck")){
+						document.addProperty("skipDraftCheck", true);
+					}
 					try {
 						if (PROCESS_STATUS_DRAFT.equals(processStatus)) {
 							List<WorkLog> workLogList = ThisApplication.context().applications()
@@ -288,15 +291,14 @@ public class QueueImportData extends AbstractQueue<String> {
 											Applications.joinQueryUri("work", "process", processId), document)
 									.getDataAsList(WorkLog.class);
 							item.setDocId(workLogList.get(0).getWork());
-							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 						} else {
 							WoId woId = ThisApplication.context().applications()
 									.postQuery(x_processplatform_assemble_surface.class,
 											Applications.joinQueryUri("workcompleted", "process", processId), document)
 									.getData(WoId.class);
 							item.setDocId(woId.getId());
-							item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 						}
+						item.setStatus(ImportRecordItem.STATUS_SUCCESS);
 					} catch (Exception e) {
 						item.setStatus(ImportRecordItem.STATUS_FAILED);
 						item.setDistribution(e.getMessage());
@@ -326,6 +328,7 @@ public class QueueImportData extends AbstractQueue<String> {
 			JsonObject document = o.getAsJsonObject();
 			JsonElement srcData = document.get("srcData");
 			String title = document.get("title").getAsString();
+			document.addProperty("skipDraftCheck", true);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				ImportRecordItem item = new ImportRecordItem();
 				item.setDocTitle(title);

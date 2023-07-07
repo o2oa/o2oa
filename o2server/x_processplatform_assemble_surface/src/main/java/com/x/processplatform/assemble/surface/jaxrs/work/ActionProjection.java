@@ -12,27 +12,31 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionProjection extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProjection.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Work work = null;
-		WoControl control = null;
+		Control control = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			work = emc.find(id, Work.class);
 			if (null != work) {
-				control = business.getControl(effectivePerson, work, WoControl.class);
+				control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
 			}
 		}
-		if (BooleanUtils.isTrue(control.getAllowSave())) {
+		if ((null != control) && BooleanUtils.isTrue(control.getAllowSave())) {
 			wo = ThisApplication.context().applications()
 					.getQuery(x_processplatform_service_processing.class,
 							Applications.joinQueryUri("work", work.getId(), "projection"), work.getJob())
@@ -44,8 +48,8 @@ class ActionProjection extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = 8530828613517157899L;
+
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }

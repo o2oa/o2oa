@@ -58,7 +58,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			}
 		}
 
-		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlVisitFuture(effectivePerson, workOrWorkCompleted);
 
 		if (null != work) {
 			CompletableFuture<Data> dataFuture = this.dataFuture(work);

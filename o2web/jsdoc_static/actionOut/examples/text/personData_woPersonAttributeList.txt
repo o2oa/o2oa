@@ -1,0 +1,18 @@
+[
+      {
+        "id": "acc8a5ec-8e76-4a3a-9a0e-f8d4d9001c42",
+        "pinyin": "shuxingyi",
+        "pinyinInitial": "sxy",
+        "description": "属性描述",
+        "name": "属性一",
+        "unique": "acc8a5ec-8e76-4a3a-9a0e-f8d4d9001c42",
+        "distinguishedName": "属性一@acc8a5ec-8e76-4a3a-9a0e-f8d4d9001c42@PA",
+        "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
+        "orderNumber": 24943622,
+        "attributeList": [
+          "1"
+        ],
+        "createTime": "2018-10-16 16:47:02",
+        "updateTime": "2023-06-30 16:50:43"
+      }
+    ]

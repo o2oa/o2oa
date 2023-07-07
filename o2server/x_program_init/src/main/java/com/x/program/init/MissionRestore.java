@@ -30,10 +30,16 @@ public class MissionRestore implements Mission {
 			}
 			ZipTools.unZip(path.toFile(), null, Config.path_local_dump(true).resolve("dumpData_" + getStamp()).toFile(),
 					true, StandardCharsets.UTF_8);
-			if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
+			if ((null == Config.externalDataSources().enable())
+					|| BooleanUtils.isNotTrue(Config.externalDataSources().enable())) {
 				Config.resource_commandQueue().add("start dataSkipInit");
 				Thread.sleep(2000);
 				Config.resource_commandQueue().add("ctl -initResourceFactory");
+				Thread.sleep(2000);
+			}
+			if ((null == Config.externalStorageSources())
+					|| BooleanUtils.isNotTrue(Config.externalStorageSources().getEnable())) {
+				Config.resource_commandQueue().add("start storageSkipInit");
 				Thread.sleep(2000);
 			}
 			Config.resource_commandQueue().add("ctl -rd " + getStamp());

@@ -36,6 +36,8 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.message.WorkCompletedEvent;
+import com.x.processplatform.core.entity.message.WorkEvent;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
@@ -88,13 +90,13 @@ class ActionRestore extends BaseAction {
 							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
 							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
 				} else {
-					CompletableFuture.allOf(deleteItem(business, snap.getJob()),
-							deleteWork(business, snap.getJob()), deleteTask(business, snap.getJob()),
-							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
-							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
-							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
-							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
-							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
+					CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
+							deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
+							deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
+							deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
+							deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
+							deleteDocumentVersion(business, snap.getJob()), deleteDocSign(business, snap.getJob()),
+							deleteDocSignScrawl(business, snap.getJob())).get();
 				}
 				emc.commit();
 				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())
@@ -148,6 +150,13 @@ class ActionRestore extends BaseAction {
 				workDataHelper.update(snap.getProperties().getData());
 			}
 			emc.commit();
+			if (!snap.getProperties().getWorkList().isEmpty()) {
+				// 创建create事件
+				emc.beginTransaction(WorkEvent.class);
+				emc.persist(WorkEvent.createEventInstance(snap.getProperties().getWorkList().get(0)),
+						CheckPersistType.all);
+				emc.commit();
+			}
 		}
 
 		private void restoreWorkCompleted(Business business, Snap snap) throws Exception {
@@ -178,6 +187,13 @@ class ActionRestore extends BaseAction {
 				workDataHelper.update(snap.getProperties().getData());
 			}
 			emc.commit();
+			if (null != snap.getProperties().getWorkCompleted()) {
+				// 创建create事件
+				emc.beginTransaction(WorkCompletedEvent.class);
+				emc.persist(WorkCompletedEvent.createEventInstance(snap.getProperties().getWorkCompleted()),
+						CheckPersistType.all);
+				emc.commit();
+			}
 		}
 
 		private void restoreRead(EntityManagerContainer emc, Snap snap) throws Exception {

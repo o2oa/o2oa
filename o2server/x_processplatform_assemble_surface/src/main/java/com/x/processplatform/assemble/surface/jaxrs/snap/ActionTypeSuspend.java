@@ -14,16 +14,21 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Activity;
 
 class ActionTypeSuspend extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSuspend.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSuspend.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		String job = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
@@ -31,11 +36,8 @@ class ActionTypeSuspend extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			job = work.getJob();
-			Activity activity = business.getActivity(work.getActivity(), work.getActivityType());
-			if (BooleanUtils.isNotTrue(
-					business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess()))
-					&& ((!business.editable(effectivePerson, work))
-							|| (BooleanUtils.isNotTrue(activity.getAllowSuspend())))) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

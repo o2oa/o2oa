@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,11 +15,10 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 
 @Deprecated(forRemoval = true)
 class ActionRollback extends BaseAction {
@@ -34,20 +35,10 @@ class ActionRollback extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
 
-			Application application = business.application().pick(work.getApplication());
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowRollback().build();
 
-			if (null == application) {
-				throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
-			}
-
-			Process process = business.process().pick(work.getProcess());
-
-			if (null == process) {
-				throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
-			}
-
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if (BooleanUtils.isNotTrue(control.getAllowRollback())) {
+				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 
 			Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
@@ -60,6 +51,8 @@ class ActionRollback extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -6434485994532989413L;
 
 		@FieldDescribe("工作日志")
 		private String workLog;
@@ -74,11 +67,10 @@ class ActionRollback extends BaseAction {
 
 	}
 
-	public static class WoWorkControl extends WorkControl {
-
-	}
-
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -3735841319508577268L;
+
 	}
 
 }

@@ -26,6 +26,28 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("回退配置.")
 	private GoBackConfig goBackConfig;
 
+	@FieldDescribe("人工环节工作流转后执行脚本.")
+	private String manualAfterProcessingScript;
+
+	@FieldDescribe("人工环节工作流转后执行脚本文本.")
+	private String manualAfterProcessingScriptText;
+
+	public String getManualAfterProcessingScript() {
+		return manualAfterProcessingScript;
+	}
+
+	public void setManualAfterProcessingScript(String manualAfterProcessingScript) {
+		this.manualAfterProcessingScript = manualAfterProcessingScript;
+	}
+
+	public String getManualAfterProcessingScriptText() {
+		return manualAfterProcessingScriptText;
+	}
+
+	public void setManualAfterProcessingScriptText(String manualAfterProcessingScriptText) {
+		this.manualAfterProcessingScriptText = manualAfterProcessingScriptText;
+	}
+
 	public Boolean getAllowGoBack() {
 		return allowGoBack;
 	}

@@ -45,7 +45,7 @@ class ActionRollback extends BaseAction {
 				throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
 			}
 
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

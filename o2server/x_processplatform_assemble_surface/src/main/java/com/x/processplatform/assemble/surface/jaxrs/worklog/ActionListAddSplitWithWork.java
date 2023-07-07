@@ -20,6 +20,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -32,15 +34,24 @@ class ActionListAddSplitWithWork extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListAddSplitWithWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 
-			if (!business.readableWithWork(effectivePerson, workId, new ExceptionEntityNotExist(workId, Work.class))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Work work = emc.find(workId, Work.class);
+
+			if (null == work) {
+				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 
-			Work work = emc.find(workId, Work.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
+			}
 
 			List<WorkLog> workLogs = emc.listEqual(WorkLog.class, Work.job_FIELDNAME, work.getJob());
 
@@ -59,10 +70,12 @@ class ActionListAddSplitWithWork extends BaseAction {
 							&& StringUtils.startsWith(StringUtils.join(work.getSplitTokenList(), ","),
 									StringUtils.join(o.getWorkLog().getProperties().getSplitTokenList(), ",")));
 
-			if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, work.getApplication(),
-					work.getProcess()))) {
-				splitNodes.forEach(o -> o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent,
-						ActivityType.choice, ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.publish).forEach(n -> {
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+					work.getApplication(), work.getProcess()))) {
+				splitNodes.forEach(o -> o
+						.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
+								ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.publish)
+						.forEach(n -> {
 							try {
 								os.add(o.getWorkLog());
 							} catch (Exception e) {
@@ -70,8 +83,10 @@ class ActionListAddSplitWithWork extends BaseAction {
 							}
 						}));
 			} else {
-				splitNodes.forEach(o -> o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent,
-						ActivityType.choice, ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.publish).forEach(n -> {
+				splitNodes.forEach(o -> o
+						.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
+								ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.publish)
+						.forEach(n -> {
 							try {
 								Long count = emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
 										effectivePerson.getDistinguishedName(), TaskCompleted.activityToken_FIELDNAME,

@@ -35,6 +35,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Choice", description = "流程平台选择活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -379,11 +380,6 @@ public class Choice extends Activity {
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
-	@FieldDescribe("允许挂起")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + allowSuspend_FIELDNAME)
-	private Boolean allowSuspend;
-
 	public static final String routeList_FIELDNAME = "routeList";
 	@IdReference(Route.class)
 	@FieldDescribe("出口路由,多值.")
@@ -469,14 +465,6 @@ public class Choice extends Activity {
 
 	public void setProcess(String process) {
 		this.process = process;
-	}
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 	public String getPosition() {

@@ -22,6 +22,9 @@ get /jaxrs/restore/cancel
 
 ## secret
 
+get /jaxrs/secret/check
+检查密码是否为空
+
 post /jaxrs/secret/set
 设置初始管理员密码 {"secret":"o2oa@2022"}
 

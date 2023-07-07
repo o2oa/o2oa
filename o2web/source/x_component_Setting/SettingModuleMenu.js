@@ -237,7 +237,8 @@ o2.xApplication.Setting.ModuleMenuDocument.StartMenu = new Class({
     },
     load: function(){
         this.loadMenuData(function(){
-            var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+            //var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+            var view = this.layout.path+this.layout.options.style+"/layout-menu-pc.html";
             this.container.loadHtml(view, {"module": this}, function(){
                 this.maskNode.destroy();
                 this.node.setStyle("z-index", o2.xDesktop.zIndexPool.applyZindex());
@@ -304,7 +305,8 @@ o2.xApplication.Setting.ModuleMenuDocument.StartMenu = new Class({
         };
         this.container.empty();
 
-        var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+        //var view = this.layout.path+this.layout.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-menu-mobile.html" : "/layout-menu-pc.html");
+        var view = this.layout.path+this.layout.options.style+"/layout-menu-pc.html";
         this.container.loadHtml(view, {"module": this}, function(){
             if (this.maskNode) this.maskNode.destroy();
 

@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,6 +17,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,11 +37,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-
 			final String job = business.job().findWithWorkOrWorkCompleted(workOrWorkCompleted);
+
+			Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
+
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
+			}
 
 			List<Wo> wos = this.list(business, job);
 

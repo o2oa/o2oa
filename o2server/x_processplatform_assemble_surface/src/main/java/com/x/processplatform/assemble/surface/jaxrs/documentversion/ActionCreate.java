@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.documentversion;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Work;
 
@@ -39,7 +42,8 @@ class ActionCreate extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (!business.readableWithJob(effectivePerson, work.getJob())) {
+			if (BooleanUtils.isNotTrue(new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit()
+					.build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

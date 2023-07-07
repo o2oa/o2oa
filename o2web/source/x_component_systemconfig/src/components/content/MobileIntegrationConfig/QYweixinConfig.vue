@@ -33,6 +33,12 @@
       <BaseInput :label="lp._integrationConfig.qywenxinText.apiAddress" v-model:value="configData.apiAddress"
                  :label-style="labelStyle"></BaseInput>
       <div class="item_el_info"></div>
+       <BaseInput :label="lp._integrationConfig.qywenxinText.oauth2Address" v-model:value="configData.oauth2Address"
+                 :label-style="labelStyle"></BaseInput>
+      <div class="item_el_info"></div>
+       <BaseInput :label="lp._integrationConfig.qywenxinText.qrConnectAddress" v-model:value="configData.qrConnectAddress"
+                 :label-style="labelStyle"></BaseInput>
+      <div class="item_el_info"></div>
 
       <BaseInput :label="lp._integrationConfig.qywenxinText.syncSecret" v-model:value="configData.syncSecret"
                  :label-style="labelStyle"></BaseInput>

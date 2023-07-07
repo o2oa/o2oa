@@ -541,6 +541,9 @@ public class Config {
 		return path;
 	}
 
+	/**
+	 * 部分对象不能直接刷新,会导致已有链接断开.
+	 */
 	public static synchronized void flush() {
 		Config newInstance = new Config();
 		if (INSTANCE != null) {

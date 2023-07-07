@@ -14,15 +14,17 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionTypeAbandoned extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeAbandoned.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeAbandoned.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -30,7 +32,7 @@ class ActionTypeAbandoned extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowDelete().build();
 			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -51,9 +53,6 @@ class ActionTypeAbandoned extends BaseAction {
 
 		private static final long serialVersionUID = -2577413577740827608L;
 
-	}
-
-	public static class WoControl extends WorkControl {
 	}
 
 }

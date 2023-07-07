@@ -13,16 +13,19 @@ import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionListPrevWithApplication extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrevWithApplication.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag)
 			throws Exception {
+		LOGGER.debug("execute:{}, id:{}, count:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName,
+				() -> id, () -> count, () -> applicationFlag);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Application application = business.application().pick(applicationFlag);
@@ -32,13 +35,12 @@ class ActionListPrevWithApplication extends BaseAction {
 			EqualsTerms equals = new EqualsTerms();
 			equals.put("creatorPerson", effectivePerson.getDistinguishedName());
 			equals.put("application", application.getId());
-			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equals, null, null,
-					null, null, null, null, null, true, DESC);
+			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME,
+					equals, null, null, null, null, null, null, null, true, DESC);
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
 					Work o = emc.find(wo.getId(), Work.class);
-					WoControl control = business.getControl(effectivePerson, o, WoControl.class);
-					wo.setControl(control);
+					wo.setControl(new WorkControlBuilder(effectivePerson, business, o).enableAll().build());
 				}
 			}
 			return result;
@@ -54,7 +56,7 @@ class ActionListPrevWithApplication extends BaseAction {
 
 		private Long rank;
 
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -64,16 +66,13 @@ class ActionListPrevWithApplication extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
-	}
-
-	public static class WoControl extends WorkControl {
 	}
 }

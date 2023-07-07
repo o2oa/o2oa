@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -11,6 +13,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WillWo;
@@ -30,7 +34,9 @@ class ActionWill extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			if (!business.readable(effectivePerson, task)) {
+			Control control = new JobControlBuilder(effectivePerson, business, task.getJob())
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			Wo wo = get(task);

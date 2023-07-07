@@ -25,7 +25,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Data.DataWork;
@@ -336,30 +335,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Predicate p = cb.equal(root.get(WorkCompleted_.job), job);
 		cq.select(root.get(WorkCompleted_.application)).where(p);
 		return em.createQuery(cq).getResultList();
-	}
-
-	/**
-	 * ActionUpdateWithJob的权限校验方法
-	 *
-	 * @param effectivePerson
-	 * @param job
-	 * @throws Exception
-	 * @throws ExceptionJobNotExist
-	 * @throws ExceptionWorkAccessDenied
-	 */
-	protected void checkUpdateWithJobControl(EffectivePerson effectivePerson, Business business, String job)
-			throws Exception {
-		if (!business.job().jobExist(job)) {
-			throw new ExceptionJobNotExist(job);
-		}
-		if (!business.editable(effectivePerson, job)) {
-			throw new ExceptionJobAccessDenied(effectivePerson.getDistinguishedName(), job);
-		}
-	}
-
-	public static class Control extends WorkControl {
-
-		private static final long serialVersionUID = 7690414994902239024L;
 	}
 
 }

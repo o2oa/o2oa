@@ -296,6 +296,10 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         if (this.combox) return this.combox.getData();
         return this._getBusinessData();
     },
+    _beforeReloaded: function(){
+	    if( this.combox )this.combox.clear();
+        this.combox = null;
+    },
     /**
      * @summary 获取选中的值和文本.
      * @example

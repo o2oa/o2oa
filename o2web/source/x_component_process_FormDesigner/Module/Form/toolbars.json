@@ -29,7 +29,7 @@
     "action": "addTask",
     "text": "{{$.lp.addTask}}",
     "id": "action_addTask",
-    "control": "allowReset",
+    "control": "allowAddTask",
     "condition": "",
     "read": true
   },

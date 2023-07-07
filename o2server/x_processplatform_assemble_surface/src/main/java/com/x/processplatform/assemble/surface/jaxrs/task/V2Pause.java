@@ -14,6 +14,8 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Manual;
@@ -35,7 +37,9 @@ class V2Pause extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			if (!business.readable(effectivePerson, task)) {
+			Control control = new JobControlBuilder(effectivePerson, business, task.getJob()).enableAllowVisit()
+					.build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			if (BooleanUtils.isTrue(task.getPause())) {

@@ -3,6 +3,8 @@ package com.x.processplatform.assemble.surface.jaxrs.review;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,8 +21,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -36,6 +39,7 @@ class ActionCreateWithWork extends BaseAction {
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
+		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Work work = null;
@@ -45,8 +49,8 @@ class ActionCreateWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(wi.getWork(), WorkCompleted.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
-			if (!control.getAllowVisit()) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			List<String> people = business.organization().person().list(wi.getPersonList());
@@ -63,6 +67,8 @@ class ActionCreateWithWork extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6105147807827072026L;
 
 		@FieldDescribe("流转中工作")
 		private String work;
@@ -88,9 +94,9 @@ class ActionCreateWithWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
-	}
 
-	public static class WoControl extends WorkControl {
+		private static final long serialVersionUID = 7909275011185813642L;
+
 	}
 
 }

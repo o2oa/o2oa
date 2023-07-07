@@ -30,7 +30,7 @@ class ActionManageListWithPerson extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
+			if (BooleanUtils.isTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", ""))) {
 				String person = business.organization().person().get(credential);
 				if (StringUtils.isNotEmpty(person)) {
 					List<Task> taskList = business.task().listWithPersonObject(person, isExcludeDraft);

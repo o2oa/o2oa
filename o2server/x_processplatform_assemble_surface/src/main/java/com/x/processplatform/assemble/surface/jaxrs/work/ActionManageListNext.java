@@ -20,7 +20,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 
@@ -30,6 +31,8 @@ class ActionManageListNext extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag)
 			throws Exception {
+		LOGGER.debug("execute:{}, id:{}, count:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName,
+				() -> id, () -> count, () -> applicationFlag);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			result.setData(new ArrayList<Wo>());
@@ -59,8 +62,7 @@ class ActionManageListNext extends BaseAction {
 			if (null != result.getData()) {
 				for (Wo wo : result.getData()) {
 					Work o = emc.find(wo.getId(), Work.class);
-					WoControl control = business.getControl(effectivePerson, o, WoControl.class);
-					wo.setControl(control);
+					wo.setControl(new WorkControlBuilder(effectivePerson, business, o).enableAll().build());
 				}
 			}
 			return result;
@@ -79,7 +81,7 @@ class ActionManageListNext extends BaseAction {
 		private Long rank;
 
 		@FieldDescribe("权限")
-		private WorkControl control;
+		private Control control;
 
 		public Long getRank() {
 			return rank;
@@ -89,16 +91,14 @@ class ActionManageListNext extends BaseAction {
 			this.rank = rank;
 		}
 
-		public WorkControl getControl() {
+		public Control getControl() {
 			return control;
 		}
 
-		public void setControl(WorkControl control) {
+		public void setControl(Control control) {
 			this.control = control;
 		}
 
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }

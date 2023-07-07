@@ -443,6 +443,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manualAfterTask": "Después de procesar la tarea pendiente",
 		"eventInfo10": "Evaluar si se cumplen las condiciones para avanzar a la siguiente actividad",
 
+		"eventInfo11": "Ejecutar todas las tareas de flujo de procesos hasta quedarse o terminar en una actividad",
+		"afterProcess": "Flujo de actividad completo",
+
 		"updataTime": "Hora de actualización",
 		"num": "Número de secuencia",
 		"defaultOpinion": "Opinión predeterminada",

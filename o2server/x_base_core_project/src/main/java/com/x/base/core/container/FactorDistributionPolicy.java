@@ -1,5 +1,6 @@
 package com.x.base.core.container;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import com.x.base.core.entity.JpaObject;
 
 public class FactorDistributionPolicy implements DistributionPolicy {
 
-	private Random random = new Random();
+	private Random random = new SecureRandom();
 
 	public String distribute(Object pc, List<String> slices, Object context) {
 		try {

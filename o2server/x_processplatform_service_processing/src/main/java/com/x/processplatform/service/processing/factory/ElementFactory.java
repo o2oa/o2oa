@@ -520,6 +520,10 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScriptText_FIELDNAME));
 				break;
+			case Business.EVENT_MANUALAFTERPROCESSING:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPT_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME));
+				break;
 			case Business.EVENT_INVOKEJAXWSPARAMETER:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScriptText_FIELDNAME));
@@ -542,7 +546,8 @@ public class ElementFactory extends AbstractFactory {
 				break;
 			case Business.EVENT_PUBLISHCMSBODY:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScript_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScriptText_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScriptText_FIELDNAME));
 				break;
 			case Business.EVENT_INVOKEJAXRSHEAD:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
@@ -751,6 +756,12 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPT_FIELDNAME));
 				scriptText = Objects
 						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERTASKSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_MANUALAFTERPROCESSING:
+				scriptName = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERPROCESSINGSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME));
 				break;
 			default:
 				break;

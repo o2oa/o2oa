@@ -139,7 +139,11 @@ MWF.xApplication.Homepage.MeetingContent.MeetingInvited = new Class({
         timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+startStr+" - "+completedStr+"<span>");
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
-        locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
+        if(d.woRoom ){
+            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
+        }else if(d.roomId){
+            locationNode.set("html", this.app.lp.meetingNumber+": <span style='color: #999999'>"+d.roomId+"<a>");
+        }
 
         if (!d.myAccept && !d.myReject){    //等待接受
             var acceptNode = new Element("div.o2_homepage_meeting_item_action_accept", {"text": this.app.lp.accept}).inject(actionArea);
@@ -209,7 +213,11 @@ MWF.xApplication.Homepage.MeetingContent.MeetingInvited = new Class({
             }
         });
         row.getLast().addEvent("click", function(e){
-            layout.openApplication(e, "Meeting");
+            if( d.roomLink ){
+                window.open( d.roomLink, "_blank" );
+            }else{
+                layout.openApplication(e, "Meeting");
+            }
         });
     },
 
@@ -252,8 +260,11 @@ MWF.xApplication.Homepage.MeetingContent.Meeting = new Class({
         timeNode.set("html", this.app.lp.meetingTime+": <span style='color: #999999'>"+startStr+" - "+completedStr+"<span>");
 
         var locationNode = new Element("div.o2_homepage_meeting_item_location").inject(inforArea);
-        locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
-
+        if( d.woRoom ){
+            locationNode.set("html", this.app.lp.meetingLocation+": <span style='color: #999999'>"+d.woRoom.name+"<span>");
+        }else if(d.roomId){
+            locationNode.set("html", this.app.lp.meetingNumber+": <span style='color: #999999'>"+d.roomId+"<a>");
+        }
 
         return row;
     },

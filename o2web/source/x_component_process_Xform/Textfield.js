@@ -136,6 +136,10 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
     _loadNodeEdit: function(){
         if (!this.json.preprocessing) this._resetNodeEdit();
         var input = this.node.getFirst();
+        if( !input && this.nodeHtml){
+            this.node.set("html", this.nodeHtml);
+            input = this.node.getFirst();
+        }
         input.set(this.json.properties);
         this.node.set({
             "id": this.json.id,

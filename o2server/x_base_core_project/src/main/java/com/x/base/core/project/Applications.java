@@ -2,6 +2,7 @@ package com.x.base.core.project;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -57,7 +58,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 
     private Date updateTimestamp;
 
-    private static final Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new SecureRandom();
 
     public String getToken() {
         return token;

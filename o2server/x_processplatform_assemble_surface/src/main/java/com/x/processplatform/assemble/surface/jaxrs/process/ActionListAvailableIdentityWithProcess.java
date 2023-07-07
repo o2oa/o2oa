@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,10 +17,8 @@ import com.x.base.core.project.organization.WoIdentity;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Process;
-import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ActionListAvailableIdentityWithProcess extends BaseAction {
 
@@ -42,7 +43,7 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 				/** 没有设置可启动人员,所有人都可以启动 */
 				dns.addAll(identities);
 			} else {
-				if (business.canManageApplication(effectivePerson, null)) {
+				if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
 					dns.addAll(identities);
 				} else {
 					for (String str : identities) {
@@ -82,7 +83,6 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 
 		static WrapCopier<WoIdentity, Wo> copier = WrapCopierFactory.wo(WoIdentity.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
-
 
 	}
 }

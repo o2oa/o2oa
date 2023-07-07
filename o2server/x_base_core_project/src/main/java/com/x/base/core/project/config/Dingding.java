@@ -74,7 +74,7 @@ public class Dingding extends ConfigObject {
 		return new Dingding();
 	}
 
-	public static final String dingdingLogo = "https://app.o2oa.net/download/dingding-logo.png";
+	public static final String dingdingLogo = "https://res.o2oa.net/app/dingding-logo.png";
 	public static final Boolean default_enable = false;
 	public static final String default_appKey = "";
 	public static final String default_corpId = "";

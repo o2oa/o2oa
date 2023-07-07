@@ -115,9 +115,9 @@ https://www.o2oa.net/cms/source/335.html
 
 # 服务器部署教程：
 
-Windows环境：https://www.o2oa.net/course/qq5gny.html
+Windows环境：https://www.o2oa.net/cms/serverdeployment/467.html
 
-Linux环境：https://www.o2oa.net/course/yto8af.html
+Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
 
 
 

@@ -452,6 +452,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manualAfterTask": "manualAfterTask",
 		"eventInfo10": "Determine whether the conditions are met and enter the next activity",
 
+		"eventInfo11": "Execute all process flow tasks until staying or ending in an activity",
+		"afterProcess": "Activity flow complete",
+
 		"updataTime": "UpdataTime",
 		"num": "SerialNumber",
 		"defaultOpinion": "Default Opinion",

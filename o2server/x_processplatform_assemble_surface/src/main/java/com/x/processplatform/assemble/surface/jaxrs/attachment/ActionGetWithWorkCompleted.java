@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,6 +17,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
@@ -41,8 +45,10 @@ class ActionGetWithWorkCompleted extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workCompleted.getId())) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted).enableAllowVisit()
+					.build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
 
 			Wo wo = Wo.copier.copy(attachment);

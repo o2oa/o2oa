@@ -20,9 +20,12 @@ import com.x.processplatform.core.entity.content.Snap;
 
 class ActionUpload extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpload.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes) throws Exception {
+
+		LOGGER.debug("execute:{} .", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			String text = new String(bytes, StandardCharsets.UTF_8);
@@ -55,7 +58,8 @@ class ActionUpload extends BaseAction {
 	}
 
 	private boolean allow(EffectivePerson effectivePerson, Business business, Snap snap) throws Exception {
-		return (business.canManageApplicationOrProcess(effectivePerson, snap.getApplication(), snap.getProcess()));
+		return (business.ifPersonCanManageApplicationOrProcess(effectivePerson, snap.getApplication(),
+				snap.getProcess()));
 	}
 
 	public static class Wo extends WrapString {

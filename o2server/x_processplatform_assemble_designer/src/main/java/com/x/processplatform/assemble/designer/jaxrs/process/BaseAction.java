@@ -160,7 +160,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		this.deleteBatch(business.entityManagerContainer(), WorkLog.class, ids);
 	}
 
-	<T extends JpaObject> T wrapInJpaList(Object wrap, List<T> list) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	<T extends JpaObject> T wrapInJpaList(Object wrap, List<T> list)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		for (T t : list) {
 			if (t.getId().equalsIgnoreCase(PropertyUtils.getProperty(wrap, "id").toString())) {
 				return t;
@@ -180,7 +181,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return null;
 	}
 
-	List<Agent> createAgent(List<WrapAgent> wraps, Process process)  {
+	List<Agent> createAgent(List<WrapAgent> wraps, Process process) {
 		List<Agent> list = new ArrayList<>();
 		if (null != wraps) {
 			for (WrapAgent w : wraps) {
@@ -365,8 +366,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapService w : wraps) {
 				Service o = new Service();
-				o.setProcess(process.getId());
 				WrapService.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}

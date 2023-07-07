@@ -9,7 +9,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 		"style": "default",
         "workData" : null,
         "identity": null,
-        "latest": false
+        "latest": false,
+        "skipDraftCheck": null
 	},
     initialize: function(data, app, options){
         this.setOptions(options);
@@ -52,7 +53,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                                 var data = {
                                     "title": this.data.name+"-"+this.lp.unnamed,
                                     "identity": this.identitys[0].distinguishedName,
-                                    "latest": this.options.latest
+                                    "latest": this.options.latest,
+                                    "skipDraftCheck": this.options.skipDraftCheck
                                 };
                                 if( this.options.workData ){
                                     data.data = this.options.workData;

@@ -20,10 +20,14 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageDelete extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String applicationFlag) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> applicationFlag);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Review review = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -41,7 +45,7 @@ class ActionManageDelete extends BaseAction {
 			}
 			Process process = business.process().pick(review.getProcess());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
@@ -54,6 +58,9 @@ class ActionManageDelete extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5909597062338904183L;
+
 	}
 
 }

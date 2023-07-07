@@ -27,7 +27,7 @@ class BaseUpdateWithWorkCompletedPath extends BaseAction {
 			// 允许创建者在完成后再次修改内容,与前台的可修改不一致,所以单独判断,为的是不影响前台显示.
 			Application application = business.application().pick(workCompleted.getApplication());
 			Process process = business.process().pick(workCompleted.getProcess());
-			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))
+			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))
 					&& (!effectivePerson.isPerson(workCompleted.getCreatorPerson()))) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());

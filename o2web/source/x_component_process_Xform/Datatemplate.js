@@ -207,6 +207,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
+			debugger;
 			this.loading = true;
 
 			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
@@ -288,12 +289,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		/*
-		 * @summary 重新加载数据表格。
+		 * @summary 重新加载数据表格。会触发load和postLoad事件。
 		 * @example
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
 		reload: function( isReloadTemplate ){
-			debugger;
 			this.reloading = true;
 
 			// this.editModules = [];
@@ -1132,7 +1132,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		__setData: function(data, fireChange, operation){
-			debugger;
 			if( this.isShowAllSection ){
 				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
 				this._setEditedSectionData(data, fireChange, operation);
@@ -1201,7 +1200,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
-			debugger;
 			var old;
 			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
 
@@ -1761,7 +1759,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this))
 	},
 	setIndex: function( data, index, isEdited, isNew, operation ){
-		debugger;
 		if( this.isUnchangedAll && index === this.options.index )return;
 
 		this.data = data;
@@ -1855,7 +1852,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this));
 	},
 	_setUnchangedLineMap: function(data, operation){
-		debugger;
 		var fromOutside = !operation;
 		var dt = this.template;
 		var editalbe;
