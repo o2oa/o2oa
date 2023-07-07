@@ -1,94 +1,132 @@
 <div class="manager-box">
   <div class="index_page_header_container">
-    <div class="index_page_header_title">{{$.lp.myAttendanceTitle}} <span style="margin-left: 20px; font-size:16px;">{{$.cycleDate}}</span></div>
+    <div class="index_page_header_title">{{$.lp.myAttendanceTitle}}</div>
   </div>
-  <div style="padding: 20px;">
-    <div class="o2-h2">
-      {{$.lp.myAttendanceCalendar}}  
+  <div>
+    <div class="my-statistic-box my-statistic-block">
+      <!-- 统计周期 -->
+      <div class="my-statistic-block-first">
+        <div class="row-box">
+          <div class="o2-icon-16"><i class="o2icon-icon_arrow_left"></i></div>
+          <div style="font-size: 18px;color: #333333;line-height: 20px;margin: 0 20px;">{{$.cycleMonth}}</div>
+          <div class="o2-icon-16"><i class="o2icon-icon_arrow_right"></i></div>
+        </div>
+        <div style="font-size: 12px; color: #666666; line-height: 16px;margin-top: 20px;">
+          {{$.lp.myStatistic.title}}{{$.cycleDate}}</div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 出勤 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.averageWorkTimeDuration}}</div>
+        <div class="row-box margin-top">
+          <div class="statistic-label">{{$.lp.myStatistic.averageWorkTimeDuration}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 出勤 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{ $.statistic.workTimeDuration }}</div>
+        <div class="row-box  margin-top">
+          <div class="statistic-label">{{$.lp.myStatistic.workTimeDuration}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 出勤 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.attendance}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-normal"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.attendance}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 缺卡 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.absenceTimes}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-nosign"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.nosignTimes}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 迟到 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.lateTimes}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-late"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.lateTimes}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 早退 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.leaveEarlierTimes}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-early"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.leaveEarlierTimes}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 请假 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.leaveDays}}</div>
+        <div class="row-box margin-top">
+          <div class="item-record-status record-status-leave"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.leaveDays}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 旷工 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.absenceTimes}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-absenteeism"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.absenteeismDays}}</div>
+        </div>
+      </div>
+      <div class="my-statistic-block-divider"></div>
+      <!-- 外勤 -->
+      <div class="my-statistic-block-item">
+        <div class="statistic-number">{{$.statistic.fieldWorkTimes}}</div>
+        <div class="row-box  margin-top">
+          <div class="item-record-status record-status-fieldwork"></div>
+          <div class="statistic-label">{{$.lp.myStatistic.fieldWorkTimes}}</div>
+        </div>
+      </div>
     </div>
-    <div class="legend">
-      <div class="legend-item">
-        <div class="item-record-status record-status-normal"></div> <span>{{$.lp.appeal.normal}}</span>
+    <div class="my-statistic-box margin-top">
+      <div class="my-cal-header">
+        <div class="my-cal-header-item" oo-each="$.dayList" oo-item="day">{{day.value.name}}</div>
       </div>
-      <div class="legend-item">
-        <div class="item-record-status record-status-early"></div> <span>{{$.lp.appeal.early}}</span>
-      </div>
-      <div class="legend-item">
-        <div class="item-record-status record-status-late"></div> <span>{{$.lp.appeal.late}}</span>
-      </div>
-      <div class="legend-item">
-        <div class="item-record-status record-status-serilate"></div> <span>{{$.lp.appeal.seriousLate}}</span>
-      </div>
-      <div class="legend-item">
-        <div class="item-record-status record-status-nosign"></div> <span>{{$.lp.appeal.notSigned}}</span>
-      </div>
-      <div class="legend-item">
-        <div class="item-record-status record-status-appeal"></div> <span>{{$.lp.appeal.appeal}}</span>
-      </div>
-    </div>
-    <div class="my-cal-header">
-      <div class="my-cal-header-item" oo-each="$.dayList" oo-item="day">{{day.value.name}}</div>
-    </div>
-    <div class="my-cal-body">
-      <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
-        <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
-          <div class="item-cal-date">{{item.value.date}}</div>
-          <div class="item-record-parent" oo-if="item.value.detail">
-            <div class="item-record-child margin-left" oo-each="item.value.detail.recordList" oo-item="record">
-              <div class="{{this.formatRecordStatusClass(record.value)}}"></div>
-              <div>
-                {{ $m.formatRecord(record.value) }} 
-                <span class="color-fieldWork  margin-left " oo-if="record.value.fieldWork">({{$.lp.myFieldWork}})</span>
-                <span class="color-holiday  margin-left" oo-if="record.value.leaveData">({{record.value.leaveData.leaveType}})</span>
+      <div class="my-cal-body">
+        <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
+          <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
+            <div class="item-cal-date">{{item.value.date}}</div>
+            <div class="item-cal-record">
+              <div class="item-cal-record-line">
+                <div class="item-record-status bg" oo-if="item.value.detail && item.value.detail.recordList.length>0"></div>
+                <div class="line" oo-if="item.value.detail && item.value.detail.recordList.length>0"></div>
+                <div class="item-record-status bg" oo-if="item.value.detail && item.value.detail.recordList.length>0"></div>
+              </div>
+              <div class="item-record-parent" oo-if="item.value.detail">
+                <div class="item-record-child margin-top" oo-each="item.value.detail.recordList" oo-item="record">
+                  <!-- <div class="{{this.formatRecordStatusClass(record.value)}}"></div> -->
+                  <div class="margin-right">
+                    {{ $m.formatRecord(record.value) }}
+                    <!-- <span class="color-fieldWork  margin-left "
+                      oo-if="record.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <span class="color-holiday  margin-left"
+                      oo-if="record.value.leaveData">({{record.value.leaveData.leaveType}})</span> -->
+                  </div>
+                  <div class="{{this.formatRecordResultTagClass(record.value)}}">{{$m.formatRecordResultTagName(record.value)}}</div>
+                </div>
               </div>
             </div>
+            
           </div>
         </div>
       </div>
     </div>
-    <div class="o2-divider--horizontal"></div>
-    <div class="o2-h2" oo-if="$.statistic">
-      {{$.lp.myAttendanceStatistic}}
-    </div>
-    <div class="my-statistic-parent" oo-if="$.statistic">
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.averageWorkTimeDuration}}:</div>
-        <div class="my-statistic-value">{{$.statistic.averageWorkTimeDuration}} {{$.lp.hour}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.workTimeDuration}}:</div>
-        <div class="my-statistic-value"> {{ $m.formatWorkTimeDuration($.statistic.workTimeDuration) }}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.attendance}}:</div>
-        <div class="my-statistic-value"> {{$.statistic.attendance}} {{$.lp.classifierDay}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.rest}}:</div>
-        <div class="my-statistic-value"> {{$.statistic.rest}} {{$.lp.classifierDay}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.absenteeismDays}}:</div>
-        <div class="my-statistic-value">{{$.statistic.absenteeismDays}} {{$.lp.classifierDay}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.lateTimes}}:</div>
-        <div class="my-statistic-value">{{$.statistic.lateTimes}} {{$.lp.times}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.leaveEarlierTimes}}:</div>
-        <div class="my-statistic-value">{{$.statistic.leaveEarlierTimes}} {{$.lp.times}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.absenceTimes}}:</div>
-        <div class="my-statistic-value">{{$.statistic.absenceTimes}} {{$.lp.times}}</div>
-      </div>
-      <div class="margin-right flex">
-        <div class="my-statistic-label">{{$.lp.detailTable.fieldWorkTimes}}:</div>
-        <div class="my-statistic-value">{{$.statistic.fieldWorkTimes}} {{$.lp.times}}</div>
-      </div>
-    </div>
   </div>
-
 
 </div>

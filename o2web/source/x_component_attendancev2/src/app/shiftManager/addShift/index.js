@@ -82,7 +82,6 @@ export default content({
         this.$parent.closeFormVm();
     },
     async submitAdd() {
-        debugger
         if (isEmpty(this.bind.form.shiftName)) {
             o2.api.page.notice(lp.shiftForm.shiftNameNotEmpty, 'error');
             return ;

@@ -15,7 +15,20 @@ export default content({
       startFromMonday: true, // 是否从星期一开始 
       dayList: [], // 星期列表
       dateWithData: [], // 日历数据包含业务数据
-      // statistic 统计数据
+      statistic: {
+        userId: "",
+        workTimeDuration: 0,
+        averageWorkTimeDuration: "0.0",
+        attendance: 0,
+        rest: 0,
+        absenteeismDays: 0,
+        lateTimes: 0,
+        leaveEarlierTimes: 0,
+        absenceTimes: 0,
+        fieldWorkTimes: 0,
+        leaveDays: 0,
+        appealNums: 0
+      } // 统计数据
     };
   },
   afterRender() {
@@ -102,7 +115,12 @@ export default content({
       startDate: startDate,
       endDate: endDate,
     };
-    const list = (await myAction("listDetailWithDate", reqBody)) || [];
+    let list = [];
+    try {
+      list = (await myAction("listDetailWithDate", reqBody));
+    } catch (error) {
+     console.error(error);  
+    }
     // 添加需要补齐的前一个月的日期
     for (
       let i = daysInPrevMonth - firstDayOfMonth + 1 + start;
@@ -137,13 +155,19 @@ export default content({
     const newDates = dates.map(date => {
       const detail = list.find(element => element.recordDateString === date.dateYmd) || null;
       date.detail = detail;
+      date.workDay = true; // 默认白色背景
       return date;
     });
     // 输出日期数组
     this.bind.dateWithData = convertTo2DArray(newDates, 7);
-    this.bind.cycleDate = startDate + " - " + endDate;
+    // 当前统计周期 月份和日期
+    this.bind.cycleMonth = `${currentYear}${lp.year}${(currentMonth + 1)}${lp.month}`;
+    const showMonth = (currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1);
+    this.bind.cycleDate = `${showMonth}${lp.month}01 - ${showMonth}${lp.month}${daysInMonth}`;
     // 统计信息
     this.loadMyStatistic(reqBody);
+    // 查询是否工作日
+    this.loadIsWorkDay();
   },
   async loadMyStatistic(body) {
     const statistic = (await myAction("statistic", body));
@@ -151,14 +175,31 @@ export default content({
       this.bind.statistic = statistic;
     }
   },
+  async loadIsWorkDay() {
+    const old = this.bind.dateWithData;
+    for (let i = 0; i < old.length; i++) {
+      let line = old[i];
+      for (let index = 0; index < line.length; index++) {
+        const element = line[index];
+        if (element.detail && element.detail.workDay === false) {
+          element.workDay = false;
+          line[index] = element;
+        } else if (element.dateYmd === '2023-08-05') {
+          element.workDay = false;
+          line[index] = element;
+        }
+      }
+      // this.bind.dateWithData[i] = line;
+    }
+  },
   // 日历方块的class
   formatCalItemClass(item) {
     let className = 'item';
     if (item.notCurrent === 1) {
-      className = 'item out';
+      className += ' out';
     }
-    if (item.detail && item.detail.recordList && item.detail.recordList.length > 0) {
-      className = 'item full';
+    if (item.workDay === false) {
+      className += ' rest';
     }
     return className;
   },
@@ -172,7 +213,7 @@ export default content({
     if (record && record.checkInType === 'OnDuty') {
       type = lp.onDutySimple;
     }
-    return `${type} - ${time}`;
+    return `${time}`;
   },
   // 打卡结果 标识
   formatRecordStatusClass(record) {
@@ -204,5 +245,56 @@ export default content({
    // 格式化工作时长
    formatWorkTimeDuration(workTime) {
     return convertMinutesToHoursAndMinutes(workTime);
-  }
+  },
+  formatRecordResultTagClass(record) {
+    let statusClassName = '';
+    if (record && record.checkInResult) {
+      switch (record.checkInResult) {
+        case 'Early':
+          statusClassName =  "item-record-status-tag record-status-early";
+          break;
+        case 'Late':
+        case 'SeriousLate':
+            statusClassName =  "item-record-status-tag record-status-late";
+          break;
+        case 'NotSigned':
+            statusClassName =  "item-record-status-tag record-status-nosign";
+          break;
+        default:
+          statusClassName =  "";
+      }
+      if (record.fieldWork == true) {
+        statusClassName =  "item-record-status-tag record-status-fieldwork";
+      } else if (record.leaveData) {
+        statusClassName =  "item-record-status-tag record-status-leave";
+      }
+    }
+    return statusClassName;
+  },
+  formatRecordResultTagName(record) {
+    let tagName = '';
+    if (record && record.checkInResult) {
+      switch (record.checkInResult) {
+        case 'Early':
+          tagName =  lp.appeal.early;
+          break;
+        case 'Late':
+        case 'SeriousLate':
+          tagName =  lp.appeal.late;
+          break;
+        case 'NotSigned':
+          tagName =  lp.appeal.notSigned;
+          break;
+        default:
+          tagName =  "";
+      }
+      if (record.fieldWork == true) {
+        tagName =  lp.appeal.fieldWork;
+      } else if (record.leaveData) {
+        tagName =  lp.appeal.leave;
+      }
+    }
+    return tagName;
+  },
+  
 });

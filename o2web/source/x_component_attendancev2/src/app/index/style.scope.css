@@ -17,6 +17,8 @@
   --att-record-status-appeal-color: #4fb2e3;
   /* 外出请假 */
   --att-record-status-leave-color: #78c06e;
+  /* 旷工 */
+  --att-record-status-absenteeism-color: #FF8080;
 }
 
 /* common */
@@ -514,6 +516,13 @@
 }
 
 /* icon */
+.o2-icon-16 {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  color: #666666;
+  cursor: pointer;
+}
 .o2-icon-14 {
   width: 14px;
   height: 14px;
