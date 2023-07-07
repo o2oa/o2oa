@@ -47,8 +47,12 @@ get /jaxrs/secret/cancel
 
 ## server
 
+
 get /jaxrs/server/execute
 执行服务器任务,执行完成后将停止init服务器,随后正常启动.
+
+get /jaxrs/server/execute/status
+获取初始服务器任务执行状态 {"status":"waiting|running|success|failure", "messages":[""],"failureMessage":""}
 
 get /jaxrs/server/stop
 停止init服务器

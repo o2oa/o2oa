@@ -55,7 +55,7 @@ public class MissionExternalDataSources implements Mission {
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
 			messages.msg("success");
 		} catch (Exception e) {
-			messages.msg("failure");
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

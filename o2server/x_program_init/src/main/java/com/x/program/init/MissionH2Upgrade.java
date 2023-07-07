@@ -83,7 +83,7 @@ public class MissionH2Upgrade implements Mission {
 			}
 			messages.msg("success");
 		} catch (Exception e) {
-			messages.msg("failure");
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

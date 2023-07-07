@@ -17,7 +17,8 @@ class ActionExecuteStatus extends BaseAction {
 		Missions.ExecuteStatus executeStatus = Missions.getExecuteStatus();
 		Wo wo = new Wo();
 		wo.setMessages(executeStatus.getMessages());
-		wo.setRunning(executeStatus.getRunning());
+		wo.setStatus(executeStatus.getStatus());
+		wo.setFailureMessage(executeStatus.getFailureMessage());
 		result.setData(wo);
 		return result;
 	}

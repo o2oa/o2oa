@@ -49,10 +49,10 @@ public class MissionRestore implements Mission {
 			messages.msg("success");
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
-			messages.msg("failure");
+			messages.err(ie.getMessage());
 			throw new ExceptionMissionExecute(ie);
 		} catch (Exception e) {
-			messages.msg("failure");
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

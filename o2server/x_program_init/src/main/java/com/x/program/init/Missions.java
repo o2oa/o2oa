@@ -9,11 +9,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.StringTools;
 
 public class Missions {
+
+	public static final String STATUS_WAITING = "waiting";
+	public static final String STATUS_RUNNING = "running";
+	public static final String STATUS_SUCCESS = "success";
+	public static final String STATUS_FAILURE = "failure";
 
 	private static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS,
 			new ArrayBlockingQueue<>(1000),
@@ -25,6 +32,8 @@ public class Missions {
 
 	private static Messages messages;
 
+	private static String status = STATUS_WAITING;
+
 	public static boolean isEmpty() {
 		return stream().filter(Objects::nonNull).count() == 0;
 	}
@@ -33,9 +42,12 @@ public class Missions {
 
 		messages = new Messages();
 
+		status = STATUS_RUNNING;
+
 		Future<?> future = THREADPOOLEXECUTOR
 				.submit(() -> stream().filter(Objects::nonNull).forEach(o -> o.execute(messages)));
 		future.get();
+		status = STATUS_SUCCESS;
 
 	}
 
@@ -56,6 +68,10 @@ public class Missions {
 
 		private String head;
 
+		private String failureMessage = "";
+
+		private Boolean failure = false;
+
 		public Messages head(String head, Object... objs) {
 			this.head = StringTools.format(head, objs);
 			return this;
@@ -66,29 +82,77 @@ public class Missions {
 			return this;
 		}
 
+		public void err(String message, Object... objs) {
+			String txt = StringTools.format(message, objs);
+			this.add(head + ":" + txt);
+			this.failureMessage = txt;
+			this.failure = true;
+		}
+
+		public String getHead() {
+			return head;
+		}
+
+		public void setHead(String head) {
+			this.head = head;
+		}
+
+		public String getFailureMessage() {
+			return failureMessage;
+		}
+
+		public void setFailureMessage(String failureMessage) {
+			this.failureMessage = failureMessage;
+		}
+
+		public Boolean getFailure() {
+			return failure;
+		}
+
+		public void setFailure(Boolean failure) {
+			this.failure = failure;
+		}
+
 	}
 
 	public static ExecuteStatus getExecuteStatus() {
-		ExecuteStatus status = new ExecuteStatus();
-		status.setRunning(THREADPOOLEXECUTOR.getActiveCount() > 0 || (!THREADPOOLEXECUTOR.getQueue().isEmpty()));
-		status.setMessages(messages);
-		return status;
+		ExecuteStatus executeStatus = new ExecuteStatus();
+		boolean running = THREADPOOLEXECUTOR.getActiveCount() > 0 || (!THREADPOOLEXECUTOR.getQueue().isEmpty());
+		if (running) {
+			executeStatus.setStatus(STATUS_RUNNING);
+		} else if (BooleanUtils.isTrue(messages.getFailure())) {
+			executeStatus.setStatus(STATUS_FAILURE);
+		} else {
+			executeStatus.setStatus(status);
+		}
+		executeStatus.setMessages(messages);
+		return executeStatus;
 	}
 
 	public static class ExecuteStatus extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -7265462641759175622L;
 
-		private Boolean running;
+		private String status;
 
 		private Messages messages;
 
-		public Boolean getRunning() {
-			return running;
+		private String failureMessage;
+
+		public String getStatus() {
+			return status;
 		}
 
-		public void setRunning(Boolean running) {
-			this.running = running;
+		public void setStatus(String status) {
+			this.status = status;
+		}
+
+		public String getFailureMessage() {
+			return failureMessage;
+		}
+
+		public void setFailureMessage(String failureMessage) {
+			this.failureMessage = failureMessage;
 		}
 
 		public Messages getMessages() {
