@@ -2123,6 +2123,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.importActionNode.setStyles(styles);
 
 				this.importActionNode.addEvent("click", function () {
+					debugger;
 					this.importFromExcel();
 				}.bind(this))
 			}

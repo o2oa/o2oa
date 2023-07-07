@@ -55,6 +55,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "postLoad",
             /**
              * 表单的所有组件加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * 如果包含异步加载的组件，如异步加载的下拉框选项等，会在这些组件加载完成后执行。
              * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
@@ -725,12 +726,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             (!this.widgetCount || this.widgetCount === this.widgetLoadedCount)
         ) {
             //this.container.setStyle("opacity", 1);
-            this.fireEvent("afterModulesLoad");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
 
-            this.fireEvent("afterLoad");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
-            this.isLoaded = true;
+            var moduleAgList = [];
+            this.modules.each( function(module){
+                if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
+                if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
+            });
+
+
+            Promise.all( moduleAgList ).then(function () {
+                this.fireEvent("afterModulesLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
+
+                this.fireEvent("afterLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
+                this.isLoaded = true;
+            }.bind(this));
+
         }
     },
     _loadMobileDefaultTools: function (callback) {
