@@ -210,23 +210,32 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         if (process.serviceList) process.serviceList.each(function(a){ checkActivity(a); });
         if (process.routeList) process.routeList.each(function(a){ checkActivity(a); });
 
-        this.app.restActions.getId(oldIds.length, function(ids) {
-            var checkUUIDs = ids.data;
-            var processStr = JSON.encode(process);
-            oldIds.each(function(oid, i){
-                var reg = new RegExp(oid, "ig");
-                processStr = processStr.replace(reg, checkUUIDs[i].id);
-            }.bind(this));
-
-            process = JSON.decode(processStr);
+        if (isSameApp){
             process.isNewProcess = true;
             this.app.restActions.saveProcess(process, function(){
                 if (success) success();
             }.bind(this), function(){
                 if (failure) failure();
             }.bind(this));
+        }else{
+            this.app.restActions.getId(oldIds.length, function(ids) {
+                var checkUUIDs = ids.data;
+                var processStr = JSON.encode(process);
+                oldIds.each(function(oid, i){
+                    var reg = new RegExp(oid, "ig");
+                    processStr = processStr.replace(reg, checkUUIDs[i].id);
+                }.bind(this));
 
-        }.bind(this));
+                process = JSON.decode(processStr);
+                process.isNewProcess = true;
+                this.app.restActions.saveProcess(process, function(){
+                    if (success) success();
+                }.bind(this), function(){
+                    if (failure) failure();
+                }.bind(this));
+            }.bind(this));
+        }
+
     },
 
     // saveItemAs: function(item, process){
