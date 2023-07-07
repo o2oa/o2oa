@@ -2809,10 +2809,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ]
             };
-            if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
-                opt.html = text;
-            }else{
-                opt.text = text
+
+
+            if (typeOf(text).toLowerCase() === "object") {
+                if( text.html )opt.html = text.html;
+                if( text.text )opt.text = text.text;
+            } else {
+                if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
+                    opt.html = text;
+                }else{
+                    opt.text = text
+                }
             }
 
             var dlg = new MWF.xDesktop.Dialog(opt);

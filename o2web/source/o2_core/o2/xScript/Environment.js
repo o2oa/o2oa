@@ -3171,18 +3171,28 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 确认框标题栏显示文本。
-         * @param {String} text - 确认框的内容显示文本。
+         * @param {String|Object} text - 确认框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 确认框的宽度。
          * @param {String} height - 确认框的高度。
          * @param {Function} ok - 点击“确定”按钮后的回调函数。
          * @param {Function} cancel - 点击“取消”按钮后的回调函数。
          * @example
-         this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
-            //执行删除代码
-            this.close();
-        }, function(){
-            this.close();
-        });
+         *this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
+         * @example
+         * //使用html传入内容, v8.1开始支持
+         *this.form.confirm("wran", "删除确认", {
+         *     html: "您确定要删除吗！<br/>"
+         *}, 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
          */
         "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
             if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
@@ -3212,11 +3222,16 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 信息框标题栏显示文本。
-         * @param {String} text - 信息框的内容显示文本。
+         * @param {String|Object} text - 信息框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 信息框宽度。
          * @param {String} height - 信息框的高度。
          * @example
-         this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * @example
+         * //使用html传入内容
+         * this.form.alert("wran", "必填提醒", {
+         *     html: "请填写标题！<br/>"
+         * }, 300, 100);
          */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);

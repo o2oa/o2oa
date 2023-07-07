@@ -39,7 +39,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             callback();
         }
     },
-    _openDownloadDialog: function(url, saveName){
+    _openDownloadDialog: function(url, saveName, callback){
         /**
          * 通用的打开下载对话框方法，没有测试过具体兼容性
          * @param url 下载地址，也可以是一个blob对象，必选
@@ -60,8 +60,10 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                 event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
             }
             aLink.dispatchEvent(event);
+            if(callback)callback();
         }else{
             window.navigator.msSaveBlob( url, saveName);
+            if(callback)callback();
         }
     },
 
@@ -113,7 +115,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
         var fileNode = uploadFileAreaNode.getFirst();
         fileNode.click();
     },
-    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray, numberIndexArray){
+    exportToExcel : function(array, fileName, colWidthArr, dateIndexArray, numberIndexArray, callback){
         debugger;
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
@@ -202,7 +204,7 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
             }
             dataInfo['!cols'] = widthArray; //列宽度
 
-            this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx");
+            this._openDownloadDialog(window.xlsxUtils.format2Blob(wb), fileName +".xlsx", callback);
         }.bind(this))
     },
     importFromExcel : function( file, callback, dateColArray ){
