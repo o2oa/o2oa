@@ -498,28 +498,39 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         },
 
 
-        getExcelData: function(){
-            var options = this.getOptionsObj();
+        getExcelData: function( type ){
             var value = this.getData();
-            value = o2.typeOf(value) === "array" ? value : [value];
-            var arr = [];
-            value.each( function( a, i ){
-                var idx = options.valueList.indexOf( a );
-                arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+		    if( type === "value" )return value;
+
+            var options = this.getOptionsObj();
+            return Promise.resolve(options).then(function (opts) {
+                value = o2.typeOf(value) === "array" ? value : [value];
+                var arr = [];
+                value.each( function( a, i ){
+                    var idx = options.valueList.indexOf( a );
+                    arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+                });
+                return arr.join(", ");
             });
-            return arr.join(", ");
         },
-        setExcelData: function(d){
+        setExcelData: function(d, type){
             var arr = this.stringToArray(d);
             this.excelData = arr;
-            var options = this.getOptionsObj();
-            arr.each( function( a, i ){
-                var idx = options.textList.indexOf( a );
-                arr[ i ] = idx > -1 ? options.valueList[ idx ] : null;
-            });
-            arr.clean();
-            var value = arr.length === 1  ? arr[0] : arr;
-            this.setData(value, true);
+            if( type === "value" ){
+                this.setData(arr, true);
+            }else{
+                var options = this.getOptionsObj();
+                this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                    arr.each( function( a, i ){
+                        var idx = opts.textList.indexOf( a );
+                        arr[ i ] = idx > -1 ? opts.valueList[ idx ] : null;
+                    });
+                    arr.clean();
+                    var value = arr.length === 1  ? arr[0] : arr;
+                    this.setData(value, true);
+                    this.moduleExcelAG = null;
+                }.bind(this));
+            }
         },
         validationConfigItemExcel: function(data){
             if (data.status==="all"){

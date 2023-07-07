@@ -467,8 +467,10 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         }
     },
 
-        getExcelData: function(){
+    getExcelData: function( type ){
 		var value = this.getData();
+		if( type === "value" )return value;
+
 		var options = this.getOptionsObj();
 		return Promise.resolve(options).then(function (opts) {
 			var idx = opts.valueList.indexOf( value );
@@ -476,16 +478,20 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 			return text;
 		});
 	},
-    setExcelData: function(d){
+    setExcelData: function(d, type){
 		var value = d.replace(/&#10;/g,""); //换行符&#10;
 		this.excelData = value;
-		var options = this.getOptionsObj();
-		this.moduleSelectAG = Promise.resolve(options).then(function (opts) {
-			var idx = opts.textList.indexOf( value );
-			value = idx > -1 ? opts.valueList[ idx ] : "";
+		if( type === "value" ){
 			this.setData(value, true);
-			this.moduleSelectAG = null;
-		}.bind(this));
+		}else{
+            var options = this.getOptionsObj();
+            this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                var idx = opts.textList.indexOf( value );
+                value = idx > -1 ? opts.valueList[ idx ] : "";
+                this.setData(value, true);
+                this.moduleExcelAG = null;
+            }.bind(this));
+	    }
 	}
 	
 }); 

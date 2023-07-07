@@ -334,9 +334,11 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             return value;
         },
 
-        getExcelData: function(){
+        getExcelData: function( type ){
             var data = this.json[this.json.$id];
             if( !data )return "";
+		    if( type === "value" )return data;
+
             var text, opt = this.json.options;
             if( !opt )return "";
             if( o2.typeOf(opt.then)==="function" ){
@@ -349,13 +351,17 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 return typeOf(text) === "array" ? text.join(", ") : (text || "");
             }
         },
-        setExcelData: function(d){
+        setExcelData: function(d, type){
             var arr = this.stringToArray(d);
             this.excelData = arr;
             arr = arr.map(function (a) {
                 return a.contains("/") ? a.split("/") : a;
             });
-            var data = this.getDataByText( arr );
-            this.setData(data);
+            if( type === "value" ){
+                this.setData(data);
+            }else{
+                var data = this.getDataByText( arr );
+                this.setData(data);
+            }
         }
 }); 
