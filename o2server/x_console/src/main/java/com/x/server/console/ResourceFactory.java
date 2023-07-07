@@ -12,11 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +32,6 @@ import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.Storage;
@@ -64,19 +61,10 @@ public class ResourceFactory {
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
-	private static ExecutorService threadPool;
-
-	public static ExecutorService threadPool() {
-		return threadPool;
-	}
-
-	private static void initThreadPool() {
-		int maximumPoolSize = Runtime.getRuntime().availableProcessors() + 1;
-		ThreadFactory threadFactory = new ThreadFactoryBuilder()
-				.setNameFormat(ResourceFactory.class.getPackageName() + "-threadpool-%d").build();
-		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000),
-				threadFactory);
-	}
+//	public static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(
+//			Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors(), 120,
+//			TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000), new ThreadFactoryBuilder()
+//					.setNameFormat(ResourceFactory.class.getPackageName() + "-threadpool-%d").build());
 
 	/**
 	 * 用于销毁时的对象
@@ -96,15 +84,23 @@ public class ResourceFactory {
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
 			disableDruidMysqlUsePingMethod();
-			initThreadPool();
 		}
+		initDataSources();
+		processPlatformExecutors();
+		tokenThresholds();
+	}
+
+	/**
+	 * 生成DataSources并绑定到jndi
+	 * 
+	 * @throws Exception
+	 */
+	private static void initDataSources() throws Exception {
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
 		}
-		processPlatformExecutors();
-		tokenThresholds();
 	}
 
 	/**

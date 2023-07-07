@@ -1,13 +1,20 @@
 package com.x.program.init;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 import org.apache.commons.lang3.BooleanUtils;
 
+import com.google.gson.Gson;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ExternalDataSources;
-import com.x.base.core.project.tools.ZipTools;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.StringTools;
+import com.x.program.init.Missions.Messages;
 import com.x.program.init.Missions.Mission;
 
 public class MissionExternalDataSources implements Mission {
@@ -37,33 +44,59 @@ public class MissionExternalDataSources implements Mission {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Missions.Messages messages) {
+		messages.head(MissionExternalDataSources.class.getSimpleName());
+		Gson gson = XGsonBuilder.instance();
 		try {
-			Path path = Config.path_local_temp(true).resolve(getStamp() + ".zip");
-			if (!ZipTools.isZipFile(path)) {
-				throw new ExceptionMissionExecute("file is not zip file format.");
-			}
-			ZipTools.unZip(path.toFile(), null, Config.path_local_dump(true).resolve("dumpData_" + getStamp()).toFile(),
-					true, StandardCharsets.UTF_8);
-			if ((null == Config.externalDataSources().enable())
-					|| BooleanUtils.isNotTrue(Config.externalDataSources().enable())) {
-				Config.resource_commandQueue().add("start dataSkipInit");
-				Thread.sleep(2000);
-				Config.resource_commandQueue().add("ctl -initResourceFactory");
-				Thread.sleep(2000);
-			}
-			if ((null == Config.externalStorageSources())
-					|| BooleanUtils.isNotTrue(Config.externalStorageSources().getEnable())) {
-				Config.resource_commandQueue().add("start storageSkipInit");
-				Thread.sleep(2000);
-			}
-			Config.resource_commandQueue().add("ctl -rd " + getStamp());
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-			throw new ExceptionMissionExecute(ie);
+			messages.msg("executing");
+			Path path = Config.path_local_temp(true).resolve("externalDataSources.json");
+			Files.writeString(path, gson.toJson(getExternalDataSources()), StandardCharsets.UTF_8,
+					StandardOpenOption.TRUNCATE_EXISTING);
+			Config.resource_commandQueue().add("ctl -initResourceFactory");
+			messages.msg("success");
 		} catch (Exception e) {
+			messages.msg("failure");
 			throw new ExceptionMissionExecute(e);
 		}
+	}
+
+	public static CheckResult check() throws Exception {
+		CheckResult checkResult = new CheckResult();
+		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
+				ExternalDataSources.class);
+		if ((null != obj) && BooleanUtils.isTrue(obj.enable())) {
+			checkResult.setExternalDataSources(obj);
+			checkResult.setConfigured(true);
+		} else {
+			checkResult.setConfigured(false);
+		}
+		return checkResult;
+	}
+
+	public static class CheckResult extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -4544008653960661989L;
+
+		private Boolean configured;
+
+		private ExternalDataSources externalDataSources;
+
+		public Boolean getConfigured() {
+			return configured;
+		}
+
+		public void setConfigured(Boolean configured) {
+			this.configured = configured;
+		}
+
+		public ExternalDataSources getExternalDataSources() {
+			return externalDataSources;
+		}
+
+		public void setExternalDataSources(ExternalDataSources externalDataSources) {
+			this.externalDataSources = externalDataSources;
+		}
+
 	}
 
 }

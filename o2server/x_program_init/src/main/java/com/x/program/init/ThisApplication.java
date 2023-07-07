@@ -18,6 +18,7 @@ public class ThisApplication {
 	private static MissionH2Upgrade missionH2Upgrade;
 	private static MissionRestore missionRestore;
 	private static MissionSetSecret missionSetSecret;
+	private static MissionExternalDataSources missionExternalDataSources;
 
 	protected static String path;
 
@@ -47,6 +48,14 @@ public class ThisApplication {
 
 	public static void setMissionSetSecret(MissionSetSecret missionSetSecret) {
 		ThisApplication.missionSetSecret = missionSetSecret;
+	}
+
+	public static MissionExternalDataSources getMissionExternalDataSources() {
+		return missionExternalDataSources;
+	}
+
+	public static void setMissionExternalDataSources(MissionExternalDataSources missionExternalDataSources) {
+		ThisApplication.missionExternalDataSources = missionExternalDataSources;
 	}
 
 	private static ExecutorService threadPool;

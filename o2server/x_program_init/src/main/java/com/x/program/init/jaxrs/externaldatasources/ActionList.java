@@ -1,6 +1,7 @@
 package com.x.program.init.jaxrs.externaldatasources;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -59,9 +60,9 @@ class ActionList extends BaseAction {
 
 	}
 
-	private List<Wo> list() throws Exception {
+	private List<Wo> list() throws IOException, URISyntaxException {
 		List<Wo> list = new ArrayList<>();
-		try (Stream<Path> stream = Files.walk(Config.dir_configSample().toPath(), 1)) {
+		try (Stream<Path> stream = Files.walk(Config.path_configSample(true), 1)) {
 			stream.forEach(o -> {
 				try {
 					Matcher matcher = EXTERNALDATASOURCES_PATTERN.matcher(o.getFileName().toString());

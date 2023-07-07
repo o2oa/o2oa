@@ -16,6 +16,12 @@ class ActionExecute extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
+		Wo wo = new Wo();
+		if (Missions.isEmpty()) {
+			wo.setValue(false);
+		}
+
 		new Thread(() -> {
 			try {
 				Missions.execute();
@@ -27,7 +33,6 @@ class ActionExecute extends BaseAction {
 				LOGGER.error(e);
 			}
 		}).start();
-		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
 		return result;

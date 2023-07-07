@@ -1,6 +1,20 @@
 
 # initServer
 
+## externalDataSources
+
+get /jaxrs/externaldatasources/check
+检查是否可以设置外部数据源
+
+get /jaxrs/externaldatasources/list
+列示可用的外部数据源配置样例.
+
+get /jaxrs/externaldatasources/set
+设置外部数据源.
+
+get /jaxrs/externaldatasources/set/cancel
+取消设置外部数据源.
+
 ## h2
 
 get /jaxrs/h2/check

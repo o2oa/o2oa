@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
@@ -51,7 +52,9 @@ public class Main {
 		ResourceFactory.init();
 		CommandFactory.printStartHelp();
 		Hadoop.init();// 初始化hadoop环境
-		Config.resource_commandQueue(commandQueue);// 将命令队列注册到jndi
+		new Resource(Config.RESOURCE_COMMANDQUEUE, commandQueue);// 注册控制台命令队列,命令队列唯一不可改.
+		// 注册 commandTerminatedSignal阻塞队列
+		new Resource(Config.RESOURCE_COMMANDTERMINATEDSIGNAL_CTL_RD, new LinkedBlockingQueue<>());
 	}
 
 	public static void main(String[] args) throws Exception {

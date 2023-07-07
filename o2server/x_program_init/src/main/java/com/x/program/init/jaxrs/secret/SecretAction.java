@@ -33,7 +33,7 @@ public class SecretAction extends StandardJaxrsAction {
 	@Path("set")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void set(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
 		ActionResult<ActionSet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -51,7 +51,7 @@ public class SecretAction extends StandardJaxrsAction {
 	@Path("set/cancel")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void setCancel(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<ActionSetCancel.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

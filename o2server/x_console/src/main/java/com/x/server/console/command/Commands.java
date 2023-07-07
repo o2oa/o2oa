@@ -18,6 +18,8 @@ public class Commands {
 		// nothing
 	}
 
+	public static final String  COMMANDTERMINATEDSIGNAL_SUCCESS = "success";
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Commands.class);
 
 	private static final List<Pair<Pattern, Consumer<Matcher>>> PATTERN_COMMANDS = Arrays.asList(
