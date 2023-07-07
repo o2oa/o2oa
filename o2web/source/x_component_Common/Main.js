@@ -821,7 +821,7 @@ MWF.xApplication.Common.Main = new Class({
 			dlg.show();
 		}.bind(this));
 	},
-	alert: function (type, e, title, text, width, height) {
+	alert: function (type, e, title, text, width, height, callback) {
 		MWF.require("MWF.widget.Dialog", function () {
 			var size = $(document.body).getSize();
 			debugger;
@@ -883,6 +883,7 @@ MWF.xApplication.Common.Main = new Class({
 					{
 						"text": MWF.LP.process.button.ok,
 						"action": function () {
+							if( typeOf(callback) === "function" )callback();
 							this.close();
 						}
 					}
