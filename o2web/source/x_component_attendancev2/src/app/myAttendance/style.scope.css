@@ -105,9 +105,20 @@
   opacity: 0.4!important;
 }
 .item-cal-date {
+  margin-left: 10px;
+}
+.item-cal-date .item-cal-date-text {
+  border-radius: 12px;
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
   font-size: 16px;
   font-weight: 600;
-  margin-left: 10px;
+}
+.item-cal-date .item-cal-date-today {
+  background-color: var(--el-color-primary)!important;
+  color: #ffffff;
 }
 .item-cal-record {
   display: flex;

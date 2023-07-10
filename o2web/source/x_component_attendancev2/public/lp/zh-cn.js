@@ -199,10 +199,10 @@ MWF.xApplication.attendancev2.LP = {
     confirmDelete: "确认要删除这个【{name}】考勤组？",
   },
   dateCycle: {
-    none: '无',
-    week: '每周',
-    twoWeek: '每两周',
-    month: '每月',
+    none: "无",
+    week: "每周",
+    twoWeek: "每两周",
+    month: "每月",
   },
   // 考勤信息
   detailManagerTitle: "考勤统计",
@@ -238,7 +238,6 @@ MWF.xApplication.attendancev2.LP = {
     participatesErrorNotEmtpy: "参与考勤人员、组织不能为空！",
     startDateEmptyPlaceholder: "请选择开始日期!",
     endDateEmptyPlaceholder: "请选择结束日期!",
-    
   },
   detailRecordList: {
     title: "打卡记录",
@@ -246,7 +245,7 @@ MWF.xApplication.attendancev2.LP = {
     time: "打卡时间",
     result: "打卡结果",
   },
-  
+
   // 配置信息
   configManagerTitle: "考勤配置",
   config: {
@@ -265,11 +264,11 @@ MWF.xApplication.attendancev2.LP = {
     onDutyFastCheckInEnable: "是否启用上班极速打卡 (app端有效)",
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
     checkInAlert: "打卡提醒",
-    checkInAlertEnable: "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
+    checkInAlertEnable:
+      "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
     exceptionAlertEnable: "是否启用异常打卡提醒 ",
     exceptionAlertEnableTime1: " (次日 ",
     exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
-
   },
   // 请假外出记录
   leaveManagerTitle: "外出请假记录",
@@ -333,28 +332,27 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeAuto: "系统生成",
     sourceTypeFast: "极速打卡",
     sourceTypeImport: "数据导入",
-    importExcelFileSuccess: "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
+    importExcelFileSuccess:
+      "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
   },
-
 
   /// mobile
 
   mobile: {
-      menu: {
-        checkIn: '打卡',
-        statistic: '统计',
-        settings: '设置',
-      },
-      unCheckIn: '未打卡',
-      refreshLocation: '[刷新定位]',
-      locationIng: '定位中.......',
-      locationError: '定位失败，请开启定位权限！',
-      checkInWithTime: '已打卡{time}',
-      updateCheckInBtn: '更新打卡',
-      outsideTitle: '外勤打卡',
-      outsideNotAllow: '不允许外勤打卡！',
-      outsideRemarkPlaceholder: '请输入外勤打卡说明！',
-      statisticMonthLabel: '月',
-  }
-
+    menu: {
+      checkIn: "打卡",
+      statistic: "统计",
+      settings: "设置",
+    },
+    unCheckIn: "未打卡",
+    refreshLocation: "[刷新定位]",
+    locationIng: "定位中.......",
+    locationError: "定位失败，请开启定位权限！",
+    checkInWithTime: "已打卡{time}",
+    updateCheckInBtn: "更新打卡",
+    outsideTitle: "外勤打卡",
+    outsideNotAllow: "不允许外勤打卡！",
+    outsideRemarkPlaceholder: "请输入外勤打卡说明！",
+    statisticMonthLabel: "月",
+  },
 };

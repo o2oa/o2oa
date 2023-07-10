@@ -34,25 +34,26 @@ public class ActionDateIsRestDay extends BaseAction {
     Wo wo = new Wo();
     try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
       Business business = new Business(emc);
-      // 人员查询所属考勤组
-      List<AttendanceV2Group> groups = business.getAttendanceV2ManagerFactory()
-          .listGroupWithPerson(person.getDistinguishedName());
-      if (groups == null || groups.isEmpty()) {
-        logger.info("没有考勤组！");
-        wo.setRestDateList(restDateList);
-        result.setData(wo);
-        return result;
-      }
       Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-      AttendanceV2Group group = groups.get(0);
-      String shiftId = null;
       if (wi.getDateList() == null || wi.getDateList().isEmpty()) {
         logger.info("DateList 是空的！");
         wo.setRestDateList(restDateList);
         result.setData(wo);
         return result;
       }
+      // 人员查询所属考勤组
+      List<AttendanceV2Group> groups = business.getAttendanceV2ManagerFactory()
+          .listGroupWithPerson(person.getDistinguishedName());
+      if (groups == null || groups.isEmpty()) {
+        logger.info("没有考勤组！");
+        wo.setRestDateList(emptyListGetSatAndSun(wi.getDateList()));
+        result.setData(wo);
+        return result;
+      }
+      AttendanceV2Group group = groups.get(0);
+
       for (String date : wi.getDateList()) {
+        String shiftId = null;
         // 日期
         Date d = null;
         try {
@@ -61,16 +62,22 @@ public class ActionDateIsRestDay extends BaseAction {
           continue;
         }
         if (logger.isDebugEnabled()) {
-          logger.debug("date: "+date);
+          logger.debug("date: " + date);
         }
         // 周几 0-6 代表 星期天 - 星期六
         int day = DateTools.dayForWeekAttendanceV2(d);
+        if (logger.isDebugEnabled()) {
+          logger.debug("day: " + day);
+        }
         // 是否工作日
         boolean isWorkDay = false;
         // 工作日
         if (Config.workTime() != null && Config.workTime().inDefinedWorkday(d)) {
           shiftId = group.getShiftId();
           isWorkDay = true;
+          if (logger.isDebugEnabled()) {
+            logger.debug(" Config.workTime isWorkDay: " + isWorkDay);
+          }
         }
         // 考勤组的必须打卡日
         if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
@@ -116,6 +123,9 @@ public class ActionDateIsRestDay extends BaseAction {
           }
           if (StringUtils.isNotEmpty(shiftId)) {
             isWorkDay = true;
+            if (logger.isDebugEnabled()) {
+              logger.debug(" shiftId isWorkDay  " + shiftId);
+            }
           }
         } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) { // 自由工时
           if (!isWorkDay) { // 如果已经是工作日 下面不需要判断了
@@ -137,13 +147,41 @@ public class ActionDateIsRestDay extends BaseAction {
           restDateList.add(date);
         }
       }
-      wo.setRestDateList(restDateList);
+      if (restDateList.isEmpty()) {
+        wo.setRestDateList(emptyListGetSatAndSun(wi.getDateList()));
+      } else {
+        wo.setRestDateList(restDateList);
+      }
       result.setData(wo);
       if (logger.isDebugEnabled()) {
-          logger.debug("restDateList: "+ ListTools.toStringJoin(restDateList));
-        }
+        logger.debug("restDateList: " + ListTools.toStringJoin(restDateList));
+      }
       return result;
     }
+  }
+
+  private List<String> emptyListGetSatAndSun(List<String> dateList) throws Exception {
+    List<String> restDateList = new ArrayList<>();
+    for (String date : dateList) {
+      Date d = null;
+      try {
+        d = DateTools.parse(date, DateTools.format_yyyyMMdd);
+      } catch (Exception e) {
+        continue;
+      }
+      if (logger.isDebugEnabled()) {
+        logger.debug("date: " + date);
+      }
+      // 周几 0-6 代表 星期天 - 星期六
+      int day = DateTools.dayForWeekAttendanceV2(d);
+      if (logger.isDebugEnabled()) {
+        logger.debug("day: " + day);
+      }
+      if (day == 0 || day == 6) {
+        restDateList.add(date);
+      }
+    }
+    return restDateList;
   }
 
   public static class Wi extends GsonPropertyObject {

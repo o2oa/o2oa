@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp } from "@o2oa/component";
 import { myAction } from "../../utils/actions";
-import { convertTo2DArray, convertMinutesToHoursAndMinutes } from "../../utils/common";
+import { convertTo2DArray } from "../../utils/common";
 import template from "./temp.html";
 import style from "./style.scope.css";
 
@@ -33,7 +33,7 @@ export default content({
   },
   afterRender() {
     this.loadDayList();
-    this.loadDate(this.bind.startFromMonday);
+    this.loadDate();
   },
   // 星期列表 
   loadDayList() {
@@ -85,17 +85,64 @@ export default content({
   },
   // 获取当前月份的所有日期，并补齐前后几天，形成完整的日历表
   // 默认从星期天开始  startFromMonday = true 从星期一开始
-  async loadDate(startFromMonday) {
+  loadDate() {
     let start = 0
-    if (typeof startFromMonday ==="boolean" && startFromMonday) {
+    if (this.bind.startFromMonday) {
       start = 1;
     }
     // 获取当前日期
     const today = new Date();
+    this.bind.currentDateTime = today.getTime();
     // 获取当前月份
     const currentMonth = today.getMonth();
     // 获取当前年份
     const currentYear = today.getFullYear();
+    const currentDate = today.getDate();
+    this.bind.todayString = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-${(currentDate) < 10 ? "0" + (currentDate) : (currentDate)}`
+    
+    this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  clickToNextMonth() {
+    let start = 0
+    if (this.bind.startFromMonday) {
+      start = 1;
+    }
+    const preDateTime = this.bind.currentDateTime || new Date().getTime();
+    const preDate = new Date(preDateTime);
+    // 获取当前月份
+    const preMonth = preDate.getMonth();
+    // 获取当前年份
+    let currentYear = preDate.getFullYear();
+    let currentMonth = preMonth + 1;
+    if (currentMonth == 12) {
+      currentMonth = 0;
+      currentYear = currentYear + 1;
+    }
+    this.bind.currentDateTime = new Date(currentYear, currentMonth, 1).getTime();// 下个月 1 号
+    this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  clickToPreMonth() {
+    let start = 0
+    if (this.bind.startFromMonday) {
+      start = 1;
+    }
+    const lastDateTime = this.bind.currentDateTime || new Date().getTime();
+    const lastDate = new Date(lastDateTime);
+    // 获取当前月份
+    const lastMonth = lastDate.getMonth();
+     // 获取当前年份
+     let currentYear = lastDate.getFullYear();
+     let currentMonth = lastMonth - 1;
+     if (currentMonth == -1) {
+       currentMonth = 11;
+       currentYear = currentYear - 1;
+     }
+     this.bind.currentDateTime = new Date(currentYear, currentMonth, 1).getTime();// 下个月 1 号
+     this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  // 加载数据
+  // @param start 1 从星期一开始
+  async loadDataByDate( start, currentYear, currentMonth) {
     // 获取当月的天数
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     // 获取当月第一天是星期几
@@ -223,36 +270,12 @@ export default content({
     }
     return `${time}`;
   },
-  // 打卡结果 标识
-  formatRecordStatusClass(record) {
-    let statusClassName = 'item-record-status';
-    if (record && record.checkInResult) {
-      switch (record.checkInResult) {
-        case 'Early':
-          statusClassName =  "item-record-status record-status-early";
-          break;
-        case 'Late':
-            statusClassName =  "item-record-status record-status-late";
-          break;
-        case 'SeriousLate':
-            statusClassName =  "item-record-status record-status-serilate";
-          break;
-        case 'NotSigned':
-            statusClassName =  "item-record-status record-status-nosign";
-          break;
-        default:
-          statusClassName =  "item-record-status record-status-normal";
-      }
+  // 日期的 class
+  formatDateClass(date) {
+    if (date === this.bind.todayString) {
+      return 'item-cal-date-text item-cal-date-today';
     }
-    // 有申诉记录
-    if (record.appealId) {
-      statusClassName =  "item-record-status record-status-appeal";
-    }
-    return statusClassName;
-  },
-   // 格式化工作时长
-   formatWorkTimeDuration(workTime) {
-    return convertMinutesToHoursAndMinutes(workTime);
+    return 'item-cal-date-text'
   },
   formatRecordResultTagClass(record) {
     let statusClassName = '';
@@ -275,6 +298,8 @@ export default content({
         statusClassName =  "item-record-status-tag record-status-fieldwork";
       } else if (record.leaveData) {
         statusClassName =  "item-record-status-tag record-status-leave";
+      }  else if (record.appealId && statusClassName === "") {
+        statusClassName =  "item-record-status-tag record-status-appeal";
       }
     }
     return statusClassName;
@@ -300,6 +325,8 @@ export default content({
         tagName =  lp.appeal.fieldWork;
       } else if (record.leaveData) {
         tagName =  lp.appeal.leave;
+      } else if (record.appealId && tagName === "") {
+        tagName =  lp.appeal.appeal;
       }
     }
     return tagName;

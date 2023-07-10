@@ -7,9 +7,9 @@
       <!-- 统计周期 -->
       <div class="my-statistic-block-first">
         <div class="row-box">
-          <div class="o2-icon-16"><i class="o2icon-icon_arrow_left"></i></div>
+          <div class="o2-icon-16" @click="this.clickToPreMonth()"><i class="o2icon-icon_arrow_left"></i></div>
           <div style="font-size: 18px;color: #333333;line-height: 20px;margin: 0 20px;">{{$.cycleMonth}}</div>
-          <div class="o2-icon-16"><i class="o2icon-icon_arrow_right"></i></div>
+          <div class="o2-icon-16" @click="this.clickToNextMonth()"><i class="o2icon-icon_arrow_right"></i></div>
         </div>
         <div style="font-size: 12px; color: #666666; line-height: 16px;margin-top: 20px;">
           {{$.lp.myStatistic.title}}{{$.cycleDate}}</div>
@@ -78,7 +78,7 @@
       <div class="my-statistic-block-divider"></div>
       <!-- 旷工 -->
       <div class="my-statistic-block-item">
-        <div class="statistic-number">{{$.statistic.absenceTimes}}</div>
+        <div class="statistic-number">{{$.statistic.absenteeismDays}}</div>
         <div class="row-box  margin-top">
           <div class="item-record-status record-status-absenteeism"></div>
           <div class="statistic-label">{{$.lp.myStatistic.absenteeismDays}}</div>
@@ -101,7 +101,9 @@
       <div class="my-cal-body">
         <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
           <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
-            <div class="item-cal-date">{{item.value.date}}</div>
+            <div class="item-cal-date">
+              <div class="{{this.formatDateClass(item.value.dateYmd)}}">{{item.value.date}}</div>
+            </div>
             <div class="item-cal-record">
               <div class="item-cal-record-line">
                 <div class="item-record-status bg" oo-if="item.value.detail && item.value.detail.recordList.length>0"></div>
@@ -110,13 +112,8 @@
               </div>
               <div class="item-record-parent" oo-if="item.value.detail">
                 <div class="item-record-child margin-top" oo-each="item.value.detail.recordList" oo-item="record">
-                  <!-- <div class="{{this.formatRecordStatusClass(record.value)}}"></div> -->
                   <div class="margin-right">
                     {{ $m.formatRecord(record.value) }}
-                    <!-- <span class="color-fieldWork  margin-left "
-                      oo-if="record.value.fieldWork">({{$.lp.myFieldWork}})</span>
-                    <span class="color-holiday  margin-left"
-                      oo-if="record.value.leaveData">({{record.value.leaveData.leaveType}})</span> -->
                   </div>
                   <div class="{{this.formatRecordResultTagClass(record.value)}}">{{$m.formatRecordResultTagName(record.value)}}</div>
                 </div>

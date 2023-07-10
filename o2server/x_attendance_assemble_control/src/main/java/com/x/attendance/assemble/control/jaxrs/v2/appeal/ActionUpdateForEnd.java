@@ -59,23 +59,23 @@ public class ActionUpdateForEnd extends BaseAction {
             info.setJobId(wi.getJobId());
             emc.check(info, CheckPersistType.all);
             emc.commit();
-            AttendanceV2CheckInRecord record =   emc.find(info.getRecordId(), AttendanceV2CheckInRecord.class);
-            if (record != null) {
-                emc.beginTransaction(AttendanceV2CheckInRecord.class);
-                // 申诉成功后，更新打卡状态
-                if (wi.getResult() == 1) {
+            if (wi.getResult() == 1) { // 审批 同意 更新打卡记录 否则不动
+                AttendanceV2CheckInRecord record =   emc.find(info.getRecordId(), AttendanceV2CheckInRecord.class);
+                if (record != null) {
+                    emc.beginTransaction(AttendanceV2CheckInRecord.class);
+                    // 申诉成功后，更新打卡状态
                     record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
+                    record.setAppealId(info.getId()); // 申诉完成回填审核数据id
+                    emc.check(record, CheckPersistType.all);
+                    emc.commit();
+                    // 申诉成功后，重新生成对应的数据
+                    if (wi.getResult() == 1) {
+                        LOGGER.info("申诉成功，重新发起考勤数据生成，Date：{} person: {}", record.getRecordDateString(), record.getUserId());
+                        ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(record.getUserId(), record.getRecordDateString()));
+                    }
+                } else {
+                    LOGGER.info("没有找到对应的打卡记录数据，"+info.getRecordId());
                 }
-                record.setAppealId(info.getId()); // 申诉完成回填审核数据id
-                emc.check(record, CheckPersistType.all);
-                emc.commit();
-                // 申诉成功后，重新生成对应的数据
-                if (wi.getResult() == 1) {
-                    LOGGER.info("申诉成功，重新发起考勤数据生成，Date：{} person: {}", record.getRecordDateString(), record.getUserId());
-                    ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(record.getUserId(), record.getRecordDateString()));
-                }
-            } else {
-                LOGGER.info("没有找到对应的打卡记录数据，"+info.getRecordId());
             }
             ActionResult<Wo> result = new ActionResult<>();
             Wo wo = new Wo();
