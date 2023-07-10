@@ -151,7 +151,7 @@
   border-bottom: 1px solid rgb(230, 230, 230);
 }
 .att .primary_color {
-  color: var(--el-color-primary);
+  color: var(--el-color-primary)!important;
 }
 .att .operator_link_underline {
   color: #666666;
@@ -482,7 +482,7 @@
   display: flex;
   align-items: center;
   margin-left: 10px;
-  margin-top: 8px;
+  font-size: 12px;
   cursor: pointer;
   background-color: rgba(17, 31, 44, 0.08) !important;
   border-radius: 4px !important;

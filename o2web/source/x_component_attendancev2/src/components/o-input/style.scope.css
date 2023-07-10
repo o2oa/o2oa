@@ -5,7 +5,7 @@
 .o-input-item-label{
   height: 32px;
   line-height: 32px;
-  font-size: 16px;
+  font-size: 15px;
   color: #333333;
   flex: 1;
 }
@@ -20,7 +20,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 300px;
+  width: 280px;
   padding: 2px 10px;
   height: 30px;
   line-height: 30px;

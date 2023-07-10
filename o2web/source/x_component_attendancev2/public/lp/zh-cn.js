@@ -180,7 +180,7 @@ MWF.xApplication.attendancev2.LP = {
     shiftChange: "更改班次",
     shiftChangeMultiple: "批量更改班次",
     shiftEmpty: "休息",
-    shiftPlaceholder: "请点击选择班次",
+    shiftPlaceholder: "(请点击选择班次)",
     shiftErrorNotEmpty: "工作日班次不能为空！",
     workPlace: "工作场所",
     workPlacePlaceholder: "请选择工作场所",

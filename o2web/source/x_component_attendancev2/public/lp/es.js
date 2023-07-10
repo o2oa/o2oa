@@ -189,7 +189,7 @@ MWF.xApplication.attendancev2.LP = {
     shiftChange: "Cambiar turno",
     shiftChangeMultiple: "Cambiar múltiples turnos",
     shiftEmpty: "Descanso",
-    shiftPlaceholder: "Haz clic para seleccionar turno",
+    shiftPlaceholder: "(Haz clic para seleccionar turno)",
     shiftErrorNotEmpty: "¡El turno para días laborables no puede estar vacío!",
     workPlace: "Lugar de trabajo",
     workPlacePlaceholder: "Selecciona el lugar de trabajo",

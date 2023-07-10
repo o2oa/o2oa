@@ -2,7 +2,7 @@
 .o-selector-process-label {
   height: 32px;
   line-height: 32px;
-  font-size: 16px;
+  font-size: 15px;
   color: #333333;
 }
 .o-selector-process-label .required {
@@ -17,7 +17,7 @@
   box-sizing: border-box;
   margin: 0;
   list-style: none;
-  width: 300px;
+  width: 280px;
   padding: 3px 10px;
   height: 30px;
   line-height: 30px;
@@ -33,7 +33,7 @@
   height: 24px;
   line-height: 24px;
   display: inline-block;
-  color: #171a1d;
+  color: #666666;
   font-size: 14px;
   transition: all 0.3s;
   flex: auto;

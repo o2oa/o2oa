@@ -1,11 +1,13 @@
 .o-org-people-selector {
+  display: flex;
+  flex-direction: row;
 }
 .o-org-people-selector-label {
   height: 32px;
   line-height: 32px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #171a1d;
+  font-size: 15px;
+  color: #333333;
+  flex: 1;
 }
 .o-org-people-selector-label .required {
   color: #ff5219;
@@ -19,9 +21,8 @@
   box-sizing: border-box;
   margin: 0;
   list-style: none;
-  width: 230px;
+  width: 280px;
   padding: 3px 10px;
-  color: #171a1d;
   font-size: 14px;
   background-color: #fff;
   background-image: none;
@@ -35,7 +36,7 @@
   height: 24px;
   line-height: 24px;
   display: inline-block;
-  color: #171a1d;
+  color: #666666;
   font-size: 14px;
   transition: all 0.3s;
   flex: auto;
