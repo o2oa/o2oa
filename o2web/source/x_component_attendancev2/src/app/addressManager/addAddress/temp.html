@@ -1,33 +1,39 @@
 <!-- 表单 -->
 <div style="height: 100%;">
     <div class="o2-form">
-      <div class="o2-form-header">
-          <span class="title">{{$.fTitle}}</span>
-          <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
-      </div>
-      <div class="o2-form-content">
-            <div style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>点击地图定位工作场所地址</div>
-           <div class="bd-map">
-            <!-- 放百度地图 -->
-           </div>
-           <div class="form-item-line">
-            <div class="form-item-line-label"><span class="required" >*</span>定位坐标：</div>
-            <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div>
-           </div>
-           <!-- <div class="form-item-label"><span class="required" >*</span>定位坐标：</div>
+        <div class="o2-form-header">
+            <span class="title">{{$.fTitle}}</span>
+            <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
+        </div>
+        <div class="o2-form-content">
+            <div style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
+                    class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>点击地图定位工作场所地址</div>
+            <div class="bd-map">
+                <!-- 放百度地图 -->
+            </div>
+            <div class="form-item-line">
+                <div class="form-item-line-label"><span class="required">*</span>定位坐标：</div>
+                <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude :
+                    ''}}</div>
+            </div>
+            <!-- <div class="form-item-label"><span class="required" >*</span>定位坐标：</div>
            <div class="form-item-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div> -->
-           <o-input oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.title, 'placeholder': $.lp.workAddressForm.titlePlaceholder , 'value': $.form.placeName}"
+            <o-input
+                oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.title, 'placeholder': $.lp.workAddressForm.titlePlaceholder , 'value': $.form.placeName}"
                 oo-model="form.placeName"></o-input>
-           <o-input oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.range, 'placeholder': $.lp.workAddressForm.rangePlaceholder,  'value': $.form.errorRange}"
+            <o-input
+                oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.range, 'placeholder': $.lp.workAddressForm.rangePlaceholder,  'value': $.form.errorRange}"
                 oo-model="form.errorRange"></o-input>
-           <o-textarea oo-prop="{'label':$.lp.workAddressForm.desc, 'placeholder': $.lp.workAddressForm.descPlaceholder , 'value': $.form.description}"
-           oo-model="form.description"></o-textarea>
-      </div>
-      <div class="o2-form-footer">
-          <span>
-              <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-              <button class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
-          </span>
-      </div>
-  </div>
+            <o-textarea
+                oo-prop="{'label':$.lp.workAddressForm.desc, 'placeholder': $.lp.workAddressForm.descPlaceholder , 'value': $.form.description}"
+                oo-model="form.description"></o-textarea>
+        </div>
+        <div class="o2-form-footer">
+            <span>
+                <button style="width: 250px;" class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
+                <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
+
+            </span>
+        </div>
+    </div>
 </div>

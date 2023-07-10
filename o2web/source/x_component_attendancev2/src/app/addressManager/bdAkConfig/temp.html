@@ -1,22 +1,25 @@
 <!-- 表单 -->
 <div style="height: 100%;">
     <div class="o2-form">
-      <div class="o2-form-header">
-          <span class="title">{{$.lp.workAddressBDkeyConfig}}</span>
-          <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
-      </div>
-      <div class="o2-form-content">
-        <div class="form-item-content margin-top"><a href='{{$.lp.workAddressBDLink}}' target='_blank'>{{$.lp.workAddressBDLinkTitle}}</a></div>
-        <div class="form-item-content margin-top">{{$.lp.workAddressBDkeyConfigDesc}}</div>
-        <o-input  oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder , 'value': $.baiduAccountKey }"
+        <div class="o2-form-header">
+            <span class="title">{{$.lp.workAddressBDkeyConfig}}</span>
+            <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
+        </div>
+        <div class="o2-form-content">
+            <div class="form-item-content margin-top"><a href='{{$.lp.workAddressBDLink}}'
+                    target='_blank'>{{$.lp.workAddressBDLinkTitle}}</a></div>
+            <div class="form-item-content margin-top">{{$.lp.workAddressBDkeyConfigDesc}}</div>
+            <o-input
+                oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder , 'value': $.baiduAccountKey }"
                 oo-model="baiduAccountKey"></o-input>
-           
-      </div>
-      <div class="o2-form-footer">
-          <span>
-              <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-              <button class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
-          </span>
-      </div>
-  </div>
+
+        </div>
+        <div class="o2-form-footer">
+            <span>
+                <button style="width: 250px;" class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
+                <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
+
+            </span>
+        </div>
+    </div>
 </div>
