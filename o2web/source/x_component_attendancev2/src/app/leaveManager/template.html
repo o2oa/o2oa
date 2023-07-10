@@ -13,12 +13,13 @@
             <div style="margin: 10px 0;float: left;">
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
             </div>
-            <div style="margin: 10px 0;float: left;">
-                <button class="light-border-button mainColor_border"
-                    @click="importExcel">{{$.lp.leave.importExcel}}</button>
+
+            <div style="float: right;margin: 10px 10px 10px 0;">
+                <button class="light-border-button mainColor_border primary_color"  @click="excelTemplateDownload">{{$.lp.leave.excelTemplate}}</button>
             </div>
-            <div style="float: right;margin: 10px;" @click="excelTemplateDownload">
-                <span class="primary_color operator_link_underline">{{$.lp.leave.excelTemplate}}</span>
+            <div style="float: right;margin: 10px 10px 10px 0;">
+                <button class="light-border-button mainColor_border primary_color"
+                    @click="importExcel">{{$.lp.leave.importExcel}}</button>
             </div>
         </div>
 
@@ -40,6 +41,7 @@
                 <!-- <td>{{d.value.leaveDayNumber}}</td> -->
                 <td>{{d.value.description}}</td>
                 <td>
+                    <div class="o2-icon-16" @click="this.clickDeleteData(d.value.id)" oo-if="$.menu.id === '3-4'" ><i class="o2icon-icon_delete_grey"></i></div>
                     <span class="operator_link" @click="this.clickDeleteData(d.value.id)" oo-if="$.menu.id === '3-4'">{{$.lp.delete}}</span>
                 </td>
             </tr>

@@ -24,9 +24,9 @@
                 <td>{{  $m.formatAppealStatus(g.value) }}</td>
                  
                 <td>
-                    <span class="operator_link" oo-if="g.value.status === 0"
+                    <span class="operator_link_underline" oo-if="g.value.status === 0"
                         @click="this.startProcess(g.value)">{{$.lp.appeal.startProcess}}</span>
-                    <span class="operator_link" oo-if="g.value.jobId"
+                    <span class="operator_link_underline" oo-if="g.value.jobId"
                         @click="this.openJob(g.value.jobId, g.value.id)">{{$.lp.appeal.openJob}}</span>
                     
                 </td>

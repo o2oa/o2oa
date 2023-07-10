@@ -3,15 +3,19 @@
     <div class="o2-form">
       <div class="o2-form-header">
           <span class="title">{{$.fTitle}}</span>
-          <button class="close" @click="close"><i class="o2icon-icon_close"></i></button>
+          <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
       </div>
       <div class="o2-form-content">
-            <div class="form-alert">点击地图定位工作场所地址</div>
+            <div style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>点击地图定位工作场所地址</div>
            <div class="bd-map">
             <!-- 放百度地图 -->
            </div>
-           <div class="form-item-label"><span class="required" >*</span>定位坐标：</div>
-           <div class="form-item-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div>
+           <div class="form-item-line">
+            <div class="form-item-line-label"><span class="required" >*</span>定位坐标：</div>
+            <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div>
+           </div>
+           <!-- <div class="form-item-label"><span class="required" >*</span>定位坐标：</div>
+           <div class="form-item-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div> -->
            <o-input oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.title, 'placeholder': $.lp.workAddressForm.titlePlaceholder , 'value': $.form.placeName}"
                 oo-model="form.placeName"></o-input>
            <o-input oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.range, 'placeholder': $.lp.workAddressForm.rangePlaceholder,  'value': $.form.errorRange}"

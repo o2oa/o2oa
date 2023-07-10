@@ -16,8 +16,10 @@
                 <td>{{shift.value.shiftName}}</td>
                 <td>{{shift.value.properties.timeList[0].onDutyTime + ' - ' + shift.value.properties.timeList[shift.value.properties.timeList.length-1].offDutyTime}}</td>
                 <td>
+                    <div class="o2-icon-16" @click="this.clickEditShift(shift.value.id)" ><i class="o2icon-icon_bianji"></i></div>
                     <span class="operator_link"
                         @click="this.clickEditShift(shift.value.id)">{{$.lp.update}}</span>
+                    <div class="o2-icon-16 margin-left" @click="this.clickDeleteShift(shift.value.id, shift.value.shiftName)" ><i class="o2icon-icon_delete_grey"></i></div>
                     <span class="operator_link"
                         @click="this.clickDeleteShift(shift.value.id, shift.value.shiftName)">{{$.lp.delete}}</span>
                 </td>

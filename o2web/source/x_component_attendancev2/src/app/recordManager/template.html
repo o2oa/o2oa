@@ -10,17 +10,24 @@
                 oo-model="filterList"></o-org-person-selector>
         </div>
         <div style="margin: 10px 0;float: left;">
-            <o-date-picker oo-prop="{'value': $.form.recordDateString}" oo-model="form.recordDateString"></o-date-picker>  
+            <o-date-picker oo-prop="{'value': $.form.recordDateString}"
+                oo-model="form.recordDateString"></o-date-picker>
         </div>
         <div style="margin: 10px 0;float: left;">
             <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
         </div>
-        <div style="margin: 10px 0;float: left;">
-            <button class="light-border-button mainColor_border" @click="importExcel">{{$.lp.leave.importExcel}}</button>
-          </div>
-          <div style="float: right;margin: 10px;"  @click="excelTemplateDownload">
+       
+        <!-- <div style="float: right;margin: 10px;" @click="excelTemplateDownload">
             <span class="primary_color operator_link_underline">{{$.lp.leave.excelTemplate}}</span>
-          </div>
+        </div> -->
+        <div style="float: right;margin: 10px 10px 10px 0;" @click="excelTemplateDownload">
+            <button class="light-border-button mainColor_border primary_color"
+                @click="importExcel">{{$.lp.leave.excelTemplate}}</button>
+        </div>
+        <div style="margin: 10px 10px 10px 0;float: right;">
+            <button class="light-border-button mainColor_border primary_color"
+                @click="importExcel">{{$.lp.leave.importExcel}}</button>
+        </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
             <thead>
                 <th>{{$.lp.record.name}}</th>
@@ -44,7 +51,8 @@
                 <td>
                     <span class="{{this.formatRecordResultClass(r.value)}}">{{ $m.formatRecordResult(r.value) }}</span>
                     <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
-                    <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
+                    <span class="color-holiday  margin-left"
+                        oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
                 </td>
                 <!-- <td>{{ r.value.fieldWork ? $.lp.yes : $.lp.no }}</td> -->
             </tr>
