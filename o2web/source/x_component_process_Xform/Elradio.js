@@ -297,14 +297,34 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         }
     },
 
-    setExcelData: function(d){
+    getExcelData: function( type ){
+		var value = this.getData();
+		if( type === "value" )return value;
+
+		var options = this.getOptionsObj();
+		return Promise.resolve(options).then(function (opts) {
+			var idx = opts.valueList.indexOf( value );
+			var text = idx > -1 ? opts.textList[ idx ] : "";
+			if( !text )text = value;
+			return text;
+		});
+	},
+    setExcelData: function(d, type){
         var value = d.replace(/&#10;/g,""); //换行符&#10;
         this.excelData = value;
-        var options = this.getOptionsObj();
-        var idx = options.textList.indexOf( value );
-        value = idx > -1 ? options.valueList[ idx ] : "";
-        this.json[this.json.$id] = value;
-        this._setBusinessData(value);
-        this.setData(value, true);
+        if( type === "value" ){
+			this.setData(value, true);
+		}else{
+            var options = this.getOptionsObj();
+            this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                var idx = opts.textList.indexOf( value );
+                var v = idx > -1 ? opts.valueList[ idx ] : "";
+                value = v || value;
+                this.json[this.json.$id] = value;
+                this._setBusinessData(value);
+                this.setData(value, true);
+                this.moduleExcelAG = null;
+            }.bind(this));
+        }
     }
 }); 

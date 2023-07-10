@@ -126,11 +126,12 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     _setOptionsWithCode: function(code){
         var v = this.form.Macro.exec(code, this);
         if (v.then){
-            v.then(function(o){
+            this.moduleSelectAG = v.then(function(o){
                 if (o2.typeOf(o)==="array"){
                     this.json.options = o;
                     this.json.$options = o;
                 }
+                return this.json.options || [];
             }.bind(this));
         }else if (o2.typeOf(v)==="array"){
             this.json.options = v;
@@ -199,7 +200,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     __setReadonly: function(data){
         if (this.isReadonly()){
             this._loadOptions();
-            Promise.resolve(this.json.options).then(function(options){
+            Promise.resolve(this.json.options || this.moduleSelectAG).then(function(options){
                 if (data){
                     var text = this.__getOptionsText(options, data);
                     this.node.set("text", text);
@@ -277,8 +278,8 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             }
         },
         _getDataByText: function(options, text){
+            var values = [];
             if (!!this.json.props.multiple){
-                var values;
                 var texts = typeOf( text ) === "array" ? text : [text];
                 texts.forEach(function(t){
                     if( typeOf( t ) === "array" && t.length > 1 ){
@@ -289,8 +290,12 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 }.bind(this));
                 return values;
             }else{
+                if( typeOf( text ) === "array" && typeOf( text[0] ) === "array" ){
+                    text = text[0];
+                }
                 if( typeOf( text ) === "array" && text.length > 1 ){
-                    return this._getEachDataByText(options, text);
+                    values = this._getEachDataByText(options, text);
+                    return values.length ? values[0] : [];
                 }else{
                     return this._getLastDataByText(options, typeOf( text ) === "array" ? (text[0] || "") : text);
                 }
@@ -303,7 +308,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 var opValue = (prefix) ? prefix + "/" + op[this.json.props.value] : op[this.json.props.value];
                 var opLabel = (prefixLabel) ? prefixLabel + "/" + op[this.json.props.label] : op[this.json.props.label];
                 if (opLabel === t) {
-                    value.push(opValue);
+                    value.push(opValue.split("/"));
                 }else if (t.startsWith(opLabel) && op[this.json.props.children] && op[this.json.props.children].length){
                     value = value.concat(this._getEachDataByText(op[this.json.props.children], texts, opValue, opLabel));
                 }
@@ -352,13 +357,14 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
             }
         },
         setExcelData: function(d, type){
+            debugger;
             var arr = this.stringToArray(d);
             this.excelData = arr;
             arr = arr.map(function (a) {
                 return a.contains("/") ? a.split("/") : a;
             });
             if( type === "value" ){
-                this.setData(data);
+                this.setData(arr);
             }else{
                 var data = this.getDataByText( arr );
                 this.setData(data);

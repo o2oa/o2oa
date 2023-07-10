@@ -338,28 +338,42 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         }
     },
 
-        getExcelData: function(){
-            var options = this.getOptionsObj();
+        getExcelData: function( type ){
             var value = this.getData();
-            value = o2.typeOf(value) === "array" ? value : [value];
-            var arr = [];
-            value.each( function( a, i ){
-                var idx = options.valueList.indexOf( a );
-                arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+            if( type === "value" )return value;
+
+            var options = this.getOptionsObj();
+            return Promise.resolve(options).then(function (opts) {
+                value = o2.typeOf(value) === "array" ? value : [value];
+                var arr = [];
+                value.each( function( a, i ){
+                    var idx = opts.valueList.indexOf( a );
+                    var text = idx > -1 ? opts.textList[ idx ] : "";
+                    if( !text )text = value;
+                    arr.push( text );
+                });
+                return arr.join(", ");
             });
-            return arr.join(", ");
         },
-        setExcelData: function(d){
+        setExcelData: function(d, type){
             var arr = this.stringToArray(d);
             this.excelData = arr;
-            var options = this.getOptionsObj();
-            arr.each( function( a, i ){
-                var idx = options.textList.indexOf( a );
-                arr[ i ] = idx > -1 ? options.valueList[ idx ] : null;
-            });
-            arr.clean();
-            this.json[this.json.$id] = arr;
-            this._setBusinessData(arr);
-            this.setData(arr, true);
+            if( type === "value" ){
+                this.setData(value, true);
+            }else{
+                var options = this.getOptionsObj();
+                this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                    arr.each( function( a, i ){
+                        var idx = opts.textList.indexOf( a );
+                        var v = idx > -1 ? opts.valueList[ idx ] : null;
+                        arr[ i ] = v || a;
+                    });
+                    arr.clean();
+                    this.json[this.json.$id] = arr;
+                    this._setBusinessData(arr);
+                    this.setData(arr, true);
+                    this.moduleExcelAG = null;
+                }.bind(this));
+            }
         }
 }); 

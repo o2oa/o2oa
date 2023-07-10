@@ -67,7 +67,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     // },
     _loadMergeReadContentNode: function( contentNode, data ){
         this._loadOptions();
-        Promise.resolve(this.json.options).then(function(options){
+        Promise.resolve( this.json.options || this.moduleSelectAG ).then(function(options){
             var values = (o2.typeOf(data.data) !== "array") ? [data.data] : data.data;
             var text = this.__getOptionsText(options, values);
             contentNode.set("text", text.join(","));
@@ -116,7 +116,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     _setOptionsWithCode: function(code){
         var v = this.form.Macro.exec(code, this);
         if (v.then){
-            v.then(function(o){
+            this.moduleSelectAG = v.then(function(o){
                 if (o2.typeOf(o)==="array"){
                     this.json.options = o.map(function(item){
                         if (o2.typeOf(item)!=="object"){
@@ -126,6 +126,7 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                         return item;
                     });
                     this.json.$options = Array.clone(this.json.options);
+                    return this.json.options;
                 }
             }.bind(this));
         }else if (o2.typeOf(v)==="array"){
@@ -351,12 +352,15 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
         },
         setExcelData: function(d){
             this._loadOptions();
-            var arr = this.stringToArray(d);
-            this.excelData = arr;
-            arr = arr.map(function (a) {
-                return a.contains("/") ? a.split("/") : a;
-            });
-            var data = this.getDataByText( arr );
-            this.setData( this.json.multiple ? data : data[0], true);
+            this.moduleExcelAG = Promise.resolve( this.json.options || this.moduleSelectAG ).then(function(options){
+                var arr = this.stringToArray(d);
+                this.excelData = arr;
+                arr = arr.map(function (a) {
+                    return a.contains("/") ? a.split("/") : a;
+                });
+                var data = this.getDataByText( arr );
+                this.setData( this.json.multiple ? data : data[0], true);
+                this.moduleExcelAG = null;
+            }.bind(this))
         }
 }); 
