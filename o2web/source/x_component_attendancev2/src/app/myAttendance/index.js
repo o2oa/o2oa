@@ -158,6 +158,9 @@ export default content({
       date.workDay = true; // 默认白色背景
       return date;
     });
+    const checkWorkDayList = dates.map(date => {
+      return date.dateYmd;
+    });
     // 输出日期数组
     this.bind.dateWithData = convertTo2DArray(newDates, 7);
     // 当前统计周期 月份和日期
@@ -167,7 +170,7 @@ export default content({
     // 统计信息
     this.loadMyStatistic(reqBody);
     // 查询是否工作日
-    this.loadIsWorkDay();
+    this.loadIsWorkDay(checkWorkDayList);
   },
   async loadMyStatistic(body) {
     const statistic = (await myAction("statistic", body));
@@ -175,21 +178,26 @@ export default content({
       this.bind.statistic = statistic;
     }
   },
-  async loadIsWorkDay() {
+  async loadIsWorkDay(checkIsMyRestDay) {
     const old = this.bind.dateWithData;
+    let list = [];
+    try {
+      const result = (await myAction("checkIsMyRestDay", { dateList : checkIsMyRestDay}));
+      if (result && result.restDateList) {
+        list = result.restDateList;
+      }
+    } catch (error) {
+     console.error(error);  
+    }
     for (let i = 0; i < old.length; i++) {
       let line = old[i];
       for (let index = 0; index < line.length; index++) {
         const element = line[index];
-        if (element.detail && element.detail.workDay === false) {
-          element.workDay = false;
-          line[index] = element;
-        } else if (element.dateYmd === '2023-08-05') {
-          element.workDay = false;
-          line[index] = element;
+        if (list.indexOf(element.dateYmd) > -1) {
+            element.workDay = false;
+            line[index] = element;
         }
       }
-      // this.bind.dateWithData[i] = line;
     }
   },
   // 日历方块的class
