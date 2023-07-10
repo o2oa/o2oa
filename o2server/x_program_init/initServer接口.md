@@ -9,8 +9,38 @@ get /jaxrs/externaldatasources/check
 get /jaxrs/externaldatasources/list
 列示可用的外部数据源配置样例.
 
-get /jaxrs/externaldatasources/set
+post /jaxrs/externaldatasources/set
 设置外部数据源.
+{
+"externalDataSources": [{
+"enable": true,
+"url": "jdbc:sqlserver://127.0.0.1:1433;DatabaseName\u003dX;selectMethod\u003dcursor;sendStringParametersAsUnicode\u003dfalse",
+"username": "sa",
+"password": "password",
+"includes": [],
+"excludes": [],
+"logLevel": "ERROR",
+"autoCommit": false,
+"schema": "X"
+}]
+}
+
+
+post /jaxrs/externaldatasources/validate
+检查数据源是否可以连接.
+{
+"externalDataSources": [{
+"enable": true,
+"url": "jdbc:sqlserver://127.0.0.1:1433;DatabaseName\u003dX;selectMethod\u003dcursor;sendStringParametersAsUnicode\u003dfalse",
+"username": "sa",
+"password": "password",
+"includes": [],
+"excludes": [],
+"logLevel": "ERROR",
+"autoCommit": false,
+"schema": "X"
+}]
+}
 
 get /jaxrs/externaldatasources/set/cancel
 取消设置外部数据源.

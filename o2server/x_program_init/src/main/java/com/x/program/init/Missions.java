@@ -120,7 +120,7 @@ public class Missions {
 		boolean running = THREADPOOLEXECUTOR.getActiveCount() > 0 || (!THREADPOOLEXECUTOR.getQueue().isEmpty());
 		if (running) {
 			executeStatus.setStatus(STATUS_RUNNING);
-		} else if (BooleanUtils.isTrue(messages.getFailure())) {
+		} else if ((null != messages) && BooleanUtils.isTrue(messages.getFailure())) {
 			executeStatus.setStatus(STATUS_FAILURE);
 		} else {
 			executeStatus.setStatus(status);
