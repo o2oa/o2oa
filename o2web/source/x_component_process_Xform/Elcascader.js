@@ -19,6 +19,10 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     Implements: [Events],
     Extends: MWF.APP$Elinput,
     options: {
+        /**
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Elcascader#load
+         */
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
          * 当获得焦点时触发。this.event[0]指向Event

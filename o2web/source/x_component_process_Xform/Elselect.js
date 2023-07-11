@@ -28,6 +28,10 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     Implements: [Events],
     Extends: MWF.APP$ElSelector,
     options: {
+        /**
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Elselect#load
+         */
         "moduleEvents": ["load", "queryLoad", "postLoad"],
         /**
          * 当 input 获得焦点时触发。this.event[0]指向Event

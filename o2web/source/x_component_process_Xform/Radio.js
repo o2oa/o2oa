@@ -24,6 +24,12 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     {
 	Implements: [Events],
 	Extends: MWF.APP$Selector,
+        /**
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Radio#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+
     /**
      * @ignore
      * @member {Element} descriptionNode
