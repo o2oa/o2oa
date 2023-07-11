@@ -18,7 +18,7 @@
   /* 外出请假 */
   --att-record-status-leave-color: #78c06e;
   /* 旷工 */
-  --att-record-status-absenteeism-color: #FF8080;
+  --att-record-status-absenteeism-color: #ff8080;
 }
 
 /* common */
@@ -118,14 +118,14 @@
 .att_table thead {
   width: 100%;
   height: 40px;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   color: rgb(102, 102, 102);
   font-weight: normal;
   line-height: 40px;
   font-size: 15px;
 }
 .att_table th {
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   text-align: center;
   line-height: 24px;
   padding: 8px 0px;
@@ -151,7 +151,7 @@
   border-bottom: 1px solid rgb(230, 230, 230);
 }
 .att .primary_color {
-  color: var(--el-color-primary)!important;
+  color: var(--el-color-primary) !important;
 }
 .att .operator_link_underline {
   color: #666666;
@@ -202,7 +202,7 @@
 }
 .index_page_form_container {
   width: 500px;
-  box-shadow: 0px -2px 4px 0px rgba(0,0,0,0.25);
+  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.25);
 }
 /* 主页顶层样式 */
 .manager-box {
@@ -272,7 +272,7 @@
   z-index: 1026;
 }
 .o2-form {
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   position: relative;
   height: 100%;
   width: 100%;
@@ -452,7 +452,7 @@
   line-height: 32px;
   font-size: 16px;
   font-weight: bold;
-  color: #171a1d;
+  color: #333333;
 }
 .form-item-label .required {
   color: #ff5219;
@@ -460,8 +460,8 @@
   margin-right: 6px;
 }
 .form-item-content {
-  font-size: 14px;
-  color: #171a1d;
+  font-size: 15px;
+  color: #333333;
 }
 .form-item-content .required {
   color: #ff5219;
@@ -491,54 +491,34 @@
 
 /* 灰色背景的卡片 */
 .a-card {
-  border: 1px solid #f0f0f0;
-  margin: 0;
-  padding: 0;
-  color: #171a1d;
-  font-size: 14px;
-  line-height: 1.5715;
+  border: 1px solid #dedede;
   list-style: none;
   position: relative;
-  background: #fff;
-  border-radius: 6px;
+  background: #ffffff;
+  border-radius: 8px;
 }
 .a-card-gray {
   background-color: rgba(23, 26, 29, 0.04);
   margin-bottom: 12px;
 }
 .a-card-head {
-  min-height: 36px;
-  margin-bottom: -1px;
-  padding: 0 12px;
-  color: #171a1d;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 36px;
+  min-height: 20px;
+  margin: 12px 0;
+  line-height: 20px;
   background: transparent;
-  border-bottom: 1px solid #f0f0f0;
-  border-radius: 6px 6px 0 0;
+}
+.a-card-head-tile {
+  border-radius: 0 16px 16px 0;
+  background-color: var(--el-color-primary);
+  color: #ffffff;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px 10px;
 }
 .a-card-body {
   padding: 12px;
-}
-/* 选项卡 */
-.r-box {
-  display: inline-block;
-  flex-wrap: nowrap;
-  border-radius: 4px;
-  background-color: #fff;
-  background-image: none;
-  border: 1px solid #d9d9d9;
-  transition: all 0.3s;
-}
-.r-item {
-  margin: 0;
-  display: inline-block;
-  padding: 4px 11px;
-  color: #171a1d;
+  color: #333333;
   font-size: 14px;
-  line-height: 1.5715;
-  cursor: pointer;
 }
 
 /* icon */

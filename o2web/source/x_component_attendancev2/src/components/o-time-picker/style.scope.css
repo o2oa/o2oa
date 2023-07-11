@@ -12,7 +12,6 @@
   background-image: none;
   border-radius: 18px;
   border: 1px solid #dedede;
-  transition: all 0.3s;
   align-items: center;
 }
 .o-time-picker-input {
@@ -21,7 +20,7 @@
     align-items: center;
 }
 .o-time-picker-input .input {
-  width: 72px;
+  width: 96px;
   text-align: center;
 }
 .o-time-picker-input .input {
@@ -29,9 +28,8 @@
   margin-right: 10px;
   display: inline-block;
   color: #666666;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5715;
-  transition: all .3s;
   flex: auto;
   min-width: 1px;
   height: auto;

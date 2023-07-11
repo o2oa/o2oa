@@ -11,6 +11,7 @@ export default content({
         return {
             lp,
             showClear: false,
+            placeholder: lp.components.timeMinutesSelectorClosePlaceholder,
             value: "", // 选择的分钟数 数字 如 30
             showValue: "", // 前端显示的时间 格式： x小时x分钟
             key:"", // 反写回去的对象key值，多层用.分割 如 form.startTime
