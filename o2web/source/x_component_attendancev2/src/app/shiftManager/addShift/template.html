@@ -126,13 +126,18 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-top: 10px;">
-                {{$.lp.shiftForm.lateAndEarlyOnTimeLabel1}}<o-time-minutes-selector oo-prop="{'value': $.form.lateAndEarlyOnTime, 'key': 'form.lateAndEarlyOnTime'}"  ></o-time-minutes-selector>  {{$.lp.shiftForm.lateAndEarlyOnTimeLabel2}}
+            <div class="form-item-line margin-top">
+                <div class="form-item-line-label">{{$.lp.shiftForm.lateAndEarlyOnTimeLabel1}}</div>
+                <div class="form-item-line-content" style="width: 302px;">
+                    <o-time-minutes-selector oo-prop="{'value': $.form.lateAndEarlyOnTime, 'key': 'form.lateAndEarlyOnTime'}"  ></o-time-minutes-selector>  {{$.lp.shiftForm.lateAndEarlyOnTimeLabel2}}
+                </div>
             </div>
-            <div style="margin-top: 10px;">
-                {{$.lp.shiftForm.lateAndEarlyOffTimeLabel1}}<o-time-minutes-selector oo-prop="{'value': $.form.lateAndEarlyOffTime, 'key': 'form.lateAndEarlyOffTime'}"  ></o-time-minutes-selector> {{$.lp.shiftForm.lateAndEarlyOffTimeLabel2}}
+            <div class="form-item-line margin-top">
+                <div class="form-item-line-label">{{$.lp.shiftForm.lateAndEarlyOffTimeLabel1}}</div>
+                <div class="form-item-line-content" style="width: 302px;">
+                    <o-time-minutes-selector oo-prop="{'value': $.form.lateAndEarlyOffTime, 'key': 'form.lateAndEarlyOffTime'}"  ></o-time-minutes-selector> {{$.lp.shiftForm.lateAndEarlyOffTimeLabel2}}
+                </div>
             </div>
-            
             <o-input oo-prop="{'label':$.lp.shiftForm.seriousTardinessLateMinutesLabel, 'value': $.form.seriousTardinessLateMinutes}"
             oo-model="form.seriousTardinessLateMinutes"></o-input>
             
