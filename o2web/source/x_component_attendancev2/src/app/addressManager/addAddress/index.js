@@ -32,7 +32,11 @@ export default content({
         this.iconUrl = "../x_component_attendancev2/$Main/default/us_mk_icon.png"; //图标样式，发布时候修改为绝对路径
         const bdKey = await getPublicData("baiduAccountKey");
         const accountkey = bdKey || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
-        const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        let apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        if( window.location.protocol.toLowerCase() === "https:" ){
+            window.HOST_TYPE = '2';
+            apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        }
         if( !window.BDMapV2ApiLoaded ){
             o2.load(apiPath, () => {
                 this.location();
