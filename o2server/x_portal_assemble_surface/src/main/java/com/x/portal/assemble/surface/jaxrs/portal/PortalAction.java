@@ -128,13 +128,22 @@ public class PortalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	public void test() throws Exception {
-		try (FileInputStream in = new FileInputStream(new File("d:/a.png"));
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			BufferedImage image = ImageIO.read(in);
-			ImageIO.write(image, "png", baos);
-			String icon = Base64.encodeBase64String(baos.toByteArray());
+	@JaxrsMethodDescribe(value = "获取Portal的角标数量(根据Portal的角标脚本计算得出).", action = ActionGetCornerMark.class)
+	@GET
+	@Path("{flag}/corner/mark")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getCornerMark(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGetCornerMark.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetCornerMark().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
 		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

@@ -4,23 +4,20 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.OrderColumn;
 
+import com.x.base.core.entity.annotation.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.*;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.CitationNotExist;
-import com.x.base.core.entity.annotation.ContainerEntity;
-import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 /**
  * 门户平台应用
@@ -67,6 +64,8 @@ public class Portal extends SliceJpaObject {
 	@PostLoad
 	public void postLoad() {
 		this.portalCategory = StringUtils.isBlank(this.portalCategory) ? CATEGORY_DEFAULT : this.portalCategory;
+		this.cornerMarkScript = this.getProperties().getCornerMarkScript();
+		this.cornerMarkScriptText = this.getProperties().getCornerMarkScriptText();
 	}
 
 	/* flag标志位 */
@@ -197,10 +196,44 @@ public class Portal extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean mobileClient;
 
-	/* 更新运行方法 */
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private PortalProperties properties;
 
-	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME,
-	// alias_FIELDNAME, name_FIELDNAME };
+	/**
+	 * 以下为非持久化属性，定义在PortalProperties中
+	 */
+	public static final String cornerMarkScript_FIELDNAME = "cornerMarkScript";
+	@FieldDescribe("角标关联门户脚本.")
+	@Transient
+	private String cornerMarkScript;
+
+	public static final String cornerMarkScriptText_FIELDNAME = "cornerMarkScriptText";
+	@FieldDescribe("角标脚本文本.")
+	@Transient
+	private String cornerMarkScriptText;
+
+	public String getCornerMarkScript() {
+		return cornerMarkScript;
+	}
+
+	public void setCornerMarkScript(String cornerMarkScript) {
+		this.getProperties().setCornerMarkScript(cornerMarkScript);
+		this.cornerMarkScript = cornerMarkScript;
+	}
+
+	public String getCornerMarkScriptText() {
+		return cornerMarkScriptText;
+	}
+
+	public void setCornerMarkScriptText(String cornerMarkScriptText) {
+		this.getProperties().setCornerMarkScriptText(cornerMarkScriptText);
+		this.cornerMarkScriptText = cornerMarkScriptText;
+	}
 
 	public String getName() {
 		return name;
@@ -324,5 +357,16 @@ public class Portal extends SliceJpaObject {
 
 	public void setAvailableGroupList(List<String> availableGroupList) {
 		this.availableGroupList = availableGroupList;
+	}
+
+	public PortalProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new PortalProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(PortalProperties properties) {
+		this.properties = properties;
 	}
 }
