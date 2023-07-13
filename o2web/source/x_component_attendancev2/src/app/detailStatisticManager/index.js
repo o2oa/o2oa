@@ -67,10 +67,12 @@ export default content({
     if (this.validateForm()) {this.loadDetailList();}
   },
   async loadDetailList() {
+    showLoading(this);
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);
     this.bind.statisticList = json || [];
+    hideLoading(this);
   },
   // 格式化用户姓名
   formatName(person) {

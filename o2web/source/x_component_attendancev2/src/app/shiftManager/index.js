@@ -26,6 +26,7 @@ export default content({
   },
   afterRender() {
     // let a = [...new Array(2).keys()];
+    this.listenEventBus();
     this.loadShiftList();
   },
   async addShift() {
@@ -43,8 +44,9 @@ export default content({
       offDutyTimeAfterLimit: "",
     };
     // 添加
-    const content = (await import(`./addShift/index.js`)).default;
-    this.addShiftVm = await content.generate(".form", { bind: addBind }, this);
+    // const content = (await import(`./addShift/index.js`)).default;
+    // this.addShiftVm = await content.generate(".form", { bind: addBind }, this);
+    this.$parent.openShiftForm({ bind: addBind });
   },
   loadData(e) {
     if (e && e.detail && e.detail.module && e.detail.module.bind) {
@@ -76,10 +78,10 @@ export default content({
           shiftData.time3 = shift.properties.timeList[2];
         }
         // 修改
-        debugger;
         shiftData.form = shift; // 多一层的
-        const content = (await import(`./addShift/index.js`)).default;
-        this.addShiftVm = await content.generate(".form", { bind: shiftData }, this);
+        // const content = (await import(`./addShift/index.js`)).default;
+        // this.addShiftVm = await content.generate(".form", { bind: shiftData }, this);
+        this.$parent.openShiftForm({ bind: shiftData });
       } else {
         o2.api.page.notice(lp.dataError, 'error');
       }
@@ -115,5 +117,11 @@ export default content({
       this.addShiftVm.destroy();
     }
     this.loadShiftList();
+  },
+  listenEventBus() {
+    this.$topParent.listenEventBus('shift', (data) => {
+      console.log('接收到了shift消息', data);
+      this.loadShiftList();
+    });
   },
 });

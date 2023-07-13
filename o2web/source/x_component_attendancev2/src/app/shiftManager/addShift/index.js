@@ -78,10 +78,10 @@ export default content({
         setJSONValue(key, value, this.bind);
     },
     closeShift() {
-        this.$parent.closeShift();
+        this.$topParent.publishEvent('shift', {});
+        this.$parent.closeFormVm();
     },
     async submitAdd() {
-        debugger
         if (isEmpty(this.bind.form.shiftName)) {
             o2.api.page.notice(lp.shiftForm.shiftNameNotEmpty, 'error');
             return ;

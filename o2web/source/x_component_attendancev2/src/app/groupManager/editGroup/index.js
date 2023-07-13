@@ -477,7 +477,8 @@ export default content({
   },
   // 关闭当前窗口
   close() {
-    this.$parent.closeGroup();
+    this.$topParent.publishEvent('group', {});
+    this.$parent.closeFormVm();
   },
   async submit() {
     debugger;

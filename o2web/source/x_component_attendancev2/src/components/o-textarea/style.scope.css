@@ -1,33 +1,33 @@
  .o-input-item {
-  width: 312px;
+  display: flex;
+  flex-direction: row;
  }
 .o-input-item-label{
   height: 32px;
   line-height: 32px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #171a1d;
+  font-size: 15px;
+  color: #333333;
+  flex: 1;
 }
 .o-input-item-label .required {
   color: #ff5219;
   font-size: 12px;
   margin-right: 6px;
 }
-.o-input-item-input{
+.o-input-item-textarea{
   box-sizing: border-box;
   margin: 0;
   list-style: none;
   position: relative;
   display: flex;
-  width: 100%;
-  padding: 4px 11px;
-  color: #171a1d;
-  font-size: 14px;
-  line-height: 1.5715;
+  width: 280px;
+  padding: 2px 10px;
+  line-height: 30px;
   background-color: #fff;
   background-image: none;
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
+  border-radius: 18px;
+  border: 1px solid #DEDEDE;
   transition: all .3s;
+  color: #666666;
 }
  

@@ -1,3 +1,52 @@
+.my-statistic-box {
+  width: calc( 100% - 24px );
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.my-statistic-block {
+  height: 96px;
+  display: flex;
+  flex-direction: row;
+}
+.my-statistic-block-first {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+}
+.my-statistic-block-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.my-statistic-block-first .row-box, .my-statistic-block-item .row-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.my-statistic-block-divider {
+  height: 100%;
+  width: 1px;
+  background-color: #E6E6E6;
+  margin: 0 14px;
+}
+.my-statistic-block-item .statistic-label {
+  font-size: 14px;
+  color: #666666;
+  line-height: 20px;
+}
+.my-statistic-block-item .statistic-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333333;
+  line-height: 32px;
+}
+
 .legend {
   display: flex;
   flex-direction: row;
@@ -11,11 +60,13 @@
   margin-right: 10px;
 }
 .my-cal-header {
-  height: 50px;
-  width: 100%;
+  height: 40px;
+  width: calc( 100% - 14px );
   display: flex;
   flex-direction: row;
-  background-color: rgb(240, 240, 240);
+  background: #F7F7F7;
+  border-radius: 8px;
+  margin: 0 7px;
 }
 .my-cal-header-item {
   flex: 1;
@@ -32,27 +83,61 @@
 .my-cal-body-line {
   display: flex;
   flex-direction: row;
-  height: 100px;
+  height: 130px;
 }
 .my-cal-body-line .item {
   flex: 1;
   margin: 7px;
   overflow: auto;
   background-color: rgb(255, 255, 255);
-  border: 1px solid rgb(204, 204, 204);
-  border-radius: 4px;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
   opacity: 1;
   padding: 5px;
 }
 .my-cal-body-line .full {
   background-color: rgb(248, 251, 255)!important;
 }
+.my-cal-body-line .rest {
+  background-color: #F7F7F7!important;
+}
 .my-cal-body-line .out {
-  opacity: 0.5!important;
+  opacity: 0.4!important;
 }
 .item-cal-date {
+  margin-left: 10px;
+}
+.item-cal-date .item-cal-date-text {
+  border-radius: 12px;
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
   font-size: 16px;
   font-weight: 600;
+}
+.item-cal-date .item-cal-date-today {
+  background-color: var(--el-color-primary)!important;
+  color: #ffffff;
+}
+.item-cal-record {
+  display: flex;
+  flex-direction: row;
+}
+.item-cal-record-line {
+  margin: 20px 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.item-cal-record-line .bg {
+  background-color: #DEDEDE!important;
+}
+.item-cal-record-line .line {
+  width: 1px;
+  background-color: #DEDEDE!important;
+  flex: 1;
+  margin-right: 5px;
 }
 .item-record-parent {
   width: 100%;
@@ -73,6 +158,15 @@
   border-radius: 8px;
   margin-right: 5px;
   background-color: var(--att-record-status-normal-color);
+}
+.item-record-status-tag {
+  width: 50px;
+  height: 20px;
+  border-radius: 15px;
+  color: #FFFFFF;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
 }
 /* 正常 */
 .record-status-normal {
@@ -101,6 +195,14 @@
 /* 申诉 */
 .record-status-appeal {
   background-color: var(--att-record-status-appeal-color)!important;
+}
+/* 请假 */
+.record-status-leave {
+  background-color: var(--att-record-status-leave-color)!important;
+}
+/* 旷工 */
+.record-status-absenteeism {
+  background-color: var(--att-record-status-absenteeism-color)!important;
 }
 
 

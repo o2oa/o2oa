@@ -1,5 +1,9 @@
 .form {
   max-width: 720px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
 }
 .config-border {
   box-sizing: border-box;

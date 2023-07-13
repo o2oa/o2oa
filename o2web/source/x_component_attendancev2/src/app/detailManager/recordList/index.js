@@ -72,6 +72,6 @@ export default content({
 
   // 关闭当前窗口
   close() {
-    this.$parent.closeRecordList();
+    this.$parent.closeFormVm();
   },
 });

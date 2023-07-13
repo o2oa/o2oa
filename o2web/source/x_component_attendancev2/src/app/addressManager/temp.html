@@ -1,4 +1,4 @@
-<div class="manager-box">
+<div class="manager-box white-bg">
   <div class="index_page_header_container">
       <div class="index_page_header_title">{{$.lp.workAddressManagerTitle}}</div>
   </div>
@@ -7,7 +7,7 @@
           <button class="mainColor_bg" @click="clickAdd">{{$.lp.workAddressAdd}}</button>
       </div>
       <div style="margin: 10px 0;float: right;">
-          <button class="light-border-button mainColor_border" @click="openBdAKConfig">{{$.lp.workAddressBDkeyConfigBtn}}</button>
+          <button class="light-border-button mainColor_border primary_color" @click="openBdAKConfig">{{$.lp.workAddressBDkeyConfigBtn}}</button>
       </div>
       <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
         <thead>
@@ -21,6 +21,7 @@
             <td>{{address.value.errorRange}}</td>
             <td>{{address.value.description}}</td>
             <td>
+                <div class="o2-icon-16"@click="this.clickDeleteItem(address.value.id, address.value.placeName)" ><i class="o2icon-icon_delete_grey"></i></div>
                 <span class="operator_link"
                     @click="this.clickDeleteItem(address.value.id, address.value.placeName)">{{$.lp.delete}}</span>
             </td>

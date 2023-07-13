@@ -138,12 +138,8 @@ export default content({
     return convertMinutesToHoursAndMinutes(workTime);
   },
   async openRecordList(detail) {
-    const content = (await import(`./recordList/index.js`)).default;
-    this.recordListVm = await content.generate(".form", {bind: { recordList: detail.recordList||[] }}, this);
-  },
-  closeRecordList() {
-    if (this.recordListVm ) {
-      this.recordListVm.destroy();
-    }
+    // const content = (await import(`./recordList/index.js`)).default;
+    // this.recordListVm = await content.generate(".form", {bind: { recordList: detail.recordList||[] }}, this);
+    this.$topParent.openRecordListVm({bind: { recordList: detail.recordList||[] }})
   }
 });

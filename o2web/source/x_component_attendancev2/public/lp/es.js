@@ -50,6 +50,8 @@ MWF.xApplication.attendancev2.LP = {
     Friday: "Vie",
     Saturday: "Sáb",
   },
+  month: "luna",
+  year: "Año",
   minute: "min",
   hour: "h",
   classifierDay: "d",
@@ -62,13 +64,25 @@ MWF.xApplication.attendancev2.LP = {
     timeMinutesSelectorMinute: "Minuto",
     chooseDatePlaceholder: "Seleccionar fecha",
     selectPlaceholder: "Seleccionar",
-    selectOrgPersonOverCount: "¡Solo se pueden seleccionar ({count}) datos!"
+    selectOrgPersonOverCount: "¡Solo se pueden seleccionar ({count}) datos!",
   },
   // 我的
   myAttendanceTitle: "Mis estadísticas",
   myAttendanceCalendar: "Calendario de asistencia",
   myAttendanceStatistic: "Estadísticas de asistencia",
   myFieldWork: "Trabajo de campo",
+  myStatistic: {
+    title: "Ciclo de asistencia:",
+    averageWorkTimeDuration: "Jornada laboral media (horas)",
+    workTimeDuration: "Jornada laboral media (horas)",
+    attendance: "Asistencia (días)",
+    nosignTimes: "Tarjeta faltante (veces)",
+    lateTimes: "Tarde (tiempos)",
+    leaveEarlierTimes: "Salida temprano (horarios)",
+    leaveDays: "licencia (días)",
+    absenteeismDays: "Ausentismo (días)",
+    fieldWorkTimes: "Trabajo de campo (tiempos)",
+  },
 
   shiftTitle: "Gestión de turnos",
   addShift: "Agregar turno",
@@ -82,8 +96,10 @@ MWF.xApplication.attendancev2.LP = {
     checkInTimeLabel: "Horario de entrada y salida",
     seriousTardinessLateMinutesLabel: "Minutos de retraso grave",
     absenteeismLateMinutesLabel: "Minutos de ausentismo y retraso",
-    seriousTardinessLateMinutesNeedNumber: "Los minutos de retraso grave deben ser numéricos",
-    absenteeismLateMinutesNeedNumber: "Los minutos de ausentismo y retraso deben ser numéricos",
+    seriousTardinessLateMinutesNeedNumber:
+      "Los minutos de retraso grave deben ser numéricos",
+    absenteeismLateMinutesNeedNumber:
+      "Los minutos de ausentismo y retraso deben ser numéricos",
     firstTimeLabel: "Primera entrada y salida",
     secondTimeLabel: "Segunda entrada y salida",
     thirdTimeLabel: "Tercera entrada y salida",
@@ -104,8 +120,9 @@ MWF.xApplication.attendancev2.LP = {
     onDutyTimeNotEmpty: "¡La hora de entrada no puede estar vacía!",
     offDutyTimeNotEmpty: "¡La hora de salida no puede estar vacía!",
     success: "¡Guardado exitoso!",
-    confirmDelete: "¿Estás seguro de que deseas eliminar esta información de 【{name}】?",
-    selectShiftEmpty: "Seleccione un turno"
+    confirmDelete:
+      "¿Estás seguro de que deseas eliminar esta información de 【{name}】?",
+    selectShiftEmpty: "Seleccione un turno",
   },
 
   // 工作场所
@@ -116,13 +133,16 @@ MWF.xApplication.attendancev2.LP = {
   workAddressName: "Nombre del lugar",
   workAddressRange: "Rango de error",
   workAddressDesc: "Descripción",
-  workAddressBDkeyConfigBtn: "Configurar autenticación de desarrollador de Baidu",
+  workAddressBDkeyConfigBtn:
+    "Configurar autenticación de desarrollador de Baidu",
   workAddressBDkeyConfig: "Autenticación de desarrollador de Baidu",
-  workAddressBDkeyConfigDesc: "La gestión de lugares de trabajo utiliza servicios de la plataforma de mapas de Baidu. Puedes registrar una autenticación de desarrollador de Baidu para aumentar la capacidad concurrente de mapas. Después de completar la autenticación, ingresa la clave en el campo de entrada a continuación.",
+  workAddressBDkeyConfigDesc:
+    "La gestión de lugares de trabajo utiliza servicios de la plataforma de mapas de Baidu. Puedes registrar una autenticación de desarrollador de Baidu para aumentar la capacidad concurrente de mapas. Después de completar la autenticación, ingresa la clave en el campo de entrada a continuación.",
   workAddressBDLinkTitle: "Haz clic aquí para abrir el canal de autenticación",
   workAddressBDLink: "https://lbsyun.baidu.com/apiconsole/auth",
   workAddressBDSecretTitle: "Clave (AK)",
-  workAddressBDSecretTitlePlaceholder: "Ingresa la clave (AK) de la aplicación de mapas de Baidu",
+  workAddressBDSecretTitlePlaceholder:
+    "Ingresa la clave (AK) de la aplicación de mapas de Baidu",
   workAddressForm: {
     lnglatNotEmpty: "¡Selecciona un lugar de trabajo en el mapa primero!",
     title: "Nombre del lugar",
@@ -135,7 +155,8 @@ MWF.xApplication.attendancev2.LP = {
     descPlaceholder: "Ingresa información adicional",
     rangeNeedNumber: "¡El rango de registro (metros) debe ser un número!",
     success: "¡Guardado exitoso!",
-    confirmDelete: "¿Estás seguro de que deseas eliminar este lugar de trabajo 【{name}】?",
+    confirmDelete:
+      "¿Estás seguro de que deseas eliminar este lugar de trabajo 【{name}】?",
     selectWorkAddressEmpty: "Selecciona al menos un lugar de trabajo",
   },
   // 考勤组
@@ -145,7 +166,8 @@ MWF.xApplication.attendancev2.LP = {
   groupForm: {
     title: "Nombre del grupo de asistencia",
     titlePlaceholder: "Ingresa el nombre del grupo de asistencia",
-    titleErrorNotEmpty: "¡El nombre del grupo de asistencia no puede estar vacío!",
+    titleErrorNotEmpty:
+      "¡El nombre del grupo de asistencia no puede estar vacío!",
     num: "Cantidad",
     checkType: "Tipo de asistencia",
     checkTypeError: "¡Tipo de asistencia incorrecto!",
@@ -156,23 +178,28 @@ MWF.xApplication.attendancev2.LP = {
     time: "Configuración de días laborables",
     timeErrorNotEmpty: "¡Selecciona los días laborables!",
     participates: "Participantes de asistencia y organización",
-    participatesPlaceholder: "Haz clic para seleccionar participantes de asistencia y organización",
-    participatesErrorNotEmtpy: "¡Los participantes de asistencia y organización no pueden estar vacíos!",
+    participatesPlaceholder:
+      "Haz clic para seleccionar participantes de asistencia y organización",
+    participatesErrorNotEmtpy:
+      "¡Los participantes de asistencia y organización no pueden estar vacíos!",
     unParticipates: "Personal no requerido para asistencia",
-    unParticipatesPlaceholder: "Haz clic para seleccionar personal no requerido para asistencia",
+    unParticipatesPlaceholder:
+      "Haz clic para seleccionar personal no requerido para asistencia",
     shift: "Turno",
     shiftChange: "Cambiar turno",
     shiftChangeMultiple: "Cambiar múltiples turnos",
     shiftEmpty: "Descanso",
-    shiftPlaceholder: "Haz clic para seleccionar turno",
+    shiftPlaceholder: "(Haz clic para seleccionar turno)",
     shiftErrorNotEmpty: "¡El turno para días laborables no puede estar vacío!",
     workPlace: "Lugar de trabajo",
     workPlacePlaceholder: "Selecciona el lugar de trabajo",
     workPlaceErrorNotEmpty: "¡El lugar de trabajo no puede estar vacío!",
     fieldWork: "Registro de trabajo en campo",
     allowFieldWork: "¿Permitir registro de trabajo en campo?",
-    requiredFieldWorkRemarks: "¿Se requiere observaciones en el registro de trabajo en campo?",
-    fieldWorkMarkError: "¿Tratar el registro de trabajo en campo como datos anómalos?",
+    requiredFieldWorkRemarks:
+      "¿Se requiere observaciones en el registro de trabajo en campo?",
+    fieldWorkMarkError:
+      "¿Tratar el registro de trabajo en campo como datos anómalos?",
     requiredCheckInDate: "Fechas de registro obligatorio",
     requiredCheckInDateThDate: "Fecha",
     requiredCheckInDateThShift: "Turno",
@@ -180,13 +207,14 @@ MWF.xApplication.attendancev2.LP = {
     requiredCheckInDatePlaceholder: "Agrega las fechas de registro obligatorio",
     noNeedCheckInDate: "Fechas sin registro",
     noNeedCheckInDatePlaceholder: "Agrega las fechas sin registro",
-    confirmDelete: "¿Estás seguro de que deseas eliminar este grupo de asistencia 【{name}】?",
+    confirmDelete:
+      "¿Estás seguro de que deseas eliminar este grupo de asistencia 【{name}】?",
   },
   dateCycle: {
-    none: 'Ninguno',
-    week: 'Semanal',
-    twoWeek: 'Cada dos semanas',
-    month: 'Mensual'
+    none: "Ninguno",
+    week: "Semanal",
+    twoWeek: "Cada dos semanas",
+    month: "Mensual",
   },
   // 考勤信息
   detailManagerTitle: "Estadísticas de asistencia",
@@ -211,15 +239,20 @@ MWF.xApplication.attendancev2.LP = {
     offDutyAbsenceTimes: "Veces de falta de registro de salida",
     absenceTimes: "Veces de falta de registro",
     fieldWorkTimes: "Veces de trabajo externo",
-    btnRecordList: "Registro de asistencia"
+    btnRecordList: "Registro de asistencia",
   },
-  detailExportExcelFileSuccess: "¡Los datos se han calculado correctamente! ¡Haz clic en Aceptar para descargar el archivo Excel!",
-  detailExportConfirmMsg: "¡La exportación puede llevar tiempo! ¡Por favor, espera un momento!",
+  detailExportExcelFileSuccess:
+    "¡Los datos se han calculado correctamente! ¡Haz clic en Aceptar para descargar el archivo Excel!",
+  detailExportConfirmMsg:
+    "¡La exportación puede llevar tiempo! ¡Por favor, espera un momento!",
   detailStatisticList: {
-    filterEmptyPlaceholder: "¡Seleccione la persona o la organización para consultar!",
+    filterEmptyPlaceholder:
+      "¡Seleccione la persona o la organización para consultar!",
     filterSelectTitle: "Seleccionar persona u organización para consultar",
-    participatesPlaceholder: "Haz clic para seleccionar personas u organizaciones para la asistencia",
-    participatesErrorNotEmtpy: "¡Las personas u organizaciones para la asistencia no pueden estar vacías!",
+    participatesPlaceholder:
+      "Haz clic para seleccionar personas u organizaciones para la asistencia",
+    participatesErrorNotEmtpy:
+      "¡Las personas u organizaciones para la asistencia no pueden estar vacías!",
     startDateEmptyPlaceholder: "¡Seleccione la fecha de inicio!",
     endDateEmptyPlaceholder: "¡Seleccione la fecha de finalización!",
   },
@@ -232,9 +265,11 @@ MWF.xApplication.attendancev2.LP = {
   configManagerTitle: "Configuración de asistencia",
   config: {
     holidays: "Días festivos",
-    holidayLabels: "Configurar días festivos. Agregue aquí las fechas que normalmente son días laborables pero se consideran días festivos.",
+    holidayLabels:
+      "Configurar días festivos. Agregue aquí las fechas que normalmente son días laborables pero se consideran días festivos.",
     workdays: "Días laborables",
-    workdayLabels: "Configurar días laborables. Agregue aquí las fechas que normalmente son días no laborables pero se consideran días laborables.",
+    workdayLabels:
+      "Configurar días laborables. Agregue aquí las fechas que normalmente son días no laborables pero se consideran días laborables.",
     appealConfig: "Configuración de solicitud de registro",
     appealEnableLabel: "Habilitar función de solicitud de registro",
     appealProcessTypeInnerLabel: "Proceso interno predefinido",
@@ -243,14 +278,17 @@ MWF.xApplication.attendancev2.LP = {
     appealMaxTimesLabel: "Máximo de solicitudes mensuales por usuario",
     appealMaxTimesError: "Ingrese un número válido de solicitudes",
     fastCheckIn: "Registro rápido",
-    onDutyFastCheckInEnable: "Habilitar registro rápido al entrar (válido en la aplicación)",
-    offDutyFastCheckInEnable: "Habilitar registro rápido al salir (válido en la aplicación)",
+    onDutyFastCheckInEnable:
+      "Habilitar registro rápido al entrar (válido en la aplicación)",
+    offDutyFastCheckInEnable:
+      "Habilitar registro rápido al salir (válido en la aplicación)",
     checkInAlert: "Recordatorio de registro",
-    checkInAlertEnable: "Habilitar recordatorio de registro (recibirá notificaciones antes de entrar y después de salir para recordarle que haga el registro)",
+    checkInAlertEnable:
+      "Habilitar recordatorio de registro (recibirá notificaciones antes de entrar y después de salir para recordarle que haga el registro)",
     exceptionAlertEnable: "Habilitar alerta de registro de excepciones",
-    exceptionAlertEnableTime1: " (Recibirá el mensaje de registro de excepción a las ",
+    exceptionAlertEnableTime1:
+      " (Recibirá el mensaje de registro de excepción a las ",
     exceptionAlertEnableTime2: " del día siguiente)",
-
   },
   // 请假外出记录
   leaveManagerTitle: "Registro de ausencias y permisos",
@@ -264,8 +302,10 @@ MWF.xApplication.attendancev2.LP = {
     excelTemplate: "Descargar plantilla de Excel",
     importExcel: "Importar Excel",
     importExcelFileError: "¡Solo se pueden importar archivos de Excel!",
-    importExcelFileSuccess: "Importación completada. ¡Haga clic en Aceptar para descargar y ver los resultados de la importación!",
-    deleteConfirm: "¿Está seguro de que desea eliminar estos datos de registro?",
+    importExcelFileSuccess:
+      "Importación completada. ¡Haga clic en Aceptar para descargar y ver los resultados de la importación!",
+    deleteConfirm:
+      "¿Está seguro de que desea eliminar estos datos de registro?",
   },
 
   // 申诉
@@ -285,6 +325,7 @@ MWF.xApplication.attendancev2.LP = {
     notSigned: "Sin registro",
     appeal: "Solicitud de apelación",
     fieldWork: "Registro de trabajo de campo",
+    leave: "Pedir permiso",
 
     status0: "Pendiente de procesar",
     status1: "En proceso",
@@ -293,8 +334,10 @@ MWF.xApplication.attendancev2.LP = {
 
     startProcess: "Iniciar apelación",
     openJob: "Ver apelación",
-    startProcessNoConfigError: "No se ha configurado el proceso de apelación. ¡No se puede iniciar el proceso!",
-    notfoundJobError: "No se encontraron datos de proceso correspondientes. ¿Desea restaurar el estado actual de los datos?",
+    startProcessNoConfigError:
+      "No se ha configurado el proceso de apelación. ¡No se puede iniciar el proceso!",
+    notfoundJobError:
+      "No se encontraron datos de proceso correspondientes. ¿Desea restaurar el estado actual de los datos?",
   },
 
   // 原始打卡记录
@@ -313,27 +356,29 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeAuto: "Generado por el sistema",
     sourceTypeFast: "Registro rápido",
     sourceTypeImport: "Importación de datos",
-    importExcelFileSuccess: "Importación completada, hay {number} registros con errores. ¡Haz clic en Aceptar para descargar y ver los resultados de la importación!",
+    importExcelFileSuccess:
+      "Importación completada, hay {number} registros con errores. ¡Haz clic en Aceptar para descargar y ver los resultados de la importación!",
   },
-
 
   /// mobile
 
   mobile: {
     menu: {
-      checkIn: 'Registro',
-      statistic: 'Estadísticas',
-      settings: 'Configuración',
+      checkIn: "Registro",
+      statistic: "Estadísticas",
+      settings: "Configuración",
     },
-    unCheckIn: 'Sin registro',
-    refreshLocation: '[Actualizar ubicación]',
-    locationIng: 'Obteniendo ubicación...',
-    locationError: 'Error al obtener la ubicación. ¡Habilita los permisos de ubicación!',
-    checkInWithTime: 'Registro realizado a las {time}',
-    updateCheckInBtn: 'Actualizar registro',
-    outsideTitle: 'Registro de trabajo de campo',
-    outsideNotAllow: 'No se permite el registro de trabajo de campo.',
-    outsideRemarkPlaceholder: 'Ingresa una descripción para el registro de trabajo de campo.',
-    statisticMonthLabel: 'Mes',
-  }
+    unCheckIn: "Sin registro",
+    refreshLocation: "[Actualizar ubicación]",
+    locationIng: "Obteniendo ubicación...",
+    locationError:
+      "Error al obtener la ubicación. ¡Habilita los permisos de ubicación!",
+    checkInWithTime: "Registro realizado a las {time}",
+    updateCheckInBtn: "Actualizar registro",
+    outsideTitle: "Registro de trabajo de campo",
+    outsideNotAllow: "No se permite el registro de trabajo de campo.",
+    outsideRemarkPlaceholder:
+      "Ingresa una descripción para el registro de trabajo de campo.",
+    statisticMonthLabel: "Mes",
+  },
 };

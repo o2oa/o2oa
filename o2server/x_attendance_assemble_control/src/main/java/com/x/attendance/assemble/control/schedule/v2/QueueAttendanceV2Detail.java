@@ -340,6 +340,10 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         logger.debug("生成对应的异常打卡申请数据, {}", appealInfo.toString());
                     }
                 } else {
+                    // 申诉过的数据不用删除
+                    if (StringUtils.isNotEmpty( record.getAppealId()) ) {
+                        continue;
+                    }
                     // 正常的打卡记录 需要删除原来有的异常AttendanceV2AppealInfo数据，有可能打卡记录修改过，现在已经是正常的了
                     if (appealList != null && !appealList.isEmpty()) {
                         List<String> deleteIds = new ArrayList<>();
