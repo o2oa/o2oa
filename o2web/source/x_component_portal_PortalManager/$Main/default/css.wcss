@@ -237,5 +237,17 @@
         "font-size": "14px",
         "color": "#666",
         "cursor": "pointer"
-     }
+     },
+  "noteNode": {
+    "color": "#aaa",
+    "margin": "0 40px",
+    "padding-bottom": "10px"
+  },
+  "selectScriptArea": {
+    "margin": "0 50px",
+    "width": "300px",
+    "padding": "5px 10px",
+    "background": "#fff",
+    "overflow": "hidden"
+  }
 }

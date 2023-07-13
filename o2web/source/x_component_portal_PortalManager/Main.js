@@ -275,12 +275,84 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             this.createPropertyContentNode();
 
             this.createIconContentNode();
-
             this.createAvailableNode();
             this.createControllerListNode();
 
+            this.createCornerMarkNode();
+
+
             // this.createMaintainerNode();
         }.bind(this));
+    },
+    createCornerMarkNode: function(){
+        var lp = this.app.lp.application;
+        this.cornerMarkTitleNode = new Element("div", {
+            "styles": this.app.css.availableTitleNode,
+            "text": lp.cornerMark
+        }).inject(this.contentAreaNode);
+
+        this.cornerMarkContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+
+
+        new Element("div", {
+            styles: this.app.css.noteNode,
+            text: lp.cornerMarkNote
+        }).inject( this.cornerMarkContentNode );
+
+        this.selectScriptArea = new Element("div", {
+            styles: this.app.css.selectScriptArea
+        }).inject( this.cornerMarkContentNode );
+        this.selectScriptNode = new Element("div", {
+            text: lp.selectScriptNote,
+            styles: {color: "#aaa"}
+        }).inject(this.selectScriptArea);
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+            new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.selectScriptNode, this.app, {
+                "title" : lp.selectScript,
+                "type": "script",
+                "selectorOptions":{
+                    "appType" : ["portal"],
+                    "applications": [this.app.options.application.id]
+                },
+                "count" : 1,
+                "names": this.data.cornerMarkScript ? [ {id : this.data.cornerMarkScript} ] : [],
+                "onChange": function () {
+
+                }.bind(this)
+            });
+        }.bind(this));
+
+        this.cornerMarkItemsContentNode = new Element("div", {"styles": this.app.css.availableItemsContentNode}).inject(this.cornerMarkContentNode);
+
+        MWF.require("MWF.widget.ScriptArea", null, false);
+        this.cornerMarkScriptArea = new MWF.widget.ScriptArea(this.cornerMarkItemsContentNode, {
+            "type": "service",
+            "api": "../api/index.html#module-print",
+            "title": lp.cornerMarkScript,
+            //"isload" : true,
+            "isbind" : false,
+            // "forceType": "ace",
+            "maxObj": this.app.content,
+            "onChange": function(){
+                this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson();
+            }.bind(this),
+            "onSave": function(){
+                //this.app.saveForm();
+            }.bind(this),
+            // "style": "formula"
+        });
+        debugger;
+        var defaultText = "/********************\n" +
+            "this.currentPerson//当前用户\n" +
+            "this.org; //组织快速访问方法\n" +
+            "API Document: http://dev.o2oa.net/api\n" +
+            "********************/";
+        var v = this.data.cornerMarkScriptText || defaultText;
+        this.cornerMarkScriptArea.load({
+            code: v
+        });
+
+        this.cornerMarkActionAreaNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
     },
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {
