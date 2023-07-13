@@ -2121,10 +2121,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 var mediaIds = [];
                 if (medias && medias.length) {
-                    medias.each(function (file) {
+                    medias.each(function (file, i) {
                         var formData = new FormData();
                         formData.append("file", file);
                         formData.append("site", "$mediaOpinion");
+                        var fileName = "mediaOpinion_"+i+"_"+new Date().getTime();
+                        if( file.type && file.type.contains("/") ) {
+                            file.name = fileName + "." + file.type.split("/")[1];
+                        }else{
+                            file.name = fileName + ".unknow";
+                        }
                         this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function (json) {
                             mediaIds.push(json.data.id);
                         }.bind(this), null, false);

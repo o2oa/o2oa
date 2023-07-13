@@ -271,6 +271,10 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             var img = this.tablet.getImage( null, true );
             if(img)Promise.resolve( img ).then(function( image ){
                 Promise.resolve( this.tablet.getFormData(image) ).then(function (formData) {
+                    var fileName = "handwriting"+"_"+new Date().getTime();
+                    if( image.type && image.type.contains("/") ) {
+                        image.name = fileName + "." + image.type.split("/")[1];
+                    }
                     o2.xDesktop.uploadImageByScale(
                         this.form.businessData.work.job,
                         "processPlatformJob",
