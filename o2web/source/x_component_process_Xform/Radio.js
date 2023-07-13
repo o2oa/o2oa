@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
 MWF.require("MWF.widget.UUID", null, false);
 /** @class Radio 单选按钮。
  * @o2cn 单选按钮
@@ -14,7 +14,7 @@ MWF.require("MWF.widget.UUID", null, false);
  * field.hide(); //隐藏字段
  * var id = field.json.id; //获取字段标识
  * var flag = field.isEmpty(); //字段是否为空
- * @extends MWF.xApplication.process.Xform.$Input
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
@@ -23,7 +23,13 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
     /** @lends MWF.xApplication.process.Xform.Radio# */
     {
 	Implements: [Events],
-	Extends: MWF.APP$Input,
+	Extends: MWF.APP$Selector,
+        /**
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Radio#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+
     /**
      * @ignore
      * @member {Element} descriptionNode
@@ -49,20 +55,15 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         var value = this.getValue();
         this._showValue(this.node, value);
     },
-    _showValue: function(node, value){
-        var radioValues = this.getOptions();
+    __showValue: function(node, value, optionItems){
         if (value){
             var texts = "";
-            for (var i=0; i<radioValues.length; i++){
-                var item = radioValues[i];
+            for (var i=0; i<optionItems.length; i++){
+                var item = optionItems[i];
                 var tmps = item.split("|");
                 var t = tmps[0];
                 var v = tmps[1] || t;
 
-                // if (value.indexOf(v)!=-1){
-                //     texts = t;
-                //     break;
-                // }
                 if (value == v){
                     texts = t;
                     break;
@@ -123,60 +124,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
             }.bind(this));
         }
     },
-    /**
-     * @summary 刷新选择项，如果选择项是脚本，重新计算。
-     * @example
-     * this.form.get('fieldId').resetOption();
-     */
-    resetOption: function(){
-        this.node.empty();
-        this.setOptions();
-    },
-        /**
-         * @summary 获取选择项。
-         * @return {Array} 返回选择项数组，如果使用选择项脚本，根据脚本返回决定，如：<pre><code class='language-js'>[
-         *  "女|female",
-         *  "男|male"
-         * ]</code></pre>
-         * @example
-         * this.form.get('fieldId').getOptions();
-         */
-	getOptions: function(){
-		if (this.json.itemType == "values"){
-			return this.json.itemValues;
-		}else{
-			return this.form.Macro.exec(this.json.itemScript.code, this);
-		}
-		return [];
-	},
 
-    /**
-     * @summary 获取整理后的选择项。
-     * @return {Object} 返回整理后的选择项，如：
-     * <pre><code class='language-js'>{"valueList": ["","female","male"], "textList": ["","女","男"]}
-     * </code></pre>
-     * @example
-     * var optionData = this.form.get('fieldId').getOptionsObj();
-     */
-    getOptionsObj : function(){
-        var textList = [];
-        var valueList = [];
-        var optionItems = this.getOptions();
-        if (!optionItems) optionItems = [];
-        if (o2.typeOf(optionItems)==="array"){
-            optionItems.each(function(item){
-                var tmps = item.split("|");
-                textList.push( tmps[0] );
-                valueList.push( tmps[1] || tmps[0] );
-            }.bind(this));
-        }
-        return { textList : textList, valueList : valueList };
-    },
-
-    setOptions: function(){
-        var optionItems = this.getOptions();
-        this._setOptions(optionItems);
-    },
     isNumber : function( d ){
         return parseInt(d).toString() !== "NaN"
     },
@@ -378,17 +326,8 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         }
         this.fieldModuleLoaded = true;
 	},
-    /**
-     * @summary 获取选中项的value和text。
-     * @return {Object} 返回选中项的value和text，如：
-     * <pre><code class='language-js'>{"value": ["male"], "text": ["男"]}
-     * {"value": [""], "text": [""]}
-     * </code></pre>
-     * @example
-     * var data = this.form.get('fieldId').getTextData();
-     * var text = data.text[0] //获取选中项的文本
-     */
-	getTextData: function(){
+
+	_getInputTextData: function(){
 		var inputs = this.node.getElements("input");
 		var value = "";
 		var text = "";
@@ -402,7 +341,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 				}
 			}
 		}
-		return {"value": [value] || "", "text": [text || value || ""]};
+		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
     /**
      * @summary 获取选中项的text。
@@ -411,9 +350,17 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
      * var text = this.form.get('fieldId').getText(); //获取选中项的文本
      */
     getText: function(){
-        var texts = this.getTextData().text;
-        return (texts && texts.length) ? texts[0] : "";
-    },
+		var d = this.getTextData();
+		if( typeOf(d.then) === "function" ){
+			return d.then(function( d1 ){
+				var texts = d1.text;
+				return (texts && texts.length) ? texts[0] : "";
+			})
+		}else{
+			var texts = d.text;
+			return (texts && texts.length) ? texts[0] : "";
+		}
+	},
     getInputData: function(){
         if (this.isReadonly()){
             return this._getBusinessData();
@@ -526,20 +473,31 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         }
     },
 
-        getExcelData: function(){
-            var value = this.getData();
+    getExcelData: function( type ){
+		var value = this.getData();
+		if( type === "value" )return value;
+
+		var options = this.getOptionsObj();
+		return Promise.resolve(options).then(function (opts) {
+			var idx = opts.valueList.indexOf( value );
+			var text = idx > -1 ? opts.textList[ idx ] : "";
+			return text;
+		});
+	},
+    setExcelData: function(d, type){
+		var value = d.replace(/&#10;/g,""); //换行符&#10;
+		this.excelData = value;
+		if( type === "value" ){
+			this.setData(value, true);
+		}else{
             var options = this.getOptionsObj();
-            var idx = options.valueList.indexOf( value );
-            var text = idx > -1 ? options.textList[ idx ] : "";
-            return text;
-        },
-        setExcelData: function(d){
-            var value = d.replace(/&#10;/g,""); //换行符&#10;
-            this.excelData = value;
-            var options = this.getOptionsObj();
-            var idx = options.textList.indexOf( value );
-            value = idx > -1 ? options.valueList[ idx ] : ""
-            this.setData(value, true);
-        }
+            this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                var idx = opts.textList.indexOf( value );
+                value = idx > -1 ? opts.valueList[ idx ] : "";
+                this.setData(value, true);
+                this.moduleExcelAG = null;
+            }.bind(this));
+	    }
+	}
 	
 }); 

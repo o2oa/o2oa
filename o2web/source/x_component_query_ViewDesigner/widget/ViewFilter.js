@@ -25,6 +25,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
 
     },
     load: function(data){
+        this.setHtml();
         this.getInputNodes();
         this.createActionNode();
         //this.createAddNode();
@@ -52,6 +53,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         MWF.require("MWF.widget.ScriptArea", function(){
             this.scriptArea = new MWF.widget.ScriptArea(node, {
                 "title": title,
+                "isload": true,
                 "maxObj": this.app.formContentNode || this.app.pageContentNode,
                 "onChange": function(){
                     this.scriptData = this.scriptArea.toJson();
@@ -87,6 +89,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScriptArea.load(v);
         }.bind(this));
     },
+    setHtml: function(){},
     getInputNodes: function(){
         debugger;
         this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");

@@ -23,12 +23,45 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.options}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemValues').setStyle('display', 'block'); $('text{$.pid}selectEditItemScript').setStyle('display', 'none')}" name="itemType" text{($.itemType!=='script')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
-					<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+					<input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
+					 }" name="itemType" text{(!$.itemType || $.itemType==='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
+					<input class="editTableRadio" onclick="if (this.checked){
+					    $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+					    $('text{$.pid}selectEditItemScript').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
+					 }" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
+                    }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'block');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
+                    }" name="itemType" text{($.itemType=='view')?'checked':''} type="radio" value="view"/>{{$.lp.view}}
+                    <input class="editTableRadio" onclick="if (this.checked){
+                        $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemView').setStyle('display', 'none');
+                        $('text{$.pid}selectEditItemStatement').setStyle('display', 'block');
+                    }" name="itemType" text{($.itemType=='statement')?'checked':''} type="radio" value="statement"/>{{$.lp.statement}}
 				</td>
 			</tr>
 		</table>
-		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType!=='script')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
+		<div id="text{$.pid}selectEditItemValues" style="display: text{(!$.itemType || $.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
 		<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
 			<div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
 			<div style="padding: 5px">{{$.lp.itemScriptInfo}}</div>
@@ -39,6 +72,67 @@
 				<div>}</div>
 			</div>
 		</div>
+		<div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dict}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFDictionaryNode" data-count=1 name="itemDict"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dictPath}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFDictionaryItemNode" name="itemDictPath" data-dict="itemDict" title="{{$.lp.dict}}{{$.lp.dictPath}}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableValue" colspan="2">{{$.lp.dictKeyNote}}:</td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.textKey}}:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="dictTextKey" value="text{$.dictTextKey}" class="editTableInput"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.pid}selectEditItemView" style="display: text{($.itemType=='view')?'block':'none'}" class="MWFQueryViewItemContainer">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.view}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFQueryViewNode" data-count=1 name="itemView"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.textColumn}}:</td>
+                    <td class="editTableValue">
+                        <select class="MWFViewColumnSelect" name="viewTextColumn" style="max-width: 270px;"></select>
+                    </td>
+                </tr>
+            </table>
+            <div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.filter}}</div>
+            <div class="MWFViewFilterWithTemplate"></div>
+        </div>
+        <div id="text{$.pid}selectEditItemStatement" style="display: text{($.itemType=='statement')?'block':'none'}" class="MWFQueryStatementItemContainer">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.statement}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFQueryStatementNode" data-count=1 name="itemStatement"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.textColumn}}:</td>
+                    <td class="editTableValue">
+                        <select class="MWFStatementItemSelect" name="statementTextColumn" style="max-width: 270px;"></select>
+                    </td>
+                </tr>
+            </table>
+            <div style="background-color: #eeeeee; height: 24px; line-height: 24px; text-align: center; cursor:pointer">{{$.lp.filter}}</div>
+            <div class="MWFStatementFilterWithTemplate" data-statement="itemStatement"></div>
+        </div>
 
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

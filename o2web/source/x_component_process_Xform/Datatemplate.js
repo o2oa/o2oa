@@ -1164,12 +1164,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.clearSubModules();
 			}
 
-			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
-
 			this.lineList = [];
 			this.sectionlineList = [];
 			this._loadDataTemplate(function(){
 				this._setSubDatatemplateOuterEvents();
+				if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 				this.unchangedLineMap = null;
 			}.bind(this), operation);
 		},
@@ -3335,7 +3334,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}
 			if(!hasError){
 				module.setExcelData(parsedD);
-				return Promise.resolve( module.moduleValueAG || module.moduleSelectAG ).then(function () {
+				var ps = [];
+				if( module.moduleExcelAG )ps.push( module.moduleExcelAG );
+				if( module.moduleValueAG && !ps.contains(module.moduleValueAG) )ps.push( module.moduleValueAG );
+				if( module.moduleSelectAG && !ps.contains(module.moduleSelectAG) )ps.push( module.moduleSelectAG );
+				return Promise.all( ps ).then(function () {
 					var result = module.validationExcel();
 					if ( result && result.length ){
 						lineData.errorTextList.push(colInfor + result.join("\n") );

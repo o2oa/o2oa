@@ -21,17 +21,16 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     options: {
         /**
          * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
-         * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.Elcheckbox#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 组件加载时触发.
-         * @event MWF.xApplication.process.Xform.$Module#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Elcheckbox#load
          */
         /**
          * 组件加载后触发.
-         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @event MWF.xApplication.process.Xform.Elcheckbox#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad", "change"],
@@ -92,17 +91,17 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         var value = this.getValue();
         this._showValue(this.node, value);
     },
-    _showValue: function(node, value){
-        var radioValues = this.getOptions();
+    __showValue: function(node, value, optionItems){
+        debugger;
         if (value){
             var texts = [];
-            radioValues.each(function(item){
+            optionItems.each(function(item){
                 var tmps = item.split("|");
                 var t = tmps[0];
                 var v = tmps[1] || t;
 
                 if (value.indexOf(v)!=-1){
-                    texts.push(t);
+                    texts.push(t || v);
                 }
             });
             node.set("text", texts.join(", "));
@@ -338,28 +337,42 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         }
     },
 
-        getExcelData: function(){
-            var options = this.getOptionsObj();
+        getExcelData: function( type ){
             var value = this.getData();
-            value = o2.typeOf(value) === "array" ? value : [value];
-            var arr = [];
-            value.each( function( a, i ){
-                var idx = options.valueList.indexOf( a );
-                arr.push( idx > -1 ? options.textList[ idx ] : "") ;
+            if( type === "value" )return value;
+
+            var options = this.getOptionsObj();
+            return Promise.resolve(options).then(function (opts) {
+                value = o2.typeOf(value) === "array" ? value : [value];
+                var arr = [];
+                value.each( function( a, i ){
+                    var idx = opts.valueList.indexOf( a );
+                    var text = idx > -1 ? opts.textList[ idx ] : "";
+                    if( !text )text = value;
+                    arr.push( text );
+                });
+                return arr.join(", ");
             });
-            return arr.join(", ");
         },
-        setExcelData: function(d){
+        setExcelData: function(d, type){
             var arr = this.stringToArray(d);
             this.excelData = arr;
-            var options = this.getOptionsObj();
-            arr.each( function( a, i ){
-                var idx = options.textList.indexOf( a );
-                arr[ i ] = idx > -1 ? options.valueList[ idx ] : null;
-            });
-            arr.clean();
-            this.json[this.json.$id] = arr;
-            this._setBusinessData(arr);
-            this.setData(arr, true);
+            if( type === "value" ){
+                this.setData(value, true);
+            }else{
+                var options = this.getOptionsObj();
+                this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                    arr.each( function( a, i ){
+                        var idx = opts.textList.indexOf( a );
+                        var v = idx > -1 ? opts.valueList[ idx ] : null;
+                        arr[ i ] = v || a;
+                    });
+                    arr.clean();
+                    this.json[this.json.$id] = arr;
+                    this._setBusinessData(arr);
+                    this.setData(arr, true);
+                    this.moduleExcelAG = null;
+                }.bind(this));
+            }
         }
 }); 

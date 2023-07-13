@@ -860,22 +860,30 @@ o2.widget.O2Dictionary = new Class({
     open : function (e) {
         if( this.data.id && this.data.appId && this.data.appType){
             var appName;
-            if( this.data.appType === "cms" ){
-                appName = "cms.DictionaryDesigner";
-            }else if( this.data.appType === "process" ) {
-                appName = "process.DictionaryDesigner";
+            switch (this.data.appType) {
+                case "cms":
+                    appName = "cms.DictionaryDesigner"; break;
+                case "process":
+                    appName = "process.DictionaryDesigner"; break;
+                case "portal":
+                    appName = "portal.DictionaryDesigner"; break;
+                default:
+                    appName = "service.DictionaryDesigner"; break;
             }
             var appId = appName + this.data.id;
             if (layout.desktop.apps[appId]){
                 layout.desktop.apps[appId].setCurrent();
             }else {
                 var options = {
-                    "id": this.data.id,
-                    "appId": appId,
-                    "application":{
+                    "id": this.data.id
+                };
+                if( this.data.appType !== "service" ){
+                    options.appId = appId;
+                    options.application = {
                         "id": this.data.appId,
                         "name": this.data.appName || this.data.applicationName || ""
-                    }};
+                    };
+                }
                 layout.desktop.openApplication(e, appName, options);
             }
         }

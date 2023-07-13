@@ -738,5 +738,4 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         }
         return true;
     }
-	
 }); 

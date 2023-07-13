@@ -380,12 +380,23 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (!this.isAllSubformLoaded) return;
             if ((!this.subformCount || this.subformCount === this.subformLoadedCount)){
                 //this.container.setStyle("opacity", 1);
-                this.fireEvent("afterModulesLoad");
-                if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
 
-                this.fireEvent("afterLoad");
-                if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
-                this.isLoaded = true;
+                var moduleAgList = [];
+                this.modules.each( function(module){
+                    if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
+                    if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
+                });
+
+
+                Promise.all( moduleAgList ).then(function () {
+                    this.fireEvent("afterModulesLoad");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
+
+                    this.fireEvent("afterLoad");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
+                    this.isLoaded = true;
+                }.bind(this));
+
             }
         },
         autoSave: function () {
