@@ -316,8 +316,14 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
                 },
                 "count" : 1,
                 "names": this.data.cornerMarkScript ? [ {id : this.data.cornerMarkScript} ] : [],
-                "onChange": function () {
-
+                "onChange": function ( arr ) {
+                    if( arr && arr.length ){
+                        this.data.cornerMarkScript = arr[0].data.id;
+                    }else{
+                        this.data.cornerMarkScript = "";
+                    }
+                    debugger;
+                    this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
                 }.bind(this)
             });
         }.bind(this));
@@ -334,10 +340,14 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             // "forceType": "ace",
             "maxObj": this.app.content,
             "onChange": function(){
-                this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson();
+                debugger;
+                this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson().code;
+                this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
             }.bind(this),
             "onSave": function(){
-                //this.app.saveForm();
+                debugger;
+                this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson().code;
+                this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
             }.bind(this),
             // "style": "formula"
         });
