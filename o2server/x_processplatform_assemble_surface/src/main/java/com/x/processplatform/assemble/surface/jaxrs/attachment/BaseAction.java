@@ -324,6 +324,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (!StringTools.isFileName(fileName)) {
 			throw new ExceptionFileNameInvalid(fileName);
 		}
+		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
+		if(StringUtils.isBlank(fileType)){
+			throw new ExceptionFileNameInvalid(fileName);
+		}
 		if (Config.general().getAttachmentConfig().getFileSize() != null
 				&& Config.general().getAttachmentConfig().getFileSize() > 0) {
 			size = size / (1024 * 1024);
@@ -337,7 +341,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 				}
 			}
 		}
-		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
 		if ((Config.general().getAttachmentConfig().getFileTypeIncludes() != null
 				&& !Config.general().getAttachmentConfig().getFileTypeIncludes().isEmpty())
 				&& (!ListTools.contains(Config.general().getAttachmentConfig().getFileTypeIncludes(), fileType))) {
