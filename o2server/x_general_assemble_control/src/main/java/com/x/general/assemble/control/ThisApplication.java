@@ -1,10 +1,7 @@
 package com.x.general.assemble.control;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.x.base.core.project.Context;
@@ -19,18 +16,12 @@ public class ThisApplication {
 
 	protected static Context context;
 
-	private static ExecutorService threadPool;
+	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
+			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
+					.build());
 
 	public static ExecutorService threadPool() {
 		return threadPool;
-	}
-
-	private static void initThreadPool() {
-		int maximumPoolSize = Runtime.getRuntime().availableProcessors() + 1;
-		ThreadFactory threadFactory = new ThreadFactoryBuilder()
-				.setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d").build();
-		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000),
-				threadFactory);
 	}
 
 	public static Context context() {
@@ -40,7 +31,6 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
-			initThreadPool();
 			context().schedule(Clean.class, "0 0 2 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,6 +39,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			threadPool.shutdown();
 			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
