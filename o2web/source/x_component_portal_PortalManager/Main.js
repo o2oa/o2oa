@@ -326,11 +326,22 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             // }.bind(this),
             // "style": "formula"
         });
+        this.app.addEvent("resize", function () {
+            if(this.cornerMarkScriptArea.jsEditor)this.cornerMarkScriptArea.jsEditor.resize();
+        }.bind(this))
+
+        debugger;
+
+        var host = window.location.origin;
+        if( !host )host = window.location.protocol + "//" + window.location.host;
         var defaultText = "/********************\n" +
-            "this.currentPerson//当前用户\n" +
+            "this.currentPerson; //当前用户对象，如：{\"distinguishedName\":\"张三@zhangsan@P\",\"unique\":\"zhangsan\",\"name\":\"张三\"}\n" +
             "this.org; //组织快速访问方法\n" +
             "return 10; //返回结果\n" +
-            "API Document: http://dev.o2oa.net/api\n" +
+            "API Document: "+ host +"/api\n" +
+            "示例：角标显示当前人的待办总数\n" +
+            "var json = this.Actions.load(\"x_processplatform_assemble_surface\").TaskAction.manageListFilterPaging(1, 1, {\"credentialList\": [this.currentPerson.distinguishedName]})\n" +
+            "return json.count;\n"+
             "********************/";
         var v = this.data.cornerMarkScriptText || defaultText;
         this.cornerMarkScriptArea.load({code: v});

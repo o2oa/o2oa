@@ -653,11 +653,6 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             "onPostLoad": function () {
                 if(this.jsEditor)this.jsEditor.setFontSize( "12px" );
             },
-            // "onSave": function(){
-            //     if(this.currentPage){
-            //         this.currentPage.requireBody = this.propertyRequireBodyScriptArea.toJson().code;
-            //     }
-            // }.bind(this),
             "style": "formula"
         });
         this.propertyRequireBodyScriptArea.load({code: ""});
