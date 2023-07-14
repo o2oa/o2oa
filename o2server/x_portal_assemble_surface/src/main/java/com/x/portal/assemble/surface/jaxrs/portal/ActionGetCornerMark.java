@@ -46,7 +46,7 @@ class ActionGetCornerMark extends BaseAction {
 
     private Long getCornerMark(Portal portal, Business business, EffectivePerson effectivePerson) {
         Long count = 0L;
-        if(StringUtils.isNotBlank(portal.getCornerMarkScript()) && StringUtils.isNotBlank(portal.getCornerMarkScriptText())){
+        if(StringUtils.isNotBlank(portal.getCornerMarkScript()) || StringUtils.isNotBlank(portal.getCornerMarkScriptText())){
             CompiledScript compiledScript = this.getCompiledScript(portal, business);
             if(compiledScript != null) {
                 try {
