@@ -772,32 +772,57 @@ o2.widget.O2Script = new Class({
             transition: 'flyin'
         });
     },
-    open : function (e) {
-        if( this.data.id && this.data.appId && this.data.appType){
-            var appName;
-            if( this.data.appType === "cms" ){
-                appName = "cms.ScriptDesigner";
-            }else if( this.data.appType === "portal" ){
-                appName = "portal.ScriptDesigner";
-            }else if( this.data.appType === "process" ) {
-                appName = "process.ScriptDesigner";
-            }else if( this.data.appType === "service" ) {
-                appName = "service.ScriptDesigner";
-            }
-            var appId = appName + this.data.id;
-            if (layout.desktop.apps[appId]){
-                layout.desktop.apps[appId].setCurrent();
-            }else {
-                var options = {
-                    "id": this.data.id,
-                    "appId": appId,
-                    "application":{
-                        "name": this.data.appName || this.data.applicationName || "",
-                        "id": this.data.appId
+    open: function(e){
+        if( this.data.id && this.data.appId && this.data.appType) {
+            this._open();
+        }else{
+            var app = this.data.appId || this.data.application || this.data.appName || this.data.applicationName;
+            var name = this.data.id || this.data.name;
+            if( this.data.appType === "service" )app = "service";
+            if( name && app && this.data.appType ){
+                var p, type = this.data.appType;
+                if( type === "process" ){
+                    p = o2.Actions.load("x_processplatform_assemble_surface").ScriptAction.getImported(this.data.name, app);
+                }else if( type === "portal" ){
+                    p = o2.Actions.load("x_portal_assemble_surface").ScriptAction.getImported(app, this.data.name);
+                }else if( type === "cms" ){
+                    p = o2.Actions.load("x_cms_assemble_control").ScriptAction.load(this.data.name, app);
+                }else if( type === "service" ){
+                    p = o2.Actions.load("x_program_center").ScriptAction.getImported(this.data.name);
+                }
+                p.then(function (json) {
+                    if( json.data.importedList && json.data.importedList.length ){
+                        this.data.id = json.data.importedList[0];
+                        this._open(e);
                     }
-                };
-                layout.desktop.openApplication(e, appName, options);
+                }.bind(this))
             }
+        }
+    },
+    _open : function (e) {
+        var appName;
+        if( this.data.appType === "cms" ){
+            appName = "cms.ScriptDesigner";
+        }else if( this.data.appType === "portal" ){
+            appName = "portal.ScriptDesigner";
+        }else if( this.data.appType === "process" ) {
+            appName = "process.ScriptDesigner";
+        }else if( this.data.appType === "service" ) {
+            appName = "service.ScriptDesigner";
+        }
+        var appId = appName + this.data.id;
+        if (layout.desktop.apps[appId]){
+            layout.desktop.apps[appId].setCurrent();
+        }else {
+            var options = {
+                "id": this.data.id,
+                "appId": appId,
+                "application":{
+                    "name": this.data.appName || this.data.applicationName || "",
+                    "id": this.data.appId
+                }
+            };
+            layout.desktop.openApplication(e, appName, options);
         }
     }
 });

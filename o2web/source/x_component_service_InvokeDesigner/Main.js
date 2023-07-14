@@ -617,25 +617,50 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.debugger+":"}).inject(this.propertyContentArea);
 
-        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.requireArguments}).setStyles({
-            "word-break":"break-all",
-            "height" : "auto",
-            "line-height": "18px",
-            "margin-top": "10px",
-            "color": "#999999"
-        }).inject(this.propertyContentArea);
-        this.propertyRequireBodyNode = new Element("textarea", {
-            "styles": this.css.propertyInputAreaNode,
-            "value": "",
-            "events": {
-                change : function () {
-                    debugger;
-                    if(this.currentPage){
-                        this.currentPage.requireBody = this.propertyRequireBodyNode.get("value");
-                    }
-                }.bind(this)
-            }
-        }).inject(this.propertyContentArea);
+        // new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.requireArguments}).setStyles({
+        //     "word-break":"break-all",
+        //     "height" : "auto",
+        //     "line-height": "18px",
+        //     "margin-top": "10px",
+        //     "color": "#999999"
+        // }).inject(this.propertyContentArea);
+        // this.propertyRequireBodyNode = new Element("textarea", {
+        //     "styles": this.css.propertyInputAreaNode,
+        //     "value": "",
+        //     "events": {
+        //         change : function () {
+        //             debugger;
+        //             if(this.currentPage){
+        //                 this.currentPage.requireBody = this.propertyRequireBodyNode.get("value");
+        //             }
+        //         }.bind(this)
+        //     }
+        // }).inject(this.propertyContentArea);
+
+        var propertyRequireBodyScriptWraper = new Element("div").inject(this.propertyContentArea);
+        MWF.require("MWF.widget.ScriptArea", null, false);
+        this.propertyRequireBodyScriptArea = new MWF.widget.ScriptArea(propertyRequireBodyScriptWraper, {
+            "title": this.lp.requireArguments,
+            "isload" : true,
+            "isbind" : false,
+            "forceType": "ace",
+            "maxObj": this.content,
+            "onChange": function(){
+                if(this.currentPage){
+                    this.currentPage.requireBody = this.propertyRequireBodyScriptArea.toJson().code;
+                }
+            }.bind(this),
+            "onPostLoad": function () {
+                if(this.jsEditor)this.jsEditor.setFontSize( "12px" );
+            },
+            // "onSave": function(){
+            //     if(this.currentPage){
+            //         this.currentPage.requireBody = this.propertyRequireBodyScriptArea.toJson().code;
+            //     }
+            // }.bind(this),
+            "style": "formula"
+        });
+        this.propertyRequireBodyScriptArea.load({code: ""});
 
 
         node = new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.tokenSetting+":"}).inject(this.propertyContentArea);
@@ -670,7 +695,8 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             var alias = this.propertyExecuteButton.retrieve("alias");
             var name = this.propertyExecuteButton.retrieve("name");
             var id = this.propertyExecuteButton.retrieve("id");
-            var body = this.propertyRequireBodyNode.get("value");
+            //var body = this.propertyRequireBodyNode.get("value");
+            var body = this.propertyRequireBodyScriptArea.toJson().code;
 
             debugger;
 

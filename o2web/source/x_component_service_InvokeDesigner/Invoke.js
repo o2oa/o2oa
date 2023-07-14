@@ -259,7 +259,10 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyEnableTokenChangeEvent();
 
         if(this.page){
-            this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
+            //this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
+            if( this.designer.propertyRequireBodyScriptArea.jsEditor ){
+                this.designer.propertyRequireBodyScriptArea.jsEditor.setValue(this.page.requireBody || "");
+            }
             this.designer.propertyRunResultNode.set("text", this.page.executeResult || "");
         }
 
