@@ -295,12 +295,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlag(String flag, Class<T> cls, String singularAttribute,
 			Object restrictValue) throws Exception {
 		return this.restrictFlag(flag, cls, singularAttribute, restrictValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlag(String flag, Class<T> cls, String singularAttribute,
 			Object restrictValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
@@ -334,12 +336,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return t;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue) throws Exception {
 		return this.restrictFlagEqualAndEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
@@ -374,12 +378,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return t;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue) throws Exception {
 		return this.restrictFlagEqualAndNotEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
