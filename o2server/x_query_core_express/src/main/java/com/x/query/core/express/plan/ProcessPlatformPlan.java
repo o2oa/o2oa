@@ -46,7 +46,6 @@ public class ProcessPlatformPlan extends Plan {
 		this.selectList = new SelectEntries();
 		this.where = new WhereEntry();
 		this.filterList = new TreeList<FilterEntry>();
-		this.columnList = new TreeList<String>();
 	}
 
 	public WhereEntry where = new WhereEntry();

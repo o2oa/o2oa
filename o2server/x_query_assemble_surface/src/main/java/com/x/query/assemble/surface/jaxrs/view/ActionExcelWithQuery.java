@@ -1,5 +1,11 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.list.TreeList;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,6 +18,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
@@ -21,16 +29,17 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
-import org.apache.commons.collections4.list.TreeList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 class ActionExcelWithQuery extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExcel.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String queryFlag, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, queryFlag:{}, jsonElement:{}.", effectivePerson::getDistinguishedName,
+				() -> flag, () -> queryFlag, () -> jsonElement);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (ListTools.isNotEmpty(wi.getBundleList())) {
@@ -61,7 +70,7 @@ class ActionExcelWithQuery extends BaseAction {
 			runtime.bundleList = wi.getBundleList();
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
-		String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view, wi.getExcelName());
+		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());
 		Wo wo = new Wo();
 		wo.setId(excelFlag);
 		result.setData(wo);
@@ -70,9 +79,14 @@ class ActionExcelWithQuery extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 1123515948467557694L;
+
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -51802802412712709L;
+
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
