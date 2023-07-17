@@ -197,7 +197,6 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
             this.validationMode();
             if (this.validation()) {
 				//this._setEnvironmentData(v);
-				debugger;
 				this.fireEvent("change", [this._getSelectedOption()]);
 			}
         }.bind(this));
