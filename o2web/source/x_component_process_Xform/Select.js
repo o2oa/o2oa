@@ -33,6 +33,12 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 		 */
 
+		/**
+		 * 值改变时触发。可以通过this.event获取修改后的选择项（Dom对象）。
+		 * @event MWF.xApplication.process.Xform.Select#change
+		 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+		 */
+
 	/**
 	 * @ignore
 	 * @member {Element} descriptionNode
@@ -191,7 +197,8 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
             this.validationMode();
             if (this.validation()) {
 				//this._setEnvironmentData(v);
-				this.fireEvent("change");
+				debugger;
+				this.fireEvent("change", [this._getSelectedOption()]);
 			}
         }.bind(this));
 
@@ -358,10 +365,16 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	// 	//this.node.set("value", value);
 	// },
 
-
+	_getSelectedOption: function(){
+		var ops = this.node.getElements("option");
+		for( var i=0; i<ops.length; i++ ){
+			if( ops[i].selected )return ops[i];
+		}
+		return null;
+	},
 	_getInputTextData: function(){
 	    var value = [], text = [];
-        ops = this.node.getElements("option");
+        var ops = this.node.getElements("option");
         ops.each(function(op){
             if (op.selected){
                 var v = op.get("value");
@@ -437,6 +450,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	__setData: function(data, fireChange){
 		var old = this.getInputData();
         this._setBusinessData(data);
+        var selectedOption = null;
 		if (this.isReadonly()){
 			var d = typeOf(data) === "array" ? data : [data];
 			var ops = this.getOptionsObj();
@@ -462,12 +476,14 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 				if (typeOf(data)==="array"){
 					if (data.indexOf(op.get("value"))!=-1){
 						op.set("selected", true);
+						selectedOption = op;
 					}else{
 						op.set("selected", false);
 					}
 				}else{
 					if (data == op.get("value")){
 						op.set("selected", true);
+						selectedOption = op;
 					}else{
 						op.set("selected", false);
 					}
@@ -477,7 +493,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		}
 		this.fieldModuleLoaded = true;
 		this.fireEvent("setData", [data]);
-		if (fireChange && old!==data) this.fireEvent("change");
+		if (fireChange && old!==data) this.fireEvent("change", [selectedOption]);
 	},
 
 	getExcelData: function( type ){

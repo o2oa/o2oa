@@ -23,6 +23,11 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
          * @event MWF.xApplication.process.Xform.Checkbox#load
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
+        /**
+         * 值改变时触发。可以通过this.event获取修改后的选择项（Dom对象）。
+         * @event MWF.xApplication.process.Xform.Checkbox#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
         loadDescription: function(){},
         _loadNode: function(){
             if (this.isReadonly()){
@@ -191,7 +196,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                         textNode.addEvent("click", function( ev ){
                             if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
                             this.radio.checked = ! this.radio.checked;
-                            this.radio.fireEvent("change");
+                            this.radio.fireEvent("change", [this.radio]);
                             this.radio.fireEvent("click");
                         }.bind( {radio : radio} ) );
 
