@@ -28,8 +28,8 @@ MWF.xApplication.query.QueryExplorer.LP = MWF.QueryLP = {
     "createApplication_cancel_title": "Cancel Confirmation",
     "createApplication_cancel": "Are you sure you want to cancel the newly created data application?",
     "createApplicationSuccess": "Create data application complete!",
-    "searchAppPlacholder": "Enter the name to search for the application",
-
+    "searchAppPlacholder": "Search for the application",
+    "searchAppTitle": "Match the name, alias and id of the application",
     "application": {
         "export": "Export",
         "export_ok": "OK",

@@ -17,6 +17,7 @@ MWF.xApplication.cms.Column.LP = {
     "export_ok": "OK",
     "allApp": "All apps",
     "searchAppPlacholder": "Enter the name to search for the application",
+    "searchAppTitle": "Matches the app's name, alias, and id",
     "column": {
         "title" :"AppInfo Management",
         "create": "New App",

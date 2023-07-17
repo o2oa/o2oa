@@ -28,8 +28,8 @@ MWF.xApplication.query.QueryExplorer.LP = MWF.QueryLP = {
     "createApplication_cancel_title": "取消新建数据应用确认",
     "createApplication_cancel": "您确定要取消新建数据应用吗?",
     "createApplicationSuccess": "创建数据应用完成!",
-    "searchAppPlacholder": "输入名称搜索应用",
-
+    "searchAppPlacholder": "搜索应用",
+    "searchAppTitle": "可匹配应用的名称、别名和id",
     "application": {
         // "action_ok": "完  成",
         // "action_cancel": "取  消",

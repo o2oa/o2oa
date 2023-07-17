@@ -29,6 +29,7 @@ MWF.xApplication.process.ApplicationExplorer.LP = {
 	"createApplication_cancel": "¿Seguro que desea cancelar la creación de la aplicación?",
 	"createApplicationSuccess": "¡Se ha creado la aplicación satisfactoriamente!",
 	"searchAppPlacholder": "Ingresar nombre",
+	"searchAppTitle": "Coincide con el nombre, alias e id de la aplicación",
 
 	"application": {
 		// "action_ok": "完  成",
