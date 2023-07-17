@@ -126,7 +126,8 @@ MWF.xApplication.cms.Column.Main = new Class({
 
             this.searchInput = new Element("input.searchInput", {
                 "styles": this.css.columnTop_searchInput,
-                "placeholder": this.lp.searchAppPlacholder
+                "placeholder": this.lp.searchAppPlacholder,
+                "title": this.lp.searchAppTitle
             }).inject(this.searchNode);
 
             this.searchButton = new Element("i.o2icon-search", {
@@ -182,7 +183,7 @@ MWF.xApplication.cms.Column.Main = new Class({
     searchApp: function(){
         var key = this.searchInput && this.searchInput.get("value");
         this.columns.each(function (app) {
-            if( !key || app.titleNode.get("text").contains( key )){
+            if( !key || app.data.id.contains(key) || app.data.appName.contains(key) || app.data.appAlias.contains(key)){
                 app.node.show();
             }else{
                 app.node.hide();
@@ -191,7 +192,6 @@ MWF.xApplication.cms.Column.Main = new Class({
     },
     loadAppType : function( appType, callback, noRefreshContent ){
         var _self = this;
-        debugger;
         this.restActions.listAllAppTypeByManager( function( json ){
             (json.data || []).each( function( typeObject ){
                 var cNode = new Element( "div.columnTop_category", {

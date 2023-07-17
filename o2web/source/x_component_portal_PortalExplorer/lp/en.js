@@ -27,7 +27,7 @@ MWF.xApplication.portal.PortalExplorer.LP = MWF.PortalLP = {
     "createApplication_cancel": "Are you sure you want to cancel the new portal?",
     "createApplicationSuccess": "The portal is created!",
     "searchAppPlacholder": "Enter the name to search for the application",
-
+    "searchAppTitle": "Match the name, alias and id of the application",
     "application": {
         "export": "Export",
         "export_ok": "OK",
