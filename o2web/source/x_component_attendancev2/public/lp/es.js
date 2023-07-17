@@ -30,6 +30,7 @@ MWF.xApplication.attendancev2.LP = {
   positive: "Aceptar",
   cancel: "Cancelar",
   add: "Agregar",
+  more: "Más",
   dataError: "Error de datos",
   saveSuccess: "Guardado exitoso",
   onDuty: "Registro entrada",
@@ -343,6 +344,7 @@ MWF.xApplication.attendancev2.LP = {
   // 原始打卡记录
   recordManagerTitle: "Registro original",
   record: {
+    detailTitle: "registrar detalles",
     name: "Nombre",
     group: "Grupo de asistencia",
     shift: "Turno",
@@ -350,6 +352,8 @@ MWF.xApplication.attendancev2.LP = {
     checkInType: "Tipo de asistencia",
     recordDate: "Fecha de registro",
     sourceType: "Origen de datos",
+    fieldWorkDesc: "instrucciones de campo",
+    fieldWorkAddress: "Dirección de perforación",
     checkInResult: "Resultado del registro",
     fieldWork: "¿Registro de trabajo de campo?",
     sourceTypeUser: "Registro del usuario",

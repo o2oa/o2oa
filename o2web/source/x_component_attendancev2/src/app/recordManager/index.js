@@ -51,6 +51,10 @@ export default content({
       this.loadRecordlList();
     }
   },
+  // 打开更多详细内容
+  openMore(record) {
+    this.$parent.openRecordDetailVm({bind: { record: record }});
+  },
   search() {
     this.bind.pagerData.page = 1;
     this.loadRecordlList();

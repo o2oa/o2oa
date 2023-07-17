@@ -39,6 +39,7 @@
                 <th>{{$.lp.record.sourceType}}</th>
                 <th>{{$.lp.record.checkInResult}}</th>
                 <!-- <th>{{$.lp.record.fieldWork}}</th> -->
+                <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.recordList" oo-item="r">
                 <td>{{ $m.formatName(r.value.userId) }}</td>
@@ -50,11 +51,15 @@
                 <td>{{ $m.sourceTypeFormat(r.value.sourceType) }}</td>
                 <td>
                     <span class="{{this.formatRecordResultClass(r.value)}}">{{ $m.formatRecordResult(r.value) }}</span>
-                    <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <!-- <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span> -->
                     <span class="color-holiday  margin-left"
                         oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
                 </td>
                 <!-- <td>{{ r.value.fieldWork ? $.lp.yes : $.lp.no }}</td> -->
+                <td>
+                    <!-- <div class="o2-icon-16" @click="this.openMore(r.value)" ><i class="o2icon-icon_bianji"></i></div> -->
+                    <span class="operator_link_underline" @click="this.openMore(r.value)">{{$.lp.more}}</span>
+                </td>
             </tr>
         </table>
     </div>
