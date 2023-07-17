@@ -3895,6 +3895,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @borrows module:queryView.confirm as confirm
      * @borrows module:queryView.alert as alert
      * @borrows module:queryView.notice as notice
+     * @borrows module:queryView.dialog as dialog
+     * @borrows module:queryView.selectOrg as selectOrg
      * @borrows module:queryView.addEvent as addEvent
      * @borrows module:queryView.openWork as openWork
      * @borrows module:queryView.openJob as openJob
@@ -4488,6 +4490,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "dialog": function ( options ) {
             return  _form.dialog( options );
+        },
+
+        /**打开人员组织选择界面
+         * @method selectOrg
+         * @static
+         * @see module:form.selectOrg
+         */
+        "selectOrg": function ( container, options,  delayLoad) {
+            if( !container )container = _form.app.content;
+            return new MWF.O2Selector(container, options, delayLoad);
         },
 
         /**　给视图添加事件。
