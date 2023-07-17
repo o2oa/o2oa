@@ -116,7 +116,7 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
 
     private String comparison(FilterEntry entry) {
         if (Comparison.isNotEquals(entry.comparison)) {
-            return "!=";
+            return "<>";
         }
         if (Comparison.isGreaterThan(entry.comparison)) {
             return ">";
