@@ -24,6 +24,11 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * @author sword
+ * 服务管理接口
+ */
 @Schema(name = "Invoke", description = "服务管理接口.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -37,10 +42,12 @@ public class Invoke extends SliceJpaObject {
 	private static final long serialVersionUID = 8877822163007579542L;
 	private static final String TABLE = PersistenceProperties.Invoke.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -50,6 +57,7 @@ public class Invoke extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 
 	}
@@ -123,6 +131,14 @@ public class Invoke extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, simplyString = false)
 	@Index(name = TABLE + IndexNameMiddle + remoteAddrRegex_FIELDNAME)
 	private String remoteAddrRegex;
+
+	public static final String data_FIELDNAME = "data";
+	@FieldDescribe("自定义字段.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String data;
 
 	public String getName() {
 		return name;
@@ -204,4 +220,11 @@ public class Invoke extends SliceJpaObject {
 		this.enableToken = enableToken;
 	}
 
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
 }
