@@ -1223,6 +1223,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
     changeListStyle: function(style){
         this.options.listStyle = style;
+        this.listStyle = style;
         this.attachments.each(function(attachment){
             attachment.changeListStyle(style);
         }.bind(this));
@@ -1811,6 +1812,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.controller = controller;
         this.css = this.controller.css;
+        this.listStyle = this.controller.options.listStyle;
         this.content = this.controller.minContent;
         this.isSelected = false;
         this.isCheckPosition = isCheckPosition;
@@ -2073,7 +2075,22 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         delete this.node;
         this.node = node;
 
-        this.loadList();
+        debugger;
+
+        switch (this.listStyle){
+            case "list":
+                this.loadList();
+                break;
+            case "icon":
+                this.loadIcon();
+                break;
+            case "preview":
+                this.loadPreview();
+                break;
+            case "sequence":
+                this.loadSequence();
+                break;
+        }
 
         this.createInforNode();
         if (!Browser.Platform.ios){
