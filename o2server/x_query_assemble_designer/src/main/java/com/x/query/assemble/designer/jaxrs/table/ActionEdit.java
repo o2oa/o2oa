@@ -23,6 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
+import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
@@ -39,11 +40,13 @@ class ActionEdit extends BaseAction {
 			if (null == table) {
 				throw new ExceptionEntityNotExist(flag, Table.class);
 			}
+			Query query = emc.flag(table.getQuery(), Query.class);
+			if (null == query) {
+				throw new ExceptionEntityNotExist(table.getQuery());
+			}
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wi.copier.copy(wi, table);
-
-			this.check(effectivePerson, business, table);
 
 			DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(wi.getDraftData(), DynamicEntity.class);
 
@@ -52,8 +55,8 @@ class ActionEdit extends BaseAction {
 			}
 
 			for (Field field : dynamicEntity.getFieldList()) {
-				if (ListTools.toList(JpaObject.FieldsDefault, DynamicEntity.BUNDLE_FIELD).stream().filter(o -> StringUtils.equalsIgnoreCase(o, field.getName()))
-						.count() > 0) {
+				if (ListTools.toList(JpaObject.FieldsDefault, DynamicEntity.BUNDLE_FIELD).stream()
+						.filter(o -> StringUtils.equalsIgnoreCase(o, field.getName())).count() > 0) {
 					throw new ExceptionFieldName(field.getName());
 				}
 			}
@@ -68,6 +71,7 @@ class ActionEdit extends BaseAction {
 				table.setAlias(wi.getAlias());
 				table.setName(wi.getName());
 			}
+			checkDuplicate(business, query, table);
 			emc.check(table, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Table.class);
