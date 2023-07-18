@@ -239,8 +239,6 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyEnableTokenNode.getElement("option[value='"+ this.data.enableToken +"']").set("selected", true );
         this.designer.propertyEnableNode.getElement("option[value='"+ this.data.enable +"']").set("selected", true );
 
-
-
         this.designer.propertyRemoteAddrRegexNode.set("value", this.data.remoteAddrRegex || "");
 
         this.designer.propertyLastStartTimeNode.set("text", this.data.lastStartTime || "");
@@ -258,12 +256,25 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyEnableTokenNode.addEvent("change", this.designer.propertyEnableTokenChangeEvent);
         this.designer.propertyEnableTokenChangeEvent();
 
+        var data = {};
+        if( this.data.data ){
+            try{ data = JSON.parse( this.data.data ) }catch (e) {}
+        }
         if(this.page){
-            this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
+            //this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
+            if( this.designer.propertyRequireBodyScriptArea.jsEditor ){
+                this.designer.propertyRequireBodyScriptArea.jsEditor.setValue(this.page.requireBody || data.requireBodyScript || "");
+            }
             this.designer.propertyRunResultNode.set("text", this.page.executeResult || "");
+
+            if(this.designer.propertyTokenNode){
+                this.designer.propertyTokenNode.getElements("option").each(function ( opt ) {
+                    if( data.simulaToken === opt.value )opt.selected = true;
+                });
+            }
         }
 
-        this.setButton()
+        this.setButton();
     },
     setButton : function(){
         this.designer.propertyExecuteButton.store("id", this.data.id);
@@ -356,6 +367,19 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 }
             });
 
+            var requireBodyScript = "";
+            if(this.designer.propertyRequireBodyScriptArea){
+                requireBodyScript = this.designer.propertyRequireBodyScriptArea.toJson().code;
+            }
+
+            var simulaToken = "";
+            if(this.designer.propertyTokenNode){
+                this.designer.propertyTokenNode.getElements("option").each( function(option){
+                    if( option.selected ){
+                        simulaToken =  option.value;
+                    }
+                });
+            }
 
             if (!name){
                 this.designer.notice(this.designer.lp.notice.inputName, "error");
@@ -373,6 +397,10 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.data.text = this.editor.editor.getValue();
             this.data.enable = enable;
             this.data.enableToken = enableToken;
+            this.data.data = JSON.stringify({
+                requireBodyScript: requireBodyScript,
+                simulaToken: simulaToken
+            });
 
             this.isSave = true;
             this.saveInvoke(this.data, function(json){
@@ -435,6 +463,20 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                     }
                 });
 
+                var requireBodyScript = "";
+                if(this.designer.propertyRequireBodyScriptArea){
+                    requireBodyScript = this.designer.propertyRequireBodyScriptArea.toJson().code;
+                }
+
+                var simulaToken = "";
+                if(this.designer.propertyTokenNode){
+                    this.designer.propertyTokenNode.getElements("option").each( function(option){
+                        if( option.selected ){
+                            simulaToken =  option.value;
+                        }
+                    });
+                }
+
                 if (!name){
                     this.designer.notice(this.designer.lp.notice.inputName, "error");
                     return false;
@@ -449,6 +491,11 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.data.remoteAddrRegex = remoteAddrRegex;
                 this.data.validated = validated;
                 this.data.enable = enable;
+
+                this.data.data = JSON.stringify({
+                    requireBodyScript: requireBodyScript,
+                    simulaToken: simulaToken
+                });
             }
             this.data.text = this.editor.editor.getValue();
 

@@ -125,7 +125,16 @@ MWF.xApplication.portal.PortalManager.LP = {
         "setUsableIdentity" : "Establecer identidad utilizable",
         "setUsableUnit" : "Establecer organización utilizable",
         "setAppUsableIdentity" : "Establecer identidad utilizable de la aplicación",
-        "setAppUsableUnit" : "Establecer organización utilizable de la aplicación"
+        "setAppUsableUnit" : "Establecer organización utilizable de la aplicación",
+
+        "cornerMark": "Configuración de marca de esquina",
+        "cornerMarkNote": "Nota: La marca de la esquina es el número en la esquina superior derecha de la interfaz de la aplicación móvil -> aplicación del portal.",
+        "selectScriptNote": "Haga clic en el signo más para seleccionar la biblioteca de secuencias de comandos",
+        "selectScript": "Seleccionar guión",
+        "cornerMarkScript": "CornerMarkScript",
+        "run": "Ejecutar inmediatamente",
+        "openLogView": "Abrir Visor de Registros",
+        "runResult": "Ejecutar resultado:"
     },
     "createSelectTemplate": "Crear: Seleccionar plantilla",
     "templateCategory": "Categoría de plantilla:",

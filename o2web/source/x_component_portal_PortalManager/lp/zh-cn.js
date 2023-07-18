@@ -125,7 +125,16 @@ MWF.xApplication.portal.PortalManager.LP = {
         "setUsableIdentity" : "设置可用身份",
         "setUsableUnit" : "设置可用组织",
         "setAppUsableIdentity" : "设置应用可用身份",
-        "setAppUsableUnit" : "设置应用可用组织"
+        "setAppUsableUnit" : "设置应用可用组织",
+
+        "cornerMark": "角标设置",
+        "cornerMarkNote": "注：角标为移动端应用界面->门户应用右上角的数字。",
+        "selectScriptNote": "点击加号选择脚本库",
+        "selectScript": "选择脚本",
+        "cornerMarkScript": "角标脚本",
+        "run": "立即运行",
+        "openLogView": "打开日志查看器",
+        "runResult": "运行结果："
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",

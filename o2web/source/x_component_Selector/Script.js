@@ -8,6 +8,7 @@ MWF.xApplication.Selector.Script = new Class({
         "values": [],
         "names": [],
         "appType" : ["service","process","portal","cms"],
+        "applications": [],
         "expand": false,
         "forceSearchInItem" : true
     },
@@ -46,6 +47,11 @@ MWF.xApplication.Selector.Script = new Class({
                         appName = script.portalName || script.applicationName || script.appName || "";
                         appId = script.portal || script.application || script.appId || "";
                     }
+
+                    if( this.options.applications && this.options.applications.length ){
+                        if( !this.options.applications.contains( appId ) )return;
+                    }
+
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,

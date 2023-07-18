@@ -56,7 +56,7 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = 8552082924745177797L;
 		static WrapCopier<Wi, Portal> copier = WrapCopierFactory.wi(Wi.class, Portal.class, null,
-				JpaObject.FieldsUnmodify);
+				JpaObject.FieldsUnmodifyIncludePorperties);
 
 	}
 

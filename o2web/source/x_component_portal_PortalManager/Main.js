@@ -275,12 +275,159 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             this.createPropertyContentNode();
 
             this.createIconContentNode();
-
             this.createAvailableNode();
             this.createControllerListNode();
 
+            this.createCornerMarkNode();
+
+
             // this.createMaintainerNode();
         }.bind(this));
+    },
+    createCornerMarkNode: function(){
+        var lp = this.app.lp.application;
+        this.cornerMarkTitleNode = new Element("div", {
+            "styles": this.app.css.availableTitleNode,
+            "text": lp.cornerMark
+        }).inject(this.contentAreaNode);
+
+        this.cornerMarkContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+
+
+        new Element("div", {
+            styles: this.app.css.noteNode,
+            text: lp.cornerMarkNote
+        }).inject( this.cornerMarkContentNode );
+
+
+        this.cornerMarkItemsContentNode = new Element("div", {"styles": this.app.css.availableItemsContentNode}).inject(this.cornerMarkContentNode);
+
+        this.cornerMarkLeftNode = new Element("div", {"styles": {
+            "width": "calc( 100% - 260px )",
+             "float": "left"
+        }}).inject(this.cornerMarkItemsContentNode);
+
+        MWF.require("MWF.widget.ScriptArea", null, false);
+        this.cornerMarkScriptArea = new MWF.widget.ScriptArea(this.cornerMarkLeftNode, {
+            "type": "service",
+            "api": "../api/index.html#module-print",
+            "title": lp.cornerMarkScript,
+            //"isload" : true,
+            "isbind" : false,
+            // "forceType": "ace",
+            "maxObj": this.app.content,
+            "onChange": function(){
+                this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson().code;
+                this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
+            }.bind(this)
+            // "onSave": function(){
+            //     this.data.cornerMarkScriptText = this.cornerMarkScriptArea.toJson().code;
+            //     this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
+            // }.bind(this),
+            // "style": "formula"
+        });
+        this.app.addEvent("resize", function () {
+            if(this.cornerMarkScriptArea.jsEditor)this.cornerMarkScriptArea.jsEditor.resize();
+        }.bind(this))
+
+        debugger;
+
+        var host = window.location.origin;
+        if( !host )host = window.location.protocol + "//" + window.location.host;
+        var defaultText = "/********************\n" +
+            "this.currentPerson; //当前用户对象，如：{\"distinguishedName\":\"张三@zhangsan@P\",\"unique\":\"zhangsan\",\"name\":\"张三\"}\n" +
+            "this.org; //组织快速访问方法\n" +
+            "return 10; //返回结果\n" +
+            "API Document: "+ host +"/api\n" +
+            "示例：角标显示当前人的待办总数\n" +
+            "var json = this.Actions.load(\"x_processplatform_assemble_surface\").TaskAction.manageListFilterPaging(1, 1, {\"credentialList\": [this.currentPerson.distinguishedName]})\n" +
+            "return json.count;\n"+
+            "********************/";
+        var v = this.data.cornerMarkScriptText || defaultText;
+        this.cornerMarkScriptArea.load({code: v});
+
+        this.cornerMarkRightNode = new Element("div", {"styles": {
+                "width": "260px",
+                "margin-left": "calc( 100% - 260px )"
+            }}).inject(this.cornerMarkItemsContentNode);
+
+        this.selectScriptArea = new Element("div", {
+            styles: this.app.css.selectScriptArea
+        }).inject( this.cornerMarkRightNode );
+        this.selectScriptNode = new Element("div", {
+            text: this.data.cornerMarkScript ? "" : lp.selectScriptNote,
+            styles: {color: "#aaa"}
+        }).inject(this.selectScriptArea);
+
+
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function() {
+            new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.selectScriptNode, this.app, {
+                "title" : lp.selectScript,
+                "type": "script",
+                "selectorOptions":{
+                    "appType" : ["portal"],
+                    "applications": [this.app.options.application.id]
+                },
+                "count" : 1,
+                "names": this.data.cornerMarkScript ? [ {
+                    appId: this.app.options.application.id,
+                    name : this.data.cornerMarkScript,
+                    alias: "",
+                    applicationName: this.data.name,
+                    appType: "portal"
+                } ] : [],
+                "onChange": function ( arr ) {
+                    if( arr && arr.length ){
+                        this.data.cornerMarkScript = arr[0].data.name;
+                    }else{
+                        this.data.cornerMarkScript = "";
+                    }
+                    this.app.restActions.saveApplication(this.data, function(json){}.bind(this));
+                }.bind(this)
+            });
+        }.bind(this));
+
+
+        this.cornerMarkActionAreaNode = new Element("div", {"styles": this.app.css.cornerMarkActionAreaNode }).inject(this.cornerMarkRightNode);
+
+        var executeAction = new Element("div", {
+            "styles": this.app.css.cornerMarkButton,
+            "text": lp.run
+        }).inject(this.cornerMarkActionAreaNode);
+        executeAction.addEvent("click", function(){
+            o2.Actions.load("x_portal_assemble_surface").PortalAction.getCornerMark(this.data.id, function (json) {
+                var result = "";
+                try{
+                    result = JSON.stringify(json, null, 4);
+                }catch (e) {}
+                this.cornerMarkResultNode.set("text",result);
+            }.bind(this), function (xhr) {
+                var result;
+                try{
+                    result = JSON.stringify(xhr.responseText, null, 4);
+                }catch (e) {
+                    result = xhr.responseText;
+                }
+                this.cornerMarkResultNode.set("text",result);
+            }.bind(this))
+        }.bind(this));
+
+        var logAction = new Element("div", {
+            "styles": this.app.css.cornerMarkButton,
+            "text": lp.openLogView
+        }).inject(this.cornerMarkActionAreaNode);
+        logAction.addEvent("click", function(){
+            layout.openApplication(null, "LogViewer");
+        }.bind(this));
+
+        new Element("div", {
+            styles: this.app.css.cornerMarkExecuteNoteNode,
+            text: lp.runResult
+        }).inject( this.cornerMarkRightNode );
+
+        this.cornerMarkResultNode = new Element("div", {
+            style: "white-space: pre; font-size: 12px; word-break: break-all; word-wrap: break-word; height: auto; overflow:auto; margin-left:10px;"
+        }).inject( this.cornerMarkRightNode );
     },
     createPropertyContentNode: function(){
         this.propertyContentNode = new Element("div", {"styles": {
