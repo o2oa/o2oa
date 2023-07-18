@@ -31,6 +31,7 @@ MWF.xApplication.attendancev2.LP = {
   positive: "确定",
   cancel: "取消",
   add: "添加",
+  more: "更多",
   dataError: "数据错误！",
   saveSuccess: "保存成功！",
   onDuty: "上班打卡",
@@ -323,6 +324,7 @@ MWF.xApplication.attendancev2.LP = {
   // 原始打卡记录
   recordManagerTitle: "原始记录",
   record: {
+    detailTitle: "记录详情",
     name: "姓名",
     group: "考勤组",
     shift: "班次",
@@ -332,6 +334,8 @@ MWF.xApplication.attendancev2.LP = {
     sourceType: "数据来源",
     checkInResult: "打卡结果",
     fieldWork: "是否外勤打卡",
+    fieldWorkDesc: "外勤说明",
+    fieldWorkAddress: "打卡地址",
     sourceTypeUser: "用户打卡",
     sourceTypeAuto: "系统生成",
     sourceTypeFast: "极速打卡",

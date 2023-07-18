@@ -51,6 +51,13 @@ export default content({
   publishEvent(eventName, data) {
     this.eventBus.publish(eventName, data);
   },
+  // 打开 打卡记录的详情
+  async openRecordDetailVm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../recordManager/detail/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
   // 打开 打卡地点表单
   async openRecordListVm(bind) {
     this.closeFormVm();
