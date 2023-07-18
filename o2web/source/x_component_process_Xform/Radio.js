@@ -30,6 +30,13 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
 
+
+        /**
+         * 值改变时触发。可以通过this.event获取修改后的选择项（Dom对象）。
+         * @event MWF.xApplication.process.Xform.Radio#change
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+
     /**
      * @ignore
      * @member {Element} descriptionNode
@@ -174,7 +181,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                     textNode.addEvent("click", function( ev ){
                         if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
                         this.radio.checked = true;
-                        this.radio.fireEvent("change");
+                        this.radio.fireEvent("change", [this.radio]);
                         this.radio.fireEvent("click");
                     }.bind( {radio : radio} ) );
 
