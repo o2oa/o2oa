@@ -2942,7 +2942,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
             "offset": options.offset || null,
             "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
-            "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
+            "container": options.container ||  ( layout.mobile ? $(document.body) : this.app.content ),
             "duration": options.duration || 200,
             "lp": options.lp || null,
             "zindex": ( options.zindex || 100 ).toInt(),
