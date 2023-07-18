@@ -12,39 +12,39 @@ public class AndFx extends ConfigObject {
 	private Boolean forceSyncEnable;
 	@FieldDescribe("是否同步离职人员,默认false（即人员离职需要在O2手工删除）")
 	private Boolean syncDeleteUser;
-	@FieldDescribe("移动办公认证api服务地址")
+	@FieldDescribe("认证api服务地址")
 	private String ssoApi;
-	@FieldDescribe("移动办公统一认证sourceId")
+	@FieldDescribe("统一认证sourceId")
 	private String sourceId;
-	@FieldDescribe("移动办公统一认证sourceKey")
+	@FieldDescribe("统一认证sourceKey")
 	private String sourceKey;
-	@FieldDescribe("移动办公客户端ID")
+	@FieldDescribe("客户端ID")
 	private String clientId;
-	@FieldDescribe("移动办公企业ID")
+	@FieldDescribe("企业ID")
 	private String enterId;
-	@FieldDescribe("移动办公通讯录api服务地址")
+	@FieldDescribe("通讯录api服务地址")
 	private String addressApi;
-	@FieldDescribe("移动办公通讯录appKey")
+	@FieldDescribe("通讯录appKey")
 	private String addressAppKey;
-	@FieldDescribe("移动办公通讯录appSecret")
+	@FieldDescribe("通讯录appSecret")
 	private String addressAppSecret;
-	@FieldDescribe("移动办公消息推送api服务地址")
+	@FieldDescribe("消息推送api服务地址")
 	private String msgApi;
-	@FieldDescribe("移动办公消息推送appKey")
+	@FieldDescribe("消息推送appKey")
 	private String msgAppKey;
-	@FieldDescribe("移动办公消息推送appSecret")
+	@FieldDescribe("消息推送appSecret")
 	private String msgAppSecret;
-	@FieldDescribe("移动办公消息推送发送者手机号")
+	@FieldDescribe("消息推送发送者手机号")
 	private String msgSender;
-	@FieldDescribe("移动办公消息推送行业消息类型")
+	@FieldDescribe("消息推送行业消息类型")
 	private String msgType;
-	@FieldDescribe("移动办公消息盒子标题")
+	@FieldDescribe("消息盒子标题")
 	private String msgBoxTitle;
-	@FieldDescribe("移动办公消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
+	@FieldDescribe("消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
 	private String workUrl = "";
-	@FieldDescribe("移动办公消息处理完成后跳转到特定的门户页面的Id")
+	@FieldDescribe("消息处理完成后跳转到特定的门户页面的Id")
 	private String messageRedirectPortal = "";
-	@FieldDescribe("推送消息到移动办公")
+	@FieldDescribe("启用消息推送.")
 	private Boolean messageEnable;
 
 	public static AndFx defaultInstance() {
