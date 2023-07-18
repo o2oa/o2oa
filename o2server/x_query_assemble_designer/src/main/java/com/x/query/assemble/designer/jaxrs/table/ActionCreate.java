@@ -15,7 +15,6 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionDuplicateFlag;
 import com.x.base.core.project.exception.ExceptionEntityFieldEmpty;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -51,18 +50,14 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(table.getName())) {
 				throw new ExceptionEntityFieldEmpty(Table.class, Table.NAME_FIELDNAME);
 			}
-			if (StringUtils.isNotEmpty(emc.conflict(Table.class, table))) {
-				throw new ExceptionDuplicateFlag(Table.class, emc.conflict(Table.class, table));
-			}
-
 			DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getDraftData(), DynamicEntity.class);
 			if (ListTools.isEmpty(dynamicEntity.getFieldList())) {
 				throw new ExceptionFieldEmpty();
 			}
 
 			for (Field field : dynamicEntity.getFieldList()) {
-				if (ListTools.toList(JpaObject.FieldsDefault, DynamicEntity.BUNDLE_FIELD).stream().filter(o -> StringUtils.equalsIgnoreCase(o, field.getName()))
-						.count() > 0) {
+				if (ListTools.toList(JpaObject.FieldsDefault, DynamicEntity.BUNDLE_FIELD).stream()
+						.filter(o -> StringUtils.equalsIgnoreCase(o, field.getName())).count() > 0) {
 					throw new ExceptionFieldName(field.getName());
 				}
 			}
@@ -73,6 +68,7 @@ class ActionCreate extends BaseAction {
 			table.setData("");
 			table.setStatus(Table.STATUS_DRAFT);
 			table.setBuildSuccess(false);
+			checkDuplicate(business, query, table);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Table.class);

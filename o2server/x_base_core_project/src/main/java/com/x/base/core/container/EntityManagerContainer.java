@@ -34,9 +34,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -295,12 +295,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlag(String flag, Class<T> cls, String singularAttribute,
 			Object restrictValue) throws Exception {
 		return this.restrictFlag(flag, cls, singularAttribute, restrictValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlag(String flag, Class<T> cls, String singularAttribute,
 			Object restrictValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
@@ -334,12 +336,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return t;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue) throws Exception {
 		return this.restrictFlagEqualAndEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
@@ -374,12 +378,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return t;
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue) throws Exception {
 		return this.restrictFlagEqualAndNotEqual(flag, cls, firstAttribute, firstValue, secondAttribute, secondValue,
 				this.entityManagerContainerFactory.getRestrictFlagFields(cls));
 	}
 
+	@Deprecated
 	public <T extends JpaObject> T restrictFlagEqualAndNotEqual(String flag, Class<T> cls, String firstAttribute,
 			Object firstValue, String secondAttribute, Object secondValue, List<Field> fields) throws Exception {
 		EntityManager em = this.get(cls);
@@ -433,11 +439,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public <T extends JpaObject> List<T> list(Class<T> cls, boolean ordered, String... ids) throws Exception {
-		List<String> list = new ArrayList<>();
-		for (String str : ids) {
-			list.add(str);
-		}
-		return this.list(cls, ordered, list);
+		return this.list(cls, ordered, Arrays.asList(ids));
 	}
 
 	public <T extends JpaObject> List<T> list(Class<T> cls, boolean ordered, Collection<String> ids) throws Exception {
@@ -467,8 +469,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root).where(cb.equal(root.get(attribute), value));
 		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Comparable<? super W>> List<T> listLessThan(Class<T> cls, String attribute,
@@ -479,8 +480,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root).where(cb.lessThan(root.get(attribute), w));
 		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndEqual(Class<T> cls, String attribute, Object value,
@@ -492,7 +492,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.select(root)
 				.where(cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
 		List<T> os = em.createQuery(cq).getResultList();
-		return new TreeList<T>(os);
+		return new TreeList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndEqualAndEqual(Class<T> cls, String attribute, Object value,
@@ -504,7 +504,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.select(root).where(cb.and(cb.equal(root.get(attribute), value),
 				cb.equal(root.get(otherAttribute), otherValue), cb.equal(root.get(thirdAttribute), thirdValue)));
 		List<T> os = em.createQuery(cq).getResultList();
-		return new TreeList<T>(os);
+		return new TreeList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndEqualAndEqualAndNotEqual(Class<T> cls, String firstAttribute,
@@ -518,7 +518,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				cb.equal(root.get(secondAttribute), secondValue), cb.equal(root.get(thirdAttribute), thirdValue),
 				cb.notEqual(root.get(fourthAttribute), fourthValue)));
 		List<T> os = em.createQuery(cq).getResultList();
-		return new TreeList<T>(os);
+		return new TreeList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndNotEqual(Class<T> cls, String equalAttribute, Object equalValue,
@@ -530,7 +530,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.select(root).where(cb.and(cb.equal(root.get(equalAttribute), equalValue),
 				cb.notEqual(root.get(notEqualAttribute), notEqualValue)));
 		List<T> os = em.createQuery(cq).getResultList();
-		return new TreeList<T>(os);
+		return new TreeList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndEqualAndNotEqual(Class<T> cls, String equalAttribute,
@@ -545,7 +545,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 						cb.equal(root.get(otherEqualAttribute), otherEqualValue),
 						cb.notEqual(root.get(notEqualAttribute), notEqualValue)));
 		List<T> os = em.createQuery(cq).getResultList();
-		return new TreeList<T>(os);
+		return new TreeList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndIn(Class<T> cls, String attribute, Object value,
@@ -557,8 +557,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(attribute), value);
 		p = cb.and(p, cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndNotIn(Class<T> cls, String attribute,
@@ -570,8 +569,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(attribute), value);
 		p = cb.and(p, cb.isNotMember(root.get(otherAttribute), cb.literal(otherValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndEqualAndIn(Class<T> cls, String firstAttribute,
@@ -585,8 +583,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
 		p = cb.and(p, cb.isMember(root.get(thirdAttribute), cb.literal(thirdValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndEqualAndNotIn(Class<T> cls,
@@ -600,8 +597,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.equal(root.get(secondAttribute), secondValue));
 		p = cb.and(p, cb.isNotMember(root.get(thirdAttribute), cb.literal(thirdValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndInAndNotEqual(Class<T> cls,
@@ -615,8 +611,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.isMember(root.get(secondAttribute), cb.literal(secondValues)));
 		p = cb.and(p, cb.notEqual(root.get(thirdAttribute), thirdValue));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listEqualAndGreaterThanOrEqualTo(Class<T> cls,
@@ -626,7 +621,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				+ otherAttribute + " >= ?2))");
 		query.setParameter(1, value);
 		query.setParameter(2, otherValue);
-		return new ArrayList<T>(query.getResultList());
+		return new ArrayList<>(query.getResultList());
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndLessThanOrEqualTo(Class<T> cls, String attribute, Object value,
@@ -661,8 +656,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(attribute), value);
 		p = cb.or(p, cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
 		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<T> listEqualOrEqual(Class<T> cls, String attribute, Object value,
@@ -684,8 +678,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root).where(cb.or(cb.isNull(root.get(attribute)), cb.notEqual(root.get(attribute), value)));
 		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject, W extends Object> List<T> listIn(Class<T> cls, String attribute, Collection<W> values)
@@ -705,8 +698,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root).where(cb.isMember(value, root.get(attribute)));
 		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> Optional<T> first(Class<T> cls) throws Exception {
@@ -737,6 +729,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root)
 				.where(cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.isEmpty() ? null : os.get(0);
+	}
+
+	public <T extends JpaObject> T firstEqualAndNotEqual(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root).where(
+				cb.and(cb.equal(root.get(attribute), value), cb.not(cb.equal(root.get(otherAttribute), otherValue))));
 		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
 		return os.isEmpty() ? null : os.get(0);
 	}
@@ -1816,51 +1820,72 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<W> cq = cb.createQuery(attributeClass);
 		Root<T> root = cq.from(cls);
 		List<W> os = em.createQuery(cq.select(root.get(attribute))).getResultList();
-		List<W> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
-	public <T extends JpaObject> String conflict(Class<T> clz, T t) throws Exception {
+//	public <T extends JpaObject> String conflict(Class<T> clz, T t) throws Exception {
+//		EntityManager em = this.get(clz);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		for (Field field : this.entityManagerContainerFactory.getFlagFields(clz)) {
+//			Object value = t.get(field.getName());
+//			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
+//				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+//				Root<T> root = cq.from(clz);
+//				Predicate p = cb.disjunction();
+//				for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
+//					p = cb.or(p, cb.equal(root.get(f.getName()), value));
+//				}
+//				p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
+//				if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
+//					return field.getName() + ":" + Objects.toString(value);
+//				}
+//			}
+//		}
+//		for (Field field : this.entityManagerContainerFactory.getRestrictFlagFields(clz)) {
+//			Object value = t.get(field.getName());
+//			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
+//				RestrictFlag restrictFlag = field.getAnnotation(RestrictFlag.class);
+//				if ((null != restrictFlag) && restrictFlag.fields().length > 0) {
+//					CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+//					Root<T> root = cq.from(clz);
+//					Predicate p = cb.disjunction();
+//					for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
+//						Object v = t.get(f.getName());
+//						if ((null != v) && StringUtils.isNotEmpty(Objects.toString(v))) {
+//							p = cb.or(cb.equal(root.get(f.getName()), v));
+//						}
+//					}
+//					p = cb.and(p, cb.equal(root.get(field.getName()), value));
+//					p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
+//					if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
+//						return field.getName() + ":" + Objects.toString(value);
+//					}
+//				}
+//			}
+//		}
+//		return null;
+//	}
+
+	public <T extends JpaObject> Optional<Triple<T, Field, Object>> conflict(Class<T> clz, T t) throws Exception {
 		EntityManager em = this.get(clz);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		for (Field field : this.entityManagerContainerFactory.getFlagFields(clz)) {
 			Object value = t.get(field.getName());
 			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
-				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+				CriteriaQuery<T> cq = cb.createQuery(clz);
 				Root<T> root = cq.from(clz);
 				Predicate p = cb.disjunction();
 				for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
 					p = cb.or(p, cb.equal(root.get(f.getName()), value));
 				}
 				p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
-				if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
-					return field.getName() + ":" + Objects.toString(value);
+				List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+				if (!os.isEmpty()) {
+					return Optional.of(Triple.of(os.get(0), field, value));
 				}
 			}
 		}
-		for (Field field : this.entityManagerContainerFactory.getRestrictFlagFields(clz)) {
-			Object value = t.get(field.getName());
-			if ((null != value) && StringUtils.isNotEmpty(Objects.toString(value))) {
-				RestrictFlag restrictFlag = field.getAnnotation(RestrictFlag.class);
-				if ((null != restrictFlag) && restrictFlag.fields().length > 0) {
-					CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-					Root<T> root = cq.from(clz);
-					Predicate p = cb.disjunction();
-					for (Field f : this.entityManagerContainerFactory.getFlagFields(clz)) {
-						Object v = t.get(f.getName());
-						if ((null != v) && StringUtils.isNotEmpty(Objects.toString(v))) {
-							p = cb.or(cb.equal(root.get(f.getName()), v));
-						}
-					}
-					p = cb.and(p, cb.equal(root.get(field.getName()), value));
-					p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), t.getId()));
-					if (em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0) {
-						return field.getName() + ":" + Objects.toString(value);
-					}
-				}
-			}
-		}
-		return null;
+		return Optional.empty();
 	}
 
 	public <T extends JpaObject> List<T> listEqualAndSequenceAfter(Class<T> clz, String equalAttribute,

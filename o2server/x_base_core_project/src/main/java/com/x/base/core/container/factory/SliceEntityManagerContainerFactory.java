@@ -29,7 +29,6 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
-import com.x.base.core.entity.dynamic.DynamicEntity;
 
 public abstract class SliceEntityManagerContainerFactory {
 
