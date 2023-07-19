@@ -275,7 +275,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         this.viewPage.addEvent("postShow", function () {
             if (this.view) {
-                this.view.setContentHeight();
+                //this.view.setContentHeight();
+                this.view.setViewWidth();
                 this.view.selected();
             }
         }.bind(this));
