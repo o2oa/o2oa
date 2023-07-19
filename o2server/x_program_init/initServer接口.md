@@ -61,7 +61,7 @@ get /jaxrs/h2/upgrade/cancel
 post /jaxrs/restore/upload
 上传zip格式数据包,字段名file
 
-get /jaxrs/restore/cancel
+get /jaxrs/restore/upload/cancel
 取消数据导入
 
 ## secret
