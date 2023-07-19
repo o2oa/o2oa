@@ -14,6 +14,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.core.entity.content.Data.DataWork;
+import com.x.processplatform.core.entity.element.DataTraceFieldTypeEnum;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
@@ -491,7 +492,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected void createDataRecord(Business business, DataWi wi) throws Exception{
 		Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
-		if (null != process && ListTools.isNotEmpty(process.getDataTraceFieldList())) {
+		if (null != process && DataTraceFieldTypeEnum.toTrace(process.getDataTraceFieldType())) {
 			Map<String, JsonElement> itemMap = new HashMap<>();
 			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
 				if(process.getDataTraceFieldList().contains(fromEntry.getKey())){
