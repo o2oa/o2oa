@@ -1401,7 +1401,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
                 if (pic.indexOf("/x_processplatform_assemble_surface")!==-1){
                     pic = pic.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }else if (pic.indexOf("x_processplatform_assemble_surface")!==-1){
-                    pic = pic.replace("x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                    pic = pic.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }
                 if (pic.indexOf("/x_portal_assemble_surface")!==-1){
                     pic = pic.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
