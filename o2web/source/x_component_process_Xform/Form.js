@@ -270,9 +270,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
                 if (pic.indexOf("/x_processplatform_assemble_surface") !== -1) {
-                    pic = pic.replace("/x_processplatform_assemble_surface", pic + "/x_processplatform_assemble_surface");
+                    pic = pic.replace("/x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
                 } else if (pic.indexOf("x_processplatform_assemble_surface") !== -1) {
-                    pic = pic.replace("x_processplatform_assemble_surface", pic + "/x_processplatform_assemble_surface");
+                    pic = pic.replace("x_processplatform_assemble_surface", host1 + "/x_processplatform_assemble_surface");
                 }
                 if (pic.indexOf("/x_portal_assemble_surface") !== -1) {
                     pic = pic.replace("/x_portal_assemble_surface", host2 + "/x_portal_assemble_surface");
@@ -308,7 +308,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             while ((match = rex.exec(cssText)) !== null) {
                 var rulesStr = match[0];
-                if( rulesStr.indexOf( "@media" ) === -1 ){
+                var startWith = rulesStr.substring(0, 1);
+                if (startWith === "@" || startWith === ":" || rulesStr.indexOf("%") !== -1) {
+
+                }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){
+
+                } else {
                     if (rulesStr.indexOf(",") != -1) {
                         //var rules = rulesStr.split(/\s*,\s*/g);
                         var rules = rulesStr.split(/,/g);
@@ -2549,7 +2554,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "type": "ok",
                         "text": MWF.LP.process.button.ok,
                         "action": function (d, e) {
-                            if (this.processor) this.processor.okButton.click();
+                            //避免双击
+                            if (this.processTimer) {
+                                clearTimeout(this.processTimer);
+                                this.processTimer = null;
+                            }
+                            this.processTimer = setTimeout(function(){
+                                if (this.processor) this.processor.okButton.click();
+                                this.processTimer = null;
+                            }.bind(this), 200)
                         }.bind(this)
                     },
                     {
@@ -2942,7 +2955,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
             "offset": options.offset || null,
             "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
-            "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
+            "container": options.container ||  ( layout.mobile ? $(document.body) : this.app.content ),
             "duration": options.duration || 200,
             "lp": options.lp || null,
             "zindex": ( options.zindex || 100 ).toInt(),

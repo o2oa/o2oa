@@ -113,7 +113,12 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
 
             while ((match = rex.exec(cssText)) !== null) {
                 var rulesStr = match[0];
-                if( rulesStr.indexOf( "@media" ) === -1 ){
+                var startWith = rulesStr.substring(0, 1);
+                if (startWith === "@" || startWith === ":" || rulesStr.indexOf("%") !== -1) {
+
+                }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){
+
+                } else {
                     if (rulesStr.indexOf(",") != -1) {
                         //var rules = rulesStr.split(/\s*,\s*/g);
                         var rules = rulesStr.split(/,/g);
