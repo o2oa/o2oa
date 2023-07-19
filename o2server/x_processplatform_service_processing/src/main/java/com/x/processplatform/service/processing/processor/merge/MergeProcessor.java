@@ -18,7 +18,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class MergeProcessor extends AbstractMergeProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(MergeProcessor.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(MergeProcessor.class);
 
 	public MergeProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -111,7 +111,9 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		}).sorted((o1, o2) -> {
 			return o1.getCreateTime().compareTo(o2.getCreateTime());
 		}).findFirst().orElse(null);
-
+		if ((null != other) && LOGGER.isDebugEnabled()) {
+			LOGGER.debug("work {} found same split level work {}.", aeiObjects.getWork()::getId, other::getId);
+		}
 		/* 找不到同级那么开始早更深层次的文档 */
 		if (null == other) {
 			other = aeiObjects.getWorks().stream().filter(o -> {
@@ -128,6 +130,9 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				}
 				return compare;
 			}).findFirst().orElse(null);
+		}
+		if ((null != other) && LOGGER.isDebugEnabled()) {
+			LOGGER.debug("work {} found further split level work {}.", aeiObjects.getWork()::getId, other::getId);
 		}
 		return other;
 	}
@@ -161,7 +166,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateTaskCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -172,7 +177,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getUpdateReads().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -185,7 +190,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateReadCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -196,7 +201,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getUpdateReviews().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -208,7 +213,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateAttachments().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -222,7 +227,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateWorkLogs().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
