@@ -51,8 +51,8 @@ public class RestoreAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "取消上传dataDump数据包.", action = ActionUploadCancel.class)
 	@GET
 	@Path("upload/cancel")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void uploadCancel(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<ActionUploadCancel.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
