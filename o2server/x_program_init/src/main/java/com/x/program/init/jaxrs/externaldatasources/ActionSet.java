@@ -24,7 +24,7 @@ class ActionSet extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 
 		MissionExternalDataSources.CheckResult checkResult = MissionExternalDataSources.check();
-		if (BooleanUtils.isNotTrue(checkResult.getConfigured())) {
+		if (BooleanUtils.isTrue(checkResult.getConfigured())) {
 			throw new ExceptionMissionExecute("外部数据源已配置.");
 		}
 
