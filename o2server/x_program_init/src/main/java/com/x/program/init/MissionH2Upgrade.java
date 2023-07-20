@@ -27,6 +27,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.H2Tools;
+import com.x.base.core.project.tools.StringTools;
+import com.x.program.init.Missions.Messages;
 import com.x.program.init.Missions.Mission;
 
 public class MissionH2Upgrade implements Mission {
@@ -60,8 +62,10 @@ public class MissionH2Upgrade implements Mission {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Missions.Messages messages) {
+		messages.head(MissionH2Upgrade.class.getSimpleName());
 		try {
+			messages.msg("executing");
 			Optional<String> jarVersion = H2Tools.jarVersion();
 			if (jarVersion.isEmpty()) {
 				throw new ExceptionMissionExecute("can not get h2 jar version.");
@@ -77,7 +81,9 @@ public class MissionH2Upgrade implements Mission {
 				cover(path);
 				H2Tools.localRepositoryDataH2Version(jarVersion.get());
 			}
+			messages.msg("success");
 		} catch (Exception e) {
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

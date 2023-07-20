@@ -22,8 +22,10 @@ public class MissionRestore implements Mission {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Missions.Messages messages) {
+		messages.head(MissionRestore.class.getSimpleName());
 		try {
+			messages.msg("executing");
 			Path path = Config.path_local_temp(true).resolve(getStamp() + ".zip");
 			if (!ZipTools.isZipFile(path)) {
 				throw new ExceptionMissionExecute("file is not zip file format.");
@@ -43,10 +45,14 @@ public class MissionRestore implements Mission {
 				Thread.sleep(2000);
 			}
 			Config.resource_commandQueue().add("ctl -rd " + getStamp());
+			Config.resource_commandTerminatedSignal_ctl_rd().take();// 等待执行完成信号.
+			messages.msg("success");
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
+			messages.err(ie.getMessage());
 			throw new ExceptionMissionExecute(ie);
 		} catch (Exception e) {
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

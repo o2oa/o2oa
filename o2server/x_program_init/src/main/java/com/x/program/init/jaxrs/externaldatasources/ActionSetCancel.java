@@ -14,7 +14,7 @@ class ActionSetCancel extends BaseAction {
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson) {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
-		ThisApplication.setMissionSetSecret(null);
+		ThisApplication.setMissionExternalDataSources(null);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);
@@ -23,7 +23,7 @@ class ActionSetCancel extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = 7688723596987345774L;
+		private static final long serialVersionUID = -748743363673216769L;
 
 	}
 

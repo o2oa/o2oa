@@ -1,5 +1,7 @@
 package com.x.program.init.jaxrs.externaldatasources;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -8,7 +10,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.program.init.MissionSetSecret;
+import com.x.program.init.ExceptionMissionExecute;
+import com.x.program.init.MissionExternalDataSources;
 import com.x.program.init.ThisApplication;
 
 class ActionSet extends BaseAction {
@@ -17,12 +20,18 @@ class ActionSet extends BaseAction {
 
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
+
+		MissionExternalDataSources.CheckResult checkResult = MissionExternalDataSources.check();
+		if (BooleanUtils.isTrue(checkResult.getConfigured())) {
+			throw new ExceptionMissionExecute("外部数据源已配置.");
+		}
+
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		MissionSetSecret missionSetSecret = new MissionSetSecret();
-		missionSetSecret.setSecret(wi.getSecret());
-		ThisApplication.setMissionSetSecret(missionSetSecret);
+		MissionExternalDataSources missionExternalDataSources = new MissionExternalDataSources();
+		missionExternalDataSources.setExternalDataSources(wi.getExternalDataSources());
+		ThisApplication.setMissionExternalDataSources(missionExternalDataSources);
 		Wo wo = new Wo();
 		wo.setValue(true);
 		result.setData(wo);

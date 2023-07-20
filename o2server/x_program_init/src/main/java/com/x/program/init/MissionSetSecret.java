@@ -32,13 +32,17 @@ public class MissionSetSecret implements Mission {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Missions.Messages messages) {
+		messages.head(MissionSetSecret.class.getSimpleName());
 		try {
+			messages.msg("executing");
 			this.changeInternalDataServerPassword(Config.token().getPassword(), getSecret());
 			this.changeTokenPassword(getSecret());
 			Config.resource_commandQueue().add("ctl -flushConfig");
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
+			messages.msg("success");
 		} catch (Exception e) {
+			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}

@@ -69,6 +69,8 @@ public class StartCommand {
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
 	}
+	
+	
 
 	private static boolean ifInitServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
 		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
@@ -79,6 +81,10 @@ public class StartCommand {
 					&& (!StringUtils.equalsIgnoreCase(jarVersion.get(), localRepositoryDataH2Version.get())));
 		}
 		return false;
+	}
+	
+	private static boolean ifInitServerNecessaryExternalDataSources() throws Exception {
+		return (ifInitServerNecessarySetPassword() || ifInitServerNecessaryUpgradeLocalRepositoryDataH2());
 	}
 
 	public static Consumer<Matcher> consumer() {
