@@ -238,7 +238,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.portal = json.data;
             if (this.pageJson){
                 var pageName = this.pageJson.data.page ? this.pageJson.data.page.name : this.pageJson.data.name;
-                if(!layout.mobile)this.setTitle(this.portal.name+"-"+pageName);
+                //if(!layout.mobile)this.setTitle(this.portal.name+"-"+pageName);
             }
 
             if (this.portal.icon){
