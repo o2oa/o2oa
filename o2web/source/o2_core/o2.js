@@ -1086,6 +1086,7 @@ if (!window.o2) {
 
                     var events = el.getAttribute("data-o2-events").toString();
                     if (events) _bindToEvents(op.module, el, events, bindDataId);
+                    el.removeAttribute("data-o2-events");
                 }
             }
 
