@@ -1,4 +1,13 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+
+if( !o2.APP$ElSelector ){
+    o2.xApplication.process.Xform.$ElSelector = o2.APP$ElSelector = new Class({
+        Implements: [Events],
+        Extends: MWF.APP$Elinput
+    });
+    Object.assign(o2.APP$ElSelector.prototype, o2.APP$Selector.prototype);
+}
+
 /** @class Elautocomplete 基于Element UI的自动完成输入框组件。
  * @o2cn 自动完成输入框
  * @example
@@ -16,9 +25,19 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     /** @lends o2.xApplication.process.Xform.Elautocomplete# */
     {
     Implements: [Events],
-    Extends: MWF.APP$Elinput,
+    Extends: MWF.APP$ElSelector,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad"],
+        /**
+         * 当 input失去焦点且值有修改是触发，或点击建议面板的选项后且值有修改时触发。this.event[0]为组件值
+         * @event MWF.xApplication.process.Xform.Elautocomplete#change
+         * @see {@link https://element.eleme.io/#/zh-CN/component/input#dai-shu-ru-jian-yi|input组件的带输入建议章节}
+         */
+        /**
+         * 点击建议面板的选项后时触发。this.event[0]为选中的选项
+         * @event MWF.xApplication.process.Xform.Elautocomplete#select
+         * @see {@link https://element.eleme.io/#/zh-CN/component/input#input-methods|input组件的Input Method章节}
+         */
         "elEvents": ["select", "change"]
     },
     /**
@@ -44,6 +63,26 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         if (!this.json.suffixIcon) this.json.suffixIcon = "";
         if (!this.json.description) this.json.description = "";
     },
+    _createEventFunction: function(methods, k){
+        methods["$loadElEvent_"+k.camelCase()] = function(){
+            this.validationMode();
+            if (k==="change") this._setBusinessData(this.getInputData());
+            if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                this.form.Macro.fire(this.json.events[k].code, this, arguments);
+            }
+            if(k==="select"){
+                var arr = [];
+                var d = this._getBusinessData();
+                if( arguments[0] && arguments[0].value )arr.push(arguments[0].value);
+                if( (d||"") !== (arr[0] || "")){
+                    if (this.json.events && this.json.events["change"] && this.json.events["change"].code){
+                        this.form.Macro.fire(this.json.events["change"].code, this, arr);
+                    }
+                }
+                this._setBusinessData(arr[0]);
+            }
+        }.bind(this);
+    },
     appendVueExtend: function(app){
         if (!app.methods) app.methods = {};
         // app.methods.$loadElEvent = function(ev){
@@ -52,7 +91,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
         //         this.form.Macro.fire(this.json.events[ev].code, this, event);
         //     }
         // }.bind(this);
-        if (this.json.itemType!=='script'){
+        if (!this.json.itemType || this.json.itemType==='values'){
             app.methods.$fetchSuggestions = function(qs, cb){
                 if (this.json.itemValues){
                     var items = this.json.itemValues.filter(function(v){
@@ -65,7 +104,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                 }
                 return [];
             }.bind(this);
-        }else{
+        }else if(this.json.itemType==='script'){
             if (this.json.itemScript && this.json.itemScript.code){
                 var fetchSuggestions = this.form.Macro.exec(this.json.itemScript.code, this);
                 if (o2.typeOf(fetchSuggestions)==="function"){
@@ -74,7 +113,23 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                     }.bind(this);
                 }
             }
-
+        }else{
+            var options;
+            Promise.resolve(this.getOptions()).then(function (opt) {
+                options = opt;
+            });
+            app.methods.$fetchSuggestions = function(qs, cb){
+                if (options){
+                    var items = options.filter(function(v){
+                        return !qs || v.indexOf(qs)!=-1;
+                    }).map(function(v){
+                        return {"value": v};
+                    });
+                    cb(items);
+                    //return items;
+                }
+                return [];
+            }.bind(this);
         }
         // app.methods.$fetchSuggestions = function(qs, cb){
         //     if (this.json.itemType!=='script'){

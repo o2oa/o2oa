@@ -1906,6 +1906,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 return _form.dialog( options );
             },
 
+            /**打开人员组织选择界面
+             * @method selectOrg
+             * @static
+             * @see module:form.selectOrg
+             */
+            "selectOrg": function ( container, options,  delayLoad) {
+                if( !container )container = _form.app.content;
+                return new MWF.O2Selector(container, options, delayLoad);
+            },
+
             /**给页面添加事件。
              * @method addEvent
              * @static

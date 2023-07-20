@@ -609,4 +609,17 @@ public class StringTools {
 		}
 	}
 
+	/**
+	 * 检查去除注释后是否有有效的代码.
+	 * 
+	 * @param script
+	 * @return
+	 */
+	public static boolean ifScriptHasEffectiveCode(String script) {
+		if (StringUtils.isEmpty(script)) {
+			return false;
+		}
+		return StringUtils.isNotBlank(StringUtils.trimToEmpty(EMPTY_SCRIPT_CODE_REGEX.matcher(script).replaceAll("")));
+	}
+
 }

@@ -1,11 +1,19 @@
 package com.x.portal.assemble.surface;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.portal.assemble.surface.factory.*;
 import com.x.portal.assemble.surface.factory.cms.CmsFactory;
 import com.x.portal.assemble.surface.factory.process.ProcessFactory;
 import com.x.portal.assemble.surface.factory.service.CenterServiceFactory;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 
 public class Business {
 
@@ -116,6 +124,30 @@ public class Business {
 			this.centerService = new CenterServiceFactory(this);
 		}
 		return centerService;
+	}
+
+	public void binding(EffectivePerson effectivePerson, ScriptContext scriptContext) throws Exception {
+		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		Resources resources = new Resources();
+		resources.setContext(ThisApplication.context());
+		resources.setOrganization(new Organization(ThisApplication.context()));
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setApplications(ThisApplication.context().applications());
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+	}
+
+	public static class Resources extends AbstractResources {
+		private Organization organization;
+
+		public Organization getOrganization() {
+			return organization;
+		}
+
+		public void setOrganization(Organization organization) {
+			this.organization = organization;
+		}
+
 	}
 
 }

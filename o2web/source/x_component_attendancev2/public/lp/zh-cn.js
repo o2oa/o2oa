@@ -31,6 +31,7 @@ MWF.xApplication.attendancev2.LP = {
   positive: "确定",
   cancel: "取消",
   add: "添加",
+  more: "更多",
   dataError: "数据错误！",
   saveSuccess: "保存成功！",
   onDuty: "上班打卡",
@@ -51,6 +52,8 @@ MWF.xApplication.attendancev2.LP = {
     Friday: "周五",
     Saturday: "周六",
   },
+  month: "月",
+  year: "年",
   minute: "分钟",
   hour: "小时",
   classifierDay: "天",
@@ -70,6 +73,18 @@ MWF.xApplication.attendancev2.LP = {
   myAttendanceCalendar: "考勤日历",
   myAttendanceStatistic: "考勤统计",
   myFieldWork: "外勤",
+  myStatistic: {
+    title: "考勤周期：",
+    averageWorkTimeDuration: "平均工时（小时）",
+    workTimeDuration: "工作时长（分钟）",
+    attendance: "出勤（天）",
+    nosignTimes: "缺卡（次）",
+    lateTimes: "迟到（次）",
+    leaveEarlierTimes: "早退（次）",
+    leaveDays: "请假（天）",
+    absenteeismDays: "旷工（天）",
+    fieldWorkTimes: "外勤（次）",
+  },
 
   // 班次
   shiftTitle: "班次管理",
@@ -93,10 +108,14 @@ MWF.xApplication.attendancev2.LP = {
     secondTimeDayLabel: "1天2次上下班",
     thirdTimeDayLabel: "1天3次上下班",
     onDutyTimeLabel: "上班时间:",
-    beforeOnDutyTimeLabel: "打卡时段: 上班前",
+    beforeOnDutyTimeLabel: "打卡时段: ",
+    beforeOnDutyTimePlaceholder: "请选择上班前时间",
+    afterOnDutyTimePlaceholder: "请选择上班后时间",
     afterOnDutyTimeLabel: "上班后",
     offDutyTimeLabel: "下班时间:",
-    beforeOffDutyTimeLabel: "打卡时段: 下班前",
+    beforeOffDutyTimeLabel: "打卡时段: ",
+    beforeOffDutyTimePlaceholder: "请选择下班前时间",
+    afterOffDutyTimePlaceholder: "请选择下班后时间",
     afterOffDutyTimeLabel: "下班后",
     lateAndEarlyOnTimeLabel1: "上班最多可晚到：",
     lateAndEarlyOnTimeLabel2: " 不算迟到",
@@ -166,7 +185,7 @@ MWF.xApplication.attendancev2.LP = {
     shiftChange: "更改班次",
     shiftChangeMultiple: "批量更改班次",
     shiftEmpty: "休息",
-    shiftPlaceholder: "请点击选择班次",
+    shiftPlaceholder: "(请点击选择班次)",
     shiftErrorNotEmpty: "工作日班次不能为空！",
     workPlace: "工作场所",
     workPlacePlaceholder: "请选择工作场所",
@@ -185,10 +204,10 @@ MWF.xApplication.attendancev2.LP = {
     confirmDelete: "确认要删除这个【{name}】考勤组？",
   },
   dateCycle: {
-    none: '无',
-    week: '每周',
-    twoWeek: '每两周',
-    month: '每月',
+    none: "无",
+    week: "每周",
+    twoWeek: "每两周",
+    month: "每月",
   },
   // 考勤信息
   detailManagerTitle: "考勤统计",
@@ -224,7 +243,6 @@ MWF.xApplication.attendancev2.LP = {
     participatesErrorNotEmtpy: "参与考勤人员、组织不能为空！",
     startDateEmptyPlaceholder: "请选择开始日期!",
     endDateEmptyPlaceholder: "请选择结束日期!",
-    
   },
   detailRecordList: {
     title: "打卡记录",
@@ -232,7 +250,7 @@ MWF.xApplication.attendancev2.LP = {
     time: "打卡时间",
     result: "打卡结果",
   },
-  
+
   // 配置信息
   configManagerTitle: "考勤配置",
   config: {
@@ -251,11 +269,11 @@ MWF.xApplication.attendancev2.LP = {
     onDutyFastCheckInEnable: "是否启用上班极速打卡 (app端有效)",
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
     checkInAlert: "打卡提醒",
-    checkInAlertEnable: "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
+    checkInAlertEnable:
+      "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
     exceptionAlertEnable: "是否启用异常打卡提醒 ",
     exceptionAlertEnableTime1: " (次日 ",
     exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
-
   },
   // 请假外出记录
   leaveManagerTitle: "外出请假记录",
@@ -287,9 +305,10 @@ MWF.xApplication.attendancev2.LP = {
     early: "早退",
     late: "迟到",
     seriousLate: "严重迟到",
-    notSigned: "未打卡",
+    notSigned: "缺卡",
     appeal: "申诉",
     fieldWork: "外勤打卡",
+    leave: "请假",
 
     status0: "待处理",
     status1: "流转中",
@@ -305,6 +324,7 @@ MWF.xApplication.attendancev2.LP = {
   // 原始打卡记录
   recordManagerTitle: "原始记录",
   record: {
+    detailTitle: "记录详情",
     name: "姓名",
     group: "考勤组",
     shift: "班次",
@@ -314,32 +334,33 @@ MWF.xApplication.attendancev2.LP = {
     sourceType: "数据来源",
     checkInResult: "打卡结果",
     fieldWork: "是否外勤打卡",
+    fieldWorkDesc: "外勤说明",
+    fieldWorkAddress: "打卡地址",
     sourceTypeUser: "用户打卡",
     sourceTypeAuto: "系统生成",
     sourceTypeFast: "极速打卡",
     sourceTypeImport: "数据导入",
-    importExcelFileSuccess: "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
+    importExcelFileSuccess:
+      "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
   },
-
 
   /// mobile
 
   mobile: {
-      menu: {
-        checkIn: '打卡',
-        statistic: '统计',
-        settings: '设置',
-      },
-      unCheckIn: '未打卡',
-      refreshLocation: '[刷新定位]',
-      locationIng: '定位中.......',
-      locationError: '定位失败，请开启定位权限！',
-      checkInWithTime: '已打卡{time}',
-      updateCheckInBtn: '更新打卡',
-      outsideTitle: '外勤打卡',
-      outsideNotAllow: '不允许外勤打卡！',
-      outsideRemarkPlaceholder: '请输入外勤打卡说明！',
-      statisticMonthLabel: '月',
-  }
-
+    menu: {
+      checkIn: "打卡",
+      statistic: "统计",
+      settings: "设置",
+    },
+    unCheckIn: "未打卡",
+    refreshLocation: "[刷新定位]",
+    locationIng: "定位中.......",
+    locationError: "定位失败，请开启定位权限！",
+    checkInWithTime: "已打卡{time}",
+    updateCheckInBtn: "更新打卡",
+    outsideTitle: "外勤打卡",
+    outsideNotAllow: "不允许外勤打卡！",
+    outsideRemarkPlaceholder: "请输入外勤打卡说明！",
+    statisticMonthLabel: "月",
+  },
 };

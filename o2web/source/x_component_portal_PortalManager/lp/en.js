@@ -129,6 +129,15 @@ MWF.xApplication.portal.PortalManager.LP = {
         "setUsableUnit": "Set UsableUnit",
         "setAppUsableIdentity": "Set AppUsableIdentity",
         "setAppUsableUnit": "Set AppUsableUnit",
+
+        "cornerMark": "Corner Mark Settings",
+        "cornerMarkNote": "Note: The corner mark is the number in the upper right corner of the mobile application interface -> portal application.",
+        "selectScriptNote": "Click the plus sign to select the script library",
+        "selectScript": "Select Script",
+        "cornerMarkScript": "CornerMarkScript",
+        "run": "Run immediately",
+        "openLogView": "Open Log Viewer",
+        "runResult": "Run result:"
     },
     "createSelectTemplate": "Create: Select template",
     "templateCategory": "Template Category: ",

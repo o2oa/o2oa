@@ -78,7 +78,7 @@ layout.addReady(function(){
                     var _page = getPage();
                     var tmpApp = _page.app;
                     _page.app = app;
-                    _page.app.toPortal = tmpApp.toPortal;
+                    if( !_page.app.toPortal )_page.app.toPortal = tmpApp.toPortal;
                     var api = createEnvironment(_page);
                     if (!app.unique) app.unique = (new Date()).getTime().toString();
                     o2.apis[app.unique] = api;
@@ -94,7 +94,7 @@ layout.addReady(function(){
                 var _page = getPage();
                 var tmpApp = _page.app;
                 _page.app = app;
-                _page.app.toPortal = tmpApp.toPortal;
+                if( !_page.app.toPortal )_page.app.toPortal = tmpApp.toPortal;
                 var api = createEnvironment(_page);
                 if (!app.unique) app.unique = (new Date()).getTime().toString();
                 o2.apis[app.unique] = api;

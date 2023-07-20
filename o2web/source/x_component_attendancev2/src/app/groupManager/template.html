@@ -1,4 +1,4 @@
-<div class="manager-box">
+<div class="manager-box white-bg">
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.groupManagerTitle}}</div>
     </div>
@@ -18,8 +18,10 @@
                 <td>{{g.value.trueParticipantSize}}</td>
                 <td>{{ $m.formatAttendanceTime(g.value) }}</td>
                 <td>
+                    <div class="o2-icon-16" @click="this.clickEditGroup(g.value.id)" ><i class="o2icon-icon_bianji"></i></div>
                     <span class="operator_link"
                         @click="this.clickEditGroup(g.value.id)">{{$.lp.update}}</span>
+                    <div class="o2-icon-16 margin-left" @click="this.clickDeleteGroup(g.value.id, g.value.groupName)" ><i class="o2icon-icon_delete_grey"></i></div>
                     <span class="operator_link"
                         @click="this.clickDeleteGroup(g.value.id, g.value.groupName)">{{$.lp.delete}}</span>
                 </td>

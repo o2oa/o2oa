@@ -27,10 +27,12 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -126,6 +128,10 @@ public class V2Add extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
+			Work work = emc.find(task.getWork(), Work.class);
+			if (null == work) {
+				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+			}
 			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 			this.initFilterOptionIdentities(business, wi, task.getWork());
 			this.initCheckOptionIdentities(wi);
@@ -134,9 +140,9 @@ public class V2Add extends BaseAction {
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
-			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, task.getApplication(),
-					task.getProcess())) {
-				throw new ExceptionAccessDenied(effectivePerson, task);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowAddTask().build();
+			if (BooleanUtils.isNotTrue(control.getAllowAddTask())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
 					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());

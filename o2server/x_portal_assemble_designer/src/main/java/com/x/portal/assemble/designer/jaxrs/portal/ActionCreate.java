@@ -57,14 +57,14 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = 6624639107781167248L;
 
 		static WrapCopier<Wi, Portal> copier = WrapCopierFactory.wi(Wi.class, Portal.class, null,
-				JpaObject.FieldsUnmodifyExcludeId);
+				JpaObject.FieldsUnmodifyIncludePorpertiesExcludeId);
 
 	}
 
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -8762393731283285476L;
-		
+
 	}
 
 }

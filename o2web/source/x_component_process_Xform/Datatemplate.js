@@ -113,6 +113,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
+			 * 导出前触发。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#beforeExport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 导出excel的时候触发，this.event指向导出的数据，您可以通过修改this.event来修改数据。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#export
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -127,6 +132,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 *     colWidthArray : [100, 50, 100, 200, 150, 150], //每列宽度
 			 *     title : "xxxx" //导出的excel文件标题
 			 * }
+			 */
+			/**
+			 * 导入前触发。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#beforeImport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
 			 * 在导入excel，进行数据校验后触发，this.event指向导入的数据。
@@ -163,7 +173,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
+				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine", "beforeExport",
+				"beforeImport", "export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -207,6 +218,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
+			debugger;
 			this.loading = true;
 
 			if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
@@ -293,7 +305,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 *  this.form.get("fieldId").reload(); //重新加载
 		 */
 		reload: function( isReloadTemplate ){
-			debugger;
 			this.reloading = true;
 
 			// this.editModules = [];
@@ -1132,7 +1143,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}.bind(this));
 		},
 		__setData: function(data, fireChange, operation){
-			debugger;
 			if( this.isShowAllSection ){
 				//兼容外部对编辑当前区段的setData，内部的setData不走这里，直接走setAllSectionData
 				this._setEditedSectionData(data, fireChange, operation);
@@ -1154,12 +1164,11 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.clearSubModules();
 			}
 
-			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
-
 			this.lineList = [];
 			this.sectionlineList = [];
 			this._loadDataTemplate(function(){
 				this._setSubDatatemplateOuterEvents();
+				if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 				this.unchangedLineMap = null;
 			}.bind(this), operation);
 		},
@@ -1201,7 +1210,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 *  });
 		 */
 		setAllSectionData: function(data, fireChange, operation){
-			debugger;
 			var old;
 			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
 
@@ -1761,7 +1769,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this))
 	},
 	setIndex: function( data, index, isEdited, isNew, operation ){
-		debugger;
 		if( this.isUnchangedAll && index === this.options.index )return;
 
 		this.data = data;
@@ -1855,7 +1862,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 		}.bind(this));
 	},
 	_setUnchangedLineMap: function(data, operation){
-		debugger;
 		var fromOutside = !operation;
 		var dt = this.template;
 		var editalbe;
@@ -2633,6 +2639,17 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 
 	},
 	exportToExcel : function () {
+		MWF.require("MWF.widget.Mask", null, false);
+		this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+		// 适配移动端
+		if (layout.mobile) {
+			this.mask.load();
+		} else {
+			this.mask.loadNode(this.form.app.content);
+		}
+
+		this.template.fireEvent("beforeExport");
+
 		var resultArr = [];
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
 			return config.title;
@@ -2672,7 +2689,14 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 				arg.data || rstArr,
 				arg.title || excelName,
 				arg.colWidthArray || colWidthArr,
-				this.getDateIndexArray()  //日期格式列下标
+				this.getDateIndexArray(),  //日期格式列下标
+				null,
+				function () {
+					if (this.mask) {
+						this.mask.hide();
+						this.mask = null;
+					}
+				}.bind(this)
 			);
 		}.bind(this))
 	},
@@ -2837,6 +2861,16 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 	},
 
 	exportWithImportDataToExcel : function ( columnList, importedData ) {
+		MWF.require("MWF.widget.Mask", null, false);
+		this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+		// 适配移动端
+		if (layout.mobile) {
+			this.mask.load();
+		} else {
+			this.mask.loadNode(this.form.app.content);
+		}
+
+		this.template.fireEvent("beforeExport");
 
 		var resultArr = [];
 		var titleArr = this.template.json.excelFieldConfig.map(function(config){
@@ -2877,7 +2911,14 @@ MWF.xApplication.process.Xform.Datatemplate.Exporter = new Class({
 			arg.data || resultArr,
 			arg.title || excelName,
 			arg.colWidthArray || colWidthArr,
-			this.getDateIndexArray()  //日期格式列下标
+			this.getDateIndexArray(),  //日期格式列下标
+			null,
+			function () {
+				if (this.mask) {
+					this.mask.hide();
+					this.mask = null;
+				}
+			}.bind(this)
 		);
 	}
 });
@@ -2905,11 +2946,23 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		return true;
 	},
 	importFromExcel : function () {
+		this.template.fireEvent("beforeImport");
+
 		this.getFieldArray();
 		var dateColArray = this.getDateIndexArray(); //日期列
 		var orgTitleArray = this.getOrgTitleArray();
 
 		this.excelUtil.upload( dateColArray, function (data) {
+
+			MWF.require("MWF.widget.Mask", null, false);
+			this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+			// 适配移动端
+			if (layout.mobile) {
+				this.mask.load();
+			} else {
+				this.mask.loadNode(this.form.app.content);
+			}
+
 			this.importedData = data;
 
 			if( !this.checkCount() )return;
@@ -3060,6 +3113,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 
 		this.template.fireEvent("change", [{lines: this.template.lineList, type : "import"}]);
 
+		if (this.mask) {
+			this.mask.hide();
+			this.mask = null;
+		}
+
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
@@ -3137,6 +3195,10 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}.bind(this)
 		});
 
+		if (this.mask) {
+			this.mask.hide();
+			this.mask = null;
+		}
 	},
 	checkCount: function(){
 		var idata = this.importedData;
@@ -3272,7 +3334,11 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			}
 			if(!hasError){
 				module.setExcelData(parsedD);
-				return Promise.resolve( module.moduleValueAG || module.moduleSelectAG ).then(function () {
+				var ps = [];
+				if( module.moduleExcelAG )ps.push( module.moduleExcelAG );
+				if( module.moduleValueAG && !ps.contains(module.moduleValueAG) )ps.push( module.moduleValueAG );
+				if( module.moduleSelectAG && !ps.contains(module.moduleSelectAG) )ps.push( module.moduleSelectAG );
+				return Promise.all( ps ).then(function () {
 					var result = module.validationExcel();
 					if ( result && result.length ){
 						lineData.errorTextList.push(colInfor + result.join("\n") );

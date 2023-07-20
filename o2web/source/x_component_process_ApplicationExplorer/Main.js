@@ -118,7 +118,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 	searchApp: function(){
 		var key = this.searchInput && this.searchInput.get("value");
 		this.applicationList.each(function (app) {
-			if( !key || app.node.getElement(".o2_process_AppExp_item_titleName").get("text").contains( key )){
+			if( !key || app.data.id.contains(key) || app.data.name.contains(key) || app.data.alias.contains(key)){
 				app.node.show();
 			}else{
 				app.node.hide();

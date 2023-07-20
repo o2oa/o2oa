@@ -761,8 +761,8 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
-     * @return {PersonData|PersonData[]} 返回人员对象。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+     * @return {PersonData} 返回人员对象。
+     * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
      * @o2syntax
      * //返回人员对象。
      * var person = this.org.getPersonData( name );

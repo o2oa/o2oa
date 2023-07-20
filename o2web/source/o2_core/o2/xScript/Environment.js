@@ -642,17 +642,21 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
-         *        "allowVisit": true,             //是否允许访问
+         *        "allowVisit": true,             //是否允许访问工作
          *        "allowProcessing": true,        //是否允许流转
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人
-         *        "allowRetract": false,          //是否允许撤回
          *        "allowReroute": false,          //是否允许调度
          *        "allowDelete": true,             //是否允许删除流程实例
-         *        "allowRollback": false,         //是否允许流程回溯
-         *        "allowAddSplit": false,         //是否允许增加分支
-         *        "allowPress": false,             //是否允许催办
+         *        "allowAddSplit": false,         //是否允许添加拆分分支
+         *        "allowRetract": false,          //是否允许撤回
+         *        "allowRollback": false,         //是否允许回溯流程
+         *        "allowPress": false,             //是否允许发送办理提醒
+         *        "allowGoBack": false,         //是否允许回退
+         *        "allowAddTask": false,          //是否允许加签
+         *        "allowPause": false,         //是否允许待办挂起
+         *        "allowResume": false,             //是否允许待办从挂起状态恢复
          * }</code></pre>
          * @o2syntax
          * var control = this.workContext.getControl();
@@ -3167,18 +3171,28 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 确认框标题栏显示文本。
-         * @param {String} text - 确认框的内容显示文本。
+         * @param {String|Object} text - 确认框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 确认框的宽度。
          * @param {String} height - 确认框的高度。
          * @param {Function} ok - 点击“确定”按钮后的回调函数。
          * @param {Function} cancel - 点击“取消”按钮后的回调函数。
          * @example
-         this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
-            //执行删除代码
-            this.close();
-        }, function(){
-            this.close();
-        });
+         *this.form.confirm("wran", "删除确认", "您确定要删除吗？", 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
+         * @example
+         * //使用html传入内容, v8.1开始支持
+         *this.form.confirm("wran", "删除确认", {
+         *     html: "您确定要删除吗！<br/>"
+         *}, 300, 100,function(){
+         *   //执行删除代码
+         *   this.close();
+         *}, function(){
+         *   this.close();
+         *});
          */
         "confirm": function(type, title, text, width, height, ok, cancel, callback, mask, style){
             if ((arguments.length<=1) || o2.typeOf(arguments[1])==="string"){
@@ -3208,11 +3222,16 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} type - 要显示的信息类型。可选值：success 成功，info :信息，error :错误， wran : 警告
          * @param {String} title - 信息框标题栏显示文本。
-         * @param {String} text - 信息框的内容显示文本。
+         * @param {String|Object} text - 信息框的内容显示文本。值为html的时候见下面的样例“使用html传入内容”。
          * @param {Number} width - 信息框宽度。
          * @param {String} height - 信息框的高度。
          * @example
-         this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * this.form.alert("wran", "必填提醒", "请填写标题！", 300, 100);
+         * @example
+         * //使用html传入内容
+         * this.form.alert("wran", "必填提醒", {
+         *     html: "请填写标题！<br/>"
+         * }, 300, 100);
          */
         "alert": function(type, title, text, width, height){
             _form.alert(type, title, text, width, height);
@@ -3408,6 +3427,128 @@ MWF.xScript.Environment = function(ev){
          */
         "dialog": function ( options ) {
             return _form.dialog( options );
+        },
+
+        /**弹出人员组织选择界面，支持身份、个人、组织、群组的单个选择或复合选择。该方法参数适用于 new MWF.O2Selector()。
+         * @method selectOrg
+         * @static
+         * @return {Object} 人员组织选择器对象。
+         * @param {Element} container - 人员选择界面的所在容器，默认为当前应用的容器。
+         * @param {Object} options - 人员组织选择选项。<br/>
+         * <pre><code class="language-js">{
+         *  "type": "", //选择类型，和types二选一，可选值为 identity(身份), person(个人), unit(组织), group(群组),
+         *  "types": [], //复合选择，和type二选一，如 ["identity", "person", "unit", "group"]
+         *  "count": 0, //选择数量，0表示不限制
+         *  "title": "", //选择界面的title
+         *  "values": [], //已选择的值
+         *
+         *  "groups": [], //选择的群组范围，选择人员和群组时有效。
+         *
+         *  "units": [], //选择的组织范围，选择身份和群组时有效
+         *  "resultType" : "", //可以设置成"person"(个人)，那么结果返回个人。选择身份时有效。用在选择人员，但是需要按照组织层级展现的场景。
+         *  "dutys": [], //选择的职务范围，选择身份时有效。
+         *  "categoryType": "", //如果指定了选择的职务范围（dutys不为空），按unit(组织)还是按duty(职务)来展现分类，默认为按unit。该参数在选择身份时有效。
+         *
+         *  "include" : [], //增加的可选项
+         *  "exclude" : [], //排除的可选项
+         *
+         *  "expand": false, //默认是否展开，选择身份和群组时有效
+         *  "expandSubEnable" : true, //是否允许展开下一层，选择身份和群组时有效
+         *  "selectAllEnable" : true,  //分类是否允许全选下一层，选择身份和群组时有效
+         *
+         *  "level1Indent" : 10, //第一级的缩进
+         *  "indent" : 10, //后续的缩进
+         *  "zIndex": 1000, //选择界面的zIndex,
+         *
+         *  "onComplete" : function( selectedItemList ){
+         *      //点击确定时执行
+         *      //selectedItemList为选中的item对象，下面的selectedDataList为选中的数据
+         *      var selectedDataList = selectedItemList.map( function(item){
+         *          return item.data;
+         *      })
+         *  },
+         *  "onCancel" : function(selector) {
+         *      //点击取消时的事件, selector 为选择器, this为选择器
+         *  },
+         *  "onQueryLoad" : function(selector) {
+         *      //加载选择器前事件, selector 为选择器, this为选择器
+         *  },
+         *  "onLoad" : function(selector) {
+         *      //加载选择器后事件, selector 为选择器, this为选择器
+         *  },
+         *  "onCancel" : function(selector) {
+         *      //点击取消时的事件, selector 为选择器, this为选择器
+         *  },
+         *  "onQueryLoadCategory" : function(category) {
+         *      //加载分类前事件, category 为 分类对象, this为选择器
+         *  },
+         *  "onPostLoadCategory" : function(category) {
+         *      //加载分类后事件, category 为 分类对象, this为选择器
+         *  },
+         *  "onSelectCategory" : function(category){
+         *      //选择分类, category 为 分类对象, this为选择器
+         *  },
+         *  "onUnselectCategory": function(category){
+         *      //取消选择分类, category 为 分类对象, this为选择器
+         *  },
+         *  "onQueryLoadItem" : function(item){
+         *      //加载项目前事件, item 为 项目对象, this为选择器
+         *  },
+         *  "onPostLoadItem" : function(item){
+         *      //加载项目后事件, item 为 项目对象, this为选择器
+         *  },
+         *  "onSelectItem" : function(item){
+         *      //选择项目事件, item 为 项目对象, this为选择器
+         *  },
+         *  "onUnselectItem" : function(item){
+         *      //取消选择项目事件, item 为 项目对象, this为选择器
+         *  },
+         *  "onExpand" : function( obj ){
+         *      //展开分类， obj 为分类/项目, this为选择器
+         *  },
+         *  "onCollapse" : function(obj){
+         *       //折叠分类，obj 为分类/项目, this为选择器
+         *   }
+         *}</code></pre>
+         * @example
+         * //选择身份
+         * var selector = this.form.selectOrg(null, {
+         *   type: "identity",
+         *   onComplete : function( selectedItemList ){
+         *      //点击确定时执行
+         *      //selectedItemList为选中的item对象，下面的selectedDataList为选中的数据
+         *      var selectedDataList = selectedItemList.map( function(item){
+         *          return item.data;
+         *      })
+         *  }
+         *});
+         * @example
+         * //在限定组织内选择身份
+         * var selector = this.form.selectOrg(null, {
+         *   type: "identity",
+         *   units: ["兰德纵横@landzone@U"],
+         *   onComplete : function( selectedItemList ){
+         *  }
+         *});
+         * @example
+         * //在限定职务时选择身份
+         * var selector = this.form.selectOrg(null, {
+         *   type: "identity",
+         *   dutys: ["部门正职"],
+         *   onComplete : function( selectedItemList ){
+         *  }
+         *});
+         * @example
+         * //同时选择组织、群组、身份
+         * var selector = this.form.selectOrg(null, {
+         *   types: ["unit", "group", "identity", "person"],
+         *   onComplete : function( selectedItemList ){
+         *  }
+         *});
+         */
+        "selectOrg": function ( container, options,  delayLoad) {
+            if( !container )container = _form.app.content;
+            return new MWF.O2Selector(container, options, delayLoad);
         },
 
         /**给表单添加事件。

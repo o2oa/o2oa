@@ -22,7 +22,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
 import com.x.processplatform.core.entity.content.DocumentVersion;
@@ -87,16 +86,15 @@ class ActionRestore extends BaseAction {
 							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
 							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
 							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
-							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
-							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
+							deleteDocumentVersion(business, snap.getJob()), deleteDocSign(business, snap.getJob()),
+							deleteDocSignScrawl(business, snap.getJob())).get();
 				} else {
 					CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
 							deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
 							deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
 							deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
-							deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
-							deleteDocumentVersion(business, snap.getJob()), deleteDocSign(business, snap.getJob()),
-							deleteDocSignScrawl(business, snap.getJob())).get();
+							deleteRecord(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
+							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
 				}
 				emc.commit();
 				if (Objects.equals(Snap.TYPE_ABANDONEDWORKCOMPLETED, snap.getType())
@@ -128,7 +126,6 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(Record.class);
 			emc.beginTransaction(DocumentVersion.class);
 			emc.beginTransaction(Item.class);
-			emc.beginTransaction(Attachment.class);
 			emc.beginTransaction(DocSign.class);
 			emc.beginTransaction(DocSignScrawl.class);
 			restoreTask(emc, snap);
@@ -139,7 +136,6 @@ class ActionRestore extends BaseAction {
 			restoreWorkLog(emc, snap);
 			restoreRecord(emc, snap);
 			restoreDocumentVersion(emc, snap);
-			restoreAttachment(emc, snap);
 			restoreDocSign(emc, snap);
 			restoreDocSignScrawl(emc, snap);
 			if (ListTools.isNotEmpty(snap.getProperties().getWorkList())) {
@@ -169,7 +165,6 @@ class ActionRestore extends BaseAction {
 			emc.beginTransaction(WorkLog.class);
 			emc.beginTransaction(Record.class);
 			emc.beginTransaction(Item.class);
-			emc.beginTransaction(Attachment.class);
 			emc.beginTransaction(DocSign.class);
 			emc.beginTransaction(DocSignScrawl.class);
 			restoreTaskCompleted(emc, snap);
@@ -178,7 +173,6 @@ class ActionRestore extends BaseAction {
 			restoreReview(emc, snap);
 			restoreWorkLog(emc, snap);
 			restoreRecord(emc, snap);
-			restoreAttachment(emc, snap);
 			restoreDocSign(emc, snap);
 			restoreDocSignScrawl(emc, snap);
 			emc.persist(snap.getProperties().getWorkCompleted(), CheckPersistType.all);
@@ -200,24 +194,6 @@ class ActionRestore extends BaseAction {
 			for (Read o : snap.getProperties().getReadList()) {
 				emc.persist(o, CheckPersistType.all);
 				MessageFactory.read_create(o);
-			}
-		}
-
-		private void restoreAttachment(EntityManagerContainer emc, Snap snap) throws Exception {
-			for (Attachment o : snap.getProperties().getAttachmentList()) {
-				String content = snap.getProperties().getAttachmentContentMap().get(o.getId());
-				if (StringUtils.isNotEmpty(content)) {
-					StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
-							o.getStorage());
-					if (null == mapping) {
-						mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-					}
-					if (null != mapping) {
-						byte[] bytes = Base64.decodeBase64(content);
-						o.updateContent(mapping, bytes);
-					}
-					emc.persist(o, CheckPersistType.all);
-				}
 			}
 		}
 

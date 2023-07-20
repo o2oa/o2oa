@@ -55,6 +55,9 @@ public class PortalFactory extends AbstractFactory {
     }
 
     public boolean visible(EffectivePerson effectivePerson, Portal portal) throws Exception {
+        if (ListTools.isEmpty(portal.getAvailableIdentityList(), portal.getAvailableUnitList())) {
+            return true;
+        }
         if (effectivePerson.isManager() || BooleanUtils.isTrue(this.business().organization().person()
                 .hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
             return true;
@@ -63,9 +66,6 @@ public class PortalFactory extends AbstractFactory {
             return true;
         }
         if (effectivePerson.isPerson(portal.getControllerList())) {
-            return true;
-        }
-        if (ListTools.isEmpty(portal.getAvailableIdentityList(), portal.getAvailableUnitList())) {
             return true;
         }
         List<String> identities = this.business().organization().identity()

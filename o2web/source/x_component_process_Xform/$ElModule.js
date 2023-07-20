@@ -12,17 +12,17 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     options: {
         /**
          * 组件加载前触发。queryLoad执行的时候，当前组件没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取。
-         * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.$ElModule#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 组件加载时触发.
-         * @event MWF.xApplication.process.Xform.$Module#load
+         * @event MWF.xApplication.process.Xform.$ElModule#load
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
          * 组件加载后触发.
-         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @event MWF.xApplication.process.Xform.$ElModule#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad"],
@@ -84,12 +84,13 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     _loadVue: function(callback){
         var flag = (o2.session.isDebugger || !this.form.app.inBrowser);
         var vue = flag ? "vue_develop" : "vue";
-        var vueName = flag ? "Vue" : "Cn";
-        if (!window.Vue || window.Vue.name!==vueName){
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
+        //var vueName = flag ? "Vue" : "Cn";
+        // if (!window.Vue || window.Vue.name!==vueName){
+        //     o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        // }else{
+        //     if (callback) callback();
+        // }
+        o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     _mountVueApp: function(){
         if (!this.vueApp) this.vueApp = this._createVueExtend();

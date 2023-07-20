@@ -1,11 +1,11 @@
 <!-- 表单 -->
-<div class="cc-mask cc-mask-show">
-    <div class="s-dialog">
-        <div class="s-dialog-header">
+<div style="height: 100%;">
+    <div class="o2-form">
+        <div class="o2-form-header">
             <span class="title">{{$.fTitle}}</span>
-            <button class="close" @click="close"><i class="o2icon-icon_close"></i></button>
+            <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
         </div>
-        <div class="s-dialog-content">
+        <div class="o2-form-content">
             <o-input oo-prop="{'isRequried': true, 'label':$.lp.groupForm.title, 'placeholder':$.lp.groupForm.titlePlaceholder, 'value': $.form.groupName}"
                 oo-model="form.groupName"></o-input>
             <o-org-person-selector
@@ -23,134 +23,134 @@
                 </div>
                 <div style="display: flex; flex-wrap: wrap;">
                     <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeType('1')">
-                        <div class="o2-icon-14" id="checkTypeFix"><i class="{{ ($.form.checkType == '1' ) ? 'o2icon-radio-checked primary_color' : 'o2icon-radio-unchecked'}}"></i></div>
+                        <div class="o2-icon-14" id="checkTypeFix"><i class="{{ ($.form.checkType == '1' ) ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
                         <label style="margin: 5px;" for="checkTypeFix"> {{$.lp.groupForm.checkTypeFix}}</label>
                     </div>
                     <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeType('2')">
-                        <div class="o2-icon-14" id="checkTypeFree"><i class="{{ ($.form.checkType == '2' ) ? 'o2icon-radio-checked primary_color' : 'o2icon-radio-unchecked'}}"></i></div>
+                        <div class="o2-icon-14" id="checkTypeFree"><i class="{{ ($.form.checkType == '2' ) ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
                         <label style="margin: 5px;" for="checkTypeFree"> {{$.lp.groupForm.checkTypeFree}}</label>
                     </div>
                 </div>
             </div>
             <!-- 考勤时间 固定班制 选择班次和打卡日子 -->
             <div class="margin-top" oo-if=" $.form.checkType == '1' ">
-                <div class="o-input-item-label" >
-                    <span class="required">*</span>
-                    {{$.lp.groupForm.time}}
+                <div class="form-item-line">
+                    <div class="form-item-line-label" >
+                        <span class="required">*</span>
+                        {{$.lp.groupForm.time}}
+                    </div>
+                    <div class="form-item-line-content" style="text-align: right;">
+                        {{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? $.shiftSelector.shiftSelected.shiftName : $.lp.groupForm.shiftPlaceholder}}
+                        <span class="operator_link primary_color"  @click="this.openShiftSelect('all')">{{$.lp.groupForm.shiftChangeMultiple}}</span>
+                    </div>
                 </div>
-                <div >
-                    {{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? $.shiftSelector.shiftSelected.shiftName : $.lp.groupForm.shiftPlaceholder}}
-                    <span class="operator_link"  @click="this.openShiftSelect('all')">{{$.lp.groupForm.shiftChangeMultiple}}</span>
-                </div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
+                
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top" style="table-layout: fixed;">
                     <thead>
-                        <th> </th>
-                        <th>{{$.lp.groupForm.tableThDay}}</th>
+                        <th style="width: 24px;"> </th>
+                        <th style="width: 10%;">{{$.lp.groupForm.tableThDay}}</th>
                         <th>{{$.lp.groupForm.tableThShift}}</th>
-                        <th  >{{$.lp.operate}}</th>
+                        <th style="width: 20%;">{{$.lp.operate}}</th>
                     </thead>
                     <!-- 周一 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('monday')">
-                                <i class="{{ $.workDay.monday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.monday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Monday}}</td>
                         <td>{{($.workDay.monday.shiftSelected && $.workDay.monday.shiftSelected.id) ? $.workDay.monday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('monday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周二 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('tuesday')">
-                                <i class="{{ $.workDay.tuesday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.tuesday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Tuesday}}</td>
                         <td>{{($.workDay.tuesday.shiftSelected && $.workDay.tuesday.shiftSelected.id) ? $.workDay.tuesday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('tuesday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周三 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('wednesday')">
-                                <i class="{{ $.workDay.wednesday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.wednesday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Wednesday}}</td>
                         <td>{{($.workDay.wednesday.shiftSelected && $.workDay.wednesday.shiftSelected.id) ? $.workDay.wednesday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('wednesday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周四 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('thursday')">
-                                <i class="{{ $.workDay.thursday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.thursday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Thursday}}</td>
                         <td>{{($.workDay.thursday.shiftSelected && $.workDay.thursday.shiftSelected.id) ? $.workDay.thursday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('thursday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周五 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('friday')">
-                                <i class="{{ $.workDay.friday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.friday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Friday}}</td>
                         <td>{{($.workDay.friday.shiftSelected && $.workDay.friday.shiftSelected.id) ? $.workDay.friday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('friday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周六 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('saturday')">
-                                <i class="{{ $.workDay.saturday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.saturday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Saturday}}</td>
                         <td>{{($.workDay.saturday.shiftSelected && $.workDay.saturday.shiftSelected.id) ? $.workDay.saturday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('saturday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                     <!-- 周日 -->
-                    <tr>
+                    <tr style="background-color: transparent;">
                         <td>
                             <div class="o2-icon-14" @click="this.changeWorkDayChecked('sunday')">
-                                <i class="{{ $.workDay.sunday.checked ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}} "></i>
+                                <i class="{{ $.workDay.sunday.checked ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}} "></i>
                             </div>
                         </td>
                         <td>{{$.lp.day.Sunday}}</td>
                         <td>{{($.workDay.sunday.shiftSelected && $.workDay.sunday.shiftSelected.id) ? $.workDay.sunday.shiftSelected.shiftName : $.lp.groupForm.shiftEmpty}}</td>
                         <td>
-                            <span class="operator_link"
+                            <span class="operator_link primary_color"
                                 @click="this.openShiftSelect('sunday')">{{$.lp.groupForm.shiftChange}}</span>
                         </td>
                     </tr>
                 </table>
-                <!-- <div class="o-input-item-input">
-                    <span class="{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? 'input' : 'input placeholder'}}" @click="openShiftSelect">{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? $.shiftSelector.shiftSelected.shiftName : $.lp.groupForm.shiftPlaceholder}}</span>
-                </div> -->
             </div>
             <!-- 考勤时间 自由工时的时候 选择打卡日子 -->
             <div class="margin-top" oo-if=" $.form.checkType == '2' ">
@@ -160,50 +160,56 @@
                 </div>
                 <div style="display: flex; flex-wrap: wrap;">
                     <div class="margin-left" style="display: flex;align-items: center;" oo-each="$.days" oo-item="day" @click="this.selectDay(day.value)">
-                        <div class="o2-icon-14" id="{{'day_' + day.value.value}}"><i class="{{ ($.workDateList.indexOf(day.value.value) > -1) ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i></div>
+                        <div class="o2-icon-14" id="{{'day_' + day.value.value}}"><i class="{{ ($.workDateList.indexOf(day.value.value) > -1) ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i></div>
                         <label style="margin: 5px;" for="{{'day_' + day.value.value}}">{{day.value.name}}</label>
                     </div>
                     
                 </div>
             </div>
             <!-- 工作场所 -->
-            <div class="o-input-item margin-top">
-                <div class="o-input-item-label" >
+            <div class="form-item-line margin-top">
+                <div class="form-item-line-label" style="height: 46px;line-height: 46px;">
                     <span class="required">*</span>
                     {{$.lp.groupForm.workPlace}}
-                    <span class="operator_link margin-left" @click="openWorkPlaceSelector">{{$.lp.add}}</span>
+                    
                 </div>
-                <div class="o-input-item-input  padding-bottom">
-                    <span class=" input placeholder" oo-if=" $.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
-                    <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
-                        <div class="tag-item"  oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
-                            {{workPlace.value.placeName}}
-                            <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
+                <div class="form-item-line-content" style="height: 46px;line-height: 46px;">
+                    <div class="o-input-item-input" style="height: 40px;border-radius: 20px;">
+                        <span class="input placeholder" oo-if=" $.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
+                        <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
+                            <div class="tag-item"  oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
+                                {{workPlace.value.placeName}}
+                                <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div style="height: 46px;line-height: 46px; cursor: pointer;" @click="openWorkPlaceSelector">
+                    <span class="operator_link primary_color margin-right" >{{$.lp.add}}</span>
+                    <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                </div>
             </div>
             <!-- 外勤打卡 -->
-            <div class="o-input-item margin-top">
-                <div class="o-input-item-label" >
+            <div class="form-item-line margin-top">
+                <div class="form-item-line-label" >
                     {{$.lp.groupForm.fieldWork}}
                 </div>
-                <div class="tag-container">
+                <div style="display: flex;flex-direction: column; width: 320px;">
                     <div class="margin-top margin-left flex" @click="clickAllowFieldWork">
                         <div class="o2-icon-14">
-                            <i class="{{ $.form.allowFieldWork ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                            <i class="{{ $.form.allowFieldWork ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.allowFieldWork}}</label>
                     </div>
                     <div class="margin-top margin-left flex" @click="clickRequiredFieldWorkRemarks">
                         <div class="o2-icon-14">
-                            <i class="{{ $.form.requiredFieldWorkRemarks ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                            <i class="{{ $.form.requiredFieldWorkRemarks ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.requiredFieldWorkRemarks}}</label>
                     </div>
                     <div class="margin-top margin-left flex" @click="clickFieldWorkMarkError">
                         <div class="o2-icon-14">
-                            <i class="{{ $.form.fieldWorkMarkError ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                            <i class="{{ $.form.fieldWorkMarkError ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.fieldWorkMarkError}}</label>
                     </div>
@@ -213,7 +219,10 @@
             <div class="  margin-top">
                 <div class="o-input-item-label" >
                     {{$.lp.groupForm.requiredCheckInDate}}
-                    <span class="operator_link margin-left" id="requiredDateSelector">{{$.lp.add}}</span>
+                    <div style="float: right;" id="requiredDateSelector">
+                        <span class="operator_link primary_color margin-right" >{{$.lp.add}}</span>
+                        <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                    </div>
                 </div>
                 <div class="margin-top" oo-if="$.requiredCheckInDateForTableList.length > 0">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
@@ -223,7 +232,7 @@
                             <th>{{$.lp.groupForm.requiredCheckInDateThCycle}}</th>
                             <th  >{{$.lp.operate}}</th>
                         </thead>
-                        <tr oo-each="$.requiredCheckInDateForTableList" oo-item="rDate">
+                        <tr oo-each="$.requiredCheckInDateForTableList" oo-item="rDate" style="background-color: transparent;">
                             <td>
                                 {{rDate.value.date}}
                             </td>
@@ -235,9 +244,9 @@
                                 </select>
                             </td>
                             <td>
-                                <span class="operator_link" oo-if=" $.form.checkType === '1' "
+                                <span class="operator_link primary_color" oo-if=" $.form.checkType === '1' "
                                     @click="this.openShiftSelect('requiredCheckIn-' + rDate.value.date)">{{$.lp.groupForm.shiftChange}}</span>
-                                <span class="operator_link"
+                                <span class="operator_link primary_color"
                                     @click="this.deleteRequiredDate(rDate.value.date)">{{$.lp.delete}}</span>
                             </td>
                         </tr>
@@ -248,7 +257,10 @@
             <div class="  margin-top ">
                 <div class="o-input-item-label" >
                     {{$.lp.groupForm.noNeedCheckInDate}}
-                    <span class="operator_link margin-left" id="noNeedDateSelector">{{$.lp.add}}</span>
+                    <div style="float: right;" id="noNeedDateSelector">
+                        <span class="operator_link primary_color margin-right" >{{$.lp.add}}</span>
+                        <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                    </div>
                 </div>
                 <div class="margin-top" oo-if="$.noNeedCheckInDateForTableList.length > 0">
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
@@ -259,7 +271,7 @@
                             <th  >{{$.lp.operate}}</th>
                         </thead>
                         <!-- 周一 -->
-                        <tr oo-each="$.noNeedCheckInDateForTableList" oo-item="rDate">
+                        <tr oo-each="$.noNeedCheckInDateForTableList" oo-item="rDate" style="background-color: transparent;">
                             <td>
                                 {{rDate.value.date}}
                             </td>
@@ -270,7 +282,7 @@
                                 </select>
                             </td>
                             <td>
-                                <span class="operator_link"
+                                <span class="operator_link primary_color"
                                     @click="this.deleteNoNeedDateSelector(rDate.value.date)">{{$.lp.delete}}</span>
                             </td>
                         </tr>
@@ -279,10 +291,10 @@
                 
             </div>
         </div>
-        <div class="s-dialog-footer">
+        <div class="o2-form-footer">
             <span>
+                <button style="width: 250px;" class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
                 <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-                <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
             </span>
         </div>
     </div>

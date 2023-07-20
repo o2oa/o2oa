@@ -49,15 +49,18 @@ class ActionEdit extends BaseAction {
 			page.getProperties().setRelatedScriptMap(wi.getRelatedScriptMap());
 			page.getProperties().setMobileRelatedScriptMap(wi.getMobileRelatedScriptMap());
 			emc.check(page, CheckPersistType.all);
+			emc.beginTransaction(Portal.class);
 			/** 更新首页 */
 			if (this.isBecomeFirstPage(business, portal, page)) {
-				emc.beginTransaction(Portal.class);
 				portal.setFirstPage(page.getId());
 			} else if (StringUtils.isEmpty(portal.getFirstPage())
 					|| (null == emc.find(portal.getFirstPage(), Page.class))) {
 				/* 如果是第一个页面,设置这个页面为当前页面 */
-				emc.beginTransaction(Portal.class);
 				portal.setFirstPage(page.getId());
+			}
+			if(StringUtils.isNotBlank(wi.getCornerMarkScript()) && StringUtils.isNotBlank(wi.getCornerMarkScriptText())) {
+				portal.setCornerMarkScript(wi.getCornerMarkScript());
+				portal.setCornerMarkScriptText(wi.getCornerMarkScriptText());
 			}
 			emc.commit();
 			CacheManager.notify(Page.class);
@@ -86,6 +89,12 @@ class ActionEdit extends BaseAction {
 
 		@FieldDescribe("移动端关联脚本.")
 		private Map<String, String> mobileRelatedScriptMap = new LinkedHashMap<>();
+
+		@FieldDescribe("角标关联脚本.")
+		private String cornerMarkScript;
+
+		@FieldDescribe("角标脚本文本.")
+		private String cornerMarkScriptText;
 
 		public List<String> getRelatedWidgetList() {
 			return this.relatedWidgetList == null ? new ArrayList<>() : this.relatedWidgetList;
@@ -117,6 +126,22 @@ class ActionEdit extends BaseAction {
 
 		public void setMobileRelatedScriptMap(Map<String, String> mobileRelatedScriptMap) {
 			this.mobileRelatedScriptMap = mobileRelatedScriptMap;
+		}
+
+		public String getCornerMarkScript() {
+			return cornerMarkScript;
+		}
+
+		public void setCornerMarkScript(String cornerMarkScript) {
+			this.cornerMarkScript = cornerMarkScript;
+		}
+
+		public String getCornerMarkScriptText() {
+			return cornerMarkScriptText;
+		}
+
+		public void setCornerMarkScriptText(String cornerMarkScriptText) {
+			this.cornerMarkScriptText = cornerMarkScriptText;
 		}
 	}
 

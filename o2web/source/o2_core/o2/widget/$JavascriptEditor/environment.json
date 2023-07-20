@@ -60,7 +60,7 @@
     "control": {
       "allowVisit": "boolean:是否允许访问工作",
       "allowProcessing": "boolean:是否允许流转",
-      "allowReadProcessing": "boolean:是否允许流转",
+      "allowReadProcessing": "boolean:是否有待阅",
       "allowSave": "boolean:是否允许保存",
       "allowReset": "boolean:是否允许重置处理人",
       "allowReroute": "boolean:是否允许调度",
@@ -68,7 +68,11 @@
       "allowAddSplit": "boolean:是否允许添加拆分分支",
       "allowRetract": "boolean:是否允许撤回",
       "allowRollback": "boolean:是否允许回溯流程",
-      "allowPress": "boolean:是否允许发送办理提醒"
+      "allowPress": "boolean:是否允许发送办理提醒",
+      "allowGoBack": "boolean:是否允许回退",
+      "allowAddTask": "boolean:是否允许加签",
+      "allowPause": "boolean:是否允许待办挂起",
+      "allowResume": "boolean:是否允许待办从挂起状态恢复"
     },
     "task": {
       "id": "待办ID",

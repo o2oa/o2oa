@@ -1,4 +1,4 @@
-<div class="manager-box">
+<div class="manager-box white-bg">
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
     </div>
@@ -20,9 +20,9 @@
              <div class="margin-top margin-right">
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
             </div>
-            <div class="margin-top margin-right">
-                <button class="light-border-button mainColor_border" @click="statisticExport">{{$.lp.statisticExport}}</button>
-            </div>
+        </div>
+        <div style="margin: 10px 0;float: right;">
+            <button class="light-border-button mainColor_border primary_color" @click="statisticExport">{{$.lp.statisticExport}}</button>
         </div>
        
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">

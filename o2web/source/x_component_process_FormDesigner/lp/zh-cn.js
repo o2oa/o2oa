@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "notDoubleDotId": "元素标识符不能包含连续的两个点号",
         "history": "历史",
         "componentTree": "组件树",
+        "invalidElementUIId": "由于Element组件的数据需要做双向绑定，标识请不要和配置项重名，如下：",
 
 		"button":{
 			"ok": "确定",
@@ -191,6 +192,8 @@ MWF.xApplication.process.FormDesigner.LP = {
     "newCategory": "新分类",
     "mustSelectFormStyle" : "必须选择一种表单样式",
     "notValidJson" : "错误的json格式",
+    "mustSelectDict" : "请先选择数据字典",
+    "mustSelect": "请选择",
 
     "imageClipper" : "图片编辑",
 
@@ -403,6 +406,14 @@ MWF.xApplication.process.FormDesigner.LP = {
         "printForm": "打印表单",
         "preloadScript": "预加载脚本",
         "script": "脚本",
+        "dict": "数据字典",
+        "dictName": "字典名称",
+        "dictPath": "数据路径",
+        "valueKey": "值属性名",
+        "textKey": "文本属性名",
+        "valueColumn": "值列",
+        "textColumn": "文本列",
+        "dictKeyNote": "如返回对象数组，需配置值属性名或文本属性名",
         "copy": "复制",
         "paste": "粘贴",
         "language": "语言包",
@@ -532,6 +543,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "simple": "精简",
         "separator": "分隔符",
         "asyncMode": "异步模式",
+        "asyncLoad": "异步加载",
 
         "identity": "身份",
         "unit": "组织",
@@ -661,8 +673,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectStyle": "Select样式",
         "options": "可选值",
         "optionScript": "可选值脚本",
+        "defaultOptionScript": "默认可选值脚本",
         "divStyle": "容器样式",
         "buttonStyle": "按钮样式",
+        "extendOptions": "其他可选值",
 
         "dynamic": "动态计算",
         "canSelectCount": "可选数量",
@@ -855,6 +869,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "singleChoice": "单选",
         "multipleChoice": "多选",
         "view": "视图",
+        "statement": "查询",
         "boxTitleStyle": "选择框标题样式",
         "boxItemStyle": "选择框条目样式",
         "selectResultProcessing": "选择结果处理",

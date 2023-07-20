@@ -21,17 +21,16 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     options: {
         /**
          * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
-         * @event MWF.xApplication.process.Xform.$Module#queryLoad
+         * @event MWF.xApplication.process.Xform.Elradio#queryLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
-         * 组件加载时触发.
-         * @event MWF.xApplication.process.Xform.$Module#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.Elradio#load
          */
         /**
          * 组件加载后触发.
-         * @event MWF.xApplication.process.Xform.$Module#postLoad
+         * @event MWF.xApplication.process.Xform.Elradio#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "queryLoad", "postLoad", "change"],
@@ -66,6 +65,24 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     _loadNodeEdit: function(){
         if (!this.json.preprocessing) this._resetNodeEdit();
         this.setOptions();
+    },
+
+    __showValue: function(node, value, optionItems){
+        if (value){
+            var texts = "";
+            for (var i=0; i<optionItems.length; i++){
+                var item = optionItems[i];
+                var tmps = item.split("|");
+                var t = tmps[0];
+                var v = tmps[1] || t;
+
+                if (value == v){
+                    texts = t || v;
+                    break;
+                }
+            }
+            node.set("text", texts);
+        }
     },
 
     setOptions: function(){
@@ -185,13 +202,24 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
 
     _loadVue: function(callback){
-        if (!window.Vue){
-            var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
-            o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
-        }else{
-            if (callback) callback();
-        }
+        var flag = (o2.session.isDebugger || !this.form.app.inBrowser);
+        var vue = flag ? "vue_develop" : "vue";
+        //var vueName = flag ? "Vue" : "Cn";
+        // if (!window.Vue || window.Vue.name!==vueName  ){
+        //     o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+        // }else{
+        //     if (callback) callback();
+        // }
+        o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
+    // _loadVue: function(callback){
+    //     if (!window.Vue){
+    //         var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+    //         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
+    //     }else{
+    //         if (callback) callback();
+    //     }
+    // },
     _mountVueApp: function(callback){
         if (!this.vueApp) this.vueApp = this._createVueExtend(callback);
 
@@ -268,14 +296,34 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         }
     },
 
-    setExcelData: function(d){
+    getExcelData: function( type ){
+		var value = this.getData();
+		if( type === "value" )return value;
+
+		var options = this.getOptionsObj();
+		return Promise.resolve(options).then(function (opts) {
+			var idx = opts.valueList.indexOf( value );
+			var text = idx > -1 ? opts.textList[ idx ] : "";
+			if( !text )text = value;
+			return text;
+		});
+	},
+    setExcelData: function(d, type){
         var value = d.replace(/&#10;/g,""); //换行符&#10;
         this.excelData = value;
-        var options = this.getOptionsObj();
-        var idx = options.textList.indexOf( value );
-        value = idx > -1 ? options.valueList[ idx ] : "";
-        this.json[this.json.$id] = value;
-        this._setBusinessData(value);
-        this.setData(value, true);
+        if( type === "value" ){
+			this.setData(value, true);
+		}else{
+            var options = this.getOptionsObj();
+            this.moduleExcelAG = Promise.resolve(options).then(function (opts) {
+                var idx = opts.textList.indexOf( value );
+                var v = idx > -1 ? opts.valueList[ idx ] : "";
+                value = v || value;
+                this.json[this.json.$id] = value;
+                this._setBusinessData(value);
+                this.setData(value, true);
+                this.moduleExcelAG = null;
+            }.bind(this));
+        }
     }
 }); 

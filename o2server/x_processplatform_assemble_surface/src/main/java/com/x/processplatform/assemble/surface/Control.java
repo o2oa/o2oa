@@ -22,8 +22,6 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowAddTask;
 	// 是否可以调度
 	private Boolean allowReroute;
-	// 是否可以挂起
-	private Boolean allowSuspend;
 	// 是否可以删除
 	private Boolean allowDelete;
 	// 是否可以增加会签分支
@@ -40,8 +38,6 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowResume;
 	// 是否可以退回
 	private Boolean allowGoBack;
-	// 是否可以重置待阅处理人
-	private Boolean allowReadReset;
 
 	public Boolean getAllowManage() {
 		return allowManage;
@@ -169,22 +165,6 @@ public class Control extends GsonPropertyObject {
 
 	public void setAllowGoBack(Boolean allowGoBack) {
 		this.allowGoBack = allowGoBack;
-	}
-
-	public Boolean getAllowReadReset() {
-		return allowReadReset;
-	}
-
-	public void setAllowReadReset(Boolean allowReadReset) {
-		this.allowReadReset = allowReadReset;
-	}
-
-	public Boolean getAllowSuspend() {
-		return allowSuspend;
-	}
-
-	public void setAllowSuspend(Boolean allowSuspend) {
-		this.allowSuspend = allowSuspend;
 	}
 
 }

@@ -29,7 +29,7 @@ MWF.xApplication.query.QueryExplorer.LP = MWF.QueryLP = {
     "createApplication_cancel": "¿Está seguro de que desea cancelar la creación de la aplicación de datos?",
     "createApplicationSuccess": "¡La aplicación de datos se ha creado correctamente!",
     "searchAppPlacholder": "Ingrese el nombre",
-
+    "searchAppTitle": "Coincide con el nombre, alias e id de la aplicación",
     "application": {
         // "action_ok": "完  成",
         // "action_cancel": "取  消",

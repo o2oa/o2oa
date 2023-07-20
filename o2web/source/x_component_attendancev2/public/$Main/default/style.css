@@ -26,6 +26,102 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.o2icon-icon_tongji:before {
+  content: "\e900";
+}
+.o2icon-icon_dingwei:before {
+  content: "\e901";
+}
+.o2icon-icon_tishi:before {
+  content: "\e902";
+}
+.o2icon-icon_off:before {
+  content: "\e903";
+}
+.o2icon-icon_zengjia_blue2_click:before {
+  content: "\e904";
+}
+.o2icon-icon_shijian:before {
+  content: "\e905";
+}
+.o2icon-icon_bianji:before {
+  content: "\e906";
+}
+.o2icon-icon_off_round:before {
+  content: "\e907";
+}
+.o2icon-icon__ok2_click_b:before {
+  content: "\e908";
+}
+.o2icon-icon_delete_grey:before {
+  content: "\e909";
+}
+.o2icon-icon_choose_people:before {
+  content: "\e90a";
+}
+.o2icon-icon_rili:before {
+  content: "\e90b";
+}
+.o2icon-icon_arrow_left:before {
+  content: "\e90c";
+}
+.o2icon-icon_arrow_right:before {
+  content: "\e90d";
+}
+.o2icon-icon_banciguanli:before {
+  content: "\e90e";
+}
+.o2icon-icon_changsuo:before {
+  content: "\e90f";
+}
+.o2icon-icon_huizong:before {
+  content: "\e910";
+}
+.o2icon-icon_kaoiqinyichang:before {
+  content: "\e911";
+}
+.o2icon-icon_kaoqinzu:before {
+  content: "\e912";
+}
+.o2icon-icon_lock:before {
+  content: "\e913";
+}
+.o2icon-icon_meirihuizong:before {
+  content: "\e914";
+}
+.o2icon-icon_peizhi:before {
+  content: "\e915";
+}
+.o2icon-icon_qingjia:before {
+  content: "\e916";
+}
+.o2icon-icon_yuanshijilu:before {
+  content: "\e917";
+}
+.o2icon-icon_quan:before {
+  content: "\e918";
+}
+.o2icon-icon_xuanzhong:before {
+  content: "\e919";
+}
+.o2icon-triangle_left:before {
+  content: "\e91a";
+}
+.o2icon-triangle_right:before {
+  content: "\e91b";
+}
+.o2icon-icon_arrow_down:before {
+  content: "\e91c";
+}
+.o2icon-icon_arrow_up2:before {
+  content: "\e91d";
+}
+.o2icon-icon_bumen3:before {
+  content: "\e91e";
+}
+.o2icon-icon_close:before {
+  content: "\e928";
+}
 .o2icon-piechart:before {
   content: "\e95f";
 }
@@ -35,32 +131,14 @@
 .o2icon-accept:before {
   content: "\e975";
 }
-.o2icon-config:before {
-  content: "\e9ba";
-}
-.o2icon-triangle_left:before {
-  content: "\e90c";
-}
-.o2icon-triangle_right:before {
-  content: "\e90d";
-}
-.o2icon-icon_arrow_down:before {
-  content: "\e913";
-}
-.o2icon-icon_arrow_up2:before {
-  content: "\e916";
-}
-.o2icon-icon_bumen3:before {
-  content: "\e91e";
-}
-.o2icon-icon_close:before {
-  content: "\e928";
-}
 .o2icon-icon_sousuo:before {
   content: "\e999";
 }
 .o2icon-clock2:before {
   content: "\e9ab";
+}
+.o2icon-config:before {
+  content: "\e9ba";
 }
 .o2icon-cancel-circle:before {
   content: "\ea0d";

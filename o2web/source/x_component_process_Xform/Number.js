@@ -42,7 +42,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                         break;
                     case "average":
                         this._loadMergeAverageEditNode();
-                        break;
                 }
             }else{
                 this._loadNode();

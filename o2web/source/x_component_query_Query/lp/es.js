@@ -244,6 +244,10 @@ MWF.xApplication.query.Query.LP = {
 
     "deleteDocument": "Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este registro de importación?",  
     "deleteDocumentTitle": "Confirmar",  
-    "deleteDocumentOK": "El registro de importación se eliminó correctamente"
+    "deleteDocumentOK": "El registro de importación se eliminó correctamente",
+
+    "noPermission": "No tienes permiso para acceder a este documento.",
+    "associationSuccess": "Asociación exitosa.",
+    "associationResult": "Resultado de la asociación"
 
 };

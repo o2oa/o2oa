@@ -51,7 +51,19 @@
 
         <div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="{{$.lp.options}}"></div>
         <div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
-        <div id="text{$.pid}selectEditItemDynamic" style="display: text{($.itemType=='script')?'block':'none'}" class="MWFScriptArea" name="itemDynamic" title="{{$.lp.optionDynamicScript}} (S)"></div>
+        <div id="text{$.pid}selectEditItemDynamic" style="display: text{($.itemType=='dynamic')?'block':'none'}">
+            <div style="line-height: 20px;padding:5px;">
+                //动态计算指每次输入的时候（出现可选列表）都会重新计算可选值<br/>
+                //可以通过this.event.value 获取当前输入的值<br/>
+                //需要通过 this.event.callback( options ) 将选项回传给组件<br/>
+                if( ( this.event.value || "" ).indexOf("a") > -1 ){<br/>
+                &nbsp;&nbsp;this.event.callback( [{text:"111"}, {text:"222"}] )<br/>
+                }else{<br/>
+                &nbsp;&nbsp;this.event.callback( [{text:"aaa"}, {text:"bbb"}] )<br/>
+                }
+            </div>
+            <div class="MWFScriptArea" name="itemDynamic" title="{{$.lp.optionDynamicScript}} (S)"></div>
+        </div>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
         <!--<div class="MWFMaplist" name="inputStyles" title="Combox样式"></div>-->

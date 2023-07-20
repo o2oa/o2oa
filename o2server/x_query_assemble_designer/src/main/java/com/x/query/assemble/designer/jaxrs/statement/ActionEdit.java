@@ -70,13 +70,10 @@ class ActionEdit extends BaseAction {
 			if (StringUtils.isEmpty(statement.getName())) {
 				throw new ExceptionEntityFieldEmpty(Statement.class, Statement.NAME_FIELDNAME);
 			}
-			if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
-				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
-			}
-
 			emc.beginTransaction(Statement.class);
 			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			statement.setLastUpdateTime(new Date());
+			this.checkDuplicate(business, query, statement);
 			emc.check(statement, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Statement.class);

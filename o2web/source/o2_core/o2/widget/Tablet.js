@@ -534,7 +534,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         Promise.resolve( image ).then(function(image){
             if( image ){
                 if( this.options.action ){
-                    this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(action).action : this.options.action;
+                    this.action = (typeOf(this.options.action)=="string") ? o2.Actions.get(this.options.action).action : this.options.action;
                     this.action.invoke({
                         "name": this.options.method,
                         "async": true,
@@ -585,7 +585,16 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 ia[i] = src.charCodeAt(i);
             }
 
-            return new Blob([ia], {type: this.fileType });
+            var blob = new Blob([ia], {type: this.fileType });
+            var fileName = "image_"+new Date().getTime();
+            if( this.fileType && this.fileType.contains("/") ) {
+                blob.name = fileName + "." + this.fileType.split("/")[1];
+            }else{
+                blob.name = fileName + ".unknow";
+            }
+
+            return blob;
+
         }.bind(this));
     },
     getBase64Code : function( ignoreResultSize ){

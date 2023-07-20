@@ -1,9 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
-import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,10 +9,6 @@ import java.util.concurrent.ExecutorService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
@@ -39,11 +32,11 @@ import com.x.query.core.express.plan.CmsPlan;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.ProcessPlatformPlan;
-import com.x.query.core.express.plan.Row;
 import com.x.query.core.express.plan.Runtime;
-import com.x.query.core.express.plan.SelectEntry;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+	private static final String EXCEL_EXTENSION = ".xlsx";
 
 	protected Plan accessPlan(Business business, View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
@@ -80,9 +73,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 			plan = processPlatformPlan;
 			break;
 		}
-		plan.afterCalculateGridScriptText = null;
-		plan.afterGridScriptText = null;
-		plan.afterGroupGridScriptText = null;
 		return plan;
 	}
 
@@ -173,75 +163,23 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	protected String girdWriteToExcel(EffectivePerson effectivePerson, Business business, Plan plan, View view,
+	protected String writeExcel(EffectivePerson effectivePerson, Business business, Plan plan, View view,
 			String excelName) throws Exception {
-		try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-			XSSFSheet sheet = workbook.createSheet("grid");
-			if (ListTools.isNotEmpty(plan.selectList)) {
-				XSSFRow r = sheet.createRow(0);
-				XSSFCell c = null;
-				int i = 0;
-				for (SelectEntry o : plan.selectList) {
-					c = r.createCell(i);
-					c.setCellValue(o.getDisplayName());
-					i++;
-				}
-			}
-			if (null != plan.grid) {
-				Row row = null;
-				XSSFRow r = null;
-				XSSFCell c = null;
-				int i = 0;
-				for (int j = 0; j < plan.grid.size(); j++) {
-					row = plan.grid.get(j);
-					r = sheet.createRow(j + 1);
-					i = 0;
-					for (SelectEntry o : plan.selectList) {
-						c = r.createCell(i);
-						c.setCellValue(objectToString(row.find(o.column)));
-						i++;
-					}
-				}
-			}
-			if (StringUtils.isEmpty(excelName)) {
-				excelName = view.getName() + ".xlsx";
-			}
-			if (!excelName.toLowerCase().endsWith(".xlsx")) {
-				excelName = excelName + ".xlsx";
-			}
-			workbook.write(os);
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-				GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName,
-						effectivePerson.getDistinguishedName());
-				generalFile.saveContent(gfMapping, os.toByteArray(), excelName);
-				emc.beginTransaction(GeneralFile.class);
-				emc.persist(generalFile, CheckPersistType.all);
-				emc.commit();
-				return generalFile.getId();
-			}
+		if (StringUtils.isEmpty(excelName)) {
+			excelName = view.getName() + EXCEL_EXTENSION;
 		}
-	}
-
-	protected String objectToString(Object object) {
-		String str = "";
-		if (object instanceof Integer) {
-			str = object.toString();
-		} else if (object instanceof Double) {
-			str = object.toString();
-		} else if (object instanceof Float) {
-			str = object.toString();
-		} else if (object instanceof Boolean) {
-			str = String.valueOf(object);
-		} else if (object instanceof Date) {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			str = formatter.format(object);
-		} else if (object instanceof List){
-			str = StringUtils.join((List)object, ",");
-		} else {
-			str = object.toString();
+		if (!excelName.toLowerCase().endsWith(EXCEL_EXTENSION)) {
+			excelName = excelName + EXCEL_EXTENSION;
 		}
-		return str;
+		byte[] bytes = plan.girdToExcel();
+		StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+		GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName,
+				effectivePerson.getDistinguishedName());
+		generalFile.saveContent(gfMapping, bytes, excelName);
+		business.entityManagerContainer().beginTransaction(GeneralFile.class);
+		business.entityManagerContainer().persist(generalFile, CheckPersistType.all);
+		business.entityManagerContainer().commit();
+		return generalFile.getId();
 	}
 
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,

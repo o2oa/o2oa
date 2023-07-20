@@ -17,6 +17,7 @@ MWF.xApplication.cms.Column.LP = {
 	"export_ok" : "Aceptar",
 	"allApp": "Todas",
 	"searchAppPlacholder": "Ingrese el nombre para buscar una categoría",
+	"searchAppTitle": "Coincide con el nombre, alias e id de la aplicación",
 	"column" : {
 		"title" : "Administración de categorías",
 		"create" : "Crear",

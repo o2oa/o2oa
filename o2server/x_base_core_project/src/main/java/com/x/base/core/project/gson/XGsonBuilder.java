@@ -37,7 +37,7 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
 					gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
-					INSTANCE = gson.setPrettyPrinting().create();
+					INSTANCE = gson.setPrettyPrinting().serializeSpecialFloatingPointValues().create();
 				}
 			}
 		}

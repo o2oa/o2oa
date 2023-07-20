@@ -8,14 +8,14 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.JobControlBuilder;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionAllowVisitWithPerson extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAllowVisitWithPerson.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job)  {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, String person) throws Exception {
 
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
@@ -23,8 +23,23 @@ class ActionAllowVisitWithPerson extends BaseAction {
 		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build();
-			wo.setValue(control.getAllowVisit());
+			String pro = null;
+			String app = null;
+			Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
+			if (null != work) {
+				pro = work.getProcess();
+				app = work.getApplication();
+			} else {
+				WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
+						WorkCompleted.job_FIELDNAME, job);
+				if (null != workCompleted) {
+					pro = workCompleted.getProcess();
+					app = workCompleted.getApplication();
+				}
+			}
+			wo.setValue(business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(person, job)
+					|| business.ifPersonCanManageApplicationOrProcess(person, app, pro)
+					|| business.ifJobHasBeenCorrelation(person, job));
 		}
 		result.setData(wo);
 		return result;

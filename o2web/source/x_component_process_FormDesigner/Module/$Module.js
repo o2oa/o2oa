@@ -1139,6 +1139,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_setEditStyle: function(name, obj, oldValue){
 		var title = "";
 		var text = "";
+		debugger;
 		if (name==="name"){
 			title = this.json.name || this.json.id;
 			if (this.json.type==="Common"){

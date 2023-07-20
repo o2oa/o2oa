@@ -16,7 +16,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
 import com.x.processplatform.core.entity.content.DocumentVersion;
@@ -77,14 +76,13 @@ class ActionTypeSnap extends BaseAction {
 				List<Review> reviews = new ArrayList<>();
 				List<WorkLog> workLogs = new ArrayList<>();
 				List<Record> records = new ArrayList<>();
-				List<Attachment> attachments = new ArrayList<>();
 				List<DocumentVersion> documentVersions = new ArrayList<>();
 				List<DocSign> docSigns = new ArrayList<>();
 				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				Snap snap = new Snap(work);
 				snap.setProperties(
 						snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads, readCompleteds,
-								reviews, workLogs, records, attachments, documentVersions, docSigns, docSignScrawls));
+								reviews, workLogs, records,  documentVersions, docSigns, docSignScrawls));
 
 				snap.setType(Snap.TYPE_SNAP);
 				emc.beginTransaction(Snap.class);

@@ -608,9 +608,14 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 this.rowList.each( function( row, lineIndex ){
                     var lineData = row.importedData;
                     var array = [];
-                    lineData.each( function (d, i) {
-                        array.push( ( d || '' ).replace(/&#10;/g, "\n") );
-                    });
+                    for( var i=0; i<lineData.length; i++ ){
+                        var d = ( lineData[i] || '' ).replace(/&#10;/g, "\n");
+                        array.push( d );
+                    }
+                    // lineData.each( function (d, i) {
+                    //     array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                    // });
+
                     array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
                     resultArr.push( array );
                 }.bind(this));

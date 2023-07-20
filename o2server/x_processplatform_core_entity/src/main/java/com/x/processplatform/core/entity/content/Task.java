@@ -84,6 +84,10 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		if (StringTools.utf8Length(this.getProperties().getOpinion()) > length_255B) {
 			this.opinion = StringTools.utf8SubString(this.getProperties().getOpinion(), length_255B - 3) + "...";
 		}
+		// 在加签中routeName用于显示加签人员,如果超长,会导致无法保存.
+		if (StringTools.utf8Length(this.getRouteName()) > length_255B) {
+			this.routeName = StringTools.utf8SubString(this.getRouteName(), length_255B - 3) + "...";
+		}
 	}
 
 	@PostLoad

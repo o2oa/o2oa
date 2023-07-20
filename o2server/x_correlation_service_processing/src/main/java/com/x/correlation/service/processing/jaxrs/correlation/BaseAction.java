@@ -12,19 +12,20 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_cms_assemble_control;
 import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.cms.core.entity.Document;
 import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
+import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWo;
 import com.x.correlation.service.processing.Business;
 import com.x.correlation.service.processing.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
@@ -32,23 +33,19 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected void checkAllowVisitProcessPlatform(String person, String job) throws Exception {
+	protected boolean checkAllowVisitProcessPlatform(String person, String job) throws Exception {
 		WrapBoolean resp = ThisApplication.context().applications()
 				.getQuery(x_processplatform_assemble_surface.class,
 						Applications.joinQueryUri("job", job, "allow", "visit", "person", person))
 				.getData(WrapBoolean.class);
-		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionAccessDenied(person, job);
-		}
+		return resp.getValue();
 	}
 
-	protected void checkPermissionReadFromCms(String person, String document) throws Exception {
+	protected boolean checkPermissionReadFromCms(String person, String document) throws Exception {
 		WrapBoolean resp = ThisApplication.context().applications().getQuery(x_cms_assemble_control.class,
 				Applications.joinQueryUri("document", "cipher", document, "permission", "read", "person", person))
 				.getData(WrapBoolean.class);
-		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionAccessDenied(person, document);
-		}
+		return resp.getValue();
 	}
 
 	protected Map<String, Correlation> exists(Business business, String fromType, String fromBundle) throws Exception {
@@ -58,20 +55,33 @@ abstract class BaseAction extends StandardJaxrsAction {
 				.stream().collect(Collectors.toMap(o -> o.getTargetType() + o.getTargetBundle(), Function.identity()));
 	}
 
-	protected List<Correlation> readTarget(String person, Business business, List<TargetWi> targets) throws Exception {
-		List<Correlation> list = new ArrayList<>();
+	protected Pair<List<Correlation>, List<TargetWo>> readTarget(String person, Business business,
+			List<TargetWi> targets) throws Exception {
+		List<Correlation> successList = new ArrayList<>();
+		List<TargetWo> failureList = new ArrayList<>();
 		for (TargetWi targetWi : targets) {
 			if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_PROCESSPLATFORM)) {
-				checkAllowVisitProcessPlatform(person, targetWi.getBundle());
-				list.add(readTargetProcessPlatform(person, business, targetWi.getBundle(), targetWi.getSite()));
+				if (checkAllowVisitProcessPlatform(person, targetWi.getBundle())) {
+					successList
+							.add(readTargetProcessPlatform(person, business, targetWi.getBundle(), targetWi.getSite()));
+				} else {
+					TargetWo targetWo = new TargetWo();
+					targetWi.copyTo(targetWo);
+					failureList.add(targetWo);
+				}
 			} else if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_CMS)) {
-				checkPermissionReadFromCms(person, targetWi.getBundle());
-				list.add(readTargetCms(person, business, targetWi.getBundle(), targetWi.getSite()));
+				if (checkPermissionReadFromCms(person, targetWi.getBundle())) {
+					successList.add(readTargetCms(person, business, targetWi.getBundle(), targetWi.getSite()));
+				} else {
+					TargetWo targetWo = new TargetWo();
+					targetWi.copyTo(targetWo);
+					failureList.add(targetWo);
+				}
 			} else {
 				throw new ExceptionAccessDenied(person, targetWi.getBundle());
 			}
 		}
-		return list;
+		return Pair.of(successList, failureList);
 	}
 
 	protected Correlation readTargetProcessPlatform(String person, Business business, String bundle, String site)

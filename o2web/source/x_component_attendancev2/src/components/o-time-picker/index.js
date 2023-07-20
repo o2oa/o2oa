@@ -11,6 +11,7 @@ export default content({
         return {
             lp,
             showClear: false,
+            placeholder: lp.components.chooseTimePlaceholder,
             value: "",
             key:"" // 反写回去的对象key值，多层用.分割 如 form.startTime
         };

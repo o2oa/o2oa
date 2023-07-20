@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp } from "@o2oa/component";
 import { myAction } from "../../utils/actions";
-import { convertTo2DArray, convertMinutesToHoursAndMinutes } from "../../utils/common";
+import { convertTo2DArray } from "../../utils/common";
 import template from "./temp.html";
 import style from "./style.scope.css";
 
@@ -15,12 +15,25 @@ export default content({
       startFromMonday: true, // 是否从星期一开始 
       dayList: [], // 星期列表
       dateWithData: [], // 日历数据包含业务数据
-      // statistic 统计数据
+      statistic: {
+        userId: "",
+        workTimeDuration: 0,
+        averageWorkTimeDuration: "0.0",
+        attendance: 0,
+        rest: 0,
+        absenteeismDays: 0,
+        lateTimes: 0,
+        leaveEarlierTimes: 0,
+        absenceTimes: 0,
+        fieldWorkTimes: 0,
+        leaveDays: 0,
+        appealNums: 0
+      } // 统计数据
     };
   },
   afterRender() {
     this.loadDayList();
-    this.loadDate(this.bind.startFromMonday);
+    this.loadDate();
   },
   // 星期列表 
   loadDayList() {
@@ -72,17 +85,64 @@ export default content({
   },
   // 获取当前月份的所有日期，并补齐前后几天，形成完整的日历表
   // 默认从星期天开始  startFromMonday = true 从星期一开始
-  async loadDate(startFromMonday) {
+  loadDate() {
     let start = 0
-    if (typeof startFromMonday ==="boolean" && startFromMonday) {
+    if (this.bind.startFromMonday) {
       start = 1;
     }
     // 获取当前日期
     const today = new Date();
+    this.bind.currentDateTime = today.getTime();
     // 获取当前月份
     const currentMonth = today.getMonth();
     // 获取当前年份
     const currentYear = today.getFullYear();
+    const currentDate = today.getDate();
+    this.bind.todayString = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-${(currentDate) < 10 ? "0" + (currentDate) : (currentDate)}`
+    
+    this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  clickToNextMonth() {
+    let start = 0
+    if (this.bind.startFromMonday) {
+      start = 1;
+    }
+    const preDateTime = this.bind.currentDateTime || new Date().getTime();
+    const preDate = new Date(preDateTime);
+    // 获取当前月份
+    const preMonth = preDate.getMonth();
+    // 获取当前年份
+    let currentYear = preDate.getFullYear();
+    let currentMonth = preMonth + 1;
+    if (currentMonth == 12) {
+      currentMonth = 0;
+      currentYear = currentYear + 1;
+    }
+    this.bind.currentDateTime = new Date(currentYear, currentMonth, 1).getTime();// 下个月 1 号
+    this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  clickToPreMonth() {
+    let start = 0
+    if (this.bind.startFromMonday) {
+      start = 1;
+    }
+    const lastDateTime = this.bind.currentDateTime || new Date().getTime();
+    const lastDate = new Date(lastDateTime);
+    // 获取当前月份
+    const lastMonth = lastDate.getMonth();
+     // 获取当前年份
+     let currentYear = lastDate.getFullYear();
+     let currentMonth = lastMonth - 1;
+     if (currentMonth == -1) {
+       currentMonth = 11;
+       currentYear = currentYear - 1;
+     }
+     this.bind.currentDateTime = new Date(currentYear, currentMonth, 1).getTime();// 下个月 1 号
+     this.loadDataByDate(start, currentYear, currentMonth);
+  },
+  // 加载数据
+  // @param start 1 从星期一开始
+  async loadDataByDate( start, currentYear, currentMonth) {
     // 获取当月的天数
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     // 获取当月第一天是星期几
@@ -102,7 +162,12 @@ export default content({
       startDate: startDate,
       endDate: endDate,
     };
-    const list = (await myAction("listDetailWithDate", reqBody)) || [];
+    let list = [];
+    try {
+      list = (await myAction("listDetailWithDate", reqBody));
+    } catch (error) {
+     console.error(error);  
+    }
     // 添加需要补齐的前一个月的日期
     for (
       let i = daysInPrevMonth - firstDayOfMonth + 1 + start;
@@ -137,13 +202,22 @@ export default content({
     const newDates = dates.map(date => {
       const detail = list.find(element => element.recordDateString === date.dateYmd) || null;
       date.detail = detail;
+      date.workDay = true; // 默认白色背景
       return date;
+    });
+    const checkWorkDayList = dates.map(date => {
+      return date.dateYmd;
     });
     // 输出日期数组
     this.bind.dateWithData = convertTo2DArray(newDates, 7);
-    this.bind.cycleDate = startDate + " - " + endDate;
+    // 当前统计周期 月份和日期
+    this.bind.cycleMonth = `${currentYear}${lp.year}${(currentMonth + 1)}${lp.month}`;
+    const showMonth = (currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1);
+    this.bind.cycleDate = `${showMonth}${lp.month}01 - ${showMonth}${lp.month}${daysInMonth}`;
     // 统计信息
     this.loadMyStatistic(reqBody);
+    // 查询是否工作日
+    this.loadIsWorkDay(checkWorkDayList);
   },
   async loadMyStatistic(body) {
     const statistic = (await myAction("statistic", body));
@@ -151,14 +225,36 @@ export default content({
       this.bind.statistic = statistic;
     }
   },
+  async loadIsWorkDay(checkIsMyRestDay) {
+    const old = this.bind.dateWithData;
+    let list = [];
+    try {
+      const result = (await myAction("checkIsMyRestDay", { dateList : checkIsMyRestDay}));
+      if (result && result.restDateList) {
+        list = result.restDateList;
+      }
+    } catch (error) {
+     console.error(error);  
+    }
+    for (let i = 0; i < old.length; i++) {
+      let line = old[i];
+      for (let index = 0; index < line.length; index++) {
+        const element = line[index];
+        if (list.indexOf(element.dateYmd) > -1) {
+            element.workDay = false;
+            line[index] = element;
+        }
+      }
+    }
+  },
   // 日历方块的class
   formatCalItemClass(item) {
     let className = 'item';
     if (item.notCurrent === 1) {
-      className = 'item out';
+      className += ' out';
     }
-    if (item.detail && item.detail.recordList && item.detail.recordList.length > 0) {
-      className = 'item full';
+    if (item.workDay === false) {
+      className += ' rest';
     }
     return className;
   },
@@ -172,37 +268,68 @@ export default content({
     if (record && record.checkInType === 'OnDuty') {
       type = lp.onDutySimple;
     }
-    return `${type} - ${time}`;
+    return `${time}`;
   },
-  // 打卡结果 标识
-  formatRecordStatusClass(record) {
-    let statusClassName = 'item-record-status';
+  // 日期的 class
+  formatDateClass(date) {
+    if (date === this.bind.todayString) {
+      return 'item-cal-date-text item-cal-date-today';
+    }
+    return 'item-cal-date-text'
+  },
+  formatRecordResultTagClass(record) {
+    let statusClassName = '';
     if (record && record.checkInResult) {
       switch (record.checkInResult) {
         case 'Early':
-          statusClassName =  "item-record-status record-status-early";
+          statusClassName =  "item-record-status-tag record-status-early";
           break;
         case 'Late':
-            statusClassName =  "item-record-status record-status-late";
-          break;
         case 'SeriousLate':
-            statusClassName =  "item-record-status record-status-serilate";
+            statusClassName =  "item-record-status-tag record-status-late";
           break;
         case 'NotSigned':
-            statusClassName =  "item-record-status record-status-nosign";
+            statusClassName =  "item-record-status-tag record-status-nosign";
           break;
         default:
-          statusClassName =  "item-record-status record-status-normal";
+          statusClassName =  "";
       }
-    }
-    // 有申诉记录
-    if (record.appealId) {
-      statusClassName =  "item-record-status record-status-appeal";
+      if (record.fieldWork == true) {
+        statusClassName =  "item-record-status-tag record-status-fieldwork";
+      } else if (record.leaveData) {
+        statusClassName =  "item-record-status-tag record-status-leave";
+      }  else if (record.appealId && statusClassName === "") {
+        statusClassName =  "item-record-status-tag record-status-appeal";
+      }
     }
     return statusClassName;
   },
-   // 格式化工作时长
-   formatWorkTimeDuration(workTime) {
-    return convertMinutesToHoursAndMinutes(workTime);
-  }
+  formatRecordResultTagName(record) {
+    let tagName = '';
+    if (record && record.checkInResult) {
+      switch (record.checkInResult) {
+        case 'Early':
+          tagName =  lp.appeal.early;
+          break;
+        case 'Late':
+        case 'SeriousLate':
+          tagName =  lp.appeal.late;
+          break;
+        case 'NotSigned':
+          tagName =  lp.appeal.notSigned;
+          break;
+        default:
+          tagName =  "";
+      }
+      if (record.fieldWork == true) {
+        tagName =  lp.appeal.fieldWork;
+      } else if (record.leaveData) {
+        tagName =  lp.appeal.leave;
+      } else if (record.appealId && tagName === "") {
+        tagName =  lp.appeal.appeal;
+      }
+    }
+    return tagName;
+  },
+  
 });

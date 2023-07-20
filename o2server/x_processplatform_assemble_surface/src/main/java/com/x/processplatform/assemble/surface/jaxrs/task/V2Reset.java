@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -24,10 +25,12 @@ import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -81,14 +84,7 @@ public class V2Reset extends BaseAction {
 		this.effectivePerson = effectivePerson;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-
 			init(business, id, wi);
-
-			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, task.getApplication(),
-					task.getProcess())) {
-				throw new ExceptionAccessDenied(effectivePerson, this.task);
-			}
-
 		}
 
 		ManualTaskIdentityMatrix manualTaskIdentityMatrix = reset(this.task, wi.getKeep(), identities);
@@ -141,7 +137,10 @@ public class V2Reset extends BaseAction {
 		if (null == work) {
 			throw new ExceptionEntityNotExist(id, Work.class);
 		}
-
+		Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowReset().build();
+		if (BooleanUtils.isNotTrue(control.getAllowReset())) {
+			throw new ExceptionAccessDenied(effectivePerson, work);
+		}
 		if (!work.getManualTaskIdentityMatrix().contains(task.getIdentity())) {
 			throw new ExceptionIdentityNotInMatrix(task.getIdentity());
 		}

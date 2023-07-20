@@ -1,2 +1,22 @@
+/* 选项卡 */
+.r-box {
+  display: inline-block;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid var(--el-color-primary);
+  transition: all 0.3s;
+}
+.r-item {
+  margin: 0;
+  display: inline-block;
+  padding: 4px 11px;
+  color: #333333;
+  font-size: 14px;
+  line-height: 1.5715;
+  cursor: pointer;
+}
+.r-item-active {
+  color: var(--el-color-primary)!important;
+  border-bottom: 2px solid var(--el-color-primary);
+}
 
 

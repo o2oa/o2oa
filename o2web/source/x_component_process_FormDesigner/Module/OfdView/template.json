@@ -4,6 +4,8 @@
 	"type": "OfdView",
 	"description": "",
 	"template": "",
+	"templeteScript" : "",
+	"templateType" : "value",
 	"script": {
 		"code": "",
 		"html": ""

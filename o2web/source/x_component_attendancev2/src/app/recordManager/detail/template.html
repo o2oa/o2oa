@@ -1,0 +1,108 @@
+<!-- 表单 -->
+<div style="height: 100%;">
+  <div class="o2-form">
+    <div class="o2-form-header">
+      <span class="title">{{$.fTitle}}</span>
+      <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
+    </div>
+    <div class="o2-form-content" style="width: 460px;">
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.name}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $m.formatName($.record.userId) }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.group}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $.record.groupName }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.shift}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $.record.shiftName }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.dutyTime}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $.record.shiftId ? $.record.recordDateString + ' ' + $.record.preDutyTime : '' }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.checkInType}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $.record.checkInType === 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.sourceType}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{ $m.sourceTypeFormat($.record.sourceType) }}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.recordDate}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          {{$m.recordDateFormat()}}
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.checkInResult}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          <span class="{{this.formatRecordResultClass($.record)}}">{{ $m.formatRecordResult($.record) }}</span>
+          <!-- <span class="color-fieldWork  margin-left" oo-if="$.record.fieldWork">({{$.lp.myFieldWork}})</span> -->
+          <span class="color-holiday  margin-left"
+              oo-if="$.record.leaveData">({{$.record.leaveData.leaveType}})</span>
+        </div>
+      </div>
+      <div class="form-item-line">
+        <div class="form-item-line-label">
+          {{$.lp.record.fieldWork}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+           {{$.record.fieldWork ?  $.lp.yes : $.lp.no }}
+        </div>
+      </div>
+      <div class="form-item-line" oo-if="$.record.fieldWork">
+        <div class="form-item-line-label">
+          {{$.lp.record.fieldWorkDesc}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+           {{$.record.signDescription }}
+        </div>
+      </div>
+      <div class="form-item-line" oo-if="$.record.fieldWork">
+        <div class="form-item-line-label">
+          {{$.lp.record.fieldWorkAddress}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+           {{$.record.recordAddress }}
+        </div>
+      </div>
+    </div>
+    <div class="o2-form-footer">
+      <span>
+        <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
+      </span>
+    </div>
+  </div>
+
+</div>

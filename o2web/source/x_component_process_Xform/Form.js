@@ -55,6 +55,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "postLoad",
             /**
              * 表单的所有组件加载后触发。表单包含有子表单、子页面、部件时，此事件会在这些组件加载后触发。
+             * 如果包含异步加载的组件，如异步加载的下拉框选项等，会在这些组件加载完成后执行。
              * @event MWF.xApplication.process.Xform.Form#afterModulesLoad
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
@@ -737,12 +738,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             (!this.widgetCount || this.widgetCount === this.widgetLoadedCount)
         ) {
             //this.container.setStyle("opacity", 1);
-            this.fireEvent("afterModulesLoad");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
 
-            this.fireEvent("afterLoad");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
-            this.isLoaded = true;
+            var moduleAgList = [];
+            this.modules.each( function(module){
+                if( module.moduleValueAG )moduleAgList.push( module.moduleValueAG );
+                if( module.moduleSelectAG && module.moduleValueAG !== module.moduleSelectAG )moduleAgList.push(module.moduleSelectAG);
+            });
+
+
+            Promise.all( moduleAgList ).then(function () {
+                this.fireEvent("afterModulesLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterModulesLoad");
+
+                this.fireEvent("afterLoad");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("afterLoad");
+                this.isLoaded = true;
+            }.bind(this));
+
         }
     },
     _loadMobileDefaultTools: function (callback) {
@@ -1523,7 +1535,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
-                if (callback && typeOf(callback) === "function") callback();
+                if (callback && typeOf(callback) === "function") callback(json);
                 this.fireEvent("afterSave");
                 this.fireEvent("afterSaveWork");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
@@ -2109,10 +2121,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 var mediaIds = [];
                 if (medias && medias.length) {
-                    medias.each(function (file) {
+                    medias.each(function (file, i) {
                         var formData = new FormData();
                         formData.append("file", file);
                         formData.append("site", "$mediaOpinion");
+                        var fileName = "mediaOpinion_"+i+"_"+new Date().getTime();
+                        if( file.type && file.type.contains("/") ) {
+                            file.name = fileName + "." + file.type.split("/")[1];
+                        }else{
+                            file.name = fileName + ".unknow";
+                        }
                         this.workAction.uploadAttachment(this.businessData.work.id, formData, file, function (json) {
                             mediaIds.push(json.data.id);
                         }.bind(this), null, false);
@@ -2809,10 +2827,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ]
             };
-            if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
-                opt.html = text;
-            }else{
-                opt.text = text
+
+
+            if (typeOf(text).toLowerCase() === "object") {
+                if( text.html )opt.html = text.html;
+                if( text.text )opt.text = text.text;
+            } else {
+                if( /<\/?[a-z][\s\S]*>/i.test(text||"")){
+                    opt.html = text;
+                }else{
+                    opt.text = text
+                }
             }
 
             var dlg = new MWF.xDesktop.Dialog(opt);
@@ -3170,8 +3195,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         node.getFirst().setStyles(this.css.rollbackItemTaskTitleNode_current);
         node.getLast().setStyles(this.css.rollbackItemTaskBodyNode_current);
 
-        debugger;
-
         var checkeds = item.getElements("input");
         if (checkeds){
             checkeds.set("checked", true);
@@ -3323,7 +3346,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var text = this.app.lp.rollbackConfirmContent;
                 var log = items[i].retrieve("log");
                 var checks = items[i].getElements("input:checked");
-                debugger;
+
                 var idList = [];
                 checks.each(function (check) {
                     var id = check.get("value");
@@ -4738,7 +4761,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var p = MWF.getCenterPosition(content, width, height);
 
             var _self = this;
-debugger;
+
             //"您确定要将“" + title + "”标记为已阅吗？";
             var title = this.businessData.work.title;
             var text = MWF.xApplication.process.Xform.LP.setReadedConfirmContent.replace("{title}",title);

@@ -1891,6 +1891,10 @@ MWF.xScript.CMSEnvironment = function(ev){
         "dialog": function ( options ) {
             return _form.dialog( options );
         },
+        "selectOrg": function ( container, options,  delayLoad) {
+            if( !container )container = _form.app.content;
+            return new MWF.O2Selector(container, options, delayLoad);
+        },
         "addEvent": function(e, f){_form.addEvent(e, f);},
         "openWork": function(id, completedId, title, options){
             var op = options || {};

@@ -35,7 +35,7 @@ MWF.xApplication.Selector.Dictionary = new Class({
                     action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
                     break;
                 case "cms":
-                    action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+                    action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
                     break;
                 case "portal":
                     action = o2.Actions.load("x_portal_assemble_designer").DictAction.listPaging;

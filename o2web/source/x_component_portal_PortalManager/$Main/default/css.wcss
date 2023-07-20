@@ -237,5 +237,36 @@
         "font-size": "14px",
         "color": "#666",
         "cursor": "pointer"
-     }
+     },
+  "noteNode": {
+    "color": "#aaa",
+    "margin": "0 40px",
+    "padding-bottom": "10px"
+  },
+  "selectScriptArea": {
+    "margin-left": "10px",
+    "padding": "5px 10px",
+    "background": "#fff",
+    "overflow": "hidden"
+  },
+  "cornerMarkActionAreaNode": {
+    "overflow": "hidden",
+    "margin": "10px"
+  },
+  "cornerMarkButton": {
+    "border-radius" : "5px",
+    "cursor" : "pointer",
+    "font-size" : "12px",
+    "border" : "1px solid #ccc",
+    "background-color" : "#fff",
+    "display": "block",
+    "padding" : "5px 10px",
+    "float" : "left",
+    "margin-right": "20px"
+  },
+  "cornerMarkExecuteNoteNode": {
+    "padding-left": "10px",
+    "color": "#999",
+    "padding-bottom": "10px"
+  }
 }

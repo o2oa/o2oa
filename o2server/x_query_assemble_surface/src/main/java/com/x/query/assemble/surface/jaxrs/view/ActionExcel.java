@@ -1,5 +1,11 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.list.TreeList;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -23,17 +29,16 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
-import org.apache.commons.collections4.list.TreeList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 class ActionExcel extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExcel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExcel.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (ListTools.isNotEmpty(wi.getBundleList())) {
@@ -63,7 +68,7 @@ class ActionExcel extends BaseAction {
 			runtime.bundleList = wi.getBundleList();
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
-		String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view, wi.getExcelName());
+		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());
 		Wo wo = new Wo();
 		wo.setId(excelFlag);
 		result.setData(wo);

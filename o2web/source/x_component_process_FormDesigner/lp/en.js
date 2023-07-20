@@ -11,6 +11,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "notDoubleDotId": "Element identifier cannot contain two consecutive dots",
     "history": "History",
     "componentTree": "Component Tree",
+    "invalidElementUIId": "Dado que los datos del componente Element deben vincularse en dos direcciones, no tenga el mismo nombre que el elemento de configuración:",
 
     "button":{
         "ok": "OK",
@@ -193,6 +194,8 @@ MWF.xApplication.process.FormDesigner.LP = {
     "newCategory": "New Category",
     "mustSelectFormStyle": "You must select a form style",
     "notValidJson": "Wrong json format",
+    "mustSelectDict" : "Please select the data dictionary first",
+    "mustSelect": "Please select.",
 
     "imageClipper": "ImageEditor",
 
@@ -405,6 +408,14 @@ MWF.xApplication.process.FormDesigner.LP = {
         "printForm": "PrintForm",
         "preloadScript": "PreloadScript",
         "script": "Script",
+        "dict": "Dictonary",
+        "dictName": "Dictonary Name",
+        "dictPath": "Data Path",
+        "valueKey": "Value attribute name",
+        "textKey": "Text attribute name",
+        "valueColumn": "Value Column",
+        "textColumn": "Text Column",
+        "dictKeyNote": "If an object array is returned, you need to configure the value attribute name or text attribute name",
         "copy": "Copy",
         "paste": "Paste",
         "language": "Language",
@@ -534,6 +545,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "simple": "Simple",
         "separator": "Separator",
         "asyncMode": "Async Mode",
+        "asyncLoad": "Async Loading",
 
         "identity": "Identity",
         "unit": "Unit",
@@ -663,6 +675,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectStyle": "Select Style",
         "options": "Options",
         "optionScript": "Options Script",
+        "extendOptions": "Additional optional values",
         "divStyle": "Container style",
         "buttonStyle": "Button style",
 

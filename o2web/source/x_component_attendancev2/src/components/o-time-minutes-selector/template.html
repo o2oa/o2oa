@@ -1,6 +1,6 @@
 <div class="o-time-picker">
   <div class="o-time-picker-input">
-    <span class="{{$.value ? 'input' : 'input placeholder'}}" >{{$.value ? $.showValue : $.lp.components.timeMinutesSelectorClosePlaceholder}}</span>
+    <span class="{{$.value ? 'input' : 'input placeholder'}}" >{{$.value ? $.showValue : $.placeholder}}</span>
     <div class="icon" @mouseenter="enterIcon" @mouseleave="leaveIcon" @click="clickIconClearValue"><i class="{{$.showClear ? 'o2icon-cancel-circle': 'o2icon-icon_arrow_down'}}"></i></div>
   </div>
   <div class="o-time-minutes-selctor" style="display: none;">

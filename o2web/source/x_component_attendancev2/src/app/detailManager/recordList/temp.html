@@ -1,12 +1,10 @@
-<div class="cc-mask cc-mask-show">
-  <div class="s-dialog">
-      <div class="s-dialog-header">
+<div style="height: 100%;">
+  <div class="o2-form">
+      <div class="o2-form-header">
           <span class="title">{{$.fTitle}}</span>
-          <button class="close" @click="close"><i class="o2icon-icon_close"></i></button>
+          <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
       </div>
-      <div class="s-dialog-content">
-        <div style="padding: 20px;">
-           
+      <div class="o2-form-content">
           <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
               <thead>
                   <th>{{$.lp.detailRecordList.dutyTitle}}</th>
@@ -24,11 +22,9 @@
               </tr>
           </table>
       </div>
-      </div>
-      <div class="s-dialog-footer">
+      <div class="o2-form-footer">
           <span>
               <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-              <!-- <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button> -->
           </span>
       </div>
   </div>
