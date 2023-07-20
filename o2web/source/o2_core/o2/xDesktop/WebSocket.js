@@ -342,7 +342,8 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveCustomMessage: function(data){
-        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+o2.txt(data.body);
+        var text =  o2.typeOf(data.body) === "string" ? data.body : data.title;
+        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+o2.txt(text);
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
