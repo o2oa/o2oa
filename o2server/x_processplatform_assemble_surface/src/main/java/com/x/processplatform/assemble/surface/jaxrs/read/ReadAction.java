@@ -301,7 +301,7 @@ public class ReadAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "根据work创建待阅.", action = ActionCreateWithWork.class)
+	@JaxrsMethodDescribe(value = "根据workCompleted创建待阅.", action = ActionCreateWithWorkCompleted.class)
 	@POST
 	@Path("workcompleted/{workCompletedId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
