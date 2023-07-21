@@ -1,7 +1,5 @@
 package com.x.portal.assemble.designer.jaxrs.page;
 
-import java.util.Optional;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,33 +14,40 @@ import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
 
+import java.util.Optional;
+
 class ActionGet extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = null;
-			Portal portal = emc.find(wo.getPortal(), Portal.class);
-			if (null == portal) {
-				throw new PortalNotExistedException(id);
-			}
-			if (!business.editable(effectivePerson, portal)) {
-				throw new PortalInvisibleException(effectivePerson.getDistinguishedName(), portal.getName(),
-						portal.getId());
-			}
+			Wo wo;
+			Portal portal;
 			CacheKey cacheKey = new CacheKey(id);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				wo = (Wo) optional.get();
+				portal = emc.find(wo.getPortal(), Portal.class);
+				if (null == portal) {
+					throw new PortalNotExistedException(wo.getPortal());
+				}
 			} else {
 				Page page = emc.find(id, Page.class);
 				if (null == page) {
 					throw new PageNotExistedException(id);
 				}
 				wo = Wo.copier.copy(page);
+				portal = emc.find(wo.getPortal(), Portal.class);
+				if (null == portal) {
+					throw new PortalNotExistedException(wo.getPortal());
+				}
 				wo.setCornerMarkScript(portal.getProperties().getCornerMarkScript());
 				wo.setCornerMarkScriptText(portal.getProperties().getCornerMarkScriptText());
 				CacheManager.put(cache, cacheKey, wo);
+			}
+			if (!business.editable(effectivePerson, portal)) {
+				throw new PortalInvisibleException(effectivePerson.getDistinguishedName(), portal.getName(),
+						portal.getId());
 			}
 
 			result.setData(wo);
