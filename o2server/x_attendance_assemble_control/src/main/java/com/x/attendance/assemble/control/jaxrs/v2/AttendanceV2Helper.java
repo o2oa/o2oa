@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateError;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
@@ -8,11 +9,13 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +26,17 @@ import java.util.List;
  * Copyright © 2023 O2. All rights reserved.
  */
 public class AttendanceV2Helper {
+
+
+    public static boolean beforeToday(String date) throws Exception {
+        Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
+        Date today = new Date(); 
+        today = DateUtils.truncate(today, Calendar.DATE); // 今天  0 点 0 分
+        if (dateD.after(today) || dateD.equals(today)) {
+            throw new ExceptionDateError();
+        }
+        return true;
+    }
 
 
     /**

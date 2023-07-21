@@ -39,10 +39,12 @@ public class ActionRebuildDetailWithGroupDate  extends BaseAction {
         if (StringUtils.isEmpty(date)) {
             throw new ExceptionEmptyParameter("date");
         }
-        Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
-        Date today = new Date();
-        if (dateD.after(today)) {
-            throw new ExceptionDateError();
+        if (!AttendanceV2Helper.beforeToday(date)) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Wo wo = new Wo();
+            wo.setValue(false);
+            result.setData(wo);
+            return result;
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);

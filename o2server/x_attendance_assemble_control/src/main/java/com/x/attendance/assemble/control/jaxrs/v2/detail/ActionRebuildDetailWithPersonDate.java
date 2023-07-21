@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.base.core.container.EntityManagerContainer;
@@ -14,7 +15,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -39,16 +42,15 @@ public class ActionRebuildDetailWithPersonDate extends BaseAction {
                 throw new ExceptionAccessDenied(effectivePerson);
             }
         }
-        Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
-        Date today = new Date();
-        if (dateD.after(today)) {
-            throw new ExceptionDateError();
-        }
-        LOGGER.info("发起考勤数据生成，Date：{} person: {}", date, person);
-        ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, date));
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
-        wo.setValue(true);
+        if (AttendanceV2Helper.beforeToday(date)) {
+            LOGGER.info("发起考勤数据生成，Date：{} person: {}", date, person);
+            ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, date));
+            wo.setValue(true);
+        } else {
+            wo.setValue(false);
+        }
         result.setData(wo);
         return result;
     }
