@@ -109,14 +109,13 @@ export default component({
        }
     },
     async timeoutCheck() {
-        debugger;
         if (this.bind.status==='starting'){
             await this.checkServer();
         }else{
             await this.check();
         }
 
-        if (this.checkCount>15){
+        if (this.checkCount>150){
             this.bind.status = 'unknown';
         }else{
             if (this.bind.status==='started'){

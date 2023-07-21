@@ -14,11 +14,11 @@ const o={
 }
 export default defineConfig({
     // assetsInclude: ['**/*.html'],
-    base: '/x_init',
     server: {
         proxy: {
             '/jaxrs': o,
-            '/x_program_center': o
+            '/x_program_center': o,
+            '/x_desktop': o
         },
         sourcemap: true
     }
