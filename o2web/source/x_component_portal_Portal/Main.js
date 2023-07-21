@@ -103,7 +103,8 @@ MWF.xApplication.portal.Portal.Main = new Class({
                     // var page = (pageJson.data.data) ? JSON.decode(MWF.decodeJsonString(pageJson.data.data)): null;
 
                     var pageName = pageJson.data.page ? pageJson.data.page.name : pageJson.data.name;
-                    this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
+                    //this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
+                    this.setTitle(pageName);
                     var page;
                     if (pageJson.data.page){
                         this.pageDataText = (pageJson.data.page.data) ? MWF.decodeJsonString(pageJson.data.page.data): "";
@@ -177,7 +178,8 @@ MWF.xApplication.portal.Portal.Main = new Class({
     },
     openPage: function(pageJson, par, callback){
         var pageName = pageJson.data.page ? pageJson.data.page.name : pageJson.data.name;
-        this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
+        //this.setTitle((this.portal && this.portal.name) ? this.portal.name+"-"+pageName : pageName);
+        this.setTitle(pageName);
         if (pageJson.data.page){
             this.pageDataText = (pageJson.data.page.data) ? MWF.decodeJsonString(pageJson.data.page.data): "";
             this.page = (this.pageDataText) ? JSON.decode(this.pageDataText): null;
@@ -238,7 +240,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.portal = json.data;
             if (this.pageJson){
                 var pageName = this.pageJson.data.page ? this.pageJson.data.page.name : this.pageJson.data.name;
-                if(!layout.mobile)this.setTitle(this.portal.name+"-"+pageName);
+                //if(!layout.mobile)this.setTitle(this.portal.name+"-"+pageName);
             }
 
             if (this.portal.icon){

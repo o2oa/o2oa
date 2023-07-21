@@ -1326,6 +1326,8 @@ MDomItem.Radio = new Class({
         this.valSeparator = module.valSeparator;
     },
     load : function(){
+        if( !this.options.selectValue && this.options.selectText )this.options.selectValue = this.options.selectText;
+        if( !this.options.selectText && this.options.selectValue )this.options.selectText = this.options.selectValue;
         if( this.options.isEdited ){
             this.loadEdit();
         }else{
@@ -1504,6 +1506,8 @@ MDomItem.Checkbox = new Class({
         this.valSeparator = module.valSeparator;
     },
     load : function(){
+        if( !this.options.selectValue && this.options.selectText )this.options.selectValue = this.options.selectText;
+        if( !this.options.selectText && this.options.selectValue )this.options.selectText = this.options.selectValue;
         if( this.options.isEdited ){
             this.loadEdit();
         }else{
@@ -1693,6 +1697,8 @@ MDomItem.Select = new Class({
         this.valSeparator = module.valSeparator;
     },
     load : function(){
+        if( !this.options.selectValue && this.options.selectText )this.options.selectValue = this.options.selectText;
+        if( !this.options.selectText && this.options.selectValue )this.options.selectText = this.options.selectValue;
         if( this.options.disable )return;
         if( this.options.isEdited ){
             this.loadEdit();
@@ -1852,6 +1858,8 @@ MDomItem.Multiselect = new Class({
         this.valSeparator = module.valSeparator;
     },
     load : function(){
+        if( !this.options.selectValue && this.options.selectText )this.options.selectValue = this.options.selectText;
+        if( !this.options.selectText && this.options.selectValue )this.options.selectText = this.options.selectValue;
         if( this.options.disable )return;
         if( this.options.isEdited ){
             this.loadEdit();

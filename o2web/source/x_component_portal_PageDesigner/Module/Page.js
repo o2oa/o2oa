@@ -1099,6 +1099,18 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         //     }.bind(this));
         // }
         return {"fieldConflict": fieldConflict, "elementConflict": elementConflict};
-    }
+    },
+	//脚本附签上的脚本编辑器
+	addScriptJsEditor: function (propertyName, jsEditor) {
+		if( !this.scriptJsEditors )this.scriptJsEditors = {};
+		this.scriptJsEditors[propertyName] = jsEditor;
+	},
+	getScriptJsEditor: function (propertyName) {
+		if( !this.scriptJsEditors ){
+			return null;
+		}else{
+			return this.scriptJsEditors[propertyName];
+		}
+	}
 	
 });
