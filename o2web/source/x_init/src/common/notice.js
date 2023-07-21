@@ -33,7 +33,6 @@ const notice = {
      */
     msg: (title, text, type, options = {})=>{
         const opts = Object.assign({  title, text, duration: 5000, type, location: 'topRight', marginTop: 10}, options);
-        debugger;
         new Notice(opts);
     },
 

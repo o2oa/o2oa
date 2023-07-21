@@ -10,7 +10,7 @@ const password_cancel = '/jaxrs/secret/cancel';
 const server_execute = '/jaxrs/server/execute';         //get 执行服务器任务,执行完成后将停止init服务器,随后正常启动.
 const server_stop = '/jaxrs/server/stop';               //get 停止init服务器
 const server_status = '/jaxrs/server/execute/status';   //get 取初始服务器任务执行状态
-const server_echo = '/x_program_center/jaxrs/echo';  //get 检查O2OA服务器是否启动成功
+const server_echo = '/x_desktop/res/config/config.json';  //get 检查O2OA服务器是否启动成功
 
 
 //database

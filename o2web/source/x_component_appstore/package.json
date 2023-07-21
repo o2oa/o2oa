@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@o2oa/vue-cli-plugin-o2component-vue2": "latest",
-    "@vue/cli-service": "~4.5.17",
+    "@vue/cli-service": "^5.0.8",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
