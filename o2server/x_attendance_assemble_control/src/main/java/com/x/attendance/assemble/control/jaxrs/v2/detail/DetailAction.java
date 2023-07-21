@@ -32,14 +32,14 @@ public class DetailAction extends StandardJaxrsAction {
 
     private static Logger logger = LoggerFactory.getLogger(DetailAction.class);
 
-
     @JaxrsMethodDescribe(value = "重新生成考勤信息，人员: 人员DN，日期: yyyy-MM-dd.", action = ActionRebuildDetailWithPersonDate.class)
     @GET
     @Path("rebuild/person/{person}/date/{date}/")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void rebuild(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                    @JaxrsParameterDescribe("人员") @PathParam("person") String person, @JaxrsParameterDescribe("日期：yyyy-MM-dd") @PathParam("date") String date) {
+            @JaxrsParameterDescribe("人员") @PathParam("person") String person,
+            @JaxrsParameterDescribe("日期：yyyy-MM-dd") @PathParam("date") String date) {
         ActionResult<ActionRebuildDetailWithPersonDate.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
@@ -51,16 +51,14 @@ public class DetailAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-
-
     @JaxrsMethodDescribe(value = "分页查询考勤信息列表.", action = ActionListByPage.class)
     @POST
     @Path("list/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void listByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                             @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+            @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+            @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         ActionResult<List<ActionListByPage.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
@@ -77,11 +75,12 @@ public class DetailAction extends StandardJaxrsAction {
     @Path("statistic/filter")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void statistic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  JsonElement jsonElement) {
+    public void statistic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            JsonElement jsonElement) {
         ActionResult<List<StatisticWo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionStatisticWithFilter().execute( jsonElement );
+            result = new ActionStatisticWithFilter().execute(jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);
@@ -94,12 +93,32 @@ public class DetailAction extends StandardJaxrsAction {
     @Path("statistic/export/filter/{filter}/start/{start}/end/{end}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void statisticExport(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  @JaxrsParameterDescribe("人员或组织的DN，组织会递归下面所有的人员，如xxx@xxx@P、xxx@xxx@U") @PathParam("filter") String filter,
-                                @JaxrsParameterDescribe("开始日期：yyyy-MM-dd") @PathParam("start") String start, @JaxrsParameterDescribe("结束日期：yyyy-MM-dd") @PathParam("end") String end) {
+    public void statisticExport(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("人员或组织的DN，组织会递归下面所有的人员，如xxx@xxx@P、xxx@xxx@U") @PathParam("filter") String filter,
+            @JaxrsParameterDescribe("开始日期：yyyy-MM-dd") @PathParam("start") String start,
+            @JaxrsParameterDescribe("结束日期：yyyy-MM-dd") @PathParam("end") String end) {
         ActionResult<ActionStatisticExportExcel.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionStatisticExportExcel().execute(effectivePerson, filter, start ,end );
+            result = new ActionStatisticExportExcel().execute(effectivePerson, filter, start, end);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "根据统计id查询相关的打卡记录列表.", action = ActionRecordListByDetailId.class)
+    @GET
+    @Path("statistic/{detailId}/list/record")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void recordList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("detail 统计 id") @PathParam("detailId") String detailId) {
+        ActionResult<List<ActionRecordListByDetailId.WoRecord>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionRecordListByDetailId().execute(effectivePerson, detailId);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

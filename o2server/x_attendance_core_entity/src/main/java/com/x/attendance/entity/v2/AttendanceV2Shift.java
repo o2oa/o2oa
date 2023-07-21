@@ -81,6 +81,16 @@ public class AttendanceV2Shift extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private AttendanceV2ShiftCheckTimeProperties properties;
 
+	public static final String workTime_FIELDNAME = "workTime";
+	@FieldDescribe("工作时长分钟数.")
+	@Column(name = ColumnNamePrefix + workTime_FIELDNAME)
+	private Integer workTime; // 工作时长分钟数，如 480
+
+	public static final String needLimitWorkTime_FIELDNAME = "needLimitWorkTime";
+	@FieldDescribe("工作时长不足是否记为早退.")
+	@Column(name = ColumnNamePrefix + needLimitWorkTime_FIELDNAME)
+	private Boolean needLimitWorkTime = true;
+
 	public static final String seriousTardinessLateTime_FIELDNAME = "seriousTardinessLateMinutes";
 	@FieldDescribe("严重迟到分钟数.")
 	@Column(name = ColumnNamePrefix + seriousTardinessLateTime_FIELDNAME)
@@ -161,5 +171,22 @@ public class AttendanceV2Shift extends SliceJpaObject {
 		this.lateAndEarlyOffTime = lateAndEarlyOffTime;
 	}
 
+  public Integer getWorkTime() {
+    return workTime;
+  }
+
+  public void setWorkTime(Integer workTime) {
+    this.workTime = workTime;
+  }
+
+  public Boolean getNeedLimitWorkTime() {
+    return needLimitWorkTime;
+  }
+
+  public void setNeedLimitWorkTime(Boolean needLimitWorkTime) {
+    this.needLimitWorkTime = needLimitWorkTime;
+  }
+
+	
 
 }

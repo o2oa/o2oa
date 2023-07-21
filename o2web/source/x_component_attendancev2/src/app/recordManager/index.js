@@ -5,7 +5,7 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
-import { lpFormat } from "../../utils/common";
+import { lpFormat, isEmpty } from "../../utils/common";
 
 export default content({
   template,
@@ -17,7 +17,8 @@ export default content({
       recordList: [],
       form: {
         userId: "",
-        recordDateString: "",
+        startDate: "",
+        endDate: "",
       },
       units: [], // 控制组织选择的范围
       filterList:[],
@@ -65,6 +66,10 @@ export default content({
       form.userId = this.bind.filterList[0];
     } else {
       form.userId = "";
+    }
+    if ((isEmpty(form.startDate) && !isEmpty(form.endDate)) || (!isEmpty(form.startDate) && isEmpty(form.endDate))) {
+      o2.api.page.notice(lp.record.searchDateError, 'error');
+      return;
     }
     const json = await recordActionListByPaging(
       this.bind.pagerData.page,

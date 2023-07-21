@@ -1,5 +1,10 @@
 package com.x.attendance.assemble.control.jaxrs.v2.record;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -15,9 +20,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
+import com.x.base.core.project.tools.DateTools;
 
 /**
  * Created by fancyLou on 2023/2/15.
@@ -42,8 +45,14 @@ public class ActionListByPage extends BaseAction {
             }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
+            Date start = null;
+            Date end = null;
+            if (StringUtils.isNotEmpty(wi.getStartDate()) && StringUtils.isNotEmpty(wi.getEndDate())) {
+                start = DateTools.parseDate(wi.getStartDate());
+                end = DateTools.parseDate(wi.getEndDate());
+            }
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory().listRecordByPage(adjustPage,
-                    adjustPageSize, wi.getUserId(), wi.getRecordDateString());
+                    adjustPageSize, wi.getUserId(), start, end);
             List<Wo> wos = Wo.copier.copy(list);
             for (Wo wo : wos) {
                 try {
@@ -56,7 +65,7 @@ public class ActionListByPage extends BaseAction {
                 } catch (Exception ignore) {}
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), wi.getRecordDateString()));
+            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), start, end));
             return result;
         }
     }
@@ -67,8 +76,10 @@ public class ActionListByPage extends BaseAction {
         private static final long serialVersionUID = 4227642755086093795L;
         @FieldDescribe("打卡的用户标识")
         private String userId;
-        @FieldDescribe("打卡记录日期字符串: YYYY-MM-dd")
-        private String recordDateString;
+        @FieldDescribe("打卡记录开始日期: YYYY-MM-dd")
+        private String startDate;
+        @FieldDescribe("打卡记录结束日期: YYYY-MM-dd")
+        private String endDate;
 
         public String getUserId() {
             return userId;
@@ -78,13 +89,23 @@ public class ActionListByPage extends BaseAction {
             this.userId = userId;
         }
 
-        public String getRecordDateString() {
-            return recordDateString;
+        public String getStartDate() {
+            return startDate;
         }
 
-        public void setRecordDateString(String recordDateString) {
-            this.recordDateString = recordDateString;
+        public void setStartDate(String startDate) {
+            this.startDate = startDate;
         }
+
+        public String getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(String endDate) {
+            this.endDate = endDate;
+        }
+
+        
     }
 
 

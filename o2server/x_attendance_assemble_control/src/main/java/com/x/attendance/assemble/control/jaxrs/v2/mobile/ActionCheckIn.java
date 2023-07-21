@@ -18,8 +18,10 @@ import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by fancyLou on 2023/2/22.
@@ -137,6 +139,38 @@ public class ActionCheckIn extends BaseAction {
                             Date lateAndEarlyOffTime = DateTools.addMinutes(offDutyTime, -minute);
                             if (nowDate.after(lateAndEarlyOffTime)) {
                                 checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                            }
+                        }
+                    }
+                    // 工作时长检查
+                    if (checkInResult.equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && shift.getNeedLimitWorkTime() && shift.getWorkTime() > 0) {
+                        List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), today);
+                        if (recordList == null || recordList.isEmpty()) {
+                            throw new ExceptionNoTodayRecordList();
+                        }
+                        // 确定是最后一条打卡
+                        if (record.getId().equals(recordList.get(recordList.size()-1).getId())) {
+                            long realWorkTime = 0;
+                             // 上班打卡
+                            List<AttendanceV2CheckInRecord> onDutyList = recordList.stream().filter(
+                                            (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)  )
+                                    .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
+                            // 下班打卡
+                            List<AttendanceV2CheckInRecord> offDutyList = recordList.stream().filter(
+                                            (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) )
+                                    .sorted(Comparator.comparing(AttendanceV2CheckInRecord::getRecordDate)).collect(Collectors.toList());
+                            for (int i = 0; i < onDutyList.size(); i++) {
+                                AttendanceV2CheckInRecord onDuty = onDutyList.get(i);
+                                AttendanceV2CheckInRecord offDuty = offDutyList.get(i);
+                                if (offDuty.getId().equals(record.getId())) {
+                                    realWorkTime += (nowDate.getTime() - onDuty.getRecordDate().getTime());
+                                } else {
+                                    realWorkTime += (offDuty.getRecordDate().getTime() - onDuty.getRecordDate().getTime());
+                                }
+                            }
+                            if (realWorkTime < shift.getWorkTime()) { // 工作时长不足 标记未早退
+                                checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
+                                LOGGER.info("时长不足，标记为早退， "+ effectivePerson.getDistinguishedName());
                             }
                         }
                     }

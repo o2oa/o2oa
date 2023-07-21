@@ -218,7 +218,7 @@ public class ActionPreCheck extends BaseAction {
         record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
         record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_AUTO_CHECK);
         record.setSourceDevice("其他");
-        record.setDescription("系统生成，未打卡记录");
+        record.setDescription("系统生成，缺卡记录");
         emc.persist(record, CheckPersistType.all);
         emc.commit();
     }

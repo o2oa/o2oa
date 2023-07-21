@@ -1,11 +1,11 @@
 <div style="height: 100%;">
-  <div class="o2-form">
+  <div class="o2-form" style="width: 500px;">
       <div class="o2-form-header">
           <span class="title">{{$.fTitle}}</span>
           <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
       </div>
       <div class="o2-form-content">
-          <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+          <!-- <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
               <thead>
                   <th>{{$.lp.detailRecordList.dutyTitle}}</th>
                   <th>{{$.lp.detailRecordList.time}}</th>
@@ -20,7 +20,55 @@
                     <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
                   </td>
               </tr>
-          </table>
+          </table> -->
+
+          <div oo-each="$.recordList" oo-item="r" style="margin-bottom: 10px;border-bottom: 1px solid #ededed;padding-bottom: 10px;">
+            <div class="form-item-line">
+                <div class="form-item-line-label">
+                    {{$.lp.detailRecordList.dutyTitle}}
+                </div>
+                <div class="form-item-line-content" style="text-align: right;">
+                    {{$m.formatDutyType(r.value.checkInType)}}
+                </div>
+              </div>
+              <div class="form-item-line">
+                <div class="form-item-line-label">
+                    {{$.lp.detailRecordList.time}}
+                </div>
+                <div class="form-item-line-content" style="text-align: right;">
+                    {{$m.formatTime(r.value.recordDate)}}
+                </div>
+              </div>
+              <div class="form-item-line">
+                <div class="form-item-line-label">
+                    {{$.lp.detailRecordList.result}}
+                </div>
+                <div class="form-item-line-content" style="text-align: right;">
+                    <span class="{{this.formatResultClass(r.value)}}" >{{$m.formatResult(r.value)}}</span>  
+                    <span class="color-fieldWork  margin-left" oo-if="r.value.fieldWork">({{$.lp.myFieldWork}})</span>
+                    <span class="color-holiday  margin-left" oo-if="r.value.leaveData">({{r.value.leaveData.leaveType}})</span>
+                </div>
+              </div>
+              <div class="form-item-line">
+                <div class="form-item-line-label">
+                    {{$.lp.detailRecordList.address}}
+                </div>
+                <div  style="text-align: right;line-height: 36px; color: #666666;width: 320px;">
+                     {{r.value.recordAddress}}
+                </div>
+              </div>
+              <div class="form-item-line">
+                <div class="form-item-line-label">
+                    {{$.lp.detailRecordList.signDesc}}
+                </div>
+                <div style="text-align: right;line-height: 36px; color: #666666;width: 320px;">
+                     {{r.value.signDescription}}
+                </div>
+              </div>
+
+          </div>
+         
+
       </div>
       <div class="o2-form-footer">
           <span>

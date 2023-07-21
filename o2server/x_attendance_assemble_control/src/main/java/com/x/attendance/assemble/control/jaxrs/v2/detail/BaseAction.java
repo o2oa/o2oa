@@ -1,15 +1,21 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.model.DetailWo;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.model.RecordWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
+import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +37,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             StatisticWo wo = new StatisticWo();
             wo.setUserId(person); //
             List<AttendanceV2Detail> list = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndStartEndDate(person, wi.getStartDate(), wi.getEndDate());
+            List<DetailWo> detailWos = new ArrayList<>();
             if (list != null && !list.isEmpty()) {
                 Long workTimeDuration = 0L;
                 int attendance = 0;
@@ -80,6 +87,10 @@ abstract class BaseAction extends StandardJaxrsAction {
                     // 查询打卡记录 计算申诉数据
                     List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(person, attendanceV2Detail.getRecordDateString());
                     appealNums += (int) recordList.stream().filter((r) -> StringUtils.isNotEmpty(r.getAppealId())).count();
+                    // 前端展现用的
+                    DetailWo detailWo = DetailWo.copier.copy(attendanceV2Detail);
+                    detailWo.setRecordList(RecordWo.copier.copy(recordList));
+                    detailWos.add(detailWo);
                 }
                 if (workDayCount > 0) {
                     DecimalFormat df = new DecimalFormat("0.0");
@@ -95,6 +106,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                 wo.setFieldWorkTimes(fieldWorkTimes);
                 wo.setLeaveDays(leaveDays);
                 wo.setAppealNums(appealNums);
+                wo.setDetailList(detailWos);
             }
             wos.add(wo);
         }

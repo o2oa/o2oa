@@ -127,6 +127,21 @@
                 </div>
             </div>
             <div class="form-item-line margin-top">
+                <div class="form-item-line-label">{{$.lp.shiftForm.workTimeLabel}}</div>
+                <div  style="width: 302px;display: flex;flex-direction: column;color: #666666;" >
+                     <div class="margin-top margin-left">
+                        {{$.lp.shiftForm.workTimeTotal}} {{ $m.formatWorkTime($.form.workTime) }} 
+                     </div>
+                     <div class="margin-top margin-left" @click="clickChangeLimitWorkTime">
+                        <div class="o2-icon-14">
+                            <i class="{{ $.form.needLimitWorkTime ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" >{{$.lp.shiftForm.needWorkTimeLimit}}</label>
+                     </div>
+                     
+                </div>
+            </div>
+            <div class="form-item-line margin-top">
                 <div class="form-item-line-label">{{$.lp.shiftForm.lateAndEarlyOnTimeLabel1}}</div>
                 <div class="form-item-line-content" style="width: 302px;">
                     <o-time-minutes-selector oo-prop="{'value': $.form.lateAndEarlyOnTime, 'key': 'form.lateAndEarlyOnTime'}"  ></o-time-minutes-selector>  {{$.lp.shiftForm.lateAndEarlyOnTimeLabel2}}

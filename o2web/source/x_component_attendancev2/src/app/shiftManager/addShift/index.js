@@ -1,6 +1,6 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2} from '@o2oa/component';
-import { isPositiveInt, isEmpty } from '../../../utils/common';
+import { isPositiveInt, isEmpty, convertMinutesToHoursAndMinutes } from '../../../utils/common';
 import { attendanceShiftAction } from "../../../utils/actions";
 import template from './template.html';
 import oInput from '../../../components/o-input';
@@ -23,6 +23,8 @@ export default content({
                 absenteeismLateMinutes: "0", // 旷工迟到分钟数
                 lateAndEarlyOnTime: "", // 上班最多可晚时间
                 lateAndEarlyOffTime: "", // 下班最多可早走时间
+                workTime: 0, // 工作时长分钟数.
+                needLimitWorkTime: true, // 工作时长不足是否记为早退.
             },
             timeType: 1,  // 打卡次数 1:每天两次 2:每次4次 3:每天6次
             time1: {
@@ -68,10 +70,54 @@ export default content({
         if (this.bind.form && this.bind.form.id && this.bind.form.id !== '') {
             this.bind.fTitle = lp.editShift;
         }
+        this.calWorkTime();
+        console.log(this.bind)
+    },
+    clickChangeLimitWorkTime(){
+        this.bind.form.needLimitWorkTime = !this.bind.form.needLimitWorkTime;
+    },
+    // 前端显示
+    formatWorkTime(workTime) {
+        return convertMinutesToHoursAndMinutes(workTime);
+    },
+    // 计算 workTime
+    calWorkTime() {
+        let workTime = 0;
+        if (this.bind.timeType === 1) {
+            workTime = this._calTimeMinute(this.bind.time1);
+        } else if (this.bind.timeType === 2) {
+            workTime += this._calTimeMinute(this.bind.time1);
+            workTime += this._calTimeMinute(this.bind.time2);
+        } else if (this.bind.timeType === 3) {
+            workTime += this._calTimeMinute(this.bind.time1);
+            workTime += this._calTimeMinute(this.bind.time2);
+            workTime += this._calTimeMinute(this.bind.time3);
+        }
+        this.bind.form.workTime = workTime;
+    },
+    _calTimeMinute(time) {
+        let workTime = 0;
+        const onDutyTime = time.onDutyTime.split(":");
+        const offDutyTime = time.offDutyTime.split(":");
+        let onDutyDate = new Date();
+        let offDutyDate = new Date();
+        if (onDutyTime && onDutyTime.length > 1 && offDutyTime && offDutyTime.length > 1) {
+            const onDutyTimehour = parseInt(onDutyTime[0]);
+            const onDutyTimeminute = parseInt(onDutyTime[1]);
+            onDutyDate.setHours(onDutyTimehour);
+            onDutyDate.setMinutes(onDutyTimeminute);
+            const offDutyTimehour = parseInt(offDutyTime[0]);
+            const offDutyTimeminute = parseInt(offDutyTime[1]);
+            offDutyDate.setHours(offDutyTimehour);
+            offDutyDate.setMinutes(offDutyTimeminute);
+            workTime = (offDutyDate.getTime() - onDutyDate.getTime()) / 1000 / 60; // 分钟数
+        }
+        return workTime;
     },
     // o time picker 控件使用
     setTimeValue(key, value) {
         setJSONValue(key, value, this.bind);
+        this.calWorkTime();
     },
     // o time minute selector 控件返回结果使用
     setSelectorValue(key, value) {

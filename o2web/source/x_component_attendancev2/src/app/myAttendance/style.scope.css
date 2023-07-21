@@ -160,7 +160,7 @@
   background-color: var(--att-record-status-normal-color);
 }
 .item-record-status-tag {
-  width: 50px;
+  padding: 0 8px;
   height: 20px;
   border-radius: 15px;
   color: #FFFFFF;
