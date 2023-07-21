@@ -61,7 +61,8 @@
     "manualTaskIdentityText" : "张三",
     "activityType": "text:work_activityType",
     "destinationActivityType": "text:work_activityType",
-    "workStatus": "text:work_workStatus"
+    "workStatus": "text:work_workStatus",
+    "goBackStore": "text:work_goBackStore"
   },
   "WorkCompleted" : {
     "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",
