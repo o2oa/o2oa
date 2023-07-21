@@ -407,9 +407,9 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
                 if (pic.indexOf("/x_processplatform_assemble_surface")!==-1){
-                    pic = pic.replace("/x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                    pic = pic.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }else if (pic.indexOf("x_processplatform_assemble_surface")!==-1){
-                    pic = pic.replace("x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                    pic = pic.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }
                 if (pic.indexOf("/x_portal_assemble_surface")!==-1){
                     pic = pic.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");

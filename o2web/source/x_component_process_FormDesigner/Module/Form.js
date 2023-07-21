@@ -1399,9 +1399,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
                 if (pic.indexOf("/x_processplatform_assemble_surface")!==-1){
-                    pic = pic.replace("/x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                    pic = pic.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }else if (pic.indexOf("x_processplatform_assemble_surface")!==-1){
-                    pic = pic.replace("x_processplatform_assemble_surface", pic+"/x_processplatform_assemble_surface");
+                    pic = pic.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }
                 if (pic.indexOf("/x_portal_assemble_surface")!==-1){
                     pic = pic.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
@@ -1437,7 +1437,12 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
             while ((match = rex.exec(cssText)) !== null) {
 				var rulesStr = match[0];
-                if( rulesStr.indexOf( "@media" ) === -1 ){
+            var startWith = rulesStr.substring(0, 1);
+            if (startWith === "@" || startWith === ":" || rulesStr.indexOf("%") !== -1) {
+
+            }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){
+
+            } else {
                     if (rulesStr.indexOf(",")!=-1){
                         //var rules = rulesStr.split(/\s*,\s*/g);
                         var rules = rulesStr.split(/,/g);
