@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
@@ -102,6 +103,7 @@ public class Config {
 	public static final String PATH_CONFIG_GENERAL = "config/general.json";
 
 	public static final String DIR_COMMONS = "commons";
+	public static final String DIR_COMMONS_H2 = "commons/h2";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
 	public static final String DIR_COMMONS_LANGUAGE = "commons/language";
@@ -127,6 +129,7 @@ public class Config {
 	public static final String DIR_LOCAL_DUMP = "local/dump";
 	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
 	public static final String DIR_LOCAL_REPOSITORY_INDEX = "local/repository/index";
+	public static final String DIR_LOCAL_REPOSITORY_DATA = "local/repository/data";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
@@ -146,16 +149,22 @@ public class Config {
 	public static final String DIR_SERVERS_CENTERSERVER_WEBAPPS = "servers/centerServer/webapps";
 	public static final String DIR_SERVERS_CENTERSERVER_WORK = "servers/centerServer/work";
 	public static final String DIR_SERVERS_WEBSERVER = "servers/webServer";
+	public static final String DIR_SERVERS_WEBSERVER_X_INIT = "servers/webServer/x_init";
 	public static final String DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG = "servers/webServer/x_desktop/res/config";
 	public static final String DIR_STORE = "store";
 	public static final String DIR_STORE_JARS = "store/jars";
 	public static final String DIR_WEBROOT = "webroot";
+	public static final String DIR_SERVERS_INITSERVER_WORK = "servers/initServer/work";
 
 	public static final String RESOURCE_CONTAINERENTITIES = "containerEntities";
 
 	public static final String RESOURCE_CONTAINERENTITYNAMES = "containerEntityNames";
 
 	public static final String RESOURCE_STORAGECONTAINERENTITYNAMES = "storageContainerEntityNames";
+
+	public static final String RESOURCE_INITSERVERSTOPSIGNALQUEUE = "initServerStopSignalQueue";
+
+	public static final String RESOURCE_COMMANDQUEUE = "commandQueue";
 
 	public static final String RESOURCE_JDBC_PREFIX = "jdbc/";
 
@@ -174,6 +183,10 @@ public class Config {
 	public static final String RESOURCE_NODE_PROCESSPLATFORMEXECUTORS = RESOURCE_NODE_PREFIX
 			+ "processPlatformExecutors";
 	public static final String RESOURCE_NODE_TOKENTHRESHOLDS = RESOURCE_NODE_PREFIX + "tokenThresholds";
+
+	public static final String RESOURCE_COMMANDTERMINATEDSIGNAL_PREFIX = "commandTerminatedSignal/";
+	public static final String RESOURCE_COMMANDTERMINATEDSIGNAL_CTL_RD = RESOURCE_COMMANDTERMINATEDSIGNAL_PREFIX
+			+ "ctl -rd";
 
 	private static final String DEFAULT_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWcVZIS57VeOUzi8c01WKvwJK9uRe6hrGTUYmF6J/pI6/UvCbdBWCoErbzsBZOElOH8Sqal3vsNMVLjPYClfoDyYDaUlakP3ldfnXJzAFJVVubF53KadG+fwnh9ZMvxdh7VXVqRL3IQBDwGgzX4rmSK+qkUJjc3OkrNJPB7LLD8QIDAQAB";
 	private static final String DEFAULT_PRIVATE_KEY = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJZxVkhLntV45TOLxzTVYq/Akr25F7qGsZNRiYXon+kjr9S8Jt0FYKgStvOwFk4SU4fxKpqXe+w0xUuM9gKV+gPJgNpSVqQ/eV1+dcnMAUlVW5sXncpp0b5/CeH1ky/F2HtVdWpEvchAEPAaDNfiuZIr6qRQmNzc6Ss0k8HsssPxAgMBAAECgYAWtRy05NUgm5Lc6Og0jVDL/mEnydxPBy2ectwzHh2k7wIHNi8XhUxFki2TMqzrM9Dv3/LySpMl4AE3mhs34LNPy6F+MwyF5X7j+2Y6MflJyeb9HNyT++viysQneoOEiOk3ghxF2/GPjpiEF79wSp+1YKTxRAyq7ypV3t35fGOOEQJBANLDPWl8b5c3lrcz/dTamMjHbVamEyX43yzQOphzkhYsz4pruATzTxU+z8/zPdEqHcWWV39CP3xu3EYNcAhxJW8CQQC2u7PF5Xb1xYRCsmIPssFxil64vvdUadSxl7GLAgjQ9ULyYWB24KObCEzLnPcT8Pf2Q0YQOixxa/78FuzmgbyfAkA7ZFFV/H7lugB6t+f7p24OhkRFep9CwBMD6dnZRBgSr6X8d8ZvfrD2Z7DgBMeSva+OEoOtlNmXExZ3lynO9zN5AkAVczEmIMp3DSl6XtAuAZC9kD2QODJ2QToLYsAfjiyUwsWKCC43piTuVOoW2KUUPSwOR1VZIEsJQWEcHGDQqhgHAkAeZ7a6dVRZFdBwKA0ADjYCufAW2cIYiVDQBJpgB+kiLQflusNOCBK0FT3lg8BdUSy2D253Ih6l3lbaM/4M7DFQ";
@@ -242,10 +255,6 @@ public class Config {
 
 	public static File dir_config() throws Exception {
 		return new File(base(), DIR_CONFIG);
-	}
-
-	public static File dir_configSample() throws Exception {
-		return new File(base(), DIR_CONFIGSAMPLE);
 	}
 
 	public static File dir_custom() throws Exception {
@@ -486,38 +495,9 @@ public class Config {
 		return dir;
 	}
 
-	public static Path path_servers_webServer_x_desktop_res_config(boolean force) throws Exception {
-		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG);
-		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_config_coverToWebServer(boolean force) throws Exception {
-		Path path = Paths.get(base(), DIR_CONFIG_COVERTOWEBSERVER);
-		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path path_servers_webServer(boolean force) throws Exception {
-		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER);
-		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
-	public static Path pathLocalRepository(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY);
-		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
-
+	/**
+	 * 部分对象不能直接刷新,会导致已有链接断开.
+	 */
 	public static synchronized void flush() {
 		Config newInstance = new Config();
 		if (INSTANCE != null) {
@@ -695,19 +675,6 @@ public class Config {
 		return instance().person;
 	}
 
-//	private Communicate communicate = null;
-//
-//	public static synchronized Communicate communicate() throws Exception {
-//		if (null == instance().communicate) {
-//			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
-//			if (null == obj) {
-//				obj = Communicate.defaultInstance();
-//			}
-//			instance().communicate = obj;
-//		}
-//		return instance().communicate;
-//	}
-
 	private Meeting meeting;
 
 	public static synchronized Meeting meeting() throws Exception {
@@ -780,17 +747,6 @@ public class Config {
 		}
 		return instance().initialServiceScriptText;
 	}
-
-//	@Deprecated
-//	public String mooToolsScriptText;
-//
-//	@Deprecated
-//	public static synchronized String mooToolsScriptText() throws Exception {
-//		if (null == instance().mooToolsScriptText) {
-//			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
-//		}
-//		return instance().mooToolsScriptText;
-//	}
 
 	private MimeTypes mimeTypes;
 
@@ -1353,6 +1309,18 @@ public class Config {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static synchronized LinkedBlockingQueue<String> resource_commandQueue() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_COMMANDQUEUE);
+		return (LinkedBlockingQueue<String>) o;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static synchronized LinkedBlockingQueue<String> resource_commandTerminatedSignal_ctl_rd() throws Exception {
+		Object o = initialContext().lookup(RESOURCE_COMMANDTERMINATEDSIGNAL_CTL_RD);
+		return (LinkedBlockingQueue<String>) o;
+	}
+
 	public static boolean isWindowsJava8() throws Exception {
 		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_WINDOWS));
 	}
@@ -1481,9 +1449,97 @@ public class Config {
 		return path;
 	}
 
+	public static Path path_local_repository_data(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_COMMONS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_commons_h2(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_COMMONS_H2);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
 	public static Path path_webroot(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_WEBROOT);
 		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_initServer_work(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_INITSERVER_WORK);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_configSample(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_CONFIGSAMPLE);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_local_temp(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_TEMP);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_webServer_x_desktop_res_config(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_DESKTOP_RES_CONFIG);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_config_coverToWebServer(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_CONFIG_COVERTOWEBSERVER);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_webServer(boolean force) throws Exception {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_servers_webServer_x_init(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_INIT);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path pathLocalRepository(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY);
+		if (!Files.exists(path) && force) {
 			Files.createDirectories(path);
 		}
 		return path;

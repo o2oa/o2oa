@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,7 +32,6 @@ import org.eclipse.jetty.plus.jndi.Resource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
 import com.x.base.core.entity.Storage;
@@ -44,6 +42,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.tools.ClassLoaderTools;
+import com.x.base.core.project.tools.H2Tools;
 import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PathTools;
@@ -62,14 +61,10 @@ public class ResourceFactory {
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
-//	private static ExecutorService threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors() + 1,
-//			Runtime.getRuntime().availableProcessors() * 2, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100),
-//			new ThreadFactoryBuilder().setNameFormat(ResourceFactory.class.getPackageName() + "-threadpool-%d")
-//					.build());
-//
-//	public static ExecutorService threadPool() {
-//		return threadPool;
-//	}
+//	public static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(
+//			Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors(), 120,
+//			TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000), new ThreadFactoryBuilder()
+//					.setNameFormat(ResourceFactory.class.getPackageName() + "-threadpool-%d").build());
 
 	/**
 	 * 用于销毁时的对象
@@ -90,13 +85,22 @@ public class ResourceFactory {
 			stroageContainerEntityNames(sr);
 			disableDruidMysqlUsePingMethod();
 		}
+		initDataSources();
+		processPlatformExecutors();
+		tokenThresholds();
+	}
+
+	/**
+	 * 生成DataSources并绑定到jndi
+	 * 
+	 * @throws Exception
+	 */
+	private static void initDataSources() throws Exception {
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
 		}
-		processPlatformExecutors();
-		tokenThresholds();
 	}
 
 	/**
@@ -240,7 +244,6 @@ public class ResourceFactory {
 	 * @author ray Druid DataSource 是需要close的.
 	 */
 	public static void destory() {
-		// threadPool.shutdown();
 		for (DruidDataSourceC3P0Adapter dataSource : dataSources) {
 			dataSource.close();
 		}
@@ -250,14 +253,14 @@ public class ResourceFactory {
 		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
-			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
-					+ "/X;LOCK_MODE=0;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout() + ";JMX="
-					+ (BooleanUtils.isTrue(entry.getValue().getJmxEnable()) ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-					+ (entry.getValue().getCacheSize() * 1024);
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/"
+					+ H2Tools.DATABASE + ";LOCK_MODE=0;DEFAULT_LOCK_TIMEOUT=" + entry.getValue().getLockTimeout()
+					+ ";JMX=" + (BooleanUtils.isTrue(entry.getValue().getJmxEnable()) ? "TRUE" : "FALSE")
+					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setJdbcUrl(url);
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
-			dataSource.setUser("sa");
+			dataSource.setUser(H2Tools.USER);
 			dataSource.setPassword(Config.token().getPassword());
 			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
 			dataSource.setMinPoolSize(entry.getValue().getMaxIdle());

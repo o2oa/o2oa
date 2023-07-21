@@ -7,14 +7,11 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -36,7 +33,6 @@ import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ZipTools;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.Servers;
@@ -45,7 +41,7 @@ public class WebServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebServerTools.class);
 
-	public static Server start(WebServer webServer) throws Exception {
+	public static Server start() throws Exception {
 
 		// 更新web服务配置信息
 		WebServers.updateWebServerConfigJson();
@@ -58,7 +54,10 @@ public class WebServerTools extends JettySeverTools {
 		// 覆盖 webServer
 		coverToWebServer();
 
-		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
+		WebServer webServer = Config.currentNode().getWeb();
+
+		if ((null == webServer) || BooleanUtils.isNotTrue(webServer.getEnable())
+				|| Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
 			return startInApplication();
 		} else {
 			return startStandalone(webServer);
@@ -68,15 +67,15 @@ public class WebServerTools extends JettySeverTools {
 
 	private static Server startInApplication() throws Exception {
 		WebAppContext webContext = webContext();
-		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
 		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 		hanlderList.addHandler(webContext);
 		webContext.start();
-		System.out.println("****************************************");
-		System.out.println("* web server is started in the application server.");
-		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
-		System.out.println("****************************************");
-		return Servers.applicationServer;
+		LOGGER.print("****************************************");
+		LOGGER.print("* web server is started in the application server.");
+		LOGGER.print("* port: " + Config.currentNode().getApplication().getPort() + ".");
+		LOGGER.print("****************************************");
+		return Servers.getApplicationServer();
 	}
 
 	private static Server startStandalone(WebServer webServer) throws Exception {
@@ -133,7 +132,7 @@ public class WebServerTools extends JettySeverTools {
 		moveNonDefaultDirectoryToWebroot();
 		context.setContextPath("/");
 		ResourceCollection resources = new ResourceCollection(
-				new String[] { Config.path_servers_webServer(true).toString(),
+				new String[] { Config.path_servers_webServer(true).toAbsolutePath().toString(),
 						Config.path_webroot(true).toAbsolutePath().toString() });
 		context.setBaseResource(resources);
 		context.setParentLoaderPriority(true);

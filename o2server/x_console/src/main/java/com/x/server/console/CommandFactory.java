@@ -3,7 +3,6 @@ package com.x.server.console;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -13,43 +12,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ImageToAcii;
 
 public class CommandFactory {
 
-	public static final Pattern test_pattern = Pattern.compile("^ {0,}test {0,}$", Pattern.CASE_INSENSITIVE);
+	private CommandFactory() {
+		// nothing
+	}
 
-	public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key {0,}$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern start_pattern = Pattern
-			.compile("^ {0,}start {0,}(data|storage|center|application|web|all|) {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern stop_pattern = Pattern
-			.compile("^ {0,}stop {0,}(data|storage|center|application|web|all|) {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern help_pattern = Pattern.compile("^ {0,}help {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern restart_pattern = Pattern.compile("^ {0,}restart {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern setPassword_pattern = Pattern.compile("^ {0,}setPassword (.+) (.+)$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)", Pattern.CASE_INSENSITIVE);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandFactory.class);
 
 	public static void printStartHelp() {
 		try {
 			printStartImage();
-			System.out.println(">>> server directory:" + Config.base() + StringUtils.LF + ">>> version:"
-					+ Config.version() + StringUtils.LF + ">>> java:" + SystemUtils.JAVA_VERSION + StringUtils.LF
-					+ ">>> os:" + SystemUtils.OS_NAME + StringUtils.LF + ">>> nodeAgent "
+			LOGGER.print(">>> server directory:" + Config.base() + StringUtils.LF + ">>> version:" + Config.version()
+					+ StringUtils.LF + ">>> java:" + SystemUtils.JAVA_VERSION + StringUtils.LF + ">>> os:"
+					+ SystemUtils.OS_NAME + StringUtils.LF + ">>> nodeAgent "
 					+ (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())
 							? ("port:" + Config.currentNode().nodeAgentPort() + ", encrypt:"
 									+ Config.currentNode().nodeAgentEncrypt())
@@ -81,17 +61,17 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " start|stop web                         start stop web server.";
 			help += StringUtils.LF;
+			help += " start init                             start init server then start all enable server.";
+			help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)    change initial manager password.";
 			help += StringUtils.LF;
-//			help += " create encrypt key                     create random RSA key.";
-//			help += StringUtils.LF;
-			help += " version                                show available update version.";
+			help += " version                                display version.";
 			help += StringUtils.LF;
-			help += " exit                                   exit after stop.";
+			help += " exit                                   exit after stop all enable server.";
 			help += StringUtils.LF;
 			help += " ctl -<argument> option                 system control command, no argument display help.";
 			help += StringUtils.LF;
-			System.out.println(help);
+			LOGGER.print(help);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -108,8 +88,9 @@ public class CommandFactory {
 				image = ImageIO.read(in);
 			}
 			String ascii = new ImageToAcii().convert(image);
-			System.out.println(ascii);
+			LOGGER.print(ascii);
 		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 	}
 
