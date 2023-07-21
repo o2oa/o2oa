@@ -61,7 +61,9 @@ public class StartCommand {
 	};
 
 	private static boolean ifInitServerNecessary() throws Exception {
-		return (ifInitServerNecessarySetPassword());
+		// 密码为空且数据库文件不存在
+		return (ifInitServerNecessarySetPassword()
+				&& (!Files.exists(Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE))));
 	}
 
 	private static boolean ifInitServerNecessarySetPassword() throws Exception {

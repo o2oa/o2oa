@@ -57,6 +57,8 @@ public class MissionSetSecret implements Mission {
 					H2Tools.USER, oldPassword)) {
 				RunScript.execute(conn,
 						new StringReader("ALTER USER " + H2Tools.USER + " SET PASSWORD '" + newPassword + "'"));
+			} catch (SQLException e) {
+				throw new ExceptionMissionExecute("本地H2数据库密码修改失败,旧密码不匹配.");
 			}
 		}
 	}
