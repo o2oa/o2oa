@@ -150,6 +150,55 @@
   overflow: hidden;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
+
+/* 滚动的 table */
+.scroll-table {
+  margin: 0;
+  border: none;
+  border-spacing: 0;
+  border-collapse:separate;
+  table-layout: fixed;
+  width: 100%; 
+}
+.scroll-table td,
+.scroll-table th {
+  padding: 0.5rem 1rem;
+}
+.scroll-table thead th {
+  line-height: 24px;
+  padding: 8px 0px;
+  font-weight: normal;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 120px;
+  background-color: #f0f0f0;
+}
+.scroll-table td {
+  background: #ffffff;
+  padding: 4px 5px;
+  text-align: center;
+  width: 120px;
+}
+
+/* .scroll-table tbody th {
+  font-weight: 100;
+  font-style: italic;
+  text-align: left;
+  position: relative;
+} */
+.scroll-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+.scroll-table tbody th {
+  position: sticky;
+  left: 0;
+  background: #ffffff;
+  z-index: 1;
+}
+
 .att .primary_color {
   color: var(--el-color-primary) !important;
 }

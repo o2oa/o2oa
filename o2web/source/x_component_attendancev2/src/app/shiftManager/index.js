@@ -68,17 +68,48 @@ export default content({
     if (shiftFilter && shiftFilter.length>0) {
       const shift = shiftFilter[0];
       let shiftData = {};
+      // 这里不能直接赋值 会带 proxy 代理过去
       if (shift && shift.properties && shift.properties.timeList) {
         shiftData.timeType = shift.properties.timeList.length;
-        shiftData.time1 = shift.properties.timeList[0];
+        shiftData.time1 = {
+          onDutyTime: shift.properties.timeList[0].onDutyTime || "09:00",
+          onDutyTimeBeforeLimit: shift.properties.timeList[0].onDutyTimeBeforeLimit || "",
+          onDutyTimeAfterLimit:shift.properties.timeList[0].onDutyTimeAfterLimit || "",
+          offDutyTime: shift.properties.timeList[0].offDutyTime || "18:00",
+          offDutyTimeBeforeLimit: shift.properties.timeList[0].offDutyTimeBeforeLimit || "",
+          offDutyTimeAfterLimit: shift.properties.timeList[0].offDutyTimeAfterLimit || "",
+        };
         if (shift.properties.timeList.length > 1) {
-          shiftData.time2 = shift.properties.timeList[1];
+          shiftData.time2  = {
+            onDutyTime: shift.properties.timeList[1].onDutyTime || "",
+            onDutyTimeBeforeLimit: shift.properties.timeList[1].onDutyTimeBeforeLimit || "",
+            onDutyTimeAfterLimit:shift.properties.timeList[1].onDutyTimeAfterLimit || "",
+            offDutyTime: shift.properties.timeList[1].offDutyTime || "",
+            offDutyTimeBeforeLimit: shift.properties.timeList[1].offDutyTimeBeforeLimit || "",
+            offDutyTimeAfterLimit: shift.properties.timeList[1].offDutyTimeAfterLimit || "",
+          };
         }
         if (shift.properties.timeList.length > 2) {
-          shiftData.time3 = shift.properties.timeList[2];
+          shiftData.time3  = {
+            onDutyTime: shift.properties.timeList[2].onDutyTime || "",
+            onDutyTimeBeforeLimit: shift.properties.timeList[2].onDutyTimeBeforeLimit || "",
+            onDutyTimeAfterLimit:shift.properties.timeList[2].onDutyTimeAfterLimit || "",
+            offDutyTime: shift.properties.timeList[2].offDutyTime || "",
+            offDutyTimeBeforeLimit: shift.properties.timeList[2].offDutyTimeBeforeLimit || "",
+            offDutyTimeAfterLimit: shift.properties.timeList[2].offDutyTimeAfterLimit || "",
+          };
         }
         // 修改
-        shiftData.form = shift; // 多一层的
+        shiftData.form = {
+          id: shift.id || "",
+          shiftName: shift.shiftName|| "", //班次名称
+          seriousTardinessLateMinutes: shift.seriousTardinessLateMinutes|| "0", // 严重迟到分钟数
+          absenteeismLateMinutes: shift.absenteeismLateMinutes|| "0", // 旷工迟到分钟数
+          lateAndEarlyOnTime: shift.lateAndEarlyOnTime|| "", // 上班最多可晚时间
+          lateAndEarlyOffTime: shift.lateAndEarlyOffTime|| "", // 下班最多可早走时间
+          workTime: shift.workTime || 0, // 工作时长分钟数.
+          needLimitWorkTime: shift.needLimitWorkTime || true, // 工作时长不足是否记为早退.
+      }; // 多一层的
         // const content = (await import(`./addShift/index.js`)).default;
         // this.addShiftVm = await content.generate(".form", { bind: shiftData }, this);
         this.$parent.openShiftForm({ bind: shiftData });

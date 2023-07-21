@@ -124,6 +124,9 @@ MWF.xApplication.attendancev2.LP = {
     confirmDelete:
       "¿Estás seguro de que deseas eliminar esta información de 【{name}】?",
     selectShiftEmpty: "Seleccione un turno",
+    workTimeLabel: "Horas de trabajo por turnos",
+    workTimeTotal: "Duración total del trabajo",
+    needWorkTimeLimit: "¿¿ se registra la duración insuficiente como salida temprana?",
   },
 
   // 工作场所
@@ -362,6 +365,7 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeImport: "Importación de datos",
     importExcelFileSuccess:
       "Importación completada, hay {number} registros con errores. ¡Haz clic en Aceptar para descargar y ver los resultados de la importación!",
+    searchDateError: "¡¡ las fechas de inicio y fin deben estar vacías o valer la pena!",
   },
 
   /// mobile

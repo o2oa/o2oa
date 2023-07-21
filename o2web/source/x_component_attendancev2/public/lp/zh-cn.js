@@ -127,6 +127,9 @@ MWF.xApplication.attendancev2.LP = {
     success: "保存成功！",
     confirmDelete: "确认要删除这条【{name}】信息？",
     selectShiftEmpty: "请选择一个班次",
+    workTimeLabel: "班次工时",
+    workTimeTotal: "合计工作时长",
+    needWorkTimeLimit: "时长不足是否记为早退",
   },
 
   // 工作场所
@@ -249,6 +252,8 @@ MWF.xApplication.attendancev2.LP = {
     dutyTitle: "打卡类型",
     time: "打卡时间",
     result: "打卡结果",
+    address: "打卡地址",
+    signDesc: "外勤说明",
   },
 
   // 配置信息
@@ -342,6 +347,7 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeImport: "数据导入",
     importExcelFileSuccess:
       "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
+    searchDateError: "起止日期必须都为空或者都有值！",
   },
 
   /// mobile

@@ -22,7 +22,7 @@ export default content({
       units: [], // 控制组织选择的范围
       filterList: [],
       statisticList: [],
-     
+      tableHeaderList:[] // detail 
     };
   },
   beforeRender() {
@@ -71,8 +71,53 @@ export default content({
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);
-    this.bind.statisticList = json || [];
+    const list =  json || [];
+    if (list.length > 0) {
+      const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
+      this.bind.tableHeaderList = firstDetailList;
+    }
+    this.bind.statisticList = list;
     hideLoading(this);
+  },
+  async openRecordList(detail) {
+    this.$topParent.openRecordListVm({bind: { recordList: detail.recordList||[] }})
+  },
+  formatRecordList(recordList){
+    let result = "";
+    if (recordList && recordList.length > 0) {
+      for (let index = 0; index < recordList.length; index++) {
+        const element = recordList[index];
+        result +=  (element.checkInType === 'OnDuty' ? lp.onDuty : lp.offDuty) + ": "+ this._formatRecordResult(element);
+        if (index != recordList.length-1) {
+          result += " ";
+        }
+      }
+    }
+    return result;
+  },
+  _formatRecordResult(record) {
+    let span = "";
+    if (record.fieldWork) {
+      span = lp.appeal.fieldWork;
+    } else {
+      const result = record.checkInResult;
+      if (result === "PreCheckIn") {
+        span = "";
+      } else if (result === "NotSigned") {
+        span = lp.appeal.notSigned;
+      } else if (result === "Normal") {
+        span = lp.appeal.normal;
+      } else if (result === "Early") {
+        span = lp.appeal.early;
+      } else if (result === "Late") {
+        span = lp.appeal.late;
+      } else if (result === "SeriousLate") {
+        span = lp.appeal.seriousLate;
+      } else {
+        span = "";
+      }
+    }
+    return span;
   },
   // 格式化用户姓名
   formatName(person) {

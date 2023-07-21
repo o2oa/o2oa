@@ -123,6 +123,9 @@ MWF.xApplication.attendancev2.LP = {
     success: "保存成功！",
     confirmDelete: "确认要删除这条【{name}】信息？",
     selectShiftEmpty: "请选择一个班次",
+    workTimeLabel: "班次工时",
+    workTimeTotal: "合计工作时长",
+    needWorkTimeLimit: "时长不足是否记为早退",
   },
 
   // 工作场所
@@ -338,6 +341,7 @@ MWF.xApplication.attendancev2.LP = {
     sourceTypeFast: "极速打卡",
     sourceTypeImport: "数据导入",
     importExcelFileSuccess: "导入完成，错误数据{number}条，点击确定下载查看导入结果！",
+    searchDateError: "起止日期必须都为空或者都有值！",
   },
 
 

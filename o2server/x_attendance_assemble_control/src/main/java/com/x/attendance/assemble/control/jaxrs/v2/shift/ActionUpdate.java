@@ -56,11 +56,20 @@ public class ActionUpdate extends BaseAction {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("班次post {}", wi.toString());
             }
+            long workTime = shiftWorkTime(properties);
+            if (workTime < 0) {
+                workTime = -workTime;
+            }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("班次工作 "+workTime);
+            }
             // 修改
             AttendanceV2Shift shift = emc.find(wi.getId(), AttendanceV2Shift.class);
             emc.beginTransaction(AttendanceV2Shift.class);
             shift.setShiftName(wi.getShiftName());
             shift.setProperties(wi.getProperties());
+            shift.setWorkTime((int)workTime);
+            shift.setNeedLimitWorkTime(wi.getNeedLimitWorkTime());
             shift.setAbsenteeismLateMinutes(wi.getAbsenteeismLateMinutes());
             shift.setSeriousTardinessLateMinutes(wi.getSeriousTardinessLateMinutes());
             shift.setLateAndEarlyOffTime(wi.getLateAndEarlyOffTime());

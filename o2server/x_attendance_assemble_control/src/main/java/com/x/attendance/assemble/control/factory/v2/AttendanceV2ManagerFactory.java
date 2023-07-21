@@ -181,12 +181,13 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
      * @param adjustPage
      * @param adjustPageSize
      * @param userId
-     * @param recordDateString YYYY-MM-dd
+     * @param startDate Date
+     * @param endDate Date
      * @return
      * @throws Exception
      */
     public List<AttendanceV2CheckInRecord> listRecordByPage(Integer adjustPage,
-                                                     Integer adjustPageSize, String userId, String recordDateString) throws Exception {
+                                                     Integer adjustPageSize, String userId, Date startDate, Date endDate) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2CheckInRecord> cq = cb.createQuery(AttendanceV2CheckInRecord.class);
@@ -195,11 +196,11 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         if (StringUtils.isNotEmpty(userId)) {
             p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
         }
-        if (StringUtils.isNotEmpty(recordDateString)) {
+        if ( startDate != null && endDate != null) {
             if (p == null) {
-                p = cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString);
+                p = cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate);
             } else {
-                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+                p = cb.and(p, cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate));
             }
         }
         if (p == null) {
@@ -215,11 +216,12 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
      * 查询打卡记录
      * 分页查询需要
      * @param userId 可以为空
-     * @param recordDateString YYYY-MM-dd
+     * @param startDate Date
+     * @param endDate Date
      * @return
      * @throws Exception
      */
-    public Long recordCount(String userId, String recordDateString) throws Exception {
+    public Long recordCount(String userId, Date startDate, Date endDate) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -228,11 +230,11 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         if (StringUtils.isNotEmpty(userId)) {
             p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), userId);
         }
-        if (StringUtils.isNotEmpty(recordDateString)) {
+        if (startDate != null && endDate != null) {
             if (p == null) {
-                p = cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString);
+                p = cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate);
             } else {
-                p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), recordDateString));
+                p = cb.and(p, cb.between(root.get(AttendanceV2CheckInRecord_.recordDate), startDate, endDate));
             }
         }
         if (p == null) {
@@ -279,7 +281,7 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         Predicate p = cb.equal(root.get(AttendanceV2Detail_.userId), person);
         p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate));
         p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
-        cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.createTime)));
+        cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.recordDateString)));
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 

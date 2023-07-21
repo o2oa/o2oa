@@ -381,7 +381,8 @@ o2.addReady(function () {
                 type: "openO2CmsApplication",
                 data: {
                     appId : options.columnId,
-                    title: options.title || ""
+                    title: options.title || "",
+                    categoryId: options.categoryId || ""
                 }
             };
             window.o2android.postMessage(JSON.stringify(body));

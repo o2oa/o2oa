@@ -1,10 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
-import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTimeProperties;
 import com.x.base.core.container.EntityManagerContainer;
@@ -19,9 +22,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Created by fancyLou on 2023/1/31.
@@ -57,9 +57,17 @@ public class ActionPost extends BaseAction {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("班次post {}", wi.toString());
             }
+            long workTime = shiftWorkTime(properties);
+            if (workTime < 0) {
+                workTime = -workTime;
+            }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("班次工作 "+workTime);
+            }
             // 新增
             AttendanceV2Shift shift = Wi.copier.copy(wi);
             shift.setOperator(effectivePerson.getDistinguishedName());
+            shift.setWorkTime((int)workTime);
             emc.beginTransaction(AttendanceV2Shift.class);
             emc.persist(shift, CheckPersistType.all);
             emc.commit();
