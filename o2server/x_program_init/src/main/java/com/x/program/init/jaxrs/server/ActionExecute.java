@@ -25,7 +25,7 @@ class ActionExecute extends BaseAction {
 		new Thread(() -> {
 			try {
 				Missions.execute();
-				Config.resource_commandQueue().add("stop init");
+				Config.resource_commandQueue().put("stop init");
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				LOGGER.error(e);

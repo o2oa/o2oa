@@ -61,7 +61,7 @@ public class StartCommand {
 	};
 
 	private static boolean ifInitServerNecessary() throws Exception {
-		return (ifInitServerNecessarySetPassword() || ifInitServerNecessaryUpgradeLocalRepositoryDataH2());
+		return (ifInitServerNecessarySetPassword());
 	}
 
 	private static boolean ifInitServerNecessarySetPassword() throws Exception {
@@ -69,8 +69,6 @@ public class StartCommand {
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
 	}
-	
-	
 
 	private static boolean ifInitServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
 		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
@@ -82,7 +80,7 @@ public class StartCommand {
 		}
 		return false;
 	}
-	
+
 	private static boolean ifInitServerNecessaryExternalDataSources() throws Exception {
 		return (ifInitServerNecessarySetPassword() || ifInitServerNecessaryUpgradeLocalRepositoryDataH2());
 	}

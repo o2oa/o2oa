@@ -52,7 +52,7 @@ public class Missions {
 	}
 
 	private static Stream<Mission> stream() {
-		return Stream.<Mission>of(ThisApplication.getMissionH2Upgrade(), ThisApplication.getMissionSetSecret(),
+		return Stream.<Mission>of(ThisApplication.getMissionSetSecret(),
 				ThisApplication.getMissionExternalDataSources(), ThisApplication.getMissionRestore());
 	}
 

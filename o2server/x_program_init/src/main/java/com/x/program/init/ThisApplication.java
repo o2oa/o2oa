@@ -15,7 +15,6 @@ public class ThisApplication {
 		// nothing
 	}
 
-	private static MissionH2Upgrade missionH2Upgrade;
 	private static MissionRestore missionRestore;
 	private static MissionSetSecret missionSetSecret;
 	private static MissionExternalDataSources missionExternalDataSources;
@@ -24,14 +23,6 @@ public class ThisApplication {
 
 	public static String getPath() {
 		return path;
-	}
-
-	public static MissionH2Upgrade getMissionH2Upgrade() {
-		return missionH2Upgrade;
-	}
-
-	public static void setMissionH2Upgrade(MissionH2Upgrade missionH2Upgrade) {
-		ThisApplication.missionH2Upgrade = missionH2Upgrade;
 	}
 
 	public static MissionRestore getMissionRestore() {

@@ -1456,6 +1456,14 @@ public class Config {
 		return path;
 	}
 
+	public static Path path_commons(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_COMMONS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
 	public static Path path_webroot(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_WEBROOT);
 		if ((!Files.exists(path)) && force) {

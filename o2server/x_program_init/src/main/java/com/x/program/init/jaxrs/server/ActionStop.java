@@ -18,7 +18,7 @@ class ActionStop extends BaseAction {
 		new Thread(() -> {
 			try {
 				Thread.sleep(1000);
-				Config.resource_commandQueue().add("stop init");
+				Config.resource_commandQueue().put("stop init");
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				LOGGER.error(e);
