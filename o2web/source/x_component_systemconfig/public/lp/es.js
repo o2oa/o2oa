@@ -1231,6 +1231,8 @@ o2.xApplication.systemconfig.LP = {
 			"attendanceSyncEnable": "¿Habilitar sincronización de información de asistencia?",
 			"attendanceSyncAgentId": "ID de aplicación de marcaje de asistencia",
 			"attendanceSyncSecret": "Secreto de aplicación de marcaje de asistencia",
+            "bindEnable": "Si habilitar la vinculación del usuario",
+            "bindEnableInfo": "¡¡ no lo active por defecto, esto es para usuarios vinculados privatizados y es mutuamente excluyente de las organizaciones de usuarios simultáneos!",
 
 			"getUserPrivateInfoMessageTitle": "Enviar mensaje para obtener información privada personal de WeChat Enterprise",
 			"getUserPrivateInfoMessageDesc": "La nueva versión de la API de sincronización de WeChat Enterprise limita la obtención de información privada del usuario (como número de teléfono, correo electrónico, etc.). En este momento, el programa de sincronización solo puede obtener el nombre y el userId del usuario. La función de envío de mensajes a continuación es para enviar un mensaje de autorización para obtener información privada. Después de que el usuario haga clic en este mensaje, este programa puede leer la información del usuario necesaria.",
