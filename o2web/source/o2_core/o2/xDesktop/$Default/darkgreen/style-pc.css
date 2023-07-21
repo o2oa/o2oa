@@ -639,8 +639,10 @@
     cursor: default;
 }
 .layout_message_item_top {
-    height: 30px;
-    line-height: 30px;
+    min-height: 20px;
+    line-height: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     font-size: 16px;
     color: #4387cd;
 }
@@ -653,7 +655,7 @@
     background-position: center;
 }
 .layout_message_item_top_subject {
-    height: 30px;
+    min-height: 20px;
     margin-right: 18px;
 }
 .layout_message_item_content {
