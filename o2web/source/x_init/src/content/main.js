@@ -8,12 +8,15 @@ import initInfo from './init/initInfo.js';
 import execute from './init/execute.js';
 
 import explain from './init/common/explain.js'
+import {serverStatus} from "../common/action.js";
 export default component({
     template,
     autoUpdate: true,
     components: {password, explain, database, restore, initInfo, execute},
 
-    bind(){
+    async bind() {
+        const status = await serverStatus();
+        const step = (status.status === 'waiting') ? 0 : 4;
         return {
             explain: [
                 {
@@ -66,7 +69,8 @@ export default component({
                     ]
                 }
             ],
-            step: 4
+            step,
+            serverStop: false
         }
     },
 

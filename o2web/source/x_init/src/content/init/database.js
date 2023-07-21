@@ -36,24 +36,24 @@ const template = `
             </div>
         </div>
     </div>
-    <div oo-else>
-        <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">H2数据库升级</div>
-        
-        <div style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">
-            本地h2版本：{{$.h2.localRepositoryDataH2Version}}
-        </div>
-        <div oo-if="$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">
-            可升级h2版本：{{$.h2.jarVersion}}
-        </div>
-        
-        <div oo-if="!$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">H2数据库版本已经是最新，不需要升级！</div>
-        <div oo-else style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666; display: flex; justify-content: center;">
-            <oo-radio-group name="h2_upgrade" oo-model="h2_upgrade" label="是否升级H2:　" oo-element="h2UpgradeNode">
-                <oo-radio value="yes">是</oo-radio>
-                <oo-radio value="no">否</oo-radio>
-            </oo-radio-group>
-        </div>
-    </div>
+<!--    <div oo-else>-->
+<!--        <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">H2数据库升级</div>-->
+<!--        -->
+<!--        <div style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">-->
+<!--            本地h2版本：{{$.h2.localRepositoryDataH2Version}}-->
+<!--        </div>-->
+<!--        <div oo-if="$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">-->
+<!--            可升级h2版本：{{$.h2.jarVersion}}-->
+<!--        </div>-->
+<!--        -->
+<!--        <div oo-if="!$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">H2数据库版本已经是最新，不需要升级！</div>-->
+<!--        <div oo-else style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666; display: flex; justify-content: center;">-->
+<!--            <oo-radio-group name="h2_upgrade" oo-model="h2_upgrade" label="是否升级H2:　" oo-element="h2UpgradeNode">-->
+<!--                <oo-radio value="yes">是</oo-radio>-->
+<!--                <oo-radio value="no">否</oo-radio>-->
+<!--            </oo-radio-group>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 <div class="actions">
     <oo-button type="cancel" @click="stepPrev">上一步</oo-button>
@@ -84,9 +84,9 @@ export default component({
         listDatabase().then((list)=>{
             this.bind.databaseList = list;
         });
-        h2Check().then((o)=>{
-            this.bind.h2 = o;
-        });
+        // h2Check().then((o)=>{
+        //     this.bind.h2 = o;
+        // });
 
         return {
             databaseName: {
@@ -106,7 +106,7 @@ export default component({
             testDbMessage: '',
 
             h2:{},
-            h2_upgrade: 'yes'
+            h2_upgrade: 'no'
         }
     },
     changeDb(e){
@@ -142,11 +142,11 @@ export default component({
             this.bind.database.type = this.bind.database.type;
             this.bind.database.url = this.bind.externalDataSources.url;
         } else {
-            if (this.bind.h2_upgrade === 'yes') {
-                await h2Upgrade();
-            } else {
-                await h2Cancel();
-            }
+            // if (this.bind.h2_upgrade === 'yes') {
+            //     await h2Upgrade();
+            // } else {
+            //     await h2Cancel();
+            // }
 
             this.bind.database.type = this.bind.database.type;
         }

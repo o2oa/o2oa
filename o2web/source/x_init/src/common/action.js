@@ -10,6 +10,8 @@ const password_cancel = '/jaxrs/secret/cancel';
 const server_execute = '/jaxrs/server/execute';         //get 执行服务器任务,执行完成后将停止init服务器,随后正常启动.
 const server_stop = '/jaxrs/server/stop';               //get 停止init服务器
 const server_status = '/jaxrs/server/execute/status';   //get 取初始服务器任务执行状态
+const server_echo = '/x_program_center/jaxrs/echo';  //get 检查O2OA服务器是否启动成功
+
 
 //database
 const database_check = '/jaxrs/externaldatasources/check';          //get 检查是否可以设置外部数据源
@@ -167,20 +169,24 @@ async function executeServer() {
 }
 async function serverStatus() {
     try{
-        const data = (await get(server_status));
-        return data;
+        return (await get(server_status, true));
     }catch(e){
-        if (e instanceof TypeError || e instanceof SyntaxError){
-            return {
-                status: 'failure',
-                messages: [],
-                failureMessage: ''
-            }
-        }else{
-
+        return {
+            status: 'starting',
         }
     }
-
+}
+async function echoServer() {
+    try{
+        await get(server_echo, true);
+        return {
+            status: 'started',
+        }
+    }catch(e){
+        return {
+            status: 'starting',
+        }
+    }
 }
 
 
@@ -202,5 +208,6 @@ export {
     cancelRestore,
     stopServer,
     executeServer,
-    serverStatus
+    serverStatus,
+    echoServer
 };

@@ -1,6 +1,7 @@
 import {component} from '@o2oa/oovm';
 import {dom} from '@o2oa/util';
-import {uploadRestore, cancelRestore} from '../../common/action.js';
+import {Dialog} from '@o2oa/ui';
+import {executeServer, stopServer} from '../../common/action.js';
 import {notice} from '../../common/notice.js';
 
 const template = `
@@ -22,11 +23,16 @@ const template = `
             <div oo-if="!$.restore.name" class="info"><span class="icon ooicon-cancel"></span>不导入数据文件</div>
         </div>
     </div>
+    
+    <div>
+        <div oo-if="$.status==='unknown'" class="icon ooicon-error" style="color:#ffc42bde"></div>
+        <div oo-if="$.status==='waiting'" class="info">等待服务器执行初始化 ... </div>
+    </div>
   
 </div>
 <div class="actions">
     <oo-button type="cancel" @click="stepPrev">上一步</oo-button>
-    <oo-button type="cancel" @click="stepPrev">取消</oo-button>
+    <oo-button type="cancel" @click="stepCancel">取消</oo-button>
     <oo-button @click="nextStep">执行</oo-button>
 </div>
 <input type="file" @change="uploadFile" oo-element="uploadFileNode" style="display: none"/>
@@ -66,10 +72,37 @@ export default component({
         const step = this.$p.bind.step - 1;
         this.$p.bind.step = (step<0) ? 0 : step;
     },
-
-    nextStep(){
-        const step = this.$p.bind.step + 1;
-        this.$p.bind.step = (step<5) ? step : 0;
+    async stepCancel(e) {
+        this.dialog = new Dialog(e.target.parentElement, {
+            modalArea: this.$p.dom.firstElementChild,
+            content: `是否确定要关闭初始化服务器？`,
+            width: '30em',
+            position: "center",
+            events: {
+                'ok': async () => {
+                    await stopServer();
+                    this.$p.bind.step = 4;
+                    this.$p.bind.serverStop = true;
+                },
+            }
+        });
+        this.dialog.show();
+    },
+    nextStep(e){
+        this.dialog = new Dialog(e.target.parentElement, {
+            modalArea: this.$p.dom.firstElementChild,
+            content: `是否确定要执行初始化任务？`,
+            width: '30em',
+            position: "center",
+            events: {
+                'ok': async () => {
+                    await executeServer();
+                    const step = this.$p.bind.step + 1;
+                    this.$p.bind.step = (step < 5) ? step : 0;
+                },
+            }
+        });
+        this.dialog.show();
     }
 
 });

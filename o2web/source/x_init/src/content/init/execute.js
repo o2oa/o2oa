@@ -1,6 +1,6 @@
 import {component} from '@o2oa/oovm';
 import {dom} from '@o2oa/util';
-import {serverStatus} from '../../common/action.js';
+import {serverStatus, echoServer} from '../../common/action.js';
 import {notice} from '../../common/notice.js';
 
 const template = `
@@ -8,18 +8,26 @@ const template = `
     <div class="input_title">执行服务器初始化</div>
     
     <div class="infoArea">
-        <div oo-if="$.status==='waiting' || $.status==='running'" class="loading" oo-element="testLoading"></div>
+        <div oo-if="$.status==='waiting' || $.status==='running' || $.status==='starting'" class="loading" oo-element="testLoading"></div>
+        <div oo-if="$.status==='success' || $.status==='started'" class="icon ooicon-check"></div>
+        <div oo-if="$.status==='unknown'" class="icon ooicon-error" style="color:#ffc42bde"></div>
+        
         <div oo-if="$.status==='waiting'" class="info">等待服务器执行初始化 ... </div>
         <div oo-if="$.status==='running'" class="info">服务器初始化正在执行中 ... </div>
+        <div oo-if="$.status==='starting'" class="info">正在启动O2OA(翱途)服务器 ... </div>
         
-        <div oo-if="$.status==='success'" class="icon ooicon-check"></div>
-        <div oo-if="$.status==='success'" class="info">服务器初始化执行成功！</div>
-        <div oo-if="$.status==='success'" class="info"><oo-button style="margin-left:0" @click="">进入系统登录页面</oo-button></div>
+        <div oo-if="$.status==='success'" class="info">服务器初始化执行成功，即将启动O2OA(翱途)服务器！</div>
+        <div oo-if="$.status==='started'" class="info">服务器初始化执行成功，O2OA(翱途)服务器已启动！</div>
+        <div oo-if="$.status==='started'" class="info"><oo-button style="margin-left:0" @click="window.location='/'">进入系统登录页面</oo-button></div>
         
-        <div oo-if="$.status==='failure'" class="icon ooicon-cancel"></div>
+        <div oo-if="$.status==='failure' || $.status==='stop'" class="icon ooicon-cancel"></div>
         <div oo-if="$.status==='failure'" class="info">服务器初始化执行失败 </div>
-        <div oo-if="$.status==='failure'" class="info" style="font-size: 0.875rem; color: red">{{$.failureMessage}}</div>
+        <div oo-if="$.status==='failure'" class="info" style="font-size: 0.875rem; color: red; text-align: center;">{{$.failureMessage || $.messages.join(', ')}}</div>
         <div oo-if="$.status==='failure'" class="info" style="font-size: 0.875rem; color: #666666">您可以重启服务器后重新进行初始化配置！</div>
+        
+        <div oo-if="$.status==='unknown'" class="info">无法获取服务器状态，请查看服务器控制台信息</div>
+        
+        <div oo-if="$.status==='stop'" class="info">初始化服务器已关闭，您可以再次手工启动服务器，以完成初始化配置。</div>
         
 <!--        <div class="line">-->
 <!--            <div oo-if="$.secret.passStr" class="info"><span class="icon ooicon-check"></span>管理员密码已设置</div>-->
@@ -85,31 +93,55 @@ export default component({
 
     bind(){
         return {
-            status: 'failure',
+            status: 'success',
             messages: [],
-            failureMessage: ''
+            failureMessage: '',
+            checkCount: 0
         }
     },
 
     async afterRender() {
-       // this.check();
-       // this.timeoutCheck();
+       if (this.$p.bind.serverStop){
+           this.bind.status = 'stop';
+       }else{
+           this.checkCount = 0;
+           this.timeoutCheck();
+       }
     },
     async timeoutCheck() {
-        await this.check();
-        if (this.status==='success'){
-
-        }else if (this.status==='failure'){
-
+        debugger;
+        if (this.bind.status==='starting'){
+            await this.checkServer();
         }else{
-            // window.setTimeout(() => {
-            //     this.timeoutCheck();
-            // }, 2000);
+            await this.check();
+        }
+
+        if (this.checkCount>15){
+            this.bind.status = 'unknown';
+        }else{
+            if (this.bind.status==='started'){
+
+            }else if (this.bind.status==='failure'){
+
+            }else{
+                window.setTimeout(() => {
+                    this.timeoutCheck();
+                }, 2000);
+            }
         }
     },
     async check() {
         const json = await serverStatus();
         this.bind.status = json.status;
         this.bind.failureMessage = json.failureMessage || '';
+        this.bind.messages = json.messages || [];
+        this.checkCount++;
+    },
+    async checkServer() {
+        const json = await echoServer();
+        this.bind.status = json.status;
+        this.bind.failureMessage = json.failureMessage || '';
+        this.bind.messages = json.messages || [];
+        this.checkCount++;
     }
 });
