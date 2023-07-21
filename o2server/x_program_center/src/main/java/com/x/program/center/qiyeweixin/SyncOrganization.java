@@ -21,6 +21,7 @@ import javax.script.ScriptContext;
 import com.x.organization.core.entity.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -45,10 +46,44 @@ public class SyncOrganization {
     private static Logger logger = LoggerFactory.getLogger(SyncOrganization.class);
 
     public PullResult execute(Business business) throws Exception {
+        if(!BooleanUtils.isTrue( Config.qiyeweixin().getEnable())) {
+            logger.print("没有启用企业微信配置，请检查企业微信配置文件！");
+            return new PullResult();
+        }
+        // 配置启用就进行用户绑定
+        if(BooleanUtils.isTrue( Config.qiyeweixin().getBindEnable())) {
+            return bindO2OAUserAndQywxUser(business);
+        }
+        // 默认同步
+        return pullFromQywx(business);
+    }
+
+    // 把企业微信那边的用户 userid 绑定到  O2OA 的 person 表中的 qywxId 字段中
+    private PullResult bindO2OAUserAndQywxUser(Business business) throws Exception {
+        logger.print("开始与企业微信进行人员 userid 的绑定.");
+        PullResult result = new PullResult();
+        String accessToken = Config.qiyeweixin().syncAccessToken();
+        logger.print("accessToken：" + accessToken);
+        QiyeweixinFactory factory = new QiyeweixinFactory(accessToken);
+        for (User user : factory.getUsers()) {
+            this.checkBindPerson(business, result, user);
+        }
+        CacheManager.notify(Person.class);
+        result.end();
+        if (!result.getBindPersonList().isEmpty()) {
+            logger.print("绑定用户企业微信 userid ({}):{}.", result.getBindPersonList().size(),
+                    StringUtils.join(result.getBindPersonList(), ","));
+        }
+        logger.print("结束企业微信人员 userid 绑定的任务.");
+        return result;
+    }
+
+    // 同步企业微信组织用户
+    private PullResult pullFromQywx(Business business) throws Exception {
         logger.print("开始与企业微信同步人员组织,方向:拉入.");
         PullResult result = new PullResult();
         String accessToken = Config.qiyeweixin().syncAccessToken();
-        logger.print("开accessToken：" + accessToken);
+        logger.print("accessToken：" + accessToken);
         List<Unit> units = new ArrayList<>();
         List<Person> people = new ArrayList<>();
         List<PersonAttribute> personAttributes = new ArrayList<>();
@@ -107,6 +142,7 @@ public class SyncOrganization {
         return result;
     }
 
+ 
     private void check(Business business, PullResult result, List<Unit> units, List<Person> people,
             List<PersonAttribute> personAttributes, List<Identity> identities, String accessToken,
             QiyeweixinFactory factory, Unit sup, Department org) throws Exception {
@@ -256,6 +292,27 @@ public class SyncOrganization {
                 }
             }
         }
+        return person;
+    }
+
+    private Person checkBindPerson(Business business, PullResult result, User user) throws Exception {
+        Person person = business.person().getWithQiyeweixinIdObject(user.getUserid());
+        if (null == person && StringUtils.isNotEmpty(user.getMobile())) {
+            person = this.bindPerson(business, result, user);
+        }
+        return person;
+    }
+
+    private Person bindPerson(Business business, PullResult result, User user) throws Exception {
+        EntityManagerContainer emc = business.entityManagerContainer();
+        emc.beginTransaction(Person.class);
+        Person person = emc.flag(user.getMobile(), Person.class);
+        if (null != person) {
+            person.setQiyeweixinId(Objects.toString(user.getUserid()));
+            emc.check(person, CheckPersistType.all);
+            result.getBindPersonList().add(person.getDistinguishedName());
+        }
+        emc.commit();
         return person;
     }
 
@@ -581,6 +638,8 @@ public class SyncOrganization {
         private List<String> removeUnitDutyList = new ArrayList<>();
         private List<String> removeUnitAttributeList = new ArrayList<>();
 
+        private List<String> bindPersonList = new ArrayList<>();
+
         public void end() {
             this.end = new Date();
             this.elapsed = end.getTime() - start.getTime();
@@ -721,5 +780,15 @@ public class SyncOrganization {
         public void setUpdatePersonAttributeList(List<String> updatePersonAttributeList) {
             this.updatePersonAttributeList = updatePersonAttributeList;
         }
+
+        public List<String> getBindPersonList() {
+          return bindPersonList;
+        }
+
+        public void setBindPersonList(List<String> bindPersonList) {
+          this.bindPersonList = bindPersonList;
+        }
+
+        
     }
 }

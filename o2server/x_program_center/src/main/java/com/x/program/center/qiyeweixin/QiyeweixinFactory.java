@@ -30,8 +30,8 @@ public class QiyeweixinFactory {
 		users = ListTools.trim(users, true, true);
 	}
 
-	public List<Department> getOrgs(){
-		return this.orgs;
+	public List<User> getUsers() {
+		return this.users;
 	}
 
 	// 2023-03-14 新的api根据应用的权限来同步组织，组织不一定是根节点，根节点id==1的判断已经失效
