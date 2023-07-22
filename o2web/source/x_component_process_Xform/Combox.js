@@ -58,13 +58,14 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
     _loadMergeReadContentNode: function( contentNode, data ){
 	    this.mergeRead = true;
         contentNode.setStyles({ "overflow": "hidden"});
-        data.data.each(function(v, i){
-            var text = "";
-            if (typeOf(v)==="object"){
-                text = v.text || v.title || v.subject  || v.name;
-            }else{
-                text = v.toString();
-            }
+		var textList = this.getTextListByValue( data.data );
+        textList.each(function(text, i){
+            //var text = "";
+            //if (typeOf(v)==="object"){
+            //    text = v.text || v.title || v.subject  || v.name;
+            //}else{
+            //    text = v.toString();
+            //}
             if (i<data.data.length-1) text += this.json.splitShow;
             new Element("div", {"styles": {
                     "float": "left",
@@ -167,7 +168,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
                     options.push(v);
                 }else{
                 	v = v.toString();
-                	arr = v.split("|");
+                	var arr = v.split("|");
                 	var o = { "text": "", "keyword": "", "value": "" };
                 	switch (arr.length){
                         case 0: break;
@@ -223,30 +224,35 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 
 		if (this.combox){
             this.combox.clear();
-
-            comboxValues = [];
-            value.each(function(v){
-				if (typeOf(v)==="object"){
-                    comboxValues.push({
-						"text": v.text || v.title || v.subject  || v.name,
-						"value": v
-                    });
-				}else{
-                    comboxValues.push(v.toString());
-				}
+            var comboxValues = [];
+            var textData = this.getTextData( value );
+            textData.value.each(function(v, i){
+				// if (typeOf(v)==="object"){
+                //     comboxValues.push({
+				// 		"text": v.text || v.title || v.subject  || v.name,
+				// 		"value": v
+                //     });
+				// }else{
+                //     comboxValues.push(v.toString());
+				// }
+                comboxValues.push({
+                    "text": textData.text[i] || v,
+                    "value": v
+                });
 			}.bind(this));
             this.combox.addNewValues(comboxValues);
 		}else{
 		    var contentNode = new Element("div", {
 		        "styles": { "overflow": "hidden"}
             }).inject(this.node);
-            value.each(function(v, i){
-                var text = "";
-                if (typeOf(v)==="object"){
-                	text = v.text || v.title || v.subject  || v.name;
-                }else{
-                    text = v.toString();
-                }
+		    var textList = this.getTextListByValue( value );
+            textList.each(function(text, i){
+                // var text = "";
+                // if (typeOf(v)==="object"){
+                // 	text = v.text || v.title || v.subject  || v.name;
+                // }else{
+                //     text = v.toString();
+                // }
                 if (i<value.length-1) text += this.json.splitShow;
                 new Element("div", {"styles": {
                     "float": "left",
@@ -304,12 +310,63 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      * @summary 获取选中的值和文本.
      * @example
      * var array = this.form.get('fieldId').getTextData();
-     * @return {Object} 返回选中项值和文本，格式为 { 'value' : value, 'text' : text }.
+     * @return {Object} 返回选中项值和文本，格式为 { 'value' : [value], 'text' : [text] }.
      */
-    getTextData: function(){
-	    var v = this.getData();
-        return {"value": v, "text": v};
+    getTextData: function( value ){
+	    var v = value || this.getData();
+	    var textList = this.getTextListByValue( v );
+        return {"value": v, "text": textList.length ? textList : v};
         //return this.node.get("text");
+    },
+    getTextListByValue: function( v ){
+        var options, textList=[];
+        if (this.json.itemType === "values" || this.json.itemType === "script"){
+            options = this.getOptions();
+            v.each(function ( i ) {
+                var text;
+                if (typeOf(i)==="object"){
+                    text = i.text || i.title || i.subject  || i.name;
+                }else{
+                    i = i.toString();
+                    var matchList = options.filter(function (o) {
+                        if( o.value === i )return true;
+                    });
+                    text = (matchList[0] && matchList[0].text) ? matchList[0].text : i;
+                }
+                textList.push( text );
+            }.bind(this));
+            return textList;
+        }else if( this.json.itemType === "dynamic" ){
+            var fun = this._searchOptions();
+            if( fun ){
+                v.each(function ( i ) {
+                    var text;
+                    if (typeOf(i)==="object"){
+                        text = i.text || i.title || i.subject  || i.name;
+                    }else{
+                        i = i.toString();
+                        fun(i, function( options ){
+                            var matchList = options.filter(function (o) {
+                                if( o.value === i )return true;
+                            });
+                            text = (matchList[0] && matchList[0].text) ? matchList[0].text : i;
+                            textList.push( text );
+                        }.bind(this));
+                    }
+                }.bind(this));
+                return textList;
+            }
+        }
+        v.each(function ( i ) {
+            var text;
+            if (typeOf(i)==="object"){
+                text = i.text || i.title || i.subject  || i.name;
+            }else{
+                text = i.toString();
+            }
+            textList.push( text );
+        }.bind(this));
+        return textList;
     },
     resetData: function(){
         //this._setBusinessData(this.getValue());
