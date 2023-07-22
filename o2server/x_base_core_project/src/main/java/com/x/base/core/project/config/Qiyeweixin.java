@@ -47,11 +47,13 @@ public class Qiyeweixin extends ConfigObject {
 	private String messageRedirectPortal = "";
 	@FieldDescribe("推送消息到企业微信")
 	private Boolean messageEnable;
+	@FieldDescribe("是否启用用户绑定，私有化绑定用户用的，和同步冲突")
+	private Boolean bindEnable;
+
 	@FieldDescribe("企业微信扫码登录")
 	private Boolean scanLoginEnable;
 	@FieldDescribe("是否启用考勤信息")
 	private Boolean attendanceSyncEnable;
-
 	@FieldDescribe("企业微信考勤打卡应用id")
 	private String attendanceSyncAgentId;
 	@FieldDescribe("企业微信考勤打卡应用secret")
@@ -74,6 +76,7 @@ public class Qiyeweixin extends ConfigObject {
 	public static final String default_workUrl = "";
 	public static final String default_messageRedirectPortal = "";
 	public static final Boolean default_messageEanble = false;
+	public static final Boolean default_bindEnable = false;
 	public static final Boolean default_scanLoginEnable = false;
 	public static final Boolean default_attendanceSyncEnable = false;
 
@@ -95,6 +98,7 @@ public class Qiyeweixin extends ConfigObject {
 		this.attendanceSyncEnable = default_attendanceSyncEnable;
 		this.attendanceSyncAgentId = "";
 		this.attendanceSyncSecret = "";
+		this.bindEnable = default_bindEnable;
 	}
 
 	private static String cacheAttendanceAccessToken;
@@ -474,6 +478,16 @@ public class Qiyeweixin extends ConfigObject {
 
 	public void setAttendanceSyncSecret(String attendanceSyncSecret) {
 		this.attendanceSyncSecret = attendanceSyncSecret;
+	}
+
+	
+
+	public Boolean getBindEnable() {
+		return bindEnable;
+	}
+
+	public void setBindEnable(Boolean bindEnable) {
+		this.bindEnable = bindEnable;
 	}
 
 	public void save() throws Exception {
