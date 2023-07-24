@@ -57,9 +57,9 @@
                 //可以通过this.event.value 获取当前输入的值<br/>
                 //需要通过 this.event.callback( options ) 将选项回传给组件<br/>
                 if( ( this.event.value || "" ).indexOf("a") > -1 ){<br/>
-                &nbsp;&nbsp;this.event.callback( [{text:"111"}, {text:"222"}] )<br/>
+                &nbsp;&nbsp;this.event.callback( [{text:"文本1", value:"aaa"}, {text:"文本2", value:"aa"}] )<br/>
                 }else{<br/>
-                &nbsp;&nbsp;this.event.callback( [{text:"aaa"}, {text:"bbb"}] )<br/>
+                &nbsp;&nbsp;this.event.callback( [{text:"文本3", value:"bbb"}, {text:"文本4", value:"bb"}] )<br/>
                 }
             </div>
             <div class="MWFScriptArea" name="itemDynamic" title="{{$.lp.optionDynamicScript}} (S)"></div>
