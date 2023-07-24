@@ -2159,6 +2159,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //this.node.addEvent("wheel", stopFun);
             this.resizeToolbar();
         }
+        this.getData();
         this.reload();
     },
     /**缩放文件内容
