@@ -38,7 +38,7 @@
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
     "gulp-shell": "^0.8.0",
-    "gulp-tm-asset-rev": "^0.0.18",
+    "gulp-o2oa-asset-rev": "^0.0.19",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
     "jasmine-core": "^3.6.0",

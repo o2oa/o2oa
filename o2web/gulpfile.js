@@ -21,7 +21,7 @@ var nodePath = path;
 //var sourceMap = require('gulp-sourcemaps');
 var git = require('gulp-git');
 
-var assetRev = require('gulp-tm-asset-rev');
+var assetRev = require('gulp-o2oa-asset-rev');
 var apps = require('./gulpapps.js');
 
 var ftpconfig;

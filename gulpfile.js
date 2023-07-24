@@ -18,7 +18,7 @@ const ora = require('ora');
 concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
-var assetRev = require('gulp-tm-asset-rev');
+var assetRev = require('gulp-o2oa-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
@@ -1123,6 +1123,7 @@ function build_web_v_o2() {
     var dest = 'target/o2server/servers/webServer/o2_core/';
 
     return getGitV().then(function(arr){
+        debugger;
         return gulp.src(src)
             .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
             //.pipe(gulp.dest(dest))
@@ -1136,6 +1137,7 @@ function build_web_v_o2() {
             .pipe(gutil.noop());
     });
 }
+exports.build_web_v_o2 = build_web_v_o2;
 
 async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
