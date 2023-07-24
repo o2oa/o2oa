@@ -27,7 +27,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
-import com.x.processplatform.core.express.service.processing.jaxrs.readcompleted.ActionManageListFilterPagingWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted.ActionManageListFilterPagingWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -51,7 +51,7 @@ class ActionManageListFilterPaging extends BaseAction {
 				result.setData(wos);
 				result.setCount(emc.count(ReadCompleted.class, p));
 			} else {
-				result.setData(new ArrayList<Wo>());
+				result.setData(new ArrayList<>());
 				result.setCount(0L);
 			}
 			return result;
