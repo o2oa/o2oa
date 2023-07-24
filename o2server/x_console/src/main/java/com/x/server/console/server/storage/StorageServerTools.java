@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.DataConnectionConfigurationFactory;
@@ -22,14 +23,30 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.StorageServer.Account;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.server.Servers;
 
 public class StorageServerTools {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(StorageServerTools.class);
 
 	private StorageServerTools() {
 		// nothing
 	}
 
-	public static FtpServer start(StorageServer storageServer) throws Exception {
+	public static FtpServer start() throws Exception {
+
+		StorageServer storageServer = Config.currentNode().getStorage();
+
+		if (null == storageServer) {
+			LOGGER.info("storagae server is not configured.");
+			return null;
+		} else if (BooleanUtils.isNotTrue(storageServer.getEnable())) {
+			LOGGER.info("storagae server is not enable.");
+			return null;
+		}
+
 		FtpServerFactory serverFactory = new FtpServerFactory();
 		ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
 		connectionConfigFactory.setAnonymousLoginEnabled(false);

@@ -1,0 +1,30 @@
+<main>
+    <div class="main_area">
+        <div class="title" oo-element="titleNode">
+            <div class="title1">欢迎使用O2OA(翱途)企业应用开发平台</div>
+            <div class="title2">首次启动服务器需要进行服务器初始化配置</div>
+        </div>
+        <div style="height: 7rem"></div>
+        <div class="pane" oo-element="paneNode">
+            <explain :explain="$.explain[$.step]"></explain>
+            <div class="pane_layout">
+<!--                <div>-->
+                <password oo-if="$.step===0" :secret="$.secret"></password>
+                <database oo-if="$.step===1" :database="$.database"></database>
+                <restore oo-if="$.step===2" :restore="$.restore"></restore>
+                <init-info oo-if="$.step===3" oo-prop="$"></init-info>
+                <execute oo-if="$.step===4" oo-prop="$"></execute>
+<!--                </div>-->
+            </div>
+        </div>
+        <div class="bottom" style="height: 7rem" oo-element="bottomNode">
+            <div class="current" style="left: {{$.step*6}}rem"></div>
+
+            <div class="step"></div>
+            <div class="step"></div>
+            <div class="step"></div>
+            <div class="step"></div>
+            <div class="step"></div>
+        </div>
+    </div>
+</main>

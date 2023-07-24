@@ -21,53 +21,53 @@ public class RestatWar {
 	private static Logger logger = LoggerFactory.getLogger(RestatWar.class);
 
 	/* 初始化完成 */
-	public boolean execute( String simpleName ) throws Exception {
+	public boolean execute(String simpleName) throws Exception {
 		if (Servers.applicationServerIsRunning()) {
 			try {
-				GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+				GzipHandler gzipHandler = (GzipHandler) Servers.getApplicationServer().getHandler();
 				HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 				File dir = null;
 				String warFilePath = null;
 				Boolean appExists = false;
 				for (Handler handler : hanlderList.getHandlers()) {
-					if ( QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
+					if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 						QuickStartWebApp app = (QuickStartWebApp) handler;
 						if (StringUtils.equals("/" + simpleName, app.getContextPath())) {
 							appExists = true;
-							if( StringUtils.equals( type(simpleName), "storeWar")){
+							if (StringUtils.equals(type(simpleName), "storeWar")) {
 								warFilePath = Config.dir_store(true) + "/" + simpleName + ".war";
 								dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
-								logger.print("stoping offical application {} ...", simpleName );
-							}else if( StringUtils.equals( type(simpleName), "customWar")){
+								logger.print("stoping offical application {} ...", simpleName);
+							} else if (StringUtils.equals(type(simpleName), "customWar")) {
 								warFilePath = Config.dir_custom(true) + "/" + simpleName + ".war";
 								dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
-								logger.print("stoping custom application {} ...", simpleName );
+								logger.print("stoping custom application {} ...", simpleName);
 							}
 							app.stop();
 							Thread.sleep(2000);
-							if( dir != null && dir.exists() ){
+							if (dir != null && dir.exists()) {
 								FileUtils.forceDelete(dir);
 							}
-							Resource base = Resource.newResource( warFilePath );
+							Resource base = Resource.newResource(warFilePath);
 							dir.mkdirs();
-							logger.print("redeploy application {} to work dir...", simpleName );
+							logger.print("redeploy application {} to work dir...", simpleName);
 							JarResource.newJarResource(base).copyTo(dir);
-							logger.print("starting application {} ...", simpleName );
+							logger.print("starting application {} ...", simpleName);
 							app.start();
 						}
 					}
 				}
-				if( !appExists ){
-					logger.print("application {} not exists or not start.", simpleName );
+				if (!appExists) {
+					logger.print("application {} not exists or not start.", simpleName);
 				}
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
-			logger.print("application server not start." );
+		} else {
+			logger.print("application server not start.");
 		}
-		logger.print("restart application {} command excute completed.", simpleName );
+		logger.print("restart application {} command excute completed.", simpleName);
 		return true;
 	}
 

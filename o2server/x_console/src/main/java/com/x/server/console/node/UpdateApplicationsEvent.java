@@ -18,7 +18,7 @@ public class UpdateApplicationsEvent implements Event {
 	public final String type = Event.TYPE_UPDATEAPPLICATIONS;
 
 	public void execute() {
-		this.execute(Servers.applicationServer);
+		this.execute(Servers.getApplicationServer());
 	}
 
 	public void execute(Server applicationServer) {
