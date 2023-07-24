@@ -11,25 +11,19 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         this.action.getUserData(name, function(json){
             if (callback) callback(json);
-        }, null, async)
-
-        // this.action.invoke({"name": "getUserData", "async": async, "parameter": {"name": name}, "success": function(json){
-        //     if (callback) callback(json);
-        // }.bind(this)});
+        }, null, async);
     },
     getDataJson: function(name, callback, async){
         if (!this.action) this.getAction();
         this.action.getUserData(name, function(json){
             var returnJson = null;
-            if (json.data) returnJson = JSON.decode(json.data);
+            if (json.data){
+                try{
+                    returnJson = JSON.decode(json.data);
+                }catch(e){}
+            }
             if (callback) callback(returnJson);
-        }, null, async)
-
-        // this.action.invoke({"name": "getUserData", "async": async, "parameter": {"name": name}, "success": function(json){
-        //     var returnJson = null;
-        //     if (json.data) returnJson = JSON.decode(json.data);
-        //     if (callback) callback(returnJson);
-        // }.bind(this)});
+        }, null, async);
     },
 
     putData: function(name, data, callback, async){
@@ -57,7 +51,11 @@ MWF.xDesktop.UserData = MWF.UD = {
         if (!this.action) this.getAction();
         this.action.getPublicUserData(name, function(json){
             var returnJson = null;
-            if (json.data) returnJson = JSON.decode(json.data);
+            if (json.data){
+                try{
+                    returnJson = JSON.decode(json.data);
+                }catch(e){}
+            }
             if (callback) callback(returnJson);
         }, null, async)
 
