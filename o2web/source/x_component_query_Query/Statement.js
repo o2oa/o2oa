@@ -1019,7 +1019,8 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
             this.sequenceTd.setStyles({
                 "width": "30px",
-                "text-align": "center"
+                "text-align": "center",
+                "word-break": "keep-all"
             });
             this.sequenceTd.set("text", sequence);
         }

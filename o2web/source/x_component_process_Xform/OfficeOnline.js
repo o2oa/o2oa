@@ -224,7 +224,12 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.officeNode = new Element("div#_" + this.documentId,{"style":"height:100%;overflow:hidden"}).inject(this.node);
 
         var form = new Element("form",{"target" : "office_frame_"+this.documentId,"action":this.fileUrl,"type":"hidden","method":"post"}).inject(this.officeNode);
-        new Element("input",{"name":"access_token","value":Cookie.read(o2.tokenName),"type":"hidden"}).inject(form);
+
+        var xtoken = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        if (!xtoken) {
+            xtoken = (layout.session && layout.session.user) ? (layout.session.token || layout.session.user.token) : "";
+        }
+        new Element("input",{"name":"access_token","value":xtoken,"type":"hidden"}).inject(form);
 
         var iframe = new Element("iframe#office_frame_"+this.documentId,{"name":"office_frame_"+this.documentId}).inject(this.officeNode);
         // iframe.set("src",this.fileUrl);
