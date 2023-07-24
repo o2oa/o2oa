@@ -20,6 +20,7 @@ export default defineConfig({
             '/x_program_center': o,
             '/x_desktop': o
         },
+        host: true,
         sourcemap: true
     }
 })

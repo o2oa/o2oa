@@ -24,6 +24,10 @@ const template = `
     <oo-button @click="nextStep">下一步</oo-button>
 </div>
 <input type="file" @change="uploadFile" oo-element="uploadFileNode" style="display: none"/>
+<div class="maskNode" oo-if="$.status==='uploading'">
+    <div class="loading"></div>
+    <div>正在上传数据文件 ... </div>
+</div>
 `;
 const style = `
 .upload_area {
@@ -56,11 +60,41 @@ const style = `
     width: unset;
     height:1.5rem;
 }
+.loading {
+  position: relative;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 0.2rem solid #000;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-right-color: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  border-radius: 100%;
+  animation: circle infinite 0.75s linear;
+  margin-right: 0.5rem;
+}
+.maskNode {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #eeeeee;
+    opacity: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
 `;
 export default component({
     template,
     style,
     autoUpdate: true,
+
+    bind(){
+        return {
+            status: ''
+        }
+    },
 
     dragover(e){
         e.preventDefault();
@@ -78,8 +112,10 @@ export default component({
             const file = e.dataTransfer.files[0];
             const formData = new FormData();
             formData.append('file', file);
+            this.bind.status = 'uploading';
             await uploadRestore(formData);
             this.bind.restore.name = file.name;
+            this.bind.status = '';
         }
     },
 
@@ -90,8 +126,12 @@ export default component({
             const file = e.target.files[0];
             const formData = new FormData();
             formData.append('file', file);
+
+            this.bind.status = 'uploading';
+
             await uploadRestore(formData);
             this.bind.restore.name = file.name;
+            this.bind.status = '';
         }
     },
     selectFile(){

@@ -363,7 +363,7 @@ async function build_web_module() {
             // var tasks = [];
             moduleFolder.forEach((f)=>{
                 shelljs.config.verbose = true;
-                shelljs.exec('npm install && npm audit fix --force && npm run o2-build', {cwd: path.resolve(srcPath, f)});
+                shelljs.exec('npm install && npm run o2-build', {cwd: path.resolve(srcPath, f)});
             });
         });
     });

@@ -1,8 +1,4 @@
-@media (orientation: landscape){
-    :root {
-        font-size: 6px;
-    }
-}
+
 @media (height >= 1920px) {
     :root {
         font-size: 20px;
@@ -23,11 +19,12 @@
         font-size: 14px;
     }
 }
-@media (500px < height < 900px) {
+@media (height < 900px) {
     :root {
         font-size: 12px;
     }
 }
+
 *{
     box-sizing: border-box;
 }
@@ -71,9 +68,10 @@ header>img{
 }
 main{
     height: calc(100% - 14rem);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: auto;
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
 
 
@@ -254,6 +252,7 @@ main .pane{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
 }
 .pane_content{
     padding: 3rem;
