@@ -9,6 +9,10 @@ layout.addReady(function(){
         var _load = function(){
             MWF.xDesktop.getUserLayout(function(){
                 layout.userLayout = layout.userLayout || {};
+                if (!layout.userLayout.scale || isNaN(layout.userLayout.scale)){
+                    layout.userLayout.scale = 1;
+                }
+
                 var uri = new URI(window.location.href);
                 var viewMode = uri.getData("view");
                 var flatStyle = uri.getData("style");
