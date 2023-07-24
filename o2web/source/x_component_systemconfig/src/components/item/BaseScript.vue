@@ -38,6 +38,7 @@ const createEditor = ()=>{
       title: props.label,
       maxObj: content,
       style: 'o2',
+      type: props.inputType.type,
       onChange: ()=>{
         if (scriptArea.editor){
           changeValue(scriptArea.editor.getValue());

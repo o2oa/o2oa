@@ -24,7 +24,7 @@
                 </div>
               </template>
               <div class="item_info">
-                <BaseScript :value="loaders[type]" @blur="(v)=>{loaders[type]=v; saveLoader();}" @save="(v)=>{loaders[type]=v; saveLoader();}"></BaseScript>
+                <BaseScript :value="loaders[type]" :inputType="{type: 'service'}" @blur="(v)=>{loaders[type]=v; saveLoader();}" @save="(v)=>{loaders[type]=v; saveLoader();}"></BaseScript>
               </div>
 
             </el-collapse-item>
