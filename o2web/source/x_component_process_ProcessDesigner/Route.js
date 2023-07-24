@@ -444,6 +444,7 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         }
         //this.point.toFront();
         if (this.line) this.line.toFront();
+        if( this.property )this.property.checkTabShow();
     },
 
     cornerBrokenLineBegin: function (e, corner) {
@@ -1128,12 +1129,11 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
             if (!this.propertyContent){
                 this.htmlString = o2.bindJson(this.htmlString, {"lp": o2.APPPD.LP.propertyTemplate});
                 this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.process.propertyListNode);
+
                 this.process.panel.propertyTabPage.showTabIm();
                 this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                 this.propertyContent.set("html", this.JsonTemplate.load());
                 this.process.panel.data = this.data;
-
-                debugger;
 
                 this.loadRouteCondition();
 
@@ -1152,6 +1152,52 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
                 this.propertyContent.setStyle("display", "block");
             }
         }
+    },
+    loadPropertyTab: function(){
+        var tabNodes = this.propertyContent.getElements(".MWFTab");
+        if (tabNodes.length){
+            var tmpNode = this.propertyContent.getFirst();
+            var tabAreaNode = new Element("div", {
+                "styles": this.process.css.propertyTabNode
+            }).inject(tmpNode, "before");
+
+            MWF.require("MWF.widget.Tab", function(){
+                var tab = new MWF.widget.Tab(tabAreaNode, {"style": "moduleList"});
+                tab.load();
+                var tabPages = [];
+                this.tabPages = tabPages;
+                var isFromManual = this.isFromManualActivity();
+                tabNodes.each(function(node){
+                    var tabPage = tab.addTab(node, node.get("title"), false);
+                    tabPages.push(tabPage);
+                    if (node.hasAttribute("data-o2-advanced") && node.dataset["o2Advanced"]=="yes"){
+                        tabPage.tabNode.setAttribute("data-o2-advanced", "yes");
+                    }
+                    if( !isFromManual && node.hasAttribute("data-o2-manual") && node.dataset["o2Manual"]=="yes" ){
+                        tabPage.tabNode.hide()
+                    }
+                }.bind(this));
+                tabPages[0].showTab();
+            }.bind(this));
+        }
+    },
+    checkTabShow: function(){
+        var isFromManual = this.isFromManualActivity();
+        this.tabPages.each(function (tabPage) {
+            // var node = tabPage.xx
+            // if( node.hasAttribute("data-o2-manual") && node.dataset["o2Manual"]=="yes" ){
+            //     if(!isFromManual) tabPage.tabNode.hide();
+            // }
+        });
+    },
+    isFromManualActivity: function(){
+        for( var key in this.process.manuals ){
+            var manual = this.process.manuals[key];
+            if( manual.data && manual.data.routeList && manual.data.routeList.contains( this.data.id ) ){
+                return true;
+            }
+        }
+        return false;
     },
     loadRouteCondition: function(){
         var routeConditionNode = this.propertyContent.getElement(".MWFRouteCondition");
