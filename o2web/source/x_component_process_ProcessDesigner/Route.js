@@ -1133,6 +1133,8 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
                 this.propertyContent.set("html", this.JsonTemplate.load());
                 this.process.panel.data = this.data;
 
+                debugger;
+
                 this.loadRouteCondition();
 
                 this.setEditNodeEvent();
