@@ -143,7 +143,7 @@ public class ActionCheckIn extends BaseAction {
                         }
                     }
                     // 工作时长检查
-                    if (checkInResult.equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && shift.getNeedLimitWorkTime() && shift.getWorkTime() > 0) {
+                    if (checkInResult.equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(shift.getNeedLimitWorkTime())  && shift.getWorkTime() > 0) {
                         List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), today);
                         if (recordList == null || recordList.isEmpty()) {
                             throw new ExceptionNoTodayRecordList();
