@@ -1057,12 +1057,15 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         this.application = application;
         this.applicationData = applicationData;
         this.app = this.application.app;
+        debugger;
         if( this.application.starter ){
             this.starter = this.application.starter;
         }else if( this.application.app && this.application.app.starter ){
             this.starter = this.application.app.starter;
         }else if( this.application.app && this.application.app.processStarter ){
             this.starter = this.application.app.processStarter;
+        }else if( application.startProcessAreaNode ){
+            this.starter = application;
         }
         //this.starter = this.application.starter
         this.container = container;
@@ -1112,7 +1115,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         });
     },
     startProcess: function(){
-        this.starter.closeStartProcessArea();
+        if(this.starter)this.starter.closeStartProcessArea();
         MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
             var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(this.data, this.app, {
                 "onStarted": function(data, title, processName){
