@@ -172,7 +172,7 @@ public class AttendanceV2Shift extends SliceJpaObject {
 	}
 
   public Integer getWorkTime() {
-    return workTime;
+    return workTime == null ? 0 : workTime;
   }
 
   public void setWorkTime(Integer workTime) {

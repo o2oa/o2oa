@@ -1,5 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.DetailWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.RecordWo;
@@ -7,17 +15,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
-import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
