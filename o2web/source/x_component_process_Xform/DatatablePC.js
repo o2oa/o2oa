@@ -370,16 +370,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				node = this.titleTr.getElement("th.mwf_moveaction");
 				if( node )node.destroy();
 			}
-
 			if( this.templateTr ){
 				node = this.templateTr.getElement("td.mwf_editaction");
 				if( node )node.destroy();
 				node = this.templateTr.getElement("td.mwf_moveaction");
 				if( node )node.destroy();
 			}
-
 			if( this.totalTr ){
 				this.totalTr.destroy();
+				this.totalTr = null;
+			}
+			if( this.exportActionNode ){
+				this.exportActionNode.destroy();
+				this.totalTr = null;
+			}
+			if( this.importActionNode ){
+				this.importActionNode.destroy();
 				this.totalTr = null;
 			}
 		},
