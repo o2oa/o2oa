@@ -36,7 +36,7 @@ public class ClassLoaderTools {
 			boolean dynamic, List<Path> paths) throws Exception {
 		Set<Path> set = new HashSet<>();
 		if (ext) {
-			set.addAll(dirCfg(Config.dir_commons_ext()));
+			set.addAll(dirCfg(Config.pathCommonsExt(true)));
 		}
 		if (store) {
 			set.addAll(dirCfg(Config.dir_store_jars().toPath()));

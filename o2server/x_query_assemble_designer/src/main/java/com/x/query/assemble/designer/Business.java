@@ -281,7 +281,7 @@ public class Business {
 			PersistenceXmlHelper.directWriteDynamicEnhance(
 					new File(resources, "META-INF/persistence.xml").getAbsolutePath(), classNames);
 			List<File> classPath = new ArrayList<>();
-			classPath.addAll(FileUtils.listFiles(Config.dir_commons_ext().toFile(),
+			classPath.addAll(FileUtils.listFiles(Config.pathCommonsExt(true).toFile(),
 					FileFilterUtils.suffixFileFilter(DOT_JAR), DirectoryFileFilter.INSTANCE));
 			classPath.addAll(FileUtils.listFiles(Config.dir_store_jars(), FileFilterUtils.suffixFileFilter(DOT_JAR),
 					DirectoryFileFilter.INSTANCE));
@@ -324,7 +324,7 @@ public class Business {
 		List<String> paths = new ArrayList<>();
 
 		paths.add(Config.dir_store_jars().getAbsolutePath() + File.separator + "*");
-		paths.add(Config.dir_commons_ext().toString() + File.separator + "*");
+		paths.add(Config.pathCommonsExt(true).toString() + File.separator + "*");
 		paths.add(target.getAbsolutePath());
 		paths.add(resources.getAbsolutePath());
 

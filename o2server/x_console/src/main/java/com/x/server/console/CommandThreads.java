@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -94,7 +93,7 @@ public class CommandThreads {
 				file.setLength(0); // 清空文件
 			}
 			lock.release(); // 释放文件锁
-		} catch (URISyntaxException | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

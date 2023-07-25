@@ -84,7 +84,8 @@ public class RestoreData {
 			dir = Paths.get(path);
 			if ((!Files.exists(dir)) || (!Files.isDirectory(dir))) {
 				throw new IllegalArgumentException("directory not exist: " + path + ".");
-			} else if (dir.startsWith(Paths.get(Config.base()))) {
+			} else if (dir.startsWith(Paths.get(Config.base())) && (!dir.startsWith(Config.path_local_temp(false)))) {
+				// 如果通过路径来恢复,那么只能在 local/temp 目录下,避免程序文件被删除.
 				throw new IllegalArgumentException("path can not in base directory.");
 			}
 		}
@@ -236,7 +237,7 @@ public class RestoreData {
 		}
 
 		private Pair<List<String>, List<String>> entities(DumpRestoreDataCatalog catalog, ClassLoader classLoader)
-				throws Exception {
+				throws ClassNotFoundException {
 			List<String> containerEntityNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
 			if (StringUtils.equalsIgnoreCase(DumpRestoreData.MODE_LITE, Config.dumpRestoreData().getMode())) {
 				containerEntityNames = containerEntityNames.stream().filter(o -> {
@@ -377,8 +378,7 @@ public class RestoreData {
 			}
 		}
 
-		private <T> List<T> batchListExistEntity(Class<T> cls, EntityManager em, ContainerEntity containerEntity)
-				throws Exception {
+		private <T> List<T> batchListExistEntity(Class<T> cls, EntityManager em, ContainerEntity containerEntity) {
 			List<T> list;
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(cls);
@@ -394,7 +394,7 @@ public class RestoreData {
 		}
 
 		private <T extends JpaObject> List<String> loopIds(Class<T> cls, EntityManager em,
-				ContainerEntity containerEntity, String latestId) throws Exception {
+				ContainerEntity containerEntity, String latestId) {
 			List<String> list;
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);

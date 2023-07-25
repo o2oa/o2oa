@@ -3,7 +3,6 @@ package com.x.program.init;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -13,8 +12,6 @@ import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.program.init.Missions.Messages;
 import com.x.program.init.Missions.Mission;
 
 public class MissionExternalDataSources implements Mission {
@@ -49,18 +46,23 @@ public class MissionExternalDataSources implements Mission {
 		Gson gson = XGsonBuilder.instance();
 		try {
 			messages.msg("executing");
-			Path path = Config.path_local_temp(true).resolve("externalDataSources.json");
-			Files.writeString(path, gson.toJson(getExternalDataSources()), StandardCharsets.UTF_8,
-					StandardOpenOption.TRUNCATE_EXISTING);
+			Path path = Config.pathConfig(true).resolve("externalDataSources.json");
+			Files.writeString(path, gson.toJson(getExternalDataSources()), StandardCharsets.UTF_8);
+			Config.resource_commandQueue().add("ctl -regenerateConfig");
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
+			Config.regenerate();
+			// 命令队列是用多线程运行的,后续如果有ctl -initResourceFactory对目录有操作,可能导致重复删除目录冲突.
+			Thread.sleep(5000);
 			messages.msg("success");
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
 		} catch (Exception e) {
 			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
 	}
 
-	public static CheckResult check() throws Exception {
+	public static CheckResult check() {
 		CheckResult checkResult = new CheckResult();
 		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
 				ExternalDataSources.class);
