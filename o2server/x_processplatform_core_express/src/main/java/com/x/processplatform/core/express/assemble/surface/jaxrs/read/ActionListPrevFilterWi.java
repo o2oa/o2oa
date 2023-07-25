@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.read;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ActionListNextFilterWi extends GsonPropertyObject {
+public class ActionListPrevFilterWi extends GsonPropertyObject {
 
-	private static final long serialVersionUID = -1634195880987229071L;
+	private static final long serialVersionUID = -6793971147187572320L;
 
 	@FieldDescribe("应用标识.")
 	@Schema(description = "应用标识.")

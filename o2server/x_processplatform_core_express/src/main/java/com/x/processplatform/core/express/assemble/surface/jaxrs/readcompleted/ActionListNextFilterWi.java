@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.read;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ActionListMyFilterPagingWi extends GsonPropertyObject {
+public class ActionListNextFilterWi extends GsonPropertyObject {
 
-	private static final long serialVersionUID = -7285242594787321737L;
+	private static final long serialVersionUID = -4097088510809374338L;
 
 	@FieldDescribe("应用标识.")
 	@Schema(description = "应用标识.")
@@ -23,28 +23,24 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 	@Schema(description = "是否查找同版本流程数据：true(默认查找)|false.")
 	private Boolean relateEditionProcess = true;
 
-	@FieldDescribe("开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
-	@Schema(description = "开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
-	private String startTime;
-
-	@FieldDescribe("结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
-	@Schema(description = "结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
-	private String endTime;
-
-	@FieldDescribe("创建身份所在组织.")
-	@Schema(description = "创建身份所在组织.")
+	@FieldDescribe("创建人所在组织.")
+	@Schema(description = "创建人所在组织.")
 	private List<String> creatorUnitList;
 
-	@FieldDescribe("待阅开始时间.")
-	@Schema(description = "待阅开始时间.")
+	@FieldDescribe("开始时间月份.")
+	@Schema(description = "开始时间月份.")
 	private List<String> startTimeMonthList;
 
-	@FieldDescribe("活动名称.")
-	@Schema(description = "活动名称.")
+	@FieldDescribe("结束时间月份.")
+	@Schema(description = "结束时间月份.")
+	private List<String> completedTimeMonthList;
+
+	@FieldDescribe("活动.")
+	@Schema(description = "活动.")
 	private List<String> activityNameList;
 
-	@FieldDescribe("搜索关键字.")
-	@Schema(description = "搜索关键字.")
+	@FieldDescribe("匹配关键字.")
+	@Schema(description = "匹配关键字.")
 	private String key;
 
 	public List<String> getApplicationList() {
@@ -71,14 +67,6 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 		this.relateEditionProcess = relateEditionProcess;
 	}
 
-	public List<String> getStartTimeMonthList() {
-		return startTimeMonthList;
-	}
-
-	public void setStartTimeMonthList(List<String> startTimeMonthList) {
-		this.startTimeMonthList = startTimeMonthList;
-	}
-
 	public List<String> getActivityNameList() {
 		return activityNameList;
 	}
@@ -103,20 +91,20 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 		this.creatorUnitList = creatorUnitList;
 	}
 
-	public String getStartTime() {
-		return startTime;
+	public List<String> getCompletedTimeMonthList() {
+		return completedTimeMonthList;
 	}
 
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setCompletedTimeMonthList(List<String> completedTimeMonthList) {
+		this.completedTimeMonthList = completedTimeMonthList;
 	}
 
-	public String getEndTime() {
-		return endTime;
+	public List<String> getStartTimeMonthList() {
+		return startTimeMonthList;
 	}
 
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
+	public void setStartTimeMonthList(List<String> startTimeMonthList) {
+		this.startTimeMonthList = startTimeMonthList;
 	}
 
 }

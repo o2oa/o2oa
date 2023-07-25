@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.readcompleted;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,40 +9,40 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class V2CountWo extends GsonPropertyObject {
+public class ActionFilterAttributeFilterWo extends GsonPropertyObject {
 
-	private static final long serialVersionUID = -8723288394987103327L;
+	private static final long serialVersionUID = 3467078298152132280L;
 
-	@FieldDescribe("总数量.")
-	@Schema(description = "总数量.")
-	private Long count;
-
-	@FieldDescribe("按应用分类数量.")
-	@Schema(description = "按应用分类数量.")
+	@FieldDescribe("可选择的应用.")
+	@Schema(description = "可选择的应用.")
 	private List<NameValueCountPair> applicationList = new ArrayList<>();
 
-	@FieldDescribe("按流程分类数量.")
-	@Schema(description = "按流程分类数量.")
+	@FieldDescribe("可选择的流程.")
+	@Schema(description = "可选择的流程.")
 	private List<NameValueCountPair> processList = new ArrayList<>();
 
-	@FieldDescribe("按创建人分类数量.")
-	@Schema(description = "按创建人分类数量.")
-	private List<NameValueCountPair> creatorPersonList = new ArrayList<>();
-
-	@FieldDescribe("按创建组织分类数量.")
-	@Schema(description = "按创建组织分类数量.")
+	@FieldDescribe("可选择的组织.")
+	@Schema(description = "可选择的组织.")
 	private List<NameValueCountPair> creatorUnitList = new ArrayList<>();
 
-	@FieldDescribe("按创建的年月分类.")
-	@Schema(description = "按创建的年月分类.")
+	@FieldDescribe("可选择的开始月份.")
+	@Schema(description = "可选择的开始月份.")
 	private List<NameValueCountPair> startTimeMonthList = new ArrayList<>();
 
-	public Long getCount() {
-		return count;
+	@FieldDescribe("可选择的活动节点.")
+	@Schema(description = "可选择的活动节点.")
+	private List<NameValueCountPair> activityNameList = new ArrayList<>();
+
+	@FieldDescribe("可选择的完成状态.")
+	@Schema(description = "可选择的完成状态.")
+	private List<NameValueCountPair> completedList = new ArrayList<>();
+
+	public List<NameValueCountPair> getCompletedList() {
+		return completedList;
 	}
 
-	public void setCount(Long count) {
-		this.count = count;
+	public void setCompletedList(List<NameValueCountPair> completedList) {
+		this.completedList = completedList;
 	}
 
 	public List<NameValueCountPair> getApplicationList() {
@@ -61,14 +61,6 @@ public class V2CountWo extends GsonPropertyObject {
 		this.processList = processList;
 	}
 
-	public List<NameValueCountPair> getCreatorPersonList() {
-		return creatorPersonList;
-	}
-
-	public void setCreatorPersonList(List<NameValueCountPair> creatorPersonList) {
-		this.creatorPersonList = creatorPersonList;
-	}
-
 	public List<NameValueCountPair> getCreatorUnitList() {
 		return creatorUnitList;
 	}
@@ -83,6 +75,14 @@ public class V2CountWo extends GsonPropertyObject {
 
 	public void setStartTimeMonthList(List<NameValueCountPair> startTimeMonthList) {
 		this.startTimeMonthList = startTimeMonthList;
+	}
+
+	public List<NameValueCountPair> getActivityNameList() {
+		return activityNameList;
+	}
+
+	public void setActivityNameList(List<NameValueCountPair> activityNameList) {
+		this.activityNameList = activityNameList;
 	}
 
 }

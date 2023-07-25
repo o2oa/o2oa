@@ -22,7 +22,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionListPrevFilterWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.read.ActionListPrevFilterWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

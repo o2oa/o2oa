@@ -26,7 +26,7 @@ import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionFilterAttributeWo;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.read.ActionFilterAttributeWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -28,7 +28,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
-import com.x.processplatform.core.express.service.processing.jaxrs.readcompleted.V2CountWo;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted.V2CountWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

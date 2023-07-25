@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.read;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ActionListPrevFilterWi extends GsonPropertyObject {
+public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 
-	private static final long serialVersionUID = -6793971147187572320L;
+	private static final long serialVersionUID = -7285242594787321737L;
 
 	@FieldDescribe("应用标识.")
 	@Schema(description = "应用标识.")
@@ -22,6 +22,14 @@ public class ActionListPrevFilterWi extends GsonPropertyObject {
 	@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false.")
 	@Schema(description = "是否查找同版本流程数据：true(默认查找)|false.")
 	private Boolean relateEditionProcess = true;
+
+	@FieldDescribe("开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
+	@Schema(description = "开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
+	private String startTime;
+
+	@FieldDescribe("结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
+	@Schema(description = "结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
+	private String endTime;
 
 	@FieldDescribe("创建身份所在组织.")
 	@Schema(description = "创建身份所在组织.")
@@ -63,6 +71,14 @@ public class ActionListPrevFilterWi extends GsonPropertyObject {
 		this.relateEditionProcess = relateEditionProcess;
 	}
 
+	public List<String> getStartTimeMonthList() {
+		return startTimeMonthList;
+	}
+
+	public void setStartTimeMonthList(List<String> startTimeMonthList) {
+		this.startTimeMonthList = startTimeMonthList;
+	}
+
 	public List<String> getActivityNameList() {
 		return activityNameList;
 	}
@@ -87,12 +103,20 @@ public class ActionListPrevFilterWi extends GsonPropertyObject {
 		this.creatorUnitList = creatorUnitList;
 	}
 
-	public List<String> getStartTimeMonthList() {
-		return startTimeMonthList;
+	public String getStartTime() {
+		return startTime;
 	}
 
-	public void setStartTimeMonthList(List<String> startTimeMonthList) {
-		this.startTimeMonthList = startTimeMonthList;
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 
 }

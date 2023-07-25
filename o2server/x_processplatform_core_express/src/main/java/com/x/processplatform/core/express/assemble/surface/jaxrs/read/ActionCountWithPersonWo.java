@@ -1,13 +1,13 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.read;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ActionCountWithFilterWo extends GsonPropertyObject {
+public class ActionCountWithPersonWo extends GsonPropertyObject {
 
-	private static final long serialVersionUID = 3347407900790466007L;
+	private static final long serialVersionUID = -4242925327577316593L;
 	
 	@FieldDescribe("待阅数量.")
 	@Schema(description = "待阅数量.")
