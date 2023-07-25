@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.readcompleted;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,45 +9,28 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ActionFilterAttributeFilterWo extends GsonPropertyObject {
+public class ActionFilterAttributeWo extends GsonPropertyObject {
 
-	private static final long serialVersionUID = -1641928409149990969L;
-
-	@FieldDescribe("可选择的应用.")
-	@Schema(description = "可选择的应用.")
+	private static final long serialVersionUID = -7846051029815234834L;
+	
+	@FieldDescribe("可选应用范围.")
+	@Schema(description = "可选应用范围.")
 	private List<NameValueCountPair> applicationList = new ArrayList<>();
-
-	@FieldDescribe("可选择的流程.")
-	@Schema(description = "可选择的流程.")
+	@FieldDescribe("可选流程范围.")
+	@Schema(description = "可选流程范围.")
 	private List<NameValueCountPair> processList = new ArrayList<>();
-
-	@FieldDescribe("可选择的组织.")
-	@Schema(description = "可选择的组织.")
+	@FieldDescribe("可选组织范围.")
+	@Schema(description = "可选组织范围.")
 	private List<NameValueCountPair> creatorUnitList = new ArrayList<>();
-
 	@FieldDescribe("可选择的开始月份.")
 	@Schema(description = "可选择的开始月份.")
 	private List<NameValueCountPair> startTimeMonthList = new ArrayList<>();
-
-	@FieldDescribe("可选择的结束月份.")
-	@Schema(description = "可选择的结束月份.")
-	private List<NameValueCountPair> completedTimeMonthList = new ArrayList<>();
-
-	@FieldDescribe("可选择的活动节点.")
-	@Schema(description = "可选择的活动节点.")
+	@FieldDescribe("可选活动范围.")
+	@Schema(description = "可选活动范围.")
 	private List<NameValueCountPair> activityNameList = new ArrayList<>();
-
 	@FieldDescribe("可选择的完成状态.")
 	@Schema(description = "可选择的完成状态.")
 	private List<NameValueCountPair> completedList = new ArrayList<>();
-
-	public List<NameValueCountPair> getCompletedList() {
-		return completedList;
-	}
-
-	public void setCompletedList(List<NameValueCountPair> completedList) {
-		this.completedList = completedList;
-	}
 
 	public List<NameValueCountPair> getApplicationList() {
 		return applicationList;
@@ -73,14 +56,6 @@ public class ActionFilterAttributeFilterWo extends GsonPropertyObject {
 		this.creatorUnitList = creatorUnitList;
 	}
 
-	public List<NameValueCountPair> getStartTimeMonthList() {
-		return startTimeMonthList;
-	}
-
-	public void setStartTimeMonthList(List<NameValueCountPair> startTimeMonthList) {
-		this.startTimeMonthList = startTimeMonthList;
-	}
-
 	public List<NameValueCountPair> getActivityNameList() {
 		return activityNameList;
 	}
@@ -89,11 +64,20 @@ public class ActionFilterAttributeFilterWo extends GsonPropertyObject {
 		this.activityNameList = activityNameList;
 	}
 
-	public List<NameValueCountPair> getCompletedTimeMonthList() {
-		return completedTimeMonthList;
+	public List<NameValueCountPair> getStartTimeMonthList() {
+		return startTimeMonthList;
 	}
 
-	public void setCompletedTimeMonthList(List<NameValueCountPair> completedTimeMonthList) {
-		this.completedTimeMonthList = completedTimeMonthList;
+	public void setStartTimeMonthList(List<NameValueCountPair> startTimeMonthList) {
+		this.startTimeMonthList = startTimeMonthList;
 	}
+
+	public List<NameValueCountPair> getCompletedList() {
+		return completedList;
+	}
+
+	public void setCompletedList(List<NameValueCountPair> completedList) {
+		this.completedList = completedList;
+	}
+
 }

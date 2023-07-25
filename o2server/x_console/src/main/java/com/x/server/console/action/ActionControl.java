@@ -1,5 +1,7 @@
 package com.x.server.console.action;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.server.console.ResourceFactory;
@@ -45,6 +48,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_GC = "gc";
 	private static final String CMD_INITRESOURCEFACTORY = "initResourceFactory";
 	private static final String CMD_FLUSHCONFIG = "flushConfig";
+	private static final String CMD_REGENERATECONFIG = "regenerateConfig";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -89,6 +93,8 @@ public class ActionControl extends ActionBase {
 				initResourceFactory();
 			} else if (cmd.hasOption(CMD_FLUSHCONFIG)) {
 				flushConfig();
+			} else if (cmd.hasOption(CMD_REGENERATECONFIG)) {
+				regenerateConfig();
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", displayOptions());
@@ -118,6 +124,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(gcOption());
 		options.addOption(initResourceFactoryOption());
 		options.addOption(flushConfigOption());
+		options.addOption(regenerateConfigOption());
 		return options;
 	}
 
@@ -220,7 +227,13 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option flushConfigOption() {
-		return Option.builder(CMD_FLUSHCONFIG).longOpt("flush config").hasArg(false).desc("重置Config对象.").build();
+		return Option.builder(CMD_FLUSHCONFIG).longOpt("flush config").hasArg(false)
+				.desc("重置Config对象,不更新externalDataSources,externalStorageSources.").build();
+	}
+
+	private static Option regenerateConfigOption() {
+		return Option.builder(CMD_REGENERATECONFIG).longOpt("regenerate config").hasArg(false)
+				.desc("重新生成Config对象,销毁所有配置对象.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -269,7 +282,7 @@ public class ActionControl extends ActionBase {
 		compactLocalH2.execute();
 	}
 
-	private void dd(CommandLine cmd) throws Exception {
+	private void dd(CommandLine cmd) throws IOException, URISyntaxException {
 		String path = Objects.toString(cmd.getOptionValue(CMD_DD), "");
 		DumpData dumpData = new DumpData();
 		dumpData.execute(path);
@@ -350,6 +363,10 @@ public class ActionControl extends ActionBase {
 
 	private void flushConfig() {
 		Config.flush();
+	}
+
+	private void regenerateConfig() {
+		Config.regenerate();
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {

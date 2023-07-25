@@ -18,7 +18,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.express.service.processing.jaxrs.readcompleted.ActionManageOpinionWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.readcompleted.ActionManageOpinionWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

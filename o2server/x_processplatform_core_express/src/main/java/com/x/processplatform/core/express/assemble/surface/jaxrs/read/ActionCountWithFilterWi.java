@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.read;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.read;
 
 import java.util.List;
 

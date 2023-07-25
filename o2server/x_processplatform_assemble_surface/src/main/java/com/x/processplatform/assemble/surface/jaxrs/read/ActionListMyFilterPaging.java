@@ -26,7 +26,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
-import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionListMyFilterPagingWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.read.ActionListMyFilterPagingWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

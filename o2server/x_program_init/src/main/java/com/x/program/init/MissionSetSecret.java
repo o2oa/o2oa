@@ -40,7 +40,12 @@ public class MissionSetSecret implements Mission {
 			this.changeTokenPassword(getSecret());
 			Config.resource_commandQueue().add("ctl -flushConfig");
 			Config.resource_commandQueue().add("ctl -initResourceFactory");
+			Config.regenerate();
+			// 命令队列是用多线程运行的,后续如果有ctl -initResourceFactory对目录有操作,可能导致重复删除目录冲突.
+			Thread.sleep(5000);
 			messages.msg("success");
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
 		} catch (Exception e) {
 			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);

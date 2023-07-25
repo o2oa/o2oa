@@ -176,36 +176,42 @@ public class Servers {
 	public static void stopInitServer() throws Exception {
 		if (initServerIsRunning()) {
 			initServer.stop();
+			LOGGER.print("init server stoped.");
 		}
 	}
 
 	public static void stopWebServer() throws Exception {
 		if (webServerIsRunning()) {
 			webServer.stop();
+			LOGGER.print("web server stoped.");
 		}
 	}
 
 	public static void stopApplicationServer() throws Exception {
 		if (applicationServerIsRunning()) {
 			applicationServer.stop();
+			LOGGER.print("application server stoped.");
 		}
 	}
 
 	public static void stopCenterServer() throws Exception {
 		if (centerServerIsRunning()) {
 			centerServer.stop();
+			LOGGER.print("center server stoped.");
 		}
 	}
 
 	public static void stopStorageServer() {
 		if (storageServerIsRunning()) {
 			storageServer.stop();
+			LOGGER.print("storage server stoped.");
 		}
 	}
 
 	public static void stopDataServer() {
 		if (dataServerIsRunning()) {
 			dataServer.stop();
+			LOGGER.print("data server stoped.");
 		}
 	}
 

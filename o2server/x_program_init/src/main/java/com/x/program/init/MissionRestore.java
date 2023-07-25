@@ -1,7 +1,13 @@
 package com.x.program.init;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -30,23 +36,29 @@ public class MissionRestore implements Mission {
 			if (!ZipTools.isZipFile(path)) {
 				throw new ExceptionMissionExecute("file is not zip file format.");
 			}
-			ZipTools.unZip(path.toFile(), null, Config.path_local_dump(true).resolve("dumpData_" + getStamp()).toFile(),
-					true, StandardCharsets.UTF_8);
+			Path unzipFolder = Config.path_local_temp(true).resolve(getStamp());
+			ZipTools.unZip(path.toFile(), null, unzipFolder.toFile(), true, StandardCharsets.UTF_8);
 			if ((null == Config.externalDataSources().enable())
 					|| BooleanUtils.isNotTrue(Config.externalDataSources().enable())) {
 				Config.resource_commandQueue().add("start dataSkipInit");
-				Thread.sleep(2000);
 				Config.resource_commandQueue().add("ctl -initResourceFactory");
-				Thread.sleep(2000);
+				// 命令队列是用多线程运行的,后续如果有ctl -initResourceFactory对目录有操作,可能导致重复删除目录冲突.
+				Thread.sleep(5000);
 			}
 			if ((null == Config.externalStorageSources())
 					|| BooleanUtils.isNotTrue(Config.externalStorageSources().getEnable())) {
 				Config.resource_commandQueue().add("start storageSkipInit");
-				Thread.sleep(2000);
+				// 命令队列是用多线程运行的,后续如果有ctl -initResourceFactory对目录有操作,可能导致重复删除目录冲突.
+				Thread.sleep(5000);
 			}
-			Config.resource_commandQueue().add("ctl -rd " + getStamp());
-			Config.resource_commandTerminatedSignal_ctl_rd().take();// 等待执行完成信号.
-			messages.msg("success");
+			Optional<Path> folder = locationFolder(unzipFolder);
+			if (folder.isPresent()) {
+				Config.resource_commandQueue().add("ctl -rd " + unzipFolder.toAbsolutePath().toString());
+				Config.resource_commandTerminatedSignal_ctl_rd().take();// 等待执行完成信号.
+				messages.msg("success");
+			} else {
+				messages.err("can not find catalog.json in folder:{}.", unzipFolder);
+			}
 		} catch (InterruptedException ie) {
 			Thread.currentThread().interrupt();
 			messages.err(ie.getMessage());
@@ -55,6 +67,17 @@ public class MissionRestore implements Mission {
 			messages.err(e.getMessage());
 			throw new ExceptionMissionExecute(e);
 		}
+	}
+
+	private static Optional<Path> locationFolder(Path path) throws IOException {
+		PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/catalog.json");
+		try (Stream<Path> stream = Files.walk(path, 3)) {
+			Optional<Path> opt = stream.filter(pathMatcher::matches).findFirst();
+			if (opt.isPresent()) {
+				return Optional.of(opt.get().getParent().toAbsolutePath());
+			}
+		}
+		return Optional.empty();
 	}
 
 }

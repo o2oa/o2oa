@@ -22,7 +22,7 @@ public class Missions {
 	public static final String STATUS_SUCCESS = "success";
 	public static final String STATUS_FAILURE = "failure";
 
-	private static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(1, 1, 120, TimeUnit.SECONDS,
+	private static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(1, 1, 300, TimeUnit.SECONDS,
 			new ArrayBlockingQueue<>(1000),
 			new ThreadFactoryBuilder().setNameFormat(Missions.class.getName() + "-threadpool-%d").build());
 
@@ -46,7 +46,9 @@ public class Missions {
 
 		Future<?> future = THREADPOOLEXECUTOR
 				.submit(() -> stream().filter(Objects::nonNull).forEach(o -> o.execute(messages)));
+
 		future.get();
+
 		status = STATUS_SUCCESS;
 
 	}

@@ -1663,7 +1663,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
                 var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
                 if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                    var xtoken = Cookie.read(o2.tokenName);
+                    var xtoken = layout.session.token;
+                    //var xtoken = Cookie.read(o2.tokenName);
                     downloadUrl += "&" + o2.tokenName + "=" + xtoken;
                 }
                 window.open(downloadUrl);

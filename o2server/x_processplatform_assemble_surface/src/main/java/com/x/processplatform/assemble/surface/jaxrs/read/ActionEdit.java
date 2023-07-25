@@ -13,7 +13,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionEditWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.read.ActionEditWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

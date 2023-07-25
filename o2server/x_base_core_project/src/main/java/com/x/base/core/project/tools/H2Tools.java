@@ -2,21 +2,23 @@ package com.x.base.core.project.tools;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 public class H2Tools {
+
+	private H2Tools() {
+		// nothing
+	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(H2Tools.class);
 
@@ -29,20 +31,9 @@ public class H2Tools {
 	public static final String DEFAULT_VERSION = "1.4.200";
 
 	public static Optional<String> jarVersion() {
-		try {
-			String classFile = org.h2.Driver.class.getName().replace('.', '/') + ".class";
-			// 获取类的URL
-			URL classUrl = org.h2.Driver.class.getClassLoader().getResource(classFile);
-			if ((classUrl != null) && classUrl.getProtocol().equals("jar")) {
-				String jarPath = classUrl.getPath().substring(5, classUrl.getPath().indexOf("!"));
-				jarPath = URLDecoder.decode(jarPath, "UTF-8");
-				Path path = Paths.get(jarPath);
-				String name = path.getFileName().toString();
-				Matcher matcher = VERSION_FILENAME_PATTERN.matcher(name);
-				if (matcher.matches()) {
-					return Optional.of(matcher.group(1));
-				}
-			}
+		try (Stream<Path> stream = Files.walk(Config.pathCommonsExt(true), 1)) {
+			return stream.map(o -> VERSION_FILENAME_PATTERN.matcher(o.getFileName().toString()))
+					.filter(Matcher::matches).map(o -> o.group(1)).findFirst();
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
