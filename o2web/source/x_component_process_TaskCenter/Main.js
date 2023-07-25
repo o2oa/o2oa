@@ -1057,7 +1057,6 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         this.application = application;
         this.applicationData = applicationData;
         this.app = this.application.app;
-        debugger;
         if( this.application.starter ){
             this.starter = this.application.starter;
         }else if( this.application.app && this.application.app.starter ){
