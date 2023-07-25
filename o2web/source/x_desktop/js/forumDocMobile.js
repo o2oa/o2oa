@@ -20,22 +20,27 @@ o2.addReady(function () {
         var options = uri.get("data");
         if (options[o2.tokenName]) {
             // 删除
-            Cookie.dispose(o2.tokenName);
-            // 写入
-            var host = window.location.hostname; // 域名
-            var domain = null;
-            if (_isIp(host)) {
-                domain = host;
-            }else {
-                if (host.indexOf(".") > 0) {
-                    domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
-                }
+            // Cookie.dispose(o2.tokenName);
+            // // 写入
+            // var host = window.location.hostname; // 域名
+            // var domain = null;
+            // if (_isIp(host)) {
+            //     domain = host;
+            // }else {
+            //     if (host.indexOf(".") > 0) {
+            //         domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
+            //     }
+            // }
+            // if (domain) {
+            //     Cookie.write(o2.tokenName, options[o2.tokenName], {domain: domain, path:"/"});
+            // }else {
+            //     Cookie.write(o2.tokenName, options[o2.tokenName]);
+            // }
+            if (window.layout) {
+                if (!layout.session) layout.session = {};
+                layout.session.token = options[o2.tokenName];
             }
-            if (domain) {
-                Cookie.write(o2.tokenName, options[o2.tokenName], {domain: domain, path:"/"});
-            }else {
-                Cookie.write(o2.tokenName, options[o2.tokenName]);
-            }
+            if (layout.config && layout.config.sessionStorageEnable && window.sessionStorage) window.sessionStorage.setItem("o2LayoutSessionToken", options[o2.tokenName]);
         }
 
         MWF.loadLP("zh-cn");

@@ -385,25 +385,25 @@ o2.addReady(function () {
         //修改支持x-token
         var uri = new URI(window.location.href);
         var options = uri.get("data");
-        if (options[o2.tokenName]) {
-            // 删除
-            Cookie.dispose(o2.tokenName);
-            // 写入
-            var host = window.location.hostname; // 域名
-            var domain = null;
-            if (_isIp(host)) {
-                domain = host;
-            }else {
-                if (host.indexOf(".") > 0) {
-                    domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
-                }
-            }
-            if (domain) {
-                Cookie.write(o2.tokenName, options[o2.tokenName], {domain: domain, path:"/"});
-            }else {
-                Cookie.write(o2.tokenName, options[o2.tokenName]);
-            }
-        }
+        // if (options[o2.tokenName]) {
+        //     // 删除
+        //     Cookie.dispose(o2.tokenName);
+        //     // 写入
+        //     var host = window.location.hostname; // 域名
+        //     var domain = null;
+        //     if (_isIp(host)) {
+        //         domain = host;
+        //     }else {
+        //         if (host.indexOf(".") > 0) {
+        //             domain = host.substring(host.indexOf(".")); // 上级域名 如 .o2oa.net
+        //         }
+        //     }
+        //     if (domain) {
+        //         Cookie.write(o2.tokenName, options[o2.tokenName], {domain: domain, path:"/"});
+        //     }else {
+        //         Cookie.write(o2.tokenName, options[o2.tokenName]);
+        //     }
+        // }
 
         //先判断用户是否登录
         o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
