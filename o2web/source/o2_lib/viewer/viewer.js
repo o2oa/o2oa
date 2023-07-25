@@ -1446,7 +1446,11 @@
 
       if(isDingding){
 
-        var xtoken = Cookie.read(o2.tokenName);
+        var xtoken = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        if (!xtoken) {
+          xtoken = (layout.session && layout.session.user) ? (layout.session.token || layout.session.user.token) : "";
+        }
+        //var xtoken = Cookie.read(o2.tokenName);
         var url =  o2.filterUrl(this.image.src + "?"+o2.tokenName+"=" + xtoken);
         var fileName = this.image.alt;
         o2.load("/o2_lib/dingding/dingtalk.open-2.10.3.js",function(){

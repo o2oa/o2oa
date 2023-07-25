@@ -351,7 +351,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 }).inject(this.viewTitleLine);
                 this.sequenceTitleCell.setStyles({
                     "width": "30px",
-                    "text-align": "center"
+                    "text-align": "center",
+                    "word-break": "keep-all"
                 });
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
                 if( !this.expandTitleCell )this.expandTitleCell = this.sequenceTitleCell;
