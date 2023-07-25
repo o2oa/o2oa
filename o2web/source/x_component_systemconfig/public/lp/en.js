@@ -385,6 +385,12 @@ o2.xApplication.systemconfig.LP = {
         "tokenName": "Token Name",
         "tokenNameInfo": "The default token name of the system is x-token, and you can modify the token name here to prevent cookie conflicts under the same Domain, which is especially useful when deploying multiple sets of O2OA under the same Domain.(The server needs to be restarted after modification.)",
 
+        "tokenCookieHttpOnly": "Enable httponly",
+        "tokenCookieHttpOnlyInfo": "Whether the cookie that saves the token is enabled for httponly",
+
+        "tokenCookieSecure": "Enable Cookie Secure",
+        "tokenCookieSecureInfo": "Whether secure is enabled for the cookie that saves the token, indicating that this cookie will only be transmitted under the https protocol",
+
         "enableSafeLogout": "Enable Secure Logout",
         "enableSafeLogoutInfo": "After the secure logout is enabled, if you perform a logout operation on any terminal, the login status of all terminals will be logged out at the same time.",
 
