@@ -268,42 +268,47 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 
 		if (this.combox){
             this.combox.clear();
-            var comboxValues = [];
             var textData = this.getTextData( value );
-            textData.value.each(function(v, i){
-				// if (typeOf(v)==="object"){
-                //     comboxValues.push({
-				// 		"text": v.text || v.title || v.subject  || v.name,
-				// 		"value": v
-                //     });
-				// }else{
-                //     comboxValues.push(v.toString());
-				// }
-                comboxValues.push({
-                    "text": textData.text[i] || v,
-                    "value": v
-                });
-			}.bind(this));
-            this.combox.addNewValues(comboxValues);
+            if( typeOf(textData) === "object" ){
+                Promise.resolve(textData.then).then(function (tData) {
+                    this.__setValueEdit( tData );
+                }.bind(this))
+            }else{
+                this.__setValueEdit( textData )
+            }
 		}else{
-		    var contentNode = new Element("div", {
-		        "styles": { "overflow": "hidden"}
-            }).inject(this.node);
 		    var textList = this.getTextListByValue( value );
-            textList.each(function(text, i){
-                // var text = "";
-                // if (typeOf(v)==="object"){
-                // 	text = v.text || v.title || v.subject  || v.name;
-                // }else{
-                //     text = v.toString();
-                // }
-                if (i<value.length-1) text += this.json.splitShow;
-                new Element("div", {"styles": {
+            if( typeOf(textList.then) === "object" ){
+                Promise.resolve(textList).then(function (tList) {
+                    this.__setValueRead( value, tList );
+                }.bind(this))
+            }else{
+                this.__setValueRead( value, textList );
+            }
+		}
+    },
+    __setValueEdit: function(textData){
+        var comboxValues = [];
+        textData.value.each(function(v, i){
+            comboxValues.push({
+                "text": textData.text[i] || v,
+                "value": v
+            });
+        }.bind(this));
+        this.combox.addNewValues(comboxValues);
+        this.fieldModuleLoaded = true;
+    },
+    __setValueRead: function(value, textList){
+        var contentNode = new Element("div", {
+            "styles": { "overflow": "hidden"}
+        }).inject(this.node);
+        textList.each(function(text, i){
+            if (i<value.length-1) text += this.json.splitShow;
+            new Element("div", {"styles": {
                     "float": "left",
                     "margin-right": "5px"
                 },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
-            }.bind(this));
-		}
+        }.bind(this));
         this.fieldModuleLoaded = true;
     },
     /**
@@ -360,12 +365,24 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      * @summary 获取选中的值和文本.
      * @example
      * var array = this.form.get('fieldId').getTextData();
-     * @return {Object} 返回选中项值和文本，格式为 { 'value' : [value], 'text' : [text] }.
+     * @example
+     * //异步
+     * var array = this.form.get('fieldId').getTextData();
+     * Promise.resolve(array).then(function(arr){
+     *     //arr为选中项值和文本
+     * })
+     * @return {Object|Promise} 返回选中项值和文本，格式为 { 'value' : [value], 'text' : [text] }.
      */
     getTextData: function( value ){
 	    var v = value || this.getData();
 	    var textList = this.getTextListByValue( v );
-        return {"value": v, "text": textList.length ? textList : v};
+        if( typeOf(textList.then) === "function" ){
+            return Promise.resolve(textList).then(function (tList) {
+                return {"value": v, "text": tList.length ? tList : v};
+            }.bind(this));
+        }else{
+            return {"value": v, "text": textList.length ? textList : v};
+        }
         //return this.node.get("text");
     },
     getTextListByValue: function( v ){
@@ -393,24 +410,11 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         }else{
             options = this.getOptions();
             if( typeOf(options.then) === "function" ){
-                Promise.resolve(options).then(function (opt) {
-
-                })
-            }else{
-                v.each(function ( i ) {
-                    var text;
-                    if (typeOf(i)==="object"){
-                        text = i.text || i.title || i.subject  || i.name;
-                    }else{
-                        i = i.toString();
-                        var matchList = options.filter(function (o) {
-                            if( o.value === i )return true;
-                        });
-                        text = (matchList[0] && matchList[0].text) ? matchList[0].text : i;
-                    }
-                    textList.push( text );
+                return Promise.resolve(options).then(function (opt) {
+                    return this._getTextListByValue(v, opt);
                 }.bind(this));
-                return textList;
+            }else{
+                return this._getTextListByValue(v, options);
             }
         }
         v.each(function ( i ) {
@@ -424,8 +428,22 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         }.bind(this));
         return textList;
     },
-    _getTextListByValue: function(){
-
+    _getTextListByValue: function(v, options){
+        var textList = [];
+        v.each(function ( i ) {
+            var text;
+            if (typeOf(i)==="object"){
+                text = i.text || i.title || i.subject  || i.name;
+            }else{
+                i = i.toString();
+                var matchList = options.filter(function (o) {
+                    if( o.value === i )return true;
+                });
+                text = (matchList[0] && matchList[0].text) ? matchList[0].text : i;
+            }
+            textList.push( text );
+        }.bind(this));
+        return textList;
     },
     resetData: function(){
         //this._setBusinessData(this.getValue());
