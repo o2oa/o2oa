@@ -3,6 +3,7 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
@@ -243,14 +243,6 @@ public class Config {
 
 	public static Path dir_commons_fonts() throws Exception {
 		return Paths.get(base()).resolve(DIR_COMMONS_FONTS);
-	}
-
-	public static Path dir_commons_ext() throws IOException, URISyntaxException {
-		if (SystemUtils.IS_JAVA_11) {
-			return Paths.get(base()).resolve(DIR_COMMONS_EXT + "_java11");
-		} else {
-			return Paths.get(base()).resolve(DIR_COMMONS_EXT);
-		}
 	}
 
 	public static File dir_config() throws Exception {
@@ -496,6 +488,7 @@ public class Config {
 	}
 
 	/**
+	 * 重置Config对象,不更新externalDataSources,externalStorageSources.
 	 * 部分对象不能直接刷新,会导致已有链接断开.
 	 */
 	public static synchronized void flush() {
@@ -506,6 +499,13 @@ public class Config {
 			newInstance.externalDataSources = INSTANCE.externalDataSources;
 		}
 		INSTANCE = newInstance;
+	}
+
+	/**
+	 * 重新生成Config对象,销毁所有配置对象.
+	 */
+	public static synchronized void regenerate() {
+		INSTANCE = null;
 	}
 
 	private static synchronized Config instance() {
@@ -541,7 +541,7 @@ public class Config {
 
 	private String base;
 
-	public static synchronized String base() throws IOException, URISyntaxException {
+	public static synchronized String base() {
 		if (null == instance().base) {
 			instance().base = BaseTools.getBasePath();
 		}
@@ -722,7 +722,7 @@ public class Config {
 	 * @return
 	 * @throws Exception
 	 */
-	public static synchronized DumpRestoreData dumpRestoreData() throws Exception {
+	public static synchronized DumpRestoreData dumpRestoreData() {
 		DumpRestoreData obj = BaseTools.readConfigObject(PATH_CONFIG_DUMPRESTOREDATA, DumpRestoreData.class);
 		if (null == obj) {
 			obj = DumpRestoreData.defaultInstance();
@@ -1529,20 +1529,53 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_servers_webServer_x_init(boolean force) throws IOException, URISyntaxException {
+	public static Path path_servers_webServer_x_init(boolean force) {
 		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER_X_INIT);
 		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
+			createDirectories(path);
 		}
 		return path;
 	}
 
-	public static Path pathLocalRepository(boolean force) throws IOException, URISyntaxException {
+	public static Path pathLocalRepository(boolean force) {
 		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY);
 		if (!Files.exists(path) && force) {
-			Files.createDirectories(path);
+			createDirectories(path);
 		}
 		return path;
 	}
 
+	public static Path pathConfig(boolean force) {
+		Path path = Paths.get(base(), DIR_CONFIG);
+		if ((!Files.exists(path)) && force) {
+			createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path pathCommonsExt(boolean force) {
+		Path path = null;
+		if (SystemUtils.IS_JAVA_11) {
+			path = Paths.get(base()).resolve(DIR_COMMONS_EXT + "_java11");
+		} else {
+			path = Paths.get(base()).resolve(DIR_COMMONS_EXT);
+		}
+		if (!Files.exists(path) && force) {
+			createDirectories(path);
+		}
+		return path;
+	}
+
+	/**
+	 * 创建层级目录,将IOException转换为UncheckedIOException
+	 * 
+	 * @param path
+	 */
+	private static void createDirectories(Path path) {
+		try {
+			Files.createDirectories(path);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
 }

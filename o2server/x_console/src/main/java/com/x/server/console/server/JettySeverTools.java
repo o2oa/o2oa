@@ -132,7 +132,7 @@ public abstract class JettySeverTools {
 		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
-		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), JARS_FILTER.get(), null)) {
+		for (File o : FileUtils.listFiles(Config.pathCommonsExt(true).toFile(), JARS_FILTER.get(), null)) {
 			jars.add(o.getAbsolutePath());
 		}
 		return jars;
