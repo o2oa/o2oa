@@ -2,11 +2,9 @@ import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { attendanceWorkPlaceV2Action, getPublicData } from '../../utils/actions';
 import { lpFormat } from '../../utils/common';
-import style from "./style.scope.css";
 import template from "./temp.html";
 
 export default content({
-  style,
   template,
   autoUpdate: true,
   components: {},

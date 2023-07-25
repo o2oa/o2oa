@@ -2,6 +2,7 @@ import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { isEmpty } from "../../../utils/common";
 import { groupAction, attendanceWorkPlaceV2Action, attendanceShiftAction } from "../../../utils/actions";
+import style from "./style.scope.css";
 import template from "./temp.html";
 import oInput from "../../../components/o-input";
 import oOrgPersonSelector from "../../../components/o-org-person-selector";
@@ -9,6 +10,7 @@ import selectShift from "../../shiftManager/selectShift";
 import addressSelector from "../../addressManager/addressSelector";
 
 export default content({
+  style,
   template,
   components: { oInput, oOrgPersonSelector, selectShift, addressSelector },
   autoUpdate: true,
@@ -482,7 +484,7 @@ export default content({
   },
   async submit() {
     debugger;
-    let myForm = this.bind.form;
+    const myForm = this.bind.form;
     // 考勤组名称
     if (isEmpty(myForm.groupName)) {
       o2.api.page.notice(lp.groupForm.titleErrorNotEmpty, 'error');
