@@ -3099,11 +3099,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = signers;
                             break;
                         case "mainSend":
-                            this.data[name] = strs.join("，") + "：";
+                            this.data[name] = strs.length ? strs.join("，") + "：" : "";
                             break;
                         case "copyto":
                         case "copyto2":
-                            this.data[name] = strs.join("，") + "。";
+                            this.data[name] = strs.length ? strs.join("，") + "。" : "";
                             break;
                         default:
                             this.data[name] = strs.join("，");
