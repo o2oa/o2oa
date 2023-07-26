@@ -487,11 +487,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
                 this.moduleSelectAG.then(function () {
                     this.fireEvent("load");
-                    this.loaded = true;
+                    this.isLoaded = true;
                 }.bind(this))
             }else{
                 this.fireEvent("load");
-                this.loaded = true;
+                this.isLoaded = true;
             }
         }
     },

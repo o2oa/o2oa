@@ -312,19 +312,26 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.fieldModuleLoaded = true;
     },
     /**
-     * @summary 重新计算下拉选项，该功能通常用在下拉选项为动态计算的情况.
+     * @summary 重新计算下拉选项.
+     * @param {Function} callback 回调方法
      * @example
      * this.form.get('fieldId').resetOption();
+     * @example
+     * this.form.get('fieldId').resetOption(function(){
+     *   //设置完成后的回调
+     * });
      */
-    resetOption: function(){
+    resetOption: function( callback ){
         if (this.combox){
             var list = this.getOptions();
             if( typeOf(list.then) === "function" ){
                 Promise.resolve(list).then(function (array) {
                     this.combox.setOptions({"list": array});
+                    if(callback)callback();
                 })
             }else{
                 this.combox.setOptions({"list": list});
+                if(callback)callback();
             }
         }
     },
@@ -445,19 +452,74 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         }.bind(this));
         return textList;
     },
+
+    getValueListByText: function( text ){
+        var options, valueList=[];
+        if( this.json.itemType === "dynamic" ){
+        }else{
+            options = this.getOptions();
+            if( typeOf(options.then) === "function" ){
+                return Promise.resolve(options).then(function (opt) {
+                    return this._getValueListByText(text, opt);
+                }.bind(this));
+            }else{
+                return this._getValueListByText(text, options);
+            }
+        }
+        text.each(function ( i ) {
+            var value;
+            if (typeOf(i)==="object"){
+                value = i.name || i.text || i.title || i.subject ;
+            }else{
+                value = i.toString();
+            }
+            valueList.push( value );
+        }.bind(this));
+        return valueList;
+    },
+    _getValueListByText: function(text, options){
+        var valueList = [];
+        text.each(function ( i ) {
+            var value;
+            if (typeOf(i)==="object"){
+                value = i.name || i.text || i.title || i.subject;
+            }else{
+                i = i.toString();
+                var matchList = options.filter(function (o) {
+                    if( o.text === i )return true;
+                });
+                value = (matchList[0] && matchList[0].text) ? matchList[0].value : i;
+            }
+            valueList.push( value );
+        }.bind(this));
+        return valueList;
+    },
+
     resetData: function(){
         //this._setBusinessData(this.getValue());
         this.setData(this.getValue());
     },
 
-    getExcelData: function(){
+    getExcelData: function( type ){
         var value = this.getData();
-        return o2.typeOf(value) === "array" ? value.join(", ") : value;
+        if( type === "value" )return o2.typeOf(value) === "array" ? value.join(", ") : value;
+
+        var textList = this.getTextListByValue();
+		return Promise.resolve(textList).then(function (tList) {
+			return tList.join(", ");
+		});
     },
-    setExcelData: function(data){
+    setExcelData: function(data, type){
         var arr = this.stringToArray(data);
         this.excelData = arr;
-        var value = arr.length === 0  ? arr[0] : arr;
-        this.setData(value, true);
+        if( type === "value" ){
+            this.setData(arr, true);
+        }else{
+            var values = this.getValueListByText();
+            this.moduleExcelAG = Promise.resolve(values).then(function (vs) {
+                this.setData(vs, true);
+                this.moduleExcelAG = null;
+            }.bind(this));
+        }
     }
 }); 
