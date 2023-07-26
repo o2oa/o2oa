@@ -451,8 +451,13 @@ public class Qiyeweixin extends ConfigObject {
 	public void setAttendanceSyncSecret(String attendanceSyncSecret) {
 		this.attendanceSyncSecret = attendanceSyncSecret;
 	}
+	
 
-	public void save() throws Exception {
+	public void setSyncSecret(String syncSecret) {
+    this.syncSecret = syncSecret;
+  }
+
+  public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QIYEWEIXIN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 		BaseTools.executeSyncFile(Config.PATH_CONFIG_QIYEWEIXIN);
