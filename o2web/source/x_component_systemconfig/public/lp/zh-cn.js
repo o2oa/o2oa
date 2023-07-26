@@ -359,7 +359,6 @@ o2.xApplication.systemconfig.LP = {
             "<li>您必须执行以下步骤，才能正常使用系统：<br>使用xadmin账号重新登录系统，并通过任何方式重置所有用户密码</li></ul></div>",
         "tokenEncryptTypeButton": "确定修改密码加密方式",
         "changeTokenEncryptTypeInfo": "您确定要修改密码加密方式码？"
-
     },
     "_loginConfig": {
         "baseConfig": "基本配置",
@@ -385,6 +384,12 @@ o2.xApplication.systemconfig.LP = {
 
         "tokenName": "token名称",
         "tokenNameInfo": "系统默认的token名称为x-token，您可以在此处修改token名称，以防止在相同Domain下的Cookie冲突，这在相同Domain下部署多套O2OA时尤其有用。(需要重启服务器)",
+
+        "tokenCookieHttpOnly": "启用Cookie HttpOnly",
+        "tokenCookieHttpOnlyInfo": "保存token的cookie是否启用httponly",
+
+        "tokenCookieSecure": "启用Cookie Secure",
+        "tokenCookieSecureInfo": "保存token的cookie是否启用secure，表示仅在https协议才会传输此cookie",
 
         "enableSafeLogout": "启用安全注销",
         "enableSafeLogoutInfo": "启用安全注销后，您在任意终端执行注销操作，将会同时注销所有终端的登录状态。",
