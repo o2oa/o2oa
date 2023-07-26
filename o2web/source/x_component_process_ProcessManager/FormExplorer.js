@@ -317,14 +317,14 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
         }.bind(this);
 
         var getFormTemplateList = function(callback){
-            if (this.formTemplateList){
-                if (callback) callback();
-            }else{
+            // if (this.formTemplateList){
+            //     if (callback) callback();
+            // }else{
                 this.app.restActions.listFormTemplate(function(json){
                     this.formTemplateList = json.data;
                     if (callback) callback();
                 }.bind(this));
-            }
+            // }
         }.bind(this);
         var loadTemplates = function(category){
             getFormTemplateList(function(){
