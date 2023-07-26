@@ -13,7 +13,6 @@ export default content({
     bind(){
         return {
             lp,
-            bMapV2ApiLoaded: false,
             person: {},
              // 打卡按钮
              checkInCycle: {
@@ -80,8 +79,13 @@ export default content({
         const bdKey = await getPublicData("baiduAccountKey");
         const accountkey = bdKey || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         this.bind.bdKey = accountkey;
-        const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
-        if( !this.bind.bMapV2ApiLoaded ){
+        // const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        let apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        if( window.location.protocol.toLowerCase() === "https:" ){
+            window.HOST_TYPE = '2';
+            apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
+        }
+        if( !window.bMapV2ApiLoaded ){
             o2.load(apiPath, () => {
                 this.location();
             });
@@ -91,7 +95,7 @@ export default content({
     },
     // 定位
     location() {
-        this.bind.bMapV2ApiLoaded = true;
+        window.bMapV2ApiLoaded = true;
         var self = this;
         const geolocation = new BMap.Geolocation();
         // 开启SDK辅助定位 app webview 支持

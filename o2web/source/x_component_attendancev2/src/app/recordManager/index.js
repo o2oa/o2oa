@@ -44,7 +44,6 @@ export default content({
     }
   },
   afterRender() {
-    this.loadRecordlList();
   },
   loadData(e) {
     if (e && e.detail && e.detail.module && e.detail.module.bind) {
@@ -65,6 +64,10 @@ export default content({
     if (this.bind.filterList.length > 0) {
       form.userId = this.bind.filterList[0];
     } else {
+      if (this.bind.units.length > 0) {
+        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+        return;
+      }
       form.userId = "";
     }
     if ((isEmpty(form.startDate) && !isEmpty(form.endDate)) || (!isEmpty(form.startDate) && isEmpty(form.endDate))) {

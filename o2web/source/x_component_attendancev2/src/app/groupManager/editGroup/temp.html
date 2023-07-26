@@ -173,9 +173,9 @@
                     {{$.lp.groupForm.workPlace}}
                     
                 </div>
-                <div class="form-item-line-content" style="height: 46px;line-height: 46px;">
-                    <div class="o-input-item-input" style="height: 40px;border-radius: 20px;">
-                        <span class="input placeholder" oo-if=" $.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
+                <div >
+                    <div  style="width: 320px;">
+                        <span style="line-height: 46px; color: #999999;" oo-if="$.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
                         <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
                             <div class="tag-item"  oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
                                 {{workPlace.value.placeName}}

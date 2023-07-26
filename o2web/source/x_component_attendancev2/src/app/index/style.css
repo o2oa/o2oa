@@ -530,12 +530,13 @@
 .tag-item {
   display: flex;
   align-items: center;
-  margin-left: 10px;
+  margin: 10px 0 10px 10px;
   font-size: 12px;
   cursor: pointer;
-  background-color: rgba(17, 31, 44, 0.08) !important;
+  background-color: rgba(255, 255, 255) !important;
   border-radius: 4px !important;
   padding: 5px;
+  line-height: 24px;
 }
 
 /* 灰色背景的卡片 */

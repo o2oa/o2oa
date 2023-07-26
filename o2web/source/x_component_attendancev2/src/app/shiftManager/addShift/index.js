@@ -3,6 +3,7 @@ import {lp, o2} from '@o2oa/component';
 import { isPositiveInt, isEmpty, convertMinutesToHoursAndMinutes } from '../../../utils/common';
 import { attendanceShiftAction } from "../../../utils/actions";
 import template from './template.html';
+import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
 import oTimePicker from '../../../components/o-time-picker';
 import oTimeMinutesSelector from '../../../components/o-time-minutes-selector';
@@ -11,6 +12,7 @@ import { setJSONValue } from '../../../utils/common';
 
 export default content({
     template,
+    style,
     components: {oInput, oTimePicker, oTimeMinutesSelector},
     autoUpdate: true,
     bind(){
