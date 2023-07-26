@@ -3557,7 +3557,7 @@ MWF.xScript.Environment = function(ev){
          * @param {String} type - 事件名称，参考本API Classer->FormComponents->Form的事件
          * @param {Function} event - 事件方法。
          * @example
-         this.form.addEvent("load", function(){
+         this.form.addEvent("afterLoad", function(){
             this.form.notice("表单载入完成", "success");
         }.bind(this));
          */

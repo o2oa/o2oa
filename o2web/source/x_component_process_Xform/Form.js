@@ -5431,8 +5431,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var _self = this;
             var opt = {};
 
-            this.app.content.parent
-
             o2.DL.open({
                 "title": o2.xApplication.process.Xform.LP.form.addTask,
                 "style": this.json.dialogStyle || "user",
