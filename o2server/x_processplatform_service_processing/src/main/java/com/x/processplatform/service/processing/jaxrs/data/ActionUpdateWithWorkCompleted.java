@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.data;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -31,9 +32,10 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		// 防止提交空数据清空data
-		if (null == jsonElement || (!jsonElement.isJsonObject())) {
+		if (null == wi.getJsonElement() || (!wi.getJsonElement().isJsonObject())) {
 			throw new ExceptionNotJsonObject();
 		}
 
@@ -46,38 +48,45 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				ActionResult<Wo> result = new ActionResult<>();
-				Wo wo = new Wo();
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
-					if (null == workCompleted) {
-						throw new ExceptionEntityNotExist(id, WorkCompleted.class);
-					}
-					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-						throw new ExceptionModifyMerged(workCompleted.getId());
-					}
-
-					JsonElement source = getData(business, workCompleted.getJob());
-					JsonElement merge = XGsonBuilder.merge(jsonElement, source);
-
-					/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-					updateTitleSerial(business, workCompleted, merge);
-					updateData(business, workCompleted, merge);
-					/* updateTitleSerial 和 updateData 方法内进行了提交 */
-					wo.setId(workCompleted.getId());
+		Callable<ActionResult<Wo>> callable = () -> {
+			ActionResult<Wo> result1 = new ActionResult<>();
+			Wo wo1 = new Wo();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				WorkCompleted workCompleted = emc.find(id, WorkCompleted.class);
+				if (null == workCompleted) {
+					throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 				}
-				result.setData(wo);
-				return result;
+				if (BooleanUtils.isTrue(workCompleted.getMerged())) {
+					throw new ExceptionModifyMerged(workCompleted.getId());
+				}
+
+				JsonElement source = getData(business, workCompleted.getJob());
+				JsonElement merge = XGsonBuilder.merge(wi.getJsonElement(), source);
+
+				/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+				updateTitleSerial(business, workCompleted, merge);
+				updateData(business, workCompleted, merge);
+				/* updateTitleSerial 和 updateData 方法内进行了提交 */
+
+				wi.init(workCompleted, merge);
+				createDataRecord(business, wi);
+
+				wo1.setId(workCompleted.getId());
 			}
+			result1.setData(wo1);
+			return result1;
 		};
 
 		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 		result.setData(wo);
 		return result;
+	}
+
+	public static class Wi extends DataWi {
+
+		private static final long serialVersionUID = 2412698845557505026L;
 	}
 
 	public static class Wo extends WoId {

@@ -16,16 +16,17 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
+@Deprecated
 class ActionDeleteWithWorkPath2 extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkPath2.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2)
 			throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}, path0:{}, path1:{}, path2:{}.", effectivePerson::getDistinguishedName,
 				() -> id, () -> path0, () -> path1, () -> path2);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;

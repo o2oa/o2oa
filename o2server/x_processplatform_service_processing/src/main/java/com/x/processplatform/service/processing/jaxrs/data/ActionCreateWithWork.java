@@ -38,7 +38,6 @@ class ActionCreateWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
 			executorSeed = work.getJob();
-			work.copyTo(wi);
 		}
 
 		Callable<String> callable = () -> {
@@ -63,8 +62,10 @@ class ActionCreateWithWork extends BaseAction {
 				}
 				/* 标识数据已经被修改 */
 				work.setDataChanged(true);
-
 				emc.commit();
+
+				wi.init(work);
+				createDataRecord(business, wi);
 			}
 			return "";
 		};

@@ -16,6 +16,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
+@Deprecated
 class ActionDeleteWithWorkPath0 extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkPath0.class);
@@ -23,7 +24,7 @@ class ActionDeleteWithWorkPath0 extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}, path0:{}.", effectivePerson::getDistinguishedName, () -> id, () -> path0);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;

@@ -11,6 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionCreateWithWorkPath7 extends BaseCreateWithWorkPath {
@@ -25,11 +26,12 @@ class ActionCreateWithWorkPath7 extends BaseCreateWithWorkPath {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = this.checkWork(effectivePerson, id);
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.postQuery(
 						x_processplatform_service_processing.class, Applications.joinQueryUri("data", "work",
-								work.getId(), path0, path1, path2, path3, path4, path5, path6, path7),
-						jsonElement, work.getJob())
+								work.getId(), joinPath(path0, path1, path2, path3, path4, path5, path6, path7)),
+						dataWi, work.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;

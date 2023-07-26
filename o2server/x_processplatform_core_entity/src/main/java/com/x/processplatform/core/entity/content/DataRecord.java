@@ -6,6 +6,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.query.core.entity.Item;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
@@ -20,13 +21,25 @@ import java.util.List;
 @Table(name = PersistenceProperties.Content.DataRecord.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.DataRecord.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }),
+		@UniqueConstraint(name = PersistenceProperties.Content.DataRecord.table + JpaObject.IndexNameMiddle
+		+ DataRecord.job_FIELDNAME, columnNames = { JpaObject.ColumnNamePrefix + DataRecord.job_FIELDNAME,
+				JpaObject.ColumnNamePrefix + DataRecord.path_FIELDNAME }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class DataRecord extends SliceJpaObject {
 
 	private static final long serialVersionUID = 4161117889391157310L;
 
 	private static final String TABLE = PersistenceProperties.Content.DataRecord.table;
+
+	public DataRecord(){}
+
+	public DataRecord(String application, String process, String job, String path){
+		this.application = application;
+		this.process = process;
+		this.job = job;
+		this.path = path;
+	}
 
 	@Override
 	public String getId() {
@@ -91,7 +104,6 @@ public class DataRecord extends SliceJpaObject {
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工单标识")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String job;
 

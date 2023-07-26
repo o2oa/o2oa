@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.data;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
@@ -12,6 +13,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.core.entity.content.Data.DataWork;
 import com.x.processplatform.core.entity.element.DataTraceFieldTypeEnum;
@@ -21,14 +23,18 @@ import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+
+	protected static final String PATH_SPLIT = "\\.";
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;
@@ -490,16 +496,60 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return list;
 	}
 
-	protected void createDataRecord(Business business, DataWi wi) throws Exception{
+	/**
+	 * 记录业务数据变更信息
+	 * @param business
+	 * @param wi
+	 * @throws Exception
+	 */
+	void createDataRecord(Business business, DataWi wi) throws Exception{
+		EntityManagerContainer emc = business.entityManagerContainer();
+		int length_300B = 300;
 		Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
 		if (null != process && DataTraceFieldTypeEnum.toTrace(process.getDataTraceFieldType())) {
-			Map<String, JsonElement> itemMap = new HashMap<>();
+			emc.beginTransaction(DataRecord.class);
 			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
-				if(process.getDataTraceFieldList().contains(fromEntry.getKey())){
-					itemMap.put(fromEntry.getKey(), fromEntry.getValue());
+				String val = wi.getData() == null ? fromEntry.getValue().toString() : XGsonBuilder.extract(wi.getData(), fromEntry.getKey()).toString();
+				if(isKeyRecord(process, fromEntry.getKey()) && StringTools.utf8Length(val) < length_300B){
+					DataRecordItem item = new DataRecordItem(wi.getOperator(), wi.getActivity(), wi.getActivityName());
+					if(BooleanUtils.isTrue(wi.getDeleted())){
+						item.setOldData(val);
+					}else {
+						item.setNewData(val);
+					}
+					DataRecord dataRecord = business.dataRecord().getRecord(wi.getJob(), fromEntry.getKey());
+					if(dataRecord != null){
+						List<DataRecordItem> itemList = dataRecord.getDataRecordItemList();
+						if(!BooleanUtils.isTrue(wi.getDeleted())){
+							String oldData = itemList.get(itemList.size()-1).getNewData();
+							if(item.getNewData().equals(oldData)){
+								continue;
+							}
+							item.setOldData(oldData);
+						}
+						itemList.add(item);
+						dataRecord.setDataRecordItemList(itemList);
+					}else{
+						dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
+						List<DataRecordItem> itemList = new ArrayList<>();
+						itemList.add(item);
+						dataRecord.setDataRecordItemList(itemList);
+						emc.persist(dataRecord);
+					}
 				}
 			}
+			emc.commit();
 		}
+	}
+
+	private boolean isKeyRecord(Process process, String key){
+		if(process.getDataTraceFieldType().equals(DataTraceFieldTypeEnum.ALL.getValue())){
+			return true;
+		}
+		if(ListTools.isNotEmpty(process.getDataTraceFieldList())){
+			return process.getDataTraceFieldList().stream().filter(o -> Pattern.compile(o).matcher(key).find()).findFirst().isPresent();
+		}
+		return false;
 	}
 
 }

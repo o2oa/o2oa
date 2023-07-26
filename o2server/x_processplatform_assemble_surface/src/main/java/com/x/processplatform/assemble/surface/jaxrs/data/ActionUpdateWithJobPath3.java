@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -26,9 +27,9 @@ class ActionUpdateWithJobPath3 extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, String path0, String path1, String path2,
 			String path3, JsonElement jsonElement) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
-		
+
 		LOGGER.debug("{} access.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -38,9 +39,10 @@ class ActionUpdateWithJobPath3 extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 		}
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "job", job, path0, path1, path2, path3), jsonElement, job)
+						Applications.joinQueryUri("data", "job", job, joinPath(path0, path1, path2, path3)), dataWi, job)
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;
@@ -52,5 +54,5 @@ class ActionUpdateWithJobPath3 extends BaseAction {
 		private static final long serialVersionUID = -2942168134266650614L;
 
 	}
- 
+
 }

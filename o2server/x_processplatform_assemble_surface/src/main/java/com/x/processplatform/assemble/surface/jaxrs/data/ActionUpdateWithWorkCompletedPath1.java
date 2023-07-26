@@ -11,6 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionUpdateWithWorkCompletedPath1 extends BaseUpdateWithWorkCompletedPath {
@@ -24,10 +25,11 @@ class ActionUpdateWithWorkCompletedPath1 extends BaseUpdateWithWorkCompletedPath
 
 		ActionResult<Wo> result = new ActionResult<>();
 		WorkCompleted workCompleted = this.getWorkCompleted(effectivePerson, id);
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId(), path0, path1),
-						jsonElement, workCompleted.getJob())
+						Applications.joinQueryUri("data", "workcompleted", workCompleted.getId(), joinPath(path0, path1)),
+						dataWi, workCompleted.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;
