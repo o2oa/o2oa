@@ -353,7 +353,7 @@
                     <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceDisabledInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType!=='custom' && $.dataTraceFieldType!=='all')?'checked':''} type="radio" value="none"/>{{$.lp.dataTraceDisabled}}</label>
                     <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='block'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceCustomInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.dataTraceCustom}}</label>
                     <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceAllInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='all')?'checked':''} type="radio" value="all"/>{{$.lp.dataTraceAll}}</label>
-                    <div id="text{$.id}dataTraceInfo" style="padding: 5px; color:#999999;">text{$.dataTraceFieldType='all' ? '{{$.lp.dataTraceDisabledInfo}}' : ($.dataTraceFieldType='custom' ? '{{$.lp.dataTraceCustomInfo}}' : '{{$.lp.dataTraceAllInfo}}')}</div>
+                    <div id="text{$.id}dataTraceInfo" style="padding: 5px; color:#999999;">text{$.dataTraceFieldType==='all' ? '{{$.lp.dataTraceDisabledInfo}}' : ($.dataTraceFieldType==='custom' ? '{{$.lp.dataTraceCustomInfo}}' : '{{$.lp.dataTraceAllInfo}}')}</div>
                 </td>
             </tr>
         </table>

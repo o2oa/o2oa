@@ -540,6 +540,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var fields = Object.keys(selectedContent.selectedFields);
         arrayList.clear();
         arrayList.loadContent(fields);
+        arrayList.fireEvent("change");
     },
     selectedForm: function(node, fieldContent, selectedContent){
         if (fieldContent.formNode){
