@@ -78,7 +78,7 @@ class ActionGetWithJobPath extends BaseAction {
 		private static final long serialVersionUID = -3887850760955249124L;
 
 		static WrapCopier<DataRecord, Wo> copier = WrapCopierFactory.wo(DataRecord.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+				JpaObject.FieldsInvisibleIncludeProperites);
 	}
 
 }

@@ -510,7 +510,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			emc.beginTransaction(DataRecord.class);
 			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
 				String val = wi.getData() == null ? fromEntry.getValue().toString() : XGsonBuilder.extract(wi.getData(), fromEntry.getKey()).toString();
-				if(isKeyRecord(process, fromEntry.getKey()) && StringTools.utf8Length(val) < length_300B){
+				if(isKeyRecord(process, fromEntry.getKey())){
+					if(StringTools.utf8Length(val) > length_300B){
+
+						continue;
+					}
 					DataRecordItem item = new DataRecordItem(wi.getOperator(), wi.getActivity(), wi.getActivityName());
 					if(BooleanUtils.isTrue(wi.getDeleted())){
 						item.setOldData(val);
