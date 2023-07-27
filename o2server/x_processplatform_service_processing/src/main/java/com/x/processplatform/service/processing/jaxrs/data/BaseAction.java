@@ -524,7 +524,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 						if(jsonElement == null || jsonElement.isJsonNull()){
 							continue;
 						}
-						String val = jsonElement.toString();
+						String val = jsonElement.isJsonPrimitive() ? jsonElement.getAsString() : jsonElement.toString();
 						if(StringTools.utf8Length(val) > orgLength){
 							String orgName = pickDistinguishedName(jsonElement);
 							if(StringUtils.isNotBlank(orgName)){
