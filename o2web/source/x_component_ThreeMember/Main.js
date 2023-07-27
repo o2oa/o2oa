@@ -223,7 +223,7 @@ MWF.xApplication.ThreeMember.Main = new Class({
         // if (this.setContentSizeFun) this.removeEvent("resize", this.setContentSizeFun);
     },
     goHome: function(){
-        window.location = "/";
+        window.location = o2.filterUrl( window.location.protocol + "//" + window.location.host );
     },
     loadLogView: function(){
         if(this.currentView)this.currentView.clear();
