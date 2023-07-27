@@ -40,6 +40,29 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.field = true;
         this.fieldModuleLoaded = false;
     },
+    _loadUserInterface: function(){
+        if ( this.isSectionMergeRead() ) { //区段合并显示
+            this._loadMergeReadNode();
+        }else{
+            if( this.isSectionMergeEdit() ){
+                this._loadMergeEditNode();
+            }else{
+                this._loadNode();
+            }
+            // if (this.json.compute === "show"){
+            //     this._setValue(this._computeValue());
+            // }else{
+            //     this._loadValue();
+            // }
+        }
+    },
+    loadVal: function(){
+        if (this.json.compute === "show"){
+            this._setValue(this._computeValue());
+        }else{
+            this._loadValue();
+        }
+    },
 	/**
 	 * @summary 重新加载组件。会执行postLoad事件。
 	 * @example
@@ -53,7 +76,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
 		}
 		this._beforeReloaded();
 		this._loadUserInterface();
-		this._loadStyles();
+        this._loadStyles();
 		this._afterLoaded();
 		this._afterReloaded();
 		this.fireEvent("postLoad");
@@ -71,29 +94,45 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+        this.loadVal();
         //new Element("select").inject(this.node);
     },
     _loadMergeReadContentNode: function( contentNode, data ){
 	    this.mergeRead = true;
         contentNode.setStyles({ "overflow": "hidden"});
 		var textList = this.getTextListByValue( data.data );
-        textList.each(function(text, i){
-            //var text = "";
-            //if (typeOf(v)==="object"){
-            //    text = v.text || v.title || v.subject  || v.name;
-            //}else{
-            //    text = v.toString();
-            //}
-            if (i<data.data.length-1) text += this.json.splitShow;
-            new Element("div", {"styles": {
-                    "float": "left",
-                    "margin-right": "5px"
-                },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
-        }.bind(this));
+
+        if( typeOf(textList.then) === "function" ){
+            Promise.resolve(textList).then(function (tList) {
+                this.__setValueRead( data.data, tList, contentNode );
+            }.bind(this))
+        }else{
+            this.__setValueRead( data.data, textList, contentNode );
+        }
+        // textList.each(function(text, i){
+        //     if (i<data.data.length-1) text += this.json.splitShow;
+        //     new Element("div", {"styles": {
+        //             "float": "left",
+        //             "margin-right": "5px"
+        //         },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
+        // }.bind(this));
     },
     _loadNodeEdit: function(){
+        var options = this.getOptions();
+        if( typeOf(options.then) === "function" ){
+            Promise.resolve(options).then(function (opt) {
+                this.__loadNodeEdit(opt);
+                this.loadVal();
+                this._loadStyles();
+            }.bind(this))
+        }else{
+            this.__loadNodeEdit(options);
+            this.loadVal();
+        }
+    },
+    __loadNodeEdit: function(opt){
+	    debugger;
         this.node.empty();
-
         var select;
         MWF.require("MWF.widget.Combox", function(){
             select = this.combox = new MWF.widget.Combox({
@@ -104,7 +143,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
                 "splitStr": this.json.splitStr || ",\\s*|;\\s*|，\\s*|；\\s*",
                 "splitShow": this.json.splitShow || ", ",
                 "focusList": this.json.showOptions === "focus",
-                "list": this.getOptions(),
+                "list": opt,
                 "onCommitInput": function(item){
                     this.fireEvent("commitInput");
                 }.bind(this),
@@ -182,6 +221,8 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      * })
      */
     getOptions: function(async, refresh){
+        debugger;
+        if( this.optionsCache && !refresh )return this.optionsCache;
         this.optionsCache = null;
         var opt = this._getOptions(async, refresh);
         if( (opt && typeOf(opt.then) === "function") ){
@@ -267,18 +308,19 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         if (typeOf(value) !=="array") value = [value];
 
 		if (this.combox){
-            this.combox.clear();
             var textData = this.getTextData( value );
-            if( typeOf(textData) === "object" ){
-                Promise.resolve(textData.then).then(function (tData) {
+            if( typeOf(textData.then) === "function" ){
+                Promise.resolve(textData).then(function (tData) {
+                    this.combox.clear();
                     this.__setValueEdit( tData );
                 }.bind(this))
             }else{
+                this.combox.clear();
                 this.__setValueEdit( textData )
             }
 		}else{
 		    var textList = this.getTextListByValue( value );
-            if( typeOf(textList.then) === "object" ){
+            if( typeOf(textList.then) === "function" ){
                 Promise.resolve(textList).then(function (tList) {
                     this.__setValueRead( value, tList );
                 }.bind(this))
@@ -298,8 +340,8 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.combox.addNewValues(comboxValues);
         this.fieldModuleLoaded = true;
     },
-    __setValueRead: function(value, textList){
-        var contentNode = new Element("div", {
+    __setValueRead: function(value, textList, contentNode){
+        if(!contentNode)contentNode = new Element("div", {
             "styles": { "overflow": "hidden"}
         }).inject(this.node);
         textList.each(function(text, i){
@@ -323,7 +365,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      */
     resetOption: function( callback ){
         if (this.combox){
-            var list = this.getOptions();
+            var list = this.getOptions(true, true);
             if( typeOf(list.then) === "function" ){
                 Promise.resolve(list).then(function (array) {
                     this.combox.setOptions({"list": array});
@@ -367,6 +409,28 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
     _beforeReloaded: function(){
 	    if( this.combox )this.combox.clear();
         this.combox = null;
+    },
+    /**
+     * @summary 获取选中项的text。
+     * @return {Array|Promise} 返回选中项的text
+     * @example
+     * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+     * @example
+     * //如果选项是异步的，比如数据字典、视图、查询视图
+     * var p = this.form.get('fieldId').getText(); //获取选中项Promise
+     * Promise.resolve(p).then(function(text){
+     *     //text 为选选中项的文本
+     * })
+     */
+    getText: function(){
+        var d = this.getTextData();
+        if( typeOf(d.then) === "function" ){
+            return d.then(function( d1 ){
+                return d1.text;
+            });
+        }else{
+            return d.text;
+        }
     },
     /**
      * @summary 获取选中的值和文本.
