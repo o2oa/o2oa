@@ -104,9 +104,9 @@ o2.widget.JavascriptEditor = new Class({
                 window.setTimeout(this.setMonacoLayout.bind(this), 500);
         }
 
-	    if (this.editor && this.editor.getDomNode()){
-
-        }
+	    // if (this.editor && this.editor.getDomNode()){
+        //
+        // }
     },
     loadMonaco: function(callback){
         if (o2.editorData.javascriptEditor){
