@@ -49,7 +49,7 @@ class ActionUpdateWithJobPath extends BaseAction {
 					updateData(business, works.get(0), wi.getJsonElement(), paths);
 
 					wi.init(works.get(0));
-					wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+					wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
 					createDataRecord(business, wi);
 				}else{
 					List<WorkCompleted> workCompletedList = emc.listEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
@@ -57,7 +57,7 @@ class ActionUpdateWithJobPath extends BaseAction {
 						updateData(business, workCompletedList.get(0), wi.getJsonElement(), paths);
 
 						wi.init(workCompletedList.get(0));
-						wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+						wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
 						createDataRecord(business, wi);
 					}
 				}

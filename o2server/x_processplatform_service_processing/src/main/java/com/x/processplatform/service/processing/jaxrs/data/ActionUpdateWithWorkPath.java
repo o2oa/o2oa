@@ -52,7 +52,7 @@ class ActionUpdateWithWorkPath extends BaseAction {
 				/* updateTitleSerial 和 updateData 方法内进行了提交 */
 
 				wi.init(work);
-				wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+				wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
 				createDataRecord(business, wi);
 
 				wo.setId(work.getId());

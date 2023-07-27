@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
@@ -47,6 +48,7 @@ class ActionListWithJob extends BaseAction {
 			List<Wo> wos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				wos = emc.fetchEqual(DataRecord.class, Wo.copier, DataRecord.job_FIELDNAME, flag);
+				SortTools.desc(wos, DataRecord.updateTime_FIELDNAME);
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}

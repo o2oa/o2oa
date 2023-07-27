@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -46,19 +47,18 @@ class ActionDeleteWithWorkPath extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
+				wi.init(work);
 				String[] paths = path.split(PATH_SPLIT);
 				if(paths.length == 1){
 					wi.setDeleted(true);
-					wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+					wi.setJsonElement(getDataWithPath(business, work.getJob(), paths[0]));
 				}
 
 				wo.setId(work.getId());
 				deleteData(business, work, paths);
 
-
-				wi.init(work);
 				if(paths.length > 1){
-					wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+					wi.setJsonElement(getDataWithPath(business, work.getJob(), paths[0]));
 				}
 				createDataRecord(business, wi);
 			}
