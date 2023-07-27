@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import javax.print.DocFlavor;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -42,6 +44,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		jsonElement = converter.assemble(list, paths.length);
 		return jsonElement;
+	}
+
+	JsonElement getDataWithPath(Business business, String job, String path) throws Exception {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.add(path, getData(business, job, path));
+		return jsonObject;
 	}
 
 	// 将data中的Title 和 serial 字段同步到work中
@@ -502,44 +510,87 @@ abstract class BaseAction extends StandardJaxrsAction {
 	 * @param wi
 	 * @throws Exception
 	 */
-	void createDataRecord(Business business, DataWi wi) throws Exception{
+	void createDataRecord(Business business, DataWi wi){
 		EntityManagerContainer emc = business.entityManagerContainer();
-		int length_300B = 300;
-		Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
-		if (null != process && DataTraceFieldTypeEnum.toTrace(process.getDataTraceFieldType())) {
-			emc.beginTransaction(DataRecord.class);
-			for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
-				String val = wi.getData() == null ? fromEntry.getValue().toString() : XGsonBuilder.extract(wi.getData(), fromEntry.getKey()).toString();
-				if(isKeyRecord(process, fromEntry.getKey()) && StringTools.utf8Length(val) < length_300B){
-					DataRecordItem item = new DataRecordItem(wi.getOperator(), wi.getActivity(), wi.getActivityName());
-					if(BooleanUtils.isTrue(wi.getDeleted())){
-						item.setOldData(val);
-					}else {
-						item.setNewData(val);
-					}
-					DataRecord dataRecord = business.dataRecord().getRecord(wi.getJob(), fromEntry.getKey());
-					if(dataRecord != null){
-						List<DataRecordItem> itemList = dataRecord.getDataRecordItemList();
-						if(!BooleanUtils.isTrue(wi.getDeleted())){
-							String oldData = itemList.get(itemList.size()-1).getNewData();
-							if(item.getNewData().equals(oldData)){
+		int orgLength = 150;
+		int maxLength = 300;
+		try {
+			Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
+			if (null != process && wi.getJsonElement() != null && DataTraceFieldTypeEnum.toTrace(process.getDataTraceFieldType())) {
+				emc.beginTransaction(DataRecord.class);
+				for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
+					if(isKeyRecord(process, fromEntry.getKey())){
+						JsonElement jsonElement = wi.getData() == null ? fromEntry.getValue() : XGsonBuilder.extract(wi.getData(), fromEntry.getKey());
+						if(jsonElement == null || jsonElement.isJsonNull()){
+							continue;
+						}
+						String val = jsonElement.isJsonPrimitive() ? jsonElement.getAsString() : jsonElement.toString();
+						if(StringTools.utf8Length(val) > orgLength){
+							String orgName = pickDistinguishedName(jsonElement);
+							if(StringUtils.isNotBlank(orgName)){
+								val = orgName;
+							}else if(StringTools.utf8Length(val) > maxLength) {
 								continue;
 							}
-							item.setOldData(oldData);
 						}
-						itemList.add(item);
-						dataRecord.setDataRecordItemList(itemList);
-					}else{
-						dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
-						List<DataRecordItem> itemList = new ArrayList<>();
-						itemList.add(item);
-						dataRecord.setDataRecordItemList(itemList);
-						emc.persist(dataRecord);
+						DataRecordItem item = new DataRecordItem(wi.getOperator(), wi.getActivity(), wi.getActivityName());
+						if(BooleanUtils.isTrue(wi.getDeleted())){
+							item.setOldData(val);
+						}else {
+							item.setNewData(val);
+						}
+						DataRecord dataRecord = business.dataRecord().getRecord(wi.getJob(), fromEntry.getKey());
+						if(dataRecord != null){
+							List<DataRecordItem> itemList = dataRecord.getDataRecordItemList();
+							if(!BooleanUtils.isTrue(wi.getDeleted())){
+								String oldData = itemList.get(itemList.size()-1).getNewData();
+								if(item.getNewData().equals(oldData)){
+									continue;
+								}
+								item.setOldData(oldData);
+							}
+							itemList.add(item);
+							dataRecord.setDataRecordItemList(itemList);
+							dataRecord.setUpdateNum(itemList.size());
+						}else{
+							dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
+							List<DataRecordItem> itemList = new ArrayList<>();
+							itemList.add(item);
+							dataRecord.setDataRecordItemList(itemList);
+							dataRecord.setUpdateNum(itemList.size());
+							emc.persist(dataRecord);
+						}
 					}
 				}
+				emc.commit();
 			}
-			emc.commit();
+		} catch (Exception e) {
+			LOGGER.warn("保存job:{}的业务数据数据变更记录：{}, 异常：{}", wi.getJob(), wi.getJsonElement(), e.getMessage());
+			LOGGER.error(e);
 		}
+	}
+
+	private String pickDistinguishedName(JsonElement jsonElement){
+		if(jsonElement.isJsonObject()){
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if(jsonObject.has(JpaObject.DISTINGUISHEDNAME)){
+				return jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString();
+			}
+		}else if(jsonElement.isJsonArray()){
+			List<String> list = new ArrayList<>();
+			jsonElement.getAsJsonArray().forEach(je -> {
+				if(je.isJsonObject()){
+					JsonObject jsonObject = je.getAsJsonObject();
+					if(jsonObject.has(JpaObject.DISTINGUISHEDNAME)){
+						list.add(jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString());
+					}
+				}
+			});
+			if(list.size() > 0){
+				return new Gson().toJson(list);
+			}
+		}
+		return null;
 	}
 
 	private boolean isKeyRecord(Process process, String key){

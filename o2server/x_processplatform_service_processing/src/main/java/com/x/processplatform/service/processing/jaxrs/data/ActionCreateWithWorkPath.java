@@ -66,7 +66,7 @@ class ActionCreateWithWorkPath extends BaseAction {
 				createData(business, work, wi.getJsonElement(), paths);
 
 				wi.init(work);
-				wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+				wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
 				createDataRecord(business, wi);
 
 				Wo wo = new Wo();

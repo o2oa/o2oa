@@ -12,6 +12,7 @@ MWF.xApplication.process.Application.LP = {
 	"draft" : "草稿",
 	"attachment" : "附件",
 	"businessData" : "业务数据",
+	"dataRecord" : "业务数据变更记录",
 	"work" : "流转中工作",
 	"workcompleted" : "已完成工作",
 	"workdelete" : "已删除工作",
@@ -96,8 +97,19 @@ MWF.xApplication.process.Application.LP = {
 	"resetActionFor" : "转交给",
 	"readProcess" : "待阅处理",
 	"editAction" : "维护",
-	"unnamed" : "无标题"
+	"unnamed" : "无标题",
 
+	"fieldName" : "字段名",
+	"op" : "操作",
+	"dataRecordView" : {
 
+		"record" : "变更记录",
+		"title" : "查看",
+		"person" : "变更人",
+		"time" : "时间",
+		"active" : "环节",
+		"old" : "变更前",
+		"new" : "变更后"
+	}
 
 };

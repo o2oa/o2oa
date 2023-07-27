@@ -57,7 +57,7 @@ class ActionUpdateWithWorkCompletedPath extends BaseAction {
 				updateData(business, workCompleted, wi.getJsonElement(), paths);
 
 				wi.init(workCompleted);
-				wi.setJsonElement(getData(business, wi.getJob(), paths[0]));
+				wi.setJsonElement(getDataWithPath(business, wi.getJob(), paths[0]));
 				createDataRecord(business, wi);
 			}
 			return "";

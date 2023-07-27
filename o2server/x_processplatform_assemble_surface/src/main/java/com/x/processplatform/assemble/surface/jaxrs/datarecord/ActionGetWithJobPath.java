@@ -11,7 +11,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
@@ -25,13 +24,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-class ActionListWithJob extends BaseAction {
+class ActionGetWithJobPath extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithJobPath.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
-		ActionResult<List<Wo>> result = new ActionResult<>();
-		CompletableFuture<List<Wo>> listFuture = this.listFuture(job);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, String path) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		CompletableFuture<Wo> listFuture = this.listFuture(job, path);
 		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, job);
 
 		if (BooleanUtils.isFalse(
@@ -43,16 +42,19 @@ class ActionListWithJob extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<List<Wo>> listFuture(String flag) {
+	private CompletableFuture<Wo> listFuture(String flag, String path) {
 		return CompletableFuture.supplyAsync(() -> {
-			List<Wo> wos = new ArrayList<>();
+			Wo wo = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				wos = emc.fetchEqual(DataRecord.class, Wo.copier, DataRecord.job_FIELDNAME, flag);
-				SortTools.desc(wos, DataRecord.updateTime_FIELDNAME);
+				DataRecord dataRecord = emc.firstEqualAndEqual(DataRecord.class, DataRecord.job_FIELDNAME, flag,
+						DataRecord.path_FIELDNAME, path);
+				if(dataRecord != null) {
+					wo = Wo.copier.copy(dataRecord);
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-			return wos;
+			return wo;
 		}, ThisApplication.threadPool());
 	}
 
@@ -70,14 +72,13 @@ class ActionListWithJob extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.datarecord.ActionListWithJob$Wo")
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.datarecord.ActionGetWithJobPath$Wo")
 	public static class Wo extends DataRecord {
 
 		private static final long serialVersionUID = -3887850760955249124L;
 
-		static WrapCopier<DataRecord, Wo> copier = WrapCopierFactory.wo(DataRecord.class, Wo.class,
-				singularAttributeField(DataRecord.class, true, true),
-				null);
+		static WrapCopier<DataRecord, Wo> copier = WrapCopierFactory.wo(DataRecord.class, Wo.class, null,
+				JpaObject.FieldsInvisibleIncludeProperites);
 	}
 
 }

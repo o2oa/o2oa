@@ -114,6 +114,12 @@ public class DataRecord extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String path;
 
+	public static final String updateNum_FIELDNAME = "updateNum";
+	@FieldDescribe("变更次数.")
+	@Column(name = ColumnNamePrefix + updateNum_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer updateNum;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
@@ -159,4 +165,11 @@ public class DataRecord extends SliceJpaObject {
 		this.path = path;
 	}
 
+	public Integer getUpdateNum() {
+		return updateNum;
+	}
+
+	public void setUpdateNum(Integer updateNum) {
+		this.updateNum = updateNum;
+	}
 }

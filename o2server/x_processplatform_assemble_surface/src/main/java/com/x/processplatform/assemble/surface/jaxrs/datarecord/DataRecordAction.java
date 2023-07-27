@@ -56,4 +56,26 @@ public class DataRecordAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@Operation(summary = "根据任务标识和业务字段获取数据变更记录.", operationId = OPERATIONID_PREFIX + "getWithJobPath", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionGetWithJobPath.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据任务标识和业务字段获取数据变更记录.", action = ActionGetWithJobPath.class)
+	@GET
+	@Path("get/job/{job}/path/{path}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithJobPath(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("工作的job") @PathParam("job") String job,
+							@JaxrsParameterDescribe("字段path") @PathParam("path") String path) {
+		ActionResult<ActionGetWithJobPath.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithJobPath().execute(effectivePerson, job, path);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
