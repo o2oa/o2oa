@@ -2671,6 +2671,8 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		this.recordArea = new Element("div",{"style" : "height:550px;overflow:auto" }).inject(this.tabNode);
 		this.businessDataArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
 
+		this.dataRecordArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
+
 		MWF.require("MWF.widget.Tab", function(){
 
 			this.tabs = new MWF.widget.Tab(this.tabNode, {"style": "attendance"});
@@ -2715,6 +2717,11 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 			this.businessDataPage = this.tabs.addTab(this.businessDataArea,this.lp.businessData, false);
 			this.businessDataPage.addEvent("show",function(){
 				if(!this.initBusinessData) this.loadBusinessData();
+			}.bind(this));
+
+			this.dataRecordPage = this.tabs.addTab(this.dataRecordArea,this.lp.dataRecord, false);
+			this.dataRecordPage.addEvent("show",function(){
+				if(!this.initDataRecord) this.loadDataRecord();
 			}.bind(this));
 
 			this.tabs.pages[0].showTab();
@@ -3382,6 +3389,119 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 
 		}.bind(this));
 	},
+
+	loadDataRecord : function (){
+		this.app.action.DataRecordAction.listWithJob(this.data.job, function (json) {
+			this.dataRecordList = json.data;
+			this._loadDataRecord();
+			this.initAttachement = true;
+		}.bind(this), null, false);
+	},
+	_loadDataRecord : function (){
+		this.dataRecordArea.empty();
+		this.dataRecordContentNode = new Element("div").inject(this.dataRecordArea)
+		var dataRecordTableNode = new Element("table.table",{
+			"border" : 0,
+			"cellpadding" : 5,
+			"cellspacing" : 0
+		}).inject(this.dataRecordContentNode);
+
+		var dataRecordTableTheadNode = new Element("thead").inject(dataRecordTableNode);
+		var dataRecordTableTbodyNode = new Element("tbody").inject(dataRecordTableNode);
+		var dataRecordTableTheadTrNode = new Element("tr").inject(dataRecordTableTheadNode);
+		Array.each([this.lp.fieldName,"变更次数",this.lp.op], function (text) {
+			new Element("th", {"text": text}).inject(dataRecordTableTheadTrNode);
+		});
+
+
+		this.dataRecordList.each(function (dataRecord) {
+
+			if(dataRecord.updateNum && dataRecord.updateNum>1){
+				var trNode = new Element("tr").inject(dataRecordTableTbodyNode);
+				trNode.store("data", dataRecord);
+
+				Array.each([dataRecord.path,dataRecord.updateNum], function (text, index) {
+					new Element("td", {
+						text: text
+					}).inject(trNode);
+				}.bind(this));
+
+				var tdOpNode = new Element("td").inject(trNode);
+				var viewButton = new Element("button", {"text": this.lp.dataRecordView.title, "class": "button"}).inject(tdOpNode);
+				viewButton.addEvent("click", function (e) {
+
+					this._loadDataRecordDetail(dataRecord.path);
+
+				}.bind(this));
+			}
+
+		}.bind(this));
+
+	},
+	_loadDataRecordDetail : function (path){
+		_self = this;
+		var lp = this.lp;
+		var recordNode = new Element("div");
+
+		var dataRecordContentNode = new Element("div").inject(recordNode)
+		var dataRecordTableNode = new Element("table.table",{
+			"border" : 0,
+			"cellpadding" : 5,
+			"cellspacing" : 0
+		}).inject(dataRecordContentNode);
+
+		var dataRecordTableTheadNode = new Element("thead").inject(dataRecordTableNode);
+		var dataRecordTableTbodyNode = new Element("tbody").inject(dataRecordTableNode);
+		var dataRecordTableTheadTrNode = new Element("tr").inject(dataRecordTableTheadNode);
+		Array.each([lp.dataRecordView.person,lp.dataRecordView.time,lp.dataRecordView.active,lp.dataRecordView.old,lp.dataRecordView.new], function (text) {
+			new Element("th", {"text": text}).inject(dataRecordTableTheadTrNode);
+		});
+
+		this.app.action.DataRecordAction.getWithJobPath(this.data.job, path,function (json) {
+			var dataRecordList = json.data;
+
+			dataRecordList.dataRecordItemList.each(function (item) {
+				item.personName = item.person.split("@")[0];
+
+				var trNode = new Element("tr").inject(dataRecordTableTbodyNode);
+
+				Array.each([item.personName,item.updateDate,item.activityName,item.oldData,item.newData], function (text, index) {
+					new Element("td", {
+						text: text
+					}).inject(trNode);
+				}.bind(this));
+
+			}.bind(this));
+
+
+			var viewDlg = o2.DL.open({
+				"title": path + " : " + this.lp.dataRecordView.record,
+				"width": "800px",
+				"height": "500",
+				"mask": true,
+				"content": recordNode,
+				"container": this.app.content,
+				"positionNode": this.app.content,
+				"onQueryClose": function () {
+					recordNode.destroy();
+				}.bind(this),
+				"buttonList": [
+
+					{
+						"text": lp.close,
+						"action": function () {
+							viewDlg.close();
+						}.bind(this)
+					}
+				],
+				"onPostShow": function () {
+					viewDlg.reCenter();
+				}.bind(this)
+			});
+		}.bind(this),null,false);
+
+	},
+
 	loadAttachement : function (){
 		this.app.action.AttachmentAction.listWithJob(this.data.job, function (json) {
 			this.attachmentList = json.data;

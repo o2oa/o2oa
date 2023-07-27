@@ -12,6 +12,7 @@ MWF.xApplication.process.Application.LP = {
     "draft" : "Draft",
     "attachment" : "Attachment",
     "businessData" : "Business Data",
+    "dataRecord" : "Data Record",
     "work" : "Working in Circulation",
     "workcompleted" : "Work Completed",
     "workdelete" : "Work deleted",
@@ -98,6 +99,17 @@ MWF.xApplication.process.Application.LP = {
     "readProcess" : "Pending read processing",
     "editAction" : "Maintenance",
 
-    "unnamed" : "No Title"
+    "unnamed" : "No Title",
+    "fieldName" : "Field ",
+    "op" : "operation",
+    "dataRecordView" : {
 
+        "record" : "Record",
+        "title" : "View",
+        "person" : "Person",
+        "time" : "Time",
+        "active" : "Activity",
+        "old" : "Old",
+        "new" : "New"
+    }
 };
