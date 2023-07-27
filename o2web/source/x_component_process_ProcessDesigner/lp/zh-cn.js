@@ -303,6 +303,11 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataTraceCustomInfo": "在下面的设置中定义要跟踪的业务字段",
 		"dataTraceAllInfo": "跟踪所有业务数据字段（不包括数据表格、数据模板和长文本（Lob）类型的数据）",
 		"dataTraceFieldNames": "字段名称",
+		"dataTraceFieldNamesSelect": "选择表单字段",
+		"selectForm": "表单",
+		"selectField": "数据字段",
+		"selectedField": "已选字段",
+
 
 
 		"allowReroute": "是否允许调度",

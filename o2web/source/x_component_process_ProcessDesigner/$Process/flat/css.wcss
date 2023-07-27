@@ -997,5 +997,40 @@
         "margin-top": "4px",
         "margin-right": "5px",
         "cursor": "pointer"
-    }
+    },
+	"selectDataTraceFieldArea": {
+		"padding": "10px",
+		"display": "flex",
+		"height": "100%",
+		"justify-content": "space-between"
+	},
+	"selectDataTraceArea": {
+		"width": "32%",
+		"display": "flex",
+		"flex-direction": "column",
+		"border": "1px solid #cccccc"
+	},
+	"selectDataTraceAreaTitle": {
+		"text-align": "center",
+		"font-weight": "bold",
+		"height": "26px",
+		"line-height": "26px",
+		"background-color": "#f3f3f3",
+		"border-bottom": "1px solid #cccccc"
+	},
+	"selectDataTraceAreaContent": {
+		"height": "calc(100% - 26px)",
+		"overflow": "auto"
+	},
+	"selectFormItemNode": {
+		"padding": "5px",
+		"cursor": "pointer",
+		"transition": "background-color 0.3s"
+	},
+	"selectFieldItemNode": {
+		"padding": "5px",
+		"cursor": "pointer",
+		"transition": "background-color 0.3s",
+		"display": "flex"
+	}
 }

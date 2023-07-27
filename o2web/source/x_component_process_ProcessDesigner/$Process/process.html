@@ -293,7 +293,7 @@
                     </select></td>
                 </tr>
             </table>
-            <div></div>
+            <div class="mainColor_bg"></div>
             <div></div>
         </div>
         <hr/>
@@ -350,17 +350,15 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.dataTraceFields}}:</td>
                 <td class="editTableValue">
-                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; var divs = this.parentElement.getElements('div'); divs.setStyle('display', 'none'); divs[0].setStyle('display', 'block');" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType!=='custom' && $.dataTraceFieldType!=='all')?'checked':''} type="radio" value="none"/>{{$.lp.dataTraceDisabled}}</label>
-                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='block'; var divs = this.parentElement.getElements('div'); divs.setStyle('display', 'none'); divs[1].setStyle('display', 'block');" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.dataTraceCustom}}</label>
-                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; var divs = this.parentElement.getElements('div'); divs.setStyle('display', 'none'); divs[2].setStyle('display', 'block');" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='all')?'checked':''} type="radio" value="all"/>{{$.lp.dataTraceAll}}</label>
-                    <div style="padding: 5px; color:#999999; display: text{($.dataTraceFieldType!=='custom' && $.dataTraceFieldType!=='all')?'block':'none'} ">{{$.lp.dataTraceDisabledInfo}}</div>
-                    <div style="padding: 5px; color:#999999; display: text{($.dataTraceFieldType==='custom')?'block':'none'}">{{$.lp.dataTraceCustomInfo}}</div>
-                    <div style="padding: 5px; color:#999999; display: text{($.dataTraceFieldType==='all')?'block':'none'} ">{{$.lp.dataTraceAllInfo}}</div>
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceDisabledInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType!=='custom' && $.dataTraceFieldType!=='all')?'checked':''} type="radio" value="none"/>{{$.lp.dataTraceDisabled}}</label>
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='block'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceCustomInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.dataTraceCustom}}</label>
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceAllInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='all')?'checked':''} type="radio" value="all"/>{{$.lp.dataTraceAll}}</label>
+                    <div id="text{$.id}dataTraceInfo" style="padding: 5px; color:#999999;">text{$.dataTraceFieldType='all' ? '{{$.lp.dataTraceDisabledInfo}}' : ($.dataTraceFieldType='custom' ? '{{$.lp.dataTraceCustomInfo}}' : '{{$.lp.dataTraceAllInfo}}')}</div>
                 </td>
             </tr>
         </table>
 
-        <div id="text{$.id}dataTraceCustomArea">
+        <div id="text{$.id}dataTraceCustomArea" style="display: text{$.dataTraceFieldType==='custom' ? 'block' : 'none'}">
 <!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--                <tr>-->
 <!--                    <td class="editTableTitle">{{$.lp.dataTraceFieldNames}}:</td>-->
@@ -370,8 +368,11 @@
 <!--                    </td>-->
 <!--                </tr>-->
 <!--            </table>-->
-
+            <div class="MWFDataTraceFieldSelect mainColor_bg" style="width: 80%; margin: 10px auto; height: 24px; line-height: 24px; border-radius: 15px; text-align: center; cursor: pointer;">{{$.lp.dataTraceFieldNamesSelect}}</div>
             <div class="MWFArraylist" name="dataTraceFieldList" title="{{$.lp.dataTraceFieldNames}}"></div>
+<!--            <div id="text{$.id}dataTraceSelectArea" style="display: none">-->
+<!--                -->
+<!--            </div>-->
         </div>
     </div>
 
