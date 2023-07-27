@@ -201,9 +201,7 @@ public class DingTalkEncryptor {
 
 	private static void setFinalStaticValue(Class<?> srcClazz, String fieldName, Object newValue) throws Exception {
 		Field field = srcClazz.getDeclaredField(fieldName);
-		field.setAccessible(true);
 		Field modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
 		modifiersField.setInt(field, field.getModifiers() & -17);
 		field.set((Object) null, newValue);
 	}
@@ -211,7 +209,6 @@ public class DingTalkEncryptor {
 	private static <T> T getFieldValue(Class<?> srcClazz, String fieldName, Object owner, Class<T> dstClazz)
 			throws Exception {
 		Field field = srcClazz.getDeclaredField(fieldName);
-		field.setAccessible(true);
 		return dstClazz.cast(field.get(owner));
 	}
 
