@@ -88,7 +88,8 @@
                     if (layout.isQywx()) {
                         action.qywxOauthServer(function (json) {
                             var qywxConfig = json.data || {};
-                            var url = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect?state=STATE";
+                            var qrConnectAddress = qywxConfig.qrConnectAddress || "https://open.work.weixin.qq.com";
+                            var url = qrConnectAddress + "/wwopen/sso/qrConnect?state=STATE";
                             var corpId = qywxConfig.corpId;
                             if (corpId) {
                                 url += "&appid=" + corpId;
