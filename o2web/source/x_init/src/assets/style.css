@@ -50,7 +50,7 @@ body {
 }
 
 header {
-    height: 4rem;
+    height: 6rem;
     padding: 1rem 3rem;
     /*border-bottom: 1px solid #999999;*/
     display: flex;
@@ -64,7 +64,7 @@ header>img{
 }
 
 .logo{
-    height: 2rem;
+    height: 3.5rem;
 }
 main{
     height: calc(100% - 14rem);

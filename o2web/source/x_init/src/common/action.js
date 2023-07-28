@@ -65,7 +65,7 @@ const restore_cancel = '/jaxrs/restore/upload/cancel'; //get 上传zip格式数�
 
 async function get(url, noerror) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {cache: 'no-cache'});
         if (res.ok) {
             const json = await res.json();
             return json.data;

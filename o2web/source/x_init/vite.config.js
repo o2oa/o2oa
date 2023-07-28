@@ -22,5 +22,6 @@ export default defineConfig({
         },
         host: true,
         sourcemap: true
-    }
+    },
+    base: './'
 })

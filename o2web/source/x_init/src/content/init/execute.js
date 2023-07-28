@@ -18,7 +18,7 @@ const template = `
         
         <div oo-if="$.status==='success'" class="info">服务器初始化执行成功，即将启动O2OA(翱途)服务器！</div>
         <div oo-if="$.status==='started'" class="info">服务器初始化执行成功，O2OA(翱途)服务器已启动！</div>
-        <div oo-if="$.status==='started'" class="info"><oo-button style="margin-left:0" @click="window.location='/'">进入系统登录页面</oo-button></div>
+        <div oo-if="$.status==='started'" class="info"><oo-button style="margin-left:0" @click="gotoIndex">进入系统登录页面</oo-button></div>
         
         <div oo-if="$.status==='failure' || $.status==='stop'" class="icon ooicon-cancel"></div>
         <div oo-if="$.status==='failure'" class="info">服务器初始化执行失败 </div>
@@ -142,5 +142,8 @@ export default component({
         this.bind.failureMessage = json.failureMessage || '';
         this.bind.messages = json.messages || [];
         this.checkCount++;
+    },
+    gotoIndex(){
+        window.location=`/?${(new Date()).getTime()}`;
     }
 });
