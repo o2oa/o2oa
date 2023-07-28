@@ -10,6 +10,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDeleteWithWorkPath2 extends BaseDeleteWithWorkPath {
@@ -23,9 +24,10 @@ class ActionDeleteWithWorkPath2 extends BaseDeleteWithWorkPath {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = checkWork(effectivePerson, id);
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), null);
 		Wo wo = ThisApplication.context().applications()
-				.deleteQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "work", work.getId(), path0, path1, path2), work.getJob())
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("data", "work", work.getId(), joinPath(path0, path1, path2), "delete"), dataWi, work.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;

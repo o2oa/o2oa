@@ -54,7 +54,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
         this.table = this.tableArea.getElement("table").setStyles(this.css.projectionTable);
         this.tableArea.getElements("th").setStyles(this.css.projectionTableTitle);
 
-        this.runAction = new Element("div", {"styles": this.css.actionNode, "text": MWF.xApplication.process.ProcessDesigner.LP.projectionRunActionNode}).inject(this.node);
+        this.runAction = new Element("div.mainColor_bg", {"styles": this.css.actionNode, "text": MWF.xApplication.process.ProcessDesigner.LP.projectionRunActionNode}).inject(this.node);
 
         this.loadProjectionList();
         // //this.loadProjectionCreate();

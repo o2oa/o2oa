@@ -337,4 +337,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return em.createQuery(cq).getResultList();
 	}
 
+	String joinPath(String... paths){
+		return StringUtils.join(paths, ".");
+	}
+
 }

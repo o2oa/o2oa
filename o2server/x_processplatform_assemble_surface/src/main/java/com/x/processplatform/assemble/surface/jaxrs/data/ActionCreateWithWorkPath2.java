@@ -11,22 +11,24 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionCreateWithWorkPath2 extends BaseCreateWithWorkPath {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWorkPath2.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			JsonElement jsonElement) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = this.checkWork(effectivePerson, id);
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("data", "work", work.getId(), path0, path1, path2), jsonElement,
+						Applications.joinQueryUri("data", "work", work.getId(), joinPath(path0, path1, path2)), dataWi,
 						work.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
@@ -40,5 +42,5 @@ class ActionCreateWithWorkPath2 extends BaseCreateWithWorkPath {
 
 	}
 
- 
+
 }

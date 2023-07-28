@@ -2,18 +2,7 @@ package com.x.processplatform.service.processing;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
-import com.x.processplatform.service.processing.factory.AttachmentFactory;
-import com.x.processplatform.service.processing.factory.DocumentVersionFactory;
-import com.x.processplatform.service.processing.factory.ElementFactory;
-import com.x.processplatform.service.processing.factory.ItemFactory;
-import com.x.processplatform.service.processing.factory.ReadCompletedFactory;
-import com.x.processplatform.service.processing.factory.ReadFactory;
-import com.x.processplatform.service.processing.factory.ReviewFactory;
-import com.x.processplatform.service.processing.factory.TaskCompletedFactory;
-import com.x.processplatform.service.processing.factory.TaskFactory;
-import com.x.processplatform.service.processing.factory.WorkCompletedFactory;
-import com.x.processplatform.service.processing.factory.WorkFactory;
-import com.x.processplatform.service.processing.factory.WorkLogFactory;
+import com.x.processplatform.service.processing.factory.*;
 
 public class Business {
 
@@ -174,6 +163,15 @@ public class Business {
 			this.element = new ElementFactory(this);
 		}
 		return element;
+	}
+
+	private DataRecordFactory dataRecord;
+
+	public DataRecordFactory dataRecord() throws Exception {
+		if (null == this.dataRecord) {
+			this.dataRecord = new DataRecordFactory(this);
+		}
+		return dataRecord;
 	}
 
 	private Organization organization;

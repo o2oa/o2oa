@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -142,6 +143,34 @@ public class Process extends SliceJpaObject {
 		this.getProperties().setUpdateTableList(updateTableList);
 	}
 
+	public static final String dataTraceFieldType_FIELDNAME = "dataTraceFieldType";
+	@FieldDescribe("需要记录数据变化的字段配置方式：all|所有、custom|依据dataTraceFieldList配置的字段.")
+	@Transient
+	private String dataTraceFieldType;
+
+	public String getDataTraceFieldType() {
+		return dataTraceFieldType;
+	}
+
+	public void setDataTraceFieldType(String dataTraceFieldType) {
+		this.dataTraceFieldType = dataTraceFieldType;
+		this.getProperties().setDataTraceFieldType(dataTraceFieldType);
+	}
+
+	public static final String dataTraceFieldList_FIELDNAME = "dataTraceFieldList";
+	@FieldDescribe("需要记录数据变化的字段.")
+	@Transient
+	private List<String> dataTraceFieldList;
+
+	public List<String> getDataTraceFieldList() {
+		return dataTraceFieldList;
+	}
+
+	public void setDataTraceFieldList(List<String> dataTraceFieldList) {
+		this.dataTraceFieldList = dataTraceFieldList;
+		this.getProperties().setDataTraceFieldList(dataTraceFieldList);
+	}
+
 	public Boolean getProjectionFully() {
 		return BooleanUtils.isTrue(this.projectionFully);
 	}
@@ -225,6 +254,8 @@ public class Process extends SliceJpaObject {
 			this.targetAssignDataScriptText = this.getProperties().getTargetAssignDataScriptText();
 			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
+			this.dataTraceFieldType = this.getProperties().getDataTraceFieldType();
+			this.dataTraceFieldList = this.getProperties().getDataTraceFieldList();
 		}
 	}
 

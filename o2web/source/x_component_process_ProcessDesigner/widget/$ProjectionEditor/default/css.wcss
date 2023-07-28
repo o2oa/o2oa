@@ -32,8 +32,6 @@
         "height": "24px",
         "line-height": "24px",
         "border-radius": "15px",
-        "color": "#ffffff",
-        "background-color": "#4a90e2",
         "text-align": "center",
         "cursor": "pointer"
     },

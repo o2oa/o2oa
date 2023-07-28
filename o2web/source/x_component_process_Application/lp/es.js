@@ -12,6 +12,7 @@ MWF.xApplication.process.Application.LP = {
 	"draft" : "Borrador",
 	"attachment" : "Adjunto",
 	"businessData" : "Datos negocio",
+	"dataRecord" : "Registro de Datos",
 	"work" : "Trabajo en progreso",
 	"workcompleted" : "Trabajos completados",
 	"workdelete" : "Trabajos eliminados",
@@ -66,7 +67,7 @@ MWF.xApplication.process.Application.LP = {
 
 	"firstPage": "Primera",
 	"lastPage": "Última",
-	
+
 	"reroute": "Reencaminar",
 	"rollback": "Retroceder",
 	"noItem": "No se encontraron datos con los criterios de búsqueda actuales",
@@ -98,6 +99,17 @@ MWF.xApplication.process.Application.LP = {
 	"editAction": "Mantenimiento",
 	"unnamed": "Sin título",
 
+	"fieldName" : "Feild ",
+	"op" : "Actividades",
+	"dataRecordView" : {
 
+		"record" : "registro",
+		"title" : "ver",
+		"person" : "persona",
+		"time" : "tiempo",
+		"active" : "activo",
+		"old" : "viejo",
+		"new" : "nuevo"
+	}
 
 };

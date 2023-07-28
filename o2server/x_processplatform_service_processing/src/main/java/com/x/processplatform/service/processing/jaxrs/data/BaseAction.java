@@ -1,15 +1,10 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
@@ -19,25 +14,29 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Data;
+import com.x.base.core.project.tools.StringTools;
+import com.x.processplatform.core.entity.content.*;
 import com.x.processplatform.core.entity.content.Data.DataWork;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.DataTraceFieldTypeEnum;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import javax.print.DocFlavor;
+import java.util.*;
+import java.util.regex.Pattern;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+
+	protected static final String PATH_SPLIT = "\\.";
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;
@@ -45,6 +44,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		jsonElement = converter.assemble(list, paths.length);
 		return jsonElement;
+	}
+
+	JsonElement getDataWithPath(Business business, String job, String path) throws Exception {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.add(path, getData(business, job, path));
+		return jsonObject;
 	}
 
 	// 将data中的Title 和 serial 字段同步到work中
@@ -497,6 +502,105 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}.getType());
 		}
 		return list;
+	}
+
+	/**
+	 * 记录业务数据变更信息
+	 * @param business
+	 * @param wi
+	 * @throws Exception
+	 */
+	void createDataRecord(Business business, DataWi wi){
+		EntityManagerContainer emc = business.entityManagerContainer();
+		int orgLength = 150;
+		int maxLength = 300;
+		try {
+			Process process = business.entityManagerContainer().find(wi.getProcess(), Process.class);
+			if (null != process && wi.getJsonElement() != null && DataTraceFieldTypeEnum.toTrace(process.getDataTraceFieldType())) {
+				emc.beginTransaction(DataRecord.class);
+				for (Map.Entry<String, JsonElement> fromEntry : wi.getJsonElement().getAsJsonObject().entrySet()) {
+					if(isKeyRecord(process, fromEntry.getKey())){
+						JsonElement jsonElement = wi.getData() == null ? fromEntry.getValue() : XGsonBuilder.extract(wi.getData(), fromEntry.getKey());
+						if(jsonElement == null || jsonElement.isJsonNull()){
+							continue;
+						}
+						String val = jsonElement.isJsonPrimitive() ? jsonElement.getAsString() : jsonElement.toString();
+						if(StringTools.utf8Length(val) > orgLength){
+							String orgName = pickDistinguishedName(jsonElement);
+							if(StringUtils.isNotBlank(orgName)){
+								val = orgName;
+							}else if(StringTools.utf8Length(val) > maxLength) {
+								continue;
+							}
+						}
+						DataRecordItem item = new DataRecordItem(wi.getOperator(), wi.getActivity(), wi.getActivityName());
+						if(BooleanUtils.isTrue(wi.getDeleted())){
+							item.setOldData(val);
+						}else {
+							item.setNewData(val);
+						}
+						DataRecord dataRecord = business.dataRecord().getRecord(wi.getJob(), fromEntry.getKey());
+						if(dataRecord != null){
+							List<DataRecordItem> itemList = dataRecord.getDataRecordItemList();
+							if(!BooleanUtils.isTrue(wi.getDeleted())){
+								String oldData = itemList.get(itemList.size()-1).getNewData();
+								if(item.getNewData().equals(oldData)){
+									continue;
+								}
+								item.setOldData(oldData);
+							}
+							itemList.add(item);
+							dataRecord.setDataRecordItemList(itemList);
+							dataRecord.setUpdateNum(itemList.size());
+						}else{
+							dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
+							List<DataRecordItem> itemList = new ArrayList<>();
+							itemList.add(item);
+							dataRecord.setDataRecordItemList(itemList);
+							dataRecord.setUpdateNum(itemList.size());
+							emc.persist(dataRecord);
+						}
+					}
+				}
+				emc.commit();
+			}
+		} catch (Exception e) {
+			LOGGER.warn("保存job:{}的业务数据数据变更记录：{}, 异常：{}", wi.getJob(), wi.getJsonElement(), e.getMessage());
+			LOGGER.error(e);
+		}
+	}
+
+	private String pickDistinguishedName(JsonElement jsonElement){
+		if(jsonElement.isJsonObject()){
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if(jsonObject.has(JpaObject.DISTINGUISHEDNAME)){
+				return jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString();
+			}
+		}else if(jsonElement.isJsonArray()){
+			List<String> list = new ArrayList<>();
+			jsonElement.getAsJsonArray().forEach(je -> {
+				if(je.isJsonObject()){
+					JsonObject jsonObject = je.getAsJsonObject();
+					if(jsonObject.has(JpaObject.DISTINGUISHEDNAME)){
+						list.add(jsonObject.get(JpaObject.DISTINGUISHEDNAME).getAsString());
+					}
+				}
+			});
+			if(list.size() > 0){
+				return new Gson().toJson(list);
+			}
+		}
+		return null;
+	}
+
+	private boolean isKeyRecord(Process process, String key){
+		if(process.getDataTraceFieldType().equals(DataTraceFieldTypeEnum.ALL.getValue())){
+			return true;
+		}
+		if(ListTools.isNotEmpty(process.getDataTraceFieldList())){
+			return process.getDataTraceFieldList().stream().filter(o -> Pattern.compile(o).matcher(key).find()).findFirst().isPresent();
+		}
+		return false;
 	}
 
 }
