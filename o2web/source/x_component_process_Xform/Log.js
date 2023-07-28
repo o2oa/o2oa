@@ -31,12 +31,12 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         /**
          * 加载每行流程信息以后触发，可以通过this.event获得下列信息：
          * <pre><code>
-         {
-            "data" : {}, //当前行流程信息
-            "node" : logTaskNode, //当前节点
-            "log" : object, //指向流程记录
-            "type" : "task"  //"task"表示待办，"taskCompleted"表示已办
-        }
+         * {
+         *    "data" : {}, //当前行流程信息
+         *    "node" : logTaskNode, //当前节点
+         *    "log" : object, //指向流程记录
+         *    "type" : "task"  //"task"表示待办，"taskCompleted"表示已办
+         * }
          </code></pre>
          * @event MWF.xApplication.process.Xform.Log#postLoadLine
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
