@@ -25,6 +25,10 @@ public class Qiyeweixin extends ConfigObject {
 	private String forceSyncCron;
 	@FieldDescribe("api服务器地址")
 	private String apiAddress;
+	@FieldDescribe("oauth2请求地址")
+	private String oauth2Address;
+	@FieldDescribe("qrConnect请求地址")
+	private String qrConnectAddress;
 	@FieldDescribe("企业微信corpId")
 	private String corpId;
 	@FieldDescribe("企业微信同步通讯录Secret")
@@ -61,6 +65,8 @@ public class Qiyeweixin extends ConfigObject {
 	public static final String default_syncCron = "10 0/10 * * * ?";
 	public static final String default_forceSyncCron = "10 45 8,12 * * ?";
 	public static final String default_apiAddress = "https://qyapi.weixin.qq.com";
+	public static final String default_oAuth2Address = "https://open.weixin.qq.com";
+	public static final String default_qrConnectAddress = "https://open.work.weixin.qq.com";
 	public static final String default_corpId = "";
 	public static final String default_corpSecret = "";
 	public static final String default_syncSecret = "";
@@ -76,6 +82,8 @@ public class Qiyeweixin extends ConfigObject {
 		this.syncCron = default_syncCron;
 		this.forceSyncCron = default_forceSyncCron;
 		this.apiAddress = default_apiAddress;
+		this.oauth2Address = default_oAuth2Address;
+		this.qrConnectAddress = default_qrConnectAddress;
 		this.corpId = default_corpId;
 		this.syncSecret = default_syncSecret;
 		this.corpSecret = default_corpSecret;
@@ -226,6 +234,24 @@ public class Qiyeweixin extends ConfigObject {
 	public void setApiAddress(String oapiAddress) {
 		this.apiAddress = oapiAddress;
 	}
+	
+
+	public String getOauth2Address() {
+		return oauth2Address;
+	}
+
+	public void setOauth2Address(String oauth2Address) {
+		this.oauth2Address = oauth2Address;
+	}
+
+	public String getQrConnectAddress() {
+		return qrConnectAddress;
+	}
+
+	public void setQrConnectAddress(String qrConnectAddress) {
+		this.qrConnectAddress = qrConnectAddress;
+	}
+
 
 	public static class CorpAccessTokenResp extends GsonPropertyObject {
 
