@@ -19,6 +19,11 @@ public class AppStyle extends ConfigObject {
 
 	public static final String INDEXTYPE_DEFAULT = "default";
 	public static final String INDEXTYPE_PORTAL = "portal";
+	public static final String INDEX_PAGE_HOME = "home";
+	public static final String INDEX_PAGE_IM = "im";
+	public static final String INDEX_PAGE_CONTACT = "contact";
+	public static final String INDEX_PAGE_APP = "app";
+	public static final String INDEX_PAGE_SETTINGS = "settings";
 
 	public AppStyle() {
 
@@ -123,6 +128,9 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("移动端简易模式")
 	private Boolean simpleMode;
 
+	@FieldDescribe("移动端页面")
+	private TreeSet<String> appIndexPages;
+
 	@FieldDescribe(("移动App消息列表中是否显示系统通知"))
 	private Boolean systemMessageSwitch;
 	@FieldDescribe(("移动App系统通知是否可点击打开"))
@@ -189,6 +197,24 @@ public class AppStyle extends ConfigObject {
 	public void setContactPermissionView(String contactPermissionView) {
 		this.contactPermissionView = contactPermissionView;
 	}
+	
+
+	public TreeSet<String> getAppIndexPages() {
+		if (null == this.appIndexPages || this.appIndexPages.isEmpty()) {
+			this.appIndexPages = new TreeSet<String>();
+			this.appIndexPages.add(INDEX_PAGE_HOME);
+			this.appIndexPages.add(INDEX_PAGE_IM);
+			this.appIndexPages.add(INDEX_PAGE_CONTACT);
+			this.appIndexPages.add(INDEX_PAGE_APP);
+			this.appIndexPages.add(INDEX_PAGE_SETTINGS);
+		}
+		return this.appIndexPages;
+	}
+
+	public void setAppIndexPages(TreeSet<String> appIndexPages) {
+		this.appIndexPages = appIndexPages;
+	}
+
 
 	public static class Image extends GsonPropertyObject implements Comparable<Image> {
 

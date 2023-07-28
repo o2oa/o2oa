@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
@@ -38,9 +39,10 @@ class ActionUpdateWithJobPath7 extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 		}
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("data", "job", job, path0, path1, path2, path3, path4, path5, path6, path7),
-				jsonElement, job).getData(Wo.class);
+				Applications.joinQueryUri("data", "job", job, joinPath(path0, path1, path2, path3, path4, path5, path6, path7)),
+				dataWi, job).getData(Wo.class);
 		result.setData(wo);
 		return result;
 	}

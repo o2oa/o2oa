@@ -291,6 +291,19 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"mappingTableEnabled": "Al final del procesamiento, guarde los datos en una tabla de datos",
 		"queryTable": "Tabla de datos",
 
+		"datos": "Datos",
+		"dataTrace": "Rastreo de datos comerciales",
+		"dataTraceInfo": "Habilitar el seguimiento de datos comerciales puede registrar cada cambio del campo comercial especificado, y puede configurar para ver los registros de cambios históricos de datos comerciales en el diseño del formulario",
+		"dataTraceInfo2": "",
+		"dataTraceFields": "Campos de rastreo",
+		"dataTraceDisabled": "Ninguno",
+		"dataTraceCustom": "Personalizado",
+		"dataTraceAll": "Todos",
+		"dataTraceDisabledInfo": "No rastrear ningún campo de datos comerciales",
+		"dataTraceCustomInfo": "Defina los campos comerciales a rastrear en las siguientes configuraciones",
+		"dataTraceAllInfo": "Rastrear todos los campos de datos comerciales (excluyendo tablas de datos, plantillas de datos y datos de tipo texto largo (Lob))",
+		"dataTraceFieldNames": "Nombres de campo",
+
 		"allowReroute": "Permitir redireccionamiento",
 		"allowRerouteTo": "Permitir redireccionamiento a esta actividad",
 

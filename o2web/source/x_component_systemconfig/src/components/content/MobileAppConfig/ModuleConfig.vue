@@ -11,9 +11,15 @@
           @changeConfig="saveMobileIndex"
       ></BaseItem>
 
-      <div class="item_title">{{lp._appConfig.simpleMode}}</div>
-      <div class="item_info" v-html="lp._appConfig.simpleModeInfo"></div>
-      <BaseBoolean v-model:value="appStyle.simpleMode" @change="(value)=>{appStyle.simpleMode = value; saveAppStyle(appStyle)}"></BaseBoolean>
+      <div class="item_title">{{lp._appConfig.appIndexPage}}</div>
+      <div class="item_info" v-html="lp._appConfig.appIndexPageInfo"></div>
+      <div class="item_input_area">
+        <el-checkbox v-model="appIndexPagesCheckValues.home" disabled>{{lp._appConfig.appIndexPageHome}}</el-checkbox><br/>
+        <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.im">{{lp._appConfig.appIndexPageIM}}</el-checkbox><br/>
+        <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.contact">{{lp._appConfig.appIndexPageContact}}</el-checkbox><br/>
+        <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.app">{{lp._appConfig.appIndexPageApp}}</el-checkbox><br/>
+        <el-checkbox v-model="appIndexPagesCheckValues.settings" disabled>{{lp._appConfig.appIndexPageSettings}}</el-checkbox>
+      </div>
 
       <div class="item_title">{{lp._appConfig.systemMessageSwitch}}</div>
       <div class="item_info" v-html="lp._appConfig.systemMessageSwitchInfo"></div>
@@ -62,7 +68,29 @@ const portalList = ref({});
 const mobileIndex = computed(()=>{
   return (appStyle.value && appStyle.value.indexType==='portal') ? appStyle.value.indexPortal : 'default';
 });
-
+const appIndexPagesCheckValues = ref({
+  home: true,
+  im: true,
+  contact: true,
+  app: true,
+  settings: true
+});
+const saveAppIndexPagesCheckValues = ()=> {
+  let pages = []
+  pages.push('home');
+  if (appIndexPagesCheckValues.value.im) {
+    pages.push('im');
+  }
+  if (appIndexPagesCheckValues.value.contact) {
+    pages.push('contact');
+  }
+  if (appIndexPagesCheckValues.value.app) {
+    pages.push('app');
+  }
+  pages.push('settings');
+  appStyle.value.appIndexPages = pages;
+  saveAppStyle(appStyle.value);
+}
 
 const saveMobileIndex = (v)=>{
   if (v==='default'){
@@ -86,6 +114,11 @@ const load = ()=>{
       appExitAlert: data.appExitAlert,
       contactPermissionView: data.contactPermissionView
     }
+    if (data.appIndexPages && data.appIndexPages.length > 0) {
+      appIndexPagesCheckValues.value.im = data.appIndexPages.indexOf("im") > -1;
+      appIndexPagesCheckValues.value.contact = data.appIndexPages.indexOf("contact") > -1;
+      appIndexPagesCheckValues.value.app = data.appIndexPages.indexOf("app") > -1;
+    }
   });
   loadPortals().then((data)=>{
     const o = {'default': lp.default};
@@ -100,4 +133,10 @@ load();
 </script>
 
 <style scoped>
+.item_input_area{
+  padding: 0 10px;
+  font-size: 14px;
+  margin-right: 20px;
+  margin-left: 80px;
+}
 </style>

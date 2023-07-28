@@ -1132,6 +1132,14 @@ o2.xApplication.systemconfig.LP = {
         "simpleMode": "移动端简易模式",
         "simpleModeInfo": "移动端开启简易模式后只显示首页和设置页面",
 
+        "appIndexPage": "移动端页面配置",
+        "appIndexPageInfo": "移动端几个主页面配置是否显示",
+        "appIndexPageHome": "首页",
+        "appIndexPageIM": "消息",
+        "appIndexPageContact": "通讯录",
+        "appIndexPageApp": "应用",
+        "appIndexPageSettings": "设置",
+
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
         "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",

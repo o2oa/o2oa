@@ -17,6 +17,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
 
+@Deprecated
 class ActionUpdateWithJobPath1 extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithJobPath1.class);

@@ -95,7 +95,11 @@ o2.widget.Arraylist = new Class({
 			this.items.push(newItem);
 		}
 	},
-	
+	clear: function(){
+		while (this.items.length){
+			this.deleteItem(this.items[0]);
+		}
+	},
 	deleteItem: function(item){
 		this.notAddItem = false;
 		this.items.erase(item);

@@ -293,7 +293,7 @@
                     </select></td>
                 </tr>
             </table>
-            <div></div>
+            <div class="mainColor_bg"></div>
             <div></div>
         </div>
         <hr/>
@@ -342,28 +342,41 @@
 
     </div>
 
-    <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">
-<!--        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">-->
-<!--            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeBeginScript || $.beforeBeginScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>-->
-<!--            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeBegin}}</div>-->
-<!--        </div>-->
+    <div title="{{$.lp.data}}" class="MWFTab" data-o2-advanced="yes">
+        <div style="margin: 0; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center; border-bottom: 1px solid #cccccc">{{$.lp.dataTrace}}</div>
+        <div style="padding: 5px; color:#999999; border-bottom: 1px solid #cccccc">{{$.lp.dataTraceInfo}}</div>
 
-<!--        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.dataTraceFields}}:</td>
+                <td class="editTableValue">
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceDisabledInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType!=='custom' && $.dataTraceFieldType!=='all')?'checked':''} type="radio" value="none"/>{{$.lp.dataTraceDisabled}}</label>
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='block'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceCustomInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='custom')?'checked':''} type="radio" value="custom"/>{{$.lp.dataTraceCustom}}</label>
+                    <label><input onclick="$('text{$.id}dataTraceCustomArea').style.display='none'; $('text{$.id}dataTraceInfo').innerText='{{$.lp.dataTraceAllInfo}}'" class="editTableRadio" name="dataTraceFieldType" text{($.dataTraceFieldType==='all')?'checked':''} type="radio" value="all"/>{{$.lp.dataTraceAll}}</label>
+                    <div id="text{$.id}dataTraceInfo" style="padding: 5px; color:#999999;">text{$.dataTraceFieldType==='all' ? '{{$.lp.dataTraceDisabledInfo}}' : ($.dataTraceFieldType==='custom' ? '{{$.lp.dataTraceCustomInfo}}' : '{{$.lp.dataTraceAllInfo}}')}</div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.id}dataTraceCustomArea" style="display: text{$.dataTraceFieldType==='custom' ? 'block' : 'none'}">
 <!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
 <!--                <tr>-->
-<!--                    <td class="editTableTitle">{{$.lp.beforeBegin}}:</td>-->
+<!--                    <td class="editTableTitle">{{$.lp.dataTraceFieldNames}}:</td>-->
 <!--                    <td class="editTableValue">-->
-<!--                        <div class="MWFScript" name="beforeBeginScript"></div>-->
+<!--                        <textarea style="min-height: 80px" name="dataTraceFieldList" class="editTableTextarea">text{$.dataTraceFieldList}</textarea>-->
+<!--                        <div style="padding: 5px; color:#999999;">{{$.lp.dataTraceFieldNamesInfo}}</div>-->
 <!--                    </td>-->
 <!--                </tr>-->
 <!--            </table>-->
-<!--            <div class="MWFScriptText" name="beforeBeginScriptText"></div><hr />-->
-<!--        </div>-->
-<!--        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">-->
-<!--            <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>-->
-<!--            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo1}}</div>-->
-<!--        </div>-->
+            <div class="MWFDataTraceFieldSelect mainColor_bg" style="width: 80%; margin: 10px auto; height: 24px; line-height: 24px; border-radius: 15px; text-align: center; cursor: pointer;">{{$.lp.dataTraceFieldNamesSelect}}</div>
+            <div class="MWFArraylist" name="dataTraceFieldList" title="{{$.lp.dataTraceFieldNames}}"></div>
+<!--            <div id="text{$.id}dataTraceSelectArea" style="display: none">-->
+<!--                -->
+<!--            </div>-->
+        </div>
+    </div>
 
+    <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterBeginScript || $.afterBeginScriptText) ? 'event_code' : 'event'}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterBegin}}</div>
@@ -515,11 +528,6 @@
 
         </div>
 
-<!--        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">-->
-<!--            <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>-->
-<!--            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo3}}</div>-->
-<!--        </div>-->
-
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterExecuteScript || $.afterExecuteScriptText) ? 'event_code' : 'event'}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterExecute}}</div>
@@ -603,27 +611,6 @@
             <div style="height: 26px; background: url(../x_component_process_ProcessDesigner/$Process/down16.png) no-repeat center center;"></div>
         </div>
 
-<!--        <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">-->
-<!--            <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.beforeEndScript || $.beforeEndScriptText) ? "event_code" : "event"}.png) no-repeat center center;"></div>-->
-<!--            <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.beforeEnd}}</div>-->
-<!--        </div>-->
-
-<!--        <div style="display: none; overflow:hidden; border-left: 10px solid #EEEEEE; border-bottom: 10px solid #EEEEEE;">-->
-<!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--                <tr>-->
-<!--                    <td class="editTableTitle">{{$.lp.beforeEnd}}:</td>-->
-<!--                    <td class="editTableValue">-->
-<!--                        <div class="MWFScript" name="beforeEndScript"></div>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            </table>-->
-<!--            <div class="MWFScriptText" name="beforeEndScriptText"></div><hr />-->
-<!--        </div>-->
-<!--        <div style="line-height: 20px; height: 46px; border-bottom: 1px solid #CCCCCC; border-top: 1px solid #CCCCCC; background-color:#f6f6f6;">-->
-<!--            <div style="height: 46px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/down.png) no-repeat center center;"></div>-->
-<!--            <div style="margin-left: 20px; padding: 3px 10px; text-align: center; color: #666666;">{{$.lp.eventInfo5}}</div>-->
-<!--        </div>-->
-
         <div onclick="var node = this.getNext(); if (node.getStyle('display')=='none'){node.setStyle('display', 'block');}else{node.setStyle('display', 'none');}" style="cursor: pointer; line-height: 28px; height: 30px; font-weight: bold; background-color: #EEEEEE;">
             <div style="height: 30px; width: 30px; float: left; background: url(../x_component_process_ProcessDesigner/$Process/text{($.afterEndScript || $.afterEndScriptText) ? 'event_code' : 'event'}.png) no-repeat center center;"></div>
             <div style="margin-left: 20px; padding: 0px 5px;">{{$.lp.afterEnd}}</div>
@@ -639,44 +626,5 @@
             </table>
             <div class="MWFScriptText" name="afterEndScriptText"></div><hr />
         </div>
-
-
-
-<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--            <tr>-->
-<!--                <td class="editTableTitle">流程启动前:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <div class="MWFScript" name="beforeBeginScript"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <div class="MWFScriptText" name="beforeBeginScriptText"></div><hr />-->
-<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--            <tr>-->
-<!--                <td class="editTableTitle">流程启动后:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <div class="MWFScript" name="afterBeginScript"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <div class="MWFScriptText" name="afterBeginScriptText"></div><hr />-->
-<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--            <tr>-->
-<!--                <td class="editTableTitle">流程结束前:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <div class="MWFScript" name="beforeEndScript"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <div class="MWFScriptText" name="beforeEndScriptText"></div><hr />-->
-<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--            <tr>-->
-<!--                <td class="editTableTitle">流程结束后:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <div class="MWFScript" name="afterEndScript"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <div class="MWFScriptText" name="afterEndScriptText"></div><hr />-->
     </div>
 </div>

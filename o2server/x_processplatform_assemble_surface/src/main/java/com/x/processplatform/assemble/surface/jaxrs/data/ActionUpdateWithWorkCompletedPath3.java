@@ -11,22 +11,24 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionUpdateWithWorkCompletedPath3 extends BaseUpdateWithWorkCompletedPath {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPath3.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			String path3, JsonElement jsonElement) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		WorkCompleted workCompleted = this.getWorkCompleted(effectivePerson, id);
+		DataWi dataWi = new DataWi(effectivePerson.getDistinguishedName(), jsonElement);
 		Wo wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("data", "workcompleted",
-						workCompleted.getId(), path0, path1, path2, path3), jsonElement, workCompleted.getJob())
+						workCompleted.getId(), joinPath(path0, path1, path2, path3)), dataWi, workCompleted.getJob())
 				.getData(Wo.class);
 		result.setData(wo);
 		return result;
@@ -38,5 +40,5 @@ class ActionUpdateWithWorkCompletedPath3 extends BaseUpdateWithWorkCompletedPath
 		private static final long serialVersionUID = -5896218243221588463L;
 
 	}
- 
+
 }

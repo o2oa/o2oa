@@ -1123,6 +1123,14 @@ o2.xApplication.systemconfig.LP = {
         "simpleMode": "Modo simple para acceso móvil",
         "simpleModeInfo": "Cuando se activa el modo simple para acceso móvil, solo se muestra la página principal y la página de configuración en el móvil.",
 
+        "appIndexPage": "Configuración de la página móvil",
+        "appIndexPageInfo": "Si se muestran varias configuraciones de página principal en el lado móvil",
+        "appIndexPageHome": "Página de inicio",
+        "appIndexPageIM": "Noticias",
+        "appIndexPageContact": "Libreta de direcciones",
+        "appIndexPageApp": "Aplicación",
+        "appIndexPageSettings": "Configuración",
+
         "systemMessageSwitch": "Mostrar notificaciones del sistema",
         "systemMessageSwitchInfo": "Indica si las notificaciones del sistema se muestran en la lista de mensajes de la app móvil.",
         "systemMessageCanClickInfo": "Indica si las notificaciones del sistema pueden ser abiertas haciendo clic sobre ellas en la app móvil.",
