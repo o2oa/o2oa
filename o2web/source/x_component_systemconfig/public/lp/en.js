@@ -1133,6 +1133,14 @@ o2.xApplication.systemconfig.LP = {
 
         "simpleMode": "Easy Mode on Mobile",
         "simpleModeInfo": "After the simple mode is turned on on the mobile terminal, only the home page and the setting page are displayed.",
+        
+        "appIndexPage": "Mobile page configuration",
+        "appIndexPageInfo": "Is the configuration of several main pages on the mobile end displayed",
+        "appIndexPageHome": "Home",
+        "appIndexPageIM": "Message",
+        "appIndexPageContact": "Contact",
+        "appIndexPageApp": "App",
+        "appIndexPageSettings": "Setting",
 
         "systemMessageSwitch": "show system notifications",
         "systemMessageSwitchInfo": "Are system notifications displayed in the mobile app message list?",
