@@ -294,6 +294,10 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowReroute": "Allow Reroute",
 		"allowRerouteTo": "Allow Reroute to here",
 
+		"mergeLayerThreshold": "Number of Merge Layers",
+		"mergeLayerThreshold0": "Merge as many layers as possible",
+		"mergeLayerThreshold1": "Merge single layers",
+
 		"reader": "Reader",
 		"readerId": "Reader ID",
 		"duty": "Duty",

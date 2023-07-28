@@ -294,6 +294,10 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowReroute": "Permitir redireccionamiento",
 		"allowRerouteTo": "Permitir redireccionamiento a esta actividad",
 
+		"mergeLayerThreshold": "Número de capas de combinación",
+		"mergeLayerThreshold0": "Combina tantas capas como sea posible",
+		"mergeLayerThreshold1": "Combinar capas individuales",
+
 		"reader": "Persona que debe leer",
 		"readerId": "Identificación",
 		"duty": "Posición",

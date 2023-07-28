@@ -294,6 +294,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowReroute": "是否允许调度",
 		"allowRerouteTo": "允许调度到此活动",
 
+		"mergeLayerThreshold": "合并层数",
+		"mergeLayerThreshold0": "合并尽量多的层数",
+		"mergeLayerThreshold1": "合并单层",
+		"mergeLayerThresholdn": "合并{n}层",
+
+
 		"reader": "待阅人",
 		"readerId": "身份",
 		"duty": "职务",

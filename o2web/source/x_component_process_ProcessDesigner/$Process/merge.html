@@ -34,6 +34,18 @@
         </table>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
+                <td class="editTableTitle">{{$.lp.mergeLayerThreshold}}:</td>
+                <td class="editTableValue">
+                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{(!$.mergeLayerThreshold)?'checked':''} type="radio" value="0"/>{{$.lp.mergeLayerThreshold0}}</label>
+                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===1)?'checked':''} type="radio" value="1"/>{{$.lp.mergeLayerThreshold1}} </label>
+<!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===2)?'checked':''} type="radio" value="2"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '2')}} </label><br>-->
+<!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===3)?'checked':''} type="radio" value="3"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '3')}} </label><br>-->
+<!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===4)?'checked':''} type="radio" value="4"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '4')}} </label><br>-->
+<!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===5)?'checked':''} type="radio" value="5"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '5')}} </label>-->
+                </td>
+            </tr>
+
+            <tr>
                 <td class="editTableValue"  colspan="2"><b>{{$.lp.allowReroute}}: </b><input class="editTableRadio" name="allowReroute" text{($.allowReroute)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowReroute" text{(!$.allowReroute)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
