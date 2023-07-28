@@ -553,6 +553,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 							dataRecord.setDataRecordItemList(itemList);
 							dataRecord.setUpdateNum(itemList.size());
 						}else{
+							if(StringUtils.isBlank(item.getNewData())){
+								continue;
+							}
 							dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
 							List<DataRecordItem> itemList = new ArrayList<>();
 							itemList.add(item);
