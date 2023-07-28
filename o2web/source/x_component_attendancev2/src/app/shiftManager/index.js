@@ -3,11 +3,10 @@ import { lp, o2 } from "@o2oa/component";
 import { lpFormat } from "../../utils/common";
 import { shiftActionListByPaging, attendanceShiftAction } from "../../utils/actions";
 import oPager from '../../components/o-pager';
-import style from "./style.scope.css";
+
 import template from "./template.html";
 
 export default content({
-  style,
   template,
   autoUpdate: true,
   components: {oPager},

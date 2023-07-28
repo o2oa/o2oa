@@ -41,6 +41,7 @@ public class HttpToken {
 
 	private static final String COOKIE_PART_MIDDLE = "; path=/; domain=";
 	private static final String COOKIE_PART_HTTPONLY = "; HttpOnly";
+	private static final String COOKIE_PART_SECURE = "; Secure";
 
 	public EffectivePerson who(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
 		EffectivePerson effectivePerson = this.who(this.getToken(request), key, remoteAddress(request));
@@ -175,6 +176,7 @@ public class HttpToken {
 		if (!StringUtils.isEmpty(effectivePerson.getToken())) {
 			String cookie = Config.person().getTokenName() + "=" + effectivePerson.getToken() + COOKIE_PART_MIDDLE
 					+ this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieSecure()) ? COOKIE_PART_SECURE : "")
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? COOKIE_PART_HTTPONLY : "");
 			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(Config.person().getTokenName(), effectivePerson.getToken());
@@ -185,6 +187,7 @@ public class HttpToken {
 			String token) throws Exception {
 		if (!StringUtils.isEmpty(token)) {
 			String cookie = tokenName + "=" + token + COOKIE_PART_MIDDLE + this.domain(request)
+					+ (BooleanUtils.isTrue(Config.person().getTokenCookieSecure()) ? COOKIE_PART_SECURE : "")
 					+ (BooleanUtils.isTrue(Config.person().getTokenCookieHttpOnly()) ? COOKIE_PART_HTTPONLY : "");
 			response.setHeader(SET_COOKIE, cookie);
 			response.setHeader(tokenName, token);

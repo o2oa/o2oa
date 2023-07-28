@@ -3,12 +3,12 @@ import { lp, o2 } from "@o2oa/component";
 import { personalAction } from "../../utils/actions";
 import { EventBus } from "../../utils/eventBus";
 import template from "./template.html";
-import style from "./style.scope.css";
+import style from "./style.css";
 import myMenu from "../menu";
 
 export default content({
-  template,
   style,
+  template,
   autoUpdate: true,
   components: {
     myMenu,

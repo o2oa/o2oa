@@ -3,11 +3,13 @@ import {lp, o2} from '@o2oa/component';
 import { isPositiveInt, isEmpty } from '../../../utils/common';
 import { getPublicData, attendanceWorkPlaceV2Action } from '../../../utils/actions';
 import template from './temp.html';
+import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
 import oTextarea from '../../../components/o-textarea';
 
 
 export default content({
+    style,
     template,
     components: {oInput, oTextarea},
     autoUpdate: true,

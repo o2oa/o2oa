@@ -490,6 +490,11 @@ public class Qiyeweixin extends ConfigObject {
 		this.bindEnable = bindEnable;
 	}
 
+	
+	public void setSyncSecret(String syncSecret) {
+		this.syncSecret = syncSecret;
+	}
+
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QIYEWEIXIN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);

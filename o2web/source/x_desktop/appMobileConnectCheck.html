@@ -85,7 +85,9 @@
                                 }
                             }
                             _showError("获取应用服务器地址信息失败！");
-                        })
+                        }, function(err){
+                            _showError("获取应用服务器地址信息失败！");
+                        });
                     } else {
                         _showError("获取应用服务器失败！");
                     }
@@ -110,6 +112,9 @@
                             _showError("获取中心服务器地址信息失败！");
                             _showJson(json);
                         }
+                    }.bind(this), function(err){
+                        _showError("获取中心服务器地址信息失败！");
+                        _showJson(err);
                     }.bind(this));
                 };
                

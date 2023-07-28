@@ -444,6 +444,7 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         }
         //this.point.toFront();
         if (this.line) this.line.toFront();
+        if( this.property )this.property.checkTabShow();
     },
 
     cornerBrokenLineBegin: function (e, corner) {
@@ -1128,6 +1129,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
             if (!this.propertyContent){
                 this.htmlString = o2.bindJson(this.htmlString, {"lp": o2.APPPD.LP.propertyTemplate});
                 this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.process.propertyListNode);
+
                 this.process.panel.propertyTabPage.showTabIm();
                 this.JsonTemplate = new MWF.widget.JsonTemplate(this.data, this.htmlString);
                 this.propertyContent.set("html", this.JsonTemplate.load());
@@ -1151,12 +1153,81 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
             }
         }
     },
+    loadPropertyTab: function(){
+        var tabNodes = this.propertyContent.getElements(".MWFTab");
+        if (tabNodes.length){
+            var tmpNode = this.propertyContent.getFirst();
+            var tabAreaNode = new Element("div", {
+                "styles": this.process.css.propertyTabNode
+            }).inject(tmpNode, "before");
+
+            MWF.require("MWF.widget.Tab", function(){
+                var tab = new MWF.widget.Tab(tabAreaNode, {"style": "moduleList"});
+                tab.load();
+                var tabPages = [];
+                this.tabPages = tabPages;
+                var isFromManual = this.isFromManualActivity();
+                tabNodes.each(function(node){
+                    var tabPage = tab.addTab(node, node.get("title"), false);
+                    tabPages.push(tabPage);
+                    if (node.hasAttribute("data-o2-advanced") && node.dataset["o2Advanced"]=="yes"){
+                        tabPage.tabNode.setAttribute("data-o2-advanced", "yes");
+                    }
+                    if( !isFromManual && node.hasAttribute("data-o2-manual") && node.dataset["o2Manual"]=="yes" ){
+                        tabPage.tabNode.hide()
+                    }
+                }.bind(this));
+                tabPages[0].showTab();
+            }.bind(this));
+        }
+    },
+    checkTabShow: function(){
+        var isFromManual = this.isFromManualActivity();
+        var isshowed = false;
+        this.tabPages.each(function (tabPage) {
+            var node = tabPage.contentNode;
+            var needShow = true;
+            if( node && node.hasAttribute("data-o2-manual") && node.dataset["o2Manual"]=="yes" ){
+                if(!isFromManual) {
+                    needShow = false;
+                    tabPage.tabNode.hide();
+                }else{
+                    tabPage.tabNode.show();
+                }
+            }
+
+            if( node && node.hasAttribute("data-o2-condition") ){
+                var type = this.route.fromActivity.type;
+                if (type=="choice" || type=="condition" || type=="parallel"){
+                    tabPage.tabNode.show();
+                }else{
+                    needShow = false;
+                    tabPage.tabNode.hide();
+                }
+            }
+
+            if( !isshowed && needShow ){
+                tabPage.showTab();
+                isshowed = true;
+            }
+        }.bind(this));
+    },
+    isFromManualActivity: function(){
+        var activity = this.route.fromActivity;
+        if( activity && activity.type === "manual" ){
+            if( activity.data && activity.data.routeList && activity.data.routeList.contains( this.data.id ) ){
+                return true;
+            }
+        }
+        return false;
+    },
     loadRouteCondition: function(){
         var routeConditionNode = this.propertyContent.getElement(".MWFRouteCondition");
         var type = this.route.fromActivity.type;
         if (type=="choice" || type=="condition" || type=="parallel"){
             if (!routeConditionNode){
                 routeConditionNode = new Element("div.MWFTab", {
+                    "data-o2-condition": "yes",
                     "title": MWF.APPPD.LP.condition,
                     "html": "<div class=\"MWFScriptText\" name=\"scriptText\"></div>"
                 }).inject(this.propertyContent.getFirst());

@@ -18,7 +18,8 @@ export default content({
         };
     },
     onValueChange() {
-      this.dom.value = this.bind.value;
+    //   this.dom.value = this.bind.value;
+      this.component.updateModel(this.bind.value);
     }
      
 });

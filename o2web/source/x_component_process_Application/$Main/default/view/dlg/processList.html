@@ -1,10 +1,12 @@
 <div class="st_processListAppContent">
     {{each $.processList}}
+    {{if $.startableTerminal === "client" || $.startableTerminal === "all" }}
     <div class="st_processItemArea">
         <div class="st_processItem"
              data-o2-events="mouseover:startProcessItemOver;mouseout:startProcessItemOut; mousedown:startProcessItemDown;mouseup:startProcessItemUp;click:startProcessItemClick;">
             {{$.name}}
         </div>
     </div>
+    {{end if}}
     {{end each}}
 </div>
