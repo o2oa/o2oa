@@ -4,7 +4,6 @@ MWF.xApplication.cms.FormDesigner.Module.Combox = MWF.CMSFCCombox = new Class({
 	Extends: MWF.FCCombox,
     Implements : [MWF.CMSFCMI],
 	options: {
-		"style": "default",
-		"propertyPath": "../x_component_cms_FormDesigner/Module/Combox/combox.html"
+		"style": "default"
 	}
 });
