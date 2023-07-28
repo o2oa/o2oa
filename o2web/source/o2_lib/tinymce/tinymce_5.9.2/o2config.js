@@ -13,7 +13,7 @@ o2.TinyMCEConfig =  function ( mobile ) {
         image_advtab: true,
         file_picker_types: 'image', //file image media
         extended_valid_elements : 'img[class|src|border|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name'+
-            '|style|data-id|data-orgid|data-height|data-width|onerror|data-prv]',
+            '|style|data-id|data-orgid|data-height|data-width|onerror|data-prv|data-filename]',
         file_picker_callback: function (callback, value, meta) {
             //this 指向editor实例
             if (meta.filetype === 'image') { //'file', 'media'
@@ -82,6 +82,7 @@ o2.TinyMCEConfig =  function ( mobile ) {
                                                 "width": ''+width,
                                                 "data-height": ''+height,
                                                 "data-width": ''+width,
+                                                "data-filename": file ? ( file.name||"" ) : '',
                                                 "style": 'max-width:100%; width:' + width + 'px',
                                                 "onerror": 'MWF.xDesktop.setImageSrc()',
                                                 "alt": file ? ( file.name||"" ) : '',
