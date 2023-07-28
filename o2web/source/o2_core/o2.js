@@ -3198,8 +3198,8 @@ if (!window.o2) {
                     if (!layout || !layout.userLayout || !layout.userLayout.scale || layout.userLayout.scale == 1) {
 
                     } else {
-                        boundLeft = boundLeft / layout.userLayout.scale;
-                        boundTop = boundTop / layout.userLayout.scale;
+                        // boundLeft = boundLeft / layout.userLayout.scale;
+                        // boundTop = boundTop / layout.userLayout.scale;
                     }
 
 
