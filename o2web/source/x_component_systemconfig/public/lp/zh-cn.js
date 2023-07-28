@@ -440,7 +440,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "是否启用",
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
-        "ssoConfigKeyInfo": "密钥长度8位",
+
+        "ssoConfigKeyInfo": "密钥长度为8的倍数",
+        "ssoKeyLengthError": "请保持密钥长度为8的倍数",
+
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
 
