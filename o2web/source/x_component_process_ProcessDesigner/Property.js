@@ -223,6 +223,10 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 			if (value=="false") value = false;
 			if (value=="true") value = true;
 
+            if (input.dataset.valueType && input.dataset.valueType==='number'){
+                value = parseFloat(value);
+            }
+
             var names = name.split(".");
             var oldValue = null;
             var o = this.data;

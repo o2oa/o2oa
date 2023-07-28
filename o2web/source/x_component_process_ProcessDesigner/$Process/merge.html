@@ -36,8 +36,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.mergeLayerThreshold}}:</td>
                 <td class="editTableValue">
-                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{(!$.mergeLayerThreshold)?'checked':''} type="radio" value="0"/>{{$.lp.mergeLayerThreshold0}}</label>
-                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===1)?'checked':''} type="radio" value="1"/>{{$.lp.mergeLayerThreshold1}} </label>
+                    <label><input class="editTableRadio" name="mergeLayerThreshold" data-value-type="number" text{(!$.mergeLayerThreshold)?'checked':''} type="radio" value="0"/>{{$.lp.mergeLayerThreshold0}}</label>
+                    <label><input class="editTableRadio" name="mergeLayerThreshold" data-value-type="number" text{($.mergeLayerThreshold===1)?'checked':''} type="radio" value="1"/>{{$.lp.mergeLayerThreshold1}} </label>
 <!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===2)?'checked':''} type="radio" value="2"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '2')}} </label><br>-->
 <!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===3)?'checked':''} type="radio" value="3"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '3')}} </label><br>-->
 <!--                    <label><input class="editTableRadio" name="mergeLayerThreshold " text{($.mergeLayerThreshold===4)?'checked':''} type="radio" value="4"/>{{$.lp.mergeLayerThresholdn.replace('{n}', '4')}} </label><br>-->
