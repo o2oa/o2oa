@@ -7,7 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
  * var field = this.form.get("fieldId"); //获取组件对象
  * //方法2
  * var field = this.target; //在组件本身的脚本中获取，比如事件脚本、默认值脚本、校验脚本等等
- * @extends MWF.xApplication.process.Xform.$Input
+ * @extends MWF.xApplication.process.Xform.$Selector
  * @o2category FormComponents
  * @o2range {Process|CMS}
  * @hideconstructor
@@ -131,7 +131,6 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         }
     },
     __loadNodeEdit: function(opt){
-	    debugger;
         this.node.empty();
         var select;
         MWF.require("MWF.widget.Combox", function(){
@@ -221,7 +220,6 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      * })
      */
     getOptions: function(async, refresh){
-        debugger;
         if( this.optionsCache && !refresh )return this.optionsCache;
         this.optionsCache = null;
         var opt = this._getOptions(async, refresh);
@@ -568,7 +566,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         var value = this.getData();
         if( type === "value" )return o2.typeOf(value) === "array" ? value.join(", ") : value;
 
-        var textList = this.getTextListByValue();
+        var textList = this.getTextListByValue( value );
 		return Promise.resolve(textList).then(function (tList) {
 			return tList.join(", ");
 		});
@@ -579,7 +577,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         if( type === "value" ){
             this.setData(arr, true);
         }else{
-            var values = this.getValueListByText();
+            var values = this.getValueListByText( arr );
             this.moduleExcelAG = Promise.resolve(values).then(function (vs) {
                 this.setData(vs, true);
                 this.moduleExcelAG = null;

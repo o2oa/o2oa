@@ -11,6 +11,12 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     {
     Extends: MWF.APP$Input,
 
+        /**
+         * 组件加载后触发。如果选项加载为异步，则异步处理完成后触发此事件
+         * @event MWF.xApplication.process.Xform.$Selector#load
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+
     _showValue: function(node, value){
         var optionItems = this.getOptions();
         if( optionItems && typeOf(optionItems.then) === "function" ){
