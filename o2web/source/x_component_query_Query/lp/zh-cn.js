@@ -42,6 +42,12 @@ MWF.xApplication.query.Query.LP = {
         "lessThanOrEqualTo": "小于等于"
     },
     "dateFilter": {
+	    "equals": "等于",
+        "notEquals": "不等于",
+        "greaterThan": "大于",
+        "lessThan": "小于"
+    },
+    "dateTimeFilter": {
         "greaterThan": "大于",
         "lessThan": "小于"
     },

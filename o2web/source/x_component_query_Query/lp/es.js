@@ -39,7 +39,13 @@ MWF.xApplication.query.Query.LP = {
         "lessThanOrEqualTo": "Menor o igual que"
     },
     "dateFilter": {
+        "equals": "Igual a",
+        "notEquals": "No igual a",
         "greaterThan": "Mayor que",  
+        "lessThan": "Menor que"
+    },
+    "dateTimeFilter": {
+        "greaterThan": "Mayor que",
         "lessThan": "Menor que"
     },
     "booleanFilter": {
