@@ -145,7 +145,7 @@ o2.widget.TabPage = new Class({
 		
 		if (!this.tabNode) this.tabNode = new Element("div");
 		this.tabNode.set("styles", this.tab.css.tabNode);
-		this.tabNode.addEvent("mousedown", function(event){event.stop();});
+		// this.tabNode.addEvent("mousedown", function(event){event.stop();});
 		
 		if (!this.textNode) this.textNode = new Element("div").inject(this.tabNode);
 		this.textNode.set({
@@ -169,7 +169,7 @@ o2.widget.TabPage = new Class({
 		this.tab.resize();
 	},
 	loadExisted: function(){
-		this.tabNode.addEvent("mousedown", function(event){event.stop();});
+		// this.tabNode.addEvent("mousedown", function(event){event.stop();});
 		this.tabNode.addEvent("click", this._showTab.bind(this));
 		this.tab.resize();
 	},
