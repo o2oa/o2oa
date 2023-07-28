@@ -640,7 +640,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                 if(!src){
                     return "";
                 }else{
-                    return src
+                    return src;
                 }
             }.bind(this))
         }
@@ -698,6 +698,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
         Promise.resolve( this.getBase64Code() ).then(function ( base64code ) {
             _slef.getImage( base64code ).then(function( imageFile ){
                 _slef.getBase64Image( base64code ).then(function (base64Image) {
+                    _slef.options.imageSrc = base64Image;
                     _slef.fireEvent("save", [ base64code, base64Image, imageFile]);
                 });
             })
