@@ -1236,6 +1236,8 @@ o2.xApplication.systemconfig.LP = {
             "attendanceSyncEnable": "Whether to enable attendance information",
             "attendanceSyncAgentId": "Time and attendance application ID",
             "attendanceSyncSecret": "Attendance punching application Secret",
+            "bindEnable": "Enable user binding",
+            "bindEnableInfo": "Do not enable by default, this is for private binding of users and is mutually exclusive with synchronized user organizations!",
 
             "getUserPrivateInfoMessageTitle": "Enterprise WeChat obtains personal privacy information and sends messages.",
             "getUserPrivateInfoMessageDesc": "The new version of the enterprise WeChat synchronization API restricts the acquisition of user privacy information, such as: mobile phone number, email address, etc. Currently, the synchronization program can only obtain the user name and userId. " +

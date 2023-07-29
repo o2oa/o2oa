@@ -1243,6 +1243,8 @@ o2.xApplication.systemconfig.LP = {
             "attendanceSyncEnable": "是否启用考勤信息",
             "attendanceSyncAgentId": "考勤打卡应用ID",
             "attendanceSyncSecret": "考勤打卡应用Secret",
+            "bindEnable": "是否启用用户绑定",
+            "bindEnableInfo": "默认不要启用，这个是私有化绑定用户用的，跟同步用户组织是互斥的！",
 
             "getUserPrivateInfoMessageTitle": "企业微信获取个人隐私信息的消息发送",
             "getUserPrivateInfoMessageDesc": "企业微信新版本同步API限制了用户隐私信息（比如：手机号码、邮箱等）的获取，目前同步程序只能获取到用户姓名和userId。下面的消息发送功能是给用户发送一个授权获取隐私信息的消息，用户点击这个消息后，本程序就能读取到需要的用户信息！",

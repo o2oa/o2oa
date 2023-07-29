@@ -80,6 +80,9 @@
                    :label-style="labelStyle"></BaseInput>
         <div class="item_el_info"></div>
       </div>
+      <BaseBoolean :label="lp._integrationConfig.qywenxinText.bindEnable" v-model:value="configData.bindEnable"
+                   :label-style="labelStyle"></BaseBoolean>
+      <div class="item_el_info">{{lp._integrationConfig.qywenxinText.bindEnableInfo}}</div>
 
       <div style="text-align: center; margin-bottom: 50px">
         <button class="mainColor_bg" @click="saveDingDing">{{lp._integrationConfig.qywenxinText.saveText}}</button>

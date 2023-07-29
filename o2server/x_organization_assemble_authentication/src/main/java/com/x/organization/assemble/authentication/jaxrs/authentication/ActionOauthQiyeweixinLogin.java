@@ -48,7 +48,7 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
 				wo = this.manager(request, response, userId, Wo.class);
 			} else {
 				/* 普通用户登录,也有可能拥有管理员角色 */
-				String personId = business.person().getWithCredential(userId);
+				String personId = business.person().getPersonIdWithQywxid(userId);
 				if (StringUtils.isEmpty(personId)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
