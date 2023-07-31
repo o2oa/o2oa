@@ -172,7 +172,7 @@ public class General extends ConfigObject {
 
     public List<String> getHttpWhiteList() {
         Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST) : new HashSet<>(httpWhiteList);
-        if(httpWhiteSet.contains(DEFAULT_HTTP_WHITE)){
+        if(httpWhiteSet.isEmpty() || httpWhiteSet.contains(DEFAULT_HTTP_WHITE)){
             return Collections.EMPTY_LIST;
         }
         httpWhiteSet.add(Host.ROLLBACK_IPV4);
