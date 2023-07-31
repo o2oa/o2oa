@@ -3850,34 +3850,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         MWF.require("MWF.xDesktop.Dialog", function () {
             var width = 680;
             var height = 300;
-            var p = MWF.getCenterPosition(this.app.content, width, height);
+            var p;
+            if(!layout.mobile)p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
-            var dlg = new MWF.xDesktop.Dialog({
+            o2.DL.open({
                 "title": this.app.lp.reset,
                 "style": this.json.dialogStyle || "user", //|| "work",
-                "top": p.y - 100,
-                "left": p.x,
-                "fromTop": p.y - 100,
-                "fromLeft": p.x,
-                "width": width,
-                "height": height,
-                "url": this.app.path + "reset.html",
+                "top": (layout.mobile) ? 0 : (p.y - 100),
+                "left": (layout.mobile) ? 0 : p.x,
+                "fromTop": (layout.mobile) ? 0 : (p.y - 100),
+                "fromLeft": (layout.mobile) ? 0 : p.x,
+                "width": (layout.mobile) ? "100%" : width,
+                "height": (layout.mobile) ? "100%" : height,
+                "url": this.app.path + ( (layout.mobile) ? "resetMobile" : "reset") + ".html",
                 "lp": MWF.xApplication.process.Xform.LP.form,
-                "container": this.app.content,
-                "isClose": true,
+                "container": (layout.mobile) ? document.body : this.app.content,
+                "isClose": !(layout.mobile),
                 "buttonList": [
                     {
                         "type": "ok",
                         "text": MWF.LP.process.button.ok,
                         "action": function (d, e) {
-                            this.doResetWork(dlg);
-                        }.bind(this)
+                            _self.doResetWork(this);
+                        }
                     },
                     {
                         "type": "cancel",
                         "text": MWF.LP.process.button.cancel,
-                        "action": function () { dlg.close(); }
+                        "action": function () { this.close(); }
                     }
                 ],
                 "onPostShow": function () {
@@ -3893,7 +3894,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 }
             });
-            dlg.show();
         }.bind(this));
     },
     selectPeople: function(dlg){
