@@ -28,6 +28,20 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
              * //可以修改readLog达到定制化流程记录的效果
              * do something
              */
+
+            /**
+             * 加载每行流程信息以后触发，可以通过this.event获得下列信息：
+             * <pre><code>
+             *{
+             * "data" : {}, //当前行记录信息，如果是已阅未单条记录（对象），如果是待阅有多条记录（数组）
+             * "node" : node, //当前节点
+             * "log" : object, //指向阅读记录
+             * "type" : "readCompleted"  //"read"表示待阅，"readCompleted"表示已阅
+             *}
+             </code></pre>
+             * @event MWF.xApplication.process.Xform.ReadLog#postLoadLine
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
             "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData", "postLoadLine"]
         },
         load: function(){
@@ -69,7 +83,6 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
             switch (this.json.mode){
                 case "notShow":
                     return "";
-                    break;
                 case "script":
                     this.loadReadLogByScript();
                     break;
@@ -87,13 +100,22 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                         this.form.Macro.environment.log = log;
                         this.form.Macro.environment.list = null;
                         var r = this.form.Macro.exec(code, this);
-
                         var t = o2.typeOf(r);
+                        var lineNode;
                         if (t==="string"){
-                            this.node.appendHTML(r);
+                            lineNode = new Element("div", {
+                                html: r
+                            }).inject(this.node);
+                            //this.node.appendHTML(r);
                         }else if (t==="element"){
-                            this.node.appendChild(r);
+                            lineNode = this.node.appendChild(r);
                         }
+                        this.fireEvent("postLoadLine",[{
+                            "data" : log,
+                            "node" : lineNode,
+                            "log" : this,
+                            "type" : "readCompleted"
+                        }]);
                     }
 
                 }.bind(this));
@@ -102,6 +124,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         loadReadLogDefault: function(){
             var text = this.json.textStyle;
             var readPersons = [];
+            var readLogs = [];
             this.lineClass = "logTaskNode";
             this.readLog.each(function(log, i){
 
@@ -134,9 +157,17 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                     }else{
                         this.lineClass = "logTaskNode";
                     }
+
+                    this.fireEvent("postLoadLine",[{
+                        "data" : log,
+                        "node" : div,
+                        "log" : this,
+                        "type" : "readCompleted"
+                    }]);
                 }
                 if (!!this.json.isShowRead && log.type == "read"){
                     readPersons.push(o2.name.cn(log.person)+"("+o2.name.cn(log.unit)+")");
+                    readLogs.push(log);
                 }
             }.bind(this));
             if (readPersons.length){
@@ -145,6 +176,12 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                 var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
                 leftDiv.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
                 rightDiv.appendHTML("<div><font style='font-weight: bold'>"+MWF.xApplication.process.Xform.LP.showReadTitle+": </font><font style='color: #00F'>"+readPersons.join(", ")+"</font></div>");
+                this.fireEvent("postLoadLine",[{
+                    "data" : readLogs,
+                    "node" : div,
+                    "log" : this,
+                    "type" : "read"
+                }]);
             }
         }
     });
