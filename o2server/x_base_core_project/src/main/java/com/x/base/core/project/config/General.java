@@ -3,11 +3,10 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
+import com.x.base.core.project.tools.Host;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +37,8 @@ public class General extends ConfigObject {
     private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
     private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
     private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
+    private static final String DEFAULT_HTTP_WHITE = "*";
+    private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 
     public static General defaultInstance() {
         General o = new General();
@@ -55,6 +56,7 @@ public class General extends ConfigObject {
         o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
         o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
         o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
+        o.httpWhiteList = DEFAULT_HTTPWHITELIST;
         o.attachmentConfig = new AttachmentConfig();
         return o;
     }
@@ -103,6 +105,9 @@ public class General extends ConfigObject {
 
     @FieldDescribe("对象id格式校验正则表达式.")
     private String idFormatCheckRegular = "";
+
+    @FieldDescribe("外部http接口服务地址白名单，*代表不限制.")
+    private List<String> httpWhiteList;
 
     public String getIdFormatCheckRegular() {
         return this.idFormatCheckRegular;
@@ -163,6 +168,22 @@ public class General extends ConfigObject {
     public Boolean getDeployResourceEnable() {
 
         return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE : this.deployResourceEnable;
+    }
+
+    public List<String> getHttpWhiteList() {
+        Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST) : new HashSet<>(httpWhiteList);
+        if(httpWhiteSet.contains(DEFAULT_HTTP_WHITE)){
+            return Collections.EMPTY_LIST;
+        }
+        httpWhiteSet.add(Host.ROLLBACK_IPV4);
+        httpWhiteSet.add(Collect.Default_server);
+        httpWhiteSet.add(Collect.Default_appPackServerHost);
+        try {
+            Config.nodes().entrySet().stream().forEach(n -> httpWhiteSet.add(n.getKey()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>(httpWhiteSet);
     }
 
     public AttachmentConfig getAttachmentConfig() {
