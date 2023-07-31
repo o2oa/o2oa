@@ -2605,7 +2605,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                 o2.load("../o2_lib/viewer/viewer.js", function(){
                     this.viewer = new Viewer(imgNode,{
                         navbar : false,
-                        toolbar : false,
+                        toolbar : true,
                         hidden : function(){
                             imgNode.destroy();
                             this.viewer.destroy();
