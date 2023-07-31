@@ -2,6 +2,9 @@ package com.x.processplatform.service.processing.processor.merge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -10,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
@@ -18,7 +22,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class MergeProcessor extends AbstractMergeProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(MergeProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MergeProcessor.class);
 
 	public MergeProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -33,6 +37,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Merge merge) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -45,45 +50,24 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			results.add(aeiObjects.getWork());
 			return results;
 		}
-		Work other = findWorkMergeTo(aeiObjects);
-
-		if (null != other) {
-			aeiObjects.getUpdateWorks().add(other);
+		Optional<Work> other = findWorkSameLevelOrDeeper(aeiObjects);
+		if (other.isPresent()) {
+			aeiObjects.getUpdateWorks().add(other.get());
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
 			/* 应该废弃改变对work的指向 ? */
-			this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
-			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
+			this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other.get());
+			this.mergeRead(aeiObjects, aeiObjects.getWork(), other.get());
+			this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other.get());
+			this.mergeReview(aeiObjects, aeiObjects.getWork(), other.get());
+			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other.get());
+			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other.get());
 			aeiObjects.getWorkLogs().stream()
 					.filter(p -> StringUtils.equals(p.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
-					.forEach(obj -> {
-						aeiObjects.getDeleteWorkLogs().add(obj);
-					});
+					.forEach(obj -> aeiObjects.getDeleteWorkLogs().add(obj));
 		} else {
-			Work branch = this.findWorkBranch(aeiObjects);
-			if (null != branch) {
-				aeiObjects.getWork().setSplitting(true);
-				// 回滚splitTokenList
-				aeiObjects.getWork().setSplitTokenList(ListUtils.longestCommonSubsequence(
-						aeiObjects.getWork().getSplitTokenList(), branch.getSplitTokenList()));
-				// 回滚splitToken
-				aeiObjects.getWork().setSplitToken(aeiObjects.getWork().getSplitTokenList()
-						.get(aeiObjects.getWork().getSplitTokenList().size() - 1));
-				// 回滚splitValueList
-				if (aeiObjects.getWork().getSplitValueList().size() > aeiObjects.getWork().getSplitTokenList().size()) {
-					aeiObjects.getWork().setSplitValueList(aeiObjects.getWork().getSplitValueList().subList(0,
-							aeiObjects.getWork().getSplitTokenList().size()));
-				}
-				// 回滚splitValue
-				if (aeiObjects.getWork().getSplitValueList().size() > 0) {
-					aeiObjects.getWork().setSplitValue(aeiObjects.getWork().getSplitValueList()
-							.get(aeiObjects.getWork().getSplitValueList().size() - 1));
-				} else {
-					aeiObjects.getWork().setSplitValue("");
-				}
+			Optional<Work> branch = this.findWorkShallower(aeiObjects);
+			if (branch.isPresent()) {
+				mergeTo(aeiObjects, merge, branch.get());
 				results.add(aeiObjects.getWork());
 			} else {
 				// 完全找不到合并的文档,唯一一份
@@ -98,59 +82,91 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		return results;
 	}
 
-	private Work findWorkMergeTo(AeiObjects aeiObjects) throws Exception {
-		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
-		/* 查找同级 */
-		Work other = aeiObjects.getWorks().stream().filter(o -> {
-			if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
-				if (StringUtils.equals(StringUtils.join(o.getSplitTokenList(), ","), join)) {
-					return true;
-				}
-			}
-			return false;
-		}).sorted((o1, o2) -> {
-			return o1.getCreateTime().compareTo(o2.getCreateTime());
-		}).findFirst().orElse(null);
+	private void mergeTo(AeiObjects aeiObjects, Merge merge, Work branch) {
+		aeiObjects.getWork().setSplitting(true);
+		int mergeLayerCount = aeiObjects.getWork().getSplitTokenList().size() - branch.getSplitTokenList().size();
+		if ((null != merge.getMergeLayerThreshold()) && (merge.getMergeLayerThreshold() > 0)) {
+			mergeLayerCount = Math.min(mergeLayerCount, merge.getMergeLayerThreshold());
+		}
+		int threshold = branch.getSplitTokenList().size() - mergeLayerCount;
+		// 回滚splitTokenList
+		aeiObjects.getWork().setSplitTokenList(branch.getSplitTokenList().subList(0, threshold));
+		// 回滚splitToken
+		aeiObjects.getWork().setSplitToken(
+				aeiObjects.getWork().getSplitTokenList().get(aeiObjects.getWork().getSplitTokenList().size() - 1));
+		// 回滚splitValueList,如果是并行过来没有拆分值,通过存储值进行组装
+		aeiObjects.getWork()
+				.setSplitValueList(aeiObjects.getWork().getSplitTokenList().stream()
+						.map(o -> aeiObjects.getWork().getSplitTokenValueMap().getOrDefault(o, null))
+						.filter(Objects::nonNull).collect(Collectors.toList()));
+		// 回滚splitValue
+		if (ListTools.isNotEmpty(aeiObjects.getWork().getSplitValueList())) {
+			aeiObjects.getWork().setSplitValue(
+					aeiObjects.getWork().getSplitValueList().get(aeiObjects.getWork().getSplitValueList().size() - 1));
+		} else {
+			aeiObjects.getWork().setSplitValue("");
+		}
+	}
 
-		/* 找不到同级那么开始早更深层次的文档 */
-		if (null == other) {
-			other = aeiObjects.getWorks().stream().filter(o -> {
-				if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
-					if (StringUtils.startsWith(StringUtils.join(o.getSplitTokenList(), ","), join)) {
-						return true;
-					}
-				}
-				return false;
-			}).sorted((o1, o2) -> {
-				int compare = o2.getSplitTokenList().size() - o1.getSplitTokenList().size();
-				if (compare == 0) {
-					return o2.getCreateTime().compareTo(o1.getCreateTime());
-				}
-				return compare;
-			}).findFirst().orElse(null);
+	/**
+	 * 查找同级别或者拆分更深的文档
+	 * 
+	 * @param aeiObjects
+	 * @return
+	 * @throws Exception
+	 */
+	private Optional<Work> findWorkSameLevelOrDeeper(AeiObjects aeiObjects) throws Exception {
+		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
+		// 查找同级
+		Optional<Work> other = aeiObjects.getWorks().stream()
+				.filter(o -> BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())
+						&& StringUtils.equals(StringUtils.join(o.getSplitTokenList(), ","), join))
+				.sorted((o1, o2) -> o1.getCreateTime().compareTo(o2.getCreateTime())).findFirst();
+		if (other.isPresent() && LOGGER.isDebugEnabled()) {
+			LOGGER.debug("findWorkMergeTo work {} found same split level work {}.", aeiObjects.getWork()::getId,
+					other.get()::getId);
+		}
+		// 找不到同级那么开始早更深层次的文档
+		if (other.isEmpty()) {
+			other = aeiObjects.getWorks().stream()
+					.filter(o -> BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())
+							&& StringUtils.startsWith(StringUtils.join(o.getSplitTokenList(), ","), join))
+					.sorted((o1, o2) -> {
+						int compare = o2.getSplitTokenList().size() - o1.getSplitTokenList().size();
+						if (compare == 0) {
+							return o2.getCreateTime().compareTo(o1.getCreateTime());
+						}
+						return compare;
+					}).findFirst();
+			if (other.isPresent() && LOGGER.isDebugEnabled()) {
+				LOGGER.debug("findWorkMergeTo work {} found further split level work {}.", aeiObjects.getWork()::getId,
+						other.get()::getId);
+			}
 		}
 		return other;
 	}
 
-	private Work findWorkBranch(AeiObjects aeiObjects) throws Exception {
-		Work branch = null;
+	/**
+	 * 查找更浅层次的拆分文档
+	 * 
+	 * @param aeiObjects
+	 * @return
+	 * @throws Exception
+	 */
+	private Optional<Work> findWorkShallower(AeiObjects aeiObjects) throws Exception {
 		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
 		while (StringUtils.indexOf(join, ",") > 0) {
 			join = StringUtils.substringBeforeLast(join, ",");
 			final String part = join;
-			branch = aeiObjects.getWorks().stream().filter(o -> {
-				if (BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())) {
-					if (StringUtils.startsWithIgnoreCase(StringUtils.join(o.getSplitTokenList(), ","), part)) {
-						return true;
-					}
-				}
-				return false;
-			}).findFirst().orElse(null);
-			if (null != branch) {
-				return branch;
+			Optional<Work> opt = aeiObjects.getWorks().stream()
+					.filter(o -> BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())
+							&& StringUtils.startsWithIgnoreCase(StringUtils.join(o.getSplitTokenList(), ","), part))
+					.findFirst();
+			if (opt.isPresent()) {
+				return opt;
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private void mergeTaskCompleted(AeiObjects aeiObjects, Work work, Work oldest) {
@@ -161,7 +177,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateTaskCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -172,7 +188,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getUpdateReads().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -181,11 +197,10 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			aeiObjects.getReadCompleteds().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(oldest.getId());
-						// o.setActivityToken(oldest.getActivityToken());
 						aeiObjects.getUpdateReadCompleteds().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -196,7 +211,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getUpdateReviews().add(o);
 			});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -208,7 +223,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateAttachments().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -222,7 +237,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getUpdateWorkLogs().add(o);
 					});
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 

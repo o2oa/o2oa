@@ -49,15 +49,14 @@ public class Crypto {
 
 	private static final String DES = "DES";
 
-	private static final String AES = "AES";
-
 	private static final String RSA = "RSA";
 
 	private static final String NEVERCHANGEKEY = "NEVERCHANGEKEY";
 
 	private static Class<?> classSm4 = null;
 
-	private static final String TYPE_SM4 = "sm4";
+	private static final String TYPE_AES = "AES";
+	private static final String TYPE_SM4 = "SM4";
 
 	private static final Pattern PLAINTEXT_TRANSFORM_REGEX = Pattern.compile("^\\((ENCRYPT:|SCRIPT:)(.+?)\\)$");
 
@@ -75,7 +74,7 @@ public class Crypto {
 		byte[] bt = null;
 		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
 			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
-		}else if(StringUtils.equalsIgnoreCase(type, AES)){
+		} else if (StringUtils.equalsIgnoreCase(type, TYPE_AES)) {
 			bt = encryptAes(data.getBytes(), DigestUtils.md5(key));
 		} else {
 			bt = encrypt(data.getBytes(), key.getBytes());
@@ -103,7 +102,7 @@ public class Crypto {
 	private static byte[] encryptAes(byte[] text, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException,
 			InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
-		SecretKeySpec aesKey = new SecretKeySpec(key, AES);
+		SecretKeySpec aesKey = new SecretKeySpec(key, TYPE_AES);
 
 		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
@@ -113,11 +112,10 @@ public class Crypto {
 
 	}
 
-
 	private static byte[] decryptAes(byte[] text, byte[] key) throws NoSuchPaddingException, NoSuchAlgorithmException,
 			InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
-		SecretKeySpec aesKey = new SecretKeySpec(key, AES);
+		SecretKeySpec aesKey = new SecretKeySpec(key, TYPE_AES);
 
 		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 
@@ -156,7 +154,7 @@ public class Crypto {
 		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
 			bt = decryptSm4(buf, key);
 			return new String(bt, StandardCharsets.UTF_8);
-		}else if (StringUtils.equalsIgnoreCase(type, AES)) {
+		} else if (StringUtils.equalsIgnoreCase(type, TYPE_AES)) {
 			bt = decryptAes(buf, DigestUtils.md5(key));
 			return new String(bt, StandardCharsets.UTF_8);
 		} else {
@@ -280,8 +278,9 @@ public class Crypto {
 
 	/**
 	 * AES加密
+	 * 
 	 * @param data 明文
-	 * @param key 秘钥
+	 * @param key  秘钥
 	 * @return
 	 * @throws Exception
 	 */
@@ -297,11 +296,11 @@ public class Crypto {
 
 	}
 
-
 	/**
 	 * AES解密
+	 * 
 	 * @param data 密文
-	 * @param key 秘钥
+	 * @param key  秘钥
 	 * @return
 	 * @throws Exception
 	 */

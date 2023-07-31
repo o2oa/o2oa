@@ -11,6 +11,17 @@ public class MergeProperties extends JsonProperties {
 	@FieldDescribe("活动自定义数据")
 	private JsonElement customData;
 
+	@FieldDescribe("合并层级,0尽量多的合并,1合并1层,2合并不多于2层,3合并不多于3层.")
+	private Integer mergeLayerThreshold;
+
+	public Integer getMergeLayerThreshold() {
+		return mergeLayerThreshold;
+	}
+
+	public void setMergeLayerThreshold(Integer mergeLayerThreshold) {
+		this.mergeLayerThreshold = mergeLayerThreshold;
+	}
+
 	public JsonElement getCustomData() {
 		return customData;
 	}

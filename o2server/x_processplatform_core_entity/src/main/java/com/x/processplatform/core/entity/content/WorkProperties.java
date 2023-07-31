@@ -51,6 +51,17 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("goBack进行跳转退回时使用的.")
 	private String goBackActivityToken;
 
+	@FieldDescribe("拆分值存储对象.")
+	private Map<String, String> splitTokenValueMap = new LinkedHashMap<>();
+
+	public Map<String, String> getSplitTokenValueMap() {
+		return splitTokenValueMap;
+	}
+
+	public void setSplitTokenValueMap(Map<String, String> splitTokenValueMap) {
+		this.splitTokenValueMap = splitTokenValueMap;
+	}
+
 	public String getGoBackActivityToken() {
 		return goBackActivityToken;
 	}
