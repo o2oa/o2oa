@@ -96,7 +96,7 @@ public class NodeAgent extends Thread {
 			serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort());
 			Matcher matcher;
 			while (runFlag) {
-				if (serverSocket.isClosed()) {
+				if (!serverSocket.isClosed()) {
 					try (Socket socket = serverSocket.accept()) {
 						if (!socket.isClosed()) {
 							try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
