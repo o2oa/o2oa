@@ -75,7 +75,7 @@ class ActionAddMember extends BaseAction {
 		private static final long serialVersionUID = -6314932919066148113L;
 
 		static WrapCopier<Wi, Group> copier = WrapCopierFactory.wi(Wi.class, Group.class,
-				ListTools.toList(JpaObject.FieldsUnmodify, Group.personList_FIELDNAME, Group.groupList_FIELDNAME),
+				ListTools.toList(Group.personList_FIELDNAME, Group.groupList_FIELDNAME, Group.identityList_FIELDNAME),
 				null);
 	}
 
