@@ -3398,6 +3398,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		}.bind(this), null, false);
 	},
 	_loadDataRecord : function (){
+		var lp = this.lp;
 		this.dataRecordArea.empty();
 		this.dataRecordContentNode = new Element("div").inject(this.dataRecordArea)
 		var dataRecordTableNode = new Element("table.table",{
@@ -3409,7 +3410,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		var dataRecordTableTheadNode = new Element("thead").inject(dataRecordTableNode);
 		var dataRecordTableTbodyNode = new Element("tbody").inject(dataRecordTableNode);
 		var dataRecordTableTheadTrNode = new Element("tr").inject(dataRecordTableTheadNode);
-		Array.each([this.lp.fieldName,"变更次数",this.lp.op], function (text) {
+		Array.each([this.lp.fieldName,lp.dataRecordView.person,lp.dataRecordView.time,lp.dataRecordView.active,lp.dataRecordView.old,lp.dataRecordView.new], function (text) {
 			new Element("th", {"text": text}).inject(dataRecordTableTheadTrNode);
 		});
 
@@ -3417,24 +3418,31 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		this.dataRecordList.each(function (dataRecord) {
 
 			if(dataRecord.updateNum && dataRecord.updateNum>1){
-				var trNode = new Element("tr").inject(dataRecordTableTbodyNode);
-				trNode.store("data", dataRecord);
+				var path = dataRecord.path;
+				var updateNum = dataRecord.updateNum;
 
-				Array.each([dataRecord.path,dataRecord.updateNum], function (text, index) {
-					new Element("td", {
-						text: text
-					}).inject(trNode);
-				}.bind(this));
+				this.app.action.DataRecordAction.getWithJobPath(this.data.job, dataRecord.path,function (json) {
+					var dataRecordList = json.data;
 
-				var tdOpNode = new Element("td").inject(trNode);
-				var viewButton = new Element("button", {"text": this.lp.dataRecordView.title, "class": "button"}).inject(tdOpNode);
-				viewButton.addEvent("click", function (e) {
+					dataRecordList.dataRecordItemList.each(function (item,index) {
+						var trNode = new Element("tr").inject(dataRecordTableTbodyNode);
+						if(index === 0 ){
+							new Element("td", {
+								text: path,
+								rowspan : updateNum,
+								style : "border-right:1px solid rgb(230, 230, 230)"
+							}).inject(trNode);
+						}
+						item.personName = item.person.split("@")[0];
 
-					this._loadDataRecordDetail(dataRecord.path);
-
-				}.bind(this));
+						Array.each([item.personName,item.updateDate,item.activityName,item.oldData,item.newData], function (text) {
+							new Element("td", {
+								text: text
+							}).inject(trNode);
+						}.bind(this));
+					}.bind(this));
+				})
 			}
-
 		}.bind(this));
 
 	},
@@ -3828,7 +3836,7 @@ MWF.xApplication.process.Application.ManageWorkCompletedForm = new Class({
 		this.attachementArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
 		this.recordArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
 		this.businessDataArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
-
+		this.dataRecordArea = new Element("div",{"styles" : this.css.tabPageContainer }).inject(this.tabNode);
 		MWF.require("MWF.widget.Tab", function(){
 
 			this.tabs = new MWF.widget.Tab(this.tabNode, {"style": "attendance"});
@@ -3869,7 +3877,10 @@ MWF.xApplication.process.Application.ManageWorkCompletedForm = new Class({
 			this.businessDataPage.addEvent("show",function(){
 				if(!this.initBusinessData) this.loadBusinessData();
 			}.bind(this));
-
+			this.dataRecordPage = this.tabs.addTab(this.dataRecordArea,this.lp.dataRecord, false);
+			this.dataRecordPage.addEvent("show",function(){
+				if(!this.initDataRecord) this.loadDataRecord();
+			}.bind(this));
 			this.tabs.pages[0].showTab();
 		}.bind(this));
 	}
