@@ -15,6 +15,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
+import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -87,7 +88,18 @@ abstract class BaseAction extends StandardJaxrsAction {
                     appealNums += (int) recordList.stream().filter((r) -> StringUtils.isNotEmpty(r.getAppealId())).count();
                     // 前端展现用的
                     DetailWo detailWo = DetailWo.copier.copy(attendanceV2Detail);
-                    detailWo.setRecordList(RecordWo.copier.copy(recordList));
+                    List<RecordWo> recordWos = RecordWo.copier.copy(recordList);
+                    for (RecordWo recordWo : recordWos) {
+                        try {
+                            if (StringUtils.isNotEmpty(recordWo.getLeaveDataId())) {
+                                AttendanceV2LeaveData leaveData = business.entityManagerContainer().find(recordWo.getLeaveDataId(), AttendanceV2LeaveData.class);
+                                if (leaveData != null) {
+                                    recordWo.setLeaveData(leaveData);
+                                }
+                            }
+                        } catch (Exception ignore) {}
+                    }
+                    detailWo.setRecordList(recordWos);
                     detailWos.add(detailWo);
                 }
                 if (workDayCount > 0) {
