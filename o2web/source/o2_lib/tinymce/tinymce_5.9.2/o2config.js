@@ -60,6 +60,7 @@ o2.TinyMCEConfig =  function ( mobile ) {
                             "method": "uploadImageByScale",
                             "accept": "image/*",
                             "onEvery": function (json, index, count, file) {
+                                debugger;
                                 var id = json.data ? json.data.id : json.id;
                                 var src = MWF.xDesktop.getImageSrc( id );
                                 new Element("img", {
