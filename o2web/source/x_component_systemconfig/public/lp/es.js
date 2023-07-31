@@ -441,7 +441,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "Habilitar",
         "ssoConfigName": "Nombre de la clave de autenticación",
         "ssoConfigKey": "Clave",
-        "ssoConfigKeyInfo": "La longitud de la clave debe ser de 8 caracteres.",
+
+        "ssoConfigKeyInfo": "La longitud de la clave es un múltiplo de 8",
+        "ssoKeyLengthError": "Mantenga la longitud de la clave en múltiplos de 8",
+
         "removeSSOConfigTitle": "Confirmar eliminación de configuración de clave de autenticación",
         "removeSSOConfig": "¿Está seguro de que desea eliminar la configuración de clave de autenticación: '{name}'?",
 

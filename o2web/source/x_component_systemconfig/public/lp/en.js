@@ -439,7 +439,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "Enable",
         "ssoConfigName": "Name",
         "ssoConfigKey": "Key",
-        "ssoConfigKeyInfo": "Authentication key length 8 bits",
+
+        "ssoConfigKeyInfo": "The key length is a multiple of 8",
+        "ssoKeyLengthError": "Please keep the key length in multiples of 8",
+
         "removeSSOConfigTitle": "Confirmation of deleting the authentication configuration",
         "removeSSOConfig": "Are you sure you want to delete the authentication configuration: '{name}'?",
 

@@ -20,7 +20,7 @@
           <div class="item_sso_area">
             <div class="o2icon-key item_sso_icon mainColor_bg"></div>
             <div class="item_sso_text item_bold">{{sso.client}}</div>
-            <div class="item_sso_text">{{sso.key}}</div>
+            <div class="item_sso_text" style="overflow: hidden;text-overflow: ellipsis;">{{sso.key ? "*".repeat(sso.key.length) : ""}}</div>
             <div class="item_sso_text" style="display: flex; align-items: center; justify-content: flex-end;">
               <el-switch
                   @click="(e)=>{e.stopPropagation()}"
@@ -54,7 +54,8 @@
     <div class="item_sso_editorArea" ref="ssoEditorArea">
       <BaseSwitch :label="lp._ssoConfig.isEnable" v-model:value="currentSSOData.enable"/>
       <BaseInput :label="lp._ssoConfig.ssoConfigName" v-model:value="currentSSOData.client"/>
-      <BaseInput :label="lp._ssoConfig.ssoConfigKey" v-model:value="currentSSOData.key"/>
+<!--      <BaseInput :label="lp._ssoConfig.ssoConfigKey" v-model:value="currentSSOData.key"/>-->
+      <BaseInput :label="lp._ssoConfig.ssoConfigKey" input-type="password" :show-password="true" v-model:value="currentSSOData.key" v-if="showKeyInput"></BaseInput>
       <div style="color: #999999; margin-left: 120px">{{lp._ssoConfig.ssoConfigKeyInfo}}</div>
     </div>
   </div>
@@ -71,6 +72,7 @@ import {getConfigData, saveConfig} from '@/util/acrions';
 const ssos = ref([]);
 const currentSSOData = ref({});
 const ssoEditorArea = ref();
+const showKeyInput = ref(false);
 
 const removeSSO = (e, idx)=>{
   const text = lp._ssoConfig.removeSSOConfig.replace(/{name}/, ssos.value[idx].client);
@@ -88,6 +90,7 @@ const removeSSO = (e, idx)=>{
 
 }
 const editSSOConfig = (data, idx)=>{
+  showKeyInput.value = true;
   currentSSOData.value = Object.clone(data);
   const container = component.content.getElement('.systemconfig');
   const content = ssoEditorArea.value;
@@ -103,6 +106,7 @@ const editSSOConfig = (data, idx)=>{
     onQueryClose: () => {
       content.hide();
       content.inject(container);
+      showKeyInput.value = false;
     },
     buttonList: [{
       text: lp.operation.ok,
@@ -114,6 +118,9 @@ const editSSOConfig = (data, idx)=>{
           }
           if (ssos.value.some(sameName)){
             const info = lp._ssoConfig.ssoSameNameError.replace('{name}', currentSSOData.value.client);
+            component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
+          }else if (currentSSOData.value.key.length % 8 !== 0 ){
+            const info = lp._ssoConfig.ssoKeyLengthError;
             component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
           }else{
             if (idx || idx===0){

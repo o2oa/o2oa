@@ -1468,7 +1468,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
                     break;
                 case "dateTimeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadComparisonSelect(this.lp.dateTimeFilter);
                     if( selectableList.length > 0 ){
                         this.loadViewSerchCustomSelectByScript(selectableList)
                     }else {
@@ -1484,7 +1484,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
                     break;
                 case "timeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadComparisonSelect(this.lp.dateTimeFilter);
                     if( selectableList.length > 0 ){
                         this.loadViewSerchCustomSelectByScript(selectableList)
                     }else {
