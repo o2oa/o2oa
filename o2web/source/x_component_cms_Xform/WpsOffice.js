@@ -16,7 +16,8 @@ MWF.xApplication.cms.Xform.WpsOffice = MWF.CMSWpsOffice =  new Class({
             "xls" : "Spreadsheet",
             "pptx" : "Presentation",
             "ppt" : "Presentation",
-            "pdf" : "Pdf"
+            "pdf" : "Pdf",
+            "ofd" : "Pdf"
         };
 
         this.appToken = "x_cms_assemble_control";
@@ -30,7 +31,7 @@ MWF.xApplication.cms.Xform.WpsOffice = MWF.CMSWpsOffice =  new Class({
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get(this.appToken).action,
                 "method": "uploadAttachment",
-                "accept" : ".docx,.xlsx,.pptx,.pdf",
+                "accept" : ".docx,.xlsx,.pptx,.pdf,.ofd",
                 "parameter": {
                     "id" : this.form.businessData.document.id,
                 },
