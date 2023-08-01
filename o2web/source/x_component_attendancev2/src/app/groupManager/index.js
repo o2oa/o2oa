@@ -170,6 +170,7 @@ export default content({
     );
   },
   async deleteGroup(id) {
+    this.$topParent.closeFormVm();// 关闭表单
     const json = await groupAction("delete", id);
     console.debug(json);
     this.loadGroupList();

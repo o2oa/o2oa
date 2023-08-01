@@ -138,6 +138,7 @@ export default content({
     );
   },
   async deleteShift(id) {
+    this.$topParent.closeFormVm(); // 关闭表单
     const json = await attendanceShiftAction("delete", id);
     console.debug(json);
     this.loadShiftList();

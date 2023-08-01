@@ -16,8 +16,8 @@
                 oo-model="form.unParticipateList"></o-org-person-selector>
             
            <!-- 类型选择 -->
-           <div class="o-input-item margin-top">
-                <div class="o-input-item-label" >
+           <div class="margin-top">
+                <div class="form-item-line-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.checkType}}
                 </div>
@@ -154,7 +154,7 @@
             </div>
             <!-- 考勤时间 自由工时的时候 选择打卡日子 -->
             <div class="margin-top" oo-if=" $.form.checkType == '2' ">
-                <div class="o-input-item-label" >
+                <div class="form-item-line-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.time}}
                 </div>
@@ -167,13 +167,16 @@
                 </div>
             </div>
             <!-- 工作场所 -->
-            <div class="form-item-line margin-top">
-                <div class="form-item-line-label" style="height: 46px;line-height: 46px;">
+            <div class="margin-top">
+                <div class="form-item-line-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.workPlace}}
-                    
+                    <div style="cursor: pointer;float: right;" @click="openWorkPlaceSelector">
+                        <span class="operator_link primary_color margin-right" >选择</span>
+                        <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                    </div>
                 </div>
-                <div >
+                <!-- <div >
                     <div  style="width: 320px;">
                         <span style="line-height: 46px; color: #999999;" oo-if="$.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
                         <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
@@ -183,10 +186,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div style="height: 46px;line-height: 46px; cursor: pointer;" @click="openWorkPlaceSelector">
-                    <span class="operator_link primary_color margin-right" >{{$.lp.add}}</span>
-                    <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                </div> -->
+                <div class="margin-top" oo-if="$.workPlaceSelector.workAddressSelected.length > 0">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
+                        <thead>
+                            <th>{{$.lp.workAddressName}}</th>
+                            <th style="width: 20%;">{{$.lp.workAddressRange}}</th>
+                        </thead>
+                        <tr oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" style="background-color: transparent;">
+                            <td>
+                                {{workPlace.value.placeName}}
+                            </td>
+                            <td>
+                                {{workPlace.value.errorRange}}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <!-- 外勤打卡 -->
