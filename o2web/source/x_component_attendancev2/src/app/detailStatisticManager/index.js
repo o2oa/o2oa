@@ -99,6 +99,8 @@ export default content({
     let span = "";
     if (record.fieldWork) {
       span = lp.appeal.fieldWork;
+    } else if(record.leaveData) {
+      span = record.leaveData.leaveType;
     } else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
