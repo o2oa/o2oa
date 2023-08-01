@@ -1572,7 +1572,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
         this.startProcessListNode.setStyle("height", ""+h+"px");
 
         this.app.getAction(function () {
-            this.app.action.listApplicationStartable(function (appjson) {
+            o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("mobile", function (appjson) {
                 //this.app = this;
                 MWF.UD.getDataJson("taskCenter_startTop", function(json){
                     this.top5Data = json;
@@ -1588,11 +1588,13 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         }.bind(this));
                     }
                     appjson.data.each(function (app) {
-                        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
-                        var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
-                        app.processList.each(function(process){
-                            new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
-                        }.bind(this));
+                        if (app.processList && app.processList.length > 0) {
+                            new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
+                            var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
+                            app.processList.each(function(process){
+                                new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
+                            }.bind(this));
+                        }
                     }.bind(this));
                 }.bind(this));
 
