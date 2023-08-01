@@ -3,6 +3,7 @@ package com.x.processplatform.core.entity.content;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -119,6 +120,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.parentWork = this.getProperties().getParentWork();
 		this.goBackStore = this.getProperties().getGoBackStore();
 		this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
+		this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
 	}
 
 	/* 更新运行方法 */
@@ -248,6 +250,15 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setGoBackActivityToken(goBackActivityToken);
 	}
 
+	public Map<String, String> getSplitTokenValueMap() {
+		return splitTokenValueMap;
+	}
+
+	public void setSplitTokenValueMap(Map<String, String> splitTokenValueMap) {
+		this.splitTokenValueMap = splitTokenValueMap;
+		this.getProperties().setSplitTokenValueMap(splitTokenValueMap);
+	}
+
 	@FieldDescribe("goBack进行跳转退回时使用的.")
 	private String goBackActivityToken;
 
@@ -266,6 +277,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("子流程返回标识.")
 	private String embedCompleted;
+
+	public static final String SPLITTOKENVALUEMAP_FIELDNAME = "splitTokenValueMap";
+	@Transient
+	@FieldDescribe("拆分值存储对象.")
+	private Map<String, String> splitTokenValueMap;
 
 	public static final String MANUALTASKIDENTITYMATRIX_FIELDNAME = "manualTaskIdentityMatrix";
 	@FieldDescribe("待办身份矩阵.")

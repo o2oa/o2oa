@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -63,7 +65,12 @@ class ActionProcessing extends BaseAction {
 						MessageFactory.readCompleted_create(readCompleted);
 					} else {
 						for (ReadCompleted o : exists) {
-							readCompleted.copyTo(o, JpaObject.FieldsUnmodify);
+							if (StringUtils.isEmpty(readCompleted.getOpinion())) {
+								readCompleted.copyTo(o,
+										ListTools.toList(JpaObject.FieldsUnmodify, ReadCompleted.opinion_FIELDNAME));
+							} else {
+								readCompleted.copyTo(o, ListTools.toList(JpaObject.FieldsUnmodify));
+							}
 						}
 					}
 					emc.remove(read, CheckRemoveType.all);

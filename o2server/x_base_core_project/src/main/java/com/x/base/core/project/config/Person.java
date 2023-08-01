@@ -141,7 +141,7 @@ public class Person extends ConfigObject {
 	@FieldDescribe("是否启用安全注销.")
 	private Boolean enableSafeLogout;
 
-	@FieldDescribe("加密方式,支持国密sm4")
+	@FieldDescribe("加密方式,支持国密:SM4,AES")
 	private String encryptType;
 
 	public String getEncryptType() {

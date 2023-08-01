@@ -71,7 +71,7 @@ public class MissionRestore implements Mission {
 
 	private static Optional<Path> locationFolder(Path path) throws IOException {
 		PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/catalog.json");
-		try (Stream<Path> stream = Files.walk(path, 3)) {
+		try (Stream<Path> stream = Files.walk(path, 10)) {
 			Optional<Path> opt = stream.filter(pathMatcher::matches).findFirst();
 			if (opt.isPresent()) {
 				return Optional.of(opt.get().getParent().toAbsolutePath());
