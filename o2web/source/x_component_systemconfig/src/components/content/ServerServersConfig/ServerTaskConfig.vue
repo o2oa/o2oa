@@ -128,6 +128,15 @@
     ></BaseItem>
 
     <BaseItem
+            :title="lp._serversConfig.httpWhiteList"
+            :info="lp._serversConfig.httpWhiteListInfo"
+            :config="generalData.httpWhiteList"
+            :allowEditor="true"
+            type="textarea"
+            @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||['*']); generalData.httpWhiteList=v; saveConfig('general', 'httpWhiteList', v)}"
+    ></BaseItem>
+
+    <BaseItem
         :title="lp._serversConfig.refererHeadCheckRegular"
         :info="lp._serversConfig.refererHeadCheckRegularInfo"
         :config="generalData.refererHeadCheckRegular"
@@ -196,6 +205,9 @@ getConfigData('general').then((data)=>{
   }
   if (!generalData.value.hasOwnProperty('statExclusions')){
     generalData.value.statExclusions = '*.js,*.gif,*.jpg,*.png,*.css,*.ico';
+  }
+  if (!generalData.value.hasOwnProperty('httpWhiteList')){
+    generalData.value.httpWhiteList = ['*'];
   }
 });
 getConfigData('person').then((data)=>{

@@ -793,6 +793,9 @@ o2.xApplication.systemconfig.LP = {
         "scriptingBlockedClasses": "Clases de Java deshabilitadas para scripts del servidor",
         "scriptingBlockedClassesInfo": "Puede configurar las clases de Java que no se permiten utilizar en los scripts del servidor aquí. Separe las clases con comas.",
 
+        "httpWhiteList": "Lista blanca de direcciones de servicio de interfaz http externa",
+        "httpWhiteListInfo": "Lista blanca de direcciones de servicios de interfaz http externa, * significa ilimitado, separados por comas.",
+
         "refererHeadCheckRegular": "Validación del encabezado Referer en las solicitudes",
         "refererHeadCheckRegularInfo": "Configure aquí la regla de validación para el encabezado Referer en las solicitudes. Solo se permitirán las solicitudes cuyo valor de Referer pase la validación del patrón regular configurado aquí. Una configuración razonable de esta opción puede ayudar a prevenir ataques CSRF. Por ejemplo, si configura (.+?)o2oa.net(.+?), solo se permitirán las solicitudes que tengan 'o2oa.net' en su campo Referer.",
 
