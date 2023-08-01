@@ -19,7 +19,8 @@ public class ActionOauthQiyeweixinConfig extends BaseAction {
 
 		ActionResult<Qiyeweixin> result = new ActionResult<>();
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getScanLoginEnable())) {
-			Qiyeweixin qiyeweixin = Config.qiyeweixin();
+			Qiyeweixin qiyeweixin = new Qiyeweixin();
+			Config.qiyeweixin().copyTo(qiyeweixin);
 			qiyeweixin.setCorpSecret("");
 			qiyeweixin.setAttendanceSyncSecret("");
 			qiyeweixin.setSyncSecret("");

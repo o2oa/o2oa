@@ -19,7 +19,8 @@ public class ActionOauthDingdingConfig extends BaseAction {
 
 		ActionResult<Dingding> result = new ActionResult<>();
 		if (BooleanUtils.isTrue(Config.dingding().getScanLoginEnable())) {
-			Dingding dingding = Config.dingding();
+			Dingding dingding = new Dingding();
+			Config.dingding().copyTo(dingding);
 			dingding.setAppSecret("");
 			dingding.setEncodingAesKey("");
 			dingding.setScanLoginAppSecret("");
