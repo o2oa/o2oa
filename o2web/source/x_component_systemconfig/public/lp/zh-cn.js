@@ -796,6 +796,9 @@ o2.xApplication.systemconfig.LP = {
         "scriptingBlockedClasses": "服务端脚本禁用的Java类",
         "scriptingBlockedClassesInfo": "在此设置不允许在服务端脚本中使用的Java类，用逗号分隔。",
 
+        "httpWhiteList": "外部http接口服务地址白名单",
+        "httpWhiteListInfo": "外部http接口服务地址白名单，*代表不限制，用半角逗号分隔。",
+
         "refererHeadCheckRegular": "请求Referer校验",
         "refererHeadCheckRegularInfo": "在此处可配置服务器对于请求的Referer头的校验规则，配置一个正则表达式，通过正则表达式校验Referer值的请求才被允许。" +
             "合理配置此项可有效防止CSRF攻击。如配置 (.+?)o2oa.net(.+?) 仅允许referer包含“o2oa.net”的请求",

@@ -795,6 +795,9 @@ o2.xApplication.systemconfig.LP = {
         "scriptingBlockedClasses": "Java classes disabled by server-side scripting",
         "scriptingBlockedClassesInfo": "Set Java classes that are not allowed to be used in server-side scripts here, and multiple Java classes are separated by commas.",
 
+        "httpWhiteList": "External http interface service address white list",
+        "httpWhiteListInfo": "White list of external http interface service addresses, * means unlimited, separated by commas.",
+
         "refererHeadCheckRegular": "Request Referer verification",
         "refererHeadCheckRegularInfo": "Here you can configure the server's verification rules for the Referer header of the request, configure a regular expression, and only requests that verify the Referer value through the regular expression are allowed. " +
             "Properly configuring this item can effectively prevent CSRF attacks. For example, if you configure (.+?)o2oa.net(.+?) , it means that only requests that referer contains 'o2oa.net' are allowed.",
