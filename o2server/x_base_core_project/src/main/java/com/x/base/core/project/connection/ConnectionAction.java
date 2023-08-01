@@ -56,6 +56,7 @@ public class ConnectionAction {
 
 	private static ActionResponse getDelete(int connectTimeout, int readTimeout, String address, String method,
 			List<NameValuePair> heads) throws Exception {
+		HttpConnection.checkAddress(address);
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
@@ -113,6 +114,7 @@ public class ConnectionAction {
 
 	private static byte[] getDeleteBinary(int connectTimeout, int readTimeout, String address, String method,
 			List<NameValuePair> heads) throws Exception {
+		HttpConnection.checkAddress(address);
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
@@ -155,6 +157,7 @@ public class ConnectionAction {
 
 	private static ActionResponse postPut(int connectTimeout, int readTimeout, String address, String method,
 			List<NameValuePair> heads, Object body) throws Exception {
+		HttpConnection.checkAddress(address);
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
@@ -226,6 +229,7 @@ public class ConnectionAction {
 
 	private static byte[] postPutBinary(int connectTimeout, int readTimeout, String address, String method,
 			List<NameValuePair> heads, Object body) throws Exception {
+		HttpConnection.checkAddress(address);
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
