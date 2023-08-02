@@ -244,9 +244,7 @@ public class ActionCheckIn extends BaseAction {
                 emc.beginTransaction(AttendanceV2AppealInfo.class);
                 emc.persist(appealInfo, CheckPersistType.all);
                 emc.commit();
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("生成对应的异常打卡申请数据, {}", appealInfo.toString());
-                }
+                LOGGER.info("生成对应的异常打卡申请数据, {}", appealInfo.toString());
             }
         } catch (Exception e) {
             LOGGER.error(e);
