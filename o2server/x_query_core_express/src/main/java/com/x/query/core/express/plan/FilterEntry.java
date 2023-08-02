@@ -203,7 +203,7 @@ public class FilterEntry extends GsonPropertyObject {
 					Date ceil = null;
 					if (StringUtils.equals(compareValue, DEFINE_DATE)) {
 						floor = DateTools.floorDate(new Date(), 0);
-						ceil = DateTools.ceilDate(new Date(), 0);
+						ceil = floor;
 					} else if (StringUtils.equals(compareValue, DEFINE_MONTH)) {
 						floor = DateTools.floorMonth(new Date(), 0);
 						ceil = DateTools.ceilMonth(new Date(), 0);
