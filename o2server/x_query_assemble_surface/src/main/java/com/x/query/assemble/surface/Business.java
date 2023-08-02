@@ -332,7 +332,7 @@ public class Business {
             return true;
         }
         if (ListTools.isNotEmpty(o.getEditUnitList()) || ListTools.isNotEmpty(o.getReadUnitList())) {
-            List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+            List<String> units = this.organization().unit().listWithPersonSupNested(effectivePerson.getDistinguishedName());
             if (ListTools.containsAny(units, o.getEditUnitList())
                     || ListTools.containsAny(units, o.getReadUnitList())) {
                 return true;
@@ -380,7 +380,7 @@ public class Business {
             } else if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
                 result = true;
             } else if (ListTools.isNotEmpty(o.getEditUnitList())) {
-                List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+                List<String> units = this.organization().unit().listWithPersonSupNested(effectivePerson.getDistinguishedName());
                 if (ListTools.containsAny(units, o.getEditUnitList())) {
                     result = true;
                 }
@@ -408,7 +408,7 @@ public class Business {
             return true;
         }
         if (ListTools.isNotEmpty(o.getExecuteUnitList())) {
-            List<String> units = this.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
+            List<String> units = this.organization().unit().listWithPersonSupNested(effectivePerson.getDistinguishedName());
             if (ListTools.containsAny(units, o.getExecuteUnitList())) {
                 return true;
             }
