@@ -1957,12 +1957,14 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             for (var i = 0; i<dom_pageRule.style.length; i++){
                 switch (dom_pageRule.style[i]){
                     case "size":
-                        var v = dom_pageRule.style["size"].split(/\s/);
-                        var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
-                        var oo_pgSz = this.getOrCreateEl(oo_sectPr, "pgSz");
-                        this.setAttrs(oo_pgSz, {"w": w, "h": h});
-                        this.pageHeight = h;
-                        this.pageWidth = w;
+                        if( dom_pageRule.style["size"] ){
+                            var v = dom_pageRule.style["size"].split(/\s/);
+                            var w = v[0].toFloat()*20, h=v[1].toFloat()*20;
+                            var oo_pgSz = this.getOrCreateEl(oo_sectPr, "pgSz");
+                            this.setAttrs(oo_pgSz, {"w": w, "h": h});
+                            this.pageHeight = h;
+                            this.pageWidth = w;
+                        }
                         break;
                     case "margin-top":
                     case "margin-right":
