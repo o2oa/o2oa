@@ -88,7 +88,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 							logger.warn("流程{}的工作job={}数据映射异常：{}", process.getId(), job, e.getMessage());
 							logger.error(e);
 						}
-					}, ThisApplication.threadPool());
+					}, ThisApplication.forkJoinPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {
@@ -160,7 +160,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 									e.getMessage());
 							logger.error(e);
 						}
-					}, ThisApplication.threadPool());
+					}, ThisApplication.forkJoinPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {
