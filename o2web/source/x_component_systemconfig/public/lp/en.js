@@ -1386,7 +1386,12 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "Alibaba Cloud Storage",
                 "s3":"Amazon Cloud Storage",
                 "min":"MinIO Storage"
-            }
+            },
+            "protocolDataInfo": {
+                "ali": "Alibaba Cloud Storage",
+                "s3":"Amazon Cloud Storage",
+                "min":"MinIO Storage"
+            },
         },
         "removeNodeConfigTitle": "Confirmation of deleting a storage node",
         "removeNodeConfig": "The storage node '{name}' is about to be deleted, this operation may affect the files already stored in the system, <br>Are you sure you want to delete storage node '{name}'?",

@@ -1391,7 +1391,12 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
                 "min":"MinIO存储"
-            }
+            },
+            "protocolDataInfo": {
+                "ali": "Alibaba Cloud Storage",
+                "s3":"Amazon Cloud Storage",
+                "min":"MinIO Storage"
+            },
         },
         "removeNodeConfigTitle": "删除存储节点确认",
         "removeNodeConfig": "即将删除存储节点“{name}”，此操作可能会影响到系统中已存储的文件，<br>您确定要删除存储节点“{name}”吗？",
