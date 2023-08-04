@@ -11,6 +11,7 @@ Object.assign(o2.APP$Elinput.prototype, {
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
     },
+    reload: function(){},
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
