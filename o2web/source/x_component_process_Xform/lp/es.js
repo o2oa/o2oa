@@ -315,6 +315,8 @@ MWF.xApplication.process.Xform.LP = {
         "saveTitle": "Guardar el documento",
         "flow": "Continuar el flujo de trabajo",
         "flowTitle": "Continuar el flujo de trabajo del documento",
+        "handle": "mango",
+        "handleTitle": "Manejar el trabajo",
         "reroute": "Reprogramar",
         "rerouteTitle": "Reprogramar el documento",
         "reset": "Restablecer el responsable",

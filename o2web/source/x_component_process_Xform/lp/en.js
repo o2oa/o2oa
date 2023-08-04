@@ -319,6 +319,8 @@ MWF.xApplication.process.Xform.LP = {
         "saveTitle": "Save Document",
         "flow": "Flow",
         "flowTitle": "Flow Document",
+        "handle": "handle",
+        "handleTitle": "Handle work",
         "reroute": "Reroute",
         "rerouteTitle": "Reroute to other Activity",
         "reset": "Reset",

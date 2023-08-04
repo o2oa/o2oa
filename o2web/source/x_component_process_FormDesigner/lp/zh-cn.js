@@ -1532,6 +1532,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "closeTitle": "关闭文档",
         "save": "保存",
         "saveTitle": "保存文档",
+        "handle": "处理",
+        "handleTitle": "处理工作",
         "flow": "继续流转",
         "flowTitle": "继续流转文档",
         "reroute": "调度",

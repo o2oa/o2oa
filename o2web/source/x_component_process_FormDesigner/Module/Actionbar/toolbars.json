@@ -23,6 +23,17 @@
   {
     "type": "MWFToolBarButton",
     "img": "submit.png",
+    "title": "{{$.lp.handleTitle}}",
+    "action": "handleWork",
+    "text": "{{$.lp.handle}}",
+    "id": "action_handleWork",
+    "control": "allowProcessing",
+    "condition": "",
+    "read": false
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "submit.png",
     "title": "{{$.lp.flowTitle}}",
     "action": "processWork",
     "text": "{{$.lp.flow}}",

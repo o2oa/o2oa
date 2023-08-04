@@ -2432,6 +2432,158 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
+    handleWork: function( defaultRoute ){
+        var _self = this;
+
+        if (!this.businessData.work.startTime) {
+            this.startDraftProcess();
+        } else {
+            if (this.json.mode == "Mobile") {
+                setTimeout(function () {
+                    this.processWork_mobile( defaultRoute );
+                }.bind(this), 100);
+            } else {
+                this.handleWork_pc( defaultRoute );
+            }
+        }
+    },
+    handleWork_pc: function ( defaultRoute ) {
+        var _self = this;
+        //? 添加事件
+        // this.fireEvent("beforeProcessWork");
+        // if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+
+        var handlerNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
+        handlerNode.setStyle("opacity", 0);
+
+        var setSize = function (notRecenter) {
+
+            var dlg = this;
+            if (!dlg || !dlg.node) return;
+            dlg.node.setStyle("display", "block");
+            var size = handlerNode.getSize();
+            dlg.content.setStyles({
+                "height": size.y,
+                "width": size.x
+            });
+
+            var s = dlg.setContentSize();
+            if (!notRecenter) dlg.reCenter();
+        }
+        this.loadHandler(handlerNode, "process", function (processor) {
+            this.handlerDlg = o2.DL.open({
+                "title": this.app.lp.process,
+                "style": this.json.dialogStyle || "user",
+                "isResize": false,
+                "content": handlerNode,
+                "maskNode": this.app.content,
+                "positionHeight": 800,
+                "maxHeight": 800,
+                "maxHeightPercent": "98%",
+                "minTop": 5,
+                "width": "auto",
+                "height": "auto",
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            //避免双击
+                            if (this.processTimer) {
+                                clearTimeout(this.processTimer);
+                                this.processTimer = null;
+                            }
+                            this.processTimer = setTimeout(function(){
+                                if (this.processor) this.processor.okButton.click();
+                                this.processTimer = null;
+                            }.bind(this), 200)
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.handlerDlg.close();
+                        }.bind(this)
+                    }
+                ],
+                "onQueryClose": function(){
+                    if (this.processor) this.processor.destroy();
+                }.bind(this),
+                "onPostLoad": function () {
+                    processNode.setStyle("opacity", 1);
+                    processor.options.mediaNode = this.content;
+                    setSize.call(this)
+                }
+            })
+        }.bind(this), function () {
+            if (this.handlerDlg) setSize.call(this.handlerDlg, true)
+        }.bind(this), defaultRoute);
+    },
+    loadHandler: function (hanlderNode, style, postLoadFun, resizeFun, defaultRoute) {
+        var _self = this;
+        MWF.xDesktop.requireApp("process.Work", "Handler", null, false);
+        var op = this.getOpinion();
+        var mds = op.medias;
+        var innerNode;
+        if (layout.mobile) {
+            innerNode = new Element("div").inject(hanlderNode);
+        }
+        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, {
+            "style": (layout.mobile) ? "mobile" : (style || "default"),
+            "opinion": op.opinion,
+            "isHandwriting": this.json.isHandwriting === "no" ? false : true,
+            "tabletToolHidden": this.json.tabletToolHidden || [],
+            "tabletWidth": this.json.tabletWidth || 0,
+            "tabletHeight": this.json.tabletHeight || 0,
+            "defaultRoute": defaultRoute,
+            "onPostLoad": function () {
+                if (postLoadFun) postLoadFun(this);
+                _self.fireEvent("afterLoadProcessor", [this]);
+            },
+            "onResize": function () {
+                if (resizeFun) resizeFun();
+            },
+            "onCancel": function () {
+                hanlderNode.destroy();
+                _self.app.content.unmask();
+                delete this;
+            },
+            "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
+                if (!medias || !medias.length) {
+                    medias = mds;
+                } else {
+                    medias = medias.concat(mds)
+                }
+
+                var promise;
+                if (_self.toWordSubmitList && _self.toWordSubmitList.length){
+                    var p = [];
+                    _self.toWordSubmitList.each(function(editor){
+                        if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+                    });
+                    Promise.all(p).then(function(){
+                        _self.submitWork(routeName, opinion, medias, function () {
+                            this.destroy();
+                            hanlderNode.destroy();
+                            if (_self.handlerDlg) _self.handlerDlg.close();
+                            delete this;
+                        }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    }.bind(this));
+                }else{
+                    _self.submitWork(routeName, opinion, medias, function () {
+                        debugger;
+                        this.destroy();
+                        hanlderNode.destroy();
+                        if (_self.handlerDlg) _self.handlerDlg.close();
+                        delete this;
+                    }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                }
+            }
+        }, this);
+    },
+
+
     processWork: function ( defaultRoute ) {
         var _self = this;
 

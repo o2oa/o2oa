@@ -317,6 +317,8 @@ MWF.xApplication.process.Xform.LP = {
         "saveTitle": "保存文档",
         "flow": "继续流转",
         "flowTitle": "继续流转文档",
+        "handle": "处理",
+        "handleTitle": "处理工作",
         "reroute": "调度",
         "rerouteTitle": "调度文档",
         "reset": "重置处理人",
