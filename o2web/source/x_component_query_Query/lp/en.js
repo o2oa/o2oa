@@ -158,6 +158,7 @@ MWF.xApplication.query.Query.LP = {
 
     "viewExport": {
     "exportRange": "Export Range",
+        "fileName": "File Name",
         "to": "To",
         "item": "item",
         "description": "Note: There are {count} items of data that meet the conditions.",
