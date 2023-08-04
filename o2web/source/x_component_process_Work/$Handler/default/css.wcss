@@ -1,0 +1,12 @@
+{
+    "node" : {
+      "width" : "700px"
+    },
+    "node_wide" : {
+        "width" : "1100px"
+    },
+    "mask": {
+        "opacity": 0.7,
+        "background-color": "#eee"
+    }
+}

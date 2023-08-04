@@ -2470,9 +2470,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         }
-        this.loadHandler(handlerNode, "process", function (processor) {
+        this.loadHandler(handlerNode, "process", function (handler) {
             this.handlerDlg = o2.DL.open({
-                "title": this.app.lp.process,
+                "title": this.app.lp.handleWork,
                 "style": this.json.dialogStyle || "user",
                 "isResize": false,
                 "content": handlerNode,
@@ -2489,13 +2489,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "text": MWF.LP.process.button.ok,
                         "action": function (d, e) {
                             //避免双击
-                            if (this.processTimer) {
-                                clearTimeout(this.processTimer);
-                                this.processTimer = null;
+                            if (this.handlerTimer) {
+                                clearTimeout(this.handlerTimer);
+                                this.handlerTimer = null;
                             }
-                            this.processTimer = setTimeout(function(){
-                                if (this.processor) this.processor.okButton.click();
-                                this.processTimer = null;
+                            this.handlerTimer = setTimeout(function(){
+                                if (this.handler) this.handler.okButton.click();
+                                this.handlerTimer = null;
                             }.bind(this), 200)
                         }.bind(this)
                     },
@@ -2508,11 +2508,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onQueryClose": function(){
-                    if (this.processor) this.processor.destroy();
+                    if (this.handler) this.handler.destroy();
                 }.bind(this),
                 "onPostLoad": function () {
-                    processNode.setStyle("opacity", 1);
-                    processor.options.mediaNode = this.content;
+                    handlerNode.setStyle("opacity", 1);
+                    handler.options.mediaNode = this.content;
                     setSize.call(this)
                 }
             })
@@ -2529,7 +2529,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (layout.mobile) {
             innerNode = new Element("div").inject(hanlderNode);
         }
-        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, {
+
+        var processOptions = {
             "style": (layout.mobile) ? "mobile" : (style || "default"),
             "opinion": op.opinion,
             "isHandwriting": this.json.isHandwriting === "no" ? false : true,
@@ -2539,7 +2540,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "defaultRoute": defaultRoute,
             "onPostLoad": function () {
                 if (postLoadFun) postLoadFun(this);
-                _self.fireEvent("afterLoadProcessor", [this]);
+                //? _self.fireEvent("afterLoadProcessor", [this]);
             },
             "onResize": function () {
                 if (resizeFun) resizeFun();
@@ -2580,6 +2581,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
                 }
             }
+        };
+
+        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, {
+            processOptions: processOptions
         }, this);
     },
 

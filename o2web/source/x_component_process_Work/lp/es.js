@@ -31,6 +31,7 @@ MWF.xApplication.process.Work.LP = {
     "mail": "Correo electrónico",
     "save": "Guardar",
     "process": "Continuar el flujo de trabajo",
+    "handleWork": "manejar trabajo",
     "handwriting": "Escritura a mano",
     "audioRecord": "Grabación de audio",
 
