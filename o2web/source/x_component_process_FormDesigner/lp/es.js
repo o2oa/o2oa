@@ -9,6 +9,7 @@ MWF.xApplication.process.FormDesigner.LP = {
 		"notNullId": "El identificador del elemento no puede estar vacío",
         "notNumberId": "El identificador del elemento no puede ser solo un número",
         "notDoubleDotId": "El identificador del elemento no puede contener dos puntos consecutivos",
+        "notSpecialCharacterId": "Los siguientes caracteres no se pueden incluir en el ID del componente: !{}<>,;'\"",
         "history": "Historial",
         "componentTree": "Árbol",
         "invalidElementUIId": "Dado que los datos del componente Element deben vincularse en dos direcciones, no tenga el mismo nombre que el elemento de configuración:",

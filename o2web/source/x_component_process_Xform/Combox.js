@@ -1,4 +1,4 @@
-MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
 /** @class Combox 组合框组件。
  * @o2cn 组合框
  * @example

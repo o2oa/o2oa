@@ -9,6 +9,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "notNullId": "Element ID cannot be empty",
     "notNumberId": "Element identifiers cannot be pure numbers",
     "notDoubleDotId": "Element identifier cannot contain two consecutive dots",
+    "notSpecialCharacterId": "The following characters cannot be included in the component ID: !{}<>,;'\"",
     "history": "History",
     "componentTree": "Component Tree",
     "invalidElementUIId": "Dado que los datos del componente Element deben vincularse en dos direcciones, no tenga el mismo nombre que el elemento de configuración:",
