@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
@@ -55,7 +56,7 @@ public class NodeAgent extends Thread {
 		this.setName(NodeAgent.class.getName());
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(NodeAgent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeAgent.class);
 
 	private static ReentrantLock lock = new ReentrantLock();
 
@@ -120,7 +121,7 @@ public class NodeAgent extends Thread {
 									String strCommand = commandObject.getCommand();
 									strCommand = strCommand.trim();
 									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-									logger.info("收接到同步命令:" + strCommand);
+									LOGGER.info("收接到同步命令:" + strCommand);
 									String syncFilePath = dis.readUTF();
 									File file = new File(Config.base(), syncFilePath);
 									try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -140,7 +141,7 @@ public class NodeAgent extends Thread {
 										// 更新web服务配置信息
 										WebServers.updateWebServerConfigJson();
 									}
-									logger.info("同步完成");
+									LOGGER.info("同步完成");
 									continue;
 
 								}
@@ -150,7 +151,7 @@ public class NodeAgent extends Thread {
 									String strCommand = commandObject.getCommand();
 									strCommand = strCommand.trim();
 									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-									logger.info("收接到命令:" + strCommand);
+									LOGGER.info("收接到命令:" + strCommand);
 									String filename = dis.readUTF();
 									File tempFile = null;
 									switch (strCommand) {
@@ -162,12 +163,12 @@ public class NodeAgent extends Thread {
 										tempFile = Config.dir_custom_jars();
 										break;
 									}
-									logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
+									LOGGER.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
 									// File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
 									filename = filename.substring(0, filename.indexOf("."));
 									// uninstall
 									boolean result = this.customWarUninstall(filename);
-									logger.info("uninstall:" + result);
+									LOGGER.info("uninstall:" + result);
 									continue;
 								}
 
@@ -175,7 +176,7 @@ public class NodeAgent extends Thread {
 								if (matcher.find()) {
 									String strCommand = commandObject.getCommand().trim();
 									strCommand = StringUtils.substringAfter(strCommand, ":");
-									logger.info("收接到命令:" + strCommand);
+									LOGGER.info("收接到命令:" + strCommand);
 									String filename = dis.readUTF();
 
 									byte[] bytes;
@@ -192,7 +193,7 @@ public class NodeAgent extends Thread {
 									filename = filename.substring(0, filename.lastIndexOf("."));
 									// 部署
 									String result = this.redeploy(strCommand, filename, bytes, true);
-									logger.info("部署:" + result);
+									LOGGER.info("部署:" + result);
 									continue;
 
 								}
@@ -213,7 +214,7 @@ public class NodeAgent extends Thread {
 										}
 										bytes = bos.toByteArray();
 									}
-									logger.info("receive resource bytes {}", bytes.length);
+									LOGGER.info("receive resource bytes {}", bytes.length);
 									String result = this.uploadResource(commandObject.getParam(), bytes);
 									dos.writeUTF(result);
 									dos.flush();
@@ -241,7 +242,7 @@ public class NodeAgent extends Thread {
 									String strCommand = commandObject.getCommand();
 									strCommand = strCommand.trim();
 									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
-									logger.info("收接到命令:" + strCommand);
+									LOGGER.info("收接到命令:" + strCommand);
 									// 为了同步文件
 									commandQueue.add(strCommand);
 									continue;
@@ -252,6 +253,8 @@ public class NodeAgent extends Thread {
 
 							}
 						}
+					} catch (SocketException se) {
+						LOGGER.debug("nodeAgent is closed:{}.", se.getMessage());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -259,6 +262,7 @@ public class NodeAgent extends Thread {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 				}
 			}
 		} catch (Exception e) {
@@ -268,6 +272,7 @@ public class NodeAgent extends Thread {
 				try {
 					serverSocket.close();
 				} catch (IOException e) {
+					LOGGER.error(e);
 				}
 			}
 		}
@@ -277,10 +282,11 @@ public class NodeAgent extends Thread {
 		try {
 			this.runFlag = false;
 			if (serverSocket != null) {
-				this.serverSocket.close();
+				serverSocket.close();
 				this.serverSocket = null;
 			}
 		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 	}
 
@@ -350,7 +356,7 @@ public class NodeAgent extends Thread {
 				return;
 			}
 		} catch (Exception e) {
-			logger.print("readLog error:{}", e.getMessage());
+			LOGGER.print("readLog error:{}", e.getMessage());
 		}
 		dos.writeUTF("failure");
 		dos.flush();
@@ -382,7 +388,7 @@ public class NodeAgent extends Thread {
 					ZipTools.unZip(zipFile, ignoreList, dist, WebServers.WEB_SERVER_FOLDERS, dist2, asNew, null);
 
 					FileUtils.cleanDirectory(tempFile);
-					logger.print("upload resource {} success!", fileName);
+					LOGGER.print("upload resource {} success!", fileName);
 				} else if (StringUtils.isNotEmpty(filePath)) {
 					filePath = filePath.trim();
 					File dist = Config.path_webroot(true).toFile();
@@ -396,7 +402,7 @@ public class NodeAgent extends Thread {
 						file.delete();
 					}
 					FileUtils.writeByteArrayToFile(file, bytes);
-					logger.print("upload resource {} success!", fileName);
+					LOGGER.print("upload resource {} success!", fileName);
 				} else {
 					result = "failure";
 				}
@@ -405,7 +411,7 @@ public class NodeAgent extends Thread {
 			}
 
 		} catch (Exception e) {
-			logger.print("upload resource {} error={}", XGsonBuilder.toJson(param), e.getMessage());
+			LOGGER.print("upload resource {} error={}", XGsonBuilder.toJson(param), e.getMessage());
 			result = "failure";
 		}
 		return result;
@@ -414,7 +420,7 @@ public class NodeAgent extends Thread {
 	private String redeploy(String type, String name, byte[] bytes, boolean rebootApp) {
 		String result = "success";
 		try {
-			logger.print("redeploy:{}.", name);
+			LOGGER.print("redeploy:{}.", name);
 			switch (type) {
 			case "storeWar":
 				storeWar(name, bytes);
@@ -465,7 +471,7 @@ public class NodeAgent extends Thread {
 						app.destroy();
 						stop = true;
 						war.delete();
-						logger.print("{} need stop.", app.getDisplayName());
+						LOGGER.print("{} need stop.", app.getDisplayName());
 					}
 				}
 			}
@@ -526,7 +532,7 @@ public class NodeAgent extends Thread {
 	}
 
 	private void customZip(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
-		logger.print("start deploy customZip app {} ", simpleName);
+		LOGGER.print("start deploy customZip app {} ", simpleName);
 		File tempFile = new File(Config.base(), "local/temp/redeploy");
 		FileTools.forceMkdir(tempFile);
 		FileUtils.cleanDirectory(tempFile);
