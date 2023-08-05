@@ -75,6 +75,10 @@ window.O2Processor = new Class({
             this.status = "popup";
             this.maskNode.show();
             this.node.show();
+
+            //强制刷新路由
+            //this.refreshRoute();
+
             this.positionSeted = false; //重新设置位置
             this.setSize(this.getCurrentRouteOrgList().length);
             var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
@@ -90,6 +94,10 @@ window.O2Processor = new Class({
 
             this.node.setStyles( this.css.popupNode );
             this.node.inject( this.container );
+
+            //强制刷新路由
+            //this.refreshRoute();
+
             this.positionSeted = false; //重新设置位置
             this.setSize( this.getCurrentRouteOrgList().length );
         }else{
@@ -106,7 +114,13 @@ window.O2Processor = new Class({
             if( this.topNode )this.topNode.show();
             if( this.buttonNode )this.buttonNode.show();
 
-            this.loadContent();
+            //强制刷新路由
+            //if( this.contentLoaded ){
+            //    this.refreshRoute();
+            //}else{
+                this.loadContent();
+            //}
+
             this.setPopupEvents();
             this.node.setStyles( this.css.popupNode );
             this.node.inject( this.container );
@@ -202,7 +216,11 @@ window.O2Processor = new Class({
         }
 
         this.routeGroupObject = null;
+        this.selectedRouteGroup = null;
+        if( this.routeGroupArea )this.routeGroupArea.empty();
         this.getRouteGroupList();
+
+        if(this.routeSelectorArea)this.routeSelectorArea.empty();
 
         var orgLength = this.getMaxOrgLength();
         if( orgLength === 0 ) { //流程选人数量为0
