@@ -56,7 +56,9 @@ class ActionListWithApplication extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithApplication.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationId) throws Exception {
+
 		LOGGER.debug("execute:{}, applicationId:{}.", effectivePerson::getDistinguishedName, () -> applicationId);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = new ArrayList<>();
@@ -95,6 +97,15 @@ class ActionListWithApplication extends BaseAction {
 		}
 	}
 
+	/**
+	 * 通过活动的form设置得到那些活动使用了表单,再通过活动的process得到processId,生成form->processId的一对多map
+	 * 
+	 * @param business
+	 * @param formIds
+	 * @return
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	private LinkedHashMap<String, Set<String>> formRelatedProcess(Business business, List<String> formIds)
 			throws InterruptedException, ExecutionException {
 		return ThisApplication.forkJoinPool().submit(() -> Stream
