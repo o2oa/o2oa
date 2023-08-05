@@ -84,7 +84,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         var value = this._getBusinessData();
         if( value && !isDate)return value;
         if (!value) value = this._computeValue();
-        if (value.then) return value;
+        if (value && value.then) return value;
 
         var d = (!!value) ? Date.parse(value) : "";
         if (isDate){
