@@ -1386,6 +1386,10 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "Alibaba Cloud Storage",
                 "s3":"Amazon Cloud Storage",
                 "min":"MinIO Storage"
+            },
+            "protocolDataInfo": {
+                "ali": "If you have not installed the Aliyun OSS integration plug-in in the application market, please install it first.",
+                "min": "If you have not installed the MinIO cloud storage integration plug-in in the application market, please install it first."
             }
         },
         "removeNodeConfigTitle": "Confirmation of deleting a storage node",

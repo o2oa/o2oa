@@ -1391,6 +1391,10 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
                 "min":"MinIO存储"
+            },
+            "protocolDataInfo": {
+                "ali": "如果您没有在应用市场安装阿里云OSS集成插件，请先安装。",
+                "min":"如果您没有在应用市场安装MinIO云存储集成插件，请先安装。"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",

@@ -1379,7 +1379,11 @@ o2.xApplication.systemconfig.LP = {
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3":"Almacenamiento en la nube de Amazon",
 				"min":"Almacenamiento MinIO"
-			}
+			},
+            "protocoloDataInfo": {
+                "ali": "Si no ha instalado el complemento de integración Aliyun OSS en el mercado de aplicaciones, instálelo primero",
+                "min": "Si no ha instalado el complemento de integración de almacenamiento en la nube MinIO en el mercado de aplicaciones, instálelo primero"
+            }
         },
         "removeNodeConfigTitle": "Confirmación",
 		"removeNodeConfig": "Está a punto de eliminar el nodo de almacenamiento \"{name}\". Esta acción podría afectar al almacenamiento de archivos existente en el sistema.<br>¿Está seguro de querer eliminar el nodo de almacenamiento\"{name}\"?",
