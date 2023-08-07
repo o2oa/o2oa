@@ -66,8 +66,8 @@ MWF.xApplication.process.Work.Handler = new Class({
     loadProcessor: function () {
         this.processor = new MWF.xApplication.process.Work.Handler.Processor(this.processorContentNode, this.task, this.options.processOptions, this.form);
     },
-    destory: function () {
-
+    destroy: function () {
+        if( this.processor )this.processor.destroy();
     }
 });
 
