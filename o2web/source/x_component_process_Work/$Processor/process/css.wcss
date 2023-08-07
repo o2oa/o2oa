@@ -21,7 +21,7 @@
         "width" : "500px",
         "border-right" : "1px solid #ccc"
     },
-    "routeLeftWarper_handle" : {
+    "routeLeftWarper_flow" : {
         "float" : "left",
         "width" : "450px",
         "border-right" : "1px solid #ccc"
@@ -35,7 +35,7 @@
         "float" : "left",
         "width" : "495px"
     },
-    "routeRightWarper_handle" : {
+    "routeRightWarper_flow" : {
         "float" : "left",
         "width" : "445px"
     },
@@ -150,7 +150,7 @@
         "border-right": "1px solid #cccccc",
         "background-color": "#EEE"
     },
-    "inputOpinionNode_wide_handle": {
+    "inputOpinionNode_wide_flow": {
         "height": "199px",
         "width": "450px",
         "float": "left",
@@ -171,7 +171,7 @@
         "background-color": "#FFF",
         "overflow": "hidden"
     },
-    "selectIdeaNode_wide_handle": {
+    "selectIdeaNode_wide_flow": {
         "height": "199px",
         "width": "445px",
         "float": "right",
@@ -269,7 +269,7 @@
         "color": "#666",
         "background": "#FFF"
     },
-    "inputTextarea_wide_handle": {
+    "inputTextarea_wide_flow": {
         "font-family": "Microsoft YaHei",
         "border": "0px",
         "overflow": "auto",

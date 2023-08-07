@@ -18,7 +18,7 @@
     "opacity": 0.4,
     "z-index":100
   },
-  "handleNode_Area": {
+  "flowNode_Area": {
     "height": "300px",
     "width": "800px",
     "padding": "10px",

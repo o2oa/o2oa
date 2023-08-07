@@ -2432,7 +2432,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
-    handleWork: function( defaultRoute ){
+    flowWork: function( defaultRoute ){
         var _self = this;
 
         if (!this.businessData.work.startTime) {
@@ -2443,11 +2443,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.processWork_mobile( defaultRoute );
                 }.bind(this), 100);
             } else {
-                this.handleWork_pc( defaultRoute );
+                this.flowWork_pc( defaultRoute );
             }
         }
     },
-    handleWork_pc: function ( defaultRoute ) {
+    flowWork_pc: function ( defaultRoute ) {
         var _self = this;
         //? 添加事件
         // this.fireEvent("beforeProcessWork");
@@ -2465,15 +2465,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-        var handlerNode = new Element("div", { "styles": this.app.css.handleNode_Area }).inject(this.node);
-        handlerNode.setStyle("opacity", 0);
+        var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
+        flowNode.setStyle("opacity", 0);
 
         var setSize = function (notRecenter) {
 
             var dlg = this;
             if (!dlg || !dlg.node) return;
             dlg.node.setStyle("display", "block");
-            var size = handlerNode.getSize();
+            var size = flowNode.getSize();
             dlg.content.setStyles({
                 "height": size.y,
                 "width": size.x
@@ -2482,12 +2482,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         }
-        this.loadHandler(handlerNode, "process", function (handler) {
-            this.handlerDlg = o2.DL.open({
-                "title": this.app.lp.handleWork,
+        this.loadFlow(flowNode, "process", function (flow) {
+            this.flowDlg = o2.DL.open({
+                "title": this.app.lp.flowWork,
                 "style": this.json.dialogStyle || "user",
                 "isResize": false,
-                "content": handlerNode,
+                "content": flowNode,
                 "maskNode": this.app.content,
                 "positionHeight": 800,
                 "maxHeight": 800,
@@ -2501,13 +2501,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "text": MWF.LP.process.button.ok,
                         "action": function (d, e) {
                             //避免双击
-                            if (this.handlerTimer) {
-                                clearTimeout(this.handlerTimer);
-                                this.handlerTimer = null;
+                            if (this.flowTimer) {
+                                clearTimeout(this.flowTimer);
+                                this.flowTimer = null;
                             }
-                            this.handlerTimer = setTimeout(function(){
-                                if (this.handler) this.handler.okButton.click();
-                                this.handlerTimer = null;
+                            this.flowTimer = setTimeout(function(){
+                                if (this.flow) this.flow.okButton.click();
+                                this.flowTimer = null;
                             }.bind(this), 200)
                         }.bind(this)
                     },
@@ -2515,26 +2515,26 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         "type": "cancel",
                         "text": MWF.LP.process.button.cancel,
                         "action": function () {
-                            this.handlerDlg.close();
+                            this.flowDlg.close();
                         }.bind(this)
                     }
                 ],
                 "onQueryClose": function(){
-                    if (this.handler) this.handler.destroy();
+                    if (this.flow) this.flow.destroy();
                 }.bind(this),
                 "onPostLoad": function () {
-                    handlerNode.setStyle("opacity", 1);
-                    handler.options.mediaNode = this.content;
+                    flowNode.setStyle("opacity", 1);
+                    flow.options.mediaNode = this.content;
                     setSize.call(this)
                 }
             })
         }.bind(this), function () {
-            if (this.handlerDlg) setSize.call(this.handlerDlg, true)
+            if (this.flowDlg) setSize.call(this.flowDlg, true)
         }.bind(this), defaultRoute);
     },
-    loadHandler: function (hanlderNode, style, postLoadFun, resizeFun, defaultRoute) {
+    loadFlow: function (hanlderNode, style, postLoadFun, resizeFun, defaultRoute) {
         var _self = this;
-        MWF.xDesktop.requireApp("process.Work", "Handler", null, false);
+        MWF.xDesktop.requireApp("process.Work", "Flow", null, false);
         var op = this.getOpinion();
         var mds = op.medias;
         var innerNode;
@@ -2582,7 +2582,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _self.submitWork(routeName, opinion, medias, function () {
                             this.destroy();
                             hanlderNode.destroy();
-                            if (_self.handlerDlg) _self.handlerDlg.close();
+                            if (_self.flowDlg) _self.flowDlg.close();
                             delete this;
                         }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
                     }.bind(this));
@@ -2591,7 +2591,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         debugger;
                         this.destroy();
                         hanlderNode.destroy();
-                        if (_self.handlerDlg) _self.handlerDlg.close();
+                        if (_self.flowDlg) _self.flowDlg.close();
                         delete this;
                     }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
                 }
@@ -2600,7 +2600,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         options.processOptions = processOptions;
 
-        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, options, this);
+        this.flow = new MWF.xApplication.process.Work.Flow(innerNode || hanlderNode, this.businessData.task, options, this);
     },
 
 

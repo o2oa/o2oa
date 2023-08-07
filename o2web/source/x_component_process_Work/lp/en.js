@@ -31,7 +31,7 @@ MWF.xApplication.process.Work.LP = {
     "mail": "Mail",
     "save": "Save",
     "process": "Flow",
-    "handleWork": "Process Work",
+    "flowWork": "Process Work",
     "handwriting": "Handwriting",
     "audioRecord": "Record",
 

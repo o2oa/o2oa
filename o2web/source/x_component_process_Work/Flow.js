@@ -2,7 +2,7 @@ MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp." + MWF.language, null, false);
 
-MWF.xApplication.process.Work.Handler = new Class({
+MWF.xApplication.process.Work.Flow = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
@@ -12,8 +12,8 @@ MWF.xApplication.process.Work.Handler = new Class({
     initialize: function (container, task, options, form) {
         this.setOptions(options);
 
-        this.path = "../x_component_process_Work/$Handler/";
-        this.cssPath = "../x_component_process_Work/$Handler/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_process_Work/$Flow/";
+        this.cssPath = "../x_component_process_Work/$Flow/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         this.task = task;
@@ -75,8 +75,8 @@ MWF.xApplication.process.Work.Handler = new Class({
             debugger;
             this.fireEvent("resize");
         }.bind(this);
-        processOptions.inHandle = true;
-        this.processor = new MWF.xApplication.process.Work.Handler.Processor(
+        processOptions.inFlow = true;
+        this.processor = new MWF.xApplication.process.Work.Flow.Processor(
             this.processorContentNode,
             this.task,
             processOptions,
@@ -104,7 +104,7 @@ MWF.xApplication.process.Work.Handler = new Class({
     }
 });
 
-MWF.xApplication.process.Work.Handler.Processor = new Class({
+MWF.xApplication.process.Work.Flow.Processor = new Class({
     Extends: MWF.xApplication.process.Work.Processor
 });
 

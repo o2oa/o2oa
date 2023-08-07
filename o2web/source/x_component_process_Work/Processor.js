@@ -15,7 +15,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         "tabletWidth": 0,
         "tabletHeight": 0,
         "orgHeight": 276,
-        "inHandle": false,
+        "inFlow": false,
         "maxOrgCountPerline": 2,
         "isManagerProcess": false, //是否为管理员提交
         "useDefaultOpinion": true
@@ -135,7 +135,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
                     this.routeLeftWarper = new Element("div").inject(this.routeContainer);
                     if( this.getMaxOrgLength() > 1 ){
-                        this.routeLeftWarper.setStyles( this.options.inHandle ? this.css.routeLeftWarper_handle : this.css.routeLeftWarper );
+                        this.routeLeftWarper.setStyles( this.options.inFlow ? this.css.routeLeftWarper_flow : this.css.routeLeftWarper );
                     }else{
                         this.routeLeftWarper.setStyles( this.css.routeLeftWarper_single );
                     }
@@ -147,7 +147,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
                     this.routeRightWarper = new Element("div").inject(this.routeContainer);
                     if( this.getMaxOrgLength() > 1 ){
-                        this.routeLeftWarper.setStyles( this.options.inHandle ? this.css.routeRightWarper_handle : this.css.routeRightWarper );
+                        this.routeLeftWarper.setStyles( this.options.inFlow ? this.css.routeRightWarper_flow : this.css.routeRightWarper );
                     }else{
                         this.routeLeftWarper.setStyles( this.css.routeRightWarper_single );
                     }
@@ -1863,12 +1863,12 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
         debugger;
         if (this.getMaxOrgLength() > 1) {
-            if( this.options.inHandle ){
-                this.node.setStyles(this.css.node_wide_handle);
-                this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide_handle);
-                this.inputTextarea.setStyles(this.css.inputTextarea_wide_handle);
-                this.inputTextareaStyle = this.css.inputTextarea_wide_handle;
-                this.selectIdeaNode.setStyles(this.css.selectIdeaNode_wide_handle);
+            if( this.options.inFlow ){
+                this.node.setStyles(this.css.node_wide_flow);
+                this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide_flow);
+                this.inputTextarea.setStyles(this.css.inputTextarea_wide_flow);
+                this.inputTextareaStyle = this.css.inputTextarea_wide_flow;
+                this.selectIdeaNode.setStyles(this.css.selectIdeaNode_wide_flow);
             }else{
                 this.node.setStyles(this.css.node_wide);
                 this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide);

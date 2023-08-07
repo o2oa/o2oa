@@ -32,7 +32,7 @@ MWF.xApplication.process.Work.LP = {
     "mail": "邮箱",
     "save": "保存",
     "process": "继续流转",
-    "handleWork": "处理工作",
+    "flowWork": "继续流转",
     "handwriting": "手写",
     "audioRecord": "录音",
 
