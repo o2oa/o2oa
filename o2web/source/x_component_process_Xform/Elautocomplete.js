@@ -1,4 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
 
 if( !o2.APP$ElSelector ){
     o2.xApplication.process.Xform.$ElSelector = o2.APP$ElSelector = new Class({
