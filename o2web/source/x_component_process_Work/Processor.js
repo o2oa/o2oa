@@ -15,6 +15,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         "tabletWidth": 0,
         "tabletHeight": 0,
         "orgHeight": 276,
+        "inHandle": false,
         "maxOrgCountPerline": 2,
         "isManagerProcess": false, //是否为管理员提交
         "useDefaultOpinion": true
@@ -132,20 +133,24 @@ MWF.xApplication.process.Work.Processor = new Class({
                         "styles": this.css.routeContainer
                     }).inject(this.routeOpinionTile, "before");
 
-                    this.routeLeftWarper = new Element("div", {
-                        "styles":
-                            this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
-                    }).inject(this.routeContainer);
+                    this.routeLeftWarper = new Element("div").inject(this.routeContainer);
+                    if( this.getMaxOrgLength() > 1 ){
+                        this.routeLeftWarper.setStyles( this.options.inHandle ? this.css.routeLeftWarper_handle : this.css.routeLeftWarper );
+                    }else{
+                        this.routeLeftWarper.setStyles( this.css.routeLeftWarper_single );
+                    }
                     this.routeGroupTitle = new Element("div", {
                         "styles": this.css.routeSelectorTile,
                         "text": MWF.xApplication.process.Work.LP.selectRouteGroup
                     }).inject(this.routeLeftWarper);
                     this.routeGroupArea = new Element("div", {"styles": this.css.routeSelectorArea_hasGroup}).inject(this.routeLeftWarper);
 
-                    this.routeRightWarper = new Element("div", {
-                        "styles":
-                            this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
-                    }).inject(this.routeContainer);
+                    this.routeRightWarper = new Element("div").inject(this.routeContainer);
+                    if( this.getMaxOrgLength() > 1 ){
+                        this.routeLeftWarper.setStyles( this.options.inHandle ? this.css.routeRightWarper_handle : this.css.routeRightWarper );
+                    }else{
+                        this.routeLeftWarper.setStyles( this.css.routeRightWarper_single );
+                    }
                     this.routeSelectorTile = new Element("div", {
                         "styles": this.css.routeSelectorTile,
                         "text": MWF.xApplication.process.Work.LP.selectRoute
@@ -1858,11 +1863,19 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
         debugger;
         if (this.getMaxOrgLength() > 1) {
-            this.node.setStyles(this.css.node_wide);
-            this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide);
-            this.inputTextarea.setStyles(this.css.inputTextarea_wide);
-            this.inputTextareaStyle = this.css.inputTextarea_wide;
-            this.selectIdeaNode.setStyles(this.css.selectIdeaNode_wide);
+            if( this.options.inHandle ){
+                this.node.setStyles(this.css.node_wide_handle);
+                this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide_handle);
+                this.inputTextarea.setStyles(this.css.inputTextarea_wide_handle);
+                this.inputTextareaStyle = this.css.inputTextarea_wide_handle;
+                this.selectIdeaNode.setStyles(this.css.selectIdeaNode_wide_handle);
+            }else{
+                this.node.setStyles(this.css.node_wide);
+                this.inputOpinionNode.setStyles(this.css.inputOpinionNode_wide);
+                this.inputTextarea.setStyles(this.css.inputTextarea_wide);
+                this.inputTextareaStyle = this.css.inputTextarea_wide;
+                this.selectIdeaNode.setStyles(this.css.selectIdeaNode_wide);
+            }
 
         } else {
             this.node.setStyles(this.css.node);

@@ -2453,7 +2453,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // this.fireEvent("beforeProcessWork");
         // if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
-        var handlerNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
+        if (!this.formCustomValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        if (!this.formValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        var handlerNode = new Element("div", { "styles": this.app.css.handleNode_Area }).inject(this.node);
         handlerNode.setStyle("opacity", 0);
 
         var setSize = function (notRecenter) {
@@ -2530,6 +2542,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             innerNode = new Element("div").inject(hanlderNode);
         }
 
+        var options = {
+            "onResize": function () {
+                if (resizeFun) resizeFun();
+            }
+        };
+
         var processOptions = {
             "style": (layout.mobile) ? "mobile" : (style || "default"),
             "opinion": op.opinion,
@@ -2541,9 +2559,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "onPostLoad": function () {
                 if (postLoadFun) postLoadFun(this);
                 //? _self.fireEvent("afterLoadProcessor", [this]);
-            },
-            "onResize": function () {
-                if (resizeFun) resizeFun();
             },
             "onCancel": function () {
                 hanlderNode.destroy();
@@ -2583,9 +2598,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         };
 
-        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, {
-            processOptions: processOptions
-        }, this);
+        options.processOptions = processOptions;
+
+        this.handler = new MWF.xApplication.process.Work.Handler(innerNode || hanlderNode, this.businessData.task, options, this);
     },
 
 

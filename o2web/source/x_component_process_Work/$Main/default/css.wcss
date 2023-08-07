@@ -18,6 +18,14 @@
     "opacity": 0.4,
     "z-index":100
   },
+  "handleNode_Area": {
+    "height": "300px",
+    "width": "800px",
+    "padding": "10px",
+    "background-color": "#FFF",
+    "overflow": "hidden"
+  },
+
   "processNode_from": {
     "width": "480px",
     "min-height": "280px",

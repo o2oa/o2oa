@@ -26,7 +26,7 @@ MWF.xApplication.process.Work.Handler = new Class({
         this.load();
     },
     load: function () {
-        this.node = new Element("div", {
+        this.node = new Element("div.node", {
             styles: {
                 overflow: "hidden"
             }
@@ -38,10 +38,10 @@ MWF.xApplication.process.Work.Handler = new Class({
                 "width": "100px"
             }
         }).inject(this.node);
-        this.contentNode = new Element("div", {
+        this.contentNode = new Element("div.contentNode", {
             styles: {
                 "margin-left": "100px",
-                "width": "1000px"
+                "width": "900px"
             }
         }).inject(this.node);
 
@@ -64,10 +64,43 @@ MWF.xApplication.process.Work.Handler = new Class({
         }
     },
     loadProcessor: function () {
-        this.processor = new MWF.xApplication.process.Work.Handler.Processor(this.processorContentNode, this.task, this.options.processOptions, this.form);
+        var processOptions = this.options.processOptions;
+        processOptions.onResize = function () {
+            var size = this.processorContentNode.getSize();
+            var naviSize = this.naviNode.getSize();
+            this.container.setStyles({
+                "height": size.y,
+                "width": size.x + naviSize.x + this.getOffsetX( this.naviNode )
+            });
+            debugger;
+            this.fireEvent("resize");
+        }.bind(this);
+        processOptions.inHandle = true;
+        this.processor = new MWF.xApplication.process.Work.Handler.Processor(
+            this.processorContentNode,
+            this.task,
+            processOptions,
+            this.form
+        );
     },
     destroy: function () {
         if( this.processor )this.processor.destroy();
+    },
+    getOffsetY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 ) +
+            (node.getStyle("padding-top").toInt() || 0 ) +
+            (node.getStyle("padding-bottom").toInt() || 0 )+
+            (node.getStyle("border-top-width").toInt() || 0 ) +
+            (node.getStyle("border-bottom-width").toInt() || 0 );
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
     }
 });
 
