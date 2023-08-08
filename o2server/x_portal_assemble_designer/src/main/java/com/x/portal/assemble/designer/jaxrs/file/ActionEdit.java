@@ -55,6 +55,9 @@ class ActionEdit extends BaseAction {
 					ListTools.toList(file.getName()))) {
 				throw new ExceptionDuplicateRestrictFlag(File.class, file.getName());
 			}
+			if(StringUtils.isBlank(file.getShortUrlCode())){
+				file.setShortUrlCode(getShortUrlCode(business, file, 6));
+			}
 			emc.check(file, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(File.class);
@@ -73,7 +76,7 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = 4289841165185269299L;
 
 		static WrapCopier<Wi, File> copier = WrapCopierFactory.wi(Wi.class, File.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify));
+				ListTools.toList(JpaObject.FieldsUnmodify, File.data_FIELDNAME, File.shortUrlCode_FIELDNAME));
 
 	}
 

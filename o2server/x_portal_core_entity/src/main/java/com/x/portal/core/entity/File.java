@@ -2,17 +2,9 @@ package com.x.portal.core.entity;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -80,10 +72,20 @@ public class File extends SliceJpaObject {
 	@Flag
 	@FieldDescribe("文件别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
 	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
 	/* 如果设置别名,那么需要全局唯一 */
 	@CitationNotExist(fields = { "id", "alias" }, type = File.class))
 	private String alias;
+
+	public static final String shortUrlCode_FIELDNAME = "shortUrlCode";
+	@Flag
+	@FieldDescribe("文件短url编码.")
+	@Column(length = length_id, name = ColumnNamePrefix + shortUrlCode_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + shortUrlCode_FIELDNAME)
+	@CheckPersist(allowEmpty = true, citationNotExists =
+	@CitationNotExist(fields = { "id", "shortUrlCode" }, type = File.class))
+	private String shortUrlCode;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
@@ -129,16 +131,8 @@ public class File extends SliceJpaObject {
 	public static final String length_FIELDNAME = "length";
 	@FieldDescribe("文件大小.")
 	@Column(name = ColumnNamePrefix + length_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + length_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Long length;
-
-	/* 更新运行方法 */
-
-	// public static String[] FLA GS = new String[] { id_FIELDNAME, alias_FIELDNAME
-	// };
-
-	// public static String[] RESTRICTFLA GS = new String[] { name_FIELDNAME };
 
 	public String getName() {
 		return name;
@@ -212,4 +206,11 @@ public class File extends SliceJpaObject {
 		this.length = length;
 	}
 
+	public String getShortUrlCode() {
+		return shortUrlCode;
+	}
+
+	public void setShortUrlCode(String shortUrlCode) {
+		this.shortUrlCode = shortUrlCode;
+	}
 }

@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.file;
 
+import com.x.base.core.project.tools.URLTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -27,7 +28,7 @@ class ActionCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			com.x.portal.assemble.designer.Business business = new Business(emc);
+			Business business = new Business(emc);
 			Portal portal = emc.flag(wi.getPortal(), Portal.class);
 			if (null == portal) {
 				throw new ExceptionEntityNotExist(wi.getPortal(), Portal.class);
@@ -41,19 +42,20 @@ class ActionCreate extends BaseAction {
 			file.setId(wi.getId());
 			file.setPortal(portal.getId());
 			this.updateCreator(file, effectivePerson);
+			if (StringUtils.isEmpty(file.getName())) {
+				throw new ExceptionEmptyName();
+			}
 			emc.beginTransaction(File.class);
 			if (StringUtils.isNotEmpty(file.getAlias())) {
 				if (emc.duplicateWithFlags(file.getId(), File.class, file.getAlias())) {
 					throw new ExceptionDuplicateFlag(File.class, file.getAlias());
 				}
 			}
-			if (StringUtils.isEmpty(file.getName())) {
-				throw new ExceptionEmptyName();
-			}
 			if (emc.duplicateWithRestrictFlags(File.class, File.portal_FIELDNAME, file.getPortal(), file.getId(),
 					ListTools.toList(file.getName()))) {
 				throw new ExceptionDuplicateRestrictFlag(File.class, file.getName());
 			}
+			file.setShortUrlCode(getShortUrlCode(business, file, 6));
 			emc.persist(file, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(File.class);
@@ -64,6 +66,8 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+
+
 	public static class Wo extends WoId {
 	}
 
@@ -72,7 +76,7 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = 4289841165185269299L;
 
 		static WrapCopier<Wi, File> copier = WrapCopierFactory.wi(Wi.class, File.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, com.x.portal.core.entity.File.data_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, File.data_FIELDNAME, File.shortUrlCode_FIELDNAME));
 
 	}
 

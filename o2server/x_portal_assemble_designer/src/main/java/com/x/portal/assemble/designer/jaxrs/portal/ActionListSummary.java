@@ -13,6 +13,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.SortTools;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
@@ -33,6 +34,7 @@ class ActionListSummary extends BaseAction {
 			}
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());
+
 			result.setData(wos);
 			return result;
 		}
