@@ -714,7 +714,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeModulesLoad");
         this._loadModules(this.node);
         if (Browser.firefox) this.container.setStyle("opacity", 1);
-        
+
         if (this.json.mode === "Mobile") {
             var node = document.body.getElement(".o2_form_mobile_actions");
             if (node) {
@@ -3837,6 +3837,79 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
         }
         window.open(downloadUrl);
+    },
+    monitor: function () {
+
+        var node = new Element("div");
+        var container = new Element("div").inject(node);
+        var monitor;
+        var monitorDlg = o2.DL.open({
+            "title": MWF.xApplication.process.Xform.LP.monitor,
+            "width": "1100",
+            "isResize" : true,
+            "height" : "720px",
+            "maxHeightPercent" : "98%",
+            "mask": true,
+            "isMax" : true,
+            "content": node,
+            "container": this.app.content,
+            "maskNode": this.app.content,
+            "onQueryClose": function(){
+
+            }.bind(this),
+            "buttonList": [
+                {
+                    "text": MWF.xApplication.process.Xform.LP.close,
+                    "action": function(){
+                        monitorDlg.close();
+                    }.bind(this)
+                }
+            ],
+            "onMax" : function(){
+                monitor.logProcessChartNode.setStyle("height",this.contentHeight+"px");
+                monitor.paperNode.setStyle("height",(this.contentHeight - 60)+"px");
+            },
+            "onRestore" : function(){
+                monitor.logProcessChartNode.setStyle("height",this.contentHeight+"px");
+                monitor.paperNode.setStyle("height",(this.contentHeight - 60)+"px");
+            },
+            "onPostShow": function(){
+
+                var dlg = monitorDlg;
+                var size = dlg.content.getSize();
+                dlg.options.contentWidth = size.x;
+                dlg.options.contentHeight = size.y; //+100;
+                dlg.setContentSize();
+                dlg.node.setStyles({
+                    "height": ""+dlg.options.height+"px",
+                    "width": ""+(dlg.options.width)+"px"
+                });
+                dlg.reCenter();
+                dlg.content.setStyle("overflow","hidden");
+
+
+                MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", null, false);
+                var process = (this.businessData.work) ? this.businessData.work.process : this.businessData.workCompleted.process;
+
+                monitor = new MWF.xApplication.process.Xform.widget.Monitor(container, this.businessData.workLogList, [],process,{
+                    onPostLoad : function(){
+
+                        monitor.paperNode.setStyles({
+                            "box-shadow":"none",
+                            "margin-bottom" : "0px"
+                        });
+                        var logProcessChartNode =  monitor.logProcessChartNode;
+                        logProcessChartNode.setStyle("border","0px");
+
+                        logProcessChartNode.setStyle("height",(size.y) +"px");
+                        monitor.paperNode.setStyle("height",(size.y-48)+"px");
+
+                    }.bind(this)
+                });
+
+            }.bind(this)
+        });
+
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
