@@ -54,7 +54,8 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                 "xls" : "Spreadsheet",
                 "pptx" : "Presentation",
                 "ppt" : "Presentation",
-                "pdf" : "Pdf"
+                "pdf" : "Pdf",
+                "ofd" : "Pdf"
             };
 
             this.appToken = "x_processplatform_assemble_surface";
@@ -104,7 +105,7 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
                 var upload = new o2.widget.Upload(this.content, {
                     "action": o2.Actions.get(this.appToken).action,
                     "method": "uploadAttachment",
-                    "accept" : ".docx,.xlsx,.pptx,.pdf",
+                    "accept" : ".docx,.xlsx,.pptx,.pdf,.ofd",
                     "parameter": {
                         "id" : this.form.businessData.work.id
                     },

@@ -12,9 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -22,7 +19,6 @@ import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.element.Application;
 
 public class ReadFactory extends AbstractFactory {
 
@@ -43,7 +39,7 @@ public class ReadFactory extends AbstractFactory {
 	public List<Read> listWithWorkObject(Work work) throws Exception {
 		List<String> ids = this.listWithWork(work);
 		if (ListTools.isEmpty(ids)) {
-			return new ArrayList<Read>();
+			return new ArrayList<>();
 		}
 		return this.business().entityManagerContainer().list(Read.class, ids);
 	}
@@ -172,20 +168,20 @@ public class ReadFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
-	/* read是否允许处理 */
-	public Boolean allowProcessing(EffectivePerson effectivePerson, Read read) throws Exception {
-		Business business = this.business();
-		if (StringUtils.equals(effectivePerson.getDistinguishedName(), read.getPerson())) {
-			return true;
-		}
-		Application application = business.application().pick(read.getApplication());
-		if (null != application) {
-			if (business.application().allowControl(effectivePerson, application)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	/* read是否允许处理 */
+//	public Boolean allowProcessing(EffectivePerson effectivePerson, Read read) throws Exception {
+//		Business business = this.business();
+//		if (StringUtils.equals(effectivePerson.getDistinguishedName(), read.getPerson())) {
+//			return true;
+//		}
+//		Application application = business.application().pick(read.getApplication());
+//		if (null != application) {
+//			if (business.application().allowControl(effectivePerson, application)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	public <T extends Read> List<T> sort(List<T> list) {
 		list = list.stream().sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsLast(Date::compareTo)))

@@ -1,5 +1,8 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -12,7 +15,12 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.read.ActionEditWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,11 +41,25 @@ class ActionEdit extends BaseAction {
 			if (null == read) {
 				throw new ExceptionEntityNotExist(id, Read.class);
 			}
-			if (business.read().allowProcessing(effectivePerson, read)) {
-				throw new ExceptionAccessDenied(effectivePerson, read);
+			if (BooleanUtils.isTrue(read.getCompleted())) {
+				WorkCompleted workCompleted = emc.find(read.getWorkCompleted(), WorkCompleted.class);
+				Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+						.enableAllowReadProcessing().build();
+				if (BooleanUtils.isNotTrue(control.getAllowReadProcessing())) {
+					throw new ExceptionAccessDenied(effectivePerson, read);
+				}
+			} else {
+				Work work = emc.find(read.getWork(), Work.class);
+				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowReadProcessing()
+						.build();
+				if (BooleanUtils.isNotTrue(control.getAllowReadProcessing())) {
+					throw new ExceptionAccessDenied(effectivePerson, read);
+				}
 			}
 			emc.beginTransaction(Read.class);
-			read.setOpinion(wi.getOpinion());
+			if (StringUtils.isNotEmpty(wi.getOpinion())) {
+				read.setOpinion(wi.getOpinion());
+			}
 			emc.check(read, CheckPersistType.all);
 			emc.commit();
 			Wo wo = new Wo();

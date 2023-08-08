@@ -3330,14 +3330,21 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     obj.focus();
                     return false;
                 }else if ( value.test(/^\d+$/)  ) {
-                        this.designer.notice(MWF.APPFD.LP.notNumberId, "error", this.module.form.designer.propertyContentArea, {
-                            x: "right",
-                            y: "bottom"
-                        });
-                        obj.focus();
-                        return false;
+                    this.designer.notice(MWF.APPFD.LP.notNumberId, "error", this.module.form.designer.propertyContentArea, {
+                        x: "right",
+                        y: "bottom"
+                    });
+                    obj.focus();
+                    return false;
                 }else if ( value.indexOf("..") > -1 ) {
                     this.designer.notice(MWF.APPFD.LP.notDoubleDotId, "error", this.module.form.designer.propertyContentArea, {
+                        x: "right",
+                        y: "bottom"
+                    });
+                    obj.focus();
+                    return false;
+                }else if ( /\{|\}|\<|\>|\!|\'|\"|\,|\;/i.test( value ) ) {
+                    this.designer.notice(MWF.APPFD.LP.notSpecialCharacterId, "error", this.module.form.designer.propertyContentArea, {
                         x: "right",
                         y: "bottom"
                     });

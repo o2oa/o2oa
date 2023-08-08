@@ -339,7 +339,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         var lp = this.lp.viewExport;
         var node = this.exportExcelDlgNode = new Element("div");
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.fileName + "：" +
+            "   <input class='filename' value='' style='margin-left: 14px;width: 350px;'><span>"+
+            "</div>";
+        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
             "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
             "   <input class='end' value='"+ ( this.exportExcelEnd || Math.min( total, max ) ) +"' ><span>"+lp.item+"</span>" +
             "</div>";
@@ -373,6 +376,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     "action": function (d, e) {
                         var start = node.getElement(".start").get("value");
                         var end = node.getElement(".end").get("value");
+                        var filename = node.getElement(".filename").get("value");
                         if( !start || !end ){
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
                             return false;
@@ -386,7 +390,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                         debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
-                        this._exportView(start, end);
+                        this._exportView(start, end, filename);
                         dlg.close();
                     }.bind(this)
                 },
@@ -398,10 +402,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             ]
         });
     },
-    _exportView: function(start, end){
+    _exportView: function(start, end, filename){
 
         var bundleList = this.bundleItems.slice(start-1, end);
-        var excelName = this.json.name + "(" + start + "-" + end + ").xlsx";
+        var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
 
         var action = MWF.Actions.get("x_query_assemble_surface");
 
@@ -1468,7 +1472,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
                     break;
                 case "dateTimeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadComparisonSelect(this.lp.dateTimeFilter);
                     if( selectableList.length > 0 ){
                         this.loadViewSerchCustomSelectByScript(selectableList)
                     }else {
@@ -1484,7 +1488,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     }
                     break;
                 case "timeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadComparisonSelect(this.lp.dateTimeFilter);
                     if( selectableList.length > 0 ){
                         this.loadViewSerchCustomSelectByScript(selectableList)
                     }else {

@@ -760,7 +760,10 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
         var lp = this.lp.viewExport;
         var node = this.exportExcelDlgNode = new Element("div");
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.fileName + "：" +
+            "   <input class='filename' value='' style='margin-left: 14px;width: 350px;'><span>"+
+            "</div>";
+        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
             "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
             "   <input class='end' value='"+ ( this.exportExcelEnd || total ) +"' ><span>"+lp.item+"</span>" +
             "</div>";
@@ -794,6 +797,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                     "action": function (d, e) {
                         var start = node.getElement(".start").get("value");
                         var end = node.getElement(".end").get("value");
+                        var filename = node.getElement(".filename").get("value");
                         if( !start || !end ){
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
                             return false;
@@ -807,7 +811,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                         debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
-                        this._exportView(start, end);
+                        this._exportView(start, end, filename);
                         dlg.close();
                     }.bind(this)
                 },
@@ -895,8 +899,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
     //
     //         }.bind(this));
     // },
-    _exportView: function(start, end){
-        var excelName = this.statementJson.name;
+    _exportView: function(start, end, filename){
+        var excelName = filename || this.statementJson.name;
 
         var p = this.currentPage;
         var d = {

@@ -312,7 +312,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void qiyeweixinOauthConfig(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request) {
-		ActionResult<Qiyeweixin> result = new ActionResult<>();
+		ActionResult<ActionOauthQiyeweixinConfig.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionOauthQiyeweixinConfig().execute(effectivePerson);
@@ -329,7 +329,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void dingdingOauthConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<Dingding> result = new ActionResult<>();
+		ActionResult<ActionOauthDingdingConfig.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionOauthDingdingConfig().execute(effectivePerson);

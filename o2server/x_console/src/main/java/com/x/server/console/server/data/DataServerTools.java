@@ -167,7 +167,9 @@ public class DataServerTools {
 		int exitCode = p.waitFor();
 		String errorMessage = IOUtils.toString(errorStream, StandardCharsets.UTF_8);
 		String inputMessage = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-		LOGGER.info(inputMessage);
+		if (StringUtils.isNotEmpty(inputMessage)) {
+			LOGGER.info(inputMessage);
+		}
 		if (exitCode != 0) {
 			throw new RunningException(errorMessage);
 		}

@@ -10,12 +10,18 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.resource.ResourceCollection;
@@ -53,10 +59,9 @@ public class InitServerTools extends JettySeverTools {
 
 	private static Server startStandalone(ApplicationServer applicationServer) throws Exception {
 		HandlerList handlers = new HandlerList();
-
 		QuickStartWebApp webApp = webContext();
 		handlers.addHandler(webApp);
-
+		handlers.addHandler(new CacheControlHandler());
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setName("AdminServerQueuedThreadPool");
 		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
@@ -69,15 +74,12 @@ public class InitServerTools extends JettySeverTools {
 		} else {
 			addHttpConnector(server, applicationServer.getPort(), true);
 		}
-
 		GzipHandler gzipHandler = new GzipHandler();
 		gzipHandler.setHandler(handlers);
 		server.setHandler(gzipHandler);
-
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
-
 		server.start();
 
 		InetAddress addr = InetAddress.getLocalHost();
@@ -130,9 +132,8 @@ public class InitServerTools extends JettySeverTools {
 			webApp.setExtraClasspath(calculateExtraClassPath(x_program_init.class));
 		}
 		LOGGER.debug("{} extra class path:{}.", x_program_init.class, webApp.getExtraClasspath());
-		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
-				BooleanUtils.toStringTrueFalse(false));
-		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));
+		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", BooleanUtils.FALSE);
+		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.TRUE);
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 				BooleanUtils.toStringTrueFalse(false));
 		webApp.setWelcomeFiles(new String[] { "index.html", "sample.html" });
@@ -175,5 +176,16 @@ public class InitServerTools extends JettySeverTools {
 				}
 			}
 		}
+	}
+
+	public static class CacheControlHandler extends AbstractHandler {
+		@Override
+		public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+				throws IOException, ServletException {
+			// 设置Cache-Control头部字段
+			response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+			// <code> baseRequest.setHandled(true)</code>;标记请求已经被处理
+		}
+
 	}
 }

@@ -75,6 +75,7 @@ public class Merge extends Activity {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.customData = this.getProperties().getCustomData();
+			this.mergeLayerThreshold = this.getProperties().getMergeLayerThreshold();
 		}
 	}
 
@@ -119,6 +120,23 @@ public class Merge extends Activity {
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
 		this.getProperties().setCustomData(customData);
+	}
+
+	public static final String MERGELAYERTHRESHOLD_FIELDNAME = "mergeLayerThreshold";
+	@Transient
+	private Integer mergeLayerThreshold;
+
+	public Integer getMergeLayerThreshold() {
+		if (null != mergeLayerThreshold) {
+			return this.mergeLayerThreshold;
+		} else {
+			return this.getProperties().getMergeLayerThreshold();
+		}
+	}
+
+	public void setMergeLayerThreshold(Integer mergeLayerThreshold) {
+		this.mergeLayerThreshold = mergeLayerThreshold;
+		this.getProperties().setMergeLayerThreshold(mergeLayerThreshold);
 	}
 
 	@FieldDescribe("分组")

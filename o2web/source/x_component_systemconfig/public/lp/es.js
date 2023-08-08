@@ -441,7 +441,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "Habilitar",
         "ssoConfigName": "Nombre de la clave de autenticación",
         "ssoConfigKey": "Clave",
-        "ssoConfigKeyInfo": "La longitud de la clave debe ser de 8 caracteres.",
+
+        "ssoConfigKeyInfo": "La longitud de la clave es un múltiplo de 8",
+        "ssoKeyLengthError": "Mantenga la longitud de la clave en múltiplos de 8",
+
         "removeSSOConfigTitle": "Confirmar eliminación de configuración de clave de autenticación",
         "removeSSOConfig": "¿Está seguro de que desea eliminar la configuración de clave de autenticación: '{name}'?",
 
@@ -789,6 +792,9 @@ o2.xApplication.systemconfig.LP = {
 
         "scriptingBlockedClasses": "Clases de Java deshabilitadas para scripts del servidor",
         "scriptingBlockedClassesInfo": "Puede configurar las clases de Java que no se permiten utilizar en los scripts del servidor aquí. Separe las clases con comas.",
+
+        "httpWhiteList": "Lista blanca de direcciones de servicio de interfaz http externa",
+        "httpWhiteListInfo": "Lista blanca de direcciones de servicios de interfaz http externa, * significa ilimitado, separados por comas.",
 
         "refererHeadCheckRegular": "Validación del encabezado Referer en las solicitudes",
         "refererHeadCheckRegularInfo": "Configure aquí la regla de validación para el encabezado Referer en las solicitudes. Solo se permitirán las solicitudes cuyo valor de Referer pase la validación del patrón regular configurado aquí. Una configuración razonable de esta opción puede ayudar a prevenir ataques CSRF. Por ejemplo, si configura (.+?)o2oa.net(.+?), solo se permitirán las solicitudes que tengan 'o2oa.net' en su campo Referer.",
@@ -1373,7 +1379,11 @@ o2.xApplication.systemconfig.LP = {
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3":"Almacenamiento en la nube de Amazon",
 				"min":"Almacenamiento MinIO"
-			}
+			},
+            "protocoloDataInfo": {
+                "ali": "Si no ha instalado el complemento de integración Aliyun OSS en el mercado de aplicaciones, instálelo primero",
+                "min": "Si no ha instalado el complemento de integración de almacenamiento en la nube MinIO en el mercado de aplicaciones, instálelo primero"
+            }
         },
         "removeNodeConfigTitle": "Confirmación",
 		"removeNodeConfig": "Está a punto de eliminar el nodo de almacenamiento \"{name}\". Esta acción podría afectar al almacenamiento de archivos existente en el sistema.<br>¿Está seguro de querer eliminar el nodo de almacenamiento\"{name}\"?",

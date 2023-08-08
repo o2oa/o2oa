@@ -48,8 +48,8 @@ public class ActionListByPage extends BaseAction {
             Date start = null;
             Date end = null;
             if (StringUtils.isNotEmpty(wi.getStartDate()) && StringUtils.isNotEmpty(wi.getEndDate())) {
-                start = DateTools.parseDate(wi.getStartDate());
-                end = DateTools.parseDate(wi.getEndDate());
+                start = DateTools.parseDateTime(wi.getStartDate() + " 00:00:00");
+                end = DateTools.parseDateTime(wi.getEndDate() + " 23:59:59");
             }
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory().listRecordByPage(adjustPage,
                     adjustPageSize, wi.getUserId(), start, end);

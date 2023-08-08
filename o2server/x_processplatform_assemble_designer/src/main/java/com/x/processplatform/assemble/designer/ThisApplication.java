@@ -1,9 +1,8 @@
 package com.x.processplatform.assemble.designer;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.message.MessageConnector;
@@ -14,12 +13,19 @@ public class ThisApplication {
 		// nothing
 	}
 
-	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
-					.build());
+//	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
+//			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
+//					.build());
+//
+//	public static ExecutorService threadPool() {
+//		return threadPool;
+//	}
 
-	public static ExecutorService threadPool() {
-		return threadPool;
+	private static final ForkJoinPool FORKJOINPOOL = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
+			new ApplicationForkJoinWorkerThreadFactory(ThisApplication.class.getPackage()), null, false);
+
+	public static ForkJoinPool forkJoinPool() {
+		return FORKJOINPOOL;
 	}
 
 	protected static Context context;
@@ -50,7 +56,8 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			threadPool.shutdown();
+			// threadPool.shutdown();
+			FORKJOINPOOL.shutdown();
 			CacheManager.shutdown();
 			MessageConnector.stop();
 		} catch (Exception e) {

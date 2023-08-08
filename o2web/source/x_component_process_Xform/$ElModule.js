@@ -149,6 +149,7 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
             if (this.json.events && this.json.events[k] && this.json.events[k].code){
                 this.form.Macro.fire(this.json.events[k].code, this, arguments);
             }
+            this.fireEvent(k, arguments);
         }.bind(this);
     },
     _createVueMethods: function(){

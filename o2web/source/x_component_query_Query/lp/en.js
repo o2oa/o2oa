@@ -42,6 +42,12 @@ MWF.xApplication.query.Query.LP = {
         "lessThanOrEqualTo": "Less than or equal to"
     },
     "dateFilter": {
+        "equals": "Equals",
+        "notEquals": "Not Equals",
+        "greaterThan": "Greater Than",
+        "lessThan": "Less than"
+    },
+    "dateTimeFilter": {
         "greaterThan": "Greater Than",
         "lessThan": "Less than"
     },
@@ -152,6 +158,7 @@ MWF.xApplication.query.Query.LP = {
 
     "viewExport": {
     "exportRange": "Export Range",
+        "fileName": "File Name",
         "to": "To",
         "item": "item",
         "description": "Note: There are {count} items of data that meet the conditions.",

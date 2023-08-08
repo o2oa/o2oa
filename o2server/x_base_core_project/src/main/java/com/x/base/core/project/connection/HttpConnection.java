@@ -1,28 +1,25 @@
 package com.x.base.core.project.connection;
 
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.exception.ExceptionNotSupportProtocol;
+import com.x.base.core.project.exception.ExceptionUnlawfulAddress;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.bean.NameValuePair;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 
 public class HttpConnection {
 
@@ -34,6 +31,8 @@ public class HttpConnection {
 
 	public static final int DEFAULT_CONNECTTIMEOUT = 2000;
 	public static final int DEFAULT_READTIMEOUT = 5 * 60 * 1000;
+	public static final String HTTP_PROTOCOL = "http";
+	public static final String HTTPS_PROTOCOL = "https";
 
 	public static HttpConnectionResponse get(String address, List<NameValuePair> heads, int connectTimeout,
 			int readTimeout, Supplier<HttpConnectionResponse> supplier) {
@@ -62,6 +61,7 @@ public class HttpConnection {
 
 	public static String getAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
 			throws Exception {
+		checkAddress(address);
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_GET);
 		connection.setDoOutput(false);
@@ -114,6 +114,7 @@ public class HttpConnection {
 
 	public static String postAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
 			int readTimeout) throws Exception {
+		checkAddress(address);
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_POST);
 		connection.setDoOutput(true);
@@ -170,6 +171,7 @@ public class HttpConnection {
 
 	public static String putAsString(String address, List<NameValuePair> heads, String body, int connectTimeout,
 			int readTimeout) throws Exception {
+		checkAddress(address);
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_PUT);
 		connection.setDoOutput(true);
@@ -224,6 +226,7 @@ public class HttpConnection {
 
 	public static String deleteAsString(String address, List<NameValuePair> heads, int connectTimeout, int readTimeout)
 			throws Exception {
+		checkAddress(address);
 		HttpURLConnection connection = prepare(address, heads);
 		connection.setRequestMethod(ConnectionAction.METHOD_DELETE);
 		connection.setDoOutput(false);
@@ -296,6 +299,21 @@ public class HttpConnection {
 				IOUtils.write(body, output, StandardCharsets.UTF_8);
 				output.flush();
 			}
+		}
+	}
+
+	public static void checkAddress(String address) throws Exception{
+		final String addressLower = address.toLowerCase();
+		if(addressLower.startsWith(HTTP_PROTOCOL) || addressLower.startsWith(HTTPS_PROTOCOL)){
+			List<String> httpWhiteList = Config.general().getHttpWhiteList();
+			if(ListTools.isNotEmpty(httpWhiteList)) {
+				Optional<String> optional = httpWhiteList.stream().filter(o -> addressLower.indexOf("://" + o) > -1).findFirst();
+				if (!optional.isPresent()) {
+					throw new ExceptionUnlawfulAddress(address);
+				}
+			}
+		}else{
+			throw new ExceptionNotSupportProtocol(address);
 		}
 	}
 

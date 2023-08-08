@@ -6,7 +6,7 @@ MWF.xApplication.query.Query.LP = {
     "ok": "Aceptar",  
     "cancel": "Cancelar",  
     "clear": "Borrar",  
-    "exportExcel": "Exportar a Excel",  
+    "exportExcel": "Exportar a Excel",
     "noDescription": "Descripción no definida",  
     "view": "Vista",  
     "stat": "Estadísticas",  
@@ -39,7 +39,13 @@ MWF.xApplication.query.Query.LP = {
         "lessThanOrEqualTo": "Menor o igual que"
     },
     "dateFilter": {
+        "equals": "Igual a",
+        "notEquals": "No igual a",
         "greaterThan": "Mayor que",  
+        "lessThan": "Menor que"
+    },
+    "dateTimeFilter": {
+        "greaterThan": "Mayor que",
         "lessThan": "Menor que"
     },
     "booleanFilter": {
@@ -148,7 +154,8 @@ MWF.xApplication.query.Query.LP = {
     "firstPage": "Primera",  
     "lastPage": "Última",
     "viewExport" : {
-        "exportRange" : "Rango de exportación",  
+        "exportRange" : "Rango de exportación",
+        "fileName": "Nombre del archivo",
         "to" : "a",  
         "item" : "elementos",  
         "description" : "Nota: Hay {count} elementos que cumplen con los criterios.",  

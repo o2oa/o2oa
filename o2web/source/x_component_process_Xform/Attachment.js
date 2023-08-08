@@ -2605,7 +2605,7 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                 o2.load("../o2_lib/viewer/viewer.js", function(){
                     this.viewer = new Viewer(imgNode,{
                         navbar : false,
-                        toolbar : false,
+                        toolbar : true,
                         hidden : function(){
                             imgNode.destroy();
                             this.viewer.destroy();
@@ -2691,6 +2691,8 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),

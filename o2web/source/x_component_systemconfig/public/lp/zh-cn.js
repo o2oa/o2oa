@@ -440,7 +440,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "是否启用",
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
-        "ssoConfigKeyInfo": "密钥长度8位",
+
+        "ssoConfigKeyInfo": "密钥长度为8的倍数",
+        "ssoKeyLengthError": "请保持密钥长度为8的倍数",
+
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
 
@@ -792,6 +795,9 @@ o2.xApplication.systemconfig.LP = {
 
         "scriptingBlockedClasses": "服务端脚本禁用的Java类",
         "scriptingBlockedClassesInfo": "在此设置不允许在服务端脚本中使用的Java类，用逗号分隔。",
+
+        "httpWhiteList": "外部http接口服务地址白名单",
+        "httpWhiteListInfo": "外部http接口服务地址白名单，*代表不限制，用半角逗号分隔。",
 
         "refererHeadCheckRegular": "请求Referer校验",
         "refererHeadCheckRegularInfo": "在此处可配置服务器对于请求的Referer头的校验规则，配置一个正则表达式，通过正则表达式校验Referer值的请求才被允许。" +
@@ -1385,6 +1391,10 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
                 "min":"MinIO存储"
+            },
+            "protocolDataInfo": {
+                "ali": "如果您没有在应用市场安装阿里云OSS集成插件，请先安装。",
+                "min":"如果您没有在应用市场安装MinIO云存储集成插件，请先安装。"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",

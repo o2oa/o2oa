@@ -439,7 +439,10 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "Enable",
         "ssoConfigName": "Name",
         "ssoConfigKey": "Key",
-        "ssoConfigKeyInfo": "Authentication key length 8 bits",
+
+        "ssoConfigKeyInfo": "The key length is a multiple of 8",
+        "ssoKeyLengthError": "Please keep the key length in multiples of 8",
+
         "removeSSOConfigTitle": "Confirmation of deleting the authentication configuration",
         "removeSSOConfig": "Are you sure you want to delete the authentication configuration: '{name}'?",
 
@@ -791,6 +794,9 @@ o2.xApplication.systemconfig.LP = {
 
         "scriptingBlockedClasses": "Java classes disabled by server-side scripting",
         "scriptingBlockedClassesInfo": "Set Java classes that are not allowed to be used in server-side scripts here, and multiple Java classes are separated by commas.",
+
+        "httpWhiteList": "External http interface service address white list",
+        "httpWhiteListInfo": "White list of external http interface service addresses, * means unlimited, separated by commas.",
 
         "refererHeadCheckRegular": "Request Referer verification",
         "refererHeadCheckRegularInfo": "Here you can configure the server's verification rules for the Referer header of the request, configure a regular expression, and only requests that verify the Referer value through the regular expression are allowed. " +
@@ -1380,6 +1386,10 @@ o2.xApplication.systemconfig.LP = {
                 "ali": "Alibaba Cloud Storage",
                 "s3":"Amazon Cloud Storage",
                 "min":"MinIO Storage"
+            },
+            "protocolDataInfo": {
+                "ali": "If you have not installed the Aliyun OSS integration plug-in in the application market, please install it first.",
+                "min": "If you have not installed the MinIO cloud storage integration plug-in in the application market, please install it first."
             }
         },
         "removeNodeConfigTitle": "Confirmation of deleting a storage node",

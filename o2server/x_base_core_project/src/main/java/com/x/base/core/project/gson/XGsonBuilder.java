@@ -1,5 +1,6 @@
 package com.x.base.core.project.gson;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,7 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
 					gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
+					gson.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter());
 					INSTANCE = gson.setPrettyPrinting().serializeSpecialFloatingPointValues().create();
 				}
 			}
@@ -56,6 +58,7 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Long.class, new LongDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
+					gson.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter());
 					COMPACTINSTANCE = gson.create();
 				}
 			}

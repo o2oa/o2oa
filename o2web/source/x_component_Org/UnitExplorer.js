@@ -810,13 +810,17 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 }
             }, {
                 "getHtml": function(){
-                    return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(../x_component_Org/$Explorer/"+
-                        _self.explorer.app.options.style+"/icon/move.png) center center no-repeat'></div>";
+                    if(_self.getIdentityActionPermission()){
+                        return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(../x_component_Org/$Explorer/"+
+                            _self.explorer.app.options.style+"/icon/move.png) center center no-repeat'></div>";
+                    }else{
+                        return  "<div></div>"
+                    }
                 },
                 "events": {
                     "selectstart": function(e){e.stopPropagation(); e.preventDefault();return false;},
-                    "touchstart": function(e){_self.startOrder(this.item, this.td, e)},
-                    "mousedown": function(e){_self.startOrder(this.item, this.td, e)}
+                    "touchstart": function(e){if(_self.getIdentityActionPermission())_self.startOrder(this.item, this.td, e)},
+                    "mousedown": function(e){if(_self.getIdentityActionPermission())_self.startOrder(this.item, this.td, e)}
                 }
             }],
             "onPostDelete": function(delCount){
