@@ -1121,9 +1121,11 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
                 this.data[name] = value;
                 this.route.reload();
             }
-
-		}
+		}else{
+            this.data[name] = value;
+        }
 	},
+
     show: function(){
         if (!this.process.options.isView){
             if (!this.propertyContent){
