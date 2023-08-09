@@ -349,6 +349,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         downloadAll: function(e){
             this.form.downloadAll(e);
         },
+        monitor: function(e){
+            this.form.monitor(e);
+        },
         pressWork: function(e){
             this.form.pressWork(e);
         },

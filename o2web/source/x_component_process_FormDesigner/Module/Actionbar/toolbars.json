@@ -175,5 +175,16 @@
     "control": "",
     "condition": "",
     "read": true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "monitor.png",
+    "title": "{{$.lp.monitorTitle}}",
+    "action": "monitor",
+    "text": "{{$.lp.monitor}}",
+    "id": "action_monitor",
+    "control": "",
+    "condition": "",
+    "read": true
   }
 ]

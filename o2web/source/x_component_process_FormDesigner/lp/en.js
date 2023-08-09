@@ -1555,6 +1555,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
         "downloadAllTitle": "Download the form and all attachments",
+        "monitor": "Process Monitor",
+        "monitorTitle": "Process Monitor",
+
         "setReaded": "Mark as read",
         "readed": "Readed",
         "addTask": "Add Task",
