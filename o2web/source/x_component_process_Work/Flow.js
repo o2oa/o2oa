@@ -146,16 +146,55 @@ MWF.xApplication.process.Work.Flow.Reset = new Class({
             this._getSelectorOptions(identityList, callback);
         }.bind(this))
     },
+    _getSelectorOptions: function (exclude, callback) {
+        var options = this.getDefaultOptions();
+
+        var range = this.businessData.activity.resetRange || "department";
+        var selectorOptions;
+        switch (range) {
+            case "unit":
+                options.units = this.businessData.task.unit ? [this.businessData.task.unit] : [];
+                options.exclude = exclude;
+                callback( options );
+                break;
+            case "topUnit":
+                MWF.require("MWF.xScript.Actions.UnitActions", function () {
+                    orgActions = new MWF.xScript.Actions.UnitActions();
+                    var data = { "unitList": [this.businessData.task.unit] };
+                    orgActions.listUnitSupNested(data, function (json) {
+                        options.units = json.data[0] ? [json.data[0]]: [];
+                        options.exclude = exclude;
+                        callback( options );
+                    }.bind(this));
+                }.bind(this));
+                break;
+            case "script":
+                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getActivity(this.businessData.work.activity, "manual", function (activityJson) {
+                    var scriptText = activityJson.data.activity.resetRangeScriptText;
+                    if (!scriptText) return;
+                    var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
+                    options.noUnit = true;
+                    options.include = typeOf(resetRange) === "array" ? resetRange : [resetRange];
+                    options.exclude = exclude;
+                    callback( options );
+                }.bind(this))
+                break;
+            default:
+                callback( options );
+        }
+    },
     getDefaultOptions: function(){
         var defaultOpt;
         if (layout.mobile) {
             defaultOpt = {
+                "type": "identity",
                 "style": "default",
                 "zIndex": 3000,
                 "count": this.businessData.activity.resetCount || 0
             };
         } else {
             defaultOpt = {
+                "type": "identity",
                 "style": "process",
                 "width": "auto",
                 "height": "240",
@@ -170,95 +209,6 @@ MWF.xApplication.process.Work.Flow.Reset = new Class({
             if (this.form.json.selectorStyle.style) defaultOpt.style = this.form.json.selectorStyle.style;
         }
         return defaultOpt;
-    },
-    _getSelectorOptions: function (exclude, callback) {
-        var range = this.businessData.activity.resetRange || "department";
-        var selectorOptions;
-        switch (range) {
-            case "unit":
-                selectorOptions = this.getSelectorOptionsUnit(this.businessData.task.unit,null,  exclude);
-
-                // var options = {
-                //     "values": this.identityList || [],
-                //     "type": "identity",
-                //     "units": (unit) ? [unit] : [],
-                // };
-                // if (include) {
-                //     options.noUnit = true;
-                //     options.include = typeOf(include) === "array" ? include : [include];
-                // }
-                // if( exclude ){
-                //     options.exclude = exclude;
-                // }
-                // return options;
-
-                callback( selectorOptions );
-                break;
-            case "topUnit":
-                MWF.require("MWF.xScript.Actions.UnitActions", function () {
-                    orgActions = new MWF.xScript.Actions.UnitActions();
-                    var data = { "unitList": [this.businessData.task.unit] };
-                    orgActions.listUnitSupNested(data, function (json) {
-                        v = json.data[0];
-                        selectorOptions = this.getSelectorOptionsUnit(v,null, exclude);
-                        callback( selectorOptions );
-                    }.bind(this));
-                }.bind(this));
-                break;
-            case "script":
-                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getActivity(this.businessData.work.activity, "manual", function (activityJson) {
-                    var scriptText = activityJson.data.activity.resetRangeScriptText;
-                    if (!scriptText) return;
-                    var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
-                    selectorOptions = this.getSelectorOptionsUnit("", resetRange, exclude);
-                    callback( selectorOptions );
-                }.bind(this))
-                break;
-            default:
-                selectorOptions = this.getSelectorOptionsAll(count);
-                callback( selectorOptions );
-        }
-    },
-    getSelectorOptionsUnit: function (unit, include, exclude) {
-        var options = {
-            "values": this.identityList || [],
-            "type": "identity",
-            "units": (unit) ? [unit] : [],
-            // "onComplete": function (items) {
-            //     areaNode.empty();
-            //     var identityList = [];
-            //     items.each(function (item) {
-            //         new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
-            //         identityList.push(item.data.distinguishedName);
-            //     }.bind(this));
-            //     this.identityList = identityList;
-            // }.bind(this)
-        };
-        if (include) {
-            options.noUnit = true;
-            options.include = typeOf(include) === "array" ? include : [include];
-        }
-        if( exclude ){
-            options.exclude = exclude;
-        }
-        return options;
-    },
-    getSelectorOptionsAll: function (count) {
-        return {
-            "values": this.identityList || [],
-            "type": "identity",
-            "count": count
-            // "onComplete": function (items) {
-            //     areaNode.empty();
-            //     var identityList = [];
-            //     items.each(function (item) {
-            //         new MWF.widget.O2Identity(item.data, areaNode, { "style": "reset" });
-            //         identityList.push(item.data.distinguishedName);
-            //     }.bind(this));
-            //     this.identityList = identityList;
-            // }.bind(this)
-        };
-
     },
 
 
