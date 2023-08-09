@@ -3430,7 +3430,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							new Element("td", {
 								text: path,
 								rowspan : updateNum,
-								style : "border-right:1px solid rgb(230, 230, 230)"
+								style : "border-right:1px solid #E6E6E6;background:#F7F7F7;font-weight:500"
 							}).inject(trNode);
 						}
 						item.personName = item.person.split("@")[0];
