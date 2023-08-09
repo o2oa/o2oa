@@ -1,12 +1,11 @@
 package com.x.query.service.processing;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -34,14 +33,7 @@ public class ThisApplication {
 
 	public static final IndexWriteQueue indexWriteQueue = new IndexWriteQueue();
 
-	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
-					.build());
-
-	public static ExecutorService threadPool() {
-		return threadPool;
-	}
-
+ 
 	protected static Context context;
 
 	public static Context context() {
@@ -144,7 +136,6 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			threadPool.shutdown();
 			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();

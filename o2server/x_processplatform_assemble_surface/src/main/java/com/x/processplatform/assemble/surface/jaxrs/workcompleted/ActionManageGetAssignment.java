@@ -54,7 +54,8 @@ class ActionManageGetAssignment extends BaseAction {
 			Process process = business.process().pick(workCompleted.getProcess());
 			Application application = business.application().pick(workCompleted.getApplication());
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils
+					.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			wo.setControl(
@@ -76,7 +77,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Read.class, Read.job_FIELDNAME, job).stream()
@@ -92,7 +93,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job).stream().sorted(
@@ -108,7 +109,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
@@ -124,7 +125,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		futureTaskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		futureRead.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		futureReadCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);

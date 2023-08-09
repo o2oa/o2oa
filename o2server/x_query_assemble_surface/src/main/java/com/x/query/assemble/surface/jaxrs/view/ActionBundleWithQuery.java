@@ -55,7 +55,7 @@ class ActionBundleWithQuery extends BaseAction {
 					wi.getCount(), true);
 		}
 		Wo wo = new Wo();
-		wo.setValueList(this.fetchBundle(business, view, runtime, ThisApplication.threadPool()));
+		wo.setValueList(this.fetchBundle(business, view, runtime, ThisApplication.forkJoinPool()));
 		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
 		result.setData(wo);
 		return result;

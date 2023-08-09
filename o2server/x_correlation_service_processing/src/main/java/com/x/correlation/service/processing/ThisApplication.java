@@ -1,7 +1,5 @@
 package com.x.correlation.service.processing;
 
-import java.util.concurrent.ExecutorService;
-
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.message.MessageConnector;
@@ -13,12 +11,6 @@ public class ThisApplication {
 	}
 
 	protected static Context context;
-
-	private static ExecutorService threadPool;
-
-	public static ExecutorService threadPool() {
-		return threadPool;
-	}
 
 	public static Context context() {
 		return context;

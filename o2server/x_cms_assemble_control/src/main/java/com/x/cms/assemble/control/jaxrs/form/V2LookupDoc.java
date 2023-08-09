@@ -155,7 +155,7 @@ class V2LookupDoc extends BaseAction {
 				}
 			}
 			return list;
-		},ThisApplication.threadPool());
+		},ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -170,7 +170,7 @@ class V2LookupDoc extends BaseAction {
 				}
 			}
 			return list;
-		},ThisApplication.threadPool());
+		},ThisApplication.forkJoinPool());
 	}
 
 	public static class Wo extends AbstractWo {

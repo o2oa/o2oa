@@ -99,7 +99,7 @@ class V2GetMobile extends BaseAction {
                 }
             }
             return map;
-        }, ThisApplication.threadPool());
+        }, ThisApplication.forkJoinPool());
     }
 
     private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(
@@ -117,7 +117,7 @@ class V2GetMobile extends BaseAction {
                 }
             }
             return map;
-        }, ThisApplication.threadPool());
+        }, ThisApplication.forkJoinPool());
     }
 
     private Map<String, RelatedScript> convertScript(Business business, FormProperties properties,

@@ -115,7 +115,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchPage(final Wi wi, final List<String> appIdList,
@@ -157,7 +157,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchWidget(final Wi wi, final List<String> appIdList,
@@ -200,19 +200,24 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wi extends WiDesigner {
+
+		private static final long serialVersionUID = -7152350989100117879L;
 
 	}
 
 	public static class Wo extends WrapDesigner {
 
+		private static final long serialVersionUID = -7129213500959112033L;
+
 	}
 
 	public static class WoScript extends Script {
 
+		private static final long serialVersionUID = -8330747166580465899L;
 		static WrapCopier<Script, WoScript> copier = WrapCopierFactory.wo(Script.class, WoScript.class,
 				JpaObject.singularAttributeField(Script.class, true, false), null);
 
@@ -220,6 +225,7 @@ class ActionSearch extends BaseAction {
 
 	public static class WoPage extends Page {
 
+		private static final long serialVersionUID = -3964257854306385058L;
 		static WrapCopier<Page, WoPage> copier = WrapCopierFactory.wo(Page.class, WoPage.class,
 				JpaObject.singularAttributeField(WoPage.class, true, false), null);
 
@@ -227,6 +233,7 @@ class ActionSearch extends BaseAction {
 
 	public static class WoWidget extends Widget {
 
+		private static final long serialVersionUID = 7475514889463657235L;
 		static WrapCopier<Widget, WoWidget> copier = WrapCopierFactory.wo(Widget.class, WoWidget.class,
 				JpaObject.singularAttributeField(WoWidget.class, true, false), null);
 
