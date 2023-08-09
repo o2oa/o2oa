@@ -245,6 +245,7 @@ MWF.xApplication.cms.FormDesigner.PropertyMulti = new Class({
     show: function(){
         if (!this.propertyContent){
             if (this.htmlString){
+                this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.cms.FormDesigner.LP.propertyTemplate});
                 this.JsonTemplate = new MWF.widget.JsonTemplate({}, this.htmlString);
                 this.propertyContent = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.propertyNode);
                 this.propertyContent.set("html", this.JsonTemplate.load());
