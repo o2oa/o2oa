@@ -643,7 +643,8 @@ MWF.xScript.Environment = function(ev){
          * @return {WorkControl} 流程实例权限对象.
          * <pre><code class='language-js'>{
          *        "allowVisit": true,             //是否允许访问工作
-         *        "allowProcessing": true,        //是否允许流转
+         *        "allowFlow": true,              //是否允许继续流转（允许提交或重置处理人或加签）
+         *        "allowProcessing": true,        //是否允许提交
          *        "allowReadProcessing": false,   //是否有待阅
          *        "allowSave": true,              //是否允许保存业务数据
          *        "allowReset": false,            //是否允许重置处理人

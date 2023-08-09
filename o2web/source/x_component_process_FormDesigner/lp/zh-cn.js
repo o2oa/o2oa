@@ -1145,7 +1145,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "test": "测试",
         "hostPort": "主机/端口",
 
-        "handle": "处理",
+        "flow": "继续流转",
 
         "widget": "部件",
         "widgetScript": "部件脚本",
@@ -1532,10 +1532,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "closeTitle": "关闭文档",
         "save": "保存",
         "saveTitle": "保存文档",
-        "handle": "处理",
-        "handleTitle": "处理工作",
         "flow": "继续流转",
         "flowTitle": "继续流转文档",
+        "submit": "提交",
+        "submitTitle": "提交文档",
         "reroute": "调度",
         "rerouteTitle": "调度文档",
         "reset": "重置处理人",

@@ -373,6 +373,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (lockData.success) {
                 this.keyLock(true);
             } else {
+                this.businessData.control.allowFlow = false;
                 this.businessData.control.allowProcessing = false;
                 this.businessData.control.allowSave = false;
                 this.businessData.control.allowReset = false;
@@ -2080,7 +2081,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     //saveDocumentEditor
     submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
-        if (!this.businessData.control["allowProcessing"]) {
+        if (!this.businessData.control["allowProcessing"] && !this.businessData.control["allowFlow"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             this.app.content.unmask();
             if (processor && processor.node) processor.node.unmask();
