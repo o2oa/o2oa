@@ -433,6 +433,7 @@ MWF.xApplication.process.Xform.LP = {
     "cancelAssociated": "¿Está seguro de la asociación que desea cancelar con el documento '{title}'?",
     "associatedResult": "Resultado asociado",
     "selectDocNote": "Primero seleccione un documento",
-    "associatedDocument": "Documento asociado"
+    "associatedDocument": "Documento asociado",
+    "docDeleted": "El documento ha sido eliminado."
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;
