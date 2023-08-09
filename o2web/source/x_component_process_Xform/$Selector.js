@@ -429,7 +429,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
             }
         }
-        return obj;
+        return this.getString( obj );
     }
 
 });
