@@ -97,7 +97,7 @@ public class ActionCreate extends BaseAction {
 		}
 		if (!Share.SHARE_TYPE_PASSWORD.equals(wi.getShareType())) {
 			CompletableFuture.runAsync(() -> sendSms(business, tempShare, oldUserList, oldOrgList, oldGroupList),
-					ThisApplication.threadPool());
+					ThisApplication.forkJoinPool());
 		}
 
 		result.setData(wo);

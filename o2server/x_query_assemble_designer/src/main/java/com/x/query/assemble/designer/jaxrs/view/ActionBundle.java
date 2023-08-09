@@ -50,12 +50,12 @@ class ActionBundle extends BaseAction {
 
 			case View.TYPE_CMS:
 				CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-				cmsPlan.init(runtime, ThisApplication.threadPool());
+				cmsPlan.init(runtime, ThisApplication.forkJoinPool());
 				os = cmsPlan.fetchBundles();
 				break;
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
-				processPlatformPlan.init(runtime, ThisApplication.threadPool());
+				processPlatformPlan.init(runtime, ThisApplication.forkJoinPool());
 				this.setProcessEdition(business, processPlatformPlan);
 				processPlatformPlan.runtime = runtime;
 				os = processPlatformPlan.fetchBundles();

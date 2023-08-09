@@ -109,7 +109,7 @@ class ActionFilterAttribute extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> processFuture(Business business,
@@ -144,7 +144,7 @@ class ActionFilterAttribute extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> creatorUnitFuture(Business business,
@@ -169,7 +169,7 @@ class ActionFilterAttribute extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> activityNameFuture(Business business,
@@ -194,7 +194,7 @@ class ActionFilterAttribute extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> startTimeMonthFuture(Business business,
@@ -219,6 +219,6 @@ class ActionFilterAttribute extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 }

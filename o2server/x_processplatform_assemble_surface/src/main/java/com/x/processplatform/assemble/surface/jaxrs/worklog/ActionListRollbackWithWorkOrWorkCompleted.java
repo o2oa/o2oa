@@ -54,10 +54,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		final String workLogJob = job;
 
 		CompletableFuture<List<WoTaskCompleted>> futureTaskCompleteds = CompletableFuture
-				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.threadPool());
+				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.forkJoinPool());
 
 		CompletableFuture<List<Wo>> futureWorkLogs = CompletableFuture.supplyAsync(() -> this.workLogs(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		List<WoTaskCompleted> taskCompleteds = futureTaskCompleteds.get();
 		List<Wo> wos = futureWorkLogs.get();
 		ListTools.groupStick(wos, taskCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,

@@ -118,7 +118,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchTable(final Wi wi, final List<String> appIdList,
@@ -159,7 +159,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchStat(final Wi wi, final List<String> appIdList,
@@ -200,7 +200,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchStatement(final Wi wi, final List<String> appIdList,
@@ -244,7 +244,7 @@ class ActionSearch extends BaseAction {
 				logger.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wi extends WiDesigner {

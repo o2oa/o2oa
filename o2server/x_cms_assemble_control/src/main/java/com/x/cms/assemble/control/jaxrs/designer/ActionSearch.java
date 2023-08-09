@@ -112,7 +112,7 @@ class ActionSearch extends BaseAction {
 				LOGGER.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList,
@@ -154,7 +154,7 @@ class ActionSearch extends BaseAction {
 				LOGGER.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wi extends WiDesigner {

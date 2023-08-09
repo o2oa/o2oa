@@ -1,5 +1,10 @@
 package com.x.processplatform.assemble.surface.jaxrs.datarecord;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,13 +21,8 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DataRecord;
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.apache.commons.lang3.BooleanUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionGetWithJobPath extends BaseAction {
 
@@ -55,7 +55,7 @@ class ActionGetWithJobPath extends BaseAction {
 				LOGGER.error(e);
 			}
 			return wo;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -69,7 +69,7 @@ class ActionGetWithJobPath extends BaseAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.datarecord.ActionGetWithJobPath$Wo")

@@ -56,15 +56,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		final String workLogJob = job;
 
 		CompletableFuture<List<WoTask>> tasksFuture = CompletableFuture.supplyAsync(() -> this.tasks(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoTaskCompleted>> taskCompletedsFuture = CompletableFuture
-				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.threadPool());
+				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoRead>> readsFuture = CompletableFuture.supplyAsync(() -> this.reads(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoReadCompleted>> readCompletedsFuture = CompletableFuture
-				.supplyAsync(() -> this.readCompleteds(workLogJob), ThisApplication.threadPool());
+				.supplyAsync(() -> this.readCompleteds(workLogJob), ThisApplication.forkJoinPool());
 		CompletableFuture<List<WorkLog>> workLogsFuture = CompletableFuture.supplyAsync(() -> this.workLogs(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<Boolean> controlFuture = CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -76,7 +76,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 
 		if (BooleanUtils.isFalse(controlFuture.get())) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
