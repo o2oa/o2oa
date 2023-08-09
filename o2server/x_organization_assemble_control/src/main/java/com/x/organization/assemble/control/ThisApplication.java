@@ -8,11 +8,6 @@ import com.x.base.core.project.cache.CacheManager;
  */
 public class ThisApplication {
 
-	// private static Logger logger =
-	// LoggerFactory.getLogger(ThisApplication.class);
-
-	// private static final String SYSTEM_MANAGER = "系统管理员";
-
 	private ThisApplication() {
 	}
 

@@ -114,7 +114,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return null;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Data> dataFuture(WorkCompleted workCompleted) {
@@ -147,7 +147,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 			return null;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<WoTask>> taskFuture(String job) {
@@ -159,7 +159,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<WoRead>> readFuture(String job) {
@@ -171,7 +171,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private void setCurrentTaskIndex(EffectivePerson effectivePerson, Wo wo) {

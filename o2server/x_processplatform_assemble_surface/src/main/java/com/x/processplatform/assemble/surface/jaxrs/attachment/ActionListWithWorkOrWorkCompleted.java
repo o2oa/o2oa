@@ -80,7 +80,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return wos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 
 	}
 

@@ -76,7 +76,7 @@ class ActionCountWithPerson extends BaseAction {
 				LOGGER.error(e);
 			}
 			return count;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Long> taskCompletedFuture(String dn, String appId) {
@@ -100,7 +100,7 @@ class ActionCountWithPerson extends BaseAction {
 				LOGGER.error(e);
 			}
 			return count;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Long> readFuture(String dn, String appId) {
@@ -116,7 +116,7 @@ class ActionCountWithPerson extends BaseAction {
 				LOGGER.error(e);
 			}
 			return count;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Long> readCompletedFuture(String dn, String appId) {
@@ -132,7 +132,7 @@ class ActionCountWithPerson extends BaseAction {
 				LOGGER.error(e);
 			}
 			return count;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Long> reviewFuture(String dn, String appId) {
@@ -148,7 +148,7 @@ class ActionCountWithPerson extends BaseAction {
 				LOGGER.error(e);
 			}
 			return count;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wo extends GsonPropertyObject {

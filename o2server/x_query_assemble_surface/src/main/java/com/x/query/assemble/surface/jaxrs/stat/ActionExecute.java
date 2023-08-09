@@ -47,7 +47,7 @@ class ActionExecute extends BaseAction {
             }
             LOGGER.debug("wi:{}", wi);
             this.append(effectivePerson, business, wi);
-            StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.threadPool());
+            StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.forkJoinPool());
             statPlan.access();
             Wo wo = new Wo();
             wo.setCalculate(statPlan.getCalculate());

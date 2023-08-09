@@ -81,7 +81,7 @@ class V2Get extends BaseAction {
 				}
 			}
 			return map;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Map<String, RelatedScript>> relatedScript = CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
 			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
@@ -131,7 +131,7 @@ class V2Get extends BaseAction {
 				}
 			}
 			return map;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		wo.setRelatedWidgetMap(relatedWidget.get(300, TimeUnit.SECONDS));
 		wo.setRelatedScriptMap(relatedScript.get(300, TimeUnit.SECONDS));
 		list.add(page.getId() + page.getUpdateTime().getTime());

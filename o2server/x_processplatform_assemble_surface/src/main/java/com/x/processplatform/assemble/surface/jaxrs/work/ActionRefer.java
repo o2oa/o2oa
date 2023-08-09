@@ -43,7 +43,7 @@ class ActionRefer extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<TaskCompleted> os = emc.listEqualAndEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME,
@@ -53,7 +53,7 @@ class ActionRefer extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Read> os = emc.listEqualAndEqual(Read.class, Read.work_FIELDNAME, workId, Read.person_FIELDNAME,
@@ -63,7 +63,7 @@ class ActionRefer extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<ReadCompleted> os = emc.listEqualAndEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME,
@@ -73,7 +73,7 @@ class ActionRefer extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Review> os = emc.listEqualAndEqual(Review.class, Review.work_FIELDNAME, workId,
