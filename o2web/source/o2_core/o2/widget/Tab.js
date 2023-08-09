@@ -153,6 +153,7 @@ o2.widget.TabPage = new Class({
 			"text": this.options.title
 		});
 		this.tabNode.addEvent("click", this._showTab.bind(this));
+		this.tabNode.addEvent("mousedown", function(e){ e.stopPropagation();});
 
 		if (this.options.isClose){
 			if (!this.closeNode) this.closeNode = new Element("div").inject(this.tabNode);
