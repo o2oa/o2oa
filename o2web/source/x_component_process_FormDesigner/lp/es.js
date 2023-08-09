@@ -1538,6 +1538,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resumeTitle": "Reanudar una tarea suspendida",
         "downloadAll": "Descargar todo",
         "downloadAllTitle": "Descargar todo",
+        "monitor": "Monitor de proceso",
+        "monitorTitle": "Monitor de proceso",
         "setReaded": "Marcar como leído",
         "readed": "Leído",
         "addTask": "Añadir destinatario",

@@ -341,7 +341,8 @@ MWF.xApplication.process.Xform.LP = {
         "resumeTitle": "Resume the task from pending",
         "downloadAll": "Download",
         "downloadAllTitle": "Download the form and all attachments",
-
+        "monitor": "Process Monitor",
+        "monitorTitle": "Process Monitor",
         "addTask": "Add Task",
         "addTaskTitle": "Add task to current activity",
 

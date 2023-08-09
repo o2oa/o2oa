@@ -339,7 +339,8 @@ MWF.xApplication.process.Xform.LP = {
         "resumeTitle": "从挂起状态恢复",
         "downloadAll": "一键下载",
         "downloadAllTitle": "一键下载",
-
+        "monitor": "流程监控",
+        "monitorTitle": "流程监控",
         "addTask": "加签",
         "addTaskTitle": "在当前活动添加处理人",
 
