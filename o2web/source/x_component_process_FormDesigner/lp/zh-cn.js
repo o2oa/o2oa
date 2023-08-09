@@ -1557,6 +1557,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "resumeTitle": "从挂起状态恢复",
         "downloadAll": "一键下载",
         "downloadAllTitle": "一键下载",
+        "monitor": "流程监控",
+        "monitorTitle": "流程监控",
         "setReaded" : "标记为已阅",
         "readed" : "已阅",
         "addTask": "加签",
