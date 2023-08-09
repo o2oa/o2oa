@@ -42,23 +42,8 @@ public class ThisApplication {
 		ThisApplication.missionExternalDataSources = missionExternalDataSources;
 	}
 
-//	private static ExecutorService threadPool;
-//
-//	public static ExecutorService threadPool() {
-//		return threadPool;
-//	}
-//
-//	private static void initThreadPool() {
-//		int maximumPoolSize = Runtime.getRuntime().availableProcessors() + 1;
-//		ThreadFactory threadFactory = new ThreadFactoryBuilder()
-//				.setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d").build();
-//		threadPool = new ThreadPoolExecutor(0, maximumPoolSize, 120, TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000),
-//				threadFactory);
-//	}
-
 	public static void init() {
 		try {
-			// initThreadPool();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

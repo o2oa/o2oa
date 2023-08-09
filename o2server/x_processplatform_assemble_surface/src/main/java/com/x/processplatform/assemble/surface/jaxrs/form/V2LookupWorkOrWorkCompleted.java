@@ -131,7 +131,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -146,7 +146,7 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 				}
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	

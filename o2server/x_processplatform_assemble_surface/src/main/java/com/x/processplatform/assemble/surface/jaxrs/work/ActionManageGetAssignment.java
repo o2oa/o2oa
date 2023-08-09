@@ -73,7 +73,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureTaskCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME, id).stream().sorted(
@@ -89,7 +89,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Read.class, Read.work_FIELDNAME, id).stream()
@@ -105,7 +105,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReadCompleted = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME, id).stream().sorted(
@@ -121,7 +121,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		CompletableFuture<Void> futureReview = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Review.class, Review.job_FIELDNAME, job).stream()
@@ -137,7 +137,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 		futureTask.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		futureReview.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);
 		futureTaskCompleted.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS);

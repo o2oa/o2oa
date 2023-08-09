@@ -131,7 +131,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				}
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -147,7 +147,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				}
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompletedMobile$Wo")

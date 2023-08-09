@@ -401,7 +401,7 @@ public class DocumentPersistService {
 										} catch (Exception e) {
 											logger.warn("刷新文档权限异常1：{}", e.getMessage());
 										}
-									},ThisApplication.threadPool());
+									},ThisApplication.forkJoinPool());
 									futures.add(future);
 								}
 								if(!flag){
@@ -468,7 +468,7 @@ public class DocumentPersistService {
 								} catch (Exception e) {
 									logger.warn("刷新文档权限异常1：{}", e.getMessage());
 								}
-							},ThisApplication.threadPool());
+							},ThisApplication.forkJoinPool());
 							futures.add(future);
 						}
 						for (CompletableFuture<Void> future : futures) {

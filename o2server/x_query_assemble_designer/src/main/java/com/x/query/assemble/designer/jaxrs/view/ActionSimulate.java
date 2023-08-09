@@ -59,7 +59,7 @@ class ActionSimulate extends BaseAction {
 
 			case View.TYPE_CMS:
 				CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-				cmsPlan.init(runtime, ThisApplication.threadPool());
+				cmsPlan.init(runtime, ThisApplication.forkJoinPool());
 				cmsPlan.access();
 				result.setData(cmsPlan);
 				break;
@@ -67,7 +67,7 @@ class ActionSimulate extends BaseAction {
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
 				this.setProcessEdition(business, processPlatformPlan);
-				processPlatformPlan.init(runtime, ThisApplication.threadPool());
+				processPlatformPlan.init(runtime, ThisApplication.forkJoinPool());
 				processPlatformPlan.access();
 				result.setData(processPlatformPlan);
 				break;
