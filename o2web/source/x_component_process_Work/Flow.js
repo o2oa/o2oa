@@ -40,30 +40,60 @@ MWF.xApplication.process.Work.Flow = new Class({
         }).inject(this.node);
         this.contentNode = new Element("div.contentNode", {
             styles: {
-                "margin-left": "100px",
-                "width": "900px"
+                "margin-left": "100px"
             }
         }).inject(this.node);
 
         if( this.businessData.control["allowProcessing"] ){
             this.processorTitleNode = new Element("div", {
-                text: "提交"
+                text: "提交",
+                events: {
+                    click: function(){ this.changeAction("process") }.bind(this)
+                }
             }).inject( this.naviNode );
             this.processorContentNode = new Element("div").inject( this.contentNode );
             this.loadProcessor();
         }
         if( this.businessData.control["allowAddTask"] ){
             this.addTaskTitleNode = new Element("div", {
-                text: "加签"
+                text: "加签",
+                events: {
+                    click: function(){ this.changeAction("addTask") }.bind(this)
+                }
             }).inject( this.naviNode );
             this.addTaskContentNode = new Element("div").inject( this.contentNode );
+            this.addTaskContentNode.hide();
+            this.loadAddTask();
         }
         if( this.businessData.control["allowReset"] ){
             this.resetTitleNode = new Element("div", {
-                text: "重置"
+                text: "重置",
+                events: {
+                    click: function(){ this.changeAction("reset") }.bind(this)
+                }
             }).inject( this.naviNode );
             this.resetContentNode = new Element("div").inject( this.contentNode );
+            this.resetContentNode.hide();
             this.loadReset();
+        }
+    },
+    changeAction: function( action ){
+        switch (action) {
+            case "process":
+                this.processorContentNode.show();
+                this.addTaskContentNode.hide();
+                this.resetContentNode.hide();
+                break;
+            case "addTask":
+                this.processorContentNode.hide();
+                this.addTaskContentNode.show();
+                this.resetContentNode.hide();
+                break;
+            case "reset":
+                this.processorContentNode.hide();
+                this.addTaskContentNode.hide();
+                this.resetContentNode.show();
+                break;
         }
     },
     loadProcessor: function () {
@@ -89,6 +119,14 @@ MWF.xApplication.process.Work.Flow = new Class({
     loadReset: function(){
         this.reset = new MWF.xApplication.process.Work.Flow.Reset(
             this.resetContentNode,
+            this.task,
+            {},
+            this.form
+        );
+    },
+    loadAddTask: function(){
+        this.addTask = new MWF.xApplication.process.Work.Flow.AddTask(
+            this.addTaskContentNode,
             this.task,
             {},
             this.form
@@ -121,10 +159,18 @@ MWF.xApplication.process.Work.Flow.Processor = new Class({
 });
 
 MWF.xApplication.process.Work.Flow.Reset = new Class({
+    Extends: MWF.widget.Common,
     Implements: [Options, Events],
-    options:{},
+    options:{
+        style: "process"
+    },
     initialize: function (container, task, options, form) {
         this.setOptions(options);
+
+        this.path = "../x_component_process_Work/$Processor/";
+        this.cssPath = "../x_component_process_Work/$Processor/" + this.options.style + "/css.wcss";
+        this._loadCss();
+
 
         this.task = task;
         this.container = $(container);
@@ -135,7 +181,233 @@ MWF.xApplication.process.Work.Flow.Reset = new Class({
         this.load();
     },
     load: function(){
+        if (layout.mobile) {
+            this.content = new Element("div").inject(this.container);
+        } else {
+            this.content = this.container;
+        }
 
+        this.routeOpinionTile = new Element("div", {
+            "styles": this.css.routeOpinionTile,
+            "text": "重置意见"
+        }).inject(this.content);
+        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.content);
+
+        this.setOpinion();
+
+        if (layout.mobile) {
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
+            this.orgsTile = new Element("div", {
+                "styles": this.css.orgsTitle,
+                "text": "重置给"
+            }).inject(this.orgsArea);
+            this.orgsArea.hide();
+        } else {
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
+            this.orgsTile = new Element("div", {
+                "styles": this.css.orgsTitle,
+                "text": "重置给"
+            }).inject(this.orgsArea);
+        }
+
+        this.loadOrg();
+
+
+        var _self = this;
+        var routeNode = new Element("div", {
+            "styles": this.css.routeNode,
+            "text": "保留我的待办"
+        }).inject(this.content);
+
+        routeNode.addEvents({
+            "mouseover": function (e) {
+                _self.overRoute(this);
+            },
+            "mouseout": function (e) {
+                _self.outRoute(this);
+            },
+            "click": function (e) {
+                _self.selectRoute(this);
+            }
+        });
+        this.fireEvent("postLoad");
+    },
+    overRoute: function (node) {
+        if (this.selectedRoute) {
+            if (this.selectedRoute.get("text") != node.get("text")) {
+                node.setStyles(this.css.routeNode_over);
+                node.addClass("lightColor_bg");
+                //node.setStyle("background-color", "#f7e1d0");
+            }
+        } else {
+            node.setStyles(this.css.routeNode_over);
+            node.addClass("lightColor_bg");
+        }
+    },
+    outRoute: function (node) {
+        if (this.selectedRoute) {
+            if (this.selectedRoute.get("text") != node.get("text")) {
+                node.setStyles(this.css.routeNode);
+                node.removeClass("lightColor_bg");
+            }
+        } else {
+            node.setStyles(this.css.routeNode);
+            node.removeClass("lightColor_bg");
+        }
+    },
+    selectRoute: function (node) {
+        if (this.selectedRoute) {
+            if (this.selectedRoute.get("text") != node.get("text")) { //选中其他路由
+                this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.removeClass("mainColor_bg");
+
+                node.setStyles(this.css.routeNode_selected);
+                node.addClass("mainColor_bg");
+                node.removeClass("lightColor_bg");
+
+            } else { //取消选中当前路由
+                if( this.options.useDefaultOpinion ) {
+                    if (this.inputTextarea.get("value") === this.getDefaultOpinion(this.selectedRoute)) {
+                        this.lastDefaultOpinion = "";
+                        this.inputTextarea.set("value", MWF.xApplication.process.Work.LP.inputText || "");
+                    }
+                }
+                this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.addClass("lightColor_bg");
+                this.selectedRoute.removeClass("mainColor_bg");
+                this.selectedRoute = null;
+            }
+        } else {
+            this.selectedRoute = node;
+            node.setStyles(this.css.routeNode_selected);
+            node.addClass("mainColor_bg");
+            node.removeClass("lightColor_bg");
+        }
+        this.routeSelectorArea.setStyle("background-color", "#FFF");
+
+    },
+    setOpinion: function () {
+        this.selectIdeaNode = new Element("div", {"styles": this.css.selectIdeaNode}).inject(this.routeOpinionArea);
+        this.selectIdeaScrollNode = new Element("div", {"styles": this.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
+        this.selectIdeaAreaNode = new Element("div", {
+            "styles": {
+                "overflow": "hidden"
+            }
+        }).inject(this.selectIdeaScrollNode);
+
+        this.inputOpinionNode = new Element("div", {"styles": this.css.inputOpinionNode}).inject(this.routeOpinionArea);
+        this.inputTextarea = new Element("textarea", {
+            "styles": this.css.inputTextarea,
+            "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText
+        }).inject(this.inputOpinionNode);
+        this.inputTextarea.setStyle("resize", "none");
+        this.inputTextarea.addEvents({
+            "focus": function () {
+                if (this.get("value") == MWF.xApplication.process.Work.LP.inputText) this.set("value", "");
+            },
+            "blur": function () {
+                if (!this.get("value")) this.set("value", MWF.xApplication.process.Work.LP.inputText);
+            },
+            "keydown": function () {
+                this.inputTextarea.setStyles(this.inputTextareaStyle || this.css.inputTextarea);
+            }.bind(this)
+        });
+
+        MWF.require("MWF.widget.ScrollBar", function () {
+            new MWF.widget.ScrollBar(this.selectIdeaScrollNode, {
+                "style": "small",
+                "where": "before",
+                "distance": 30,
+                "friction": 4,
+                "indent": false,
+                "axis": {"x": false, "y": true}
+            });
+        }.bind(this));
+
+        MWF.require("MWF.widget.UUID", function () {
+            MWF.UD.getDataJson("idea", function (json) {
+                if (json) {
+                    if (json.ideas) {
+                        this.setIdeaList(json.ideas);
+                    }
+                } else {
+                    MWF.UD.getPublicData("idea", function (pjson) {
+                        if (pjson) {
+                            if (pjson.ideas) {
+                                this.setIdeaList(pjson.ideas);
+                            }
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+        }.bind(this));
+    },
+    setIdeaList: function (ideas) {
+        var _self = this;
+        ideas.each(function (idea) {
+            if (!idea) return;
+            new Element("div", {
+                "styles": this.css.selectIdeaItemNode,
+                "text": idea,
+                "events": {
+                    "click": function () {
+                        if (_self.inputTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
+                            _self.inputTextarea.set("value", this.get("text"));
+                        } else {
+                            _self.inputTextarea.set("value", _self.inputTextarea.get("value") + ", " + this.get("text"));
+                        }
+                    },
+                    "dblclick": function () {
+                        if (_self.inputTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
+                            _self.inputTextarea.set("value", this.get("text"));
+                        } else {
+                            _self.inputTextarea.set("value", _self.inputTextarea.get("value") + ", " + this.get("text"));
+                        }
+                    },
+                    "mouseover": function () {
+                        this.setStyles(_self.css.selectIdeaItemNode_over);
+                    },
+                    "mouseout": function () {
+                        this.setStyles(_self.css.selectIdeaItemNode);
+                    }
+                }
+            }).inject(this.selectIdeaAreaNode);
+        }.bind(this));
+    },
+    setButtons: function () {
+        this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
+        var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
+        var textNode = new Element("div", {
+            "styles": this.css.cancelTextNode,
+            "text": MWF.xApplication.process.Work.LP.cancel
+        }).inject(this.cancelButton);
+
+        this.okButton = new Element("div", {"styles": this.css.okButton}).inject(this.buttonsArea);
+        var iconNode = new Element("div", {"styles": this.css.okIconNode}).inject(this.okButton);
+        var textNode = new Element("div", {
+            "styles": this.css.okTextNode,
+            "text": MWF.xApplication.process.Work.LP.ok
+        }).inject(this.okButton);
+
+        this.cancelButton.addEvent("click", function () {
+            this.destroy();
+            this.fireEvent("cancel");
+        }.bind(this));
+
+        this.okButton.addEvent("click", function (ev) {
+            if (!this.form && this.options.isManagerProcess) {
+                this.submit_withoutForm(ev)
+            }else if (layout.mobile) {
+                this.submit_mobile(ev)
+            } else {
+                this.submit_pc(ev)
+            }
+        }.bind(this));
+    },
+    loadOrg: function(){
+        this.getSelectorOptions( function (options) {
+            this.selector = new MWF.O2Selector(this.orgsArea, options)
+        }.bind(this) );
     },
     getSelectorOptions: function( callback ){
         o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
@@ -285,6 +557,64 @@ MWF.xApplication.process.Work.Flow.Reset = new Class({
         if (this.node) this.node.empty();
         // delete this.task;
         // delete this.node;
+    },
+});
+
+MWF.xApplication.process.Work.Flow.AddTask = new Class({
+    Extends: MWF.xApplication.process.Work.Flow.Reset,
+    load: function(){
+        if (layout.mobile) {
+            this.content = new Element("div").inject(this.container);
+        } else {
+            this.content = this.container;
+        }
+
+        this.routeOpinionTile = new Element("div", {
+            "styles": this.css.routeOpinionTile,
+            "text": "加签意见"
+        }).inject(this.content);
+        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.content);
+
+        this.setOpinion();
+
+        if (layout.mobile) {
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
+            this.orgsTile = new Element("div", {
+                "styles": this.css.orgsTitle,
+                "text": "加签人"
+            }).inject(this.orgsArea);
+            this.orgsArea.hide();
+        } else {
+            this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
+            this.orgsTile = new Element("div", {
+                "styles": this.css.orgsTitle,
+                "text": "加签人"
+            }).inject(this.orgsArea);
+        }
+
+        this.loadOrg();
+
+
+        var _self = this;
+        ["前加签","后加签"].each(function (text) {
+            var routeNode = new Element("div", {
+                "styles": this.css.routeNode,
+                "text": text
+            }).inject(this.content);
+
+            routeNode.addEvents({
+                "mouseover": function (e) {
+                    _self.overRoute(this);
+                },
+                "mouseout": function (e) {
+                    _self.outRoute(this);
+                },
+                "click": function (e) {
+                    _self.selectRoute(this);
+                }
+            });
+        }.bind(this))
+        this.fireEvent("postLoad");
     },
 })
 
