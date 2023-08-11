@@ -56,6 +56,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             "id": pageData.json.id,
             "name": pageData.json.name,
             "alias": pageData.json.name,
+            "category": pageData.json.category,
             //"hasMobile": false,
             "description": pageData.json.description,
             "portal": pageData.json.application,
@@ -123,6 +124,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
                 var json = {
                     "id": pageData.json.id,
                     "name": pageData.json.name,
+                    "category": pageData.json.category,
                     "hasMobile": false,
                     "alias": pageData.json.name,
                     "description": pageData.json.description,
@@ -189,6 +191,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
             "id": pageData.json.id,
             "name": pageData.json.name,
             "alias": pageData.json.name,
+            "category": pageData.json.category,
             //"hasMobile": false,
             "description": pageData.json.description,
             "portal": pageData.json.application,
@@ -218,6 +221,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
                 var json = {
                     "id": pageData.json.id,
                     "name": pageData.json.name,
+                    "category": pageData.json.category,
                     "hasMobile": false,
                     "alias": pageData.json.name,
                     "description": pageData.json.description,
