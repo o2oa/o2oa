@@ -1142,6 +1142,13 @@ MWF.xApplication.Selector.Person = new Class({
             }.bind(this));
         }
     },
+
+    setValues: function( values ){
+        this.emptySelectedItems();
+        this.options.values = values;
+        this.setSelectedItem();
+    },
+
     loadLetters: function(){
         var _self = this;
         letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
