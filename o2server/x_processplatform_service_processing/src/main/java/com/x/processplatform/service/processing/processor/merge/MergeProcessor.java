@@ -75,7 +75,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		} else {
 			Optional<Work> branch = this.findWorkShallower(aeiObjects);
 			if (branch.isPresent()) {
-				mergeTo(aeiObjects, merge, branch.get());
+				gotoShallower(aeiObjects, merge, branch.get());
 				results.add(aeiObjects.getWork());
 			} else {
 				// 完全找不到合并的文档,唯一一份
@@ -91,7 +91,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		return results;
 	}
 
-	private void mergeTo(AeiObjects aeiObjects, Merge merge, Work branch) {
+	private void gotoShallower(AeiObjects aeiObjects, Merge merge, Work branch) {
 		aeiObjects.getWork().setSplitting(true);
 		int mergeLayerCount = aeiObjects.getWork().getSplitTokenList().size() - branch.getSplitTokenList().size();
 		if ((null != merge.getMergeLayerThreshold()) && (merge.getMergeLayerThreshold() > 0)) {
@@ -99,7 +99,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		}
 		int threshold = aeiObjects.getWork().getSplitTokenList().size() - mergeLayerCount;
 		// 回滚splitTokenList
-		aeiObjects.getWork().setSplitTokenList(branch.getSplitTokenList().subList(0, threshold));
+		aeiObjects.getWork().setSplitTokenList(aeiObjects.getWork().getSplitTokenList().subList(0, threshold));
 		// 回滚splitToken
 		aeiObjects.getWork().setSplitToken(
 				aeiObjects.getWork().getSplitTokenList().get(aeiObjects.getWork().getSplitTokenList().size() - 1));
