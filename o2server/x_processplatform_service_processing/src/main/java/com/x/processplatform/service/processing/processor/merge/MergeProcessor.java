@@ -1,12 +1,12 @@
 package com.x.processplatform.service.processing.processor.merge;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,6 +15,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
@@ -64,6 +65,13 @@ public class MergeProcessor extends AbstractMergeProcessor {
 			aeiObjects.getWorkLogs().stream()
 					.filter(p -> StringUtils.equals(p.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
 					.forEach(obj -> aeiObjects.getDeleteWorkLogs().add(obj));
+			// 本体被删除,如果另外合并对象处于merge环节要尝试流转
+			if (Objects.equals(other.get().getActivityType(), ActivityType.merge)) {
+				LOGGER.warn(
+						"The work stays in merge is an illegal state, try to trigger the work(id:{}, job:{}) again.",
+						other.get().getId(), other.get().getJob());
+				results.add(other.get());
+			}
 		} else {
 			Optional<Work> branch = this.findWorkShallower(aeiObjects);
 			if (branch.isPresent()) {
@@ -76,6 +84,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getWork().setSplitTokenList(new ArrayList<>());
 				aeiObjects.getWork().setSplitValue("");
 				aeiObjects.getWork().setSplitValueList(new ArrayList<>());
+				aeiObjects.getWork().setSplitTokenValueMap(new LinkedHashMap<>());
 				results.add(aeiObjects.getWork());
 			}
 		}
@@ -88,7 +97,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 		if ((null != merge.getMergeLayerThreshold()) && (merge.getMergeLayerThreshold() > 0)) {
 			mergeLayerCount = Math.min(mergeLayerCount, merge.getMergeLayerThreshold());
 		}
-		int threshold = branch.getSplitTokenList().size() - mergeLayerCount;
+		int threshold = aeiObjects.getWork().getSplitTokenList().size() - mergeLayerCount;
 		// 回滚splitTokenList
 		aeiObjects.getWork().setSplitTokenList(branch.getSplitTokenList().subList(0, threshold));
 		// 回滚splitToken
