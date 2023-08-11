@@ -1,9 +1,8 @@
 package com.x.file.assemble.control;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.message.MessageConnector;
@@ -19,12 +18,11 @@ public class ThisApplication {
 		// nothing
 	}
 
-	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
-					.build());
+	private static final ForkJoinPool FORKJOINPOOL = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
+			new ApplicationForkJoinWorkerThreadFactory(ThisApplication.class.getPackage()), null, false);
 
-	public static ExecutorService threadPool() {
-		return threadPool;
+	public static ForkJoinPool forkJoinPool() {
+		return FORKJOINPOOL;
 	}
 
 	public static final FileRemoveQueue fileRemoveQueue = new FileRemoveQueue();
@@ -48,7 +46,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			threadPool.shutdown();
+			FORKJOINPOOL.shutdown();
 			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();

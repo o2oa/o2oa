@@ -74,7 +74,7 @@ class ActionListWithJob extends BaseAction {
 				LOGGER.error(e);
 			}
 			return wos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -88,7 +88,7 @@ class ActionListWithJob extends BaseAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readrecord.ActionListWithJob$Wo")

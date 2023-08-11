@@ -63,7 +63,7 @@ class ActionExecuteWithQuery extends BaseAction {
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
-		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
+		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		result.setData(plan);
 		return result;
 	}

@@ -51,15 +51,15 @@ class ActionListWithJob extends BaseAction {
 		}
 
 		CompletableFuture<List<WoTask>> futureTasks = CompletableFuture.supplyAsync(() -> this.tasks(job),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoTaskCompleted>> futureTaskCompleteds = CompletableFuture
-				.supplyAsync(() -> this.taskCompleteds(job), ThisApplication.threadPool());
+				.supplyAsync(() -> this.taskCompleteds(job), ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoRead>> futureReads = CompletableFuture.supplyAsync(() -> this.reads(job),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoReadCompleted>> futureReadCompleteds = CompletableFuture
-				.supplyAsync(() -> this.readCompleteds(job), ThisApplication.threadPool());
+				.supplyAsync(() -> this.readCompleteds(job), ThisApplication.forkJoinPool());
 		CompletableFuture<List<Wo>> futureWorkLogs = CompletableFuture.supplyAsync(() -> this.workLogs(job),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		List<WoTask> tasks = futureTasks.get();
 		List<WoTaskCompleted> taskCompleteds = futureTaskCompleteds.get();
 		List<WoRead> reads = futureReads.get();

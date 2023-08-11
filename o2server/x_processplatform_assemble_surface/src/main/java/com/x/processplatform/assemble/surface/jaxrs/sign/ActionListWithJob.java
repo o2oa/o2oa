@@ -64,7 +64,7 @@ class ActionListWithJob extends BaseAction {
 				LOGGER.error(e);
 			}
 			return wos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
@@ -78,7 +78,7 @@ class ActionListWithJob extends BaseAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	public static class Wo extends DocSign {

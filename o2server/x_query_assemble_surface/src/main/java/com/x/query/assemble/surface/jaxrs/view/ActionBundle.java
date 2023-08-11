@@ -57,7 +57,7 @@ class ActionBundle extends BaseAction {
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), true);
 		}
-		List<String> os = this.fetchBundle(business, view, runtime, ThisApplication.threadPool());
+		List<String> os = this.fetchBundle(business, view, runtime, ThisApplication.forkJoinPool());
 		Wo wo = new Wo();
 		wo.setValueList(os);
 		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));

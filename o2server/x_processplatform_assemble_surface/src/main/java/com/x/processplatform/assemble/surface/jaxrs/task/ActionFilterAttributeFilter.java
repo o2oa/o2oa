@@ -119,7 +119,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private Predicate filter(CriteriaBuilder cb, Root<Task> root, Predicate p, Wi wi) {
@@ -174,7 +174,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> creatorUnitFuture(Business business,
@@ -200,7 +200,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> activityNameFuture(Business business,
@@ -226,7 +226,7 @@ class ActionFilterAttributeFilter extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<NameValueCountPair>> startTimeMonthFuture(Business business,
@@ -252,6 +252,6 @@ class ActionFilterAttributeFilter extends BaseAction {
 				LOGGER.error(e);
 			}
 			return list;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 }

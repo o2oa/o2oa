@@ -214,6 +214,14 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             return this.parseDictOptions(data);
         }
     },
+    getString: function( d ){
+        switch (o2.typeOf(d)) {
+            case "null": return "";
+            case "string":  return d;
+            case "boolean": case "number": case "date": return d.toString();
+            default: return "";
+        }
+    },
     parseDictOptions: function (d) {
         var arr = [], value, text, valuekey = this.json.dictValueKey, textkey = this.json.dictTextKey;
         switch ( o2.typeOf(d) ) {
@@ -222,32 +230,32 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                     switch ( o2.typeOf(i) ) {
                         case "object":
                             if( valuekey && textkey ){
-                                value = i[ valuekey ] || "";
-                                text = i[ textkey ] || "";
+                                value = this.getString( i[valuekey] );
+                                text = this.getString( i[textkey] );
                                 arr.push( text + "|" + value );
                             }else if( valuekey ){
-                                arr.push( i[ valuekey ] || "" );
+                                arr.push( this.getString( i[valuekey] ) );
                             }else if( textkey ){
-                                arr.push( i[ textkey ] || "" );
+                                arr.push( this.getString(i[textkey] ));
                             }
                             break;
                         case "null": break;
                         default: arr.push( i.toString() ); break;
                     }
-                });
+                }.bind(this));
                 return arr;
             case "object":
                 Object.each(d, function (i, key) {
                     switch ( o2.typeOf(i) ) {
                         case "object":
                             if( valuekey && textkey ){
-                                value = i[ valuekey ] || "";
-                                text = i[ textkey ] || "";
+                                value = this.getString( i[valuekey] );
+                                text = this.getString(i[ textkey] );
                                 arr.push( value + "|" + text );
                             }else if( valuekey ){
-                                arr.push( i[ valuekey ] || "" );
+                                arr.push( this.getString( i[valuekey] ) );
                             }else if( textkey ){
-                                arr.push( i[ textkey ] || "" );
+                                arr.push( this.getString(i[ textkey] ) );
                             }
                             break;
                         case "null": break;
@@ -293,15 +301,15 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         json.grid.each(function(d){
             var i = d.data || {};
             if( valuekey && textkey ){
-                value = valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "");
-                text = textkey === "bundle" ? d.bundle : (i[ textkey ] || "");
+                value = valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] ));
+                text = textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] ));
                 arr.push( text + "|" + value );
             }else if( valuekey ){
-                arr.push( valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "") );
+                arr.push( valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] )) );
             }else if( textkey ){
-                arr.push( textkey === "bundle" ? d.bundle : (i[ textkey ] || "") );
+                arr.push( textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] )) );
             }
-        })
+        }.bind(this))
         return arr.unique();
     },
 
@@ -421,7 +429,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
             }
         }
-        return obj;
+        return this.getString( obj );
     }
 
 });

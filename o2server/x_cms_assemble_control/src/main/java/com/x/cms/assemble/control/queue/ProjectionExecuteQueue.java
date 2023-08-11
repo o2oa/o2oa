@@ -83,7 +83,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 							LOGGER.warn("文档{}数据映射异常：{}", docId, e.getMessage());
 							LOGGER.error(e);
 						}
-					}, ThisApplication.threadPool());
+					}, ThisApplication.forkJoinPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {

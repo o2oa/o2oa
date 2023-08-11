@@ -13,14 +13,6 @@ public class ThisApplication {
 		// nothing
 	}
 
-//	private static ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-//			new ThreadFactoryBuilder().setNameFormat(ThisApplication.class.getPackageName() + "-threadpool-%d")
-//					.build());
-//
-//	public static ExecutorService threadPool() {
-//		return threadPool;
-//	}
-
 	private static final ForkJoinPool FORKJOINPOOL = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
 			new ApplicationForkJoinWorkerThreadFactory(ThisApplication.class.getPackage()), null, false);
 
@@ -56,7 +48,6 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			// threadPool.shutdown();
 			FORKJOINPOOL.shutdown();
 			CacheManager.shutdown();
 			MessageConnector.stop();
