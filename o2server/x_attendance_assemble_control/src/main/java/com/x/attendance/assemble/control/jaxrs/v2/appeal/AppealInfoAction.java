@@ -51,6 +51,44 @@ public class AppealInfoAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "管理员查询申诉数据列表.", action = ActionListByPageByAdmin.class)
+    @POST
+    @Path("list/manager/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void managerListByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+        ActionResult<List<ActionListByPageByAdmin.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListByPageByAdmin().execute(effectivePerson, page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+
+    @JaxrsMethodDescribe(value = "管理员处理异常数据为正常.", action = ActionUpdateStatusByAdmin.class)
+    @GET
+    @Path("{id}/manager/status")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void managerSetNormal(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id) {
+        ActionResult<ActionUpdateStatusByAdmin.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionUpdateStatusByAdmin().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
 
     @JaxrsMethodDescribe(value = "申诉数据获取.", action = ActionGet.class)

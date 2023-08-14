@@ -3,8 +3,23 @@
         <div class="index_page_header_title">{{$.lp.appealManagerTitle}}</div>
     </div>
     <div class="manager-box-content">
-        <div style="margin: 10px 0;float: left;">
-            <!-- <button class="mainColor_bg" @click="addGroup">{{$.lp.groupAdd}}</button> -->
+        <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
+            <!--人员组织选择  -->
+            <div class="margin-right">
+                <o-org-person-selector
+                    oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailStatisticList.filterSelectTitle,  'placeholder': $.lp.detailStatisticList.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+                    oo-model="filterList"></o-org-person-selector>
+            </div>
+
+            <!-- 日期选择 -->
+            <div class="margin-top margin-right">
+                <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker>
+                <span style="margin: 0 10px;">{{$.lp.until}}</span>
+                <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
+            </div>
+            <div class="margin-top margin-right">
+                <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
         </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
             <thead>
@@ -14,7 +29,7 @@
                 <th>{{$.lp.appeal.recordResult}}</th>
                 <th>{{$.lp.appeal.status}}</th>
                 
-                <th style="width: 150px;">{{$.lp.operate}}</th>
+                <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.appealList" oo-item="g">
                 <td>{{g.value.recordDateString}}</td>
@@ -25,9 +40,8 @@
                  
                 <td>
                     <span class="operator_link_underline" oo-if="g.value.status === 0"
-                        @click="this.startProcess(g.value)">{{$.lp.appeal.startProcess}}</span>
-                    <span class="operator_link_underline" oo-if="g.value.jobId"
-                        @click="this.openJob(g.value.jobId, g.value.id)">{{$.lp.appeal.openJob}}</span>
+                        @click="this.clickDealAppeal(g.value)">{{$.lp.appeal.dealAppeal}}</span>
+                   
                     
                 </td>
             </tr>

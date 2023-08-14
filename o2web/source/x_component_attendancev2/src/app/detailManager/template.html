@@ -2,7 +2,7 @@
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
     </div>
-    <div style="padding: 20px;">
+    <div class="manager-box-content">
          <!--人员组织选择  -->
          <div style="margin-right: 10px;float: left;">
             <o-org-person-selector
@@ -33,7 +33,7 @@
                 <th>{{$.lp.detailTable.offDutyAbsenceTimes}}</th>
                 <th>{{$.lp.detailTable.fieldWorkTimes}}</th>
                 
-                <th style="width: 10%;">{{$.lp.operate}}</th>
+                <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.detailList" oo-item="d">
                 <td>{{ $m.formatName(d.value.userId)}}</td>

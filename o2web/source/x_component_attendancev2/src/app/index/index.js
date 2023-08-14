@@ -189,6 +189,12 @@ export default content({
             action: "recordManager",
             icon: "o2icon-icon_yuanshijilu"
           },
+          {
+            id: "2-4",
+            title: lp.menu.appealList,
+            action: "appealAdminManager",
+            icon: "o2icon-icon_kaoiqinyichang"
+          },
         ],
       },
       {

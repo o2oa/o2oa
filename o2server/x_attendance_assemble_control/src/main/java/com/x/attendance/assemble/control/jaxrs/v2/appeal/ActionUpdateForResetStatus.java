@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 
 /**
+ * 还原数据状态，清除流程关联.
  * Created by fancyLou on 2023/3/3.
  * Copyright © 2023 O2. All rights reserved.
  */
