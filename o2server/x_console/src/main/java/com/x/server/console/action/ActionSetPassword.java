@@ -5,9 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Map.Entry;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.h2.tools.RunScript;
 
@@ -50,7 +48,7 @@ public class ActionSetPassword extends ActionBase {
 						new StringReader("ALTER USER " + H2Tools.USER + " SET PASSWORD '" + newPassword + "'"));
 			}
 		} else {
-			Path path = Config.path_local_repository_data(true).resolve(H2Tools.DATABASE);
+			Path path = Config.pathLocalRepositoryData(true).resolve(H2Tools.DATABASE);
 			if (Files.exists(path)) {
 				try (Connection conn = DriverManager.getConnection("jdbc:h2:" + path.toAbsolutePath().toString(),
 						H2Tools.USER, oldPassword)) {
@@ -61,20 +59,4 @@ public class ActionSetPassword extends ActionBase {
 		}
 		Config.resource_commandQueue().add("ctl -initResourceFactory");
 	}
-
-//	private void changeInternalDataServerPassword(String oldPassword, String newPassword) throws Exception {
-//		org.h2.Driver.load();
-//		for (Entry<String, DataServer> en : Config.nodes().dataServers().entrySet()) {
-//			DataServer o = en.getValue();
-//			if (BooleanUtils.isTrue(o.getEnable()) && (!Config.externalDataSources().enable())) {
-//				try (Connection conn = DriverManager.getConnection(
-//						"jdbc:h2:tcp://" + en.getKey() + ":" + o.getTcpPort() + "/X", "sa", oldPassword)) {
-//					RunScript.execute(conn, new StringReader("ALTER USER SA SET PASSWORD '" + newPassword + "'"));
-//				} catch (Exception e) {
-//					throw new IllegalStateException("Verify that the dataServer:" + en.getKey()
-//							+ " is started and that the dataServer password is updated synchronously.", e);
-//				}
-//			}
-//		}
-//	}
 }
