@@ -2,7 +2,7 @@
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.groupManagerTitle}}</div>
     </div>
-    <div style="padding: 20px;">
+    <div class="manager-box-content">
         <div style="margin: 10px 0;float: left;">
             <button class="mainColor_bg" @click="addGroup">{{$.lp.groupAdd}}</button>
         </div>
@@ -11,7 +11,7 @@
                 <th>{{$.lp.groupForm.title}}</th>
                 <th>{{$.lp.groupForm.num}}</th>
                 <th>{{$.lp.groupForm.time}}</th>
-                <th style="width: 10%;">{{$.lp.operate}}</th>
+                <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.groupList" oo-item="g">
                 <td>{{g.value.groupName}}</td>

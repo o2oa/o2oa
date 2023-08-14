@@ -66,6 +66,7 @@ public class ActionUpdateForEnd extends BaseAction {
                     // 申诉成功后，更新打卡状态
                     record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
                     record.setAppealId(info.getId()); // 申诉完成回填审核数据id
+                    record.setDescription("申诉成功！");
                     emc.check(record, CheckPersistType.all);
                     emc.commit();
                     // 申诉成功后，重新生成对应的数据

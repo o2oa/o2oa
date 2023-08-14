@@ -94,7 +94,7 @@ public class Components extends ConfigObject {
             case NAME_MEETING:
                 return new Component(NAME_MEETING, NAME_MEETING, "会议管理", APPICON_PNG, 18, Component.TYPE_SYSTEM);
             case NAME_ATTENDANCE:
-                return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理2", APPICON_PNG, 20, Component.TYPE_SYSTEM);
+                return new Component(NAME_ATTENDANCE, NAME_ATTENDANCE, "考勤管理", APPICON_PNG, 20, Component.TYPE_SYSTEM);
             case NAME_FORUM:
                 return new Component(NAME_FORUM, NAME_FORUM, "论坛", APPICON_PNG, 21, Component.TYPE_SYSTEM);
             case NAME_MINDER:
