@@ -1461,6 +1461,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
             "onOrder": function () {
                 this.fireEvent("change");
+                this.save();
             }.bind(this)
         };
         if (this.readonly) options.readonly = true;
@@ -1510,6 +1511,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             } else {
                 this._setBusinessData([]);
             }
+        }
+    },
+    save: function(){
+        if( this.json.id.indexOf("..") > 0 )return;
+        if (this.attachmentController) {
+            var values = [];
+            if (this.attachmentController.attachments.length) {
+                values = this.attachmentController.attachments.map(function (d) {
+                    return d.data.name;
+                });
+            }
+            var modifedData = {};
+            modifedData[ this.json.id ] = values;
+            this.form.workAction.saveData(function () {
+                if(this.form.businessData.originalData)this.form.businessData.originalData[this.json.id] = values;
+            }.bind(this), function(){
+                return true;
+            }, this.form.businessData.work.id, modifedData, false);
         }
     },
 
@@ -1606,6 +1625,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
                     this.fireEvent("change");
+
+                    this.save();
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -1796,6 +1817,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
             this.fireEvent("change");
+
+            this.save();
         }.bind(this));
     },
 
@@ -1882,6 +1905,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     }
 
                     this.attachmentController.checkActions();
+
+                    this.save();
                 }.bind(this))
             }.bind(this), null, true, accept, size, function (o) { //错误的回调
                 if (o.messageId && this.attachmentController.messageItemList) {
