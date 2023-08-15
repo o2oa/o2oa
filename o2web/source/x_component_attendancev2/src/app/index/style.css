@@ -259,6 +259,12 @@
   overflow: auto;
   margin: 10px;
   height: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+}
+.manager-box-content {
+  padding: 20px;
+  height: inherit;
 }
 
 /* mask */

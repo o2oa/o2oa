@@ -2,7 +2,7 @@
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.shiftTitle}}</div>
     </div>
-    <div style="padding: 20px;">
+    <div class="manager-box-content">
         <div style="margin: 10px 0;float: left;">
             <button class="mainColor_bg" @click="addShift">{{$.lp.addShift}}</button>
         </div>
@@ -10,7 +10,7 @@
             <thead>
                 <th>{{$.lp.shiftName}}</th>
                 <th>{{$.lp.checkInTime}}</th>
-                <th style="width: 10%;">{{$.lp.operate}}</th>
+                <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.shiftList" oo-item="shift">
                 <td>{{shift.value.shiftName}}</td>
