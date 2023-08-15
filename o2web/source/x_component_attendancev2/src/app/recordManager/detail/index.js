@@ -39,8 +39,6 @@ export default content({
       this.bind.record.checkInResult === "NotSigned"
     ) {
       return "";
-    } else if (!this.bind.record.shiftId || this.bind.record.shiftId === "") {
-      return "";
     }
     return this.bind.record.recordDate;
   },

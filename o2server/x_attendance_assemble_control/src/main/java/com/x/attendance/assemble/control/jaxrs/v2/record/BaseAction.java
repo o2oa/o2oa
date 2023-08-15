@@ -70,18 +70,18 @@ abstract class BaseAction extends StandardJaxrsAction {
         AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
         noCheckRecord.setCheckInType(dutyType);
         noCheckRecord.setUserId(person);
+        // 打卡时间
+        if (StringUtils.isEmpty(preDutyTime)) {
+            if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
+                preDutyTime = "09:00";
+            } else {
+                preDutyTime = "18:00";
+            }
+        }
         if (recordDate != null) {
             String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-            if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) {
-                // 打卡时间
-                if (StringUtils.isEmpty(preDutyTime)) {
-                    if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
-                        preDutyTime = "09:00";
-                    } else {
-                        preDutyTime = "18:00";
-                    }
-                }
-            } else {
+            // 根据班次判断打卡结果
+            if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed) && shift != null) {
                 // 上班打卡
                 if (dutyType.equals(AttendanceV2CheckInRecord.OnDuty)) {
                     Date dutyTime = DateTools.parse(date + " " + preDutyTime, DateTools.format_yyyyMMddHHmm);
