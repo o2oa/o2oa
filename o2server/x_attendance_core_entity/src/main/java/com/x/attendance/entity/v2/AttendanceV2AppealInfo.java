@@ -105,6 +105,7 @@ public class AttendanceV2AppealInfo  extends SliceJpaObject {
     public static final Integer status_TYPE_PROCESSING = 1; // 审批中
     public static final Integer status_TYPE_PROCESS_AGREE = 2; // 审批通过
     public static final Integer status_TYPE_PROCESS_DISAGREE = 3; // 审批不通过
+    public static final Integer status_TYPE_END_BY_ADMIN = 4; // 管理员已处理
     public static final String status_FIELDNAME = "status";
     @FieldDescribe("申诉状态:0-待处理，1-审批中（已发起流程），2-审批通过，3-审批不通过")
     @Column( name = ColumnNamePrefix + status_FIELDNAME)
@@ -114,6 +115,12 @@ public class AttendanceV2AppealInfo  extends SliceJpaObject {
     @FieldDescribe("流程的jobId，申诉流程结束后写入.")
     @Column( length = JpaObject.length_id, name = ColumnNamePrefix + jobId_FIELDNAME)
     private String jobId;
+
+
+    public static final String updateStatusAdminPerson_FIELDNAME = "updateStatusAdminPerson";
+    @FieldDescribe("管理员标识，最后操作人")
+    @Column(length = length_96B, name = ColumnNamePrefix + updateStatusAdminPerson_FIELDNAME)
+    private String updateStatusAdminPerson;
 
 
 
@@ -203,4 +210,14 @@ public class AttendanceV2AppealInfo  extends SliceJpaObject {
     public void setSendStatus(Boolean sendStatus) {
         this.sendStatus = sendStatus;
     }
+
+    public String getUpdateStatusAdminPerson() {
+        return updateStatusAdminPerson;
+    }
+
+    public void setUpdateStatusAdminPerson(String updateStatusAdminPerson) {
+        this.updateStatusAdminPerson = updateStatusAdminPerson;
+    }
+
+    
 }

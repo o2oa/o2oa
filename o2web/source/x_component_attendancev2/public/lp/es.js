@@ -10,6 +10,7 @@ MWF.xApplication.attendancev2.LP = {
     detailStatisticFilter: "Estadísticas resumidas",
     detailFilter: "Estadísticas diarias",
     recordList: "Registros originales",
+    appealList: "Datos anormales",
 
     config: "Configuración",
     shiftManager: "Gestión de turnos",
@@ -335,6 +336,7 @@ MWF.xApplication.attendancev2.LP = {
     status1: "En proceso",
     status2: "Aprobado",
     status3: "Rechazado",
+    status4: "Procesado",
 
     startProcess: "Iniciar apelación",
     openJob: "Ver apelación",
@@ -342,6 +344,8 @@ MWF.xApplication.attendancev2.LP = {
       "No se ha configurado el proceso de apelación. ¡No se puede iniciar el proceso!",
     notfoundJobError:
       "No se encontraron datos de proceso correspondientes. ¿Desea restaurar el estado actual de los datos?",
+    dealAppeal: "Tratamiento",
+    confirmDealAppeal: "¿¿ confirmar que quiere establecer este dato a normal?",
   },
 
   // 原始打卡记录

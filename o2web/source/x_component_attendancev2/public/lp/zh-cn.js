@@ -1,5 +1,5 @@
 MWF.xApplication.attendancev2.LP = {
-  title: "考勤管理2",
+  title: "考勤管理",
 
   menu: {
     // 我的
@@ -11,6 +11,7 @@ MWF.xApplication.attendancev2.LP = {
     detailStatisticFilter: "汇总统计",
     detailFilter: "每日统计",
     recordList: "原始记录",
+    appealList: "异常数据",
     // 管理配置
     config: "配置",
     shiftManager: "班次管理",
@@ -275,7 +276,7 @@ MWF.xApplication.attendancev2.LP = {
     offDutyFastCheckInEnable: "是否启用下班极速打卡 (app端有效)",
     checkInAlert: "打卡提醒",
     checkInAlertEnable:
-      "是否启用打卡提醒 (上班前，下班后会收到提醒消息，不要忘记打卡)",
+      "是否启用打卡提醒 (上班前10分钟、下班时会收到提醒消息，不要忘记打卡)",
     exceptionAlertEnable: "是否启用异常打卡提醒 ",
     exceptionAlertEnableTime1: " (次日 ",
     exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
@@ -319,11 +320,14 @@ MWF.xApplication.attendancev2.LP = {
     status1: "流转中",
     status2: "审批通过",
     status3: "审批不通过",
+    status4: "已处理",
 
     startProcess: "发起申诉",
     openJob: "查看申诉",
     startProcessNoConfigError: "没有配置申诉流程，无法启动流程！",
     notfoundJobError: "没有找到对应的流程数据，是否还原当前的数据状态？",
+    dealAppeal: "处理",
+    confirmDealAppeal: "确认要把这条数据设置为正常？",
   },
 
   // 原始打卡记录

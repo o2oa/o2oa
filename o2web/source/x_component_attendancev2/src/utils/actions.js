@@ -186,6 +186,20 @@ function appealInfoActionListByPaging(...args) {
     args
   );
 }
+/**
+ * 申诉分页查询
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function appealInfoActionManagerListByPaging(...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "AppealInfoAction",
+    "managerListByPaging",
+    args
+  );
+}
 
 /**
  * 原始记录分页查询
@@ -286,6 +300,7 @@ export {
   detailAction,
   configAction,
   appealInfoActionListByPaging,
+  appealInfoActionManagerListByPaging,
   appealInfoAction,
   processAction,
   jobAction,

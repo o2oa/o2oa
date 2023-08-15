@@ -2,7 +2,7 @@
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.recordManagerTitle}}</div>
     </div>
-    <div style="padding: 20px;">
+    <div class="manager-box-content">
         <!--人员组织选择  -->
         <div style="margin-right: 10px;float: left;">
             <o-org-person-selector
@@ -39,7 +39,7 @@
                 <th>{{$.lp.record.sourceType}}</th>
                 <th>{{$.lp.record.checkInResult}}</th>
                 <!-- <th>{{$.lp.record.fieldWork}}</th> -->
-                <th style="width: 10%;">{{$.lp.operate}}</th>
+                <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.recordList" oo-item="r">
                 <td>{{ $m.formatName(r.value.userId) }}</td>

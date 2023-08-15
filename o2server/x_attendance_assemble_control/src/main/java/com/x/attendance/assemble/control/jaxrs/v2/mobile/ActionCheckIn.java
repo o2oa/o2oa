@@ -188,7 +188,11 @@ public class ActionCheckIn extends BaseAction {
             }
             record.setCheckInResult(checkInResult);
             record.setSourceDevice(wi.getSourceDevice());
-            record.setDescription(wi.getDescription());
+            if (StringUtils.isNotEmpty(wi.getDescription())) {
+                record.setDescription(wi.getDescription());
+            } else {
+                record.setDescription("");
+            }
             if (workPlace != null) {
                 record.setWorkPlaceId(workPlace.getId());
                 record.setPlaceName(workPlace.getPlaceName());
