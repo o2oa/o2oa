@@ -972,7 +972,6 @@ MWF.ProcessFlow.Processor = new Class({
             if (this.selectedRouteNode.get("text") != node.get("text")) {
                 node.setStyles(this.css.routeNode_over);
                 node.addClass("lightColor_bg");
-                //node.setStyle("background-color", "#f7e1d0");
             }
         } else {
             node.setStyles(this.css.routeNode_over);
