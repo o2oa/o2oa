@@ -13,14 +13,41 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.x.base.core.project.config.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.AndFx;
+import com.x.base.core.project.config.AppStyle;
+import com.x.base.core.project.config.Cache;
+import com.x.base.core.project.config.Cms;
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Components;
+import com.x.base.core.project.config.ConfigObject;
+import com.x.base.core.project.config.Dingding;
+import com.x.base.core.project.config.DumpRestoreData;
+import com.x.base.core.project.config.Exmail;
+import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.config.ExternalDataSources;
+import com.x.base.core.project.config.ExternalStorageSources;
+import com.x.base.core.project.config.General;
+import com.x.base.core.project.config.HuaweiPushConfig;
+import com.x.base.core.project.config.JpushConfig;
+import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.config.Mpweixin;
+import com.x.base.core.project.config.Node;
+import com.x.base.core.project.config.Person;
+import com.x.base.core.project.config.Portal;
+import com.x.base.core.project.config.ProcessPlatform;
+import com.x.base.core.project.config.Qiyeweixin;
+import com.x.base.core.project.config.Query;
+import com.x.base.core.project.config.TernaryManagement;
+import com.x.base.core.project.config.Token;
+import com.x.base.core.project.config.WeLink;
+import com.x.base.core.project.config.WorkTime;
+import com.x.base.core.project.config.ZhengwuDingding;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -40,7 +67,6 @@ public class CreateConfigSample {
 		classes.add(AppStyle.class);
 		classes.add(Cache.class);
 		classes.add(Collect.class);
-		// classes.add(Communicate.class);
 		classes.add(Components.class);
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
@@ -48,12 +74,9 @@ public class CreateConfigSample {
 		classes.add(ExternalStorageSources.class);
 		classes.add(HuaweiPushConfig.class);
 		classes.add(JpushConfig.class);
-		// classes.add(Meeting.class);
 		classes.add(Messages.class);
-//		classes.add(Mock.class);
 		classes.add(Mpweixin.class);
 		classes.add(Node.class);
-//		classes.add(Organization.class);
 		classes.add(Person.class);
 		classes.add(Portal.class);
 		classes.add(ProcessPlatform.class);
@@ -73,6 +96,7 @@ public class CreateConfigSample {
 			create(dir.toPath(), cls);
 		}
 		renameNode(dir);
+		createExternalDataSources(dir.toPath());
 	}
 
 	/**
@@ -94,6 +118,19 @@ public class CreateConfigSample {
 				+ ".json";
 		File file = new File(dir.toFile(), name);
 		FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
+	}
+
+	private static void createExternalDataSources(Path dir) throws Exception {
+		Object o = MethodUtils.invokeStaticMethod(ExternalDataSource.class, DEFAULTINSTANCE);
+		Map<String, Object> map = new LinkedHashMap<>();
+		map = XGsonBuilder.convert(o, map.getClass());
+		describe(ExternalDataSource.class, map);
+		List<Map<String, Object>> externalDataSources = new ArrayList<>();
+		externalDataSources.add(map);
+		String name = StringUtils.lowerCase(ExternalDataSources.class.getSimpleName().substring(0, 1))
+				+ ExternalDataSources.class.getSimpleName().substring(1) + ".json";
+		File file = new File(dir.toFile(), name);
+		FileUtils.write(file, XGsonBuilder.toJson(externalDataSources), DefaultCharset.charset);
 	}
 
 	private static void renameNode(File dir) throws IOException {
