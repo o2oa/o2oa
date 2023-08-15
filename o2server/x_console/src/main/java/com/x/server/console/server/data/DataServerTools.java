@@ -50,7 +50,7 @@ public class DataServerTools {
 	}
 
 	private static DataTcpWebServer startServer(DataServer dataServer) throws Exception {
-		Path dataBaseDir = Config.path_local_repository_data(true);
+		Path dataBaseDir = Config.pathLocalRepositoryData(true);
 		Server tcpServer = null;
 		Server webServer = null;
 		String password = Config.token().getPassword();
@@ -102,7 +102,7 @@ public class DataServerTools {
 	 */
 	private static void migrateIfNecessary() throws Exception {
 		Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
-		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
+		Path path = Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE);
 		Optional<String> jarVersion = H2Tools.jarVersion();
 		if (Files.exists(path) && jarVersion.isPresent() && localRepositoryDataH2Version.isPresent()
 				&& (!StringUtils.equals(jarVersion.get(), localRepositoryDataH2Version.get()))) {
@@ -114,8 +114,8 @@ public class DataServerTools {
 
 	private static void migrate(Path path, String fromVersion, String targetVesion) throws Exception {
 		String url = "jdbc:h2:file:"
-				+ Config.path_local_repository_data(true).resolve(H2Tools.DATABASE).toAbsolutePath().toString();
-		String file = Config.path_local_repository_data(true).resolve("script.zip").toAbsolutePath().toString();
+				+ Config.pathLocalRepositoryData(true).resolve(H2Tools.DATABASE).toAbsolutePath().toString();
+		String file = Config.pathLocalRepositoryData(true).resolve("script.zip").toAbsolutePath().toString();
 		script(fromVersion, url, file);
 		mv(path);
 		runScript(fromVersion, targetVesion, url, file);
@@ -129,7 +129,7 @@ public class DataServerTools {
 	 * @throws URISyntaxException
 	 */
 	private static void mv(Path path) throws IOException, URISyntaxException {
-		Path backup = Config.path_local_repository_data(true)
+		Path backup = Config.pathLocalRepositoryData(true)
 				.resolve(H2Tools.FILENAME_DATABASE + "." + DateTools.compact(new Date()));
 		LOGGER.info("backup h2 database to:{}.", backup.toAbsolutePath().toString());
 		Files.move(path, backup);

@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.server.console.CommandThreads;
 
@@ -26,9 +28,11 @@ public class RestartCommand extends StopCommand {
 		return consumer;
 	}
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(StartCommand.class);
+
 	private static void restart() {
 		try {
-			System.out.println("ready to restart...");
+			LOGGER.print("ready to restart...");
 			stopAll();
 			stopAllThreads();
 			String osName = System.getProperty("os.name");
@@ -51,7 +55,7 @@ public class RestartCommand extends StopCommand {
 				}
 			}
 			if (file.exists()) {
-				System.out.println("server will start in new process!");
+				LOGGER.print("server will start in new process!");
 				Runtime.getRuntime().exec(file.getAbsolutePath());
 				Thread.sleep(2000);
 				if (!Config.currentNode().autoStart()) {
@@ -77,7 +81,7 @@ public class RestartCommand extends StopCommand {
 					}
 				}
 			} else {
-				System.out.println("not support restart in current operating system!start server failure!");
+				LOGGER.print("not support restart in current operating system!start server failure!");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

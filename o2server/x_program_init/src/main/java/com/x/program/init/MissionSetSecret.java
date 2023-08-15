@@ -55,10 +55,10 @@ public class MissionSetSecret implements Mission {
 	private void changeInternalDataServerPassword(String oldPassword, String newPassword)
 			throws IOException, URISyntaxException, SQLException {
 		org.h2.Driver.load();
-		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
+		Path path = Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE);
 		if (Files.exists(path)) {
 			try (Connection conn = DriverManager.getConnection("jdbc:h2:"
-					+ Config.path_local_repository_data(true).resolve(H2Tools.DATABASE).toAbsolutePath().toString(),
+					+ Config.pathLocalRepositoryData(true).resolve(H2Tools.DATABASE).toAbsolutePath().toString(),
 					H2Tools.USER, oldPassword)) {
 				RunScript.execute(conn,
 						new StringReader("ALTER USER " + H2Tools.USER + " SET PASSWORD '" + newPassword + "'"));
@@ -74,7 +74,7 @@ public class MissionSetSecret implements Mission {
 		Config.flush();
 	}
 
-	public static boolean check() throws Exception {
+	public static boolean check() {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
