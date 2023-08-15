@@ -50,7 +50,7 @@
                             $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemView').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
-                            $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'none');
+                            $('text{$.pid}selectFirstOption').setStyle('display', 'none');
 						}" name="itemType" text{(!$.itemType || $.itemType=='values')?'checked':''} type="radio" value="values"/>{{$.lp.textValue}}
 						<input class="editTableRadio" onclick="if (this.checked){
                             $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
@@ -58,7 +58,7 @@
                             $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemView').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
-                            $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'none');
+                            $('text{$.pid}selectFirstOption').setStyle('display', 'none');
 						}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
 						<input class="editTableRadio" onclick="if (this.checked){
                             $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
@@ -66,7 +66,7 @@
                             $('text{$.pid}selectEditItemDict').setStyle('display', 'block');
                             $('text{$.pid}selectEditItemView').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
-                            $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'block');
+                            $('text{$.pid}selectFirstOption').setStyle('display', 'block');
                         }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
 						<input class="editTableRadio" onclick="if (this.checked){
                             $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
@@ -74,7 +74,7 @@
                             $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemView').setStyle('display', 'block');
                             $('text{$.pid}selectEditItemStatement').setStyle('display', 'none');
-                            $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'block');
+                            $('text{$.pid}selectFirstOption').setStyle('display', 'block');
                         }" name="itemType" text{($.itemType=='view')?'checked':''} type="radio" value="view"/>{{$.lp.view}}
 						<input class="editTableRadio" onclick="if (this.checked){
                             $('text{$.pid}selectEditItemValues').setStyle('display', 'none');
@@ -82,7 +82,7 @@
                             $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemView').setStyle('display', 'none');
                             $('text{$.pid}selectEditItemStatement').setStyle('display', 'block');
-                            $('text{$.pid}selectDefaultOptionScript').setStyle('display', 'block');
+                            $('text{$.pid}selectFirstOption').setStyle('display', 'block');
                         }" name="itemType" text{($.itemType=='statement')?'checked':''} type="radio" value="statement"/>{{$.lp.statement}}
 					</td>
 				</tr>
@@ -97,7 +97,7 @@
 				<!--					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>-->
 				<!--				</div>-->
 			</div>
-			<div id="text{$.pid}selectDefaultOptionScript" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
+			<div id="text{$.pid}selectFirstOption" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
 			<div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>
