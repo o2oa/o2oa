@@ -1,7 +1,6 @@
 package com.x.base.core.project.tools;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -42,7 +41,7 @@ public class H2Tools {
 
 	public static Optional<String> localRepositoryDataH2Version() {
 		try {
-			Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_H2_VERSION);
+			Path path = Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_H2_VERSION);
 			if (Files.exists(path)) {
 				String version = Files.readString(path);
 				return Optional.of(version);
@@ -55,8 +54,8 @@ public class H2Tools {
 		return Optional.empty();
 	}
 
-	public static void localRepositoryDataH2Version(String version) throws IOException, URISyntaxException {
-		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_H2_VERSION);
+	public static void localRepositoryDataH2Version(String version) throws IOException {
+		Path path = Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_H2_VERSION);
 		if (!Files.exists(path)) {
 			Files.createFile(path);
 		}

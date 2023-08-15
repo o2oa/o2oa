@@ -1449,15 +1449,15 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_local_repository_data(boolean force) throws IOException, URISyntaxException {
-		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
-		if ((!Files.exists(path)) && force) {
-			Files.createDirectories(path);
-		}
-		return path;
-	}
+//	public static Path path_local_repository_data(boolean force) throws IOException {
+//		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
+//		if ((!Files.exists(path)) && force) {
+//			Files.createDirectories(path);
+//		}
+//		return path;
+//	}
 
-	public static Path path_commons(boolean force) throws IOException, URISyntaxException {
+	public static Path path_commons(boolean force) throws IOException {
 		Path path = Paths.get(base(), DIR_COMMONS);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1465,7 +1465,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_h2(boolean force) throws IOException, URISyntaxException {
+	public static Path path_commons_h2(boolean force) throws IOException {
 		Path path = Paths.get(base(), DIR_COMMONS_H2);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1561,6 +1561,14 @@ public class Config {
 			path = Paths.get(base()).resolve(DIR_COMMONS_EXT);
 		}
 		if (!Files.exists(path) && force) {
+			createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path pathLocalRepositoryData(boolean force) {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
+		if ((!Files.exists(path)) && force)	 {
 			createDirectories(path);
 		}
 		return path;
