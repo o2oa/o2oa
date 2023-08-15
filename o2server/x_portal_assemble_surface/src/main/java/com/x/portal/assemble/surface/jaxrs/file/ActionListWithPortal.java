@@ -6,6 +6,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -47,6 +48,7 @@ class ActionListWithPortal extends BaseAction {
 		static WrapCopier<File, Wo> copier = WrapCopierFactory.wo(File.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible, File.data_FIELDNAME));
 
+		@FieldDescribe("文件访问地址.")
 		private String fileUri;
 
 		public String getFileUri() {
