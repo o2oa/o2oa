@@ -111,8 +111,6 @@ export default content({
       record.checkInResult === "NotSigned"
     ) {
       return "";
-    } else if (!record.shiftId || record.shiftId === "") {
-      return "";
     }
     return record.recordDate;
   },
@@ -235,7 +233,6 @@ export default content({
         }
       );
     }
-    this.search();
   },
   // 下载导入结果
   downloadImportResult(resultFlag) {

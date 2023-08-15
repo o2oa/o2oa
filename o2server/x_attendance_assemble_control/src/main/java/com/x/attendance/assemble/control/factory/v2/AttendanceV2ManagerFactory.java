@@ -213,9 +213,9 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
             }
         }
         if (p == null) {
-            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.recordDate)));
         } else {
-            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.createTime)));
+            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2CheckInRecord_.recordDate)));
         }
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();

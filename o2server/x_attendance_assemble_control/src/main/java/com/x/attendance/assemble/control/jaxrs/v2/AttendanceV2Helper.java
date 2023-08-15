@@ -11,6 +11,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellUtil;
 
@@ -234,6 +236,7 @@ public class AttendanceV2Helper {
                 case FORMULA:
                     return "";
                 case NUMERIC:
+                    
                     Double d = cell.getNumericCellValue();
                     Long l = d.longValue();
                     if (l.doubleValue() == d) {
@@ -246,5 +249,18 @@ public class AttendanceV2Helper {
             }
         }
         return "";
+    }
+    
+    public static String getExcelCellDateFormat(Cell cell, String format) {
+        if ( null == cell) {
+            return "";
+        }
+        if (cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell)) {
+            Date date = cell.getDateCellValue();
+            if (date != null) {
+                return DateTools.format(date, format);
+            }
+        }
+        return cell.getStringCellValue();
     }
 }
