@@ -172,10 +172,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkPreviewAttAction: function () {
-        if(layout.mobile){
-            this.setActionDisabled(this.previewAttAction);
-            this.setActionDisabled(this.min_previewAttAction);
-        } else if (this.options.isPreviewAtt === "hidden" ){
+        // if(layout.mobile){
+        //     this.setActionDisabled(this.previewAttAction);
+        //     this.setActionDisabled(this.min_previewAttAction);
+        // } else
+        if (this.options.isPreviewAtt === "hidden" ){
             this.setActionHidden(this.previewAttAction);
             this.setActionHidden(this.min_previewAttAction);
         } else if (!this.options.isPreviewAtt){
@@ -658,11 +659,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function (e, node) {
             this.deleteAttachment(e, node);
         }.bind(this));
-        if(!layout.mobile){
+        //if(!layout.mobile){
             this.previewAttAction = this.createAction(this.editActionsGroupNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
                 this.previewAttachment(e, node);
             }.bind(this));
-        }
+        //}
 
         if(!layout.mobile){
             this.editAttAction = this.createAction(this.editActionsGroupNode, "editAtt", o2.LP.widget["editAtt"], function (e, node) {
@@ -750,12 +751,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     this.downloadAttachment(e, node);
                 }.bind(this));
 
-            if(!layout.mobile){
+            //if(!layout.mobile){
                 this.min_previewAttAction = this.createAction(this.minActionAreaNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
                     this.previewAttachment(e, node);
                 }.bind(this));
 
-            }
+            //}
 
         }
         if (!hiddenGroup.contains("config")) {
