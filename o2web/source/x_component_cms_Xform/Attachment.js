@@ -130,6 +130,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
             "onOrder": function () {
                 this.fireEvent("change");
+                this.save();
             }.bind(this)
             //"downloadEvent" : this.json.downloadEvent
         };
@@ -262,6 +263,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
                     this.fireEvent("change");
+
+                    this.save();
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -370,6 +373,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
             this.fireEvent("change");
+
+            this.save();
         }.bind(this));
     },
 
@@ -432,6 +437,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     }
 
                     this.attachmentController.checkActions();
+
+                    this.save();
                 }.bind(this))
             }.bind(this), null, true, accept, size, function (o) { //错误的回调
                 if (o.messageId && this.attachmentController.messageItemList) {
@@ -563,6 +570,27 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
         });
         return data;
     },
+
+    save: function(){
+        if( this.json.id.indexOf("..") > 0 )return;
+        if (this.attachmentController) {
+            var values = [];
+            if (this.attachmentController.attachments.length) {
+                values = this.attachmentController.attachments.map(function (d) {
+                    return d.data.name;
+                });
+            }
+            var modifedData = {};
+            modifedData[ this.json.id ] = values;
+            modifedData.id = this.form.businessData.document.id;
+
+            debugger;
+            this.form.documentAction.saveData(null, function(){
+                return true;
+            }, this.form.businessData.document.id, modifedData, false);
+        }
+    },
+
     validationConfigItem: function (routeName, data) {
         var flag = (data.status == "all") ? true : (routeName == "publish");
         if (flag) {

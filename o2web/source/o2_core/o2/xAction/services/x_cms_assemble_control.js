@@ -391,6 +391,12 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             this.addData(success, failure, id, data, async);
         }
     },
+    addData: function(success, failure, id, data, async){
+        this.action.invoke({"name": "addData","data": data, "parameter": {"id": id}, "success": success,"failure": failure,"async": async});
+    },
+    updateData: function(success, failure, id, data, async){
+        this.action.invoke({"name": "updateData","data": data,"parameter": {"id": id},"success": success,"failure": failure, "async": async});
+    },
     uploadAttachment: function(id, success, failure, formData, file){
         this.action.invoke({"name": "uploadAttachment", "parameter": {"id": id},"data": formData,"file": file,"success": success,"failure": failure});
     },
