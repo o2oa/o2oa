@@ -53,7 +53,7 @@ public class MissionRestore implements Mission {
 			}
 			Optional<Path> folder = locationFolder(unzipFolder);
 			if (folder.isPresent()) {
-				Config.resource_commandQueue().add("ctl -rd " + unzipFolder.toAbsolutePath().toString());
+				Config.resource_commandQueue().add("ctl -rd " + folder.get().toAbsolutePath().toString());
 				Config.resource_commandTerminatedSignal_ctl_rd().take();// 等待执行完成信号.
 				messages.msg("success");
 			} else {
