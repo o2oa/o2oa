@@ -752,12 +752,15 @@ MWF.xApplication.process.Application.List = new Class({
 		});
 		if (idx!==-1) this.selectedList.splice(idx, 1);
 	},
-	open : function (work,workCompleted){
+	open : function (work,workCompleted,jobId){
 		var options = {
 			"workId": work,
 			"workCompletedId": workCompleted,
 			"appId":  "process.Work" + work
 		};
+		if(o2.typeOf(jobId)=="string"){
+			options.jobId = jobId;
+		}
 
 		layout.desktop.openApplication(null, "process.Work", options);
 
