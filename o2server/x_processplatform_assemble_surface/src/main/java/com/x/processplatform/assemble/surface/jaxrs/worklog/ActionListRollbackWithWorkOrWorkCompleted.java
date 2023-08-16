@@ -181,7 +181,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME,
-						Task.unit_FIELDNAME, Task.routeName_FIELDNAME, Task.opinion_FIELDNAME,
+						Task.unit_FIELDNAME, Task.ROUTENAME_FIELDNAME, Task.opinion_FIELDNAME,
 						Task.opinionLob_FIELDNAME, Task.startTime_FIELDNAME, Task.activityName_FIELDNAME,
 						Task.activityToken_FIELDNAME),
 				null);
@@ -195,7 +195,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 				WoTaskCompleted.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.activity_FIELDNAME, TaskCompleted.identity_FIELDNAME,
-						TaskCompleted.unit_FIELDNAME, TaskCompleted.routeName_FIELDNAME,
+						TaskCompleted.unit_FIELDNAME, TaskCompleted.ROUTENAME_FIELDNAME,
 						TaskCompleted.opinion_FIELDNAME, TaskCompleted.opinionLob_FIELDNAME,
 						TaskCompleted.startTime_FIELDNAME, TaskCompleted.activityName_FIELDNAME,
 						TaskCompleted.completedTime_FIELDNAME, Task.activityToken_FIELDNAME),
