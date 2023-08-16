@@ -25,24 +25,30 @@ class QueueAddAfterParallelTest {
 	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
 			new Ticket("K", "LK"));
 
-	@DisplayName("B加签EFG,EFG并行处理")
+	@DisplayName("A后加签EFG,EFG并行处理")
 	@Test
 	@Order(1)
 	void test01() {
-		Tickets tickets = Tickets.single(p1);
+		Tickets tickets = Tickets.queue(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("A,B,C", value);
-		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
+		Assertions.assertEquals("A", value);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_PARALLEL);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("E,F,G", value);
+		Assertions.assertEquals("B,E,F,G", value);
 		tickets.completed("LF");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("E,G", value);
+		Assertions.assertEquals("B,E,G", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("G", value);
+		Assertions.assertEquals("B,G", value);
+		tickets.completed("LB");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("C,G", value);
 		tickets.completed("LG");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("C", value);
+		tickets.completed("LC");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
