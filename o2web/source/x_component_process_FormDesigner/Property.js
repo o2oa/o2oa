@@ -2417,7 +2417,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                     selected: this.data[sname] === column.column
                                 }).inject( select );
                             }.bind(this))
-                        }.bind(this))
+                        }.bind(this));
 
                         if(callback)callback();
                     }.bind(this), function () {
@@ -2501,7 +2501,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var name = viewNode.get("name");
                 var view = this.data[name];
                 if( view && view.id ){
-                    MWF.Actions.get("x_query_assemble_designer").getStatement(view.id, function(json){
+                    MWF.Actions.load("x_query_assemble_designer").StatementAction.get(view.id, function(json){
                         var viewData = JSON.decode(json.data.view || {});
 
                         debugger;

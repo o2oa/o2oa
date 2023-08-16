@@ -535,7 +535,8 @@ o2.widget.O2QueryView = new Class({
             o2.Actions.get("x_query_assemble_surface").getViewById(this.data.id, function(json){
                 data = json.data;
             }, function(){
-                data = {}
+                data = {};
+                return true;
             }, false);
             this.data = data;
             return data;
@@ -572,6 +573,7 @@ o2.widget.O2QueryStatement = new Class({
                 data = json.data;
             }, function () {
                 data = {};
+                return true;
             }, false);
             this.data = data;
             return data;
