@@ -16,7 +16,7 @@ import com.x.processplatform.core.express.ticket.Ticket;
 import com.x.processplatform.core.express.ticket.Tickets;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SingleAddBeforeParallelTest {
+class ParallelAddBeforeParallelTest {
 
 	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
 			new Ticket("C", "LC"));

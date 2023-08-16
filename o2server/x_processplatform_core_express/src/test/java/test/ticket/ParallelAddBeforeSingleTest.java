@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import com.x.processplatform.core.express.ticket.Ticket;
 import com.x.processplatform.core.express.ticket.Tickets;
-	
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SingleAddBeforeSingleTest {
+class ParallelAddBeforeSingleTest {
 
 	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
 			new Ticket("C", "LC"));
@@ -24,6 +25,7 @@ class SingleAddBeforeSingleTest {
 	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
 			new Ticket("K", "LK"));
 
+	@DisplayName("")
 	@Test
 	@Order(1)
 	void test01() {
