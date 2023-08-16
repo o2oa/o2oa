@@ -1,5 +1,4 @@
 import {component} from '@o2oa/oovm';
-import {dom} from '@o2oa/util';
 const template = `
 <div class="explain">
     <div class="explain_content">
