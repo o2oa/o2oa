@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,10 +74,9 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				results.add(other.get());
 			}
 		} else {
-			Optional<Work> branch = this.findWorkShallower(aeiObjects);
-			if (branch.isPresent()) {
-				gotoShallower(aeiObjects, merge, branch.get());
-				results.add(aeiObjects.getWork());
+			Optional<List<String>> splitTokenList = this.findWorkShallower(aeiObjects);
+			if (splitTokenList.isPresent()) {
+				gotoShallower(aeiObjects, merge, splitTokenList.get());
 			} else {
 				// 完全找不到合并的文档,唯一一份
 				aeiObjects.getWork().setSplitting(false);
@@ -85,15 +85,15 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getWork().setSplitValue("");
 				aeiObjects.getWork().setSplitValueList(new ArrayList<>());
 				aeiObjects.getWork().setSplitTokenValueMap(new LinkedHashMap<>());
-				results.add(aeiObjects.getWork());
 			}
+			results.add(aeiObjects.getWork());
 		}
 		return results;
 	}
 
-	private void gotoShallower(AeiObjects aeiObjects, Merge merge, Work branch) {
+	private void gotoShallower(AeiObjects aeiObjects, Merge merge, List<String> splitTokenList) {
 		aeiObjects.getWork().setSplitting(true);
-		int mergeLayerCount = aeiObjects.getWork().getSplitTokenList().size() - branch.getSplitTokenList().size();
+		int mergeLayerCount = aeiObjects.getWork().getSplitTokenList().size() - splitTokenList.size();
 		if ((null != merge.getMergeLayerThreshold()) && (merge.getMergeLayerThreshold() > 0)) {
 			mergeLayerCount = Math.min(mergeLayerCount, merge.getMergeLayerThreshold());
 		}
@@ -162,20 +162,15 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	 * @return
 	 * @throws Exception
 	 */
-	private Optional<Work> findWorkShallower(AeiObjects aeiObjects) throws Exception {
-		String join = StringUtils.join(aeiObjects.getWork().getSplitTokenList(), ",");
-		while (StringUtils.indexOf(join, ",") > 0) {
-			join = StringUtils.substringBeforeLast(join, ",");
-			final String part = join;
-			Optional<Work> opt = aeiObjects.getWorks().stream()
-					.filter(o -> BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork())
-							&& StringUtils.startsWithIgnoreCase(StringUtils.join(o.getSplitTokenList(), ","), part))
-					.findFirst();
-			if (opt.isPresent()) {
-				return opt;
-			}
-		}
-		return Optional.empty();
+	private Optional<List<String>> findWorkShallower(AeiObjects aeiObjects) throws Exception {
+		List<String> list = aeiObjects.getWorks().stream()
+				.filter(o -> BooleanUtils.isTrue(o.getSplitting()) && (o != aeiObjects.getWork()))
+				.map(Work::getSplitTokenList).<List<String>>reduce(new ArrayList<>(), (a, b) -> {
+					List<String> ac = ListUtils.longestCommonSubsequence(aeiObjects.getWork().getSplitTokenList(), a);
+					List<String> bc = ListUtils.longestCommonSubsequence(aeiObjects.getWork().getSplitTokenList(), b);
+					return (ac.size() > bc.size()) ? ac : bc;
+				}, (x, y) -> x.size() >= y.size() ? x : y);
+		return list.isEmpty() ? Optional.empty() : Optional.of(list);
 	}
 
 	private void mergeTaskCompleted(AeiObjects aeiObjects, Work work, Work oldest) {
