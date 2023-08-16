@@ -25,7 +25,7 @@ class ParallelAddBeforeParallelTest {
 	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
 			new Ticket("K", "LK"));
 
-	@DisplayName("B前加签EFG,FEG并行处理")
+	@DisplayName("B前加签EFG,ACEFG并行处理")
 	@Test
 	@Order(1)
 	void test01() {

@@ -33,12 +33,14 @@ class QueueAdd implements Add {
 	@Override
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		afterCommon(tickets, ticket);
-		List<Ticket> list = Tickets.interconnectedAsSibling(targets);
-		List<Ticket> next = tickets.listNext(ticket);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		list.stream().forEach(o -> o.next(next).sibling(sibling));
-		tickets.listNextTo(ticket).stream().forEach(o -> o.next(list));
-		ticket.clearSibling();
+		sibling.addAll(targets);
+		Tickets.interconnectedAsSibling(sibling);
+		List<Ticket> fellow = tickets.listFellow(ticket);
+		List<Ticket> next = tickets.listNext(ticket);
+		targets.stream().forEach(o -> o.next(next).fellow(fellow));
+		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
+		ticket.clearSibling().clearFellow();
 	}
 
 	private void afterCommon(Tickets tickets, Ticket ticket) {
@@ -47,12 +49,13 @@ class QueueAdd implements Add {
 
 	@Override
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		List<Ticket> list = Tickets.interconnectedAsFellow(targets);
-		tickets.listNextTo(ticket).stream().forEach(o -> o.next(list));
-		List<Ticket> next = tickets.listNext(ticket);
+		List<Ticket> fellow = tickets.listFellow(ticket);
+		fellow.addAll(targets);
+		Tickets.interconnectedAsFellow(fellow);
+		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		list.stream().forEach(o -> o.next(next).sibling(sibling));
-		ticket.clearSibling();
+		targets.stream().forEach(o -> o.next(ticket).fellow(fellow).sibling(sibling));
+		ticket.clearSibling().clearFellow();
 	}
 
 	@Override
@@ -61,18 +64,20 @@ class QueueAdd implements Add {
 		tickets.listNextTo(ticket).stream().forEach(o -> o.next(list.get(0)));
 		list.get(list.size() - 1).next(ticket);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		list.get(0).sibling(sibling);
-		ticket.clearSibling();
+		List<Ticket> fellow = tickets.listFellow(ticket);
+		list.get(0).sibling(sibling).fellow(fellow);
+		ticket.clearSibling().clearFellow();
 	}
 
 	@Override
 	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		List<Ticket> list = Tickets.interconnectedAsSibling(targets);
-		List<Ticket> nextTo = tickets.listNextTo(ticket);
-		nextTo.stream().forEach(o -> o.next(list));
-		list.get(list.size() - 1).next(ticket);
+		List<Ticket> sibling = tickets.listSibling(ticket, false);
+		sibling.addAll(targets);
+		Tickets.interconnectedAsSibling(sibling);
+		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
 		List<Ticket> fellow = tickets.listFellow(ticket);
-		list.stream().forEach(o -> o.fellow(fellow));
+		targets.stream().forEach(o -> o.fellow(fellow).next(ticket));
+		ticket.clearSibling().clearFellow();
 	}
 
 }
