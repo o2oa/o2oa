@@ -93,11 +93,26 @@
 			<div id="text{$.pid}selectEditItemScript" style="display: text{($.itemType=='script')?'block':'none'}; border-bottom: 1px solid #cccccc">
 				<div class="MWFFormulaArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
 				<div style="padding: 5px">{{$.lp.selectItemScriptInfo}}</div>
-				<!--				<div style="padding: 5px; border-bottom: 1px solid #cccccc">-->
-				<!--					<div>return [{"value": "value1", label: "label1"}, {"value": "value2", label: "label2"}, {"value": "value3", , label: "label3"}];</div>-->
-				<!--				</div>-->
 			</div>
-			<div id="text{$.pid}selectFirstOption" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}" class="MWFFormulaArea" name="defaultOptionsScript" title="{{$.lp.defaultOptionScript}} (S)"></div>
+			<div id="text{$.pid}selectFirstOption" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.firstOptionEnable}}:</td>
+						<td class="editTableValue">
+							<input class="editTableRadio" onclick="if (this.checked){
+                        		$('text{$.pid}firstOptionTextTr').setStyle('display', '');
+                    		}" name="firstOptionEnable" text{($.firstOptionEnable)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+							<input class="editTableRadio" onclick="if (this.checked){
+                        		$('text{$.pid}firstOptionTextTr').setStyle('display', 'none');
+                    		}" name="firstOptionEnable" text{(!$.firstOptionEnable)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+						</td>
+					</tr>
+					<tr id="text{$.pid}firstOptionTextTr" style="display: text{($.firstOptionEnable)?'':'none'}">
+						<td class="editTableTitle">{{$.lp.firstOption}}:</td>
+						<td class="editTableValue"><input type="text" name="firstOption" value="text{$.firstOption}" class="editTableInput"/></td>
+					</tr>
+				</table>
+			</div>
 			<div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
 				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 					<tr>

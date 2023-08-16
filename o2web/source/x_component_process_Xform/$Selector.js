@@ -116,7 +116,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
     getFirstOption: function(){
         //return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
         if( !this.json.firstOptionEnable )return [];
-        return  [this.json.firstOption||""];
+        return  [this.json.firstOption||"|"];
     },
 
     /**
@@ -285,8 +285,8 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.viewFilterList && this.json.viewFilterList.length){
+            this.json.viewFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
@@ -329,16 +329,16 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.statementFilterList && this.json.statementFilterList.length){
+            this.json.statementFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
         }
 
         var parameter = {};
-        if( this.json.parameterList && this.json.parameterList.length ){
-            this.json.parameterList.each(function(entry){
+        if( this.json.statementParameterList && this.json.statementParameterList.length ){
+            this.json.statementParameterList.each(function(entry){
                 parameter[entry.parameter] = this.parseParameter(entry);
             }.bind(this));
         }

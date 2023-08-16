@@ -72,19 +72,19 @@
         <div id="text{$.pid}selectFirstOption" style="display: text{(['dict','view','statement'].contains($.itemType))?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
-                    <td class="editTableTitle">{{$.lp.emptyOptionEnable}}:</td>
+                    <td class="editTableTitle">{{$.lp.firstOptionEnable}}:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.pid}emptyOptionTextTr').setStyle('display', '');
-                    }" name="emptyOptionEnable" text{($.emptyOptionEnable)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        $('text{$.pid}firstOptionTextTr').setStyle('display', '');
+                    }" name="firstOptionEnable" text{($.firstOptionEnable)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                         <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.pid}emptyOptionTextTr').setStyle('display', 'none');
-                    }" name="emptyOptionEnable" text{(!$.emptyOptionEnable)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                        $('text{$.pid}firstOptionTextTr').setStyle('display', 'none');
+                    }" name="firstOptionEnable" text{(!$.firstOptionEnable)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                     </td>
                 </tr>
-                <tr id="text{$.pid}emptyOptionTextTr" style="display: text{($.emptyOptionEnable)?'':'none'}">
-                    <td class="editTableTitle">{{$.lp.emptyOptionText}}:</td>
-                    <td class="editTableValue"><input type="text" name="name" value="text{$.emptyOptionText}" class="editTableInput"/></td>
+                <tr id="text{$.pid}firstOptionTextTr" style="display: text{($.firstOptionEnable)?'':'none'}">
+                    <td class="editTableTitle">{{$.lp.firstOption}}:</td>
+                    <td class="editTableValue"><input type="text" name="firstOption" value="text{$.firstOption}" class="editTableInput"/></td>
                 </tr>
             </table>
         </div>

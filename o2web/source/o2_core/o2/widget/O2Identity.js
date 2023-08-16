@@ -533,8 +533,10 @@ o2.widget.O2QueryView = new Class({
         if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.get("x_query_assemble_surface").getViewById(this.data.id, function(json){
-                data = json.data
-            }, null, false);
+                data = json.data;
+            }, function(){
+                data = {}
+            }, false);
             this.data = data;
             return data;
         }else{
@@ -567,8 +569,10 @@ o2.widget.O2QueryStatement = new Class({
         if (!this.data.query && this.data.id){
             var data = null;
             o2.Actions.load("x_query_assemble_designer").StatementAction.get(this.data.id, function(json){
-                data = json.data
-            }, null, false);
+                data = json.data;
+            }, function () {
+                data = {};
+            }, false);
             this.data = data;
             return data;
         }else{
