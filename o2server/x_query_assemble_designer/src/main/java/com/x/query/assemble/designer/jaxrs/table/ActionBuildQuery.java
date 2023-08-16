@@ -31,9 +31,11 @@ class ActionBuildQuery extends BaseAction {
 			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			Query curQuery = emc.fetch(queryId, Query.class);
-			if (null == curQuery) {
-				throw new ExceptionEntityNotExist(queryId, Query.class);
+			if(!EMPTY_SYMBOL.equals(queryId)) {
+				Query curQuery = emc.fetch(queryId, Query.class);
+				if (null == curQuery) {
+					throw new ExceptionEntityNotExist(queryId, Query.class);
+				}
 			}
 			// 兼容老版本的jar,删除统一的一个jar
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_NAME + Business.DOT_JAR);
@@ -45,7 +47,15 @@ class ActionBuildQuery extends BaseAction {
 				Files.delete(jar.toPath());
 				wo.setValue(true);
 			} else {
-				wo.setValue(business.buildQuery(queryId));
+				if(!EMPTY_SYMBOL.equals(queryId)) {
+					wo.setValue(business.buildQuery(queryId));
+				}else{
+					List<Query> queryList = emc.fetchAll(Query.class);
+					for (Query query : queryList) {
+						business.buildQuery(query.getId());
+					}
+					wo.setValue(true);
+				}
 			}
 			LOGGER.info("build query {} table complete!", queryId);
 			result.setData(wo);
