@@ -417,6 +417,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "valueColumn": "Value Column",
         "textColumn": "Text Column",
         "dictKeyNote": "If an object array is returned, you need to configure the value attribute name or text attribute name",
+        "firstOptionEnable": "Use Preferences",
+        "firstOption": "Preferences",
         "copy": "Copy",
         "paste": "Paste",
         "language": "Language",
