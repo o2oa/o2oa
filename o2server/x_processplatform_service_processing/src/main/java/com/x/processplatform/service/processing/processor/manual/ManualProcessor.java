@@ -41,6 +41,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
@@ -535,6 +536,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		List<Route> results = new ArrayList<>();
 		Optional<Route> optional = inquiringFromGoBackStore(aeiObjects);
 		if (optional.isPresent()) {
+			markJumpAtWorkLog(aeiObjects, aeiObjects.getWork().getGoBackStore());
 			// 设置处理人
 			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(
 					aeiObjects.getWork().getGoBackStore().getManualTaskIdentityMatrix().flat());
@@ -568,6 +570,18 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getWork().setGoBackActivityToken(null);
 		}
 		return results;
+	}
+
+	private void markJumpAtWorkLog(AeiObjects aeiObjects, GoBackStore goBackStore) throws Exception {
+		Optional<WorkLog> opt = aeiObjects.getWorkLogs().stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected()))
+				.filter(o -> StringUtils.equals(o.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
+				.findFirst();
+		if (opt.isPresent()) {
+			opt.get().setGoBackFromActivityToken(goBackStore.getActivityToken());
+			opt.get().setGoBackFromActivity(goBackStore.getActivity());
+			opt.get().setGoBackFromActivityType(goBackStore.getActivityType());
+		}
+
 	}
 
 	private Optional<Route> inquiringFromTaskCompleted(AeiObjects aeiObjects, Manual manual, List<Route> results)

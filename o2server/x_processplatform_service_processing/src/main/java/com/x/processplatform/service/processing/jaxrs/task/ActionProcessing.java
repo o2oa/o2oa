@@ -1,20 +1,17 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import javax.script.ScriptContext;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Config;
@@ -207,9 +204,9 @@ class ActionProcessing extends BaseAction {
 				TaskCompleted taskCompleted = concreteTaskCompleted(task);
 				emc.persist(taskCompleted, CheckPersistType.all);
 				emc.remove(task, CheckRemoveType.all);
-				/* 去掉处理同一处理人不同身份待办合并处理一次processingTaskOnceUnderSamePerson(business, task); */
+				// 去掉处理同一处理人不同身份待办合并处理一次processingTaskOnceUnderSamePerson(business, task);
 				emc.commit();
-				/* 待办执行后脚本,不能修改数据. */
+				// 待办执行后脚本,不能修改数据.
 				callManualAfterTaskScript(business, taskCompleted);
 				MessageFactory.task_to_taskCompleted(taskCompleted);
 				wo.setId(taskCompleted.getId());
@@ -218,24 +215,24 @@ class ActionProcessing extends BaseAction {
 			return result;
 		}
 
-		// 处理同一处理人不同身份待办合并处理一次
-		private void processingTaskOnceUnderSamePerson(Business business, Task task) throws Exception {
-			List<Task> tasks = business.entityManagerContainer().listEqualAndEqualAndNotEqual(Task.class,
-					Task.activityToken_FIELDNAME, task.getActivityToken(), Task.person_FIELDNAME, task.getPerson(),
-					JpaObject.id_FIELDNAME, task.getId());
-			if (!tasks.isEmpty()) {
-				Manual manual = (Manual) business.element().get(task.getActivity(), ActivityType.manual);
-				if ((null != manual) && BooleanUtils.isTrue(manual.getProcessingTaskOnceUnderSamePerson())) {
-					for (Task t : tasks) {
-						TaskCompleted tc = concreteTaskCompleted(t);
-						tc.setRouteName(task.getRouteName());
-						tc.setOpinion(task.getOpinion());
-						business.entityManagerContainer().persist(tc, CheckPersistType.all);
-						business.entityManagerContainer().remove(t, CheckRemoveType.all);
-					}
-				}
-			}
-		}
+//		// 处理同一处理人不同身份待办合并处理一次
+//		private void processingTaskOnceUnderSamePerson(Business business, Task task) throws Exception {
+//			List<Task> tasks = business.entityManagerContainer().listEqualAndEqualAndNotEqual(Task.class,
+//					Task.activityToken_FIELDNAME, task.getActivityToken(), Task.person_FIELDNAME, task.getPerson(),
+//					JpaObject.id_FIELDNAME, task.getId());
+//			if (!tasks.isEmpty()) {
+//				Manual manual = (Manual) business.element().get(task.getActivity(), ActivityType.manual);
+//				if ((null != manual) && BooleanUtils.isTrue(manual.getProcessingTaskOnceUnderSamePerson())) {
+//					for (Task t : tasks) {
+//						TaskCompleted tc = concreteTaskCompleted(t);
+//						tc.setRouteName(task.getRouteName());
+//						tc.setOpinion(task.getOpinion());
+//						business.entityManagerContainer().persist(tc, CheckPersistType.all);
+//						business.entityManagerContainer().remove(t, CheckRemoveType.all);
+//					}
+//				}
+//			}
+//		}
 
 		private TaskCompleted concreteTaskCompleted(Task task) throws Exception {
 			Date now = new Date();

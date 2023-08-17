@@ -184,14 +184,15 @@ public class WorkProperties extends JsonProperties {
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 		private String activity;
 		private ActivityType ActivityType;
+		private String activityToken;
 
-//		public String getWay() {
-//			return way;
-//		}
-//
-//		public void setWay(String way) {
-//			this.way = way;
-//		}
+		public String getActivityToken() {
+			return activityToken;
+		}
+
+		public void setActivityToken(String activityToken) {
+			this.activityToken = activityToken;
+		}
 
 		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 			return manualTaskIdentityMatrix;
