@@ -850,36 +850,43 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this), null, async === false ? false : true );
     },
     showAssociatedDocumentResult: function(failureList, successList){
+        debugger;
         var fL = [];
         failureList.each(function( f ){
-            if( f.properties.view === this.viewJson.id )fl.push( f.targetBundle );
-        });
+            if( f.properties.view === this.json.id )fL.push( f.targetBundle );
+        }.bind(this));
 
         var sl = [];
         successList.each(function( f ){
-            if( f.properties.view === this.viewJson.id )sl.push( f.targetBundle );
-        });
+            if( f.properties.view === this.json.id )sl.push( f.targetBundle );
+        }.bind(this));
 
         var d = {};
         d.bundleList = fL.concat( sl );
         d.key = this.bundleKey;
 
-        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            var resultJson, viewData = json.data;
+        if( d.bundleList.length ){
+            this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+                var resultJson, viewData = json.data;
 
-            if (this.viewJson.group.column){
-                resultJson = json.data.groupGrid;
-                this.setSelectedableFlag();
-                this.loadGroupData();
-            }else{
-                resultJson = json.data.grid;
-                this.setSelectedableFlag();
-                this.loadData();
-            }
+                debugger;
 
-            this._showAssociatedDocumentResult( resultJson, failureList, successList );
+                if (this.viewJson.group.column){
+                    resultJson = [];
+                    json.data.groupGrid.each(function (g) {
+                        resultJson = resultJson.concat( g.list );
+                    })
+                }else{
+                    resultJson = json.data.grid;
+                }
 
-        }.bind(this), null, true );
+                this._showAssociatedDocumentResult( resultJson, failureList, successList );
+
+            }.bind(this), null, true );
+        }else{
+            this._showAssociatedDocumentResult( [], failureList, successList );
+        }
+
     },
     _showAssociatedDocumentResult: function(resultJson, failureList, successList){
         this.entries.$result = {
@@ -903,6 +910,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 "text": this.lp.associationResult
             }).inject(this.viewTitleLine);
             if (this.json.titleStyles) titleCell.setStyles(this.json.titleStyles);
+        }
+
+        if(this.expandAllNode){
+            this.expandAllNode.hide();
         }
 
         while (this.viewTable.rows.length>1){
@@ -3669,13 +3680,13 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
 
         debugger;
         Object.each(this.view.entries, function(c, k){
+            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
             if (this.view.hideColumns.indexOf(k)===-1){
                 var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-                if (k!== this.view.viewJson.group.column){
-                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                //if (k!== this.view.viewJson.group.column){
                     var v = cell;
                     if (c.isHtml){
                         td.set("html", v);
@@ -3685,9 +3696,9 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
                     if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
                     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                     if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
-                }else{
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                }
+                // }else{
+                //     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                // }
 
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, c)
