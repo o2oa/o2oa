@@ -20,7 +20,7 @@ public class DenialOfServiceFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		response.setStatus(403);
 		response.setHeader("Content-Type", "application/json;charset=UTF-8");
-		response.getWriter().write(FilterTools.Application_403_Json);
+		response.getWriter().write(FilterTools.APPLICATION_403_JSON);
 	}
 
 	@Override

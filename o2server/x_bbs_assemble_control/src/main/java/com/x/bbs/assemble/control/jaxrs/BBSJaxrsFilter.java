@@ -54,7 +54,7 @@ public class BBSJaxrsFilter extends AnonymousCipherManagerUserJaxrsFilter {
 						StringUtils.equalsAnyIgnoreCase(ThisApplication.CONFIG_BBS_ANONYMOUS_PERMISSION, "NO")) {
 					response.setStatus(500);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
-					response.getWriter().write( FilterTools.Application_Not_ManagerUser_Json );
+					response.getWriter().write( FilterTools.APPLICATION_NOT_MANAGERUSER_JSON );
 				} else {
 					chain.doFilter(request, response);
 				}
