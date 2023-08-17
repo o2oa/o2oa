@@ -850,6 +850,38 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this), null, async === false ? false : true );
     },
     showAssociatedDocumentResult: function(failureList, successList){
+        var fL = [];
+        failureList.each(function( f ){
+            if( f.properties.view === this.viewJson.id )fl.push( f.targetBundle );
+        });
+
+        var sl = [];
+        successList.each(function( f ){
+            if( f.properties.view === this.viewJson.id )sl.push( f.targetBundle );
+        });
+
+        var d = {};
+        d.bundleList = fL.concat( sl );
+        d.key = this.bundleKey;
+
+        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+            var resultJson, viewData = json.data;
+
+            if (this.viewJson.group.column){
+                resultJson = json.data.groupGrid;
+                this.setSelectedableFlag();
+                this.loadGroupData();
+            }else{
+                resultJson = json.data.grid;
+                this.setSelectedableFlag();
+                this.loadData();
+            }
+
+            this._showAssociatedDocumentResult( resultJson, failureList, successList );
+
+        }.bind(this), null, true );
+    },
+    _showAssociatedDocumentResult: function(resultJson, failureList, successList){
         this.entries.$result = {
             "id": "$result",
             "column": "$result",
@@ -882,21 +914,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         this.contentAreaNode.scrollTo(0, 0);
 
-        this.gridJson = this.selectedItems.map(function (item) {
+        this.gridJson = resultJson.map(function (item) {
             var flag = true;
-            if( !item.data.data )item.data.data = {};
+            if( !item.data )item.data = {};
             failureList.each(function (d) {
-                if( item.data.bundle === d.bundle ){
-                    item.data.$failure = true;
-                    item.data.data.$result = d.$result || this.lp.noPermission;
+                if( item.bundle === d.bundle ){
+                    item.$failure = true;
+                    item.data.$result = d.$result || this.lp.noPermission;
                     flag = false;
                 }
             }.bind(this));
             if( flag ){
-                item.data.data.$result = this.lp.associationSuccess;
+                item.data.$result = this.lp.associationSuccess;
             }
-            item.data.$selectedEnable = false;
-            return item.data;
+            item.$selectedEnable = false;
+            return item;
         }.bind(this));
         //if( this.paging )this.paging.hide();
         if(this.actionbarAreaNode)this.actionbarAreaNode.hide();
