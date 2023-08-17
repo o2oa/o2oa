@@ -119,6 +119,7 @@ class V2GoBack extends BaseAction {
 					goBackStore.setManualTaskIdentityMatrix(work.getManualTaskIdentityMatrix());
 					goBackStore.setActivity(work.getActivity());
 					goBackStore.setActivityType(work.getActivityType());
+					goBackStore.setActivityToken(work.getActivityToken());
 					work.setGoBackStore(goBackStore);
 				}
 				removeTask(business, work);
@@ -144,54 +145,54 @@ class V2GoBack extends BaseAction {
 			});
 		}
 
-		private void redirectOtherRead(Business business, Work work) throws Exception {
-			business.entityManagerContainer().listEqualAndNotEqual(Read.class, Read.job_FIELDNAME, work.getJob(),
-					Read.work_FIELDNAME, work.getId()).stream().forEach(o -> {
-						try {
-							o.setWork(work.getId());
-						} catch (Exception e) {
-							LOGGER.error(e);
-						}
-					});
-		}
-
-		private void removeAllTask(Business business, Work work) throws Exception {
-			business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob()).stream()
-					.forEach(o -> {
-						try {
-							business.entityManagerContainer().remove(o, CheckRemoveType.all);
-							MessageFactory.task_delete(o);
-						} catch (Exception e) {
-							LOGGER.error(e);
-						}
-					});
-		}
-
-		private void removeOtherWork(Business business, Work work) throws Exception {
-			List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-					work.getJob(), JpaObject.id_FIELDNAME, work.getId());
-			os.stream().forEach(o -> {
-				try {
-					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-					MessageFactory.work_delete(o);
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-			});
-		}
-
-		private void removeOtherWorkLog(Business business, Work work) throws Exception {
-			List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
-					WorkLog.JOB_FIELDNAME, work.getJob(), WorkLog.CONNECTED_FIELDNAME, false,
-					WorkLog.FROMACTIVITY_FIELDNAME, work.getActivity());
-			os.stream().forEach(o -> {
-				try {
-					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-			});
-		}
+//		private void redirectOtherRead(Business business, Work work) throws Exception {
+//			business.entityManagerContainer().listEqualAndNotEqual(Read.class, Read.job_FIELDNAME, work.getJob(),
+//					Read.work_FIELDNAME, work.getId()).stream().forEach(o -> {
+//						try {
+//							o.setWork(work.getId());
+//						} catch (Exception e) {
+//							LOGGER.error(e);
+//						}
+//					});
+//		}
+//
+//		private void removeAllTask(Business business, Work work) throws Exception {
+//			business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob()).stream()
+//					.forEach(o -> {
+//						try {
+//							business.entityManagerContainer().remove(o, CheckRemoveType.all);
+//							MessageFactory.task_delete(o);
+//						} catch (Exception e) {
+//							LOGGER.error(e);
+//						}
+//					});
+//		}
+//
+//		private void removeOtherWork(Business business, Work work) throws Exception {
+//			List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
+//					work.getJob(), JpaObject.id_FIELDNAME, work.getId());
+//			os.stream().forEach(o -> {
+//				try {
+//					business.entityManagerContainer().remove(o, CheckRemoveType.all);
+//					MessageFactory.work_delete(o);
+//				} catch (Exception e) {
+//					LOGGER.error(e);
+//				}
+//			});
+//		}
+//
+//		private void removeOtherWorkLog(Business business, Work work) throws Exception {
+//			List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
+//					WorkLog.JOB_FIELDNAME, work.getJob(), WorkLog.CONNECTED_FIELDNAME, false,
+//					WorkLog.FROMACTIVITY_FIELDNAME, work.getActivity());
+//			os.stream().forEach(o -> {
+//				try {
+//					business.entityManagerContainer().remove(o, CheckRemoveType.all);
+//				} catch (Exception e) {
+//					LOGGER.error(e);
+//				}
+//			});
+//		}
 
 	}
 
