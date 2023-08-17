@@ -624,7 +624,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			return optional.get();
 		} else {
 			throw new ExceptionChoiceRouteNameError(ListTools.extractProperty(taskCompleteds,
-					TaskCompleted.routeName_FIELDNAME, String.class, false, false));
+					TaskCompleted.ROUTENAME_FIELDNAME, String.class, false, false));
 		}
 	}
 
