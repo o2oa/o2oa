@@ -21,6 +21,17 @@ public class CorrelationProperties extends JsonProperties {
 	@FieldDescribe("关联内容创建人")
 	private String targetCreatorPerson;
 
+	@FieldDescribe("来源视图")
+	private String view;
+
+	public String getView() {
+		return view;
+	}
+
+	public void setView(String view) {
+		this.view = view;
+	}
+
 	public String getTargetTitle() {
 		return targetTitle;
 	}

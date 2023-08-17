@@ -73,9 +73,10 @@ class ActionCreateWithJob extends BaseAction {
 			for (TargetWi targetWi : targets) {
 				if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_PROCESSPLATFORM)) {
 					list.add(readTargetProcessPlatform(effectivePerson, business, targetWi.getBundle(),
-							targetWi.getSite()));
+							targetWi.getSite(), targetWi.getView()));
 				} else if (StringUtils.equalsIgnoreCase(targetWi.getType(), Correlation.TYPE_CMS)) {
-					list.add(readTargetCms(effectivePerson, business, targetWi.getBundle(), targetWi.getSite()));
+					list.add(readTargetCms(effectivePerson, business, targetWi.getBundle(), targetWi.getSite(),
+							targetWi.getView()));
 				} else {
 					throw new ExceptionAccessDenied(effectivePerson);
 				}
@@ -85,7 +86,7 @@ class ActionCreateWithJob extends BaseAction {
 	}
 
 	private TargetWi readTargetProcessPlatform(EffectivePerson effectivePerson, Business business, String bundle,
-			String site) throws Exception {
+			String site, String view) throws Exception {
 		Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, bundle);
 		if (null == work) {
 			WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
@@ -98,11 +99,12 @@ class ActionCreateWithJob extends BaseAction {
 		targetWi.setType(Correlation.TYPE_PROCESSPLATFORM);
 		targetWi.setBundle(bundle);
 		targetWi.setSite(site);
+		targetWi.setView(view);
 		return targetWi;
 	}
 
-	private TargetWi readTargetCms(EffectivePerson effectivePerson, Business business, String bundle, String site)
-			throws Exception {
+	private TargetWi readTargetCms(EffectivePerson effectivePerson, Business business, String bundle, String site,
+			String view) throws Exception {
 		Document document = business.entityManagerContainer().firstEqual(Document.class, JpaObject.id_FIELDNAME,
 				bundle);
 		if (null == document) {
@@ -112,6 +114,7 @@ class ActionCreateWithJob extends BaseAction {
 		targetWi.setType(Correlation.TYPE_CMS);
 		targetWi.setBundle(bundle);
 		targetWi.setSite(site);
+		targetWi.setView(view);
 		return targetWi;
 	}
 
