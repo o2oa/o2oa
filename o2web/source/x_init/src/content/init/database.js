@@ -1,12 +1,17 @@
 import {component} from '@o2oa/oovm';
 import {dom, cloneObject} from '@o2oa/util';
-import {listDatabase, testDatabase, h2Check, h2Upgrade, h2Cancel, setDatabase} from '../../common/action.js';
-import {notice} from '../../common/notice.js';
+import {listDatabase, testDatabase, h2Check, h2Upgrade, h2Cancel, setDatabase, checkDatabase} from '../../common/action.js';
 
 const template = `
 <div class="pane_content" style="padding: 2rem 2rem">
     <div class="input_title" style="padding: 0.5rem 0; margin-top: 0">选择数据库</div>
-    <div style="color:#777777; font-size: 0.875rem">
+    <div oo-if="$.databaseConfigured" style="padding: 3rem 2rem; text-align: center">
+        <div class="icon ooicon-check"></div>
+        <div style="padding: 1rem 0; color: var(--oo-color-text2)">您已初始化了数据库设置！请直接点击“下一步”</div>
+        <div style="padding: 1rem 0; font-size: 0.875rem; color: var(--oo-color-text3)">如需修改，请启动服务器后，进入“系统配置”-“服务器配置”-“数据库配置”中修改</div>
+    </div>
+    
+    <div  oo-else style="color:#777777; font-size: 0.875rem">
         <div style="padding: 0.5em 0.3em; margin-top: 0.5rem; border: 1px solid #cccccc; border-radius: 0.5rem">
             <oo-radio-group name="database_type" col="4" oo-model="database.type" @change="changeDb" oo-element="databaseTypeNode">
                 <oo-radio value="h2" name="database_type" style="margin: 0.3em 0em 0.3em 0">H2(内置数据库)</oo-radio>
@@ -14,7 +19,7 @@ const template = `
             </oo-radio-group>
         </div>
     </div>
-    <div oo-if="$.database.type!=='h2'">
+    <div oo-if="$.database.type!=='h2' && $.database.type!=='$configured'">
         <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">数据库配置</div>
         <div style="color:#777777; font-size: 0.875rem">
             <div style="padding: 0.5em 0.3em; margin-top: 0.5rem; border: 1px solid #cccccc; border-radius: 0.5rem">
@@ -36,24 +41,6 @@ const template = `
             </div>
         </div>
     </div>
-<!--    <div oo-else>-->
-<!--        <div class="input_title" style="padding: 0.5rem 0; margin-top: 1rem">H2数据库升级</div>-->
-<!--        -->
-<!--        <div style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">-->
-<!--            本地h2版本：{{$.h2.localRepositoryDataH2Version}}-->
-<!--        </div>-->
-<!--        <div oo-if="$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">-->
-<!--            可升级h2版本：{{$.h2.jarVersion}}-->
-<!--        </div>-->
-<!--        -->
-<!--        <div oo-if="!$.h2.needUpgrade" style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666">H2数据库版本已经是最新，不需要升级！</div>-->
-<!--        <div oo-else style="padding: 0.5rem; text-align: center; font-size: 0.875rem; color: #666666; display: flex; justify-content: center;">-->
-<!--            <oo-radio-group name="h2_upgrade" oo-model="h2_upgrade" label="是否升级H2:　" oo-element="h2UpgradeNode">-->
-<!--                <oo-radio value="yes">是</oo-radio>-->
-<!--                <oo-radio value="no">否</oo-radio>-->
-<!--            </oo-radio-group>-->
-<!--        </div>-->
-<!--    </div>-->
 </div>
 <div class="actions">
     <oo-button type="cancel" @click="stepPrev">上一步</oo-button>
@@ -72,6 +59,15 @@ const style = `
   border-radius: 100%;
   display: none;
   animation: circle infinite 0.75s linear;
+}
+.icon{
+    font-size: 3rem;
+}
+.ooicon-check{
+    color: green;
+}
+.ooicon-cancel{
+    color: red;
 }
 `;
 
@@ -105,9 +101,13 @@ export default component({
             externalDataSources: {},
             testDbMessage: '',
 
+            databaseConfigured: true,
             h2:{},
             h2_upgrade: 'no'
         }
+    },
+    async databaseCheck() {
+        this.bind.databaseConfigured = await checkDatabase();
     },
     changeDb(e){
         this.bind.testDbMessage = '';
@@ -137,19 +137,24 @@ export default component({
         this.$p.bind.step = (step<0) ? 0 : step;
     },
     async nextStep() {
-        if (this.bind.database.type !== 'h2') {
-            await setDatabase(this.bind.externalDataSources);
-            this.bind.database.type = this.bind.database.type;
-            this.bind.database.url = this.bind.externalDataSources.url;
-        } else {
-            // if (this.bind.h2_upgrade === 'yes') {
-            //     await h2Upgrade();
-            // } else {
-            //     await h2Cancel();
-            // }
+        if (this.bind.databaseConfigured){
+            this.bind.database.type = '$configured';
+        }else{
+            if (this.bind.database.type !== 'h2') {
+                await setDatabase(this.bind.externalDataSources);
+                this.bind.database.type = this.bind.database.type;
+                this.bind.database.url = this.bind.externalDataSources.url;
+            } else {
+                // if (this.bind.h2_upgrade === 'yes') {
+                //     await h2Upgrade();
+                // } else {
+                //     await h2Cancel();
+                // }
 
-            this.bind.database.type = this.bind.database.type;
+                this.bind.database.type = this.bind.database.type;
+            }
         }
+
         const step = this.$p.bind.step + 1;
         this.$p.bind.step = (step < 5) ? step : 0;
     }

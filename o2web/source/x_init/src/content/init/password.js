@@ -1,5 +1,4 @@
 import {component} from '@o2oa/oovm';
-import {dom} from '@o2oa/util';
 import {setPassword} from '../../common/action.js';
 import {notice} from '../../common/notice.js';
 
