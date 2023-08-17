@@ -33,7 +33,7 @@ public class ActionListByPageByAdmin extends BaseAction {
                 LOGGER.debug("person {}, page: {}, size: {}", person.getDistinguishedName(), adjustPage, adjustPageSize);
             }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, wi.getUserId(), wi.getStartDate(), wi.getEndDate());
+            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, wi.getUsers(), wi.getStartDate(), wi.getEndDate());
             List< Wo> wos =   Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for ( Wo detail : wos) {
@@ -44,7 +44,7 @@ public class ActionListByPageByAdmin extends BaseAction {
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().appealCount(wi.getUserId(), wi.getStartDate(), wi.getEndDate()));
+            result.setCount(business.getAttendanceV2ManagerFactory().appealCount(wi.getUsers(), wi.getStartDate(), wi.getEndDate()));
             return result;
         }
     }
@@ -53,13 +53,15 @@ public class ActionListByPageByAdmin extends BaseAction {
 
         @FieldDescribe("用户标识")
         private String userId;
-
+        @FieldDescribe("用户标识")
+        private List<String> users;
         @FieldDescribe("开始日期")
         private String startDate;
         @FieldDescribe("结束日期")
         private String endDate;
 
 
+        
         public String getUserId() {
             return userId;
         }
@@ -82,6 +84,14 @@ public class ActionListByPageByAdmin extends BaseAction {
 
         public void setEndDate(String endDate) {
             this.endDate = endDate;
+        }
+
+        public List<String> getUsers() {
+            return users;
+        }
+
+        public void setUsers(List<String> users) {
+            this.users = users;
         }
     }
 

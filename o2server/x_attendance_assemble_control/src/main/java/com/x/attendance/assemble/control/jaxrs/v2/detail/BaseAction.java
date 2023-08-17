@@ -13,6 +13,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.detail.model.DetailWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.RecordWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
+import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
@@ -95,6 +96,12 @@ abstract class BaseAction extends StandardJaxrsAction {
                                 AttendanceV2LeaveData leaveData = business.entityManagerContainer().find(recordWo.getLeaveDataId(), AttendanceV2LeaveData.class);
                                 if (leaveData != null) {
                                     recordWo.setLeaveData(leaveData);
+                                }
+                            }
+                            if (StringUtils.isNotEmpty(recordWo.getAppealId())) {
+                                AttendanceV2AppealInfo appealData = business.entityManagerContainer().find(recordWo.getAppealId(), AttendanceV2AppealInfo.class);
+                                if (appealData != null) {
+                                    recordWo.setAppealData(appealData);
                                 }
                             }
                         } catch (Exception ignore) {}

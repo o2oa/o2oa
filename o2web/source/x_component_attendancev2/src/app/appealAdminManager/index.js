@@ -22,7 +22,7 @@ export default content({
       },
       // 搜索表单
       form: {
-        userId: '',
+        users: [],
         startDate: '',
         endDate: ''
       },
@@ -63,13 +63,13 @@ export default content({
   async loadAppealList() {
     let form = this.bind.form;
     if (this.bind.filterList && this.bind.filterList.length>0) {
-      form.userId = this.bind.filterList[0];
+      form.users = this.bind.filterList;
     } else {
       if (this.bind.units.length > 0) {
         o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
         return;
       }
-      form.userId = "";
+      form.users = [];
     }
     const json = await appealInfoActionManagerListByPaging(
       this.bind.pagerData.page,
@@ -81,6 +81,12 @@ export default content({
       const count = json.count || 0;
       this.bind.pagerData.totalCount = count;
     }
+  },
+  formatPersonName(person) {
+    if (person && person.indexOf("@") > -1) {
+      return person.split("@")[0];
+    }
+    return person;
   },
   formatRecordResultClass(record) {
     let span = "";
