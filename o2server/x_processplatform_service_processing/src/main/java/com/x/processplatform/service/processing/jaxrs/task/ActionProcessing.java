@@ -218,24 +218,24 @@ class ActionProcessing extends BaseAction {
 			return result;
 		}
 
-		// 处理同一处理人不同身份待办合并处理一次
-		private void processingTaskOnceUnderSamePerson(Business business, Task task) throws Exception {
-			List<Task> tasks = business.entityManagerContainer().listEqualAndEqualAndNotEqual(Task.class,
-					Task.activityToken_FIELDNAME, task.getActivityToken(), Task.person_FIELDNAME, task.getPerson(),
-					JpaObject.id_FIELDNAME, task.getId());
-			if (!tasks.isEmpty()) {
-				Manual manual = (Manual) business.element().get(task.getActivity(), ActivityType.manual);
-				if ((null != manual) && BooleanUtils.isTrue(manual.getProcessingTaskOnceUnderSamePerson())) {
-					for (Task t : tasks) {
-						TaskCompleted tc = concreteTaskCompleted(t);
-						tc.setRouteName(task.getRouteName());
-						tc.setOpinion(task.getOpinion());
-						business.entityManagerContainer().persist(tc, CheckPersistType.all);
-						business.entityManagerContainer().remove(t, CheckRemoveType.all);
-					}
-				}
-			}
-		}
+//		// 处理同一处理人不同身份待办合并处理一次
+//		private void processingTaskOnceUnderSamePerson(Business business, Task task) throws Exception {
+//			List<Task> tasks = business.entityManagerContainer().listEqualAndEqualAndNotEqual(Task.class,
+//					Task.activityToken_FIELDNAME, task.getActivityToken(), Task.person_FIELDNAME, task.getPerson(),
+//					JpaObject.id_FIELDNAME, task.getId());
+//			if (!tasks.isEmpty()) {
+//				Manual manual = (Manual) business.element().get(task.getActivity(), ActivityType.manual);
+//				if ((null != manual) && BooleanUtils.isTrue(manual.getProcessingTaskOnceUnderSamePerson())) {
+//					for (Task t : tasks) {
+//						TaskCompleted tc = concreteTaskCompleted(t);
+//						tc.setRouteName(task.getRouteName());
+//						tc.setOpinion(task.getOpinion());
+//						business.entityManagerContainer().persist(tc, CheckPersistType.all);
+//						business.entityManagerContainer().remove(t, CheckRemoveType.all);
+//					}
+//				}
+//			}
+//		}
 
 		private TaskCompleted concreteTaskCompleted(Task task) throws Exception {
 			Date now = new Date();
