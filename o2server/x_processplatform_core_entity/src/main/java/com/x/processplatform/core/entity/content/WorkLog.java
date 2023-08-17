@@ -70,8 +70,13 @@ public class WorkLog extends SliceJpaObject {
 
 	@PostLoad
 	public void postLoad() {
-		this.splitValueList = this.getProperties().getSplitValueList();
-		this.splitTokenList = this.getProperties().getSplitTokenList();
+		if (null != this.properties) {
+			this.splitValueList = this.properties.getSplitValueList();
+			this.splitTokenList = this.properties.getSplitTokenList();
+			this.goBackFromActivityType = this.properties.getGoBackFromActivityType();
+			this.goBackFromActivity = this.properties.getGoBackFromActivity();
+			this.goBackFromActivityToken = this.properties.getGoBackFromActivityToken();
+		}
 	}
 
 	public static WorkLog createFromWork(Work work, Activity activity, String token, Date date) throws Exception {
@@ -147,6 +152,45 @@ public class WorkLog extends SliceJpaObject {
 
 	public void setProperties(WorkLogProperties properties) {
 		this.properties = properties;
+	}
+
+	@Transient
+	@FieldDescribe("退回发起活动环节类型.")
+	private ActivityType goBackFromActivityType;
+
+	@Transient
+	@FieldDescribe("退回发起活动环节标识.")
+	private String goBackFromActivity;
+
+	@Transient
+	@FieldDescribe("退回发起活动环节令牌.")
+	private String goBackFromActivityToken;
+
+	public ActivityType getGoBackFromActivityType() {
+		return goBackFromActivityType;
+	}
+
+	public void setGoBackFromActivityType(ActivityType goBackFromActivityType) {
+		this.goBackFromActivityType = goBackFromActivityType;
+		this.getProperties().setGoBackFromActivityType(goBackFromActivityType);
+	}
+
+	public String getGoBackFromActivity() {
+		return goBackFromActivity;
+	}
+
+	public void setGoBackFromActivity(String goBackFromActivity) {
+		this.goBackFromActivity = goBackFromActivity;
+		this.getProperties().setGoBackFromActivity(goBackFromActivity);
+	}
+
+	public String getGoBackFromActivityToken() {
+		return goBackFromActivityToken;
+	}
+
+	public void setGoBackFromActivityToken(String goBackFromActivityToken) {
+		this.goBackFromActivityToken = goBackFromActivityToken;
+		this.getProperties().setGoBackFromActivityToken(goBackFromActivityToken);
 	}
 
 	public static final String JOB_FIELDNAME = "job";

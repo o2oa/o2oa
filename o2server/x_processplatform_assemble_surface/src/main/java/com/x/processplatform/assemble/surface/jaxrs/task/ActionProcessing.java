@@ -83,6 +83,7 @@ class ActionProcessing extends BaseAction {
 
 	private Record rec;
 	private String series = StringTools.uniqueToken();
+	private Route route;
 
 	private static final String TYPE_APPENDTASK = "appendTask";
 	private static final String TYPE_TASK = "task";
@@ -98,8 +99,7 @@ class ActionProcessing extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			init(effectivePerson, business, id, jsonElement);
-			updateTaskIfNecessary(business);
-			seeManualRoute(business);
+			updateTask(business);
 		}
 
 		LinkedBlockingQueue<Wo> responeQueue = new LinkedBlockingQueue<>();
@@ -214,58 +214,52 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private void updateTaskIfNecessary(Business business) throws Exception {
-		if (StringUtils.isNotEmpty(this.wi.getRouteName()) || StringUtils.isNotEmpty(this.wi.getOpinion())
-				|| (!StringUtils.equals(this.task.getMediaOpinion(), this.wi.getMediaOpinion()))
-				|| StringUtils.isEmpty(this.task.getOpinion())) {
-			business.entityManagerContainer().beginTransaction(Task.class);
-			// 如果有输入新的路由决策覆盖原有决策
-			if (StringUtils.isNotEmpty(this.wi.getRouteName())) {
-				this.task.setRouteName(this.wi.getRouteName());
-			}
-			// 如果有新的流程意见那么覆盖原有流程意见
-//            if (StringUtils.isNotEmpty(this.wi.getOpinion())) {
-//                this.task.setOpinion(this.wi.getOpinion());
-//            }
-			// 如果有新的流程意见那么覆盖原有流程意见,null表示没有传过来,""可能是前端传过来的改为空值.
-			if (null != this.wi.getOpinion()) {
-				this.task.setOpinion(this.wi.getOpinion());
-			}
-			// 强制覆盖多媒体意见
-			this.task.setMediaOpinion(this.wi.getMediaOpinion());
-			if (StringUtils.isEmpty(task.getOpinion())) {
-				Process process = business.process().pick(task.getProcess());
-				if ((null != process) && BooleanUtils.isTrue(process.getRouteNameAsOpinion())) {
-					// 将路由名作为办理意见写入
-					task.setOpinion(task.getRouteName());
-				}
-			}
-			business.entityManagerContainer().commit();
+	private void updateTask(Business business) throws Exception {
+		business.entityManagerContainer().beginTransaction(Task.class);
+		// 如果有输入新的路由决策覆盖原有决策
+		if (StringUtils.isNotEmpty(this.wi.getRouteName())) {
+			this.task.setRouteName(this.wi.getRouteName());
 		}
-		// 校验路由选择不能为空
-//		if (StringUtils.isBlank(this.task.getRouteName())) {
-//			throw new ExceptionEmptyRouteName();
-//		}
-		// 校验路由在可选择范围内
-//		if (!this.task.getRouteNameList().contains(this.task.getRouteName())) {
-//			throw new ExceptionErrorRouteName(this.task.getRouteName());
-//		}
+		// 如果有新的流程意见那么覆盖原有流程意见,null表示没有传过来,""可能是前端传过来的改为空值.
+		if (null != this.wi.getOpinion()) {
+			this.task.setOpinion(this.wi.getOpinion());
+		}
+		// 强制覆盖多媒体意见
+		this.task.setMediaOpinion(this.wi.getMediaOpinion());
+		if (StringUtils.isEmpty(task.getOpinion())) {
+			Process process = business.process().pick(task.getProcess());
+			if ((null != process) && BooleanUtils.isTrue(process.getRouteNameAsOpinion())) {
+				// 将路由名作为办理意见写入
+				task.setOpinion(task.getRouteName());
+			}
+		}
+		seeManualRoute(business);
+		updateTaskRouteAlias();
+		business.entityManagerContainer().commit();
+	}
+
+	private void updateTaskRouteAlias() {
+		// 更新routeAlias
+		if ((null != this.route) && (!StringUtils.equals(route.getAlias(), task.getRouteAlias()))) {
+			this.task.setRouteAlias(this.route.getAlias());
+		} else if (null == route) {
+			this.task.setRouteAlias("");
+		}
 	}
 
 	private void seeManualRoute(Business business) throws Exception {
 		Manual manual = business.manual().pick(this.task.getActivity());
 		if (null != manual) {
-			Route route = null;
 			for (Route o : business.route().pick(manual.getRouteList())) {
 				if (StringUtils.equals(o.getName(), this.task.getRouteName())) {
-					route = o;
+					this.route = o;
 					break;
 				}
 			}
-			if (null != route) {
-				this.asyncSupported = BooleanUtils.isNotFalse(route.getAsyncSupported());
-				if (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK)
-						&& StringUtils.equals(manual.getId(), route.getActivity())) {
+			if (null != this.route) {
+				this.asyncSupported = BooleanUtils.isNotFalse(this.route.getAsyncSupported());
+				if (StringUtils.equals(this.route.getType(), Route.TYPE_APPENDTASK)
+						&& StringUtils.equals(manual.getId(), this.route.getActivity())) {
 					this.type = TYPE_APPENDTASK;
 				}
 			}
@@ -568,7 +562,7 @@ class ActionProcessing extends BaseAction {
 	}
 
 	/**
-	 * 在 type=custom的设置下获取调用后台goBack所需参数
+	 * 在 type=define的设置下获取调用后台goBack所需参数
 	 * 
 	 * @param manual
 	 * @param option
@@ -589,10 +583,14 @@ class ActionProcessing extends BaseAction {
 					.findFirst();
 			if (optDefineConfig.isPresent()) {
 				first = opt.get();
-				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
+				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
+					if (StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)) {
+						second = option.getWay();
+					} else {
+						second = manual.getGoBackConfig().getWay();
+					}
+				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
 					second = option.getWay();
-				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
-					second = manual.getGoBackConfig().getWay();
 				} else {
 					second = optDefineConfig.get().getWay();
 				}

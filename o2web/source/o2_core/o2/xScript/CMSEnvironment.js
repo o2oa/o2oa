@@ -54,8 +54,8 @@ MWF.xScript.CMSEnvironment = function(ev){
          * @static
          * @return {Document} 文档对象.
          * <pre><code class='language-js'>{
-         * 	"id": "3359aedd-c2d8-4d8c-b8b0-02507da1b3f4",		//数据库主键,自动生成.
-         * 	"summary": " ",		//文档摘要
+         * 	    "id": "3359aedd-c2d8-4d8c-b8b0-02507da1b3f4",		//数据库主键,自动生成.
+         * 	    "summary": " ",		//文档摘要
          * 		"title": "航天科工外部董事调研组到培训中心调研",		//文档标题
          * 		"documentType": "信息",		//文档类型，跟随分类类型，信息 | 数据
          * 		"appId": "c295f34c-9ce1-4122-b795-820267e32b68",		//栏目ID
@@ -121,6 +121,23 @@ MWF.xScript.CMSEnvironment = function(ev){
          * 		"createTime": "2022-09-01 17:05:47",		//创建时间,自动生成,索引创建在约束中.
          * 		"updateTime": "2022-09-01 17:05:47",		//修改时间,自动生成,索引创建在约束中.
          * 		"sequence": " ",		//列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中.
+         *      "stringValue01": "", //业务数据String值01.
+         *      "stringValue02": "", //业务数据String值02.
+         *      "stringValue03": "", //业务数据String值03.
+         *      "stringValue04": "", //业务数据String值04.
+         *      "stringValue05": "", //业务数据String值05.
+         *      "stringValue06": "", //业务数据String值06.
+         *      "stringValue07": "", //业务数据String值07.
+         *      "stringValue08": "", //业务数据String值08.
+         *      "stringValue09": "", //业务数据String值09.
+         *      "stringValue10": "", //业务数据String值10.
+         *      "longValue01": "", //业务数据Long值01.
+         *      "longValue02": "", //业务数据Long值02.
+         *      "doubleValue01": "", //业务数据double值01.
+         *      "doubleValue02": "", //业务数据double值02.
+         *      "dateTimeValue01": "", //业务数据dateTime值01.
+         *      "dateTimeValue02": "", //业务数据dateTime值02.
+         *      "dateTimeValue03": "", //业务数据dateTime值03.
          * 	}
          *</code></pre>
          * @o2syntax

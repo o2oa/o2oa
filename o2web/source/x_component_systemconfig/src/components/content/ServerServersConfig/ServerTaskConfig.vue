@@ -152,6 +152,14 @@
         @changeConfig="(value)=>{generalData.accessControlAllowOrigin=value; saveConfig('general', 'accessControlAllowOrigin', value)}"
     ></BaseItem>
 
+    <BaseItem
+        :title="lp._serversConfig.contentSecurityPolicy"
+        :info="lp._serversConfig.contentSecurityPolicyInfo"
+        :config="generalData.contentSecurityPolicy"
+        :allowEditor="true"
+        @changeConfig="(value)=>{generalData.contentSecurityPolicy=value; saveConfig('general', 'contentSecurityPolicy', value)}"
+    ></BaseItem>
+    <div class="item_info" v-html="lp._serversConfig.contentSecurityPolicyInfo2"></div>
 
 <!--    <BaseInput v-model:value="generalData.scriptingBlockedClasses" @change="(v)=>{saveConfig('general', 'scriptingBlockedClasses', v)}" input-type="textarea"/>-->
 
