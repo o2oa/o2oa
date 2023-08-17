@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.lang3.StringUtils;
@@ -60,9 +61,11 @@ public class ExecuteTarget {
             if(sql.toLowerCase().indexOf(Select.class.getSimpleName().toLowerCase()) > -1) {
                 this.parsedStatement = new Select();
             }else if(sql.toLowerCase().indexOf(Update.class.getSimpleName().toLowerCase()) > -1) {
-                this.parsedStatement = new Select();
+                this.parsedStatement = new Update();
             }else if(sql.toLowerCase().indexOf(Delete.class.getSimpleName().toLowerCase()) > -1) {
                 this.parsedStatement = new Delete();
+            }else if(sql.toLowerCase().indexOf(Insert.class.getSimpleName().toLowerCase()) > -1) {
+                this.parsedStatement = new Insert();
             }
         }
     }
