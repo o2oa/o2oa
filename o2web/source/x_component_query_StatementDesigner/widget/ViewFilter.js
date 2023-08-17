@@ -44,6 +44,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             o2.Actions.load("x_query_assemble_designer").StatementAction.get( this.options.statementId, function (json) {
                 this.statementData = json.data;
                 _load();
+            }.bind(this), function () {
+                _load();
+                return true;
             }.bind(this))
         }else{
             _load();
@@ -484,7 +487,9 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 if( noteFlag )this.app.notice( MWF.xApplication.query.StatementDesigner.LP.modifyViewFilterNote, "info" );
 
                 if(callback)callback();
-            }.bind(this))
+            }.bind(this), function () {
+                return true;
+            })
         }else{
             this.options.statementId = "";
             this.statementData = null;

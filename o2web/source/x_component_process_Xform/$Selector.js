@@ -78,7 +78,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
         }
 
-        var opts, defaultOpts = this.getDefaultOptions();
+        var opts, firstOpts = this.getFirstOption();
         switch (this.json.itemType) {
             case "dict":
                 opts = this.getOptionsWithDict( async, refresh ); break;
@@ -87,13 +87,20 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             case "statement":
                 opts = this.getOptionsWithStatement( async, refresh ); break;
         }
-        if( (defaultOpts && typeOf(defaultOpts.then) === "function" ) || (opts && typeOf(opts.then) === "function" ) ){
-            return Promise.all( [defaultOpts, opts] ).then(function (arr) {
-                return this._contactOption( arr[0], arr[1] );
+        if( opts && typeOf(opts.then) === "function" ){
+            return Promise.resolve(opts).then(function ( opts ) {
+                return this._contactOption( firstOpts, opts );
             }.bind(this));
         }else{
-            return this._contactOption( defaultOpts, opts );
+            return this._contactOption( firstOpts, opts );
         }
+        // if( (defaultOpts && typeOf(defaultOpts.then) === "function" ) || (opts && typeOf(opts.then) === "function" ) ){
+        //     return Promise.all( [defaultOpts, opts] ).then(function (arr) {
+        //         return this._contactOption( arr[0], arr[1] );
+        //     }.bind(this));
+        // }else{
+        //     return this._contactOption( defaultOpts, opts );
+        // }
     },
     _contactOption: function(opt1, opt2){
         var optA, optB;
@@ -106,8 +113,10 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         });
         return optB;
     },
-    getDefaultOptions: function(){
-        return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
+    getFirstOption: function(){
+        //return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
+        if( !this.json.firstOptionEnable )return [];
+        return  [this.json.firstOption||"|"];
     },
 
     /**
@@ -276,8 +285,8 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.viewFilterList && this.json.viewFilterList.length){
+            this.json.viewFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
@@ -320,16 +329,16 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.statementFilterList && this.json.statementFilterList.length){
+            this.json.statementFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
         }
 
         var parameter = {};
-        if( this.json.parameterList && this.json.parameterList.length ){
-            this.json.parameterList.each(function(entry){
+        if( this.json.statementParameterList && this.json.statementParameterList.length ){
+            this.json.statementParameterList.each(function(entry){
                 parameter[entry.parameter] = this.parseParameter(entry);
             }.bind(this));
         }
