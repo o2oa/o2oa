@@ -183,7 +183,7 @@ public class WorkProperties extends JsonProperties {
 		// private String way;
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 		private String activity;
-		private ActivityType ActivityType;
+		private ActivityType activityType;
 		private String activityToken;
 
 		public String getActivityToken() {
@@ -211,11 +211,11 @@ public class WorkProperties extends JsonProperties {
 		}
 
 		public ActivityType getActivityType() {
-			return ActivityType;
+			return activityType;
 		}
 
 		public void setActivityType(ActivityType activityType) {
-			ActivityType = activityType;
+			this.activityType = activityType;
 		}
 
 	}
