@@ -45,10 +45,10 @@ class ActionCreateTypeProcessPlatform extends BaseAction {
 						o.setFromBundle(job);
 						o.setPerson(wi.getPerson());
 						emc.persist(o, CheckPersistType.all);
-
 					} else {
 						v.setTargetTitle(o.getTargetTitle());
 						v.setSite(o.getSite());
+						v.setView(o.getView());
 						emc.check(v, CheckPersistType.all);
 					}
 				} catch (Exception e) {
