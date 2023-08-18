@@ -312,6 +312,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "projectionDataName": "数据名称",
     "projectionPath": "数据路径",
     "projectionType":"数据类型",
+    "projectionColumnName":"列名",
     "projectionInputError": "请输入数据名称和数据路径",
     "projectionTypeCountError": "{type}类型的数据映射条目，最多允许{count}条。",
     "projectionSameNameError": "相同的数据名称已存在",
