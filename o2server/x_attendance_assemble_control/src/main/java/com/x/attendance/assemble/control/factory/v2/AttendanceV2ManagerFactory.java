@@ -389,21 +389,22 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
-     * @param userId
+     * @param users
      * @param startDate
      * @param endDate
      * @return
      * @throws Exception
      */
     public List<AttendanceV2AppealInfo> listAppealInfoByPage(Integer adjustPage,
-            Integer adjustPageSize, String userId, String startDate, String endDate) throws Exception {
+            Integer adjustPageSize, List<String> users, String startDate, String endDate) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = null;
-        if (StringUtils.isNotEmpty(userId)) {
-            p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
+        if (users != null && !users.isEmpty()) {
+            p = root.get(AttendanceV2AppealInfo_.userId).in(users);
+            // p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
         }
         if (StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)) {
             if (p == null) {
@@ -427,18 +428,19 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 查询申诉记录总数
      * 分页查询需要
      * 
-     * @param userId
+     * @param users
      * @return
      * @throws Exception
      */
-    public Long appealCount(String userId, String startDate, String endDate) throws Exception {
+    public Long appealCount(List<String> users, String startDate, String endDate) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = null;
-        if (StringUtils.isNotEmpty(userId)) {
-            p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
+        if (users != null && !users.isEmpty()) {
+            p = root.get(AttendanceV2AppealInfo_.userId).in(users);
+            // p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
         }
         if (StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)) {
             if (p == null) {
@@ -473,13 +475,10 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = cb.between(root.get(AttendanceV2AppealInfo_.recordDate), startDate, endDate);
-        if (StringUtils.isNotEmpty(userId)) {
-            p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId));
-        }
-        p = cb.and(p,
-                cb.or(cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT),
-                        cb.notEqual(root.get(AttendanceV2AppealInfo_.status),
-                                AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN)));
+        p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId));
+        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
+        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN));
+          
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
         return em.createQuery(cq).getResultList();
     }

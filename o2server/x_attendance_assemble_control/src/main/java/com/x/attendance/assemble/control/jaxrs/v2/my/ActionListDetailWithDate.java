@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
@@ -65,6 +66,12 @@ public class ActionListDetailWithDate extends BaseAction {
                                         AttendanceV2LeaveData leaveData = emc.find(woRecord.getLeaveDataId(), AttendanceV2LeaveData.class);
                                         if (leaveData != null) {
                                             woRecord.setLeaveData(leaveData);
+                                        }
+                                    }
+                                    if (StringUtils.isNotEmpty(woRecord.getAppealId())) {
+                                        AttendanceV2AppealInfo appealData = business.entityManagerContainer().find(woRecord.getAppealId(), AttendanceV2AppealInfo.class);
+                                        if (appealData != null) {
+                                            woRecord.setAppealData(appealData);
                                         }
                                     }
                                 } catch (Exception ignore) {}
@@ -142,6 +149,10 @@ public class ActionListDetailWithDate extends BaseAction {
         @FieldDescribe("外出请假记录")
         private AttendanceV2LeaveData leaveData;
 
+
+        @FieldDescribe("申诉记录")
+        private AttendanceV2AppealInfo appealData;
+
         static WrapCopier<AttendanceV2CheckInRecord, WoRecord> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, WoRecord.class, null,
                 JpaObject.FieldsInvisible);
 
@@ -152,5 +163,14 @@ public class ActionListDetailWithDate extends BaseAction {
         public void setLeaveData(AttendanceV2LeaveData leaveData) {
             this.leaveData = leaveData;
         }
+
+        public AttendanceV2AppealInfo getAppealData() {
+          return appealData;
+        }
+
+        public void setAppealData(AttendanceV2AppealInfo appealData) {
+          this.appealData = appealData;
+        }
+        
     }
 }

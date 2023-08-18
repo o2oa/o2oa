@@ -52,6 +52,7 @@ export default content({
             "count": this.bind.count,
             "title": this.bind.selectorTitle,
             "units": this.bind.units,
+            "firstLevelSelectable": true,
             "values": this.bind.selectedResult,
             "resultType": "person",
             "onComplete": function(items) {
