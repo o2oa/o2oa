@@ -1,9 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.correlation;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -22,12 +19,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
-import com.x.correlation.core.entity.content.Correlation;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeCmsWo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionCreateTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.TargetWi;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionCreateWithDocument extends BaseAction {
 

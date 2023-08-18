@@ -312,6 +312,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "projectionDataName": "Name",
     "projectionPath": "Path",
     "projectionType":"Type",
+    "projectionColumnName": "Column name",
     "projectionInputError": "Please enter the data name and data path",
     "projectionTypeCountError": "{type} type data mapping entries, up to {count} allowed.",
     "projectionSameNameError": "Same data name already exists",

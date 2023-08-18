@@ -43,6 +43,8 @@ MWF.xApplication.process.Work.LP = {
     "readPerson": "Lector",
     "systemFlow": "Procesamiento automático del sistema",
 
+    "openWorkError": "No tienes permiso para ver este documento o ha sido eliminado.",
+
     "rollbackConfirmTitle": "Confirmación",
     "rollbackConfirmContent": "¿Está seguro de que desea volver el flujo de trabajo al estado “{log}”? (El retorno del flujo de trabajo borrará toda la información posterior a este estado)",
 

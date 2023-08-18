@@ -7,7 +7,7 @@
             <!--人员组织选择  -->
             <div class="margin-right">
                 <o-org-person-selector
-                    oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailStatisticList.filterSelectTitle,  'placeholder': $.lp.detailStatisticList.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+                    oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
                     oo-model="filterList"></o-org-person-selector>
             </div>
 
@@ -23,6 +23,7 @@
         </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
             <thead>
+                <th>{{$.lp.detailTable.person}}</th>
                 <th>{{$.lp.appeal.date}}</th>
                 <th>{{$.lp.appeal.dutyType}}</th>
                 <th>{{$.lp.appeal.recordTime}}</th>
@@ -32,6 +33,7 @@
                 <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.appealList" oo-item="g">
+                <td>{{ $m.formatPersonName(g.value.userId)}}</td>
                 <td>{{g.value.recordDateString}}</td>
                 <td>{{ g.value.record.checkInType == 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
                 <td>{{ g.value.recordDate }}</td>

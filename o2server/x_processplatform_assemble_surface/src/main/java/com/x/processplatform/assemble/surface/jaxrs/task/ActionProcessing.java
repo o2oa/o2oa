@@ -562,7 +562,7 @@ class ActionProcessing extends BaseAction {
 	}
 
 	/**
-	 * 在 type=custom的设置下获取调用后台goBack所需参数
+	 * 在 type=define的设置下获取调用后台goBack所需参数
 	 * 
 	 * @param manual
 	 * @param option
@@ -583,10 +583,14 @@ class ActionProcessing extends BaseAction {
 					.findFirst();
 			if (optDefineConfig.isPresent()) {
 				first = opt.get();
-				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
+				if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
+					if (StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getWay(), GoBackConfig.WAY_CUSTOM)) {
+						second = option.getWay();
+					} else {
+						second = manual.getGoBackConfig().getWay();
+					}
+				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_CUSTOM)) {
 					second = option.getWay();
-				} else if (StringUtils.equalsIgnoreCase(optDefineConfig.get().getWay(), GoBackConfig.WAY_DEFAULT)) {
-					second = manual.getGoBackConfig().getWay();
 				} else {
 					second = optDefineConfig.get().getWay();
 				}
