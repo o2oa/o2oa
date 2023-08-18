@@ -310,6 +310,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "projectionDataName": "Nombre del dato",
     "projectionPath": "Ruta del dato",
     "projectionType":"Tipo de dato",
+    "projectionColumnName": "nombre de la columna",
     "projectionInputError": "Por favor ingrese un nombre y una ruta para el dato.",
     "projectionTypeCountError": "Solo se permiten un máximo de {count} elementos de mapeo de datos de tipo {type}.",
     "projectionSameNameError": "Ya existe un elemento de mapeo de datos con el mismo nombre.",

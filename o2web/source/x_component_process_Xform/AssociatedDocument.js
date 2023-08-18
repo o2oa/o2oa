@@ -84,6 +84,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                         return {
                             "type": d.type === "process" ? "processPlatform" : "cms",
                             "site": this.json.site || this.json.id,
+                            "view": d.view,
                             "bundle": d.bundle
                         }
                     }.bind(this));
@@ -334,7 +335,17 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             //var disableSelectJobs = Array.clone(selectedJobs);
             disableSelectJobs.push( this.getBundle() );
 
+            debugger;
+
             var viewJsonList = [];
+
+            this.selectedBundleMap = {};
+            this.documentList.each(function (d) {
+                var viewid = d.properties.view;
+                if( !this.selectedBundleMap[viewid] )this.selectedBundleMap[viewid] = [];
+                this.selectedBundleMap[viewid].push( d.targetBundle );
+            }.bind(this));
+
             viewDataList.each(function (viewData) {
                 var filter = null;
                 var filterList = (this.json.viewFilterScriptList || []).filter(function (f) {
@@ -413,12 +424,24 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                                 var array = [];
                                 _self.viewList.each(function (view) {
-                                    var data = view.getData();
-                                    data.each(function (d) {
-                                        d.type = view.json.type;
+                                    var orginData = [], orginBundles = _self.selectedBundleMap[view.json.id] || [];
+                                    orginData = orginBundles.map(function(bundle){
+                                        return {
+                                            bundle: bundle,
+                                            type: view.json.type,
+                                            view: view.json.id
+                                        };
                                     }.bind(this));
-                                    array = array.concat(data);
-                                });
+                                    var data = [], data1 = view.getData();
+                                    data1.each(function (d) {
+                                        if( !orginBundles.contains( d.bundle ) ){
+                                            d.type = view.json.type;
+                                            d.view = view.json.id;
+                                            data.push( d );
+                                        }
+                                    }.bind(this));
+                                    array = array.concat(orginData, data);
+                                }.bind(this));
 
                                 _self.fireEvent("selectResult", [array]);
                                 if (callback) callback(array, this);
@@ -450,51 +473,57 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                             this.viewList = [];
                             viewJsonList.each(function (viewJson, index) {
-
                                 var tabViewNode = Element("div", {"styles": {"height": "100%"}});
                                 var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
-                                //this.viewArea.inject(this.pageViewNode);
 
                                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
+                                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ];
+
                                 //this.viewPage.showTabIm();
                                 var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+
+                                pageViewNode.setStyle("height", viewHeight);
+
+                                var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
+                                    "isloadContent": this.status !== "showResult",
+                                    "isloadActionbar": this.status !== "showResult",
+                                    "isloadSearchbar": this.status !== "showResult",
+                                    "style": "select",
+                                    "onLoadView": function(){
+                                        this.fireEvent("loadView");
+                                    }.bind(this),
+                                    "onSelect": function(item){
+                                        this.fireEvent("select", [item]);
+                                    }.bind(this),
+                                    "onUnselect": function(item){
+                                        selectedBundles.erase( item.data.bundle );
+                                        this.fireEvent("unselect", [item]);
+                                    }.bind(this),
+                                    "onOpenDocument": function(options, item){
+                                        this.openOptions = {
+                                            "options": options,
+                                            "item": item
+                                        };
+                                        this.fireEvent("openViewDocument", [this.openOptions]);
+                                        this.openOptions = null;
+                                    }.bind(this)
+                                }, this.form.app, this.form.Macro);
+
+                                viewPage.Viewer = view;
+                                this.viewList.push(view);
+
                                 viewPage.addEvent("postShow", function () {
-                                    if( viewPage.Viewer )return;
-
-                                    pageViewNode.setStyle("height", viewHeight);
-
-                                    var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
-                                        "isloadContent": this.status !== "showResult",
-                                        "isloadActionbar": this.status !== "showResult",
-                                        "isloadSearchbar": this.status !== "showResult",
-                                        "style": "select",
-                                        "onLoadView": function(){
-                                            this.fireEvent("loadView");
-                                        }.bind(this),
-                                        "onSelect": function(item){
-                                            this.fireEvent("select", [item]);
-                                        }.bind(this),
-                                        "onUnselect": function(item){
-                                            this.fireEvent("unselect", [item]);
-                                        }.bind(this),
-                                        "onOpenDocument": function(options, item){
-                                            this.openOptions = {
-                                                "options": options,
-                                                "item": item
-                                            };
-                                            this.fireEvent("openViewDocument", [this.openOptions]);
-                                            this.openOptions = null;
-                                        }.bind(this)
-                                    }, this.form.app, this.form.Macro);
-
-                                    viewPage.Viewer = view;
-                                    this.viewList.push(view);
+                                    if( viewPage.Viewer && viewPage.Viewer.node ){
+                                        viewPage.Viewer.setContentHeight();
+                                    }
+                                    // var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                                    // pageViewNode.setStyle("height", viewHeight);
                                 }.bind(this));
 
                                 if( index === 0 )viewPage.showTabIm();
 
-                            }.bind(this))
+                            }.bind(this));
 
 
                         }.bind(this));
