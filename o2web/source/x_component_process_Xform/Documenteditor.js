@@ -1582,22 +1582,27 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.editMode = false;
 
         this.getHistory(function(){
-            //this.history.play();
-
-            //this._checkScale();
+        }.bind(this), function(){
+            debugger;
+            this.historyMode = false;
+            this.resetData();
         }.bind(this));
         this.historyMode = true;
     },
-    getHistory: function(callback){
+    getHistory: function(callback, nodiff){
         if (this.history){
             this.history.active(function(){
                 if (callback) callback();
+            }, function(){
+                if (nodiff) nodiff();
             });
         }else{
             MWF.xDesktop.requireApp("process.Xform", "widget.DocumentHistory", function(){
                 this.history = new MWF.xApplication.process.Xform.widget.DocumentHistory(this);
                 this.history.load(function(){
                     if (callback) callback();
+                }, function(){
+                    if (nodiff) nodiff();
                 });
             }.bind(this));
         }

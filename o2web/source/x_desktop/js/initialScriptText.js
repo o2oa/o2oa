@@ -144,16 +144,18 @@ var print = function(str, type){
 var _parsePrint = function(str){
     if (!str && str!==0 && str!==false) return str;
 
-    var text = (typeOf(str)==="string") ? str.toString() : str;
-    var i = 1;
-    while (text.indexOf("%s")!==-1 && i<arguments.length){
-        text = text.replace(/\%s/, arguments[i].toString());
-        i++;
-    }
-    while (i<arguments.length){
-        text += " "+arguments[i].toString();
-        i++;
-    }
+    var text = (typeOf(str)!=="string") ? str.toString() : str;
+    try{
+        var i = 1;
+        while (text.indexOf("%s")!==-1 && i<arguments.length){
+            text = text.replace(/\%s/, arguments[i].toString());
+            i++;
+        }
+        while (i<arguments.length){
+            text += " "+arguments[i].toString();
+            i++;
+        }
+    }catch(e){}
     return text;
 };
 

@@ -16,7 +16,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         var ua = navigator.userAgent.toLowerCase();
         return (ua.match(/iPad/i)=="ipad");
     },
-    load: function(callback){
+    load: function(callback, nodiff){
         this.getHistroyDocumentList(function(){
             if (this.historyDocumentList && this.historyDocumentList.length){
                 this.getHistoryDataList(function(){
@@ -37,6 +37,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 }.bind(this));
             }else{
                 this.documentEditor.form.app.notice(MWF.xApplication.process.Xform.LP.documentHistory.nodiff, "info", this.documentEditor.node);
+                if (nodiff) nodiff();
             }
         }.bind(this));
     },
@@ -545,7 +546,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
         this.documentEditor._returnScreen();
     },
-    active: function(callback){
+    active: function(callback, nodiff){
         this.getHistroyDocumentList(function(){
             if (this.historyDocumentList && this.historyDocumentList.length){
                 this.getHistoryDataList(function(){
@@ -587,6 +588,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 }.bind(this));
             }else{
                 this.documentEditor.form.app.notice(MWF.xApplication.process.Xform.LP.documentHistory.nodiff, "info", this.documentEditor.node);
+                if (nodiff) nodiff();
             }
         }.bind(this));
     },
