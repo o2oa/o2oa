@@ -1356,3 +1356,5 @@ var o= {
 
 }
 library.defineProperties(bind, o);
+/* 清除 engine */
+this.engine = null;
