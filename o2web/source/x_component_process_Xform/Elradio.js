@@ -202,7 +202,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
 
     _loadVue: function(callback){
-        var flag = (o2.session.isDebugger || !this.form.app.inBrowser);
+        var flag = (o2.session.isDebugger && this.form.app.inBrowser);
         var vue = flag ? "vue_develop" : "vue";
         //var vueName = flag ? "Vue" : "Cn";
         // if (!window.Vue || window.Vue.name!==vueName  ){

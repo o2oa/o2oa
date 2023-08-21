@@ -33,9 +33,22 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 	cancelAllAssociated: function( callback ){
 		var _self = this;
 		if( this.documentList.length ){
-			var ids = this.documentList.map(function (doc) {
-				return doc.id;
-			});
+			var ids = [];
+            if( this.json.reserve === false ){
+                ids = this.documentList.map(function (doc) {
+                    return doc.id;
+                });
+            }else{
+                var viewIds = (this.json.queryView || []).map(function (view) {
+                   return view.id;
+                });
+                var docs = this.documentList.filter(function (doc) {
+                    return viewIds.contains( doc.view );
+                });
+                ids = docs.map(function (doc) {
+                    return doc.id;
+                });
+            }
 			o2.Actions.load("x_cms_assemble_control").CorrelationAction.deleteWithDocument(this.getBundle(), {
 				idList: ids
 			},function (json) {
