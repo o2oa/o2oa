@@ -134,6 +134,7 @@ export default class AppBase extends React.Component {
                         <div className="application-baseinfo-o2version-text">{lp.o2Version}{data.o2Version}</div>
                         <VipFlag vipApp={data.vipApp}/>
                     </div>
+                    <div className="application-baseinfo-category">{lp.updateTime}: {data.updateTime}</div>
                     <div className="application-baseinfo-category">{lp.category}: {data.category}</div>
                     <div className="application-baseinfo-abort">{data.abort}</div>
                 </div>
