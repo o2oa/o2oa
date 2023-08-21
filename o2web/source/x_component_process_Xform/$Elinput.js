@@ -30,7 +30,15 @@ Object.assign(o2.APP$Elinput.prototype, {
         this.validationMode();
     },
     __setReadonly: function(data){
-        if (this.isReadonly()) this.node.set("text", data);
+        if (this.isReadonly()) {
+            this.node.set("text", data);
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+        }
     },
     getInputData: function(){
         return this.json[this.json.$id];

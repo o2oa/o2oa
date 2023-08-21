@@ -52,6 +52,13 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
         this.node.empty();
         if (this.isReadonly()){
             this._loadNodeRead();
+
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
         }else{
             this._loadNodeEdit();
         }
