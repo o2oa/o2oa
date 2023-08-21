@@ -132,13 +132,26 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     cancelAllAssociated: function( callback ){
 	    var _self = this;
 	    if( this.documentList.length ){
-	        var ids = this.documentList.map(function (doc) {
-                return doc.id;
-            });
+            var ids = [];
+            if( this.json.reserve === false ){
+                ids = this.documentList.map(function (doc) {
+                    return doc.id;
+                });
+            }else{
+                var viewIds = (this.json.queryView || []).map(function (view) {
+                   return view.id;
+                });
+                var docs = this.documentList.filter(function (doc) {
+                    return viewIds.contains( doc.view );
+                });
+                ids = docs.map(function (doc) {
+                    return doc.id;
+                });
+            }
             o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(this.getBundle(), {
                 idList: ids
             },function (json) {
-                this.documentList = [];
+                //this.documentList = [];
                 if(callback)callback();
             }.bind(this));
         }else{
