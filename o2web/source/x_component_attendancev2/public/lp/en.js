@@ -307,7 +307,7 @@ MWF.xApplication.attendancev2.LP = {
     late: "迟到",
     seriousLate: "严重迟到",
     notSigned: "缺卡",
-    appeal: "申诉",
+    appeal: "申诉成功",
     fieldWork: "外勤打卡",
     leave: "请假",
 
