@@ -56,6 +56,13 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
             }else{
                 this.node.set("text", data );
             }
+
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
         }
     },
     _appendVueData: function(){
