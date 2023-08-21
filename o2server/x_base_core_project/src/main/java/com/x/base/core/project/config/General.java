@@ -1,20 +1,20 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.Path;
-import java.util.*;
-
-import com.x.base.core.project.tools.Host;
-import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.Host;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class General extends ConfigObject {
 
@@ -23,7 +23,8 @@ public class General extends ConfigObject {
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
 	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
 			File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName(),
-			FileWriter.class.getName(), java.lang.System.class.getName());
+			FileWriter.class.getName(), java.lang.System.class.getName(), Paths.class.getName(),
+			Files.class.getName());
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
