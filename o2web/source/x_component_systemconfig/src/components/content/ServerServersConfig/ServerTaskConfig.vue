@@ -118,14 +118,14 @@
     <div class="systemconfig_item_info" v-html="lp._serversConfig.exposeJestInfo.replaceAll('{url}', getJestUrl())"></div>
     <BaseBoolean v-model:value="generalData.exposeJest" @change="(v)=>{saveConfig('general', 'exposeJest', v)}"/>
 
-    <BaseItem
-        :title="lp._serversConfig.scriptingBlockedClasses"
-        :info="lp._serversConfig.scriptingBlockedClassesInfo"
-        :config="generalData.scriptingBlockedClasses"
-        :allowEditor="true"
-        type="textarea"
-        @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||[]); generalData.scriptingBlockedClasses=v; saveConfig('general', 'scriptingBlockedClasses', v)}"
-    ></BaseItem>
+<!--    <BaseItem-->
+<!--        :title="lp._serversConfig.scriptingBlockedClasses"-->
+<!--        :info="lp._serversConfig.scriptingBlockedClassesInfo"-->
+<!--        :config="generalData.scriptingBlockedClasses"-->
+<!--        :allowEditor="true"-->
+<!--        type="textarea"-->
+<!--        @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||[]); generalData.scriptingBlockedClasses=v; saveConfig('general', 'scriptingBlockedClasses', v)}"-->
+<!--    ></BaseItem>-->
 
     <BaseItem
             :title="lp._serversConfig.httpWhiteList"

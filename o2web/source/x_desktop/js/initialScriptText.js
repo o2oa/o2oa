@@ -4300,3 +4300,5 @@ var o= {
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
 }
 Object.defineProperties(bind, o);
+/* 清除 engine */
+this.engine = null;
