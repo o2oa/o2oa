@@ -9,12 +9,23 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.RandomAccessFile;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class General extends ConfigObject {
 
@@ -24,7 +35,10 @@ public class General extends ConfigObject {
 	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
 			File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName(),
 			FileWriter.class.getName(), java.lang.System.class.getName(), Paths.class.getName(),
-			Files.class.getName());
+			Files.class.getName(), FileOutputStream.class.getName(), RandomAccessFile.class.getName(),
+			Socket.class.getName(), ServerSocket.class.getName(), ZipFile.class.getName(),
+			ZipInputStream.class.getName(), ZipOutputStream.class.getName(), ScriptEngine.class.getName(),
+			ScriptEngineManager.class.getName(), URL.class.getName(), URI.class.getName());
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
