@@ -1152,6 +1152,13 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "App",
         "appIndexPageSettings": "Setting",
 
+        "appIndexCmsFilterTitle": "Home Information Center",
+        "appIndexCmsFilterCategoryInfo": "Information center list classification query criteria, if left blank, all queries will be queried",
+        "appIndexTaskFilterTitle": "Home Office Center",
+        "appIndexTaskFilterProcessInfo": "Office center list process query criteria, if left blank, all will be queried",
+        "appIndexTaskFilterProcessSelectorTitle": "Process selection",
+        "appIndexCmsFilterCategroySelectorTitle": "Classification selection",
+
         "systemMessageSwitch": "show system notifications",
         "systemMessageSwitchInfo": "Are system notifications displayed in the mobile app message list?",
 
