@@ -1150,6 +1150,15 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "应用",
         "appIndexPageSettings": "设置",
 
+        "appIndexCmsFilterTitle": "首页信息中心",
+        "appIndexCmsFilterCategoryInfo": "信息中心列表分类查询条件，为空就是都查询",
+        "appIndexTaskFilterTitle": "首页办公中心",
+        "appIndexTaskFilterProcessInfo": "办公中心列表流程查询条件，为空就是都查询",
+        "appIndexTaskFilterProcessSelectorTitle": "流程选择",
+        "appIndexCmsFilterCategroySelectorTitle": "分类选择",
+        
+
+
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
         "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",

@@ -1141,6 +1141,13 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "Aplicación",
         "appIndexPageSettings": "Configuración",
 
+        "appIndexCmsFilterTitle": "Centro de información de la página de inicio",
+        "appIndexCmsFilterCategoryInfo": "Condiciones de consulta de clasificación de la lista del Centro de información, si está vacío, se consultará todo.",
+        "appIndexTaskFilterTitle": "Centro de oficinas de la página de inicio",
+        "appIndexTaskFilterProcessInfo": "Condiciones de consulta del proceso de lista del Centro de oficinas, si está vacío, se consultará todo.",
+        "appIndexTaskFilterProcessSelectorTitle": "Selección de procesos",
+        "appIndexCmsFilterCategroySelectorTitle": "Selección de clasificación",
+
         "systemMessageSwitch": "Mostrar notificaciones del sistema",
         "systemMessageSwitchInfo": "Indica si las notificaciones del sistema se muestran en la lista de mensajes de la app móvil.",
         "systemMessageCanClickInfo": "Indica si las notificaciones del sistema pueden ser abiertas haciendo clic sobre ellas en la app móvil.",

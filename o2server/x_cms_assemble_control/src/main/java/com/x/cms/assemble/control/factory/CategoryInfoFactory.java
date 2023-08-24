@@ -237,6 +237,18 @@ public class CategoryInfoFactory extends ElementFactory {
 		return em.createQuery(cq.where( p )).getResultList();
 	}
 
+	public List<CategoryInfo> listCategoryByIds( List<String> ids) throws Exception {
+		if(ListTools.isEmpty( ids )) {
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CategoryInfo> cq = cb.createQuery(CategoryInfo.class);
+		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
+		Predicate p = root.get( CategoryInfo_.id ).in( ids );
+		return em.createQuery(cq.where( p )).getResultList();
+	}
+
 	public List<CategoryInfo> listByAliases(List<String> categoryAlias) throws Exception {
 		if(ListTools.isEmpty( categoryAlias )) {
 			return null;
