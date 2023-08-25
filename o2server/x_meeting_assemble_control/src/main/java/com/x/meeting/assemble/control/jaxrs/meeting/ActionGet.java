@@ -49,11 +49,6 @@ class ActionGet extends BaseAction {
 		}
 	}
 
-	private String generateHstPwd(String userId) throws Exception{
-		String content = userId+"#"+System.currentTimeMillis();
-		return Crypto.rsaEncrypt(content, Config.publicKey());
-	}
-
 	public static class Wo extends WrapOutMeeting {
 
 		private static final long serialVersionUID = 4609263020989488356L;
