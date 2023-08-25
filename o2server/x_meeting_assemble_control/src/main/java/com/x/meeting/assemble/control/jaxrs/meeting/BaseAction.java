@@ -1,5 +1,6 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.PropertyTools;
+import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
+import com.x.meeting.core.entity.MeetingConfigProperties;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -221,6 +231,30 @@ abstract class BaseAction extends StandardJaxrsAction {
 			p = cb.and(p, cb.like(root.get(Meeting_.type), "%" + type + "%"));
 		}
 		return p;
+	}
+
+	protected String generateHstPwd(String userId) throws Exception{
+		String content = userId+"#"+System.currentTimeMillis();
+		return Crypto.rsaEncrypt(content, Config.publicKey());
+	}
+
+	protected void setOnlineLink(Business business, EffectivePerson effectivePerson, List<? extends WrapOutMeeting> wos) throws Exception{
+		MeetingConfigProperties config = business.getConfig();
+		if(config.onLineEnabled()){
+			for(WrapOutMeeting wo : wos) {
+				if(StringUtils.isBlank(wo.getRoomLink())){
+					continue;
+				}
+				if (BooleanUtils.isTrue(config.getOnlineConfig().getHstAuth())) {
+					Person person = business.organization().person().getObject(effectivePerson.getDistinguishedName());
+					String userId = PropertyTools.getOrElse(person, config.getOnlineConfig().getO2ToHstUid(), String.class, person.getUnique());
+					userId = StringUtils.isNoneBlank(userId) ? userId : person.getUnique();
+					wo.setRoomLink(wo.getRoomLink() + "&userName=" + userId + "&userPwd=" + URLEncoder.encode(generateHstPwd(userId), DefaultCharset.charset));
+				} else {
+					wo.setRoomLink(wo.getRoomLink() + "&userName=" + effectivePerson.getName());
+				}
+			}
+		}
 	}
 
 }
