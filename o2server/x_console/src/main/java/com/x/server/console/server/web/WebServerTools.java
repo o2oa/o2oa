@@ -3,10 +3,7 @@ package com.x.server.console.server.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -157,7 +154,13 @@ public class WebServerTools extends JettySeverTools {
 				String name = o.getFileName().toString();
 				if (!WebServers.WEB_SERVER_FOLDERS.contains(name)) {
 					try {
-						Files.move(o, Config.path_webroot(true).resolve(name), StandardCopyOption.REPLACE_EXISTING);
+						Path target = Config.path_webroot(true).resolve(name);
+						if (Files.exists(target)){
+							FileUtils.copyDirectory(o.toFile(), target.toFile());
+							FileUtils.deleteDirectory(o.toFile());
+						} else {
+							Files.move(o, target, StandardCopyOption.REPLACE_EXISTING);
+						}
 					} catch (IOException | URISyntaxException e) {
 						LOGGER.error(e);
 					}
