@@ -16,8 +16,7 @@ export default component({
 
     async bind() {
         const status = await serverStatus();
-        // const step = (status.status === 'waiting') ? 0 : 4;
-        const step = 1
+        const step = (status.status === 'waiting') ? 0 : 4;
         return {
             explain: [
                 {
