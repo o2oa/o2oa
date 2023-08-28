@@ -5,7 +5,11 @@ import {listDatabase, testDatabase, h2Check, h2Upgrade, h2Cancel, setDatabase, c
 const template = `
 <div class="pane_content" style="padding: 2rem 2rem">
     <div class="input_title" style="padding: 0.5rem 0; margin-top: 0">选择数据库</div>
-    <div oo-if="$.databaseConfigured" style="padding: 3rem 2rem; text-align: center">
+    <div oo-if="$.databaseConfigured!==true && $.databaseConfigured!==false" style="padding: 3rem 2rem; text-align: center">
+        <div class="icon loading" style="display: block; height: 40px; width: 40px; margin: auto"></div>
+    </div>
+    
+    <div oo-else-if="$.databaseConfigured===true" style="padding: 3rem 2rem; text-align: center">
         <div class="icon ooicon-check"></div>
         <div style="padding: 1rem 0; color: var(--oo-color-text2)">您已初始化了数据库设置！请直接点击“下一步”</div>
         <div style="padding: 1rem 0; font-size: 0.875rem; color: var(--oo-color-text3)">如需修改，请启动服务器后，进入“系统配置”-“服务器配置”-“数据库配置”中修改</div>
@@ -96,19 +100,20 @@ export default component({
                 kingbase8: '人大金仓V8',
                 informix: 'Informix',
                 gbase: '南大通用',
-                gbasemysql: '南大通用(MySql)',
+                // gbasemysql: '南大通用(MySql)',
                 db2: 'DB2'
             },
             externalDataSources: {},
             testDbMessage: '',
 
-            databaseConfigured: true,
+            databaseConfigured: null,
             h2:{},
             h2_upgrade: 'no'
         }
     },
     async databaseCheck() {
-        this.bind.databaseConfigured = await checkDatabase();
+        const flag = await checkDatabase();
+        this.bind.databaseConfigured = flag;
     },
     changeDb(e){
         this.bind.testDbMessage = '';

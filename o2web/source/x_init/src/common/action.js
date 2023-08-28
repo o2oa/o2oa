@@ -142,8 +142,8 @@ async function setDatabase(o) {
     return await post(database_set, JSON.stringify(db), 'application/json');
 }
 async function checkDatabase() {
-    const [edb, h2db] = await Promise.all(get(database_check), get(database_h2_check))
-    return !(edb.configured || h2db.configured);
+    const [edb, h2db] = await Promise.all([get(database_check), get(database_h2_check)]);
+    return (edb.configured || h2db.configured);
 }
 
 
