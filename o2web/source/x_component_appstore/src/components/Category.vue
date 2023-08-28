@@ -6,7 +6,7 @@
       <div class="category-search-icon icon_search" @click="listApplicationByKeyword"></div>
       <div class="category-search-icon clear" :class="{icon_clear: (!!searchKey)}"  @click="clearKeyword"></div>
 
-      <input v-model="searchKey" :placeholder="lp.searchPlaceholder" />
+      <input v-model="searchKey" :placeholder="lp.searchPlaceholder" @keydown="keydownSearch"/>
     </div>
   </div>
 </template>
@@ -41,6 +41,11 @@ export default {
     clearKeyword(){
       this.searchKey = '';
       this.filterKeyword('');
+    },
+    keydownSearch(e){
+      if (e.keyCode===13){
+        this.listApplicationByKeyword();
+      }
     }
   }
 }
