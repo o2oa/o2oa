@@ -65,6 +65,8 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( ["flow"].contains(this.options.style)  ){
             this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
+            this.options.level1Indent = 10;
+            this.options.indent = 16;
         }
 
         Object.defineProperties(this, {
@@ -324,6 +326,7 @@ MWF.xApplication.Selector.Person = new Class({
         request.send();
     },
     loadContentWithHTML : function(){
+        debugger;
         var container = this.options.injectToBody ? $(document.body) : this.container;
         if( !this.options.embedded ){
             this.maskRelativeNode = container;
@@ -347,9 +350,9 @@ MWF.xApplication.Selector.Person = new Class({
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
         this.titleOkActionNode = this.node.getElement(".MWF_selector_titleOkActionNode");
 
+        this.titleActionNode = this.node.getElement(".MWF_selector_titleActionNode");
+
         this.contentNode = this.node.getElement(".MWF_selector_contentNode");
-
-
 
         this.selectNode = this.node.getElement(".MWF_selector_selectNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
@@ -370,6 +373,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.itemSearchAreaScrollNode = this.node.getElement(".MWF_selector_itemSearchAreaScrollNode");
         this.itemSearchAreaNode = this.node.getElement(".MWF_selector_itemSearchAreaNode");
 
+        this.selectedContainerNode = this.node.getElement(".MWF_selector_selectedContainerNode");
         this.selectedScrollNode = this.node.getElement(".MWF_selector_selectedScrollNode");
         this.selectedNode = this.node.getElement(".MWF_selector_selectedNode");
         this.selectedItemSearchAreaNode = this.node.getElement(".MWF_selector_selectedItemSearchAreaNode");
@@ -378,16 +382,17 @@ MWF.xApplication.Selector.Person = new Class({
         this.okActionNode = this.node.getElement(".MWF_selector_okActionNode");
         this.cancelActionNode = this.node.getElement(".MWF_selector_cancelActionNode");
 
-        if (this.titleNode) this.titleNode.setStyles(this.css.titleNodeMobile);
+        if (this.titleNode) this.titleNode.setStyles( layout.mobile ? this.css.titleNodeMobile : this.css.titleNode );
         if (this.titleTextNode){
-            this.titleTextNode.setStyles(this.css.titleTextNodeMobile);
+            this.titleTextNode.setStyles(layout.mobile ? this.css.titleTextNodeMobile : this.css.titleTextNode);
             if(this.options.title)this.titleTextNode.set("text", this.options.title);
         }
+        if (this.titleActionNode)this.titleActionNode.setStyles(this.css.titleActionNode);
         if (this.titleCancelActionNode) this.titleCancelActionNode.setStyles(this.css.titleCancelActionNodeMobile);
         if (this.titleOkActionNode) this.titleOkActionNode.setStyles(this.css.titleOkActionNodeMobile);
         if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
 
-        if (this.selectNode) this.selectNode.setStyles(this.css.selectNodeMobile);
+        if (this.selectNode) this.selectNode.setStyles( layout.mobile ? this.css.selectNodeMobile : this.css.selectNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput );
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
@@ -397,6 +402,7 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.itemSearchAreaScrollNode) this.itemSearchAreaScrollNode.setStyles(this.css.itemSearchAreaScrollNode);
         if (this.itemSearchAreaNode) this.itemSearchAreaNode.setStyles(this.css.itemAreaNode);
 
+        if (this.selectedContainerNode)this.selectedContainerNode.setStyles(this.css.selectedContainerNode);
         if (this.selectedScrollNode) this.selectedScrollNode.setStyles(this.css.selectedScrollNode);
         if (this.selectedNode) this.selectedNode.setStyles(this.css.selectedNode);
         if (this.selectedItemSearchAreaNode) this.selectedItemSearchAreaNode.setStyles(this.css.itemAreaNode);
@@ -418,10 +424,31 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.node.inject( container );
         if( !this.options.embedded ){
-            this.node.setStyles({
-                "top": "0px",
-                "left": "0px"
-            });
+            if( layout.mobile ){
+                this.node.setStyles({
+                    "top": "0px",
+                    "left": "0px"
+                });
+            }else{
+                if( this.options.width || this.options.height ){
+                    this.setSize()
+                }
+                this.node.position({
+                    relativeTo: this.container,
+                    position: "center",
+                    edge: "center"
+                });
+
+                var size = this.container.getSize();
+                var nodeSize = this.node.getSize();
+                this.node.makeDraggable({
+                    "handle": this.titleNode,
+                    "limit": {
+                        "x": [0, size.x - nodeSize.x],
+                        "y": [0, size.y - nodeSize.y]
+                    }
+                });
+            }
         }
 
         this.setEvent();
@@ -518,16 +545,13 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( contentNode )this.contentNode = contentNode;
         if( this.options.contentUrl || isHTML ){
-            // if (this.options.count.toInt()!==1){
-            //     this.loadSelectedNodeHTML();
-            //     this.loadSelectNodeHTML(contentNode);
-            // }else{
-            //     this.setSelectedItem();
-            //     this.loadSelectNodeHTML(contentNode);
-            // }
-
-            this.loadSelectedNodeHTML();
-            this.loadSelectNodeHTML(contentNode);
+            if( layout.mobile ){
+                this.loadSelectedNodeHTMLMobile();
+                this.loadSelectNodeHTMLMobile(contentNode);
+            }else{
+                this.loadSelectNodeHTML(contentNode);
+                this.loadSelectedNodeHTML();
+            }
         }else{
             if (layout.mobile){
                 // if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
@@ -562,6 +586,74 @@ MWF.xApplication.Selector.Person = new Class({
             (node.getStyle("border-bottom-width").toInt() || 0 );
     },
     loadSelectNodeHTML: function(contentNode){
+        var size;
+        var height;
+        if( contentNode ){
+            size = contentNode.getSize();
+            height = size.y;
+            if( height === 0 ){
+                height = contentNode.getStyle("height").toInt();
+            }
+        }else{
+            var container = this.container;
+            size = container.getSize();
+
+            if(this.node){
+                var zoom = this.node.getStyle("zoom").toInt() || 0;
+                if( zoom ){
+                    size.x = size.x * 100 / zoom;
+                    size.y = size.y * 100 / zoom;
+                }
+            }
+            height = size.y-this.getOffsetY( this.contentNode );
+            if( this.titleNode ){
+                height = height - this.getOffsetY( this.titleNode ) - ( this.titleNode.getStyle("height").toInt() || 0 )
+            }
+            if( this.actionNode ){
+                height = height - this.getOffsetY( this.actionNode ) - ( this.actionNode.getStyle("height").toInt() || 0 )
+            }
+
+            this.contentNode.setStyle("height", ""+height+"px");
+        }
+
+        this.selectNode.setStyle("height", ""+height+"px");
+
+
+        if( this.searchInput ){
+            this.initSearchInput();
+            height = height - this.getOffsetY( this.searchInputDiv ) - ( this.searchInputDiv.getStyle("height").toInt() || 0 )
+        }
+
+        if( this.options.hasLetter && this.letterAreaNode ){
+            var width = size.x - 18;
+            this.letterAreaNode.setStyle("width", "" + width + "px");
+            this.loadLetters();
+            height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 )
+        }
+
+        this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+        this.itemAreaScrollNode.setStyle("overflow", "auto");
+
+        if(this.itemSearchAreaScrollNode){
+            this.itemSearchAreaScrollNode.setStyles({
+                "display": "none",
+                "height": ""+height+"px",
+                "overflow" : "hidden"
+            });
+        }
+        this.itemSearchAreaNode.setStyle("display", "none");
+
+        this.initLoadSelectItems();
+        this.checkLoadSelectItems();
+    },
+    loadSelectedNodeHTML: function(){
+
+        this.setSelectedItem();
+
+        //if(this.selectedScrollNode)this.selectedScrollNode.setStyle("display", "none");
+    },
+
+    loadSelectNodeHTMLMobile: function(contentNode){
         var size;
         var height;
         if( contentNode ){
@@ -617,7 +709,7 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         if( this.options.hasLetter && this.letterAreaNode ){
-            width = size.x - 18;
+            var width = size.x - 18;
             this.letterAreaNode.setStyle("width", "" + width + "px");
             this.loadLetters();
             height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 )
@@ -720,7 +812,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.initLoadSelectItems();
         this.checkLoadSelectItems();
     },
-    loadSelectedNodeHTML: function(){
+    loadSelectedNodeHTMLMobile: function(){
 
         this.setSelectedItem();
 
@@ -2629,6 +2721,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         this.actionNode = new Element("div", {
             "styles": (this.selector.options.expand) ? this.selector.css.selectorItemCategoryActionNode_expand : this.selector.css.selectorItemCategoryActionNode_collapse
         }).inject(this.node);
+        if( this.selector.options.style === "flow" )this.actionNode.inject( this.iconNode, "before" );
 
         if( this.selector.options.selectAllEnable && this.selector.options.count.toInt()!==1 ){
             var selectAllNodeStyles = this.selector.css.selectorItemCategoryActionNode_selectAll;

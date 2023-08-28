@@ -326,8 +326,7 @@
 		"cursor": "pointer",
 		"font-size": "12px",
 		"color": "#666666",
-		"border-bottom": "1px solid #FFF",
-		"background": "#eeeeee"
+		"border-bottom": "1px solid #FFF"
 	},
 	"selectorItemCategory_department": {
 		"height": "26px",
@@ -336,8 +335,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"font-size": "12px",
-		"border-bottom": "1px solid #FFF",
-		"background": "#E9E9E9"
+		"border-bottom": "1px solid #FFF"
 	},
 
 	"selectorItem_over": {
@@ -346,7 +344,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"border-bottom": "1px solid #FFF",
-		"background-color": "#edf3fa"
+		"background-color": "#F7F7F7"
 	},
 	"selectorItem_selected": {
 		"line-height": "26px",
@@ -354,7 +352,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"border-bottom": "1px solid #FFF",
-		"background-color": "#6681a5"
+		"background-color": "#F7F7F7"
 	},
 	"selectorItemLevelNode": {
 		"width": "0px",
@@ -399,22 +397,22 @@
 		"background": "url(../x_component_Selector/$Selector/flow/icon/check.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_expand": {
-		"width": "26px",
+		"width": "16px",
 		"height": "26px",
-		"float": "right",
+		"float": "left",
 		"font-size": "12px",
-		"background": "url(../x_component_Selector/$Selector/flow/icon/minus.png) no-repeat center center"
+		"background": "url(../x_component_Selector/$Selector/flow/icon/expand.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_collapse": {
-		"width": "26px",
+		"width": "16px",
 		"height": "26px",
 		"font-size": "12px",
-		"float": "right",
-		"background": "url(../x_component_Selector/$Selector/flow/icon/add.png) no-repeat center center"
+		"float": "left",
+		"background": "url(../x_component_Selector/$Selector/flow/icon/collapse.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_selectAll": {
-		"width": "28px",
-		"height": "28px",
+		"width": "26px",
+		"height": "26px",
 		"float": "right",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/selectall.png) no-repeat center center"
 	},
@@ -435,7 +433,7 @@
 	"selectorItemTextNode_selected": {
 		"height": "26px",
 		"margin-left": "26px",
-		"color": "#FFF"
+		"color": "#000"
 	},
 
 	"selectorItemCategoryChildrenNode": {
