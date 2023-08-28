@@ -2471,6 +2471,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var setSize = function (notRecenter) {
 
+            debugger;
+
             var dlg = this;
             if (!dlg || !dlg.node) return;
             dlg.node.setStyle("display", "block");
@@ -2546,6 +2548,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var options = {
             "onResize": function () {
                 if (resizeFun) resizeFun();
+            },
+            "onPostLoad": function () {
+                if (postLoadFun) postLoadFun(this);
             }
         };
 
@@ -2558,7 +2563,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "tabletHeight": this.json.tabletHeight || 0,
             "defaultRoute": defaultRoute,
             "onPostLoad": function () {
-                if (postLoadFun) postLoadFun(this);
+                //if (postLoadFun) postLoadFun(this);
+
                 //? _self.fireEvent("afterLoadProcessor", [this]);
             },
             "onCancel": function () {

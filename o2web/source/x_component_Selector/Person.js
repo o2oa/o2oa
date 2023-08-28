@@ -63,6 +63,10 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.container = $(container);
 
+        if( ["flow"].contains(this.options.style)  ){
+            this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
+        }
+
         Object.defineProperties(this, {
             "orgAction": {"get": function(){return o2.Actions.get("x_organization_assemble_control");}},
             "processAction": {"get": function(){return o2.Actions.get("x_processplatform_assemble_surface");}},
@@ -331,10 +335,12 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         if( !this.options.embedded ) {
-            this.node.setStyles(this.css.containerNodeMobile);
+            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
-        this.node.setStyle("height", ( container.getSize().y ) + "px");
+        if( layout.mobile ){
+            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        }
 
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");

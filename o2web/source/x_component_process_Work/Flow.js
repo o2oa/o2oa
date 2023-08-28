@@ -16,8 +16,10 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.setOptions(options);
 
         this.path = "../x_component_process_Work/$Flow/";
-        this.cssPath = "../x_component_process_Work/$Flow/" + this.options.style + "/css.wcss";
-        this._loadCss();
+        // this.cssPath = "../x_component_process_Work/$Flow/" + this.options.style + "/css.wcss";
+        // this._loadCss();
+
+        this.lp = MWF.xApplication.process.Work.LP;
 
         this.task = task;
         this.container = $(container);
@@ -29,143 +31,122 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.load();
     },
     load: function () {
+        this.container.loadCss( this.path + this.options.style + "/style.css", null, function () {
+            this.cssLoaded = true;
+            this.checkPostLoad();
+        }.bind(this));
 
         this.processEnable = this.options.processEnable && this.businessData.control["allowProcessing"];
         this.addTaskEnable = this.options.addTaskEnable && this.businessData.control["allowAddTask"];
         this.resetEnable = this.options.resetEnable && this.businessData.control["allowReset"];
 
-        this.node = new Element("div.node", {
-            styles: {
-                overflow: "hidden"
-            }
-        }).inject(this.container);
+        this.navi = [];
+        if( this.addTaskEnable )this.navi.push({ key: "addTask", label: this.lp.flowActions.addTask });
+        if( this.resetEnable )this.navi.push({ key: "reset", label: this.lp.flowActions.reset });
+        if( this.processEnable )this.navi.push({ key: "process", label: this.lp.flowActions.process });
 
-
-
-        this.naviNode = new Element("div", {
-            styles: {
-                "float": "left",
-                "width": "100px"
-            }
-        }).inject(this.node);
-        this.contentNode = new Element("div.contentNode", {
-            styles: {
-                "margin-left": "100px",
-                "width": "900px"
-            }
-        }).inject(this.node);
-
-        this.oneKeySelect = new Element("select", {
-            styles: {
-                "padding": "6px",
-                "border": "1px solid #ccc",
-                "font-size": "14px",
-                "width": "100%",
-                "margin-bottom": "10px"
-            }
-        }).inject( this.contentNode );
-        [
-            "快速选择",
-            "提交：选择[送办理]，意见：请办理，处理人：张三、李四...",
-            "提交：选择[送核稿]，意见：请核稿，处理人：王五",
-            "加签：选择[前加签]，意见：请处理，加签人：赵六",
-            "重置：保留待办，意见：请处理，重置给：王五"
-        ].each(function (t) {
-            new Element("option", {
-                text: t
-            }).inject( this.oneKeySelect )
-        }.bind(this))
-
-        if( this.processEnable ){
-            this.processorTitleNode = new Element("div", {
-                text: "提交",
-                events: {
-                    click: function(){ this.changeAction("process"); }.bind(this)
-                }
-            }).inject( this.naviNode );
-            this.processorContentNode = new Element("div").inject( this.contentNode );
-            this.loadProcessor();
-        }
-        if( this.addTaskEnable ){
-            this.addTaskTitleNode = new Element("div", {
-                text: "加签",
-                events: {
-                    click: function(){ this.changeAction("addTask"); }.bind(this)
-                }
-            }).inject( this.naviNode );
-            this.addTaskContentNode = new Element("div").inject( this.contentNode );
-            this.addTaskContentNode.hide();
-            this.loadAddTask();
-        }
-        if( this.resetEnable ){
-            this.resetTitleNode = new Element("div", {
-                text: "重置",
-                events: {
-                    click: function(){ this.changeAction("reset"); }.bind(this)
-                }
-            }).inject( this.naviNode );
-            this.resetContentNode = new Element("div").inject( this.contentNode );
-            this.resetContentNode.hide();
-            this.loadReset();
+        var url = this.path+this.options.style+"/main.html";
+        this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
+            debugger;
+            this.changeAction( this.navi[0].key );
+            this.loadQuickSelect();
+            //this.checkPostLoad();
+        }.bind(this));
+    },
+    checkPostLoad: function(){
+        if( this.cssLoaded && this.firstActionLoaded ){
+            var nodeSize = this.node.getSize();
+            this.container.setStyles({
+                "height": nodeSize.y,
+                "width": nodeSize.x
+            });
+            this.fireEvent("postLoad");
         }
     },
     changeAction: function( action ){
 
-        if(this.processorContentNode){
-            this.processorContentNode[ action === "process" ? "show" : "hide" ]();
-            this.processorTitleNode[ action === "process" ? "addClass" : "removeClass" ]("mainColor_color");
+        if( this.currentAction ){
+            this[ this.currentAction+"ContentNode" ].hide();
+            this[ this.currentAction+"TitleNode" ].removeClass("mainColor_color").removeClass("mainColor_border");
         }
 
-        if(this.addTaskContentNode){
-            this.addTaskContentNode[ action === "addTask" ? "show" : "hide" ]();
-            this.addTaskTitleNode[ action === "addTask" ? "addClass" : "removeClass" ]("mainColor_color");
-        }
+        this[ action+"ContentNode" ].show();
+        this[ action+"TitleNode" ].addClass("mainColor_color").addClass("mainColor_border");
 
-        if(this.resetContentNode){
-            this.resetContentNode[ action === "reset" ? "show" : "hide" ]();
-            this.resetTitleNode[ action === "reset" ? "addClass" : "removeClass" ]("mainColor_color");
+        this.currentAction = action;
+
+        switch (action) {
+            case "process":
+                this.loadProcessor();
+                break;
+            case "addTask":
+                this.loadAddTask();
+                break;
+            case "reset":
+                this.loadReset();
+                break;
         }
     },
     loadProcessor: function () {
+        if( this.processor )return;
         var processOptions = this.options.processOptions;
         processOptions.onResize = function () {
-            var size = this.processorContentNode.getSize();
+            var size = this.processContentNode.getSize();
             var naviSize = this.naviNode.getSize();
             this.container.setStyles({
                 "height": size.y,
                 "width": size.x + naviSize.x + this.getOffsetX( this.naviNode )
             });
-            debugger;
             this.fireEvent("resize");
         }.bind(this);
         processOptions.inFlow = true;
         this.processor = new MWF.ProcessFlow.Processor(
-            this.processorContentNode,
+            this.processContentNode,
             this.task,
             processOptions,
             this.form
         );
     },
     loadReset: function(){
+        if( this.reset )return;
         this.reset = new MWF.ProcessFlow.Reset(
             this.resetContentNode,
-            this.task,
-            {},
-            this.form
+            this,
+            {
+                onPostLoad: function () {
+                    if( this.firstActionLoaded )return;
+                    this.firstActionLoaded = true;
+                    this.checkPostLoad();
+                }.bind(this)
+            }
         );
     },
     loadAddTask: function(){
+        if( this.addTask )return;
         this.addTask = new MWF.ProcessFlow.AddTask(
             this.addTaskContentNode,
-            this.task,
-            {},
-            this.form
+            this,
+            {
+                onPostLoad: function () {
+                    if( this.firstActionLoaded )return;
+                    this.firstActionLoaded = true;
+                    this.checkPostLoad();
+                }.bind(this)
+            }
         );
+    },
+    loadQuickSelect: function(){
+        this.quickSelector = new MWF.ProcessFlow.QuickSelect(
+            this.form.app ? this.form.app.content : $(document.body),
+            this.quickSelectNode, this.form.app, {}
+         );
+        this.quickSelector.flow = this;
     },
     destroy: function () {
         if( this.processor )this.processor.destroy();
         if( this.reset )this.reset.destroy();
         if( this.addTask )this.addTask.destroy();
+        if(this.quickSelector)this.quickSelector.destroy();
     },
     getOffsetY : function(node){
         return (node.getStyle("margin-top").toInt() || 0 ) +
@@ -182,35 +163,6 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             (node.getStyle("padding-right").toInt() || 0 )+
             (node.getStyle("border-left-width").toInt() || 0 ) +
             (node.getStyle("border-right-width").toInt() || 0 );
-    },
-    filterOneKeyData: function(){
-        var onekeyList = listOneKeyData();
-        onekeyList.filter(function (d) {
-            var flag = (d.action === "process" && this.processEnable) || (d.action === "reset" && this.resetEnable) || (d.action === "addTask" && this.addTaskEnable);
-            if( !flag )return false;
-            if( d.action === "process" && !this.getRouteConfig(d.data.routeName) )return false;
-            return true;
-        }.bind(this));
-        this.onekeyList = onekeyList;
-    },
-    listOneKeyData: function () {
-        return [
-            {
-                "process": "",
-                "activity": "",
-                "processName": "",
-                "activityName": "",
-                "person": "",
-                "action": "",
-                "data": {
-                    "routeId": "",
-                    "routeName": "",
-                    "keepTask": true,
-                    "idea": "",
-                    "organizations": {}
-                }
-            }
-        ];
     },
     getRouteConfigList: function () {
         if(this.routeConfigList)return this.routeConfigList;
@@ -248,66 +200,194 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
 });
 
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.ProcessFlow.QuickSelect = new Class({
+    Extends: MTooltips,
+    options: {
+        event : "click",
+        hasArrow : false,
+        hideByClickBody : true,
+        offset : {
+            x : 0,
+            y : 5
+        },
+        nodeStyles: {
+            "font-size" : "13px",
+            "position" : "absolute",
+            "max-width" : "500px",
+            "min-width" : "260px",
+            "z-index" : "1001",
+            "background-color" : "#fff",
+            "padding" : "10px 0px 10px 0px",
+            "border-radius" : "8px",
+            "box-shadow": "0px 0px 8px 0px rgba(0,0,0,0.25)",
+            "-webkit-user-select": "text",
+            "-moz-user-select": "text"
+        }
+    },
+    _loadCustom : function( callback ){
+        this.node.loadCss( this.flow.path + this.flow.options.style + "/style.css" );
+        var width = this.target.getSize().x ;
+        this.node.setStyles({
+            "max-width": width+"px",
+            "min-width": width+"px"
+        });
+        var data = [
+            {
+                type: "process",
+                text: "选择[送办理]，意见：请办理，处理人：张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四",
+            },
+            {
+                type: "process",
+                text: "选择[送核稿]，意见：请核稿，处理人：王五",
+            },
+            {
+                type: "addTask",
+                text:  "选择[前加签]，意见：请处理，加签人：赵六",
+            },
+            {
+                type: "reset",
+                text: "保留待办，意见：请处理，重置给：王五"
+            }
+        ];
+
+        data.each( function (d) {
+            var item = new Element("div.o2flow-quick-select-item", {
+                events: {
+                    mouseover: function () { this.addClass("mainColor_bg"); this.getFirst().addClass("mainColor_bg"); },
+                    mouseout: function () { this.removeClass("mainColor_bg"); this.getFirst().removeClass("mainColor_bg"); }
+                }
+            }).inject( this.contentNode );
+            var title = new Element("div.o2flow-quick-select-itemtitle", {
+                text: this.flow.lp.flowActions[d.type]
+            }).inject( item );
+            title.addClass( "o2flow-"+d.type+"-color" );
+            var content = new Element("div.o2flow-quick-select-itemtext", {
+                text: "："+ d.text
+            }).inject( item )
+        }.bind(this))
+
+        setTimeout( function () {
+            if(callback)callback( data );
+        }, 50);
+    },
+    filterOneKeyData: function(){
+        var onekeyList = listData();
+        onekeyList.filter(function (d) {
+            var flag = (d.action === "process" && this.flow.processEnable) || (d.action === "reset" && this.flow.resetEnable) || (d.action === "addTask" && this.flow.addTaskEnable);
+            if( !flag )return false;
+            if( d.action === "process" && !this.flow.getRouteConfig(d.data.routeName) )return false;
+            return true;
+        }.bind(this));
+        this.onekeyList = onekeyList;
+    },
+    listData: function () {
+        return [
+            {
+                "process": "",
+                "activity": "",
+                "processName": "",
+                "activityName": "",
+                "person": "",
+                "action": "",
+                "data": {
+                    "routeId": "",
+                    "routeName": "",
+                    "keepTask": true,
+                    "idea": "",
+                    "organizations": {}
+                }
+            }
+        ];
+    },
+});
+
+MWF.ProcessFlow.Opinion = new Class({
+    initialize: function( container, flow ){
+        this.container = container;
+        this.flow = flow;
+        this.lp = flow.lp;
+    },
+    load: function(){
+        this.loadData( function () {
+            this.loadDom();
+        }.bind(this));
+    },
+    loadData: function ( callback ) {
+        MWF.require("MWF.widget.UUID", function () {
+            MWF.UD.getDataJson("idea", function (json) {
+                if (json) {
+                    if (json.ideas) {
+                        this.opinionList = json.ideas;
+                        if(callback)callback();
+                    }else{
+                        this.opinionList = [];
+                        if(callback)callback();
+                    }
+                } else {
+                    MWF.UD.getPublicData("idea", function (pjson) {
+                        if (pjson && pjson.ideas) {
+                            this.opinionList = json.ideas;
+                            if(callback)callback();
+                        }else{
+                            this.opinionList = [];
+                            if(callback)callback();
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+        }.bind(this));
+    },
+    loadDom: function(){
+        var url = this.flow.path+this.flow.options.style+"/opinion.html";
+        this.container.loadHtml(url, {"bind": {"lp": this.lp, "opinionList": this.opinionList}, "module": this}, function(){
+
+        }.bind(this));
+    },
+    selectOpinion: function( opinion ){
+        var op = this.opinionTextarea.get("value");
+        if ( !op ) {
+            this.opinionTextarea.set("value", opinion );
+        } else {
+            this.opinionTextarea.set("value", op + ", " + opinion );
+        }
+    },
+    overItemNode: function (ev) {
+        ev.target.addClass("mainColor_bg_opacity")
+    },
+    outItemNode: function (ev) {
+        ev.target.removeClass("mainColor_bg_opacity")
+    }
+})
+
 MWF.ProcessFlow.Reset = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options:{
-        style: "process"
+        style: "default"
     },
-    initialize: function (container, task, options, form) {
+    initialize: function (container, flow, options) {
         this.setOptions(options);
-
-        this.path = "../x_component_process_Work/$Processor/";
-        this.cssPath = "../x_component_process_Work/$Processor/" + this.options.style + "/css.wcss";
-        this._loadCss();
-
-
-        this.task = task;
         this.container = $(container);
-
-        this.form = form;
+        this.flow = flow;
+        this.task = flow.task;
+        this.form = flow.form;
+        this.lp = flow.lp;
         this.businessData = this.form.businessData;
-
         this.load();
     },
     load: function(){
-        this.content = this.container;
+        var url = this.flow.path+this.flow.options.style+"/addTask.html";
+        this.container.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
+            this.opinion = new MWF.ProcessFlow.Opinion( this.opinionContent, this.flow );
+            this.opinion.load();
 
-        this.opinionTitle = new Element("div", {
-            "styles": this.css.opinionTitle,
-            "text": "重置意见"
-        }).inject(this.content);
-        this.opinionArea = new Element("div", {"styles": this.css.opinionArea}).inject(this.content);
+            this.loadOrg();
+            this.fireEvent("postLoad");
+        }.bind(this));
+    },
+    show: function(){
 
-        this.setOpinion();
-
-        this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
-        this.orgsTitle = new Element("div", {
-            "styles": this.css.orgsTitle,
-            "text": "重置给"
-        }).inject(this.orgsArea);
-
-        this.loadOrg();
-
-
-        var _self = this;
-        var routeNode = new Element("div", {
-            "styles": this.css.routeNode,
-            "text": "保留我的待办"
-        }).inject(this.content);
-
-        routeNode.addEvents({
-            "mouseover": function (e) {
-                _self.overRoute(this);
-            },
-            "mouseout": function (e) {
-                _self.outRoute(this);
-            },
-            "click": function (e) {
-                _self.selectRoute(this);
-            }
-        });
-        this.fireEvent("postLoad");
     },
     overRoute: function (node) {
         if (this.selectedRouteNode) {
@@ -361,94 +441,6 @@ MWF.ProcessFlow.Reset = new Class({
         }
         this.routeArea.setStyle("background-color", "#FFF");
 
-    },
-    setOpinion: function () {
-        this.selectOpinionNode = new Element("div", {"styles": this.css.selectIdeaNode}).inject(this.opinionArea);
-        this.selectOpinionScrollNode = new Element("div", {"styles": this.css.selectIdeaScrollNode}).inject(this.selectOpinionNode);
-        this.selectOpinionAreaNode = new Element("div", {
-            "styles": {
-                "overflow": "hidden"
-            }
-        }).inject(this.selectOpinionScrollNode);
-
-        this.opinionNode = new Element("div", {"styles": this.css.inputOpinionNode}).inject(this.opinionArea);
-        this.opinionTextarea = new Element("textarea", {
-            "styles": this.css.inputTextarea,
-            "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText
-        }).inject(this.opinionNode);
-        this.opinionTextarea.setStyle("resize", "none");
-        this.opinionTextarea.addEvents({
-            "focus": function () {
-                if (this.get("value") == MWF.xApplication.process.Work.LP.inputText) this.set("value", "");
-            },
-            "blur": function () {
-                if (!this.get("value")) this.set("value", MWF.xApplication.process.Work.LP.inputText);
-            },
-            "keydown": function () {
-                this.opinionTextarea.setStyles(this.opinionTextareaStyle || this.css.inputTextarea);
-            }.bind(this)
-        });
-
-        MWF.require("MWF.widget.ScrollBar", function () {
-            new MWF.widget.ScrollBar(this.selectOpinionScrollNode, {
-                "style": "small",
-                "where": "before",
-                "distance": 30,
-                "friction": 4,
-                "indent": false,
-                "axis": {"x": false, "y": true}
-            });
-        }.bind(this));
-
-        MWF.require("MWF.widget.UUID", function () {
-            MWF.UD.getDataJson("idea", function (json) {
-                if (json) {
-                    if (json.ideas) {
-                        this.setIdeaList(json.ideas);
-                    }
-                } else {
-                    MWF.UD.getPublicData("idea", function (pjson) {
-                        if (pjson) {
-                            if (pjson.ideas) {
-                                this.setIdeaList(pjson.ideas);
-                            }
-                        }
-                    }.bind(this));
-                }
-            }.bind(this));
-        }.bind(this));
-    },
-    setIdeaList: function (ideas) {
-        var _self = this;
-        ideas.each(function (idea) {
-            if (!idea) return;
-            new Element("div", {
-                "styles": this.css.selectIdeaItemNode,
-                "text": idea,
-                "events": {
-                    "click": function () {
-                        if (_self.opinionTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
-                            _self.opinionTextarea.set("value", this.get("text"));
-                        } else {
-                            _self.opinionTextarea.set("value", _self.opinionTextarea.get("value") + ", " + this.get("text"));
-                        }
-                    },
-                    "dblclick": function () {
-                        if (_self.opinionTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
-                            _self.opinionTextarea.set("value", this.get("text"));
-                        } else {
-                            _self.opinionTextarea.set("value", _self.opinionTextarea.get("value") + ", " + this.get("text"));
-                        }
-                    },
-                    "mouseover": function () {
-                        this.setStyles(_self.css.selectIdeaItemNode_over);
-                    },
-                    "mouseout": function () {
-                        this.setStyles(_self.css.selectIdeaItemNode);
-                    }
-                }
-            }).inject(this.selectOpinionAreaNode);
-        }.bind(this));
     },
     setButtons: function () {
         this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
@@ -631,47 +623,47 @@ MWF.ProcessFlow.Reset = new Class({
 
 MWF.ProcessFlow.AddTask = new Class({
     Extends: MWF.ProcessFlow.Reset,
-    load: function(){
-        this.content = this.container;
-
-        this.opinionTitle = new Element("div", {
-            "styles": this.css.opinionTitle,
-            "text": "加签意见"
-        }).inject(this.content);
-        this.opinionArea = new Element("div", {"styles": this.css.opinionArea}).inject(this.content);
-
-        this.setOpinion();
-
-        this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
-        this.orgsTitle = new Element("div", {
-            "styles": this.css.orgsTitle,
-            "text": "加签人"
-        }).inject(this.orgsArea);
-
-        this.loadOrg();
-
-
-        var _self = this;
-        ["前加签","后加签"].each(function (text) {
-            var routeNode = new Element("div", {
-                "styles": this.css.routeNode,
-                "text": text
-            }).inject(this.content);
-
-            routeNode.addEvents({
-                "mouseover": function (e) {
-                    _self.overRoute(this);
-                },
-                "mouseout": function (e) {
-                    _self.outRoute(this);
-                },
-                "click": function (e) {
-                    _self.selectRoute(this);
-                }
-            });
-        }.bind(this))
-        this.fireEvent("postLoad");
-    },
+    // load: function(){
+    //     this.content = this.container;
+    //
+    //     this.opinionTitle = new Element("div", {
+    //         "styles": this.css.opinionTitle,
+    //         "text": "加签意见"
+    //     }).inject(this.content);
+    //     this.opinionArea = new Element("div", {"styles": this.css.opinionArea}).inject(this.content);
+    //
+    //     this.setOpinion();
+    //
+    //     this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
+    //     this.orgsTitle = new Element("div", {
+    //         "styles": this.css.orgsTitle,
+    //         "text": "加签人"
+    //     }).inject(this.orgsArea);
+    //
+    //     this.loadOrg();
+    //
+    //
+    //     var _self = this;
+    //     ["前加签","后加签"].each(function (text) {
+    //         var routeNode = new Element("div", {
+    //             "styles": this.css.routeNode,
+    //             "text": text
+    //         }).inject(this.content);
+    //
+    //         routeNode.addEvents({
+    //             "mouseover": function (e) {
+    //                 _self.overRoute(this);
+    //             },
+    //             "mouseout": function (e) {
+    //                 _self.outRoute(this);
+    //             },
+    //             "click": function (e) {
+    //                 _self.selectRoute(this);
+    //             }
+    //         });
+    //     }.bind(this))
+    //     this.fireEvent("postLoad");
+    // },
 })
 
 MWF.ProcessFlow.Processor = new Class({
@@ -848,10 +840,22 @@ MWF.ProcessFlow.Processor = new Class({
 
             routeGroupNode.addEvents({
                 "mouseover": function (e) {
-                    _self.overRouteGroup(this);
+                    if (_self.selectedRouteGroup) {
+                        if (_self.selectedRouteGroup.get("text") != this.get("text")) {
+                            this.setStyles(_self.css.routeGroupNode_over);
+                        }
+                    } else {
+                        this.setStyles(_self.css.routeGroupNode_over);
+                    }
                 },
                 "mouseout": function (e) {
-                    _self.outRouteGroup(this);
+                    if (_self.selectedRouteGroup) {
+                        if (_self.selectedRouteGroup.get("text") != this.get("text")) {
+                            this.setStyles(_self.css.routeGroupNode);
+                        }
+                    } else {
+                        this.setStyles(_self.css.routeGroupNode);
+                    }
                 },
                 "click": function (e) {
                     _self.selectRouteGroup(this);
@@ -871,24 +875,6 @@ MWF.ProcessFlow.Processor = new Class({
         }.bind(this))
         if (flag) {
             this.setSize(0);
-        }
-    },
-    overRouteGroup: function (node) {
-        if (this.selectedRouteGroup) {
-            if (this.selectedRouteGroup.get("text") != node.get("text")) {
-                node.setStyles(this.css.routeGroupNode_over);
-            }
-        } else {
-            node.setStyles(this.css.routeGroupNode_over);
-        }
-    },
-    outRouteGroup: function (node) {
-        if (this.selectedRouteGroup) {
-            if (this.selectedRouteGroup.get("text") != node.get("text")) {
-                node.setStyles(this.css.routeGroupNode);
-            }
-        } else {
-            node.setStyles(this.css.routeGroupNode);
         }
     },
     selectRouteGroup: function (node) {
@@ -1287,26 +1273,22 @@ MWF.ProcessFlow.Processor = new Class({
     submit: function (ev) {
         if (this.hasRouteGroup && !this.selectedRouteGroup) {
             this.routeGroupArea.setStyle("background-color", "#ffe9e9");
-            MWF.xDesktop.notice(
-                "error",
-                {"x": "center", "y": "top"},
+            this.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
                 this.routeGroupArea,
                 null,  //{"x": 0, "y": 30}
-                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                {"x": "center", "y": "top"}
             );
             return false;
         }
 
         if (!this.selectedRouteNode) {
             this.routeArea.setStyle("background-color", "#ffe9e9");
-            MWF.xDesktop.notice(
-                "error",
-                {"x": "center", "y": "top"},
+            this.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRoute,
                 this.routeArea,
                 null,  //{"x": 0, "y": 30}
-                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                {"x": "center", "y": "top"}
             );
             return false;
         }
@@ -1323,13 +1305,11 @@ MWF.ProcessFlow.Processor = new Class({
         if (!opinion && medias.length === 0) {
             if (routeData.opinionRequired == true) {
                 this.opinionTextarea.setStyle("background-color", "#ffe9e9");
-                MWF.xDesktop.notice(
-                    "error",
-                    {"x": "center", "y": "top"},
+                this.noticeError(
                     MWF.xApplication.process.Work.LP.opinionRequired,
                     this.opinionTextarea,
-                    null,  //{"x": 0, "y": 30}
-                    {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                    null,
+                    {"x": "center", "y": "top"}
                 );
                 return false;
             }
@@ -1338,13 +1318,10 @@ MWF.ProcessFlow.Processor = new Class({
         var appendTaskOrgItem = "";
         if (routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select") {
             if (!this.orgItems || this.orgItems.length === 0) {
-                MWF.xDesktop.notice(
-                    "error",
-                    {"x": "center", "y": "center"},
+                this.noticeError(
                     MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
                     this.node,
-                    null,  //{"x": 0, "y": 30}
-                    {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                    null
                 );
                 return false;
             } else {
@@ -1357,13 +1334,9 @@ MWF.ProcessFlow.Processor = new Class({
             if (appendTaskOrgItem) {
                 appandTaskIdentityList = appendTaskOrgItem.getData();
                 if (!appandTaskIdentityList || appandTaskIdentityList.length === 0) {
-                    MWF.xDesktop.notice(
-                        "error",
-                        {"x": "center", "y": "center"},
+                    this.noticeError(
                         MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice,
-                        this.node,
-                        {"x": 0, "y": 30},
-                        {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                        this.node
                     );
                     return;
                 }
@@ -1373,24 +1346,13 @@ MWF.ProcessFlow.Processor = new Class({
                 var validation = this.form.Macro.exec(routeData.validationScriptText, this);
                 if (!validation || validation.toString() !== "true") {
                     if (typeOf(validation) === "string") {
-                        MWF.xDesktop.notice(
-                            "error",
-                            {"x": "center", "y": "center"},
-                            validation,
-                            this.node,
-                            {"x": 0, "y": 30},
-                            {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
-                        );
+                        this.noticeError( validation, this.node );
                         return false;
                     } else {
                         //"路由校验失败"
-                        MWF.xDesktop.notice(
-                            "error",
-                            {"x": "center", "y": "center"},
+                        this.noticeError(
                             MWF.xApplication.process.Work.LP.routeValidFailure,
-                            this.node,
-                            {"x": 0, "y": 30},
-                            {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                            this.node
                         );
                         return false;
                     }
@@ -1414,6 +1376,17 @@ MWF.ProcessFlow.Processor = new Class({
 
             this.fireEvent("submit", array);
         }.bind(this))
+    },
+
+    noticeError: function( text, node, offset, position ){
+        MWF.xDesktop.notice(
+            "error",
+            position || {"x": "center", "y": "center"},
+            text,
+            node || this.node,
+            offset === null ? null : ( offset || {"x": 0, "y": 30} ),
+            {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+        );
     },
 
     destroy: function () {
@@ -1495,8 +1468,107 @@ MWF.ProcessFlow.Processor = new Class({
         }.bind(this));
         return length;
     },
+    getOffsetY: function (node) {
+        return (node.getStyle("margin-top").toInt() || 0) +
+            (node.getStyle("margin-bottom").toInt() || 0) +
+            (node.getStyle("padding-top").toInt() || 0) +
+            (node.getStyle("padding-bottom").toInt() || 0) +
+            (node.getStyle("border-top-width").toInt() || 0) +
+            (node.getStyle("border-bottom-width").toInt() || 0);
+    },
+    setSize: function (currentOrgLength, flag) {
+        var lines = ((currentOrgLength + 1) / 2).toInt();
+
+        var height = 0;
+        if (this.routeTitleNode) height = height + this.getOffsetY(this.routeTitleNode) + this.routeTitleNode.getStyle("height").toInt();
+        if (this.routeArea) height = height + this.getOffsetY(this.routeArea) + this.routeArea.getStyle("height").toInt();
+        if (this.opinionTitle) height = height + this.getOffsetY(this.opinionTitle) + this.opinionTitle.getStyle("height").toInt();
+        if (this.opinionArea) height = height + this.getOffsetY(this.opinionArea) + this.opinionArea.getStyle("height").toInt();
+        //if( this.buttonsArea )height = height + this.getOffsetY(this.buttonsArea) +  this.buttonsArea.getStyle("height").toInt();
+
+        if (lines > 0) {
+            if (this.container) this.container.show();
+
+            if (flag) {
+                // if( this.orgsTitle )height = height + this.getOffsetY(this.orgsTitle) +  this.orgsTitle.getStyle("height").toInt();
+                this.container.getChildren().each(function (el) {
+                    height += el.getSize().y + this.getOffsetY(el);
+                }.bind(this))
+                this.node.setStyle("height", height);
+            } else {
+                if (this.orgsTitle) height = height + this.getOffsetY(this.orgsTitle) + this.orgsTitle.getStyle("height").toInt();
+                height = height + lines * this.options.orgHeight + this.getOffsetY(this.container);
+                this.node.setStyle("height", height);
+            }
+        } else {
+            if (this.container) this.container.hide();
+            this.node.setStyle("height", height);
+            //this.node.store("height", 401 );
+        }
+        debugger;
+        if (this.getMaxOrgLength() > 1) {
+            if( this.options.inFlow ){
+                this.node.setStyles(this.css.node_wide_flow);
+                this.opinionNode.setStyles(this.css.inputOpinionNode_wide_flow);
+                this.opinionTextarea.setStyles(this.css.inputTextarea_wide_flow);
+                this.opinionTextareaStyle = this.css.inputTextarea_wide_flow;
+                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide_flow);
+            }else{
+                this.node.setStyles(this.css.node_wide);
+                this.opinionNode.setStyles(this.css.inputOpinionNode_wide);
+                this.opinionTextarea.setStyles(this.css.inputTextarea_wide);
+                this.opinionTextareaStyle = this.css.inputTextarea_wide;
+                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide);
+            }
+
+        } else {
+            this.node.setStyles(this.css.node);
+            this.opinionNode.setStyles(this.css.inputOpinionNode);
+            this.opinionTextarea.setStyles(this.css.inputTextarea);
+            this.opinionTextareaStyle = this.css.inputTextarea;
+            this.selectOpinionNode.setStyles(this.css.selectIdeaNode);
+        }
+        if (!flag) this.fireEvent("resize");
+    },
+});
+
+MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
+
+MWF.ProcessFlow.Processor.OrgList = new Class({
+    initialize: function (processor, options) {
+        this.processor = processor;
+        this.form = processor.form;
+        this.container = processor.orgsArea;
+        this.setOptions(options);
+
+        this.orgTableObject = {};
+        this.orgItemsObject = {};
+        this.orgItemsMap = {};
+    },
+    load: function (route) {
+        if (!this.form || !route) {
+            this.container.hide();
+            this.processor.setSize(0);
+            return;
+        } else {
+            this.container.show();
+        }
+        var isLoaded = false;
+        for (var key in this.orgTableObject) {
+            if (route === key) {
+                isLoaded = true;
+            } else {
+                this.orgTableObject[key].hide();
+            }
+        }
+        if (isLoaded) {
+            this.showOrgs(route);
+        } else {
+            this.createOrgs(route)
+        }
+    },
     getOrgConfig: function (routeId) {
-        var routeList = this.getRouteConfigList();
+        var routeList = this.processor.getRouteConfigList();
         for (var i = 0; i < routeList.length; i++) {
             if (routeList[i].id === routeId) {
                 return routeList[i].selectConfigList;
@@ -1504,7 +1576,7 @@ MWF.ProcessFlow.Processor = new Class({
         }
     },
     getVisableOrgConfig: function (routeId) {
-        var selectConfigList = this.getOrgConfig(routeId);
+        var selectConfigList = this.processor.getOrgConfig(routeId);
         var list = [];
         (selectConfigList || []).each(function (config) {
             if (!this.isOrgHidden(config)) {
@@ -1520,38 +1592,11 @@ MWF.ProcessFlow.Processor = new Class({
         }
         return false;
     },
-
-    isSameArray: function (arr1, arr2) {
-        if (arr1.length !== arr2.length) return false;
-        for (var i = 0; i < arr1.length; i++) {
-            if (arr1[i] !== arr2[i]) return false;
-        }
-        return true;
-    },
-    loadOrgs: function (route) {
-        if (!this.form || !route) {
-            this.orgsArea.hide();
-            this.setSize(0);
-            return;
-        } else {
-            this.orgsArea.show();
-        }
-        if (!this.orgTableObject) this.orgTableObject = {};
-        if (!this.orgItemsObject) this.orgItemsObject = {};
-        if (!this.orgItemsMap) this.orgItemsMap = {};
-        var isLoaded = false;
-        for (var key in this.orgTableObject) {
-            if (route === key) {
-                isLoaded = true;
-            } else {
-                this.orgTableObject[key].hide();
-            }
-        }
-        if (isLoaded) {
-            this.showOrgs(route);
-        } else {
-            this.createOrgs(route)
-        }
+    setNoOrg: function(){
+        this.container.hide();
+        this.orgItemMap = {};
+        this.orgItems = [];
+        this.processor.setSize(0);
     },
     showOrgs: function (route) {
         this.orgItemMap = this.orgItemsMap[route] || {};
@@ -1560,40 +1605,33 @@ MWF.ProcessFlow.Processor = new Class({
             if (this.isSameArray(Object.keys(this.orgItemMap), dataVisable.map(function (d) { return d.name }))) {
                 this.orgTableObject[route].show();
                 this.orgItems = this.orgItemsObject[route] || [];
-                this.setSize(dataVisable.length);
+                this.processor.setSize(dataVisable.length);
             } else {
-                this.loadOrgTable(route);
+                this.loadTable(route);
             }
         } else {
-            this.orgsArea.hide();
-            this.orgItemMap = {};
-            this.orgItems = [];
-            this.setSize(0);
+           this.setNoOrg();
         }
     },
     createOrgs: function (route) {
         var dataVisable = this.getVisableOrgConfig(route);
         if (dataVisable.length) {
-            this.loadOrgTable(route);
+            this.loadTable(route);
         } else {
-            this.setSize(dataVisable.length);
-            this.orgItemMap = {};
-            this.orgItems = [];
-            this.orgsArea.hide();
+            this.setNoOrg();
         }
     },
-    loadOrgTable: function (route) {
+    loadTable: function (route) {
         var data = this.getOrgConfig(route);
         var dataVisable = this.getVisableOrgConfig(route);
-        this.setSize(dataVisable.length);
+        this.processor.setSize(dataVisable.length);
 
-        this.orgsArea.show();
+        this.container.show();
 
         var table_old = this.orgTableObject[route];
         var tdsMap_old = {};
         if (table_old) {
-            var tds = table_old.getElements("td");
-            tds.each(function (td) {
+            table_old.getElements("td").each(function (td) {
                 tdsMap_old[td.retrieve("orgName")] = td;
             });
         }
@@ -1601,18 +1639,15 @@ MWF.ProcessFlow.Processor = new Class({
         var orgItems_old = this.orgItemsObject[route] || [];
         var orgItemMap_old = this.orgItemsMap[route] || {};
 
-        this.orgItemsObject[route] = [];
-        this.orgItemsMap[route] = {};
-
-        this.orgItems = this.orgItemsObject[route];
-        this.orgItemMap = this.orgItemsMap[route];
+        this.orgItems = this.orgItemsObject[route] = [];
+        this.orgItemMap = this.orgItemsMap[route] = {};
 
         var len = dataVisable.length;
 
         var routeOrgTable = new Element("table", {
             "cellspacing": 0, "cellpadding": 0, "border": 0, "width": "100%",
             "styles": this.css.routeOrgTable
-        }).inject(this.orgsArea);
+        }).inject(this.container);
         this.orgTableObject[route] = routeOrgTable;
 
         var lines = ((len + 1) / 2).toInt();
@@ -1624,12 +1659,12 @@ MWF.ProcessFlow.Processor = new Class({
 
         var trs = routeOrgTable.getElements("tr");
 
-        var ignoreFirstOrgOldData = false; //(routeConfig.type === "appendTask" && routeConfig.appendTaskIdentityType === "select");
+        var ignoreFirstOrgOldData = false;
 
         dataVisable.each(function (config, i) {
             var sNode;
             var width;
-            if (i + 1 == len && (len % 2 === 1)) {
+            if (i + 1 === len && (len % 2 === 1)) {
                 sNode = trs[trs.length - 1].getFirst("td");
                 sNode.set("colspan", 2);
                 trs[trs.length - 1].getLast("td").destroy();
@@ -1645,7 +1680,7 @@ MWF.ProcessFlow.Processor = new Class({
                     var td = tdsMap_old[config.name];
                     td.getChildren().inject(sNode);
                 } else {
-                    this.loadOrg(sNode, config, "all", ignoreFirstOrgOldData && i == 0)
+                    this.loadOrg(sNode, config, "all", ignoreFirstOrgOldData && i === 0)
                 }
             } else {
                 var row = ((i + 2) / 2).toInt();
@@ -1692,9 +1727,6 @@ MWF.ProcessFlow.Processor = new Class({
         this.orgItemMap[json.name] = org;
 
     },
-    showOrgsByRoute: function (route) {
-        this.loadOrgs(route);
-    },
     clearAllOrgs: function () {
         //清空组织所选人
         for (var key in this.orgItemsObject) {
@@ -1703,23 +1735,10 @@ MWF.ProcessFlow.Processor = new Class({
                 org.setDataToOriginal();
             })
         }
-        //
         this.orgTableObject = {};
         this.orgItemsObject = {};
         this.orgItemsMap = {};
-        this.orgsArea.empty();
-    },
-    getCurrentRouteSelectorList: function () {
-        var selectorList = [];
-        var currentRoute = this.selectedRouteNode ? this.selectedRouteNode.retrieve("route") : "";
-        var selectedRouteNode = this.orgItemsObject[currentRoute];
-        if (!orgList) return [];
-        orgList.each(function (org) {
-            if (org.selector && org.selector.selector) {
-                selectorList.push(org.selector.selector);
-            }
-        }.bind(this))
-        return selectorList;
+        this.container.empty();
     },
     getCurrentRouteOrgList: function () {
         var currentRoute = this.selectedRouteNode ? this.selectedRouteNode.retrieve("route") : "";
@@ -1740,68 +1759,7 @@ MWF.ProcessFlow.Processor = new Class({
         }
         return data;
     },
-    getOffsetY: function (node) {
-        return (node.getStyle("margin-top").toInt() || 0) +
-            (node.getStyle("margin-bottom").toInt() || 0) +
-            (node.getStyle("padding-top").toInt() || 0) +
-            (node.getStyle("padding-bottom").toInt() || 0) +
-            (node.getStyle("border-top-width").toInt() || 0) +
-            (node.getStyle("border-bottom-width").toInt() || 0);
-    },
-    setSize: function (currentOrgLength, flag) {
-        var lines = ((currentOrgLength + 1) / 2).toInt();
 
-        var height = 0;
-        if (this.routeTitleNode) height = height + this.getOffsetY(this.routeTitleNode) + this.routeTitleNode.getStyle("height").toInt();
-        if (this.routeArea) height = height + this.getOffsetY(this.routeArea) + this.routeArea.getStyle("height").toInt();
-        if (this.opinionTitle) height = height + this.getOffsetY(this.opinionTitle) + this.opinionTitle.getStyle("height").toInt();
-        if (this.opinionArea) height = height + this.getOffsetY(this.opinionArea) + this.opinionArea.getStyle("height").toInt();
-        //if( this.buttonsArea )height = height + this.getOffsetY(this.buttonsArea) +  this.buttonsArea.getStyle("height").toInt();
-
-        if (lines > 0) {
-            if (this.orgsArea) this.orgsArea.show();
-
-            if (flag) {
-                // if( this.orgsTitle )height = height + this.getOffsetY(this.orgsTitle) +  this.orgsTitle.getStyle("height").toInt();
-                this.orgsArea.getChildren().each(function (el) {
-                    height += el.getSize().y + this.getOffsetY(el);
-                }.bind(this))
-                this.node.setStyle("height", height);
-            } else {
-                if (this.orgsTitle) height = height + this.getOffsetY(this.orgsTitle) + this.orgsTitle.getStyle("height").toInt();
-                height = height + lines * this.options.orgHeight + this.getOffsetY(this.orgsArea);
-                this.node.setStyle("height", height);
-            }
-        } else {
-            if (this.orgsArea) this.orgsArea.hide();
-            this.node.setStyle("height", height);
-            //this.node.store("height", 401 );
-        }
-        debugger;
-        if (this.getMaxOrgLength() > 1) {
-            if( this.options.inFlow ){
-                this.node.setStyles(this.css.node_wide_flow);
-                this.opinionNode.setStyles(this.css.inputOpinionNode_wide_flow);
-                this.opinionTextarea.setStyles(this.css.inputTextarea_wide_flow);
-                this.opinionTextareaStyle = this.css.inputTextarea_wide_flow;
-                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide_flow);
-            }else{
-                this.node.setStyles(this.css.node_wide);
-                this.opinionNode.setStyles(this.css.inputOpinionNode_wide);
-                this.opinionTextarea.setStyles(this.css.inputTextarea_wide);
-                this.opinionTextareaStyle = this.css.inputTextarea_wide;
-                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide);
-            }
-
-        } else {
-            this.node.setStyles(this.css.node);
-            this.opinionNode.setStyles(this.css.inputOpinionNode);
-            this.opinionTextarea.setStyles(this.css.inputTextarea);
-            this.opinionTextareaStyle = this.css.inputTextarea;
-            this.selectOpinionNode.setStyles(this.css.selectIdeaNode);
-        }
-        if (!flag) this.fireEvent("resize");
-    },
     isErrorHeightOverflow: function () {
         var hasOverflow = false;
         (this.orgItems || []).each(function (item) {
@@ -1880,15 +1838,9 @@ MWF.ProcessFlow.Processor = new Class({
             if (callback) callback();
             return true;
         }
-        //this.checkEmpowerMode = true;
         this.showEmpowerDlg(callback);
     },
     showEmpowerDlg: function (callback) {
-        //this.empowerMask = new Element("div", {"styles": this.css.handwritingMask}).inject(this.node);
-
-        //this.needCheckEmpowerOrg.each( function(org){
-        //    org.saveCheckedEmpowerData();
-        //}.bind(this));
 
         var empowerNode = new Element("div.empowerNode", {"styles": this.css.empowerNode});
         var empowerTitleNode = new Element("div", {
@@ -1950,16 +1902,7 @@ MWF.ProcessFlow.Processor = new Class({
         }.bind(this));
 
         empowerNode.setStyle("height", lines * this.options.orgHeight + 20);
-        //var dlgHeight = Math.min( Math.floor( this.form.app.content.getSize().y * 0.9) , lines*this.options.orgHeight + 151 );
-
-        //var width = this.node.retrieve("width");
-        //empowerNode.setStyle( "width", width );
         var width = 840;
-        //if( len > 1 ){
-        //    width = "840"
-        //}else{
-        //    width = "420"
-        //}
         empowerNode.setStyle("width", width + "px");
 
         this.node.getParent().mask({
@@ -2011,26 +1954,14 @@ MWF.ProcessFlow.Processor = new Class({
             ]
         });
     },
-    managerLogin: function (e) {
-        debugger;
-        var _self = this;
-        var user = (this.task.identityDn || this.task.identity).split("@")[0];
-        var text = MWF.xApplication.process.Work.LP.managerLoginConfirmContent.replace("{user}", user);
-        MWF.xDesktop.confirm("infor", e, MWF.xApplication.process.Work.LP.managerLoginConfirmTitle, text, 450, 120, function () {
-            o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.switchUser({"credential": (_self.task.personDn || _self.task.person)}, function () {
-                var text = MWF.xApplication.process.Work.LP.managerLoginSuccess.replace("{user}", user);
-                MWF.xDesktop.notice("success", {x: "right", y: "top"}, text);
-                window.open(o2.filterUrl("../x_desktop/work.html?workid=" + _self.task.work));
-            }.bind(this));
-            this.close();
-        }, function () {
-            this.close();
-        }, null, null);
-    }
-
+    isSameArray: function (arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        for (var i = 0; i < arr1.length; i++) {
+            if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
+    },
 });
-
-MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
 
 MWF.ProcessFlow.Processor.Org = new Class({
     Implements: [Options, Events],
@@ -2997,4 +2928,5 @@ MWF.ProcessFlow.Processor.IdentityOptions = new Class({
 MWF.ProcessFlow.Processor.GroupOptions = new Class({
     Extends: MWF.APPOrg.GroupOptions
 });
+
 

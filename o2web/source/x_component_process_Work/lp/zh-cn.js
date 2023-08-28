@@ -76,6 +76,16 @@ MWF.xApplication.process.Work.LP = {
     "selectIdentityInfo": "检测到当前工作您有多个不同身份的待办，请选择一个身份处理此工作",
 
     "org": "组织",
-    "duty": "职务"
+    "duty": "职务",
+
+    "flowActions": {
+        "addTask": "加签",
+        "reset": "重置",
+        "process": "提交",
+    },
+    "opinion": "意见",
+    "addTaskPerson": "加签人",
+    "inputOpinionNote": "请在此处填写意见"
+
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;
