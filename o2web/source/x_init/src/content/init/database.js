@@ -80,7 +80,7 @@ export default component({
         listDatabase().then((list)=>{
             this.bind.databaseList = list;
         });
-        databaseCheck();
+        this.databaseCheck();
         // h2Check().then((o)=>{
         //     this.bind.h2 = o;
         // });
