@@ -66,7 +66,7 @@ MWF.xApplication.Selector.Person = new Class({
         if( ["flow"].contains(this.options.style)  ){
             this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
             this.options.level1Indent = 10;
-            this.options.indent = 16;
+            this.options.indent = 20;
         }
 
         Object.defineProperties(this, {
@@ -417,12 +417,13 @@ MWF.xApplication.Selector.Person = new Class({
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
         }
 
+        this.node.inject( container );
+
         this.loadContent();
         if( this.actionNode ){
             this.loadAction();
         }
 
-        this.node.inject( container );
         if( !this.options.embedded ){
             if( layout.mobile ){
                 this.node.setStyles({
@@ -588,6 +589,7 @@ MWF.xApplication.Selector.Person = new Class({
     loadSelectNodeHTML: function(contentNode){
         var size;
         var height;
+        debugger;
         if( contentNode ){
             size = contentNode.getSize();
             height = size.y;
@@ -595,16 +597,14 @@ MWF.xApplication.Selector.Person = new Class({
                 height = contentNode.getStyle("height").toInt();
             }
         }else{
-            var container = this.container;
-            size = container.getSize();
+            size = this.node.getSize();
 
-            if(this.node){
-                var zoom = this.node.getStyle("zoom").toInt() || 0;
-                if( zoom ){
-                    size.x = size.x * 100 / zoom;
-                    size.y = size.y * 100 / zoom;
-                }
-            }
+            // var zoom = this.node.getStyle("zoom").toInt() || 0;
+            // if( zoom ){
+            //     size.x = size.x * 100 / zoom;
+            //     size.y = size.y * 100 / zoom;
+            // }
+
             height = size.y-this.getOffsetY( this.contentNode );
             if( this.titleNode ){
                 height = height - this.getOffsetY( this.titleNode ) - ( this.titleNode.getStyle("height").toInt() || 0 )
@@ -616,7 +616,11 @@ MWF.xApplication.Selector.Person = new Class({
             this.contentNode.setStyle("height", ""+height+"px");
         }
 
+        height = height - this.getOffsetY( this.selectNode );
         this.selectNode.setStyle("height", ""+height+"px");
+
+        this.selectedContainerNode.setStyle("height", ""+height+"px");
+        this.selectedScrollNode.setStyle("height", ""+height+"px");
 
 
         if( this.searchInput ){
@@ -2415,7 +2419,8 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         this.clazz = "ItemSelected";
         this.items = [];
         if (item) this.items.push(item);
-        this.level = 0;
+
+        this.level = this.selector.options.style === "flow" ? 1 : 0;
 
         this.node = new Element("div", {
             "styles": this.selector.css.selectorItem

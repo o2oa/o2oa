@@ -127,9 +127,9 @@
 		"color" : "#999"
 	},
 	"selectNode": {
-		"width": "54%",
+		"width": "50%",
 		"min-width": "200px",
-		"height": "250px",
+		"height": "410px",
 		"float": "left",
 		"margin": "0px",
 		"border": "1px solid #cccccc",
@@ -151,7 +151,7 @@
 
 
 	"selectedContainerNode": {
-		"height": "250px",
+		"height": "410px",
 		"margin": "0px",
 		"border": "1px solid #cccccc",
 		"border-left": "0px solid #cccccc",
@@ -160,7 +160,7 @@
 	},
 	"selectedScrollNode": {
 		"min-width": "160px",
-		"height": "250px",
+		"height": "410px",
 		"overflow-x": "auto",
 		"overflow-y": "auto",
 		"background-color": "#ffffff"
@@ -169,7 +169,7 @@
 
 	},
 	"actionNode": {
-		"height": "40px",
+		"height": "80px",
 		"width": "300px",
 		"margin": "auto"
 	},
@@ -366,66 +366,72 @@
 		"background": "url(../x_component_Selector/$Selector/flow/icon/collapse.png) no-repeat center right"
 	},
 	"selectorItemIconNode": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
 		"float": "left",
 		"background-repeat": "no-repeat",
 		"background-position": "center center"
 	},
 	"selectorItemActionNode": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
+		"margin-right": "10px",
 		"float": "right",
 		"background": "transparent"
 	},
 	"selectorItemActionNode_selected_over": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
+		"margin-right": "10px",
 		"float": "right",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/remove.png) no-repeat center center"
 	},
 	"selectorItemActionNode_over": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
+		"margin-right": "10px",
 		"float": "right",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/right.png) no-repeat center center"
 	},
 	"selectorItemActionNode_selected": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
 		"float": "right",
+		"margin-right": "10px",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/check.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_expand": {
-		"width": "16px",
+		"width": "20px",
 		"height": "26px",
 		"float": "left",
 		"font-size": "12px",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/expand.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_collapse": {
-		"width": "16px",
+		"width": "20px",
 		"height": "26px",
 		"font-size": "12px",
 		"float": "left",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/collapse.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_selectAll": {
-		"width": "26px",
+		"width": "20px",
 		"height": "26px",
+		"margin-right": "10px",
 		"float": "right",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/selectall.png) no-repeat center center"
 	},
 
 	"selectorItemTextNode": {
 		"height": "26px",
-		"margin": "0px 26px",
+		"margin-right": "26px",
+		"margin-left": "26px",
 		"word-wrap": "break-word",
 		"color": "#000"
 	},
 	"selectorItemCategoryTextNode": {
 		"height": "26px",
-		"margin": "0px 26px",
+		"margin": "0px 26px 0px 46px",
 		"color": "#000",
 		"font-size": "12px",
 		"font-weight": "bold"
