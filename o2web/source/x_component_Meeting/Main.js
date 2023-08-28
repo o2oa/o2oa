@@ -128,7 +128,7 @@ MWF.xApplication.Meeting.Main = new Class({
     isCopyEnable: function(){
         return Promise.resolve(false);
         // if( typeOf(this.copyEnable) === "boolean" )return Promise.resolve(this.copyEnable);
-        // var text = "";
+        // var text = " ";
         // if (navigator.clipboard) {
         //     return navigator.clipboard.writeText(text).then(function() {
         //         this.copyEnable = true;
