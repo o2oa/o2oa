@@ -511,6 +511,29 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据分类 id 列表换取分类对象列表.", action = ActionListWithIds.class)
+	@POST
+	@Path("list/objects")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void  listObjectsByIds( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionListWithIds.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionListWithIds().execute( effectivePerson, jsonElement );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "执行指定分类所有文档数据映射.", action = ActionExecuteProjection.class)
 	@POST
 	@Path("{id}/execute/projection")
