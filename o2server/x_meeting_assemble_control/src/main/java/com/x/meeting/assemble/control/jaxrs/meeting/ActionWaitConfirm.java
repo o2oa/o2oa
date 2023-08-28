@@ -29,6 +29,7 @@ class ActionWaitConfirm extends BaseAction {
 				ids = business.meeting().listWithPersonWaitConfirm(effectivePerson.getDistinguishedName());
 			}
 			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
+			this.setOnlineLink(business, effectivePerson, wos);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			SortTools.asc(wos, Meeting.startTime_FIELDNAME);

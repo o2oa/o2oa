@@ -1,10 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
@@ -16,6 +11,11 @@ import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.Meeting;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 class ActionListOnMonthAll extends BaseAction {
 
@@ -39,6 +39,7 @@ class ActionListOnMonthAll extends BaseAction {
 			List<String> ids = new ArrayList<>();
 			ids = business.meeting().listWithDate(start, end);
 			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
+			this.setOnlineLink(business, effectivePerson, wos);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			SortTools.asc(wos, false, "startTime");

@@ -25,6 +25,7 @@ class ActionInvitedRejected extends BaseAction {
 			List<String> ids = new ArrayList<>();
 			ids = business.meeting().listWithInvitedRejected(effectivePerson.getDistinguishedName());
 			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
+			this.setOnlineLink(business, effectivePerson, wos);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			SortTools.desc(wos, Meeting.startTime_FIELDNAME);
