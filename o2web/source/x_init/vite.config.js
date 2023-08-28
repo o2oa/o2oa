@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
-const host = 'http://172.16.91.6';
+const host = 'http://172.16.1.59';
 const o={
     target: host,
     changeOrigin: true,
