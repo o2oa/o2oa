@@ -805,6 +805,10 @@ o2.xApplication.systemconfig.LP = {
         "accessControlAllowOrigin": "Cross-Origin Origin License",
         "accessControlAllowOriginInfo": "Cross-origin resource sharing license, set the Access-Control-Allow-Origin flag returned by http, which can be used for CORS attack protection, such as: https://www.o2oa.net.",
 
+        "contentSecurityPolicy": "Content-Security-Policy Header",
+        "contentSecurityPolicyInfo": "The HTTP Content-Security-Policy response header allows website administrators to control resources the user agent is allowed to load for a given page. With a few exceptions, policies mostly involve specifying server origins and script endpoints. This helps guard against cross-site scripting attacks (Cross-site_scripting).",
+        "contentSecurityPolicyInfo2": "See：<a target='_blank' href='https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy'>https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy</a>",
+
         "personUnitOrderByAsc": "Person Organization Ascending",
         "personUnitOrderByAscInfo": "Whether to use ascending order when displaying and obtaining personnel organization data. The default is true, otherwise it is sorted in descending order.",
 
@@ -1147,6 +1151,13 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageContact": "Contact",
         "appIndexPageApp": "App",
         "appIndexPageSettings": "Setting",
+
+        "appIndexCmsFilterTitle": "Home Information Center",
+        "appIndexCmsFilterCategoryInfo": "Information center list classification query criteria, if left blank, all queries will be queried",
+        "appIndexTaskFilterTitle": "Home Office Center",
+        "appIndexTaskFilterProcessInfo": "Office center list process query criteria, if left blank, all will be queried",
+        "appIndexTaskFilterProcessSelectorTitle": "Process selection",
+        "appIndexCmsFilterCategroySelectorTitle": "Classification selection",
 
         "systemMessageSwitch": "show system notifications",
         "systemMessageSwitchInfo": "Are system notifications displayed in the mobile app message list?",

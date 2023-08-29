@@ -302,6 +302,13 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 var text = this.__getOptionsText(options, values);
                 this.node.set("text", text.join(","));
             }.bind(this));
+
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
         }
     },
     __getOptionsText: function(options, values){

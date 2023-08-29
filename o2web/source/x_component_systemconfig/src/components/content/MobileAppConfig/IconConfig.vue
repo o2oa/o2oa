@@ -1,5 +1,6 @@
 <template>
   <div class="systemconfig_area">
+
     <div v-if="appStyle">
 
       <div v-for="(img, index) in appStyle.images" style="margin-bottom: 30px">
@@ -65,6 +66,7 @@ const saveMobileIndex = (v)=>{
 }
 
 const load = ()=>{
+  console.log(layout.path);
   getAppStyle().then((data)=>{
     appStyle.value = {
       images: data.images

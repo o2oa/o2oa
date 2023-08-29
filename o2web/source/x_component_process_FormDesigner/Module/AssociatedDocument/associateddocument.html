@@ -117,7 +117,7 @@
 					<td class="editTableTitle">{{$.lp.select}}:</td>
 					<td class="editTableValue">
 						<input type="radio" name="select" value="single" text{($.select=='single')?'checked':''}/>{{$.lp.singleChoice}}
-						<input type="radio" name="select" value="multi" text{($.select!='multi')?'checked':''}/>{{$.lp.multipleChoice}}
+						<input type="radio" name="select" value="multi" text{($.select!=='single')?'checked':''}/>{{$.lp.multipleChoice}}
 					</td>
 				</tr>
 				<tr>
@@ -146,6 +146,13 @@
 				<tr>
 					<td class="editTableTitle">{{$.lp.view}}:</td>
 					<td class="editTableValue"><div class="MWFQueryViewSelect" name="queryView" data-count="0"></div></td>
+				</tr>
+				<tr>
+					<td class="editTableTitle">{{$.lp.reserve}}:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="reserve" text{($.reserve!==false)?'checked':''} type="radio" value="true"/>{{$.lp.changeViewReserve}} <br/>
+						<input class="editTableRadio" name="reserve" text{($.reserve==false)?'checked':''} type="radio" value="false"/>{{$.lp.changeViewNotReserve}}
+					</td>
 				</tr>
 			</table>
 		</div>

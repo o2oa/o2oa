@@ -235,6 +235,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = route.getName();
+		this.routeAlias = route.getAlias();
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
@@ -274,6 +275,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.expireTime = null;
 		this.expired = false;
 		this.routeName = "";
+		this.routeAlias = "";
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
@@ -311,6 +313,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.creatorUnit = task.getCreatorUnit();
 		this.expireTime = task.getExpireTime();
 		this.routeName = task.getRouteName();
+		this.routeAlias = task.getRouteAlias();
 		this.mediaOpinion = task.getMediaOpinion();
 		this.task = task.getId();
 		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
@@ -589,11 +592,18 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date expireTime;
 
-	public static final String routeName_FIELDNAME = "routeName";
+	public static final String ROUTENAME_FIELDNAME = "routeName";
 	@FieldDescribe("选择的路由名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + routeName_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + ROUTENAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
+
+	public static final String ROUTEALIAS_FIELDNAME = "routeAlias";
+	@Schema(description = "待办选择的路由别名.")
+	@FieldDescribe("待办选择的路由别名.")
+	@Column(length = length_255B, name = ColumnNamePrefix + ROUTEALIAS_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String routeAlias;
 
 	public static final String opinion_FIELDNAME = "opinion";
 	@FieldDescribe("处理意见.")
@@ -601,12 +611,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + opinion_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	protected String opinion;
-
-//	public static final String DECISION_FIELDNAME = "decision";
-//	@FieldDescribe("决策.")
-//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	protected String decision;
 
 	public static final String opinionLob_FIELDNAME = "opinionLob";
 	@Lob
@@ -1536,6 +1540,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setViewTime(Date viewTime) {
 		this.viewTime = viewTime;
+	}
+
+	public String getRouteAlias() {
+		return routeAlias;
+	}
+
+	public void setRouteAlias(String routeAlias) {
+		this.routeAlias = routeAlias;
 	}
 
 }

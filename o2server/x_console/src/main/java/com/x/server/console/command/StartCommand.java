@@ -59,19 +59,18 @@ public class StartCommand {
 
 	private static boolean ifInitServerNecessary() {
 		// 密码为空且数据库文件不存在
-		return ifInitServerNecessarySetPassword() && (!ifInitServerNecessaryLocalRepositoryDataH2Exists())
-				&& (!ifInitServerNecessaryExternalDataSourcesConfigured());
+		return ifInitServerNecessarySetPassword() && (!ifInitServerNecessaryLocalRepositoryDataH2Exists());
 	}
 
 	private static boolean ifInitServerNecessaryLocalRepositoryDataH2Exists() {
 		return Files.exists(Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE));
 	}
 
-	private static boolean ifInitServerNecessaryExternalDataSourcesConfigured() {
-		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
-				ExternalDataSources.class);
-		return (null != obj) && BooleanUtils.isTrue(obj.enable());
-	}
+//	private static boolean ifInitServerNecessaryExternalDataSourcesConfigured() {
+//		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
+//				ExternalDataSources.class);
+//		return (null != obj) && BooleanUtils.isTrue(obj.enable());
+//	}
 
 	private static boolean ifInitServerNecessarySetPassword() {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);

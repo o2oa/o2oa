@@ -14,7 +14,9 @@ const server_echo = '/x_desktop/res/config/config.json';  //get 检查O2OA服务
 
 
 //database
-const database_check = '/jaxrs/externaldatasources/check';          //get 检查是否可以设置外部数据源
+// const database_check = '/jaxrs/externaldatasources/check';          //get 检查是否可以设置外部数据源
+const database_check = '/jaxrs/externaldatasources/check'   //get 获取已经配置的数据库信息
+const database_h2_check = '/jaxrs/h2/check'   //get 获取是否已存在h2数据库文件
 const database_list = '/jaxrs/externaldatasources/list';            //get 列示可用的外部数据源配置样例
 const database_set = '/jaxrs/externaldatasources/set';              //post 设置外部数据源
 /**
@@ -51,8 +53,6 @@ const database_test = '/jaxrs/externaldatasources/validate';        //post 测�
     }]
 }
 * */
-
-
 
 
 const h2_check = '/jaxrs/h2/check';             //get 检查h2服务服务器是否需要升级
@@ -141,7 +141,10 @@ async function setDatabase(o) {
     }
     return await post(database_set, JSON.stringify(db), 'application/json');
 }
-
+async function checkDatabase() {
+    const [edb, h2db] = await Promise.all([get(database_check), get(database_h2_check)]);
+    return (edb.configured || h2db.configured);
+}
 
 
 async function h2Check() {
@@ -201,6 +204,7 @@ export {
     listDatabase,
     testDatabase,
     setDatabase,
+    checkDatabase,
     h2Check,
     h2Upgrade,
     h2Cancel,

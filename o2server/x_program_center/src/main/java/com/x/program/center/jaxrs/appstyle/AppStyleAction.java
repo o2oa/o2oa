@@ -89,11 +89,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageMenuLogoBlur(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageMenuLogoBlur.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageMenuLogoBlur().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageMenuLogoBlur().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -108,11 +109,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageMenuLogoFocus(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageMenuLogoFocus.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageMenuLogoFocus().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageMenuLogoFocus().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -127,11 +129,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageLaunchLogo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageLaunchLogo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageLaunchLogo().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageLaunchLogo().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -146,11 +149,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageLoginAvatar(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageLoginAvatar.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageLoginAvatar().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageLoginAvatar().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -165,11 +169,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageProcessDefault(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageProcessDefault.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageProcessDefault().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageProcessDefault().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -184,11 +189,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageSetupAboutLogo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageSetupAboutLogo.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageSetupAboutLogo().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageSetupAboutLogo().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -203,11 +209,12 @@ public class AppStyleAction extends BaseAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void imageApplicationTop(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 									@FormDataParam(FILE_FIELD) final byte[] bytes,
+									@JaxrsParameterDescribe("图片名称") @FormDataParam(FILENAME_FIELD) String fileName,
 									@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionImageApplicationTop.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionImageApplicationTop().execute(effectivePerson, bytes, disposition);
+			result = new ActionImageApplicationTop().execute(effectivePerson, bytes, disposition, fileName);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

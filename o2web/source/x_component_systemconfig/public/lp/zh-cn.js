@@ -803,6 +803,10 @@ o2.xApplication.systemconfig.LP = {
         "refererHeadCheckRegularInfo": "在此处可配置服务器对于请求的Referer头的校验规则，配置一个正则表达式，通过正则表达式校验Referer值的请求才被允许。" +
             "合理配置此项可有效防止CSRF攻击。如配置 (.+?)o2oa.net(.+?) 仅允许referer包含“o2oa.net”的请求",
 
+        "contentSecurityPolicy": "Content-Security-Policy响应头",
+        "contentSecurityPolicyInfo": "HTTP 响应头 Content-Security-Policy 允许站点管理者控制用户代理能够为指定的页面加载哪些资源。除了少数例外情况，设置的政策主要涉及指定服务器的源和脚本结束点。这将帮助防止跨站脚本攻击（Cross-Site Script）。",
+        "contentSecurityPolicyInfo2": "更多关于Content-Security-Policy响应头的信息请查看：<a target='_blank' href='https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy'>https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy</a>",
+
         "accessControlAllowOrigin": "跨域来源许可",
         "accessControlAllowOriginInfo": "跨源资源共享许可，设置http返回的Access-Control-Allow-Origin标识，可以用于CORS攻击防护，如:https://www.o2oa.net",
 
@@ -1145,6 +1149,15 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageContact": "通讯录",
         "appIndexPageApp": "应用",
         "appIndexPageSettings": "设置",
+
+        "appIndexCmsFilterTitle": "首页信息中心",
+        "appIndexCmsFilterCategoryInfo": "信息中心列表分类查询条件，为空就是都查询",
+        "appIndexTaskFilterTitle": "首页办公中心",
+        "appIndexTaskFilterProcessInfo": "办公中心列表流程查询条件，为空就是都查询",
+        "appIndexTaskFilterProcessSelectorTitle": "流程选择",
+        "appIndexCmsFilterCategroySelectorTitle": "分类选择",
+        
+
 
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",

@@ -208,6 +208,12 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                 if (data){
                     var text = this.__getOptionsText(options, data);
                     this.node.set("text", text);
+                    if( this.json.elProperties ){
+                        this.node.set(this.json.elProperties );
+                    }
+                    if (this.json.elStyles){
+                        this.node.setStyles( this._parseStyles(this.json.elStyles) );
+                    }
                 }
             }.bind(this));
         }

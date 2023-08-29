@@ -5,6 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.OrderColumn;
+
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.entity.annotation.CheckPersist;

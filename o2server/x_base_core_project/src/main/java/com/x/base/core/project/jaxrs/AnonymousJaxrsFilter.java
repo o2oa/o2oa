@@ -35,7 +35,7 @@ public abstract class AnonymousJaxrsFilter extends TokenFilter {
 					/** 需要自己标志500 */
 					response.setStatus(500);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
-					response.getWriter().write(FilterTools.Application_Not_Anonymous_Json);
+					response.getWriter().write(FilterTools.APPLICATION_NOT_ANONYMOUS_JSON);
 				} else {
 					chain.doFilter(request, response);
 				}

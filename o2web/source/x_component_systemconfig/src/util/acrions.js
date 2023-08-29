@@ -275,6 +275,14 @@ function doAppPackAction(method, ...args) {
 function doMPWeixinMenuAction(method, ...args) {
     return doAction('x_program_center', 'MPWeixinAction', method, ...args);
 }
+//  流程服务
+function processAction(method, ...args) {
+    return doAction('x_processplatform_assemble_surface', 'ProcessAction', method, ...args);
+}
+// cms 分类服务
+function categoryInfoAction(method, ...args) {
+    return doAction('x_cms_assemble_control', 'CategoryInfoAction', method, ...args);
+}
 
 
 
@@ -326,5 +334,7 @@ export {
     uploadAppStyleImage,
     listDumpData,
     doAppPackAction,
-    doMPWeixinMenuAction
+    doMPWeixinMenuAction,
+    processAction,
+    categoryInfoAction
 };

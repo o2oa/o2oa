@@ -6,6 +6,9 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.StringTools;
+import com.x.program.center.Business;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
  */
 class ActionImageApplicationTop extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition, String fileName)
 			throws Exception {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -35,12 +38,25 @@ class ActionImageApplicationTop extends BaseAction {
 			if (!effectivePerson.isManager()) {
 				throw new ExceptionAccessDenied(effectivePerson.getName());
 			}
+			String file = fileName;
+			if (StringUtils.isEmpty(file)) {
+				file = this.fileName(disposition);
+			}
+			boolean flag = !StringTools.isFileName(file) || !file.toLowerCase().endsWith(".png")
+					|| (bytes == null || bytes.length == 0);
+			if (flag) {
+				throw new ExceptionIllegalFile(file);
+			}
 			BufferedImage image = ImageIO.read(bais);
 			BufferedImage scalrImage = Scalr.resize(image, Method.QUALITY, 730, 390);
 			ImageIO.write(scalrImage, "png", baos);
-			String value = Base64.encodeBase64String(baos.toByteArray());
+			String parentFolder = Image.default_image_folder_path;
+			// 上传图片到 webserver 指定目录
+			Business.dispatch(true, file, parentFolder, baos.toByteArray());
+			
 			Image o = Image.application_top();
-			o.setValue(value);
+			o.setValue(null);
+			o.setPath(parentFolder + "/" + file);
 			// 由于getImages设置了检查,所以只能对images进行处理
 			Set<Image> images = Config.appStyle().getImages();
 			images = images.stream().filter(img -> (!StringUtils.equals(img.getName(), Image.name_application_top)))

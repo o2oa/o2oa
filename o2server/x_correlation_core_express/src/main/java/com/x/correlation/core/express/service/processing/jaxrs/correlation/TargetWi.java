@@ -16,6 +16,17 @@ public class TargetWi extends GsonPropertyObject {
 	@FieldDescribe("关联内容框标识.")
 	private String site;
 
+	@FieldDescribe("来源视图.")
+	private String view;
+
+	public String getView() {
+		return view;
+	}
+
+	public void setView(String view) {
+		this.view = view;
+	}
+
 	public String getSite() {
 		return site;
 	}

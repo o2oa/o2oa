@@ -179,6 +179,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.expireTime = expireTime;
 		this.routeNameDisable = false;
 		this.routeName = "";
+		this.routeAlias = "";
 		this.opinion = "";
 
 		this.modified = false;
@@ -496,12 +497,19 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private List<String> routeDecisionOpinionList = new ArrayList<>();
 
-	public static final String routeName_FIELDNAME = "routeName";
+	public static final String ROUTENAME_FIELDNAME = "routeName";
 	@Schema(description = "待办选择的路由名称.")
 	@FieldDescribe("选择的路由名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + routeName_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + ROUTENAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
+
+	public static final String ROUTEALIAS_FIELDNAME = "routeAlias";
+	@Schema(description = "待办选择的路由别名.")
+	@FieldDescribe("待办选择的路由别名.")
+	@Column(length = length_255B, name = ColumnNamePrefix + ROUTEALIAS_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String routeAlias;
 
 	public static final String opinion_FIELDNAME = "opinion";
 	@Schema(description = "待办处理意见.")
@@ -1423,6 +1431,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setViewTime(Date viewTime) {
 		this.viewTime = viewTime;
+	}
+
+	public String getRouteAlias() {
+		return routeAlias;
+	}
+
+	public void setRouteAlias(String routeAlias) {
+		this.routeAlias = routeAlias;
 	}
 
 }

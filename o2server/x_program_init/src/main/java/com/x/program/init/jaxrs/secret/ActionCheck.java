@@ -11,7 +11,7 @@ class ActionCheck extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCheck.class);
 
-	public ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	public ActionResult<Wo> execute(EffectivePerson effectivePerson) {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();

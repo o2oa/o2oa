@@ -90,6 +90,12 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
         });
         var value = this.getValue();
         this._showValue(this.node, value);
+        if( this.json.elProperties ){
+            this.node.set(this.json.elProperties );
+        }
+        if (this.json.elStyles){
+            this.node.setStyles( this._parseStyles(this.json.elStyles) );
+        }
     },
     __showValue: function(node, value, optionItems){
         debugger;
