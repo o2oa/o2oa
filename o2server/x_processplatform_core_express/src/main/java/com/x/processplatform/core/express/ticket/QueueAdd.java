@@ -8,11 +8,13 @@ class QueueAdd implements Add {
 	@Override
 	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		afterCommon(tickets, ticket);
-		List<Ticket> list = Tickets.interconnectedAsFellow(targets);
-		tickets.listNextTo(ticket).stream().forEach(o -> o.next(list));
+		List<Ticket> fellow = tickets.listFellow(ticket);
+		fellow.addAll(targets);
+		Tickets.interconnectedAsFellow(fellow);
+		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
 		List<Ticket> next = tickets.listNext(ticket);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		list.stream().forEach(o -> o.next(next).sibling(sibling));
+		targets.stream().forEach(o -> o.next(next).sibling(sibling));
 		ticket.clearSibling();
 	}
 
