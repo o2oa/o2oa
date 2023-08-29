@@ -1,6 +1,7 @@
 package com.x.server.console;
 
 import java.io.Console;
+import java.io.IOError;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -72,9 +73,11 @@ public class CommandThreads {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
+				} catch (IOError ioe) {
+					// nothing
 				}
 			}
-		}, "commandFromThread");
+		}, "commandFromConsoleThread");
 	}
 
 	private static Thread createCommandFromFileThread(LinkedBlockingQueue<String> commandQueue) {
@@ -87,7 +90,7 @@ public class CommandThreads {
 					Thread.currentThread().interrupt();
 				}
 			}
-		}, "commandFromThread");
+		}, "commandFromFileThread");
 	}
 
 	/**
