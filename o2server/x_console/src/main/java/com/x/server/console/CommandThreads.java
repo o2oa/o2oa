@@ -1,8 +1,7 @@
 package com.x.server.console;
 
-import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -23,12 +22,14 @@ public class CommandThreads {
 
 	private static volatile boolean isRunning = true;
 
-	private static Thread commandReadThread;
+	private static Thread commandFromConsoleThread;
+	private static Thread commandFromFileThread;
 	private static Thread commandExecuteThread;
 
 	public static void join() {
 		try {
-			commandReadThread.join();
+			commandFromConsoleThread.join();
+			commandFromFileThread.join();
 			commandExecuteThread.join();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -42,34 +43,49 @@ public class CommandThreads {
 
 	public static void start(LinkedBlockingQueue<String> commandQueue) {
 		isRunning = true;
-		commandReadThread = createCommandReadThread(commandQueue);
+		commandFromConsoleThread = createCommandFromConsoleThread(commandQueue);
+		commandFromFileThread = createCommandFromFileThread(commandQueue);
 		commandExecuteThread = createCommandExecuteThread(commandQueue);
-		commandReadThread.start();
+		commandFromConsoleThread.start();
+		commandFromFileThread.start();
 		commandExecuteThread.start();
 	}
 
 	public static void stop() {
 		isRunning = false;
-		if (null != commandReadThread) {
-			commandReadThread.interrupt();
+		if (null != commandFromConsoleThread) {
+			commandFromConsoleThread.interrupt();
+		}
+		if (null != commandFromFileThread) {
+			commandFromFileThread.interrupt();
 		}
 		if (null != commandExecuteThread) {
 			commandExecuteThread.interrupt();
 		}
 	}
 
-	private static Thread createCommandReadThread(LinkedBlockingQueue<String> commandQueue) {
+	private static Thread createCommandFromConsoleThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-				while (isRunning) {
-					fromSystemIn(commandQueue, reader);
+			while (isRunning) {
+				try {
+					fromConsole(commandQueue);
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		}, "commandFromThread");
+	}
+
+	private static Thread createCommandFromFileThread(LinkedBlockingQueue<String> commandQueue) {
+		return new Thread(() -> {
+			while (isRunning) {
+				try {
 					fromFile(commandQueue);
 					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 				}
-			} catch (InterruptedException ie) {
-				Thread.currentThread().interrupt();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}, "commandFromThread");
 	}
@@ -99,7 +115,7 @@ public class CommandThreads {
 	}
 
 	/**
-	 * 读取System.in中的输入值并写入commandQueue
+	 * 从System.console读取输入值并写入commandQueue,需要使用System.console如果使用system.in导致windows控制台没有输出,可以盲打.
 	 * 
 	 * @param commandQueue
 	 * @param reader
@@ -107,17 +123,13 @@ public class CommandThreads {
 	 * @throws InterruptedException
 	 * @throws
 	 */
-	private static void fromSystemIn(LinkedBlockingQueue<String> commandQueue, BufferedReader reader)
-			throws InterruptedException {
-		try {
-			if (reader.ready()) {
-				String consoleCmd = reader.readLine();
-				if (null != consoleCmd) {
-					commandQueue.put(consoleCmd);
-				}
+	private static void fromConsole(LinkedBlockingQueue<String> commandQueue) throws InterruptedException {
+		Console console = System.console();
+		if (null != console) {
+			String consoleCmd = console.readLine();
+			if (null != consoleCmd) {
+				commandQueue.put(consoleCmd);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
