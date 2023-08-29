@@ -355,8 +355,12 @@ MWF.xApplication.Selector.Person = new Class({
         this.contentNode = this.node.getElement(".MWF_selector_contentNode");
 
         this.selectNode = this.node.getElement(".MWF_selector_selectNode");
+        this.selectTopNode = this.node.getElement(".MWF_selector_selectTopNode");
+        this.selectTopTextNode = this.node.getElement(".MWF_selector_selectTopTextNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
+        this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
+        this.letterContainerNode = this.node.getElement(".MWF_selector_letterContainerNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
         this.flatCategoryNode = this.node.getElement(".MWF_selector_flatCategoryNode");
@@ -374,6 +378,11 @@ MWF.xApplication.Selector.Person = new Class({
         this.itemSearchAreaNode = this.node.getElement(".MWF_selector_itemSearchAreaNode");
 
         this.selectedContainerNode = this.node.getElement(".MWF_selector_selectedContainerNode");
+
+        this.selectedTopNode = this.node.getElement(".MWF_selector_selectedTopNode");
+        this.selectedTopTextNode = this.node.getElement(".MWF_selector_selectedTopTextNode");
+        this.emptySelectedNode = this.node.getElement(".MWF_selector_emptySelectedNode");
+
         this.selectedScrollNode = this.node.getElement(".MWF_selector_selectedScrollNode");
         this.selectedNode = this.node.getElement(".MWF_selector_selectedNode");
         this.selectedItemSearchAreaNode = this.node.getElement(".MWF_selector_selectedItemSearchAreaNode");
@@ -393,8 +402,12 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
 
         if (this.selectNode) this.selectNode.setStyles( layout.mobile ? this.css.selectNodeMobile : this.css.selectNode);
+        if (this.selectTopNode)this.selectTopNode.setStyles(this.css.selectTopNode);
+        if (this.selectTopTextNode)this.selectTopTextNode.setStyles(this.css.selectTopTextNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput );
+        if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
+        if (this.letterContainerNode) this.letterContainerNode.setStyles(this.css.letterContainerNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
@@ -403,6 +416,10 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.itemSearchAreaNode) this.itemSearchAreaNode.setStyles(this.css.itemAreaNode);
 
         if (this.selectedContainerNode)this.selectedContainerNode.setStyles(this.css.selectedContainerNode);
+        if (this.selectedTopNode)this.selectedTopNode.setStyles(this.css.selectedTopNode);
+        if (this.selectedTopTextNode)this.selectedTopTextNode.setStyles(this.css.selectedTopTextNode);
+        if (this.emptySelectedNode)this.emptySelectedNode.setStyles(this.css.selectedTopActionNode);
+
         if (this.selectedScrollNode) this.selectedScrollNode.setStyles(this.css.selectedScrollNode);
         if (this.selectedNode) this.selectedNode.setStyles(this.css.selectedNode);
         if (this.selectedItemSearchAreaNode) this.selectedItemSearchAreaNode.setStyles(this.css.itemAreaNode);
@@ -450,6 +467,12 @@ MWF.xApplication.Selector.Person = new Class({
                     }
                 });
             }
+        }
+
+        if( this.emptySelectedNode ){
+            this.emptySelectedNode.addEvent("click", function () {
+                this.emptySelectedItems()
+            }.bind(this))
         }
 
         this.setEvent();
@@ -556,7 +579,6 @@ MWF.xApplication.Selector.Person = new Class({
         }else{
             if (layout.mobile){
                 // if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
-
                 this.loadSelectedNodeMobile();
                 this.loadSelectNodeMobile();
             }else{
@@ -620,7 +642,9 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectNode.setStyle("height", ""+height+"px");
 
         this.selectedContainerNode.setStyle("height", ""+height+"px");
-        this.selectedScrollNode.setStyle("height", ""+height+"px");
+        var selectedTopHeight = 0;
+        if( this.selectedTopNode )selectedTopHeight = this.getOffsetY( this.selectedTopNode ) + ( this.selectedTopNode.getStyle("height").toInt() || 0 )
+        this.selectedScrollNode.setStyle("height", ""+( height - selectedTopHeight )+"px");
 
 
         if( this.searchInput ){
@@ -1253,7 +1277,7 @@ MWF.xApplication.Selector.Person = new Class({
 
     loadLetters: function(){
         var _self = this;
-        letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+        var letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
         var letterNodeCss = this.css.letterNode;
         var letterNodeCss_over = this.css.letterNode_over;

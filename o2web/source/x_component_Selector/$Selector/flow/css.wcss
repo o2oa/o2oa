@@ -83,7 +83,7 @@
 		"width": "30px",
 		"height": "30px",
 		"float": "right",
-		"background": "url(../x_component_Selector/$Selector/flow/icon/close.png) no-repeat center center",
+		"background": "url(../x_component_Selector/$Selector/flow/icon/close.png) no-repeat center right",
 		"cursor": "pointer"
 	},
 	"titleTextNodeMobile": {
@@ -169,30 +169,36 @@
 
 	},
 	"actionNode": {
-		"height": "80px",
-		"width": "300px",
-		"margin": "auto"
+		"height": "50px",
+		"width": "345px",
+		"margin": "20px auto 0px auto"
 	},
 	"okActionNode": {
-		"width": "100px",
-		"height": "30px",
+		"width": "200px",
+		"text-align": "center",
+		"line-height": "32px",
+		"height": "32px",
 		"border": "0px",
 		"color": "#FFF",
-		"font-size": "18px",
-		"padding-left": "35px",
-		"border-radius": "4px",
+		"font-size": "16px",
+		"border-radius": "20px",
+		"background": "#4A90E2",
+		"float": "left",
 		"cursor": "pointer"
 	},
 	"cancelActionNode": {
-		"width": "72px",
-		"height": "30px",
+		"width": "130px",
+		"text-align": "center",
+		"line-height": "32px",
+		"height": "32px",
 		"border": "0px",
-		"color": "#FFF",
-		"font-size": "18px",
-		"padding-left": "20px",
-		"border-radius": "4px",
+		"color": "#666666",
+		"font-size": "16px",
+		"border-radius": "20px",
 		"margin-left": "15px",
-		"cursor": "pointer"
+		"cursor": "pointer",
+		"float": "left",
+		"background": "#F0F0F0"
 	},
 	"selectedTopNode" : {
 		"overflow" : "hidden",
@@ -234,19 +240,29 @@
 		"font-size": "12px",
 		"color": "#666666",
 		"background": "transparent",
-		"border-bottom": "1px solid #ccc"
+		"border-bottom": "1px solid #ccc",
+		"position": "relative"
 	},
 	"searchInput": {
-		"width": "150px",
+		"width": "calc( 100% - 96px )",
 		"height": "16px",
-		"border": "0px",
 		"margin-top": "2px",
 		"font-size": "12px",
+		"padding-right" : "22px",
 		"padding-left" : "22px",
-		"background" : "url(../x_component_Selector/$Selector/flow/icon/search.png) 5px center no-repeat rgb(255, 255, 255)",
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/search.png) 5px center / 12px 12px no-repeat rgb(255, 255, 255)",
 		"border" : "1px solid #e3e4e8",
 		"float": "left",
 		"outline": "none"
+	},
+	"letterActionNode": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/alphabet.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "5px",
+		"top": "4px",
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer"
 	},
 	"searchInputSingle": {
 		"width": "196px",
@@ -259,6 +275,13 @@
 		"height": "36px",
 		"border-bottom": "1px solid #cccccc",
 		"background-color": "#EEE"
+	},
+	"letterContainerNode": {
+		"position": "absolute",
+		"top": "30px",
+		"left": "0px",
+		"width": "100%",
+		"height": "50px"
 	},
 	"letterAreaNode": {
 		"padding": "0px 2px",
