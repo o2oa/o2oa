@@ -118,7 +118,11 @@
 	},
 
 	"contentNode": {
-		"overflow": "hidden"
+		"overflow": "hidden",
+		"font-size": "14px"
+	},
+	"tabContainer": {
+		"height": "44px"
 	},
 	"noSelectableItemText" : {
 		"margin" : "10px auto",
@@ -127,6 +131,7 @@
 		"color" : "#999"
 	},
 	"selectNode": {
+		"position": "relative",
 		"width": "50%",
 		"min-width": "200px",
 		"height": "410px",
@@ -237,7 +242,7 @@
 	"searchInputDiv": {
 		"height": "24px",
 		"line-height": "24px",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"color": "#666666",
 		"background": "transparent",
 		"border-bottom": "1px solid #ccc",
@@ -264,6 +269,15 @@
 		"width": "16px",
 		"cursor": "pointer"
 	},
+	"letterActionNode_active": {
+		"background": "url(../x_component_Selector/$Selector/flow/icon/alphabet_active.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "5px",
+		"top": "4px",
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer"
+	},
 	"searchInputSingle": {
 		"width": "196px",
 		"height": "22px",
@@ -276,15 +290,11 @@
 		"border-bottom": "1px solid #cccccc",
 		"background-color": "#EEE"
 	},
-	"letterContainerNode": {
-		"position": "absolute",
-		"top": "30px",
-		"left": "0px",
-		"width": "100%",
-		"height": "50px"
-	},
 	"letterAreaNode": {
+		"display": "none",
+		"height": "37px",
 		"padding": "0px 2px",
+		"width": "calc( 100% - 4px )",
 		"overflow": "hidden",
 		"border-bottom": "1px solid #cccccc",
 		"background-color": "#f3f3f3"
@@ -336,7 +346,7 @@
 		"padding": "0px 0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"border-bottom": "1px solid #FFF",
 		"color": "#666666",
 		"background": "transparent"
@@ -347,7 +357,7 @@
 		"padding": "0px 0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"color": "#666666",
 		"border-bottom": "1px solid #FFF"
 	},
@@ -357,7 +367,7 @@
 		"padding": "0px 0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"border-bottom": "1px solid #FFF"
 	},
 
@@ -367,7 +377,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"border-bottom": "1px solid #FFF",
-		"background-color": "#F7F7F7"
+		"background-color": "#f5f5f5"
 	},
 	"selectorItem_selected": {
 		"line-height": "26px",
@@ -375,7 +385,7 @@
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"border-bottom": "1px solid #FFF",
-		"background-color": "#F7F7F7"
+		"background-color": "#f4f4f4"
 	},
 	"selectorItemLevelNode": {
 		"width": "0px",
@@ -427,13 +437,13 @@
 		"width": "20px",
 		"height": "26px",
 		"float": "left",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/expand.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_collapse": {
 		"width": "20px",
 		"height": "26px",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"float": "left",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/collapse.png) no-repeat center center"
 	},
@@ -456,7 +466,7 @@
 		"height": "26px",
 		"margin": "0px 26px 0px 46px",
 		"color": "#000",
-		"font-size": "12px",
+		//"font-size": "12px",
 		"font-weight": "bold"
 	},
 	"selectorItemTextNode_selected": {

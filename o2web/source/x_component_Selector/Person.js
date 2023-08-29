@@ -360,7 +360,6 @@ MWF.xApplication.Selector.Person = new Class({
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
         this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
-        this.letterContainerNode = this.node.getElement(".MWF_selector_letterContainerNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
         this.flatCategoryNode = this.node.getElement(".MWF_selector_flatCategoryNode");
@@ -407,7 +406,6 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput );
         if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
-        if (this.letterContainerNode) this.letterContainerNode.setStyles(this.css.letterContainerNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
@@ -475,9 +473,34 @@ MWF.xApplication.Selector.Person = new Class({
             }.bind(this))
         }
 
+        if( this.letterActionNode ){
+            this.letterActionNode.addEvent("click", function () {
+                this.switchLetterArea()
+            }.bind(this))
+        }
+
         this.setEvent();
     },
+    switchLetterArea: function(){
+        var showing = this.letterAreaNode.offsetParent;
+        this.letterAreaNode.setStyle("display", showing ? "none" : "" );
 
+        this.letterActionNode.setStyles( showing ? this.css.letterActionNode : this.css.letterActionNode_active )
+
+        if( this.letterAreaNode.offsetParent )this.loadLetters();
+
+        var height = this.selectNode.getSize().y - this.getOffsetY( this.selectNode );
+
+        if( this.searchInput ){
+            height = height - this.getOffsetY( this.searchInputDiv ) - ( this.searchInputDiv.getStyle("height").toInt() || 0 )
+        }
+
+        if( !showing ){
+            height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 );
+        }
+
+        this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+    },
     getUnitIdentityCount : function(){
 
     },
@@ -652,11 +675,11 @@ MWF.xApplication.Selector.Person = new Class({
             height = height - this.getOffsetY( this.searchInputDiv ) - ( this.searchInputDiv.getStyle("height").toInt() || 0 )
         }
 
-        if( this.options.hasLetter && this.letterAreaNode ){
-            var width = size.x - 18;
-            this.letterAreaNode.setStyle("width", "" + width + "px");
-            this.loadLetters();
-            height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 )
+        if( this.options.hasLetter && this.letterAreaNode){
+            if( this.letterAreaNode.offsetParent ){
+                this.loadLetters();
+                height = height - this.getOffsetY( this.letterAreaNode ) - ( this.letterAreaNode.getStyle("height").toInt() || 0 );
+            }
         }
 
         this.itemAreaScrollNode.setStyle("height", ""+height+"px");
@@ -1276,6 +1299,9 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadLetters: function(){
+        if( this.lettersLoaded )return;
+        this.lettersLoaded = true;
+
         var _self = this;
         var letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
@@ -1290,6 +1316,10 @@ MWF.xApplication.Selector.Person = new Class({
             //letterNode.setStyle("width", ""+w+"px");
             letterNodeCss.width = ""+w+"px";
             letterNodeCss_over.width = ""+w+"px";
+        }else if( this.options.style === "flow" ){
+            var width = ( this.letterAreaNode.getSize().x - this.getOffsetX(this.letterAreaNode) - 10 ) / 13;
+            letterNodeCss.width = ""+width+"px";
+            letterNodeCss_over.width = ""+width+"px";
         }
 
         letters.each(function(l){

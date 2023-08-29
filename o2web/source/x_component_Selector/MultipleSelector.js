@@ -34,6 +34,9 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         if( ["flow"].contains(this.options.style)  ){
             this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
+            this.options.level1Indent = 10;
+            this.options.indent = 20;
+            this.options.tabStyle = "blue_flat";
         }
 
         this.lp = MWF.xApplication.Selector.LP;
@@ -88,12 +91,16 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
-        this.node.setStyle("height", ( container.getSize().y ) + "px");
+        if( layout.mobile ){
+            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        }
 
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
         this.titleOkActionNode = this.node.getElement(".MWF_selector_titleOkActionNode");
+
+        this.titleActionNode = this.node.getElement(".MWF_selector_titleActionNode");
 
         this.tabContainer = this.node.getElement(".MWF_selector_tabContainer");
         this.tabContainer.show();
@@ -101,8 +108,11 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.contentNode = this.node.getElement(".MWF_selector_contentNode");
 
         this.selectNode = this.node.getElement(".MWF_selector_selectNode");
+        this.selectTopNode = this.node.getElement(".MWF_selector_selectTopNode");
+        this.selectTopTextNode = this.node.getElement(".MWF_selector_selectTopTextNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
+        this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
         this.flatCategoryNode = this.node.getElement(".MWF_selector_flatCategoryNode");
@@ -115,6 +125,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.itemSearchAreaScrollNode = this.node.getElement(".MWF_selector_itemSearchAreaScrollNode");
         this.itemSearchAreaNode = this.node.getElement(".MWF_selector_itemSearchAreaNode");
 
+        this.selectedContainerNode = this.node.getElement(".MWF_selector_selectedContainerNode");
+
+        this.selectedTopNode = this.node.getElement(".MWF_selector_selectedTopNode");
+        this.selectedTopTextNode = this.node.getElement(".MWF_selector_selectedTopTextNode");
+        this.emptySelectedNode = this.node.getElement(".MWF_selector_emptySelectedNode");
+
         this.selectedScrollNode = this.node.getElement(".MWF_selector_selectedScrollNode");
         this.selectedNode = this.node.getElement(".MWF_selector_selectedNode");
         this.selectedItemSearchAreaNode = this.node.getElement(".MWF_selector_selectedItemSearchAreaNode");
@@ -123,11 +139,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.okActionNode = this.node.getElement(".MWF_selector_okActionNode");
         this.cancelActionNode = this.node.getElement(".MWF_selector_cancelActionNode");
 
-        if (this.titleNode) this.titleNode.setStyles(this.css.titleNodeMobile);
+        if (this.titleNode) this.titleNode.setStyles( layout.mobile ? this.css.titleNodeMobile : this.css.titleNode );
         if (this.titleTextNode){
-            this.titleTextNode.setStyles(this.css.titleTextNodeMobile);
+            this.titleTextNode.setStyles(layout.mobile ? this.css.titleTextNodeMobile : this.css.titleTextNode);
             if(this.options.title)this.titleTextNode.set("text", this.options.title);
         }
+        if (this.titleActionNode)this.titleActionNode.setStyles(this.css.titleActionNode);
         if (this.titleCancelActionNode) this.titleCancelActionNode.setStyles(this.css.titleCancelActionNodeMobile);
         if (this.titleOkActionNode) this.titleOkActionNode.setStyles(this.css.titleOkActionNodeMobile);
 
@@ -135,15 +152,23 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
 
-        if (this.selectNode) this.selectNode.setStyles(this.css.selectNodeMobile);
+        if (this.selectNode) this.selectNode.setStyles( layout.mobile ? this.css.selectNodeMobile : this.css.selectNode);
+        if (this.selectTopNode)this.selectTopNode.setStyles(this.css.selectTopNode);
+        if (this.selectTopTextNode)this.selectTopTextNode.setStyles(this.css.selectTopTextNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput );
+         if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
 
         if (this.itemSearchAreaScrollNode) this.itemSearchAreaScrollNode.setStyles(this.css.itemSearchAreaScrollNode);
         if (this.itemSearchAreaNode) this.itemSearchAreaNode.setStyles(this.css.itemAreaNode);
+
+        if (this.selectedContainerNode)this.selectedContainerNode.setStyles(this.css.selectedContainerNode);
+        if (this.selectedTopNode)this.selectedTopNode.setStyles(this.css.selectedTopNode);
+        if (this.selectedTopTextNode)this.selectedTopTextNode.setStyles(this.css.selectedTopTextNode);
+        if (this.emptySelectedNode)this.emptySelectedNode.setStyles(this.css.selectedTopActionNode);
 
         if (this.selectedScrollNode) this.selectedScrollNode.setStyles(this.css.selectedScrollNode);
         if (this.selectedNode) this.selectedNode.setStyles(this.css.selectedNode);
@@ -159,10 +184,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
         }
 
+
+        this.node.inject( container );
+
         var size;
         if( this.options.injectToBody ){
             size = $(document.body).getSize();
-        }else{
+        }else if( layout.mobile ){
             var containerSize = this.container.getSize();
             var bodySize = $(document.body).getSize();
             if(containerSize.y === 0){
@@ -173,21 +201,42 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 "x" : Math.min( containerSize.x, bodySize.x ),
                 "y" : Math.min( containerSize.y, bodySize.y )
             };
+
+
+            var zoom = this.node.getStyle("zoom").toInt() || 0;
+            if( zoom ){
+                size.x = size.x * 100 / zoom;
+                size.y = size.y * 100 / zoom;
+            }
+            this.node.setStyles({
+                "width" : size.x+"px",
+                "height" : size.y+"px"
+            });
+        }else{
+            debugger;
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
+            this.node.position({
+                relativeTo: this.container,
+                position: "center",
+                edge: "center"
+            });
+
+            size = this.container.getSize();
+            var nodeSize = this.node.getSize();
+            this.node.makeDraggable({
+                "handle": this.titleNode,
+                "limit": {
+                    "x": [0, size.x - nodeSize.x],
+                    "y": [0, size.y - nodeSize.y]
+                }
+            });
         }
-        var zoom = this.node.getStyle("zoom").toInt() || 0;
-        if( zoom ){
-            size.x = size.x * 100 / zoom;
-            size.y = size.y * 100 / zoom;
-        }
-        this.node.setStyles({
-            "width" : size.x+"px",
-            "height" : size.y+"px"
-        });
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
-        var height;
 
-        var height = size.y-this.getOffsetY( this.contentNode );
+        var height = this.node.getSize().y-this.getOffsetY( this.contentNode );
         if( this.tabContainer ){
             height = height - this.getOffsetY( this.tabContainer ) - ( this.tabContainer.getStyle("height").toInt() || 0 )
         }
@@ -211,8 +260,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.loadAction();
         }
 
-        this.node.inject( container );
-        if( !this.options.embedded ){
+        if( !this.options.embedded && layout.mobile ){
             this.node.setStyles({
                 "top": "0px",
                 "left": "0px"
@@ -422,36 +470,40 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if( this.options.contentUrl ){
             MWF.require("MWF.widget.Tab", function(){
 
-                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle });
+                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle || "default" });
 
                 var width;
-                if( this.tabContainer ){
-                    var borderWidth = 0;
-                    if( this.tab.css.tabNode ){
-                        if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
-                        if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
-                    }
+                if( layout.mobile ){
+                    if( this.tabContainer ){
+                        var borderWidth = 0;
+                        if( this.tab.css.tabNode ){
+                            if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
+                            if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
+                        }
 
-                    var tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
+                        var tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
 
-                    if( this.tab.css.tabNode ){
-                        this.tab.css.tabNode["width"] = tabWidth;
-                    }
-                    if( this.tab.css.tabNodeCurrent ){
-                        this.tab.css.tabNodeCurrent["width"] = tabWidth;
+                        if( this.tab.css.tabNode ){
+                            this.tab.css.tabNode["width"] = tabWidth;
+                        }
+                        if( this.tab.css.tabNodeCurrent ){
+                            this.tab.css.tabNodeCurrent["width"] = tabWidth;
+                        }
+                    }else{
+                        width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
+                        var w = width / this.options.types.length - 2;
+                        var tabWidth = w < 60 ? w : 60;
+                        if( this.tab.css.tabNode ){
+                            this.tab.css.tabNode["min-width"] = tabWidth+"px";
+                        }
+                        if( this.tab.css.tabNodeCurrent ){
+                            this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
+                        }
                     }
                 }else{
-                    width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
-                    var w = width / this.options.types.length - 2;
-                    var tabWidth = w < 60 ? w : 60;
-                    if( this.tab.css.tabNode ){
-                        this.tab.css.tabNode["min-width"] = tabWidth+"px";
-                    }
-                    if( this.tab.css.tabNodeCurrent ){
-                        this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
-                    }
+                    this.tab = new MWF.widget.Tab(this.tabContainer, {"style": this.options.tabStyle || "default" });
+                    this.tab.load();
                 }
-
                 this.tab.load();
                 this.tab.contentNodeContainer.inject(this.contentNode);
             }.bind(this), false);
@@ -544,11 +596,18 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     pageNode.set("html", this.contentHTML);
                     pageNode.setStyle("height", this.contentHeight);
                     selector.selectNode = pageNode.getElement(".MWF_selector_selectNode");
+                    selector.selectTopNode = pageNode.getElement(".MWF_selector_selectTopNode");
+                    selector.selectTopTextNode = pageNode.getElement(".MWF_selector_selectTopTextNode");
                     selector.searchInputDiv = pageNode.getElement(".MWF_selector_searchInputDiv");
                     selector.searchInput = pageNode.getElement(".MWF_selector_searchInput");
+                    selector.letterActionNode = pageNode.getElement(".MWF_selector_letterActionNode");
 
                     selector.flatCategoryScrollNode = pageNode.getElement(".MWF_selector_flatCategoryScrollNode");
                     selector.flatCategoryNode = pageNode.getElement(".MWF_selector_flatCategoryNode");
+                    if( this.options.flatCategory && selector.flatCategoryScrollNode ){
+                        selector.isFlatCategory = true;
+                        selector.flatSubCategoryNodeList = [];
+                    }
 
                     selector.letterAreaNode = pageNode.getElement(".MWF_selector_letterAreaNode");
 
@@ -558,14 +617,16 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     selector.itemSearchAreaScrollNode = pageNode.getElement(".MWF_selector_itemSearchAreaScrollNode");
                     selector.itemSearchAreaNode = pageNode.getElement(".MWF_selector_itemSearchAreaNode");
 
+                    selector.selectedContainerNode = pageNode.getElement(".MWF_selector_selectedContainerNode");
+
+                    selector.selectedTopNode = pageNode.getElement(".MWF_selector_selectedTopNode");
+                    selector.selectedTopTextNode = pageNode.getElement(".MWF_selector_selectedTopTextNode");
+                    selector.emptySelectedNode = pageNode.getElement(".MWF_selector_emptySelectedNode");
+
                     selector.selectedScrollNode = pageNode.getElement(".MWF_selector_selectedScrollNode");
                     selector.selectedNode = pageNode.getElement(".MWF_selector_selectedNode");
                     selector.selectedItemSearchAreaNode = pageNode.getElement(".MWF_selector_selectedItemSearchAreaNode");
 
-                    if( this.options.flatCategory && selector.flatCategoryScrollNode ){
-                        selector.isFlatCategory = true;
-                        selector.flatSubCategoryNodeList = [];
-                    }
 
                     selector.loadContent( pageNode, true );
 
