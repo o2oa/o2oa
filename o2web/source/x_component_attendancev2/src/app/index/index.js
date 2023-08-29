@@ -110,7 +110,7 @@ export default content({
   async loadCurrentPersonInfo() {
     content.myDutyList = [];
     this.bind.admin = "";
-    if (o2.AC.isAttendanceManager() && o2.AC.isAdministrator()) {
+    if (o2.AC.isAttendanceManager() || o2.AC.isAdministrator()) {
       this.bind.admin = "admin";
     } else {
       const personInfo = await personalAction("get");
