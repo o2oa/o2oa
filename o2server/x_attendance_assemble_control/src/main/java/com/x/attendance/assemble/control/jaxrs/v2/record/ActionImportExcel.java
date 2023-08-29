@@ -83,7 +83,7 @@ public class ActionImportExcel extends BaseAction {
             }
             ActionResult<Wo> result = new ActionResult<>();
             // 存储 excel 文件
-            String name = "attendance_record_data_input_" + DateTools.formatDate(new Date()) + ".xlsx";
+            String name = "attendance_record_data_input_" + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".xlsx";
             workbook.write(os);
             StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
             GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,

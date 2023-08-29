@@ -128,7 +128,7 @@ public class ActionImportExcel extends BaseAction {
                 }
             }
             ActionResult<Wo> result = new ActionResult<>();
-            String name = "attendance_leave_data_input_" + DateTools.formatDate(new Date()) + ".xlsx";
+            String name = "attendance_leave_data_input_" + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".xlsx";
             workbook.write(os);
             String flag = saveAttachment(os.toByteArray(), name, effectivePerson);
             Wo wo = new Wo();
