@@ -21,7 +21,7 @@ public class CommandThreads {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandThreads.class);
 
-	private static volatile boolean isRunning = true;
+	private static volatile boolean running = true;
 
 	private static Thread commandFromConsoleThread;
 	private static Thread commandFromFileThread;
@@ -29,8 +29,6 @@ public class CommandThreads {
 
 	public static void join() {
 		try {
-			commandFromConsoleThread.join();
-			commandFromFileThread.join();
 			commandExecuteThread.join();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -43,7 +41,7 @@ public class CommandThreads {
 	}
 
 	public static void start(LinkedBlockingQueue<String> commandQueue) {
-		isRunning = true;
+		running = true;
 		commandFromConsoleThread = createCommandFromConsoleThread(commandQueue);
 		commandFromFileThread = createCommandFromFileThread(commandQueue);
 		commandExecuteThread = createCommandExecuteThread(commandQueue);
@@ -53,8 +51,8 @@ public class CommandThreads {
 	}
 
 	public static void stop() {
-		isRunning = false;
-		if (null != commandFromConsoleThread) {
+		running = false;
+		if (null != commandFromConsoleThread && commandFromConsoleThread.isAlive()) {
 			commandFromConsoleThread.interrupt();
 		}
 		if (null != commandFromFileThread) {
@@ -67,14 +65,15 @@ public class CommandThreads {
 
 	private static Thread createCommandFromConsoleThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			while (isRunning) {
+			Console console;
+			while (running && ((console = System.console()) != null)) {
 				try {
-					fromConsole(commandQueue);
-					Thread.sleep(2000);
+					fromConsole(commandQueue, console);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				} catch (IOError ioe) {
-					// nothing
+					break;
 				}
 			}
 		}, "commandFromConsoleThread");
@@ -82,7 +81,7 @@ public class CommandThreads {
 
 	private static Thread createCommandFromFileThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			while (isRunning) {
+			while (running) {
 				try {
 					fromFile(commandQueue);
 					Thread.sleep(2000);
@@ -126,8 +125,8 @@ public class CommandThreads {
 	 * @throws InterruptedException
 	 * @throws
 	 */
-	private static void fromConsole(LinkedBlockingQueue<String> commandQueue) throws InterruptedException {
-		Console console = System.console();
+	private static void fromConsole(LinkedBlockingQueue<String> commandQueue, Console console)
+			throws InterruptedException {
 		if (null != console) {
 			String consoleCmd = console.readLine();
 			if (null != consoleCmd) {
@@ -138,7 +137,7 @@ public class CommandThreads {
 
 	private static Thread createCommandExecuteThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			while (isRunning) {
+			while (running) {
 				try {
 					String cmd = commandQueue.take();
 					if (StringUtils.isNotBlank(cmd)) {
