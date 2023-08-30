@@ -16,7 +16,7 @@ import com.x.processplatform.core.express.ticket.Ticket;
 import com.x.processplatform.core.express.ticket.Tickets;
 	
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SingleAddBeforeSingleTest {
+class QueueAddBeforeSingleTest {
 
 	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
 			new Ticket("C", "LC"));
@@ -25,21 +25,27 @@ class SingleAddBeforeSingleTest {
 	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
 			new Ticket("K", "LK"));
 
-	@DisplayName("")
+	@DisplayName("A前加签EFG,EFG任意处理")
 	@Test
 	@Order(1)
 	void test01() {
-		Tickets tickets = Tickets.single(p1);
+		Tickets tickets = Tickets.queue(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("A,B,C", value);
-		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
+		Assertions.assertEquals("A", value);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, true, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LF");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("A", value);
+		tickets.completed("LA");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("B", value);
 		tickets.completed("LB");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("C", value);
+		tickets.completed("LC");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}

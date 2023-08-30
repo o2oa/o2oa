@@ -15,6 +15,7 @@ class SingleAdd implements Add {
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsFellow(targets).stream().forEach(o -> o.fellow(targets).next(next));
 		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
+		ticket.clearSibling();
 	}
 
 	@Override
@@ -28,6 +29,7 @@ class SingleAdd implements Add {
 		fellow.add(list.get(0));
 		Tickets.interconnectedAsFellow(fellow);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.next(list.get(0)));
+		ticket.clearSibling();
 	}
 
 	@Override
@@ -40,6 +42,7 @@ class SingleAdd implements Add {
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> o.next(next));
 		tickets.listNextTo(ticket).stream().forEach(o -> o.next(targets));
+		ticket.clearSibling().clearFellow();
 	}
 
 	private void afterCommon(Tickets tickets, Ticket ticket) {
