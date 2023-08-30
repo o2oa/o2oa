@@ -88,7 +88,7 @@ public class ActionStatisticExportExcel extends BaseAction {
             if (name.contains("@")) {
                 name = name.split("@")[0];
             }
-            String fileName = name+"的考勤统计_"+start + "-" + end + "_" +DateTools.format(new Date())+".xlsx";
+            String fileName = name+"的考勤统计_"+start + "-" + end + "_" +DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss)+".xlsx";
             wb.write(os);
             StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
             GeneralFile generalFile = new GeneralFile(gfMapping.getName(), fileName,
