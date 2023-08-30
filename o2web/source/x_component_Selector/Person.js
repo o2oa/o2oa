@@ -465,18 +465,10 @@ MWF.xApplication.Selector.Person = new Class({
                     }
                 });
             }
-        }
-
-        if( this.emptySelectedNode ){
-            this.emptySelectedNode.addEvent("click", function () {
-                this.emptySelectedItems()
-            }.bind(this))
-        }
-
-        if( this.letterActionNode ){
-            this.letterActionNode.addEvent("click", function () {
-                this.switchLetterArea()
-            }.bind(this))
+        }else{
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
         }
 
         this.setEvent();
@@ -696,8 +688,20 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.initLoadSelectItems();
         this.checkLoadSelectItems();
+
+        if( this.letterActionNode ){
+            this.letterActionNode.addEvent("click", function () {
+                this.switchLetterArea()
+            }.bind(this))
+        }
     },
     loadSelectedNodeHTML: function(){
+
+        if( this.emptySelectedNode ){
+            this.emptySelectedNode.addEvent("click", function () {
+                this.emptySelectedItems()
+            }.bind(this))
+        }
 
         this.setSelectedItem();
 
@@ -1877,7 +1881,7 @@ MWF.xApplication.Selector.Person = new Class({
             if( !this.options.searchbarInTopNode && this.selectTopNode ){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.selectTopNode ) - this.selectTopNode.getStyle("height").toInt();
             }
-            if(this.letterAreaNode ){
+            if(this.letterAreaNode && this.letterAreaNode.offsetParent){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.letterAreaNode ) - this.letterAreaNode.getStyle("height").toInt();
             }
             itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.itemAreaScrollNode );

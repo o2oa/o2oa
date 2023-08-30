@@ -358,7 +358,7 @@ MWF.ProcessFlow.Opinion = new Class({
     outItemNode: function (ev) {
         ev.target.removeClass("mainColor_bg_opacity")
     }
-})
+});
 
 MWF.ProcessFlow.Reset = new Class({
     Extends: MWF.widget.Common,
@@ -377,14 +377,16 @@ MWF.ProcessFlow.Reset = new Class({
         this.load();
     },
     load: function(){
-        var url = this.flow.path+this.flow.options.style+"/addTask.html";
-        this.container.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
+        this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp}, "module": this}, function(){
             this.opinion = new MWF.ProcessFlow.Opinion( this.opinionContent, this.flow );
             this.opinion.load();
 
             this.loadOrg();
             this.fireEvent("postLoad");
         }.bind(this));
+    },
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/reset.html";
     },
     show: function(){
 
@@ -528,9 +530,9 @@ MWF.ProcessFlow.Reset = new Class({
         } else {
             defaultOpt = {
                 "type": "identity",
-                "style": "process",
+                "style": "flow",
                 "width": "auto",
-                "height": "240",
+                "height": "275",
                 "count": this.businessData.activity.resetCount || 0,
                 "embedded": true,
                 "hasLetter": false, //字母
@@ -623,6 +625,9 @@ MWF.ProcessFlow.Reset = new Class({
 
 MWF.ProcessFlow.AddTask = new Class({
     Extends: MWF.ProcessFlow.Reset,
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/addTask.html";
+    }
     // load: function(){
     //     this.content = this.container;
     //
@@ -2002,9 +2007,9 @@ MWF.ProcessFlow.Processor.Org = new Class({
     },
     getDefaultOptions: function(){
         return {
-            "style": "process",
+            "style": "flow",
             "width": "auto",
-            "height": "240",
+            "height": "275",
             "embedded": true,
             "hasLetter": false, //字母
             "hasTop": true //可选、已选的标题

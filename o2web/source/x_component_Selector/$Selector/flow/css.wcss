@@ -260,6 +260,18 @@
 		"float": "left",
 		"outline": "none"
 	},
+	"searchInputSingle": {
+		"width": "calc( 100% - 96px )",
+		"height": "16px",
+		"margin-top": "2px",
+		"font-size": "12px",
+		"padding-right" : "22px",
+		"padding-left" : "22px",
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/search.png) 5px center / 12px 12px no-repeat rgb(255, 255, 255)",
+		"border" : "1px solid #e3e4e8",
+		"float": "left",
+		"outline": "none"
+	},
 	"letterActionNode": {
 		"background" : "url(../x_component_Selector/$Selector/flow/icon/alphabet.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",
 		"position": "absolute",
@@ -277,12 +289,6 @@
 		"height": "16px",
 		"width": "16px",
 		"cursor": "pointer"
-	},
-	"searchInputSingle": {
-		"width": "196px",
-		"height": "22px",
-		"border": "0px",
-		"margin": "3px"
 	},
 	"letterAreaMobileNode": {
 		"padding": "0px 9px",
@@ -453,6 +459,12 @@
 		"margin-right": "10px",
 		"float": "right",
 		"background": "url(../x_component_Selector/$Selector/flow/icon/selectall.png) no-repeat center center"
+	},
+	"selectorItemCategoryActionNode_empty": {
+		"width": "20px",
+		"height": "26px",
+		"margin-right": "10px",
+		"float": "right"
 	},
 
 	"selectorItemTextNode": {

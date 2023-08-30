@@ -32,6 +32,7 @@ MWF.xApplication.Selector.Unit = new Class({
         this._loadSelectItems();
     },
     _loadSelectItems: function(){
+
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
 
         if (this.options.units.length){
@@ -354,6 +355,15 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             "styles": this.selector.css.selectorItemLevelNode
         }).inject(this.node);
         var indent = this.selector.options.level1Indent + (this.level-1)*this.selector.options.indent;
+
+        if(this.selector.options.style === "flow"){
+            if (this.level === 1) {
+                indent = 26;
+            } else {
+                indent = 26 + ( this.level - 1 ) * this.selector.options.indent;
+            }
+        }
+
         this.levelNode.setStyle("width", ""+indent+"px");
 
         this.iconNode = new Element("div", {
@@ -455,7 +465,10 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 this.selectAllNode = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryActionNode_selectAll,
                     "title" : MWF.SelectorLP.selectChildren
-                }).inject(this.textNode, "before");
+                }).inject(
+                    this.selector.options.style === "flow" ? this.iconNode : this.textNode,
+                    "before"
+                );
                 this.selectAllNode.addEvent( "click", function(ev){
                     if( this.isSelectedAll ){
                         // this.unselectAll(ev);
@@ -488,6 +501,13 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     })
                 }
             }
+        }else if( !this.selectAllNode && this.selector.options.count.toInt() !== 1 && this.selector.options.style === "flow" ){
+            new Element("div", {
+                "styles": this.selector.css.selectorItemCategoryActionNode_empty
+            }).inject(
+                this.selector.options.style === "flow" ? this.iconNode : this.textNode,
+                "before"
+            );
         }
 
         //this.actionNode.setStyles((this.selector.options.expand) ? this.selector.css.selectorItemCategoryActionNode_expand : this.selector.css.selectorItemCategoryActionNode_collapse);
@@ -682,15 +702,6 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 this.levelNode.setStyle("width", "" + indent + "px");
             }
         }
-        //}else if( this.selector.options.style === "blue_flat_mobile" ){
-        //    if( this.level === 1 ){
-        //        var indent = 40;
-        //        this.levelNode.setStyle("width", ""+indent+"px");
-        //    }else{
-        //        var indent = 40 + ( this.level -1 ) * this.selector.options.indent ;
-        //        this.levelNode.setStyle("width", ""+indent+"px");
-        //    }
-        //}
     },
 
 

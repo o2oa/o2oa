@@ -85,7 +85,8 @@ MWF.xApplication.process.Work.LP = {
     },
     "opinion": "意见",
     "addTaskPerson": "加签人",
-    "inputOpinionNote": "请在此处填写意见"
+    "inputOpinionNote": "请在此处填写意见",
+    "resetTo": "重置给"
 
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;
