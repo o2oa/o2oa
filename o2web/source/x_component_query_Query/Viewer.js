@@ -782,6 +782,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
                         }
+                        this.fireEvent("loadView"); //options 传入的事件
                         this.fireEvent("postLoad"); //用户配置的事件
                         this.lookuping = false;
                         if(callback)callback(this);
