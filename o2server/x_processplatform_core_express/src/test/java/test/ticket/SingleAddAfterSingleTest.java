@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -29,6 +30,7 @@ class SingleAddAfterSingleTest {
 
 	@DisplayName("B加签EFG,FEG任意处理")
 	@Test
+	@Order(1)
 	void test01() {
 		Tickets tickets = Tickets.single(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
