@@ -112,13 +112,13 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.reset = new MWF.ProcessFlow.Reset(
             this.resetContentNode,
             this,
-            {
+            Object.merge( this.options.resetOptions, {
                 onPostLoad: function () {
                     if( this.firstActionLoaded )return;
                     this.firstActionLoaded = true;
                     this.checkPostLoad();
                 }.bind(this)
-            }
+            })
         );
     },
     loadAddTask: function(){
@@ -126,13 +126,13 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.addTask = new MWF.ProcessFlow.AddTask(
             this.addTaskContentNode,
             this,
-            {
+            Object.merge( this.options.addTaskOptions, {
                 onPostLoad: function () {
                     if( this.firstActionLoaded )return;
                     this.firstActionLoaded = true;
                     this.checkPostLoad();
                 }.bind(this)
-            }
+            })
         );
     },
     loadQuickSelect: function(){
@@ -201,7 +201,17 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         var node = ev.target;
         while (node && !node.hasClass(className)){ node = node.getParent();}
         return node;
-    }
+    },
+    noticeError: function( text, node, offset, position ){
+        MWF.xDesktop.notice(
+            "error",
+            position || {"x": "center", "y": "center"},
+            text,
+            node || this.node,
+            offset === null ? null : ( offset || {"x": 0, "y": 30} ),
+            {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+        );
+    },
 });
 
 MWF.ProcessFlow.Reset = new Class({
@@ -222,7 +232,10 @@ MWF.ProcessFlow.Reset = new Class({
     },
     load: function(){
         this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp}, "module": this}, function(){
-            this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow );
+
+            var opt = Object.clone(this.flow.options.opinionOptions);
+            opt.isHandwriting = this.options.isHandwriting;
+            this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
             this.opinion.load();
 
             this.loadOrg();
@@ -246,30 +259,6 @@ MWF.ProcessFlow.Reset = new Class({
         });
         this.keepOption.load();
     },
-    // setButtons: function () {
-    //     this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
-    //     var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
-    //     var textNode = new Element("div", {
-    //         "styles": this.css.cancelTextNode,
-    //         "text": MWF.xApplication.process.Work.LP.cancel
-    //     }).inject(this.cancelButton);
-    //
-    //     this.okButton = new Element("div", {"styles": this.css.okButton}).inject(this.buttonsArea);
-    //     var iconNode = new Element("div", {"styles": this.css.okIconNode}).inject(this.okButton);
-    //     var textNode = new Element("div", {
-    //         "styles": this.css.okTextNode,
-    //         "text": MWF.xApplication.process.Work.LP.ok
-    //     }).inject(this.okButton);
-    //
-    //     this.cancelButton.addEvent("click", function () {
-    //         this.destroy();
-    //         this.fireEvent("cancel");
-    //     }.bind(this));
-    //
-    //     this.okButton.addEvent("click", function (ev) {
-    //
-    //     }.bind(this));
-    // },
     loadOrg: function(){
         this.getSelOptions( function (options) {
             this.selector = new MWF.O2Selector(this.orgsArea, options)
@@ -285,7 +274,7 @@ MWF.ProcessFlow.Reset = new Class({
         }.bind(this))
     },
     _getSelOptions: function (exclude, callback) {
-        var options = this.getDefaultOptions();
+        var options = this.getSelDefaultOptions();
 
         var range = this.businessData.activity.resetRange || "department";
         switch (range) {
@@ -314,13 +303,13 @@ MWF.ProcessFlow.Reset = new Class({
                     options.include = typeOf(resetRange) === "array" ? resetRange : [resetRange];
                     options.exclude = exclude;
                     callback( options );
-                }.bind(this))
+                }.bind(this));
                 break;
             default:
                 callback( options );
         }
     },
-    getDefaultOptions: function(){
+    getSelDefaultOptions: function(){
         var defaultOpt;
         if (layout.mobile) {
             defaultOpt = {
@@ -347,73 +336,31 @@ MWF.ProcessFlow.Reset = new Class({
         }
         return defaultOpt;
     },
-
-
-    doResetWork: function () {
-        var names = this.identityList || [];
+    getSelOrgData: function () {
+        var data;
+        if (this.selector && this.selector.selector) {
+            data = this.selector.selector.selectedItems.each(function (item) {
+                return item.data.distinguishedName;
+                // return MWF.org.parseOrgData(item.data, true, simple);
+            })
+        }
+        return data || [];
+    },
+    submit: function () {
+        var names = this.getSelOrgData();
         if (!names.length) {
-            this.app.notice(MWF.xApplication.process.Xform.LP.inputResetPeople, "error", this.node);
+            this.flow.noticeError(MWF.xApplication.process.Xform.LP.inputResetPeople);
             return false;
         }
-        var opinion = $("resetWork_opinion").get("value");
-        var checkbox = this.content.getElement(".resetWork_keepOption");
-        var keep = (checkbox.checked);
+        var opinion = this.opinion.getValue();
+        var keep = this.keepOption.getValue();
 
         var nameText = [];
         names.each(function (n) { nameText.push(MWF.name.cn(n)); });
         if (!opinion) {
             opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
         }
-
-        MWF.require("MWF.widget.Mask", function () {
-            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            this.mask.loadNode(this.app.content);
-
-            this.fireEvent("beforeReset");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
-
-            this.resetWorkToPeson(names, opinion, keep, function (workJson) {
-                //this.workAction.loadWork(function (workJson) {
-                this.fireEvent("afterReset");
-                if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
-                this.addResetMessage(workJson.data);
-                //this.app.notice(MWF.xApplication.process.Xform.LP.resetOk + ": " + MWF.name.cns(names).join(", "), "success");
-                if (!this.app.inBrowser) this.app.close();
-                //}.bind(this), null, this.businessData.work.id);
-                dlg.close();
-                if (this.mask) { this.mask.hide(); this.mask = null; }
-            }.bind(this), function (xhr, text, error) {
-                var errorText = error + ":" + text;
-                if (xhr) errorText = xhr.responseText;
-                this.app.notice("request json error: " + errorText, "error", dlg.node);
-                if (this.mask) { this.mask.hide(); this.mask = null; }
-            }.bind(this));
-        }.bind(this));
-    },
-    resetWorkToPeson: function (identityList, opinion, keep, success, failure) {
-        var data = {
-            "opinion": opinion,
-            "routeName": MWF.xApplication.process.Xform.LP.reset,
-            "identityList": identityList,
-            "keep": !!keep
-        };
-        this.saveFormData(
-            function (json) {
-                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Reset(
-                    //this.workAction.resetWork(
-                    function (json) {
-                        if (success) success(json);
-                    }.bind(this),
-                    function (xhr, text, error) {
-                        if (failure) failure(xhr, text, error);
-                    },
-                    this.businessData.task.id, data
-                );
-            }.bind(this),
-            function (xhr, text, error) {
-                if (failure) failure(xhr, text, error);
-            }, true, null, true
-        );
+        this.fireEvent("submit", [names, opinion, keep]);
     },
     destroy: function () {
         if (this.orgItem && this.orgItem.clearTooltip){
@@ -1089,7 +1036,7 @@ MWF.ProcessFlow.Processor = new Class({
     submit: function (ev) {
         if (this.hasRouteGroup && !this.selectedRouteGroup) {
             this.routeGroupArea.setStyle("background-color", "#ffe9e9");
-            this.noticeError(
+            this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
                 this.routeGroupArea,
                 null,  //{"x": 0, "y": 30}
@@ -1100,7 +1047,7 @@ MWF.ProcessFlow.Processor = new Class({
 
         if (!this.selectedRouteNode) {
             this.routeArea.setStyle("background-color", "#ffe9e9");
-            this.noticeError(
+            this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRoute,
                 this.routeArea,
                 null,  //{"x": 0, "y": 30}
@@ -1121,7 +1068,7 @@ MWF.ProcessFlow.Processor = new Class({
         if (!opinion && medias.length === 0) {
             if (routeData.opinionRequired == true) {
                 this.opinionTextarea.setStyle("background-color", "#ffe9e9");
-                this.noticeError(
+                this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.opinionRequired,
                     this.opinionTextarea,
                     null,
@@ -1134,7 +1081,7 @@ MWF.ProcessFlow.Processor = new Class({
         var appendTaskOrgItem = "";
         if (routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select") {
             if (!this.orgItems || this.orgItems.length === 0) {
-                this.noticeError(
+                this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
                     this.node,
                     null
@@ -1150,7 +1097,7 @@ MWF.ProcessFlow.Processor = new Class({
             if (appendTaskOrgItem) {
                 appandTaskIdentityList = appendTaskOrgItem.getData();
                 if (!appandTaskIdentityList || appandTaskIdentityList.length === 0) {
-                    this.noticeError(
+                    this.flow.noticeError(
                         MWF.xApplication.process.Work.LP.selectAppendTaskIdentityNotice,
                         this.node
                     );
@@ -1162,11 +1109,11 @@ MWF.ProcessFlow.Processor = new Class({
                 var validation = this.form.Macro.exec(routeData.validationScriptText, this);
                 if (!validation || validation.toString() !== "true") {
                     if (typeOf(validation) === "string") {
-                        this.noticeError( validation, this.node );
+                        this.flow.noticeError( validation, this.node );
                         return false;
                     } else {
                         //"路由校验失败"
-                        this.noticeError(
+                        this.flow.noticeError(
                             MWF.xApplication.process.Work.LP.routeValidFailure,
                             this.node
                         );
@@ -1192,17 +1139,6 @@ MWF.ProcessFlow.Processor = new Class({
 
             this.fireEvent("submit", array);
         }.bind(this))
-    },
-
-    noticeError: function( text, node, offset, position ){
-        MWF.xDesktop.notice(
-            "error",
-            position || {"x": "center", "y": "center"},
-            text,
-            node || this.node,
-            offset === null ? null : ( offset || {"x": 0, "y": 30} ),
-            {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
-        );
     },
 
     destroy: function () {
@@ -2850,7 +2786,16 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
 });
 
 MWF.ProcessFlow.widget.Opinion = new Class({
-    initialize: function( container, flow ){
+    Implements: [Options, Events],
+    options: {
+        isHandwriting: false,
+        opinion: "",
+        tabletToolHidden: [],
+        tabletWidth: 0,
+        tabletHeight: 0
+    },
+    initialize: function( container, flow, options ){
+        this.setOptions( options );
         this.container = container;
         this.flow = flow;
         this.lp = flow.lp;
@@ -2887,9 +2832,18 @@ MWF.ProcessFlow.widget.Opinion = new Class({
     },
     loadDom: function(){
         var url = this.flow.path+this.flow.options.style+"/widget/opinion.html";
-        this.container.loadHtml(url, {"bind": {"lp": this.lp, "opinionList": this.opinionList}, "module": this}, function(){
+        this.container.loadHtml(url, {
+                "bind": {
+                    "lp": this.lp, "opinionList": this.opinionList, "opinion": this.options.opinion || ""
+                },
+                "module": this
+            }, function(){
 
-        }.bind(this));
+            }.bind(this)
+        );
+    },
+    getValue: function(){
+        return this.opinionTextarea.get("value");
     },
     selectOpinion: function( opinion ){
         var op = this.opinionTextarea.get("value");

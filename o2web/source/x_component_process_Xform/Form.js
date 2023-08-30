@@ -2485,7 +2485,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         }
-        this.loadFlow(flowNode, "process", function (flow) {
+        this.loadFlow(flowNode, "default", function (flow) {
             this.flowDlg = o2.DL.open({
                 "title": this.app.lp.flowWork,
                 "style": this.json.dialogStyle || "user",
@@ -2509,7 +2509,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                 this.flowTimer = null;
                             }
                             this.flowTimer = setTimeout(function(){
-                                if (this.flow) this.flow.okButton.click();
+                                if (this.flow) this.flow.submit();
                                 this.flowTimer = null;
                             }.bind(this), 200)
                         }.bind(this)
@@ -2546,66 +2546,107 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
 
         var options = {
+            "style": (layout.mobile) ? "mobile" : (style || "default"),
             "onResize": function () {
                 if (resizeFun) resizeFun();
             },
             "onPostLoad": function () {
                 if (postLoadFun) postLoadFun(this);
-            }
-        };
-
-        var processOptions = {
-            "style": (layout.mobile) ? "mobile" : (style || "default"),
-            "opinion": op.opinion,
-            "isHandwriting": this.json.isHandwriting === "no" ? false : true,
-            "tabletToolHidden": this.json.tabletToolHidden || [],
-            "tabletWidth": this.json.tabletWidth || 0,
-            "tabletHeight": this.json.tabletHeight || 0,
-            "defaultRoute": defaultRoute,
-            "onPostLoad": function () {
-                //if (postLoadFun) postLoadFun(this);
-
-                //? _self.fireEvent("afterLoadProcessor", [this]);
             },
             "onCancel": function () {
                 hanlderNode.destroy();
                 _self.app.content.unmask();
                 delete this;
             },
-            "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
-                if (!medias || !medias.length) {
-                    medias = mds;
-                } else {
-                    medias = medias.concat(mds)
-                }
+            "opinionOptions": {
+                "opinion": op.opinion,
+                "tabletToolHidden": this.json.tabletToolHidden || [],
+                "tabletWidth": this.json.tabletWidth || 0,
+                "tabletHeight": this.json.tabletHeight || 0,
+            },
+            "processOptions": {
+                "defaultRoute": defaultRoute,
+                "isHandwriting": this.json.isHandwriting === "no" ? false : true,
+                "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
+                    if (!medias || !medias.length) {
+                        medias = mds;
+                    } else {
+                        medias = medias.concat(mds)
+                    }
 
-                var promise;
-                if (_self.toWordSubmitList && _self.toWordSubmitList.length){
-                    var p = [];
-                    _self.toWordSubmitList.each(function(editor){
-                        if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
-                    });
-                    Promise.all(p).then(function(){
+                    var promise;
+                    if (_self.toWordSubmitList && _self.toWordSubmitList.length){
+                        var p = [];
+                        _self.toWordSubmitList.each(function(editor){
+                            if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+                        });
+                        Promise.all(p).then(function(){
+                            _self.submitWork(routeName, opinion, medias, function () {
+                                this.destroy();
+                                hanlderNode.destroy();
+                                if (_self.flowDlg) _self.flowDlg.close();
+                                delete this;
+                            }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                        }.bind(this));
+                    }else{
                         _self.submitWork(routeName, opinion, medias, function () {
+                            debugger;
                             this.destroy();
                             hanlderNode.destroy();
                             if (_self.flowDlg) _self.flowDlg.close();
                             delete this;
                         }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    }
+                }
+            },
+            "addTaskOptions":{
+                "isHandwriting": false,
+                "onSubmit": function () {
+
+                }
+            },
+            "resetOptions":{
+                "isHandwriting": false,
+                "onSubmit": function (names, opinion, keep) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        _self.mask.loadNode(this.app.content);
+
+                        _self.fireEvent("beforeReset");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
+
+                        _self.resetWorkToPeson(names, opinion, keep, function (workJson) {
+                            _self.fireEvent("afterReset");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterReset");
+                            _self.addResetMessage(workJson.data);
+                            if (!_self.app.inBrowser) _self.app.close();
+                            if (_self.flowDlg) _self.flowDlg.close();
+                            if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        }.bind(this), function (xhr, text, error) {
+                            var errorText = error + ":" + text;
+                            if (xhr) errorText = xhr.responseText;
+                            _self.app.notice("request json error: " + errorText, "error", _self.flowDlg.node);
+                            if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        }.bind(this));
                     }.bind(this));
-                }else{
-                    _self.submitWork(routeName, opinion, medias, function () {
-                        debugger;
-                        this.destroy();
-                        hanlderNode.destroy();
-                        if (_self.flowDlg) _self.flowDlg.close();
-                        delete this;
-                    }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
                 }
             }
         };
 
-        options.processOptions = processOptions;
+        // var processOptions = {
+        //    "defaultRoute": defaultRoute,
+            // "onPostLoad": function () {
+            //     //if (postLoadFun) postLoadFun(this);
+            //
+            //     //? _self.fireEvent("afterLoadProcessor", [this]);
+            // },
+            // "onCancel": function () {
+            //     hanlderNode.destroy();
+            //     _self.app.content.unmask();
+            //     delete this;
+            // },
+
+        //};
 
         this.flow = new MWF.xApplication.process.Work.Flow(innerNode || hanlderNode, this.businessData.task, options, this);
     },
