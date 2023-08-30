@@ -174,7 +174,6 @@
   color: #333333;
   line-height: 40px;
   padding-left: 10px;
-  margin-bottom: 10px;
 }
 .o2flow-section-content{
   overflow: hidden;
@@ -223,25 +222,29 @@
 }
 .o2flow-radio{
   float: left;
-  height: 26px;
+  padding: 3px 10px;
   background: #F0F0F0;
   border-radius: 15px;
   color: #666666;
+  cursor: pointer;
 }
 .o2flow-radio-active{
   background: #4A90E2;
   color:#fff;
 }
-.o2flow-radio-over{
-  background: transparent;
-  color:#666666;
+.o2flow-radio-icon{
+  color: #fff
 }
+/*.o2flow-radio-over{*/
+/*  background: transparent;*/
+/*  color:#666666;*/
+/*}*/
 .o2flow-radio-text{
   display: inline-block;
-  margin-left: 20px;
+  margin-left: 2px;
   height: 20px;
+  line-height: 20px;
   font-size: 14px;
   font-family: MicrosoftYaHei;
-  line-height: 19px;
 }
 

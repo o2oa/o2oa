@@ -1868,6 +1868,8 @@ MWF.xApplication.Selector.Person = new Class({
                 nodeHeight = nodeHeight - getOffsetY( this.actionNode ) - this.actionNode.getStyle("height").toInt();
             }
 
+            this.contentNode.setStyle("height", nodeHeight);
+
             var selectNodeHeight = nodeHeight - getOffsetY(this.selectNode);
             this.selectNode.setStyle("height", selectNodeHeight);
 

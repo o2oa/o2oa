@@ -41,8 +41,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.resetEnable = this.options.resetEnable && this.businessData.control["allowReset"];
 
         this.navi = [];
-        if( this.addTaskEnable )this.navi.push({ key: "addTask", label: this.lp.flowActions.addTask });
         if( this.resetEnable )this.navi.push({ key: "reset", label: this.lp.flowActions.reset });
+        if( this.addTaskEnable )this.navi.push({ key: "addTask", label: this.lp.flowActions.addTask });
         if( this.processEnable )this.navi.push({ key: "process", label: this.lp.flowActions.process });
 
         var url = this.path+this.options.style+"/main.html";
@@ -197,7 +197,11 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             }
         }
     },
-
+    getEl: function( ev, className ){
+        var node = ev.target;
+        while (node && !node.hasClass(className)){ node = node.getParent();}
+        return node;
+    }
 });
 
 MWF.ProcessFlow.Reset = new Class({
@@ -233,37 +237,39 @@ MWF.ProcessFlow.Reset = new Class({
 
     },
     afterLoad: function () {
-        this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this, {
-            optionsList: [{
-                text: "",
+        debugger;
+        this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this.flow, {
+            opinionList: [{
+                text: this.lp.keepTask,
                 value: true
             }]
-        })
+        });
+        this.keepOption.load();
     },
-    setButtons: function () {
-        this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
-        var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
-        var textNode = new Element("div", {
-            "styles": this.css.cancelTextNode,
-            "text": MWF.xApplication.process.Work.LP.cancel
-        }).inject(this.cancelButton);
-
-        this.okButton = new Element("div", {"styles": this.css.okButton}).inject(this.buttonsArea);
-        var iconNode = new Element("div", {"styles": this.css.okIconNode}).inject(this.okButton);
-        var textNode = new Element("div", {
-            "styles": this.css.okTextNode,
-            "text": MWF.xApplication.process.Work.LP.ok
-        }).inject(this.okButton);
-
-        this.cancelButton.addEvent("click", function () {
-            this.destroy();
-            this.fireEvent("cancel");
-        }.bind(this));
-
-        this.okButton.addEvent("click", function (ev) {
-
-        }.bind(this));
-    },
+    // setButtons: function () {
+    //     this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
+    //     var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
+    //     var textNode = new Element("div", {
+    //         "styles": this.css.cancelTextNode,
+    //         "text": MWF.xApplication.process.Work.LP.cancel
+    //     }).inject(this.cancelButton);
+    //
+    //     this.okButton = new Element("div", {"styles": this.css.okButton}).inject(this.buttonsArea);
+    //     var iconNode = new Element("div", {"styles": this.css.okIconNode}).inject(this.okButton);
+    //     var textNode = new Element("div", {
+    //         "styles": this.css.okTextNode,
+    //         "text": MWF.xApplication.process.Work.LP.ok
+    //     }).inject(this.okButton);
+    //
+    //     this.cancelButton.addEvent("click", function () {
+    //         this.destroy();
+    //         this.fireEvent("cancel");
+    //     }.bind(this));
+    //
+    //     this.okButton.addEvent("click", function (ev) {
+    //
+    //     }.bind(this));
+    // },
     loadOrg: function(){
         this.getSelOptions( function (options) {
             this.selector = new MWF.O2Selector(this.orgsArea, options)
@@ -423,7 +429,16 @@ MWF.ProcessFlow.AddTask = new Class({
     Extends: MWF.ProcessFlow.Reset,
     getUrl: function(){
         return this.flow.path+this.flow.options.style+"/addTask.html";
-    }
+    },
+    afterLoad: function () {
+        // this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this, {
+        //     optionsList: [{
+        //         text: this.lp.keepTask,
+        //         value: true
+        //     }]
+        // });
+        // this.keepOption.load();
+    },
     // load: function(){
     //     this.content = this.container;
     //
@@ -2907,7 +2922,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
     load: function(){
         this.checkedItems = [];
         var url = this.flow.path+this.flow.options.style+"/widget/radio.html";
-        this.container.loadHtml(url, {"bind": {"lp": this.lp, "opinionList": this.opinionList}, "module": this}, function(){
+        this.container.loadHtml(url, {"bind": {"lp": this.lp, "opinionList": this.options.opinionList}, "module": this}, function(){
             if( this.options.values.length ){
                 this.setValue( this.options.values );
             }
@@ -2917,7 +2932,9 @@ MWF.ProcessFlow.widget.Radio = new Class({
         values = typeOf( values ) === "array" ? values : [values];
         this.container.getElements(".o2flow-radio").each(function (el) {
             if(values.contains( el.dataset["o2Value"] )){
-                this.check()
+                this.check(el)
+            }else{
+                this.uncheck(el)
             }
         }.bind(this))
     },
@@ -2926,7 +2943,13 @@ MWF.ProcessFlow.widget.Radio = new Class({
             return item.dataset["o2Value"];
         })
     },
-    toggle: function( el ){
+    getText: function(){
+        return this.checkedItems.map(function (item) {
+            return item.dataset["o2Text"];
+        })
+    },
+    toggle: function( ev ){
+        var el = this.flow.getEl(ev, "o2flow-radio");
         if( this.checkedItems.contains( el ) ){
             this.uncheck( el )
         }else{
@@ -2935,27 +2958,25 @@ MWF.ProcessFlow.widget.Radio = new Class({
     },
     check: function(el){
         el.addClass("o2flow-radio-active");
-        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox");
-        el.dataset["o2checked"] = true;
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
+        el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
     },
     uncheck: function(el){
         el.removeClass("o2flow-radio-active");
-        el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle");
-        el.dataset["o2checked"] = false;
+        el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
+        el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
     },
-    overItemNode: function (ev) {
-        var el = ev.target;
-        if( !el.dataset["o2checked"] ){
-            el.addClass("o2flow-radio-over")
-        }
-    },
-    outItemNode: function (ev) {
-        var el = ev.target;
-        if( !el.dataset["o2checked"] ){
-            el.removeClass("o2flow-radio-over")
-        }
-    }
+    // overItemNode: function (ev) {
+    //     var el = this.flow.getEl(ev, "o2flow-radio");
+    //     if( !el.dataset["o2Checked"] ){
+    //         el.addClass("o2flow-radio-over")
+    //     }
+    // },
+    // outItemNode: function (ev) {
+    //     var el = this.flow.getEl(ev, "o2flow-radio");
+    //     el.removeClass("o2flow-radio-over")
+    // }
 });
 
