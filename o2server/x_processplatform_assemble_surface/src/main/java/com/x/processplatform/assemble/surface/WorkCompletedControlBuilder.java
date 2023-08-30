@@ -99,6 +99,8 @@ public class WorkCompletedControlBuilder {
 		if (null == workCompleted) {
 			return control;
 		}
+		control.setWorkTitle(workCompleted.getTitle());
+		control.setWorkJob(workCompleted.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowReadProcessing, this::computeAllowReadProcessing),

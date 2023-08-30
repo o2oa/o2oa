@@ -22,9 +22,9 @@ import com.x.processplatform.core.entity.content.Attachment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseBatchDownloadWithWorkOrWorkCompleted {
+class ActionBatchDownload extends BaseBatchDownloadWithWorkOrWorkCompleted {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBatchDownload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, String flag)
 			throws Exception {
@@ -32,16 +32,25 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseBatchDownloadWithWo
 			ActionResult<Wo> result = new ActionResult<>();
 			final Business business = new Business(emc);
 
-			Pair<String, String> pair = getTitleAndJob(effectivePerson, business, workId);
-			String title = pair.getLeft();
-			String job = pair.getRight();
-			List<Attachment> attachmentList = listAttachment(business, site, job);
+			List<Pair<String, String>> pairs = getTitleAndJob(effectivePerson, business, workId);
+			String title = pairs.size() == 1 ? pairs.get(0).getLeft() : "";
+			final Map<String, List<Attachment>> readableMap = new HashMap<>();
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			final List<Attachment> readableAttachmentList = new ArrayList<>();
-			for (Attachment attachment : attachmentList) {
-				if (this.read(attachment, effectivePerson, identities, units, business)) {
-					readableAttachmentList.add(attachment);
+			for (Pair<String, String> pair : pairs) {
+				List<Attachment> attachmentList = listAttachment(business, site, pair.getRight());
+				List<Attachment> readableAttachmentList = new ArrayList<>();
+				for (Attachment attachment : attachmentList) {
+					if (this.read(attachment, effectivePerson, identities, units, business)) {
+						readableAttachmentList.add(attachment);
+					}
+				}
+				if(readableAttachmentList.size() > 0) {
+					String key = pair.getLeft();
+					if (readableMap.containsKey(key)) {
+						key = key + StringTools.randomNumber4();
+					}
+					readableMap.put(key, readableAttachmentList);
 				}
 			}
 			fileName = adjustFileName(fileName, title);
@@ -49,7 +58,7 @@ class ActionBatchDownloadWithWorkOrWorkCompleted extends BaseBatchDownloadWithWo
 			this.assembleFile(business, map, flag);
 			StreamingOutput streamingOutput = output -> {
 				try {
-					business.downToZip(readableAttachmentList, output, map);
+					downToZip(readableMap, output, map);
 					output.flush();
 				} catch (Exception e) {
 					LOGGER.warn("batchDown error：{}", e.getMessage());
