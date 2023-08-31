@@ -77,8 +77,12 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mNotification && window.o2mNotification.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mNotification)) {
-      window.o2mNotification && window.o2mNotification.postMessage ? window.o2mNotification.postMessage(message) : window.webkit.messageHandlers.o2mNotification.postMessage(message);
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mNotification', message);
+    } else if (window.o2mNotification && window.o2mNotification.postMessage) {
+      window.o2mNotification.postMessage(message);
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mNotification) {
+      window.webkit.messageHandlers.o2mNotification.postMessage(message);
     } else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
@@ -571,8 +575,12 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mUtil && window.o2mUtil.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mUtil)) {
-      window.o2mUtil && window.o2mUtil.postMessage ? window.o2mUtil.postMessage(message) : window.webkit.messageHandlers.o2mUtil.postMessage(message);
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mUtil', message);
+    } else if (window.o2mUtil && window.o2mUtil.postMessage) {
+      window.o2mUtil.postMessage(message);
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mUtil) {
+      window.webkit.messageHandlers.o2mUtil.postMessage(message);
     } else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
@@ -1387,9 +1395,13 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mBiz && window.o2mBiz.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mBiz)) {
-      window.o2mBiz && window.o2mBiz.postMessage ? window.o2mBiz.postMessage(message) : window.webkit.messageHandlers.o2mBiz.postMessage(message);
-    } else {
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mBiz', message);
+    } else if (window.o2mBiz && window.o2mBiz.postMessage) {
+      window.o2mBiz.postMessage(message)
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mBiz) {
+      window.webkit.messageHandlers.o2mBiz.postMessage(message);
+    }  else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
       }
