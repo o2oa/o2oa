@@ -178,13 +178,11 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
     },
     loadResource: function (callback, ak) {
         window.BMap_loadScriptTime = (new Date).getTime();
-        //var apiPath = "http://api.map.baidu.com/api?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
         var apiPath;
-        var accountkey = ak || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
+        var accountkey = ak || "sM5P4Xq9zsXGlco6RAq2CRDtwjR78WQB";
         if( window.location.protocol.toLowerCase() === "https:" ){
             window.HOST_TYPE = '2';
             apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=&t=20161219171637";
-            // apiPath = "https://api.map.baidu.com/api?v=1.0&type=webgl&ak="+accountkey+"&s=1&services=&t=20161219171637";
         }else{
             apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&services=&t=20161219171637";
         }
