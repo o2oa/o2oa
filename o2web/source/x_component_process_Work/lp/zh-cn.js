@@ -87,6 +87,7 @@ MWF.xApplication.process.Work.LP = {
     "addTaskPerson": "加签人",
     "inputOpinionNote": "请在此处填写意见",
     "resetTo": "重置给",
-    "keepTask": "保留我的待办"
+    "keepTask": "保留我的待办",
+    "quickSelect": "快速选择"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

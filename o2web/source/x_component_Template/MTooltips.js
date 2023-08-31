@@ -927,7 +927,7 @@ var MTooltips = new Class({
         var top, left;
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
         var node = this.node;
-        var nodeSize = node.getSize();
+        var nodeSize = this.node.getSize();
         var offsetX = (parseFloat(this.options.offset.x).toString() !== "NaN") ? parseFloat(this.options.offset.x) : 0;
         offsetX += this.options.hasArrow ? 10 : 0;
         if( this.positionX === "left" ){
@@ -959,7 +959,7 @@ var MTooltips = new Class({
         var top, left;
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
         var node = this.node;
-        var nodeSize = node.getSize();
+        var nodeSize = this.node.getSize();
         var offsetY = (parseFloat(this.options.offset.y).toString() !== "NaN") ? parseFloat(this.options.offset.y) : 0;
         offsetY += this.options.hasArrow ? 10 : 0;
         if( this.positionY === "top" ){

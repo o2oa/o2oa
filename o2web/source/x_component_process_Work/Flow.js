@@ -149,6 +149,9 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             this.quickSelectNode, this.form.app, {}
          );
         this.quickSelector.flow = this;
+        this.contentScrollNode.addEvent("scroll", function () {
+            if(this.quickSelector.status === "display")this.quickSelector.hide();
+        }.bind(this))
     },
     submit: function(){
         switch ( this.currentAction ) {
@@ -467,7 +470,6 @@ MWF.ProcessFlow.Processor = new Class({
         "mediaNode": null,
         "opinion": "",
         "defaultRoute": "",
-        "isHandwriting": true,
         "tabletToolHidden": [],
         "tabletWidth": 0,
         "tabletHeight": 0,
@@ -786,219 +788,7 @@ MWF.ProcessFlow.Processor = new Class({
 
     },
 
-    setOpinion: function () {
-        this.selectOpinionNode = new Element("div", {"styles": this.css.selectIdeaNode}).inject(this.opinionArea);
-        this.selectOpinionScrollNode = new Element("div", {"styles": this.css.selectIdeaScrollNode}).inject(this.selectOpinionNode);
-        this.selectOpinionAreaNode = new Element("div", {
-            "styles": {
-                "overflow": "hidden"
-            }
-        }).inject(this.selectOpinionScrollNode);
 
-        this.opinionNode = new Element("div", {"styles": this.css.inputOpinionNode}).inject(this.opinionArea);
-        this.opinionTextarea = new Element("textarea", {
-            "styles": this.css.inputTextarea,
-            "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText
-        }).inject(this.opinionNode);
-        this.opinionTextarea.setStyle("resize", "none");
-        this.opinionTextarea.addEvents({
-            "focus": function () {
-                if (this.get("value") == MWF.xApplication.process.Work.LP.inputText) this.set("value", "");
-            },
-            "blur": function () {
-                if (!this.get("value")) this.set("value", MWF.xApplication.process.Work.LP.inputText);
-            },
-            "keydown": function () {
-                this.opinionTextarea.setStyles(this.opinionTextareaStyle || this.css.inputTextarea);
-            }.bind(this)
-        });
-
-        if( this.options.isHandwriting ){
-            this.mediaActionArea = new Element("div", {"styles": this.css.inputOpinionMediaActionArea}).inject(this.opinionNode);
-            this.handwritingAction = new Element("div", {
-                "styles": this.css.inputOpinionHandwritingAction,
-                "text": MWF.xApplication.process.Work.LP.handwriting
-            }).inject(this.mediaActionArea);
-            this.handwritingAction.addEvent("click", function () {
-                this.handwriting();
-            }.bind(this));
-        }
-
-
-        MWF.require("MWF.widget.ScrollBar", function () {
-            new MWF.widget.ScrollBar(this.selectOpinionScrollNode, {
-                "style": "small",
-                "where": "before",
-                "distance": 30,
-                "friction": 4,
-                "indent": false,
-                "axis": {"x": false, "y": true}
-            });
-        }.bind(this));
-
-        MWF.require("MWF.widget.UUID", function () {
-            MWF.UD.getDataJson("idea", function (json) {
-                if (json) {
-                    if (json.ideas) {
-                        this.setIdeaList(json.ideas);
-                    }
-                } else {
-                    MWF.UD.getPublicData("idea", function (pjson) {
-                        if (pjson) {
-                            if (pjson.ideas) {
-                                this.setIdeaList(pjson.ideas);
-                            }
-                        }
-                    }.bind(this));
-                }
-            }.bind(this));
-        }.bind(this));
-    },
-    audioRecord: function () {
-        if (!this.audioRecordNode) this.createAudioRecord();
-        this.audioRecordNode.show();
-        this.audioRecordNode.position({
-            "relativeTo": this.options.mediaNode || this.node,
-            "position": "center",
-            "edge": "center"
-        });
-
-        MWF.require("MWF.widget.AudioRecorder", function () {
-            this.audioRecorder = new MWF.widget.AudioRecorder(this.audioRecordNode, {
-                "onSave": function (blobFile) {
-                    this.soundFile = blobFile;
-                    this.audioRecordNode.hide();
-                    // this.page.get("div_image").node.set("src",base64Image);
-                }.bind(this),
-                "onCancel": function () {
-                    this.soundFile = null;
-                    this.audioRecordNode.hide();
-                }.bind(this)
-            }, null);
-        }.bind(this));
-    },
-    createAudioRecord: function () {
-        this.audioRecordNode = new Element("div", {"styles": this.css.handwritingNode}).inject(this.node, "after");
-        var size = (this.options.mediaNode || this.node).getSize();
-        // var y = Math.max(size.y, 320);
-        // var x = Math.max(size.x, 400);
-
-        // for (k in this.node.style){
-        //     if (this.node.style[k]) this.audioRecordNode.style[k] = this.node.style[k];
-        // }
-        var zidx = this.node.getStyle("z-index");
-        this.audioRecordNode.setStyles({
-            "height": "" + size.y + "px",
-            "width": "" + size.x + "px",
-            "z-index": zidx + 1
-        });
-    },
-
-    handwriting: function () {
-        if (!this.handwritingNode) this.createHandwriting();
-        if (this.handwritingNodeMask) this.handwritingNodeMask.show();
-        this.handwritingNode.show();
-        this.handwritingNode.position({
-            "relativeTo": this.options.mediaNode || this.node,
-            "position": "center",
-            "edge": "center"
-        });
-    },
-    createHandwriting: function () {
-        this.handwritingNodeMask = new Element("div.handwritingMask", {"styles": this.css.handwritingMask}).inject(this.node);
-
-        this.handwritingNode = new Element("div.handwritingNode", {"styles": this.css.handwritingNode}).inject(this.node, "after");
-
-        var bodySize = $(document.body).getSize();
-        x = bodySize.x;
-        y = bodySize.y;
-        this.options.tabletWidth = 0;
-        this.options.tabletHeight = 0;
-        var zidx = this.node.getStyle("z-index");
-        this.handwritingNode.setStyles({
-            "height": "" + y + "px",
-            "width": "" + x + "px",
-            "z-index": zidx + 1
-        });
-        this.handwritingNode.position({
-            "relativeTo": this.options.mediaNode || this.node,
-            "position": "center",
-            "edge": "center"
-        });
-        this.handwritingAreaNode = new Element("div", {"styles": this.css.handwritingAreaNode}).inject(this.handwritingNode);
-        this.handwritingAreaNode.setStyle("height", "" + y + "px");
-
-        MWF.require("MWF.widget.Tablet", function () {
-            var handWritingOptions = {
-                "style": "default",
-                "toolHidden": this.options.tabletToolHidden || [],
-                "contentWidth": this.options.tabletWidth || 0,
-                "contentHeight": this.options.tabletHeight || 0,
-                "onSave": function (base64code, base64Image, imageFile) {
-                    if( !this.tablet.isBlank() ){
-                        this.handwritingFile = imageFile;
-                        this.handwritingAction.setStyles( this.css.inputOpinionHandwritingOkAction )
-                    }else{
-                        this.handwritingFile = null
-                        this.handwritingAction.setStyles( this.css.inputOpinionHandwritingAction );
-                    }
-                    this.handwritingNode.hide();
-                    this.handwritingNodeMask.hide();
-                    // this.page.get("div_image").node.set("src",base64Image);
-
-                }.bind(this),
-                "onCancel": function () {
-                    this.handwritingFile = null;
-                    this.handwritingAction.setStyles( this.css.inputOpinionHandwritingAction );
-                    this.handwritingNode.hide();
-                    this.handwritingNodeMask.hide();
-                }.bind(this)
-            };
-
-            this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
-            this.tablet.load();
-        }.bind(this));
-
-        if(this.handwritingActionNode) {
-            this.handwritingActionNode.addEvent("click", function () {
-                //this.handwritingNode.hide();
-                if (this.tablet) this.tablet.save();
-            }.bind(this));
-        }
-    },
-
-    setIdeaList: function (ideas) {
-        var _self = this;
-        ideas.each(function (idea) {
-            if (!idea) return;
-            new Element("div", {
-                "styles": this.css.selectIdeaItemNode,
-                "text": idea,
-                "events": {
-                    "click": function () {
-                        if (_self.opinionTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
-                            _self.opinionTextarea.set("value", this.get("text"));
-                        } else {
-                            _self.opinionTextarea.set("value", _self.opinionTextarea.get("value") + ", " + this.get("text"));
-                        }
-                    },
-                    "dblclick": function () {
-                        if (_self.opinionTextarea.get("value") == MWF.xApplication.process.Work.LP.inputText) {
-                            _self.opinionTextarea.set("value", this.get("text"));
-                        } else {
-                            _self.opinionTextarea.set("value", _self.opinionTextarea.get("value") + ", " + this.get("text"));
-                        }
-                    },
-                    "mouseover": function () {
-                        this.setStyles(_self.css.selectIdeaItemNode_over);
-                    },
-                    "mouseout": function () {
-                        this.setStyles(_self.css.selectIdeaItemNode);
-                    }
-                }
-            }).inject(this.selectOpinionAreaNode);
-        }.bind(this));
-    },
     setButtons: function () {
         this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
         var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
@@ -1137,18 +927,6 @@ MWF.ProcessFlow.Processor = new Class({
                 if(org.clearTooltip)org.clearTooltip();
             })
         }
-        if (this.node) this.node.empty();
-        delete this.task;
-        delete this.node;
-        delete this.routeTitleNode;
-        delete this.routeArea;
-        delete this.opinionTitle;
-        delete this.opinionArea;
-        delete this.buttonsArea;
-        delete this.opinionNode;
-        delete this.opinionTextarea;
-        delete this.cancelButton;
-        delete this.okButton;
     },
     getRouteConfigList: function () {
         if(this.routeConfigList)return this.routeConfigList;
@@ -2828,7 +2606,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 },
                 "module": this
             }, function(){
-                if( this.options.isHandwriting )this.handwritingButton.show()
+                if( this.options.isHandwriting )this.handwritingButton.show();
             }.bind(this)
         );
     },
@@ -2848,6 +2626,80 @@ MWF.ProcessFlow.widget.Opinion = new Class({
     },
     outItemNode: function (ev) {
         ev.target.removeClass("mainColor_bg_opacity")
+    },
+
+    handwriting: function () {
+        if( !this.tablet )this.createHandwriting();
+        this.handwritingMask.show();
+        this.handwritingNode.show();
+        this.handwritingNode.position({
+            "relativeTo": this.flow.node,
+            "position": "center",
+            "edge": "center"
+        });
+    },
+    createHandwriting: function () {
+        this.handwritingMask.inject( this.flow.node );
+        this.handwritingNode.show().inject(this.flow.node, "after");
+        //兼容以前的默认高宽
+        var x = 600;
+        var y = 320;
+
+        x = Math.max(this.options.tabletWidth || x, 600);
+        this.options.tabletWidth = x;
+        y = Math.max(this.options.tabletHeight ? (parseInt(this.options.tabletHeight) + 110) : y, 320);
+
+        var zidx = this.flow.node.getStyle("z-index");
+        this.handwritingNode.setStyles({
+            "height": "" + y + "px",
+            "width": "" + x + "px",
+            "z-index": zidx + 1
+        });
+        this.handwritingNode.position({
+            "relativeTo": this.flow.node,
+            "position": "center",
+            "edge": "center"
+        });
+
+        debugger;
+        var h = this.handwritingSaveNode.getSize().y + this.flow.getOffsetY(this.handwritingSaveNode);
+        this.handwritingAreaNode.setStyle("height", "" + ( y - h ) + "px");
+
+        MWF.require("MWF.widget.Tablet", function () {
+            var handWritingOptions = {
+                "style": "default",
+                "toolHidden": this.options.tabletToolHidden || [],
+                "contentWidth": this.options.tabletWidth || 0,
+                "contentHeight": this.options.tabletHeight || 0,
+                "onSave": function (base64code, base64Image, imageFile) {
+                    if( !this.tablet.isBlank() ){
+                        this.handwritingFile = imageFile;
+                        this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
+                            addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
+                    }else{
+                        this.handwritingFile = null;
+                        this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                            removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                    }
+                    this.handwritingNode.hide();
+                    this.handwritingMask.hide();
+
+                }.bind(this),
+                "onCancel": function () {
+                    this.handwritingFile = null;
+                    this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                        removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                    this.handwritingNode.hide();
+                    this.handwritingMask.hide();
+                }.bind(this)
+            };
+
+            this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
+            this.tablet.load();
+        }.bind(this));
+    },
+    saveTablet: function () {
+        if (this.tablet) this.tablet.save();
     }
 });
 

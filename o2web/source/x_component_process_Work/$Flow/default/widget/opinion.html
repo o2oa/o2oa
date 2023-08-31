@@ -3,9 +3,9 @@
     <div class="o2flow-section-content">
         <div class="o2flow-opinion-textareawrap">
             <textarea class="o2flow-opinion-textarea" data-o2-element="opinionTextarea" placeholder="{{$.lp.inputOpinionNote}}">{{$.opinion}}</textarea>
-            <div class="o2flow-handwriting-button">
+            <div class="o2flow-handwriting-button" data-o2-element="handwritingButton" data-o2-events="click:handwriting">
                 <i class="o2icon-edit2"></i>
-                <div class="o2flow-handwriting-buttontext" data-o2-element="handwritingButton">{{$.lp.handwriting}}</div>
+                <div class="o2flow-handwriting-buttontext">{{$.lp.handwriting}}</div>
             </div>
         </div>
         <div class="o2flow-opinion-select">
@@ -17,4 +17,9 @@
             {{end each}}
         </div>
     </div>
+</div>
+<div class="o2flow-handwriting-mask" data-o2-element="handwritingMask"></div>
+<div class="o2flow-handwriting-node" data-o2-element="handwritingNode">
+    <div class="o2flow-handwriting-area" data-o2-element="handwritingAreaNode"></div>
+    <div class="o2flow-handwriting-saveNode" data-o2-element="handwritingSaveNode" data-o2-events="click:saveTablet">{{$.lp.saveWrite}}</div>
 </div>
