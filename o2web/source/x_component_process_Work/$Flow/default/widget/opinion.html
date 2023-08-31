@@ -3,6 +3,10 @@
     <div class="o2flow-section-content">
         <div class="o2flow-opinion-textareawrap">
             <textarea class="o2flow-opinion-textarea" data-o2-element="opinionTextarea" placeholder="{{$.lp.inputOpinionNote}}">{{$.opinion}}</textarea>
+            <div class="o2flow-handwriting-button">
+                <i class="o2icon-edit2"></i>
+                <div class="o2flow-handwriting-buttontext" data-o2-element="handwritingButton">{{$.lp.handwriting}}</div>
+            </div>
         </div>
         <div class="o2flow-opinion-select">
             {{each $.opinionList}}

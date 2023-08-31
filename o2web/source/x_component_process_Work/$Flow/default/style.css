@@ -87,23 +87,27 @@
 .o2icon-checkbox:before {
   content: "\e967";
 }
+
 .o2icon-edit2:before {
   content: "\e99d";
 }
 
 
 .o2flow-node{
-  width:1000px;
+  width:900px;
   overflow: hidden;
+  height: 100%;
 }
 .o2flow-node-wide{
   width:1100px;
   overflow: hidden;
+  height: 100%;
 }
 
 .o2flow-navi{
   float: left;
   margin-top: 32px;
+  margin-left: 10px;
 }
 .o2flow-navi-node{
   border-left: 2px solid #DEDEDE;
@@ -120,8 +124,13 @@
   margin-bottom: 16px;
 }
 
+.o2flow-content-area{
+  margin-left: 90px;
+  height: 100%;
+  overflow: auto;
+  padding-right: 20px;
+}
 .o2flow-content{
-    margin-left: 80px;
 }
 
 .o2flow-process-color{
@@ -187,6 +196,7 @@
   width: calc( 50% - 20px );
   padding-right: 20px;
   height: 200px;
+  position: relative;
 }
 .o2flow-opinion-textarea{
   resize: none;
@@ -198,6 +208,25 @@
   padding:5px;
   font-family: "Microsoft YaHei";
 }
+.o2flow-handwriting-button{
+  position: absolute;
+  right: 30px;
+  bottom: 10px;
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  background: #FFFFFF;
+  border-radius: 15px;
+  border: 1px solid #CCCCCC;
+  padding-left: 15px;
+  color: #666666;
+  cursor: pointer;
+  display: none;
+}
+.o2flow-handwriting-buttontext{
+  display: inline-block;
+}
+
 .o2flow-opinion-select{
   overflow: auto;
   float: left;
@@ -246,5 +275,30 @@
   line-height: 20px;
   font-size: 14px;
   font-family: MicrosoftYaHei;
+}
+
+.o2flow-route-container{
+  overflow: hidden;
+}
+.o2flow-routegroup-wraper{
+  float: left;
+  width: calc( 50% - 20px );
+  padding-right: 20px;
+}
+.o2flow-routegroup-area{
+  height: 100px;
+  overflow: auto;
+}
+.o2flow-route-wraper{
+  float: left;
+  width: calc( 50% - 10px );
+  padding-left: 10px;
+}
+.o2flow-route-fullsize-wraper{
+  width: 100%;
+}
+.o2flow-route-area{
+  height: 100px;
+  overflow: auto;
 }
 

@@ -2476,15 +2476,24 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var dlg = this;
             if (!dlg || !dlg.node) return;
             dlg.node.setStyle("display", "block");
-            var size = flowNode.getSize();
+            //var size = flowNode.getSize();
+
+            //希望滚动条在flow里面
+            debugger;
+
+            var maxHeight = dlg.getContentMaxHeight();
+            var s = _self.flow.getSize();
+
             dlg.content.setStyles({
-                "height": size.y,
-                "width": size.x
+                "height": Math.min(s.y, maxHeight),
+                "width": s.x,
+                "padding-right": "0px"
             });
 
             var s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
-        }
+        };
+
         this.loadFlow(flowNode, "default", function (flow) {
             this.flowDlg = o2.DL.open({
                 "title": this.app.lp.flowWork,

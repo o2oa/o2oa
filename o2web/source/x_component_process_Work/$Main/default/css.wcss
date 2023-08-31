@@ -19,11 +19,9 @@
     "z-index":100
   },
   "flowNode_Area": {
-    "height": "300px",
-    "width": "800px",
-    "padding": "10px",
     "background-color": "#FFF",
-    "overflow": "hidden"
+    "overflow": "hidden",
+    "height": "100%"
   },
 
   "processNode_from": {
