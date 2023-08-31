@@ -11,9 +11,14 @@
           @changeConfig="saveMobileIndex"
       ></BaseItem>
 
-      <div class="item_title">{{lp._appConfig.appIndexPage}}</div>
-      <div class="item_info" v-html="lp._appConfig.appIndexPageInfo"></div>
-      <div class="item_input_area">
+      <div class="item_title">{{lp._appConfig.appIndexCenteredTitle}}</div>
+      <div class="item_info" v-html="lp._appConfig.appIndexCenteredInfo"></div>
+      <BaseBoolean v-model:value="appStyle.indexCentered" @change="(value)=>{appStyle.indexCentered = value; saveAppStyle(appStyle)}"></BaseBoolean>
+
+
+      <div class="item_title" v-if="appStyle.indexCentered == false">{{lp._appConfig.appIndexPage}}</div>
+      <div class="item_info" v-if="appStyle.indexCentered == false" v-html="lp._appConfig.appIndexPageInfo"></div>
+      <div class="item_input_area" v-if="appStyle.indexCentered == false">
         <el-checkbox v-model="appIndexPagesCheckValues.home" disabled>{{lp._appConfig.appIndexPageHome}}</el-checkbox><br/>
         <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.im">{{lp._appConfig.appIndexPageIM}}</el-checkbox><br/>
         <el-checkbox @change="saveAppIndexPagesCheckValues" v-model="appIndexPagesCheckValues.contact">{{lp._appConfig.appIndexPageContact}}</el-checkbox><br/>
@@ -21,10 +26,12 @@
         <el-checkbox v-model="appIndexPagesCheckValues.settings" disabled>{{lp._appConfig.appIndexPageSettings}}</el-checkbox>
       </div>
 
+      
+
       <!-- 首页列表过滤 -->
       <div class="item_title">{{lp._appConfig.appIndexCmsFilterTitle}}</div>
       <div class="item_info" v-html="lp._appConfig.appIndexCmsFilterCategoryInfo"></div>
-      <div class="item_info" >
+      <div class="item_info">
         <div class="item_value mainColor_color" style="height:auto;">{{categroyListText}}</div>
         <button class="mainColor_bg" @click="chooseCategory()" >{{lp._appConfig.appIndexCmsFilterCategroySelectorTitle}}</button>
       </div>
@@ -225,6 +232,7 @@ const load = ()=>{
       nativeAppList: data.nativeAppList,
       simpleMode: data.simpleMode,
       systemMessageSwitch: data.systemMessageSwitch,
+      indexCentered: data.indexCentered,
       systemMessageCanClick: data.systemMessageCanClick,
       appExitAlert: data.appExitAlert,
       contactPermissionView: data.contactPermissionView,

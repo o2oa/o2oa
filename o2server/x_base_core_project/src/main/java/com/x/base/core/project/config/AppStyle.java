@@ -32,6 +32,7 @@ public class AppStyle extends ConfigObject {
 		this.indexType = INDEXTYPE_DEFAULT;
 		this.indexPortal = "";
 		this.simpleMode = false;
+		this.indexCentered = false;
 		this.systemMessageSwitch = true;
 		this.systemMessageCanClick = true;
 		this.appExitAlert = "";
@@ -127,6 +128,9 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("移动端简易模式")
 	private Boolean simpleMode;
 
+	@FieldDescribe("首页居中，首页居中页面个数将不可配置")
+	private Boolean indexCentered;
+
 	@FieldDescribe("移动端页面")
 	private TreeSet<String> appIndexPages;
 
@@ -154,7 +158,17 @@ public class AppStyle extends ConfigObject {
 	private List<String> cmsCategoryFilterList = new ArrayList<>();
 
 
-	public List<String> getProcessFilterList() {
+	
+
+	public Boolean getIndexCentered() {
+    return indexCentered;
+  }
+
+  public void setIndexCentered(Boolean indexCentered) {
+    this.indexCentered = indexCentered;
+  }
+
+  public List<String> getProcessFilterList() {
     return processFilterList;
   }
 
