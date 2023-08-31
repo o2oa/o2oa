@@ -142,6 +142,19 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
          );
         this.quickSelector.flow = this;
     },
+    submit: function(){
+        switch ( this.currentAction ) {
+            case "process":
+                this.processor.submit();
+                break;
+            case "addTask":
+                this.addTask.submit();
+                break;
+            case "reset":
+                this.reset.submit();
+                break;
+        }
+    },
     destroy: function () {
         if( this.processor )this.processor.destroy();
         if( this.reset )this.reset.destroy();
@@ -339,7 +352,7 @@ MWF.ProcessFlow.Reset = new Class({
     getSelOrgData: function () {
         var data;
         if (this.selector && this.selector.selector) {
-            data = this.selector.selector.selectedItems.each(function (item) {
+            data = this.selector.selector.selectedItems.map(function (item) {
                 return item.data.distinguishedName;
                 // return MWF.org.parseOrgData(item.data, true, simple);
             })

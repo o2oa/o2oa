@@ -2610,7 +2610,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "onSubmit": function (names, opinion, keep) {
                     MWF.require("MWF.widget.Mask", function () {
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-                        _self.mask.loadNode(this.app.content);
+                        _self.mask.loadNode(_self.app.content);
 
                         _self.fireEvent("beforeReset");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
