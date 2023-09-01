@@ -321,6 +321,15 @@
 .o2flow-org-area {
     height: 300px;
 }
+.o2flow-org-left-node{
+    width: 50%;
+}
+.o2flow-org-right-node{
+    width: 50%;
+}
+.o2flow-org-fullsize-node{
+    width: 100%;
+}
 
 .o2flow-radio-area {
     overflow: hidden;

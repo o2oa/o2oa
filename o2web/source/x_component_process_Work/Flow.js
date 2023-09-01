@@ -624,7 +624,7 @@ MWF.ProcessFlow.Processor = new Class({
             var routeId = routeConfig.id;
             var orgList = this.routeOrgMap[routeId];
             if( orgList ){
-                orgList.show();
+                orgList.load();
             }else{
                 orgList = new MWF.ProcessFlow.Processor.OrgList(this, {
                     routeId: routeId
@@ -971,8 +971,9 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.container = processor.orgsArea;
         this.setOptions(options);
 
-        this.orgItemMap = {};
-        this.orgItems = [];
+        this.orgs = [];
+        this.orgMap = {};
+        this.domMap = {};
     },
     load: function () {
         var configVisable = this.getVisableOrgConfig();
@@ -981,8 +982,9 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             this.container.show();
             this.processor.setSize(configVisable.length);
         } else {
-            this.orgItemMap = {};
+            this.orgMap = {};
             this.orgItems = [];
+            this.domMap = {};
             this.container.hide();
             this.processor.setSize(0);
         }
@@ -994,17 +996,30 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         return this.processor.getVisableOrgConfig( this.options.routeId );
     },
     loadOrgs: function () {
-        var configVisable = this.getVisableOrgConfig();
-        var len = configVisable.length;
-
-        var ignoreFirstOrgOldData = false;
-
+        var lastDom, len = configVisable.length, configVisable = this.getVisableOrgConfig();
         configVisable.each(function (config, i) {
+            var dom;
+            if( this.domMap[config.id] ){
+                dom = this.domMap[config.id].show();
+            }else{
+                dom = new Element("div" ).inject( lastDom || this.container, lastDom ? "after" : "bottom" );
+                this.domMap[config.id] = dom;
+                this.loadOrg(dom, config );
+            }
 
-            this.loadOrg(sNode, config, (i % 2 === 0) ? "left" : "right", ignoreFirstOrgOldData && i == 0)
+            if( (i + 1 === len) && (len % 2 === 1) ){ //fullsize
+                dom.addClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").removeClass("o2flow-org-right-node");
+            }else{
+                if( i % 2 === 0 ){ //left
+                    dom.removeClass("o2flow-org-fullsize-node").addClass("o2flow-org-left-node").removeClass("o2flow-org-right-node");
+                }else{
+                    dom.removeClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").addClass("o2flow-org-right-node");
+                }
+            }
+            lastDom = orgNode;
         }.bind(this));
     },
-    loadOrg: function (container, json, position, ignoreOldData) {
+    loadOrg: function (container, json, ignoreOldData) {
         var titleNode = new Element("div.selectorTitle", {
             "styles": this.css.selectorTitle
         }).inject(container);
@@ -1026,7 +1041,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         org.summitDlalog = this;
         org.load();
         this.orgItems.push(org);
-        this.orgItemMap[json.name] = org;
+        this.orgMap[json.name] = org;
 
     },
     clearAllOrgs: function () {
