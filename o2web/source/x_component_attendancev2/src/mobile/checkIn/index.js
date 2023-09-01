@@ -77,9 +77,8 @@ export default content({
     // 加载地图api等资源 因为后面计算距离啥的要用
     async loadBDMap() {
         const bdKey = await getPublicData("baiduAccountKey");
-        const accountkey = bdKey || "Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
+        const accountkey = bdKey || "sM5P4Xq9zsXGlco6RAq2CRDtwjR78WQB";
         this.bind.bdKey = accountkey;
-        // const apiPath = "//api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
         let apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak="+accountkey+"&s=1&services=";
         if( window.location.protocol.toLowerCase() === "https:" ){
             window.HOST_TYPE = '2';
@@ -161,8 +160,6 @@ export default content({
     },
     // 百度查询地址
     async getGeoAddress(point) {
-        // const url = "https://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location="+this.bind.location.lnglat.latitude+","+this.bind.location.lnglat.longitude+"&output=json&pois=1&ak=" + this.bind.bdKey;
-        // console.debug(url);
         console.debug("开始查询定位的详细地址")
         const gc = new BMap.Geocoder();
         gc.getLocation(point, (rs) => {
