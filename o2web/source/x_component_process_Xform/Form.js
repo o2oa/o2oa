@@ -2479,8 +2479,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //var size = flowNode.getSize();
 
             //希望滚动条在flow里面
-            debugger;
-
             var maxHeight = dlg.getContentMaxHeight();
             var s = _self.flow.getSize();
 

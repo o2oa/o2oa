@@ -23,7 +23,6 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
         this.task = task;
         this.container = $(container);
-        this.selectedRouteNode = null;
 
         this.form = form;
         this.businessData = this.form.businessData;
@@ -480,7 +479,7 @@ MWF.ProcessFlow.Processor = new Class({
         this.form = flow.form;
         this.lp = flow.lp;
         this.businessData = this.form.businessData;
-        this.selectedRouteNode = null;
+        this.routeOrgMap = {};
         this.load();
     },
     load: function(){
@@ -505,59 +504,10 @@ MWF.ProcessFlow.Processor = new Class({
         } else {
             this.routeGroupWraper.destroy();
             this.routeWraper.removeClass("o2flow-route-wraper").addClass("o2flow-route-fullsize-wraper");
+            this.routeArea.removeClass("o2flow-route-area").addClass("o2flow-route-fullsize-area");
             this.loadRouteList();
         }
         this.fireEvent("postLoad");
-    },
-    getRouteGroupConfig: function () {
-        if (this.routeGroupObject) return this.routeGroupObject;
-        this.routeGroupObject = {};
-        this.routeGroupNameList = [];
-        this.hasRouteGroup = false;
-        var routeList = this.getRouteConfigList();
-        routeList.each(function (route, i) {
-
-            if (route.hiddenScriptText && this.form && this.form.Macro) { //如果隐藏路由，返回
-                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
-            }
-
-            if (route.displayNameScriptText && this.form && this.form.Macro) { //如果有显示名称公式
-                route.displayName = this.form.Macro.exec(route.displayNameScriptText, this);
-            } else {
-                route.displayName = route.name;
-            }
-
-            if (route.decisionOpinion) {
-                this.hasRouteGroup = true;
-                route.decisionOpinion.split("#").each(function (rg) {
-                    this.routeGroupNameList.combine([rg]);
-                    var d = this.splitByStartNumber(rg);
-                    if (!this.routeGroupObject[d.name]) this.routeGroupObject[d.name] = [];
-                    this.routeGroupObject[d.name].push(route);
-                }.bind(this))
-            } else {
-                var defaultName = MWF.xApplication.process.Work.LP.defaultDecisionOpinionName;
-                this.routeGroupNameList.combine([defaultName]);
-                if (!this.routeGroupObject[defaultName]) this.routeGroupObject[defaultName] = [];
-                this.routeGroupObject[defaultName].push(route);
-            }
-        }.bind(this));
-        return this.routeGroupObject;
-    },
-    splitByStartNumber: function (str) {
-        var obj = {
-            name: "",
-            order: ""
-        };
-        for (var i = 0; i < str.length; i++) {
-            if (parseInt(str.substr(i, 1)).toString() !== "NaN") {
-                obj.order = obj.order + str.substr(i, 1);
-            } else {
-                obj.name = str.substr(i, str.length);
-                break;
-            }
-        }
-        return obj;
     },
     loadRouteGroupList: function(){
         var keys = this.routeGroupNameList;
@@ -592,15 +542,16 @@ MWF.ProcessFlow.Processor = new Class({
         var _self = this;
         this.routeGroupRadio = new MWF.ProcessFlow.widget.Radio2(this.routeGroupArea, this.flow, {
             optionList: optionList,
+            cancelEnable: false,
             onCheck: function(el, value){
-                var routeConfigList = this.getData();
+                var routeConfigList = this.getData().data;
                 _self.loadRouteList( routeConfigList );
             },
             onLoad: function(){
                 if( defaultValue ){
                     this.setValue( defaultValue );
                 }else{
-                    _self.setSize(0);
+                    _self.loadOrgs(0);
                 }
             }
         });
@@ -609,7 +560,6 @@ MWF.ProcessFlow.Processor = new Class({
     loadRouteList: function (routeConfigList) {
         var _self = this;
         this.routeArea.empty();
-        this.selectedRouteNode = null;
 
         if (!routeConfigList) routeConfigList = this.getRouteConfigList();
 
@@ -639,18 +589,20 @@ MWF.ProcessFlow.Processor = new Class({
         this.routeRadio = new MWF.ProcessFlow.widget.Radio(this.routeArea, this.flow, {
             optionList: optionList,
             onCheck: function(el, value){
-                var routeConfig = this.getData();
-                if( this.opinion.getValue() === (this.lastDefaultOpinion || "")){
-                    this.lastDefaultOpinion = routeConfig.opinion;
-                    this.opinion.setValue( this.lastDefaultOpinion );
+                var routeConfig = this.getData().data;
+                var op = _self.opinion.getValue();
+                if( op === (_self.lastDefaultOpinion || "") || op === "" ){
+                    _self.lastDefaultOpinion = routeConfig.opinion || "";
+                    _self.opinion.setValue( _self.lastDefaultOpinion );
                 }
                 _self.loadOrgs( routeConfig );
             },
             onUncheck: function(el, value){
-                var routeConfig = this.getData( value );
-                if (this.opinion.getValue() === (routeConfig.opinion || "") ) {
-                    this.lastDefaultOpinion = "";
-                    this.opinion.setValue("value", "");
+                var routeConfig = this.getData( value ).data;
+                var op = _self.opinion.getValue();
+                if (op === (routeConfig.opinion || "") || op === "" ) {
+                    _self.lastDefaultOpinion = "";
+                    _self.opinion.setValue("");
                 }
                 _self.loadOrgs();
             },
@@ -658,24 +610,42 @@ MWF.ProcessFlow.Processor = new Class({
                 if( defaultRoute ){
                     this.setValue( defaultRoute );
                 }else{
-                    if( this.orgsArea )this.orgsArea.hide();
-                    _self.setSize(0);
+                    _self.loadOrgs();
                 }
             }
         });
         this.routeRadio.load();
     },
-    loadOrgs: function(){
-
+    loadOrgs: function( routeConfig ){
+        for( var r in this.routeOrgMap ){
+            this.routeOrgMap[r].hide();
+        }
+        if( routeConfig ){
+            var routeId = routeConfig.id;
+            var orgList = this.routeOrgMap[routeId];
+            if( orgList ){
+                orgList.show();
+            }else{
+                orgList = new MWF.ProcessFlow.Processor.OrgList(this, {
+                    routeId: routeId
+                });
+                this.routeOrgMap[routeId] = orgList;
+                orgList.load();
+            }
+            this.currentOrgList = orgList;
+        }else{
+            this.orgsArea.hide();
+            this.setSize(0);
+            this.currentOrgList = null;
+        }
     },
     cancel: function(){
         this.destroy();
         this.fireEvent("cancel");
     },
-
     submit: function (ev) {
         if (this.hasRouteGroup && !this.routeGroupRadio.getValue() ) {
-            this.routeGroupArea.setStyle("background-color", "#ffe9e9");
+            this.routeGroupRadio.setRequireStyle();
             this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
                 this.routeGroupArea,
@@ -686,7 +656,7 @@ MWF.ProcessFlow.Processor = new Class({
         }
 
         if (!this.routeRadio.getValue()) {
-            this.routeArea.setStyle("background-color", "#ffe9e9");
+            this.routeRadio.setRequireStyle();
             this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRoute,
                 this.routeArea,
@@ -696,7 +666,7 @@ MWF.ProcessFlow.Processor = new Class({
             return false;
         }
 
-        var routeName = this.routeRadio.getData().name;
+        var routeName = this.routeRadio.getData().data.name;
         var opinion = this.opinion.getValue();
         var medias = [];
         if (this.opinion.handwritingFile) medias.push(this.opinion.handwritingFile);
@@ -709,7 +679,7 @@ MWF.ProcessFlow.Processor = new Class({
                 this.opinion.setRequireStyle();
                 this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.opinionRequired,
-                    this.opinionTextarea,
+                    this.opinion.opinionTextarea,
                     null,
                     {"x": "center", "y": "top"}
                 );
@@ -786,6 +756,41 @@ MWF.ProcessFlow.Processor = new Class({
             })
         }
     },
+    getRouteGroupConfig: function () {
+        if (this.routeGroupObject) return this.routeGroupObject;
+        this.routeGroupObject = {};
+        this.routeGroupNameList = [];
+        this.hasRouteGroup = false;
+        var routeList = this.getRouteConfigList();
+        routeList.each(function (route, i) {
+
+            if (route.hiddenScriptText && this.form && this.form.Macro) { //如果隐藏路由，返回
+                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
+            }
+
+            if (route.displayNameScriptText && this.form && this.form.Macro) { //如果有显示名称公式
+                route.displayName = this.form.Macro.exec(route.displayNameScriptText, this);
+            } else {
+                route.displayName = route.name;
+            }
+
+            if (route.decisionOpinion) {
+                this.hasRouteGroup = true;
+                route.decisionOpinion.split("#").each(function (rg) {
+                    this.routeGroupNameList.combine([rg]);
+                    var d = this.splitByStartNumber(rg);
+                    if (!this.routeGroupObject[d.name]) this.routeGroupObject[d.name] = [];
+                    this.routeGroupObject[d.name].push(route);
+                }.bind(this))
+            } else {
+                var defaultName = MWF.xApplication.process.Work.LP.defaultDecisionOpinionName;
+                this.routeGroupNameList.combine([defaultName]);
+                if (!this.routeGroupObject[defaultName]) this.routeGroupObject[defaultName] = [];
+                this.routeGroupObject[defaultName].push(route);
+            }
+        }.bind(this));
+        return this.routeGroupObject;
+    },
     getRouteConfigList: function () {
         if(this.routeConfigList)return this.routeConfigList;
 
@@ -835,6 +840,31 @@ MWF.ProcessFlow.Processor = new Class({
             }
         }
     },
+    getOrgConfig: function (routeId) {
+        var routeList = this.getRouteConfigList();
+        for (var i = 0; i < routeList.length; i++) {
+            if (routeList[i].id === routeId) {
+                return routeList[i].selectConfigList;
+            }
+        }
+    },
+    getVisableOrgConfig: function (routeId) {
+        var selectConfigList = this.getOrgConfig(routeId);
+        var list = [];
+        (selectConfigList || []).each(function (config) {
+            if (!this.isOrgHidden(config)) {
+                list.push(config);
+            }
+        }.bind(this));
+        return list;
+    },
+    isOrgHidden: function (d) {
+        if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
+            var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
+            if (hidden && hidden.toString() === "true") return true;
+        }
+        return false;
+    },
     getMaxOrgLength: function () {
         var routeList = this.getRouteConfigList();
         var length = 0;
@@ -853,6 +883,21 @@ MWF.ProcessFlow.Processor = new Class({
             (node.getStyle("padding-bottom").toInt() || 0) +
             (node.getStyle("border-top-width").toInt() || 0) +
             (node.getStyle("border-bottom-width").toInt() || 0);
+    },
+    splitByStartNumber: function (str) {
+        var obj = {
+            name: "",
+            order: ""
+        };
+        for (var i = 0; i < str.length; i++) {
+            if (parseInt(str.substr(i, 1)).toString() !== "NaN") {
+                obj.order = obj.order + str.substr(i, 1);
+            } else {
+                obj.name = str.substr(i, str.length);
+                break;
+            }
+        }
+        return obj;
     },
     setSize: function (currentOrgLength, flag) {
         return;
@@ -908,178 +953,56 @@ MWF.ProcessFlow.Processor = new Class({
             this.selectOpinionNode.setStyles(this.css.selectIdeaNode);
         }
         if (!flag) this.fireEvent("resize");
-    },
+    }
 });
 
 MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
 
 MWF.ProcessFlow.Processor.OrgList = new Class({
+    Implements: [Options, Events],
+    options: {
+        routeId: ""
+    },
     initialize: function (processor, options) {
         this.processor = processor;
         this.form = processor.form;
+        this.flow = processor.flow;
+        this.businessData = this.form.businessData;
         this.container = processor.orgsArea;
         this.setOptions(options);
 
-        this.orgTableObject = {};
-        this.orgItemsObject = {};
-        this.orgItemsMap = {};
-    },
-    load: function (route) {
-        if (!this.form || !route) {
-            this.container.hide();
-            this.processor.setSize(0);
-            return;
-        } else {
-            this.container.show();
-        }
-        var isLoaded = false;
-        for (var key in this.orgTableObject) {
-            if (route === key) {
-                isLoaded = true;
-            } else {
-                this.orgTableObject[key].hide();
-            }
-        }
-        if (isLoaded) {
-            this.showOrgs(route);
-        } else {
-            this.createOrgs(route)
-        }
-    },
-    getOrgConfig: function (routeId) {
-        var routeList = this.processor.getRouteConfigList();
-        for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].id === routeId) {
-                return routeList[i].selectConfigList;
-            }
-        }
-    },
-    getVisableOrgConfig: function (routeId) {
-        var selectConfigList = this.processor.getOrgConfig(routeId);
-        var list = [];
-        (selectConfigList || []).each(function (config) {
-            if (!this.isOrgHidden(config)) {
-                list.push(config);
-            }
-        }.bind(this));
-        return list;
-    },
-    isOrgHidden: function (d) {
-        if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
-            var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
-            if (hidden && hidden.toString() === "true") return true;
-        }
-        return false;
-    },
-    setNoOrg: function(){
-        this.container.hide();
         this.orgItemMap = {};
         this.orgItems = [];
-        this.processor.setSize(0);
     },
-    showOrgs: function (route) {
-        this.orgItemMap = this.orgItemsMap[route] || {};
-        var dataVisable = this.getVisableOrgConfig(route);
-        if (dataVisable.length) {
-            if (this.isSameArray(Object.keys(this.orgItemMap), dataVisable.map(function (d) { return d.name }))) {
-                this.orgTableObject[route].show();
-                this.orgItems = this.orgItemsObject[route] || [];
-                this.processor.setSize(dataVisable.length);
-            } else {
-                this.loadTable(route);
-            }
+    load: function () {
+        var configVisable = this.getVisableOrgConfig();
+        if (configVisable.length) {
+            this.loadOrgs();
+            this.container.show();
+            this.processor.setSize(configVisable.length);
         } else {
-           this.setNoOrg();
+            this.orgItemMap = {};
+            this.orgItems = [];
+            this.container.hide();
+            this.processor.setSize(0);
         }
     },
-    createOrgs: function (route) {
-        var dataVisable = this.getVisableOrgConfig(route);
-        if (dataVisable.length) {
-            this.loadTable(route);
-        } else {
-            this.setNoOrg();
-        }
+    hide: function(){
+
     },
-    loadTable: function (route) {
-        var data = this.getOrgConfig(route);
-        var dataVisable = this.getVisableOrgConfig(route);
-        this.processor.setSize(dataVisable.length);
-
-        this.container.show();
-
-        var table_old = this.orgTableObject[route];
-        var tdsMap_old = {};
-        if (table_old) {
-            table_old.getElements("td").each(function (td) {
-                tdsMap_old[td.retrieve("orgName")] = td;
-            });
-        }
-
-        var orgItems_old = this.orgItemsObject[route] || [];
-        var orgItemMap_old = this.orgItemsMap[route] || {};
-
-        this.orgItems = this.orgItemsObject[route] = [];
-        this.orgItemMap = this.orgItemsMap[route] = {};
-
-        var len = dataVisable.length;
-
-        var routeOrgTable = new Element("table", {
-            "cellspacing": 0, "cellpadding": 0, "border": 0, "width": "100%",
-            "styles": this.css.routeOrgTable
-        }).inject(this.container);
-        this.orgTableObject[route] = routeOrgTable;
-
-        var lines = ((len + 1) / 2).toInt();
-        for (var n = 0; n < lines; n++) {
-            var tr = new Element("tr").inject(routeOrgTable);
-            new Element("td", {"width": "50%", "valign": "bottom", "styles": this.css.routeOrgOddTd}).inject(tr);
-            new Element("td", {"width": "50%", "valign": "bottom", "styles": this.css.routeOrgEvenTd}).inject(tr);
-        }
-
-        var trs = routeOrgTable.getElements("tr");
+    getVisableOrgConfig: function(){
+        return this.processor.getVisableOrgConfig( this.options.routeId );
+    },
+    loadOrgs: function () {
+        var configVisable = this.getVisableOrgConfig();
+        var len = configVisable.length;
 
         var ignoreFirstOrgOldData = false;
 
-        dataVisable.each(function (config, i) {
-            var sNode;
-            var width;
-            if (i + 1 === len && (len % 2 === 1)) {
-                sNode = trs[trs.length - 1].getFirst("td");
-                sNode.set("colspan", 2);
-                trs[trs.length - 1].getLast("td").destroy();
-                sNode.setStyle("border", "0px");
-                sNode.set("width", "100%");
-                sNode.store("orgName", config.name);
+        configVisable.each(function (config, i) {
 
-                if (orgItemMap_old[config.name]) {
-                    var org = orgItemMap_old[config.name];
-                    this.orgItems.push(org);
-                    this.orgItemMap[config.name] = org;
-
-                    var td = tdsMap_old[config.name];
-                    td.getChildren().inject(sNode);
-                } else {
-                    this.loadOrg(sNode, config, "all", ignoreFirstOrgOldData && i === 0)
-                }
-            } else {
-                var row = ((i + 2) / 2).toInt();
-                var tr = trs[row - 1];
-                sNode = (i % 2 === 0) ? tr.getFirst("td") : tr.getLast("td");
-                sNode.store("orgName", config.name);
-
-                if (orgItemMap_old[config.name]) {
-                    var org = orgItemMap_old[config.name];
-                    this.orgItems.push(org);
-                    this.orgItemMap[config.name] = org;
-
-                    var td = tdsMap_old[config.name];
-                    td.getChildren().inject(sNode);
-                } else {
-                    this.loadOrg(sNode, config, (i % 2 === 0) ? "left" : "right", ignoreFirstOrgOldData && i == 0)
-                }
-            }
+            this.loadOrg(sNode, config, (i % 2 === 0) ? "left" : "right", ignoreFirstOrgOldData && i == 0)
         }.bind(this));
-        if (table_old) table_old.destroy();
     },
     loadOrg: function (container, json, position, ignoreOldData) {
         var titleNode = new Element("div.selectorTitle", {
@@ -2468,16 +2391,16 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 if( this.options.isHandwriting )this.handwritingButton.show();
                 this.opinionTextarea.addEvent("change", function () {
                     this.removeRequireStyle();
-                })
+                }.bind(this))
             }.bind(this)
         );
     },
     setRequireStyle: function(){
-        this.opinionTextarea.addClass("o2flow-opinion-textarea-unvalid");
+        this.opinionTextarea.addClass("o2flow-invalid-bg");
     },
     removeRequireStyle: function(){
-        if(this.opinionTextarea.hasClass("o2flow-opinion-textarea-unvalid")){
-            this.opinionTextarea.removeClass("o2flow-opinion-textarea-unvalid");
+        if(this.opinionTextarea.hasClass("o2flow-invalid-bg")){
+            this.opinionTextarea.removeClass("o2flow-invalid-bg");
         }
     },
     getValue: function(){
@@ -2493,6 +2416,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
         } else {
             this.opinionTextarea.set("value", op + ", " + opinion );
         }
+        this.removeRequireStyle();
     },
     overItemNode: function (ev) {
         ev.target.addClass("mainColor_bg_opacity")
@@ -2548,6 +2472,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                         this.handwritingFile = imageFile;
                         this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
                             addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
+                        this.removeRequireStyle();
                     }else{
                         this.handwritingFile = null;
                         this.handwritingButton.getElement("i").addClass("o2icon-edit2").
@@ -2579,7 +2504,8 @@ MWF.ProcessFlow.widget.Radio = new Class({
     Implements: [Options, Events],
     options: {
         optionList: [],
-        value: null
+        value: null,
+        cancelEnable: true
     },
     initialize: function( container, flow, options ){
         this.container = container;
@@ -2630,7 +2556,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
     toggle: function( ev ){
         var el = this.flow.getEl(ev, "o2flow-radio");
         if( this.checkedItems.contains( el ) ){
-            this.uncheck( el, true )
+            if( this.options.cancelEnable )this.uncheck( el, true )
         }else{
             this.check( el )
         }
@@ -2643,6 +2569,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
+        this.removeRequireStyle();
         this.fireEvent("check", [el, el.dataset["o2Value"]])
     },
     uncheck: function(el, isFire){
@@ -2652,6 +2579,14 @@ MWF.ProcessFlow.widget.Radio = new Class({
         this.checkedItems.erase(el);
         if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
     },
+    setRequireStyle: function(){
+        this.container.addClass("o2flow-invalid-bg");
+    },
+    removeRequireStyle: function(){
+        if(this.container.hasClass("o2flow-invalid-bg")){
+            this.container.removeClass("o2flow-invalid-bg");
+        }
+    }
     // overItemNode: function (ev) {
     //     var el = this.flow.getEl(ev, "o2flow-radio");
     //     if( !el.dataset["o2Checked"] ){
@@ -2681,7 +2616,7 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
     toggle: function( ev ){
         var el = this.flow.getEl(ev, "o2flow-radio2");
         if( this.checkedItems.contains( el ) ){
-            this.uncheck( el, true )
+            if( this.options.cancelEnable )this.uncheck( el, true )
         }else{
             this.check( el )
         }
@@ -2694,6 +2629,7 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
+        this.removeRequireStyle();
         this.fireEvent("check", [el, el.dataset["o2Value"]])
     },
     uncheck: function(el, isFire){

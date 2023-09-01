@@ -243,7 +243,8 @@
     padding: 5px;
     font-family: "Microsoft YaHei";
 }
-.o2flow-opinion-textarea-unvalid{
+
+.o2flow-invalid-bg{
     background: #ffe9e9;
 }
 
@@ -329,6 +330,8 @@
     padding: 3px 10px;
     background: #F0F0F0;
     border-radius: 15px;
+    margin-top: 5px;
+    margin-right: 10px;
     color: #666666;
     cursor: pointer;
 }
@@ -405,6 +408,12 @@
 .o2flow-route-area {
     height: 100px;
     overflow: auto;
+    padding-left: 10px;
+}
+.o2flow-route-fullsize-area{
+    overflow: hidden;
+    min-height: 40px;
+    padding-left: 10px;
 }
 
 
