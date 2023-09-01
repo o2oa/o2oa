@@ -17,9 +17,15 @@
                 <td class="editTableTitle">{{$.lp.datatableEditMode}}:</td>
                 <td class="editTableValue">
                     <input type="radio" name="editMode" value="single" text{($.editMode!=='multi')?'checked':''}
-                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', 'none')}" />{{$.lp.datatableEditModeValue[0]}}
+                           onclick="if (this.checked){
+                               $('text{$.pid}defaultCountEditTr').setStyle('display', 'none');
+                               $('text{$.pid}validationCompleteLineDiv').setStyle('display', '');
+                           }" />{{$.lp.datatableEditModeValue[0]}}
                     <input type="radio" name="editMode" value="multi" text{($.editMode==='multi')?'checked':''}
-                           onclick="if (this.checked){ $('text{$.pid}defaultCountEditTr').setStyle('display', '')}" />{{$.lp.datatableEditModeValue[1]}}
+                           onclick="if (this.checked){
+                               $('text{$.pid}defaultCountEditTr').setStyle('display', '');
+                               $('text{$.pid}validationCompleteLineDiv').setStyle('display', 'none');
+                           }" />{{$.lp.datatableEditModeValue[1]}}
                 </td>
             </tr>
         </table>
@@ -58,8 +64,26 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.allowAdd}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}/>{{$.lp.no}}
+                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}  onclick="if (this.checked){
+                        $('text{$.pid}addToTr').setStyle('display', '');
+                    }"/>{{$.lp.yes}}
+                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}  onclick="if (this.checked){
+                        $('text{$.pid}addToTr').setStyle('display', 'none');
+                    }"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr id="text{$.pid}addToTr" style="display: text{(!$.addable || $.addable!=='no')?'':'none'};">
+                <td class="editTableTitle">{{$.lp.titleAddTo}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="addTo" value="first" text{($.addTo==='first')?'checked':''}/>{{$.lp.firstLine}}
+                    <input type="radio" name="addTo" value="last" text{($.addTo!=='first')?'checked':''}/>{{$.lp.lastLine}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowSort}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="sortable" value="yes" text{($.sortable!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="sortable" value="no" text{($.sortable==='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
@@ -124,6 +148,9 @@
 
         <div class="MWFValidation" name="validationConfig"></div>
         <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+        <div id="text{$.pid}validationCompleteLineDiv" style="display: text{($.editMode==='multi')?'none':''};">
+            <div class="MWFScriptArea" name="validationCompleteLine" title="{{$.lp.verificationLineScript}} (S)"></div>
+        </div>
     </div>
     <div title="{{$.lp.style}}" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
@@ -149,6 +176,7 @@
         <div class="MWFMaplist" name="actionStyles" collapse="true" title="{{$.lp.actionCellStyles}}"></div>
         <div class="MWFMaplist" name="editStyles" collapse="true" title="{{$.lp.editCellStyles}}"></div>
         <div class="MWFMaplist" name="amountStyles" collapse="true" title="{{$.lp.amountCellStyle}}"></div>
+        <div class="MWFMaplist" name="sectionAmountStyles" collapse="true" title="{{$.lp.sectionAmountCellStyle}}"></div>
         <div class="MWFMaplist" name="itemTitleStyles" collapse="true" title="{{$.lp.itemTitleStyle}}"></div>
     </div>
     <div title="{{$.lp.section}}" class="MWFTab">
