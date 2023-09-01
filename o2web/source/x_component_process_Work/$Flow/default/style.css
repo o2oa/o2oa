@@ -37,7 +37,7 @@
 
 .o2icon-icon_circle:before {
     content: "\e902";
-    color: #d8d8d8;
+    color: #999;
 }
 
 .o2icon-person_list:before {
@@ -243,6 +243,9 @@
     padding: 5px;
     font-family: "Microsoft YaHei";
 }
+.o2flow-opinion-textarea-unvalid{
+    background: #ffe9e9;
+}
 
 .o2flow-handwriting-button {
     position: absolute;
@@ -321,7 +324,6 @@
 .o2flow-radio-area {
     overflow: hidden;
 }
-
 .o2flow-radio {
     float: left;
     padding: 3px 10px;
@@ -330,21 +332,44 @@
     color: #666666;
     cursor: pointer;
 }
-
 .o2flow-radio-active {
     background: #4A90E2;
     color: #fff;
 }
-
 .o2flow-radio-icon {
     color: #fff
 }
-
 /*.o2flow-radio-over{*/
 /*  background: transparent;*/
 /*  color:#666666;*/
 /*}*/
 .o2flow-radio-text {
+    display: inline-block;
+    margin-left: 2px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    font-family: MicrosoftYaHei;
+}
+
+.o2flow-radio2-area{
+    overflow: hidden;
+}
+.o2flow-radio2 {
+    padding-left: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 15px;
+    color: #333;
+    cursor: pointer;
+}
+.o2flow-radio2-active {
+    color: #333;
+}
+.o2flow-radio2-icon {
+    color: #4A90E2
+}
+.o2flow-radio2-text {
     display: inline-block;
     margin-left: 2px;
     height: 20px;

@@ -279,7 +279,7 @@ MWF.ProcessFlow.Reset = new Class({
     afterLoad: function () {
         debugger;
         this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this.flow, {
-            opinionList: [{
+            optionList: [{
                 text: this.lp.keepTask,
                 value: true
             }]
@@ -467,14 +467,8 @@ MWF.ProcessFlow.Processor = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "mediaNode": null,
-        "opinion": "",
         "defaultRoute": "",
-        "tabletToolHidden": [],
-        "tabletWidth": 0,
-        "tabletHeight": 0,
         "orgHeight": 276,
-        "inFlow": false,
         "maxOrgCountPerline": 2
     },
 
@@ -491,8 +485,8 @@ MWF.ProcessFlow.Processor = new Class({
     },
     load: function(){
         this.container.loadHtml(this.flow.path+this.flow.options.style+"/process.html", {"bind": {"lp": this.lp}, "module": this}, function(){
-            //this.loadRouteList();
             this.loadOpinion();
+            this.loadRouteOrGroupList();
             //this.loadOrg();
             //this.afterLoad();
             this.fireEvent("postLoad");
@@ -504,15 +498,14 @@ MWF.ProcessFlow.Processor = new Class({
         this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
         this.opinion.load();
     },
-    loadRouteList: function () {
+    loadRouteOrGroupList: function () {
         this.getRouteGroupConfig();
         if (this.hasRouteGroup) {
-            //this.getMaxOrgLength() > 1
-            //this.setRouteGroupList();
+            this.loadRouteGroupList();
         } else {
             this.routeGroupWraper.destroy();
             this.routeWraper.removeClass("o2flow-route-wraper").addClass("o2flow-route-fullsize-wraper");
-            this.setRouteList();
+            this.loadRouteList();
         }
         this.fireEvent("postLoad");
     },
@@ -566,10 +559,7 @@ MWF.ProcessFlow.Processor = new Class({
         }
         return obj;
     },
-    setRouteGroupList: function () {
-        debugger;
-        var _self = this;
-
+    loadRouteGroupList: function(){
         var keys = this.routeGroupNameList;
         keys.sort(function (a, b) {
             var aIdx = parseInt(this.splitByStartNumber(a).order || "9999999");
@@ -577,96 +567,54 @@ MWF.ProcessFlow.Processor = new Class({
             return aIdx - bIdx;
         }.bind(this));
 
-        var list = [];
-        keys.each(function (k) {
-            list.push(this.splitByStartNumber(k).name)
+        var routeGroupNames =  keys.map(function (k) { return this.splitByStartNumber(k).name; }.bind(this));
+
+        var defaultValue;
+        if( keys.length === 1 ){
+            defaultValue = routeGroupNames[0];
+        }else if( this.options.defaultRoute ){
+            routeGroupNames.each(function (routeGroupName) {
+                if( defaultValue )return;
+                var routeList = this.routeGroupObject[routeGroupName];
+                matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
+                if( matchRoutes.length )defaultValue = routeGroupName
+            }.bind(this));
+        }
+
+        var optionList = routeGroupNames.map(function (routeGroupName) {
+            return {
+                text: routeGroupName,
+                value: routeGroupName,
+                data: this.routeGroupObject[routeGroupName]
+            };
         }.bind(this));
 
-        var flag = true;
-        var matchRoutes = [];
-        list.each(function (routeGroupName) {
-            var routeList = this.routeGroupObject[routeGroupName];
-            var routeGroupNode = new Element("div", {
-                "styles": this.css.routeGroupNode,
-                "text": routeGroupName
-            }).inject(this.routeGroupArea);
-            routeGroupNode.store("routeList", routeList);
-            routeGroupNode.store("routeGroupName", routeGroupName);
-
-            routeGroupNode.addEvents({
-                "mouseover": function (e) {
-                    if (_self.selectedRouteGroup) {
-                        if (_self.selectedRouteGroup.get("text") != this.get("text")) {
-                            this.setStyles(_self.css.routeGroupNode_over);
-                        }
-                    } else {
-                        this.setStyles(_self.css.routeGroupNode_over);
-                    }
-                },
-                "mouseout": function (e) {
-                    if (_self.selectedRouteGroup) {
-                        if (_self.selectedRouteGroup.get("text") != this.get("text")) {
-                            this.setStyles(_self.css.routeGroupNode);
-                        }
-                    } else {
-                        this.setStyles(_self.css.routeGroupNode);
-                    }
-                },
-                "click": function (e) {
-                    _self.selectRouteGroup(this);
+        var _self = this;
+        this.routeGroupRadio = new MWF.ProcessFlow.widget.Radio2(this.routeGroupArea, this.flow, {
+            optionList: optionList,
+            onCheck: function(el, value){
+                var routeConfigList = this.getData();
+                _self.loadRouteList( routeConfigList );
+            },
+            onLoad: function(){
+                if( defaultValue ){
+                    this.setValue( defaultValue );
+                }else{
+                    _self.setSize(0);
                 }
-            });
-
-            if (keys.length === 1) {
-                this.selectRouteGroup(routeGroupNode);
-                flag = false;
-            }else if( matchRoutes.length === 0 && this.options.defaultRoute ){
-                matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
-                if( matchRoutes.length ){
-                    this.selectRouteGroup(routeGroupNode);
-                }
-                flag = false;
             }
-        }.bind(this))
-        if (flag) {
-            this.setSize(0);
-        }
+        });
+        this.routeGroupRadio.load();
     },
-    selectRouteGroup: function (node) {
-        if (this.selectedRouteGroup) {
-            if (this.selectedRouteGroup.get("text") != node.get("text")) {
-                this.selectedRouteGroup.setStyles(this.css.routeGroupNode);
-                //this.selectedRouteGroup.removeClass("mainColor_bg");
-
-                this.selectedRouteGroup = node;
-                this.selectedRouteGroup.setStyles(this.css.routeGroupNode_selected);
-                //this.selectedRouteGroup.addClass("mainColor_bg");
-
-                var routeList = this.selectedRouteGroup.retrieve("routeList");
-                this.setRouteList(routeList);
-
-            } else {
-
-            }
-        } else {
-            this.selectedRouteGroup = node;
-            node.setStyles(this.css.routeGroupNode_selected);
-
-            var routeList = this.selectedRouteGroup.retrieve("routeList");
-            this.setRouteList(routeList);
-        }
-        this.routeGroupArea.setStyle("background-color", "#FFF");
-    },
-    setRouteList: function (routeList) {
+    loadRouteList: function (routeConfigList) {
         var _self = this;
         this.routeArea.empty();
         this.selectedRouteNode = null;
-        //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
-        if (!routeList) routeList = this.getRouteConfigList();
-        //this.task.routeNameList.each(function(route, i){
-        var isSelected = false;
-        var isSelectedDefault = false;
-        routeList.each(function (route, i) {
+
+        if (!routeConfigList) routeConfigList = this.getRouteConfigList();
+
+        var optionList = [], isSelectedDefault = false, defaultRoute;
+        routeConfigList.each(function (route, i) {
             if ( route.hiddenScriptText ) {
                 if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
             }
@@ -674,158 +622,70 @@ MWF.ProcessFlow.Processor = new Class({
             if (route.displayNameScriptText && this.form && this.form.Macro) {
                 routeName = this.form.Macro.exec(route.displayNameScriptText, this);
             }
-            var routeNode = new Element("div", {
-                "styles": this.css.routeNode,
-                "text": routeName
-            }).inject(this.routeArea);
-
-            routeNode.store("route", route.id);
-            routeNode.store("routeName", route.name);
-
-            routeNode.addEvents({
-                "mouseover": function (e) {
-                    _self.overRoute(this);
-                },
-                "mouseout": function (e) {
-                    _self.outRoute(this);
-                },
-                "click": function (e) {
-                    _self.selectRoute(this);
-                }
+            optionList.push({
+                value: route.id,
+                text: routeName,
+                data: route
             });
 
             if( route.id === this.options.defaultRoute || route.name === this.options.defaultRoute) {
-                this.selectRoute(routeNode);
-                isSelected = true;
+                defaultRoute = route.id;
                 isSelectedDefault = true;
-            }else if ( !isSelectedDefault && (routeList.length == 1 || route.sole )) { //sole表示优先路由
-                this.selectRoute(routeNode);
-                isSelected = true;
+            }else if ( !isSelectedDefault && (routeConfigList.length == 1 || route.sole )) { //sole表示优先路由
+                defaultRoute = route.id;
             }
         }.bind(this));
-        if (!isSelected) {
-            this.setSize(0);
-            if( this.orgsArea )this.orgsArea.hide();
-        }
-    },
-    overRoute: function (node) {
-        if (this.selectedRouteNode) {
-            if (this.selectedRouteNode.get("text") != node.get("text")) {
-                node.setStyles(this.css.routeNode_over);
-                node.addClass("lightColor_bg");
-            }
-        } else {
-            node.setStyles(this.css.routeNode_over);
-            node.addClass("lightColor_bg");
-        }
-    },
-    outRoute: function (node) {
-        if (this.selectedRouteNode) {
-            if (this.selectedRouteNode.get("text") != node.get("text")) {
-                node.setStyles(this.css.routeNode);
-                node.removeClass("lightColor_bg");
-            }
-        } else {
-            node.setStyles(this.css.routeNode);
-            node.removeClass("lightColor_bg");
-        }
-    },
-    getDefaultOpinion: function( node ){
-        var routeId = node.retrieve("route");
-        var routeDate = this.getRouteConfig( routeId );
-        return routeDate.opinion || "";
-    },
-    selectRoute: function (node) {
-        if (this.selectedRouteNode) {
-            if (this.selectedRouteNode.get("text") != node.get("text")) { //选中其他路由
-                this.selectedRouteNode.setStyles(this.css.routeNode);
-                this.selectedRouteNode.removeClass("mainColor_bg");
 
-                if( this.opinionTextarea.get("value") === ( this.lastDefaultOpinion || "" ) ||
-                    this.opinionTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")
-                ){
-                    this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
-                    this.opinionTextarea.set("value", this.lastDefaultOpinion || (MWF.xApplication.process.Work.LP.inputText || "") );
+        this.routeRadio = new MWF.ProcessFlow.widget.Radio(this.routeArea, this.flow, {
+            optionList: optionList,
+            onCheck: function(el, value){
+                var routeConfig = this.getData();
+                if( this.opinion.getValue() === (this.lastDefaultOpinion || "")){
+                    this.lastDefaultOpinion = routeConfig.opinion;
+                    this.opinion.setValue( this.lastDefaultOpinion );
                 }
-
-                this.selectedRouteNode = node;
-                node.setStyles(this.css.routeNode_selected);
-                node.addClass("mainColor_bg");
-                node.removeClass("lightColor_bg");
-
-            } else { //取消选中当前路由
-                if (this.opinionTextarea.get("value") === this.getDefaultOpinion(this.selectedRouteNode)) {
+                _self.loadOrgs( routeConfig );
+            },
+            onUncheck: function(el, value){
+                var routeConfig = this.getData( value );
+                if (this.opinion.getValue() === (routeConfig.opinion || "") ) {
                     this.lastDefaultOpinion = "";
-                    this.opinionTextarea.set("value", MWF.xApplication.process.Work.LP.inputText || "");
+                    this.opinion.setValue("value", "");
                 }
-
-                this.selectedRouteNode.setStyles(this.css.routeNode);
-                this.selectedRouteNode.addClass("lightColor_bg");
-                this.selectedRouteNode.removeClass("mainColor_bg");
-
-                this.selectedRouteNode = null;
+                _self.loadOrgs();
+            },
+            onLoad: function(){
+                if( defaultRoute ){
+                    this.setValue( defaultRoute );
+                }else{
+                    if( this.orgsArea )this.orgsArea.hide();
+                    _self.setSize(0);
+                }
             }
-        } else {
-            if ( (this.opinionTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")) ||
-                (this.opinionTextarea.get("value") === this.lastDefaultOpinion )
-            ) {
-                this.lastDefaultOpinion = this.getDefaultOpinion(node) || "";
-                if (this.lastDefaultOpinion) this.opinionTextarea.set("value", this.lastDefaultOpinion);
-            }
-
-            this.selectedRouteNode = node;
-            node.setStyles(this.css.routeNode_selected);
-            node.addClass("mainColor_bg");
-            node.removeClass("lightColor_bg");
-        }
-        this.routeArea.setStyle("background-color", "#FFF");
-        this.loadOrgs(this.selectedRouteNode ? this.selectedRouteNode.retrieve("route") : "");
-
-        //临时添加
-        if (this.form.data.json.events && this.form.data.json.events.afterSelectRoute) {
-            this.form.Macro.exec(this.form.data.json.events.afterSelectRoute.code, node);
-        }
+        });
+        this.routeRadio.load();
+    },
+    loadOrgs: function(){
 
     },
-
-
-    setButtons: function () {
-        this.cancelButton = new Element("div", {"styles": this.css.cancelButton}).inject(this.buttonsArea);
-        var iconNode = new Element("div", {"styles": this.css.cancelIconNode}).inject(this.cancelButton);
-        var textNode = new Element("div", {
-            "styles": this.css.cancelTextNode,
-            "text": MWF.xApplication.process.Work.LP.cancel
-        }).inject(this.cancelButton);
-
-        this.okButton = new Element("div", {"styles": this.css.okButton}).inject(this.buttonsArea);
-        var iconNode = new Element("div", {"styles": this.css.okIconNode}).inject(this.okButton);
-        var textNode = new Element("div", {
-            "styles": this.css.okTextNode,
-            "text": MWF.xApplication.process.Work.LP.ok
-        }).inject(this.okButton);
-
-        this.cancelButton.addEvent("click", function () {
-            this.destroy();
-            this.fireEvent("cancel");
-        }.bind(this));
-
-        this.okButton.addEvent("click", function (ev) {
-            this.submit(ev);
-        }.bind(this));
+    cancel: function(){
+        this.destroy();
+        this.fireEvent("cancel");
     },
+
     submit: function (ev) {
-        if (this.hasRouteGroup && !this.selectedRouteGroup) {
+        if (this.hasRouteGroup && !this.routeGroupRadio.getValue() ) {
             this.routeGroupArea.setStyle("background-color", "#ffe9e9");
             this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRouteGroup,
                 this.routeGroupArea,
-                null,  //{"x": 0, "y": 30}
+                null,
                 {"x": "center", "y": "top"}
             );
             return false;
         }
 
-        if (!this.selectedRouteNode) {
+        if (!this.routeRadio.getValue()) {
             this.routeArea.setStyle("background-color", "#ffe9e9");
             this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.mustSelectRoute,
@@ -835,19 +695,18 @@ MWF.ProcessFlow.Processor = new Class({
             );
             return false;
         }
-        var routeName = this.selectedRouteNode.retrieve("routeName") || this.selectedRouteNode.get("text");
-        var opinion = this.opinionTextarea.get("value");
-        if (opinion === MWF.xApplication.process.Work.LP.inputText) opinion = "";
-        var medias = [];
-        if (this.handwritingFile) medias.push(this.handwritingFile);
-        if (this.soundFile) medias.push(this.soundFile);
-        if (this.videoFile) medias.push(this.videoFile);
 
-        var currentRouteId = this.selectedRouteNode.retrieve("route");
-        var routeData = this.getRouteConfig(currentRouteId);
+        var routeName = this.routeRadio.getData().name;
+        var opinion = this.opinion.getValue();
+        var medias = [];
+        if (this.opinion.handwritingFile) medias.push(this.opinion.handwritingFile);
+
+        var currentRouteId = this.routeRadio.getValue();
+        var routeConfig = this.getRouteConfig(currentRouteId);
+
         if (!opinion && medias.length === 0) {
-            if (routeData.opinionRequired == true) {
-                this.opinionTextarea.setStyle("background-color", "#ffe9e9");
+            if (routeConfig.opinionRequired === true) {
+                this.opinion.setRequireStyle();
                 this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.opinionRequired,
                     this.opinionTextarea,
@@ -859,7 +718,7 @@ MWF.ProcessFlow.Processor = new Class({
         }
 
         var appendTaskOrgItem = "";
-        if (routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select") {
+        if (routeConfig.type === "appendTask" && routeConfig.appendTaskIdentityType === "select") {
             if (!this.orgItems || this.orgItems.length === 0) {
                 this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
@@ -868,7 +727,7 @@ MWF.ProcessFlow.Processor = new Class({
                 );
                 return false;
             } else {
-                appendTaskOrgItem = this.orgItems[0]
+                appendTaskOrgItem = this.orgItems[0];
             }
         }
 
@@ -885,8 +744,8 @@ MWF.ProcessFlow.Processor = new Class({
                 }
             }
 
-            if (routeData.validationScriptText) {
-                var validation = this.form.Macro.exec(routeData.validationScriptText, this);
+            if (routeConfig.validationScriptText) {
+                var validation = this.form.Macro.exec(routeConfig.validationScriptText, this);
                 if (!validation || validation.toString() !== "true") {
                     if (typeOf(validation) === "string") {
                         this.flow.noticeError( validation, this.node );
@@ -918,9 +777,8 @@ MWF.ProcessFlow.Processor = new Class({
             }];
 
             this.fireEvent("submit", array);
-        }.bind(this))
+        }.bind(this));
     },
-
     destroy: function () {
         if (this.orgItems && this.orgItems.length){
             this.orgItems.each(function (org) {
@@ -997,6 +855,8 @@ MWF.ProcessFlow.Processor = new Class({
             (node.getStyle("border-bottom-width").toInt() || 0);
     },
     setSize: function (currentOrgLength, flag) {
+        return;
+
         var lines = ((currentOrgLength + 1) / 2).toInt();
 
         var height = 0;
@@ -1004,7 +864,6 @@ MWF.ProcessFlow.Processor = new Class({
         if (this.routeArea) height = height + this.getOffsetY(this.routeArea) + this.routeArea.getStyle("height").toInt();
         if (this.opinionTitle) height = height + this.getOffsetY(this.opinionTitle) + this.opinionTitle.getStyle("height").toInt();
         if (this.opinionArea) height = height + this.getOffsetY(this.opinionArea) + this.opinionArea.getStyle("height").toInt();
-        //if( this.buttonsArea )height = height + this.getOffsetY(this.buttonsArea) +  this.buttonsArea.getStyle("height").toInt();
 
         if (lines > 0) {
             if (this.container) this.container.show();
@@ -2607,11 +2466,25 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 "module": this
             }, function(){
                 if( this.options.isHandwriting )this.handwritingButton.show();
+                this.opinionTextarea.addEvent("change", function () {
+                    this.removeRequireStyle();
+                })
             }.bind(this)
         );
     },
+    setRequireStyle: function(){
+        this.opinionTextarea.addClass("o2flow-opinion-textarea-unvalid");
+    },
+    removeRequireStyle: function(){
+        if(this.opinionTextarea.hasClass("o2flow-opinion-textarea-unvalid")){
+            this.opinionTextarea.removeClass("o2flow-opinion-textarea-unvalid");
+        }
+    },
     getValue: function(){
         return this.opinionTextarea.get("value");
+    },
+    setValue: function( value ){
+        this.opinionTextarea.set("value", value);
     },
     selectOpinion: function( opinion ){
         var op = this.opinionTextarea.get("value");
@@ -2661,7 +2534,6 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             "edge": "center"
         });
 
-        debugger;
         var h = this.handwritingSaveNode.getSize().y + this.flow.getOffsetY(this.handwritingSaveNode);
         this.handwritingAreaNode.setStyle("height", "" + ( y - h ) + "px");
 
@@ -2706,7 +2578,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
 MWF.ProcessFlow.widget.Radio = new Class({
     Implements: [Options, Events],
     options: {
-        opinionList: [],
+        optionList: [],
         value: null
     },
     initialize: function( container, flow, options ){
@@ -2717,10 +2589,13 @@ MWF.ProcessFlow.widget.Radio = new Class({
     },
     load: function(){
         this.checkedItems = [];
-        var url = this.flow.path+this.flow.options.style+"/widget/radio.html";
-        this.container.loadHtml(url, {"bind": {"lp": this.lp, "opinionList": this.options.opinionList}, "module": this}, function(){
+        this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp, "optionList": this.options.optionList}, "module": this}, function(){
             if( this.options.value !== null )this.setValue( this.options.value );
+            this.fireEvent("load");
         }.bind(this));
+    },
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/widget/radio.html";
     },
     setValue: function( values ){
         while( this.checkedItems.length ){
@@ -2732,6 +2607,13 @@ MWF.ProcessFlow.widget.Radio = new Class({
                 this.check(el)
             }
         }.bind(this))
+    },
+    getData: function( value ){
+        if( !value )value = this.getValue();
+        var arr = this.options.optionList.filter(function (o) {
+           return o.value === value;
+        });
+        return arr[0] || null;
     },
     getValue: function(){
         var data = this.checkedItems.map(function (item) {
@@ -2748,7 +2630,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
     toggle: function( ev ){
         var el = this.flow.getEl(ev, "o2flow-radio");
         if( this.checkedItems.contains( el ) ){
-            this.uncheck( el )
+            this.uncheck( el, true )
         }else{
             this.check( el )
         }
@@ -2761,12 +2643,14 @@ MWF.ProcessFlow.widget.Radio = new Class({
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
+        this.fireEvent("check", [el, el.dataset["o2Value"]])
     },
-    uncheck: function(el){
+    uncheck: function(el, isFire){
         el.removeClass("o2flow-radio-active");
         el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
     },
     // overItemNode: function (ev) {
     //     var el = this.flow.getEl(ev, "o2flow-radio");
@@ -2778,5 +2662,46 @@ MWF.ProcessFlow.widget.Radio = new Class({
     //     var el = this.flow.getEl(ev, "o2flow-radio");
     //     el.removeClass("o2flow-radio-over")
     // }
+});
+
+MWF.ProcessFlow.widget.Radio2 = new Class({
+    Extends: MWF.ProcessFlow.widget.Radio,
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/widget/radio2.html";
+    },
+    setValue: function( values ){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        values = typeOf( values ) === "array" ? values : [values];
+        this.container.getElements(".o2flow-radio2").each(function (el) {
+            if(values.contains( el.dataset["o2Value"] ))this.check(el)
+        }.bind(this))
+    },
+    toggle: function( ev ){
+        var el = this.flow.getEl(ev, "o2flow-radio2");
+        if( this.checkedItems.contains( el ) ){
+            this.uncheck( el, true )
+        }else{
+            this.check( el )
+        }
+    },
+    check: function(el){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        el.addClass("o2flow-radio2-active");
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
+        el.dataset["o2Checked"] = true;
+        this.checkedItems.push(el);
+        this.fireEvent("check", [el, el.dataset["o2Value"]])
+    },
+    uncheck: function(el, isFire){
+        el.removeClass("o2flow-radio2-active");
+        el.getElement("i").removeClass("o2icon-radio-checked").addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
+        el.dataset["o2Checked"] = false;
+        this.checkedItems.erase(el);
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
+    }
 });
 
