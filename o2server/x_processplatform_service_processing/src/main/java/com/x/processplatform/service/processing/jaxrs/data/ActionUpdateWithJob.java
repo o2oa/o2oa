@@ -1,9 +1,12 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -14,10 +17,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.express.service.processing.jaxrs.data.DataWi;
 import com.x.processplatform.service.processing.Business;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionUpdateWithJob extends BaseAction {
 
@@ -30,7 +30,7 @@ class ActionUpdateWithJob extends BaseAction {
 
 		Callable<ActionResult<Wo>> callable = new CallableImpl(job, wi);
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -74,7 +74,7 @@ class ActionUpdateWithJob extends BaseAction {
 
 					wi.init(works.get(0), merge);
 					createDataRecord(business, wi);
-				}else {
+				} else {
 					List<WorkCompleted> workCompletedList = emc.listEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
 					if (!workCompletedList.isEmpty()) {
 						for (WorkCompleted work : workCompletedList) {

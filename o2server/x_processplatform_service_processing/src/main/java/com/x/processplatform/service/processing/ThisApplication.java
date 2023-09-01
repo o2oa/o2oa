@@ -58,6 +58,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			ProcessPlatformKeyClassifyExecutorFactory.init(10);
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
@@ -105,6 +106,7 @@ public class ThisApplication {
 			FORKJOINPOOL.shutdown();
 			CacheManager.shutdown();
 			MessageConnector.stop();
+			ProcessPlatformKeyClassifyExecutorFactory.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -7,7 +7,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -19,6 +18,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionExpire extends BaseAction {
 
@@ -28,8 +28,6 @@ class ActionExpire extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -42,34 +40,24 @@ class ActionExpire extends BaseAction {
 
 		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
 			public ActionResult<Wo> call() throws Exception {
-				String taskId = null;
-				String taskTitle = null;
-				String taskSequence = null;
 				ActionResult<Wo> result = new ActionResult<>();
-				try {
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						Task task = emc.find(id, Task.class);
-						if (null != task) {
-							WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
-									task.getJob(), WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
-							if (null == workLog) {
-								throw new ExceptionEntityNotExist(WorkLog.class);
-							}
-							taskId = task.getId();
-							taskTitle = task.getTitle();
-							taskSequence = task.getSequence();
-							emc.beginTransaction(Task.class);
-							task.setExpired(true);
-							Record record = record(workLog, task);
-							emc.persist(record, CheckPersistType.all);
-							emc.commit();
-							Wo wo = new Wo();
-							wo.setId(task.getId());
-							result.setData(wo);
-							MessageFactory.task_expire(task);
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Task task = emc.find(id, Task.class);
+					if (null != task) {
+						WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
+								WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
+						if (null == workLog) {
+							throw new ExceptionEntityNotExist(WorkLog.class);
 						}
-					} catch (Exception e) {
-						throw new ExceptionExpired(e, taskId, taskTitle, taskSequence);
+						emc.beginTransaction(Task.class);
+						task.setExpired(true);
+						Record record = record(workLog, task);
+						emc.persist(record, CheckPersistType.all);
+						emc.commit();
+						Wo wo = new Wo();
+						wo.setId(task.getId());
+						result.setData(wo);
+						MessageFactory.task_expire(task);
 					}
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -78,10 +66,7 @@ class ActionExpire extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wo);
-		return result;
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 	}
 
 	private Record record(WorkLog workLog, Task task) {

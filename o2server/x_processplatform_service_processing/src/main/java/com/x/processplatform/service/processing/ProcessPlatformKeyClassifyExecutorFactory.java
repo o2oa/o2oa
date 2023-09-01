@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.executor;
+package com.x.processplatform.service.processing;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 
 	private static final Map<String, ThreadPoolExecutor> pool = new HashMap<>();
 
-	private static final int DISJOINT_INTERVAL = 20;
+	private static int disjointInterval = 20;
 
 	private static int loop = 0;
 
@@ -38,29 +38,34 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 	private static List<ThreadPoolExecutor> coreThreadPoolExecutors;
 
 	public static void init(int coreSize) {
+		loop = 0;
+		disjointInterval = coreSize * 2;
 		coreThreadPoolExecutors = initCoreThreadPoolExecutors(coreSize);
 	}
 
 	public static void shutdown() {
-		pool.values().stream().forEach(o -> {
-			if (!o.isShutdown()) {
-				o.shutdown();
-			}
-		});
-		pool.clear();
-		coreThreadPoolExecutors.stream().forEach(ThreadPoolExecutor::shutdown);
-		coreThreadPoolExecutors.clear();
+		final ReentrantLock lock = LOCK;
+		lock.lock();
+		try {
+			pool.values().stream().filter(o -> !o.isShutdown()).forEach(ThreadPoolExecutor::shutdown);
+			pool.clear();
+			coreThreadPoolExecutors.stream().forEach(ThreadPoolExecutor::shutdown);
+			coreThreadPoolExecutors.clear();
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public static ThreadPoolExecutor get(String key) {
-		LOCK.lock();
+		final ReentrantLock lock = LOCK;
+		lock.lock();
 		try {
-			loop = (++loop) % DISJOINT_INTERVAL;
+			loop = (++loop) % disjointInterval;
 			key = createUniqueKeyIfBlank(key);
 			return (loop == 0) ? disjoint(key)
 					: pool.computeIfAbsent(key, ProcessPlatformKeyClassifyExecutorFactory::createThreadPoolExecutor);
 		} finally {
-			LOCK.unlock();
+			lock.unlock();
 		}
 	}
 
@@ -74,10 +79,10 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 				LOGGER.info("disjoint found existing ThreadPoolExecutor: {}, queue size:{}, active count;{}.", key,
 						executor.getQueue().size(), executor.getActiveCount());
 			} else if (idle(entry.getValue())) {
+				iterator.remove();
 				if (!coreThreadPoolExecutors.contains(entry.getValue())) {
 					entry.getValue().shutdown();
 				}
-				iterator.remove();
 				LOGGER.info("disjoint remove ThreadPoolExecutor: {}.", entry.getKey());
 			}
 		}
@@ -96,7 +101,8 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 			return opt.get();
 		}
 		ThreadFactory threadFactory = new ThreadFactoryBuilder()
-				.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-" + key + "-%d").build();
+				.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-auxiliary-" + key + "-%d")
+				.build();
 		return (ThreadPoolExecutor) Executors.newFixedThreadPool(1, threadFactory);
 	}
 
@@ -111,7 +117,7 @@ public class ProcessPlatformKeyClassifyExecutorFactory {
 	private static List<ThreadPoolExecutor> initCoreThreadPoolExecutors(int coreSize) {
 		return IntStream.range(0, coreSize).mapToObj(i -> {
 			ThreadFactory threadFactory = new ThreadFactoryBuilder()
-					.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-core" + i + "-%d")
+					.setNameFormat(ProcessPlatformKeyClassifyExecutorFactory.class.getName() + "-core-" + i + "-%d")
 					.build();
 			return (ThreadPoolExecutor) Executors.newFixedThreadPool(1, threadFactory);
 		}).collect(Collectors.toList());
