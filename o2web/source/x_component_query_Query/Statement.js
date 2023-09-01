@@ -135,9 +135,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
                 };
             } else {
                 json = this.viewJson.pagingList[0];
-                var jsonStr = JSON.stringify(json);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
-                json = JSON.parse(jsonStr);
+                // var jsonStr = JSON.stringify(json);
+                // jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                // json = JSON.parse(jsonStr);
             }
             this.paging = new MWF.xApplication.query.Query.Statement.Paging(this.viewPageAreaNode, json, this, {});
             this.paging.load();
@@ -429,7 +429,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(
             this.json.statementId || this.json.statementName || this.json.statementAlias,
             function (json) {
-                debugger;
                 var viewData = JSON.decode(json.data.view);
                 if (!this.json.pageSize) this.json.pageSize = viewData.pageSize || "20";
                 this.viewJson = viewData.data;
