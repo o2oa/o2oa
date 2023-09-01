@@ -607,6 +607,7 @@ MWF.ProcessFlow.Processor = new Class({
                 _self.loadOrgs();
             },
             onLoad: function(){
+                debugger;
                 if( defaultRoute ){
                     this.setValue( defaultRoute );
                 }else{
@@ -634,7 +635,7 @@ MWF.ProcessFlow.Processor = new Class({
             }
             this.currentOrgList = orgList;
         }else{
-            this.orgsArea.hide();
+            this.orgsWraper.hide();
             this.setSize(0);
             this.currentOrgList = null;
         }
@@ -687,9 +688,10 @@ MWF.ProcessFlow.Processor = new Class({
             }
         }
 
+        var orgItems = this.currentOrgList ? this.currentOrgList.orgVisableItems : [];
         var appendTaskOrgItem = "";
         if (routeConfig.type === "appendTask" && routeConfig.appendTaskIdentityType === "select") {
-            if (!this.orgItems || this.orgItems.length === 0) {
+            if (!orgItems || orgItems.length === 0) {
                 this.flow.noticeError(
                     MWF.xApplication.process.Work.LP.noAppendTaskIdentityConfig,
                     this.node,
@@ -697,11 +699,11 @@ MWF.ProcessFlow.Processor = new Class({
                 );
                 return false;
             } else {
-                appendTaskOrgItem = this.orgItems[0];
+                appendTaskOrgItem = orgItems[0];
             }
         }
 
-        this.saveOrgsWithCheckEmpower(function () {
+        this.currentOrgList.saveOrgsWithCheckEmpower(function () {
             var appandTaskIdentityList;
             if (appendTaskOrgItem) {
                 appandTaskIdentityList = appendTaskOrgItem.getData();
@@ -742,7 +744,7 @@ MWF.ProcessFlow.Processor = new Class({
             });
 
 
-            var array = [routeName, opinion, medias, appandTaskIdentityList, this.orgItems, function () {
+            var array = [routeName, opinion, medias, appandTaskIdentityList, orgItems, function () {
                 if (appendTaskOrgItem) appendTaskOrgItem.setData([]);
             }];
 
@@ -750,11 +752,11 @@ MWF.ProcessFlow.Processor = new Class({
         }.bind(this));
     },
     destroy: function () {
-        if (this.orgItems && this.orgItems.length){
-            this.orgItems.each(function (org) {
+        Object.values( this.routeOrgMap ).each(function (orgList) {
+            Object.values( orgList.orgMap ).each(function( org ){
                 if(org.clearTooltip)org.clearTooltip();
-            })
-        }
+            });
+        });
     },
     getRouteGroupConfig: function () {
         if (this.routeGroupObject) return this.routeGroupObject;
@@ -968,6 +970,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.form = processor.form;
         this.flow = processor.flow;
         this.businessData = this.form.businessData;
+        this.wraper = processor.orgsWraper;
         this.container = processor.orgsArea;
         this.setOptions(options);
 
@@ -976,21 +979,22 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.domMap = {};
     },
     load: function () {
+        this.orgVisableItems = [];
         var configVisable = this.getVisableOrgConfig();
         if (configVisable.length) {
             this.loadOrgs();
-            this.container.show();
+            this.wraper.show();
             this.processor.setSize(configVisable.length);
         } else {
             this.orgMap = {};
-            this.orgItems = [];
             this.domMap = {};
-            this.container.hide();
+            this.wraper.hide();
             this.processor.setSize(0);
         }
     },
     hide: function(){
-
+        this.wraper.hide();
+        this.processor.setSize(0);
     },
     getVisableOrgConfig: function(){
         return this.processor.getVisableOrgConfig( this.options.routeId );
@@ -998,12 +1002,13 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     loadOrgs: function () {
         var lastDom, len = configVisable.length, configVisable = this.getVisableOrgConfig();
         configVisable.each(function (config, i) {
-            var dom;
-            if( this.domMap[config.id] ){
-                dom = this.domMap[config.id].show();
+            var dom, cfgId = config.id;
+            if( this.domMap[cfgId] ){
+                dom = this.domMap[cfgId].show();
+                this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
                 dom = new Element("div" ).inject( lastDom || this.container, lastDom ? "after" : "bottom" );
-                this.domMap[config.id] = dom;
+                this.domMap[cfgId] = dom;
                 this.loadOrg(dom, config );
             }
 
@@ -1020,53 +1025,33 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         }.bind(this));
     },
     loadOrg: function (container, json, ignoreOldData) {
-        var titleNode = new Element("div.selectorTitle", {
-            "styles": this.css.selectorTitle
-        }).inject(container);
-        var titleTextNode = new Element("div.selectorTitleText", {
-            "text": json.title,
-            "styles": this.css.selectorTitleText
-        }).inject(titleNode);
+        var titleNode = new Element("div.o2flow-selector-title").inject(container);
+        new Element("div.o2flow-selector-titletext", { "text": json.title }).inject(titleNode);
+        var errorNode = new Element("div.o2flow-selector-errornode").inject(titleNode);
 
-        var errorNode = new Element("div.selectorErrorNode", {
-            "styles": this.css.selectorErrorNode
-        }).inject(titleNode);
+        var contentNode = new Element("div.o2flow-selector-content").inject(container);
 
-        var contentNode = new Element("div.selectorContent", {
-            "styles": this.css.selectorContent
-        }).inject(container);
         var org = new MWF.ProcessFlow.Processor.Org(contentNode, this.form, json, this);
         org.ignoreOldData = ignoreOldData;
         org.errContainer = errorNode;
-        org.summitDlalog = this;
         org.load();
-        this.orgItems.push(org);
+        this.orgVisableItems.push(org);
         this.orgMap[json.name] = org;
-
     },
     clearAllOrgs: function () {
         //清空组织所选人
-        for (var key in this.orgItemsObject) {
-            var orgItems = this.orgItemsObject[key] || [];
-            orgItems.each(function (org) {
-                org.setDataToOriginal();
-            })
-        }
-        this.orgTableObject = {};
-        this.orgItemsObject = {};
-        this.orgItemsMap = {};
+        Object.values(this.orgMap).each(function (org) {
+            org.setDataToOriginal();
+        })
+        this.orgMap = {};
+        this.domMap = {};
+        this.orgVisableItems = [];
         this.container.empty();
     },
-    getCurrentRouteOrgList: function () {
-        var currentRoute = this.selectedRouteNode ? this.selectedRouteNode.retrieve("route") : "";
-        var orgList = this.orgItemsObject[currentRoute];
-        return orgList || [];
-    },
-    getSelectorSelectedData: function (filedName) {
+    getSelectedData: function (filedName) {
         var data = [];
-        var orgList = this.getCurrentRouteOrgList();
-        for (var i = 0; i < orgList.length; i++) {
-            var org = orgList[i];
+        for (var i = 0; i < this.orgVisableItems.length; i++) {
+            var org = this.orgVisableItems[i];
             if (org.json.name === filedName) {
                 var selector = org.selector.selector;
                 selector.selectedItems.each(function (item) {
@@ -1079,7 +1064,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
 
     isErrorHeightOverflow: function () {
         var hasOverflow = false;
-        (this.orgItems || []).each(function (item) {
+        (this.orgVisableItems || []).each(function (item) {
             if (item.errorHeightOverflow) {
                 hasOverflow = true;
             }
@@ -1088,7 +1073,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     },
     checkErrorHeightOverflow: function (force) {
         if (force || this.isErrorHeightOverflow()) {
-            this.setSize(this.orgItems.length, true);
+            this.processor.setSize(this.orgVisableItems.length, true);
         }
     },
     errorHeightChange: function () {
@@ -1096,19 +1081,19 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.checkErrorHeightOverflow(true)
     },
     validationOrgs: function () {
-        if (!this.orgItems || !this.orgItems.length) return true;
+        if (!this.orgVisableItems || !this.orgVisableItems.length) return true;
         var flag = true;
-        this.orgItems.each(function (item) {
+        this.orgVisableItems.each(function (item) {
             if (!item.validation()) flag = false;
         }.bind(this));
         this.checkErrorHeightOverflow();
         return flag;
     },
     isOrgsHasEmpower: function () {
-        if (!this.orgItems || !this.orgItems.length) return true;
+        if (!this.orgVisableItems || !this.orgVisableItems.length) return true;
         var flag = false;
         this.needCheckEmpowerOrg = [];
-        this.orgItems.each(function (item) {
+        this.orgVisableItems.each(function (item) {
             if (item.hasEmpowerIdentity()) {
                 this.needCheckEmpowerOrg.push(item);
                 flag = true;
@@ -1117,9 +1102,9 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         return flag;
     },
     saveOrgs: function (keepSilent) {
-        if (!this.orgItems || !this.orgItems.length) return true;
+        if (!this.orgVisableItems || !this.orgVisableItems.length) return true;
         var flag = true;
-        this.orgItems.each(function (item) {
+        this.orgVisableItems.each(function (item) {
             if (!item.save(!keepSilent)) flag = false;
         }.bind(this));
         return flag;
@@ -1131,7 +1116,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         var needOrgLength = visableOrg.length;
 
         var loadedOrgLength = 0;
-        if ( this.orgItems && this.orgItems.length)loadedOrgLength = this.orgItems.length;
+        if ( this.orgVisableItems && this.orgVisableItems.length)loadedOrgLength = this.orgVisableItems.length;
 
         if( needOrgLength !== loadedOrgLength ){
             MWF.xDesktop.notice(
@@ -1145,7 +1130,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             return false;
         }
 
-        if (!this.orgItems || !this.orgItems.length) {
+        if (!this.orgVisableItems || !this.orgVisableItems.length) {
             if (callback) callback();
             return true;
         }
