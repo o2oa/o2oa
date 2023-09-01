@@ -1152,6 +1152,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "App",
         "appIndexPageSettings": "Setting",
 
+        "appIndexCenteredTitle": "Is the mobile app homepage centered",
+        "appIndexCenteredInfo": "The homepage of the mobile app is centered, and the number of pages will not be configurable",
+
         "appIndexCmsFilterTitle": "Home Information Center",
         "appIndexCmsFilterCategoryInfo": "Information center list classification query criteria, if left blank, all queries will be queried",
         "appIndexTaskFilterTitle": "Home Office Center",

@@ -1141,6 +1141,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "Aplicación",
         "appIndexPageSettings": "Configuración",
 
+        "appIndexCenteredTitle": "Si la página de inicio de la aplicación móvil está en el Centro",
+        "appIndexCenteredInfo": "La página de inicio de la aplicación móvil está en el centro, y el número de páginas no será configurable.",
+
         "appIndexCmsFilterTitle": "Centro de información de la página de inicio",
         "appIndexCmsFilterCategoryInfo": "Condiciones de consulta de clasificación de la lista del Centro de información, si está vacío, se consultará todo.",
         "appIndexTaskFilterTitle": "Centro de oficinas de la página de inicio",
