@@ -1150,6 +1150,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "应用",
         "appIndexPageSettings": "设置",
 
+        "appIndexCenteredTitle": "移动App首页是否居中",
+        "appIndexCenteredInfo": "移动App首页居中，页面个数将不可配置",
+
         "appIndexCmsFilterTitle": "首页信息中心",
         "appIndexCmsFilterCategoryInfo": "信息中心列表分类查询条件，为空就是都查询",
         "appIndexTaskFilterTitle": "首页办公中心",
