@@ -126,11 +126,7 @@ public class Token extends ConfigObject {
 	public void setPassword(String password)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
-		if (StringUtils.equals(password, initPassword)) {
-			this.password = null;
-		} else {
-			this.password = Crypto.formattedDefaultEncrypt(password);
-		}
+		this.password = Crypto.formattedDefaultEncrypt(password);
 	}
 
 	public String getInitialManager() {
