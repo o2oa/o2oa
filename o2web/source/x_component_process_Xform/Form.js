@@ -2499,8 +2499,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "isResize": false,
                 "content": flowNode,
                 "maskNode": this.app.content,
-                "positionHeight": 800,
-                "maxHeight": 800,
+                "positionHeight": 880,
+                "maxHeight": 880,
                 "maxHeightPercent": "98%",
                 "minTop": 5,
                 "width": "auto",
@@ -2534,7 +2534,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }.bind(this),
                 "onPostLoad": function () {
                     flowNode.setStyle("opacity", 1);
-                    flow.options.mediaNode = this.content;
                     setSize.call(this)
                 }
             })
@@ -2557,7 +2556,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "onResize": function () {
                 if (resizeFun) resizeFun();
             },
-            "onPostLoad": function () {
+            "onLoad": function () {
                 if (postLoadFun) postLoadFun(this);
             },
             "onCancel": function () {

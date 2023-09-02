@@ -137,7 +137,7 @@
 		"height": "410px",
 		"float": "left",
 		"margin": "0px",
-		"border": "1px solid #cccccc",
+		"border": "1px solid #DEDEDE",
 		"border-radius": "0px"
 	},
 	"selectNodeSingle": {
@@ -145,12 +145,12 @@
 		"height": "250px",
 		"float": "left",
 		"margin": "10px",
-		"border": "2px solid #cccccc",
+		"border": "2px solid #DEDEDE",
 		"border-radius": "6px"
 	},
 	"selectNodeMobile":{
 		"margin": "0px",
-		"border": "0px solid #cccccc",
+		"border": "0px solid #DEDEDE",
 		"border-radius": "0px"
 	},
 
@@ -158,8 +158,8 @@
 	"selectedContainerNode": {
 		"height": "410px",
 		"margin": "0px",
-		"border": "1px solid #cccccc",
-		"border-left": "0px solid #cccccc",
+		"border": "1px solid #DEDEDE",
+		"border-left": "0px solid #DEDEDE",
 		"border-radius": "0px",
 		"overflow" : "hidden"
 	},
@@ -209,7 +209,7 @@
 		"overflow" : "hidden",
 		"height": "24px",
 		"background-color" : "#f7f7f7",
-		"border-bottom": "1px solid #ccc"
+		"border-bottom": "1px solid #DEDEDE"
 	},
 	"selectedTopTextNode" : {
 		"float" : "left",
@@ -236,7 +236,7 @@
 		"width" : "40px",
 		"height": "24px",
 		"line-height": "24px",
-		"border-bottom": "1px solid #ccc",
+		"border-bottom": "1px solid #DEDEDE",
 		"margin-left" : "10px"
 	},
 	"searchInputDiv": {
@@ -245,7 +245,7 @@
 		//"font-size": "12px",
 		"color": "#666666",
 		"background": "transparent",
-		"border-bottom": "1px solid #ccc",
+		"border-bottom": "1px solid #DEDEDE",
 		"position": "relative"
 	},
 	"searchInput": {
@@ -293,7 +293,7 @@
 	"letterAreaMobileNode": {
 		"padding": "0px 9px",
 		"height": "36px",
-		"border-bottom": "1px solid #cccccc",
+		"border-bottom": "1px solid #DEDEDE",
 		"background-color": "#EEE"
 	},
 	"letterAreaNode": {
@@ -302,7 +302,7 @@
 		"padding": "0px 2px",
 		"width": "calc( 100% - 4px )",
 		"overflow": "hidden",
-		"border-bottom": "1px solid #cccccc",
+		"border-bottom": "1px solid #DEDEDE",
 		"background-color": "#f3f3f3"
 	},
 	"letterNode": {

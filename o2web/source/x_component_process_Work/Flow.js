@@ -1,7 +1,7 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp." + MWF.language, null, false);
-
+MWF.ProcessFlow_ORG_HEIGHT = 275;
 MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -32,7 +32,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     load: function () {
         this.container.loadCss( this.path + this.options.style + "/style.css", null, function () {
             this.cssLoaded = true;
-            this.checkPostLoad();
+            this.checkLoadEvent();
         }.bind(this));
 
         this.processEnable = this.options.processEnable && this.businessData.control["allowProcessing"];
@@ -49,23 +49,28 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             debugger;
             this.changeAction( this.navi[0].key );
             this.loadQuickSelect();
-            //this.checkPostLoad();
+            //this.checkLoadEvent();
         }.bind(this));
     },
     getSize: function(){
         return {
             y: this.contentWraper.getSize().y + this.getMarginY(this.contentWraper) + this.getOffsetY(this.node),
             x: this.node.getSize().x + this.getMarginY(this.node)
-        }
+        };
     },
-    checkPostLoad: function(){
-        if( this.cssLoaded && this.firstActionLoaded ){
+    checkLoadEvent: function(){
+        if( this.cssLoaded && this.firstActionLoaded){
             // var nodeSize = this.node.getSize();
             // this.container.setStyles({
             //     "height": nodeSize.y,
             //     "width": nodeSize.x
             // });
-            this.fireEvent("postLoad");
+            if( this.currentAction === "process" ){
+                if( this.processor.getMaxOrgLength() > 1 ){
+                    this.node.addClass("o2flow-node-wide").removeClass("o2flow-node")
+                }
+            }
+            this.fireEvent("load");
         }
     },
     changeAction: function( action ){
@@ -92,52 +97,61 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }
     },
     loadProcessor: function () {
-        if( this.processor )return;
+        if( this.processor ){
+            this.resize();
+            return;
+        }
         this.processor = new MWF.ProcessFlow.Processor(
             this.processContentNode,
             this,
             Object.merge( this.options.processOptions, {
-                onPostLoad: function () {
-                    if( this.firstActionLoaded )return;
-                    this.firstActionLoaded = true;
-                    this.checkPostLoad();
-                }.bind(this),
-                onResize: function () {
-                    // var size = this.processContentNode.getSize();
-                    // var naviSize = this.naviNode.getSize();
-                    // this.container.setStyles({
-                    //     "height": size.y,
-                    //     "width": size.x + naviSize.x + this.getOffsetX( this.naviNode )
-                    // });
-                    // this.fireEvent("resize");
+                onLoad: function () {
+                    if( this.firstActionLoaded ){
+                        this.resize();
+                    }else{
+                        this.firstActionLoaded = true;
+                        this.checkLoadEvent();
+                    }
                 }.bind(this)
             })
         );
     },
     loadReset: function(){
-        if( this.reset )return;
+        if( this.reset ){
+            this.resize();
+            return;
+        }
         this.reset = new MWF.ProcessFlow.Reset(
             this.resetContentNode,
             this,
             Object.merge( this.options.resetOptions, {
-                onPostLoad: function () {
-                    if( this.firstActionLoaded )return;
-                    this.firstActionLoaded = true;
-                    this.checkPostLoad();
+                onLoad: function () {
+                    if( this.firstActionLoaded ){
+                        this.resize();
+                    }else{
+                        this.firstActionLoaded = true;
+                        this.checkLoadEvent();
+                    }
                 }.bind(this)
             })
         );
     },
     loadAddTask: function(){
-        if( this.addTask )return;
+        if( this.addTask ){
+            this.resize();
+            return;
+        }
         this.addTask = new MWF.ProcessFlow.AddTask(
             this.addTaskContentNode,
             this,
             Object.merge( this.options.addTaskOptions, {
-                onPostLoad: function () {
-                    if( this.firstActionLoaded )return;
-                    this.firstActionLoaded = true;
-                    this.checkPostLoad();
+                onLoad: function () {
+                    if( this.firstActionLoaded ){
+                        this.resize();
+                    }else{
+                        this.firstActionLoaded = true;
+                        this.checkLoadEvent();
+                    }
                 }.bind(this)
             })
         );
@@ -195,39 +209,6 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             (node.getStyle("border-left-width").toInt() || 0 ) +
             (node.getStyle("border-right-width").toInt() || 0 );
     },
-    getRouteConfigList: function () {
-        if(this.routeConfigList)return this.routeConfigList;
-
-        if (this.task.routeNameDisable){
-            this.routeConfigList = [{
-                "id": o2.uuid(),
-                "asyncSupported": false,
-                "soleDirect": false,
-                "name": "继续流转",
-                "alias": "",
-                "selectConfigList": []
-            }];
-            return this.routeConfigList;
-        }
-
-        if( this.form && this.form.businessData && this.form.businessData.routeList ){
-            this.routeConfigList = this.form.businessData.routeList;
-        }
-        if (!this.routeConfigList) {
-            o2.Actions.get("x_processplatform_assemble_surface").listRoute({"valueList": this.task.routeList}, function (json) {
-                this.routeConfigList = json.data;
-            }.bind(this), null, false);
-        }
-        return this.routeConfigList;
-    },
-    getRouteConfig: function (routeName) {
-        var routeList = this.getRouteConfigList();
-        for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].name === routeName) {
-                return routeList[i];
-            }
-        }
-    },
     getEl: function( ev, className ){
         var node = ev.target;
         while (node && !node.hasClass(className)){ node = node.getParent();}
@@ -243,6 +224,9 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
         );
     },
+    resize: function () {
+        this.fireEvent("resize");
+    }
 });
 
 MWF.ProcessFlow.Reset = new Class({
@@ -266,7 +250,7 @@ MWF.ProcessFlow.Reset = new Class({
             this.loadOpinion();
             this.loadOrg();
             this.afterLoad();
-            this.fireEvent("postLoad");
+            this.fireEvent("load");
         }.bind(this));
     },
     getUrl: function(){
@@ -355,7 +339,7 @@ MWF.ProcessFlow.Reset = new Class({
                 "type": "identity",
                 "style": "flow",
                 "width": "auto",
-                "height": "275",
+                "height": MWF.ProcessFlow_ORG_HEIGHT,
                 "count": this.businessData.activity.resetCount || 0,
                 "embedded": true,
                 "hasLetter": false, //字母
@@ -457,7 +441,7 @@ MWF.ProcessFlow.AddTask = new Class({
     //             }
     //         });
     //     }.bind(this))
-    //     this.fireEvent("postLoad");
+    //     this.fireEvent("load");
     // },
 })
 
@@ -466,9 +450,7 @@ MWF.ProcessFlow.Processor = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "defaultRoute": "",
-        "orgHeight": 276,
-        "maxOrgCountPerline": 2
+        "defaultRoute": ""
     },
 
     initialize: function (container, flow, options) {
@@ -488,8 +470,13 @@ MWF.ProcessFlow.Processor = new Class({
             this.loadRouteOrGroupList();
             //this.loadOrg();
             //this.afterLoad();
-            this.fireEvent("postLoad");
         }.bind(this));
+    },
+    checkLoadEvent: function(){
+        if( !this.loadEventFired ){
+            this.fireEvent("load");
+            this.loadEventFired = true;
+        }
     },
     loadOpinion: function(){
         var opt = Object.clone(this.flow.options.opinionOptions);
@@ -507,7 +494,6 @@ MWF.ProcessFlow.Processor = new Class({
             this.routeArea.removeClass("o2flow-route-area").addClass("o2flow-route-fullsize-area");
             this.loadRouteList();
         }
-        this.fireEvent("postLoad");
     },
     loadRouteGroupList: function(){
         var keys = this.routeGroupNameList;
@@ -527,7 +513,7 @@ MWF.ProcessFlow.Processor = new Class({
                 if( defaultValue )return;
                 var routeList = this.routeGroupObject[routeGroupName];
                 matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
-                if( matchRoutes.length )defaultValue = routeGroupName
+                if( matchRoutes.length )defaultValue = routeGroupName;
             }.bind(this));
         }
 
@@ -590,10 +576,17 @@ MWF.ProcessFlow.Processor = new Class({
             optionList: optionList,
             onCheck: function(el, value){
                 var routeConfig = this.getData().data;
-                var op = _self.opinion.getValue();
-                if( op === (_self.lastDefaultOpinion || "") || op === "" ){
-                    _self.lastDefaultOpinion = routeConfig.opinion || "";
-                    _self.opinion.setValue( _self.lastDefaultOpinion );
+                var checkOpinion = function(){
+                    var op = _self.opinion.getValue();
+                    if( op === (_self.lastDefaultOpinion || "") || op === "" ){
+                        _self.lastDefaultOpinion = routeConfig.opinion || "";
+                        _self.opinion.setValue( _self.lastDefaultOpinion );
+                    }
+                };
+                if( _self.opinion.loaded ){
+                    checkOpinion()
+                }else{
+                    _self.opinion.addEvent("load", checkOpinion);
                 }
                 _self.loadOrgs( routeConfig );
             },
@@ -607,7 +600,6 @@ MWF.ProcessFlow.Processor = new Class({
                 _self.loadOrgs();
             },
             onLoad: function(){
-                debugger;
                 if( defaultRoute ){
                     this.setValue( defaultRoute );
                 }else{
@@ -621,24 +613,27 @@ MWF.ProcessFlow.Processor = new Class({
         for( var r in this.routeOrgMap ){
             this.routeOrgMap[r].hide();
         }
+        var notFireResize = !this.loadEventFired;
         if( routeConfig ){
             var routeId = routeConfig.id;
             var orgList = this.routeOrgMap[routeId];
             if( orgList ){
-                orgList.load();
+                orgList.load( notFireResize );
             }else{
                 orgList = new MWF.ProcessFlow.Processor.OrgList(this, {
                     routeId: routeId
                 });
                 this.routeOrgMap[routeId] = orgList;
-                orgList.load();
+                orgList.load( notFireResize );
             }
             this.currentOrgList = orgList;
         }else{
             this.orgsWraper.hide();
-            this.setSize(0);
+            //this.setSize(0);
+            if( !notFireResize )this.flow.resize();
             this.currentOrgList = null;
         }
+        this.checkLoadEvent();
     },
     cancel: function(){
         this.destroy();
@@ -874,7 +869,7 @@ MWF.ProcessFlow.Processor = new Class({
             if (route.hiddenScriptText) { //如果隐藏路由，返回
                 if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
             }
-            length = Math.max(length, route.selectConfigList.length);
+            length = Math.max(length, this.getVisableOrgConfig( route.id ).length);
         }.bind(this));
         return length;
     },
@@ -901,61 +896,10 @@ MWF.ProcessFlow.Processor = new Class({
         }
         return obj;
     },
-    setSize: function (currentOrgLength, flag) {
-        return;
-
-        var lines = ((currentOrgLength + 1) / 2).toInt();
-
-        var height = 0;
-        if (this.routeTitleNode) height = height + this.getOffsetY(this.routeTitleNode) + this.routeTitleNode.getStyle("height").toInt();
-        if (this.routeArea) height = height + this.getOffsetY(this.routeArea) + this.routeArea.getStyle("height").toInt();
-        if (this.opinionTitle) height = height + this.getOffsetY(this.opinionTitle) + this.opinionTitle.getStyle("height").toInt();
-        if (this.opinionArea) height = height + this.getOffsetY(this.opinionArea) + this.opinionArea.getStyle("height").toInt();
-
-        if (lines > 0) {
-            if (this.container) this.container.show();
-
-            if (flag) {
-                // if( this.orgsTitle )height = height + this.getOffsetY(this.orgsTitle) +  this.orgsTitle.getStyle("height").toInt();
-                this.container.getChildren().each(function (el) {
-                    height += el.getSize().y + this.getOffsetY(el);
-                }.bind(this))
-                this.node.setStyle("height", height);
-            } else {
-                if (this.orgsTitle) height = height + this.getOffsetY(this.orgsTitle) + this.orgsTitle.getStyle("height").toInt();
-                height = height + lines * this.options.orgHeight + this.getOffsetY(this.container);
-                this.node.setStyle("height", height);
-            }
-        } else {
-            if (this.container) this.container.hide();
-            this.node.setStyle("height", height);
-            //this.node.store("height", 401 );
-        }
-        debugger;
-        if (this.getMaxOrgLength() > 1) {
-            if( this.options.inFlow ){
-                this.node.setStyles(this.css.node_wide_flow);
-                this.opinionNode.setStyles(this.css.inputOpinionNode_wide_flow);
-                this.opinionTextarea.setStyles(this.css.inputTextarea_wide_flow);
-                this.opinionTextareaStyle = this.css.inputTextarea_wide_flow;
-                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide_flow);
-            }else{
-                this.node.setStyles(this.css.node_wide);
-                this.opinionNode.setStyles(this.css.inputOpinionNode_wide);
-                this.opinionTextarea.setStyles(this.css.inputTextarea_wide);
-                this.opinionTextareaStyle = this.css.inputTextarea_wide;
-                this.selectOpinionNode.setStyles(this.css.selectIdeaNode_wide);
-            }
-
-        } else {
-            this.node.setStyles(this.css.node);
-            this.opinionNode.setStyles(this.css.inputOpinionNode);
-            this.opinionTextarea.setStyles(this.css.inputTextarea);
-            this.opinionTextareaStyle = this.css.inputTextarea;
-            this.selectOpinionNode.setStyles(this.css.selectIdeaNode);
-        }
-        if (!flag) this.fireEvent("resize");
-    }
+    // setSize: function (currentOrgLength, flag) {
+    //     this.flow.resize()
+    //     return;
+    // }
 });
 
 MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
@@ -972,42 +916,46 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.businessData = this.form.businessData;
         this.wraper = processor.orgsWraper;
         this.container = processor.orgsArea;
+        this.node = new Element("div").inject( processor.orgsArea );
         this.setOptions(options);
 
         this.orgs = [];
         this.orgMap = {};
         this.domMap = {};
     },
-    load: function () {
+    load: function ( notFireResize ) {
         this.orgVisableItems = [];
         var configVisable = this.getVisableOrgConfig();
         if (configVisable.length) {
-            this.loadOrgs();
             this.wraper.show();
-            this.processor.setSize(configVisable.length);
+            this.node.show();
+            this.loadOrgs();
+            //this.processor.setSize(configVisable.length);
+            if(!notFireResize)this.flow.resize();
         } else {
             this.orgMap = {};
             this.domMap = {};
+            this.node.hide();
             this.wraper.hide();
-            this.processor.setSize(0);
+            //this.processor.setSize(0);
+            if(!notFireResize)this.flow.resize();
         }
     },
     hide: function(){
-        this.wraper.hide();
-        this.processor.setSize(0);
+        this.node.hide();
     },
     getVisableOrgConfig: function(){
         return this.processor.getVisableOrgConfig( this.options.routeId );
     },
     loadOrgs: function () {
-        var lastDom, len = configVisable.length, configVisable = this.getVisableOrgConfig();
+        var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length;
         configVisable.each(function (config, i) {
             var dom, cfgId = config.id;
             if( this.domMap[cfgId] ){
                 dom = this.domMap[cfgId].show();
                 this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
-                dom = new Element("div" ).inject( lastDom || this.container, lastDom ? "after" : "bottom" );
+                dom = new Element("div" ).inject( lastDom || this.node, lastDom ? "after" : "bottom" );
                 this.domMap[cfgId] = dom;
                 this.loadOrg(dom, config );
             }
@@ -1021,7 +969,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
                     dom.removeClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").addClass("o2flow-org-right-node");
                 }
             }
-            lastDom = orgNode;
+            lastDom = dom;
         }.bind(this));
     },
     loadOrg: function (container, json, ignoreOldData) {
@@ -1046,7 +994,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         this.orgMap = {};
         this.domMap = {};
         this.orgVisableItems = [];
-        this.container.empty();
+        this.node.empty();
     },
     getSelectedData: function (filedName) {
         var data = [];
@@ -1073,7 +1021,8 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     },
     checkErrorHeightOverflow: function (force) {
         if (force || this.isErrorHeightOverflow()) {
-            this.processor.setSize(this.orgVisableItems.length, true);
+            //this.processor.setSize(this.orgVisableItems.length, true);
+            this.flow.resize();
         }
     },
     errorHeightChange: function () {
@@ -1203,7 +1152,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
 
         }.bind(this));
 
-        empowerNode.setStyle("height", lines * this.options.orgHeight + 20);
+        empowerNode.setStyle("height", lines * MWF.ProcessFlow_ORG_HEIGHT + 20);
         var width = 840;
         empowerNode.setStyle("width", width + "px");
 
@@ -1306,7 +1255,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
         return {
             "style": "flow",
             "width": "auto",
-            "height": "275",
+            "height": MWF.ProcessFlow_ORG_HEIGHT,
             "embedded": true,
             "hasLetter": false, //字母
             "hasTop": true //可选、已选的标题
@@ -2391,7 +2340,9 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 if( this.options.isHandwriting )this.handwritingButton.show();
                 this.opinionTextarea.addEvent("change", function () {
                     this.removeRequireStyle();
-                }.bind(this))
+                }.bind(this));
+                this.loaded = true;
+                this.fireEvent("load");
             }.bind(this)
         );
     },

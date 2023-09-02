@@ -108,29 +108,27 @@
     content: "\e99d";
 }
 
-
 .o2flow-node {
     width: 900px;
     overflow: hidden;
     height: 100%;
+    position: relative;
 }
-
 .o2flow-node-wide {
     width: 1100px;
     overflow: hidden;
     height: 100%;
+    position: relative;
 }
 
 .o2flow-navi {
-    float: left;
+    position: absolute;
     margin-top: 32px;
     margin-left: 10px;
 }
-
 .o2flow-navi-node {
     border-left: 2px solid #DEDEDE;
 }
-
 .o2flow-navi-item {
     cursor: pointer;
     color: #333333;
@@ -144,7 +142,7 @@
 }
 
 .o2flow-content-scrollNode {
-    margin-left: 90px;
+    padding-left: 90px;
     height: 100%;
     overflow: auto;
     padding-right: 20px;
@@ -194,7 +192,7 @@
     cursor: pointer;
     line-height: 30px;
     overflow: hidden;
-    padding: 0px 10px 0px 10px;
+    padding: 0 10px 0 10px;
 }
 
 .o2flow-quick-select-itemtitle {
@@ -222,21 +220,19 @@
 }
 
 .o2flow-opinion-area {
-    height: 250px;
+    height: 230px;
 }
-
 .o2flow-opinion-textareawrap {
     float: left;
-    width: calc(50% - 20px);
-    padding-right: 20px;
-    height: 200px;
+    width: calc(50% - 10px);
+    padding-right: 10px;
+    height: 180px;
     position: relative;
 }
-
 .o2flow-opinion-textarea {
     resize: none;
     width: calc(100% - 12px);
-    height: 188px;
+    height: calc( 100% - 12px );
     background: #FFFFFF;
     border-radius: 8px;
     border: 1px solid #DEDEDE;
@@ -247,7 +243,6 @@
 .o2flow-invalid-bg{
     background: #ffe9e9;
 }
-
 .o2flow-handwriting-button {
     position: absolute;
     right: 30px;
@@ -269,16 +264,15 @@
 .o2flow-handwriting-buttontext {
     display: inline-block;
 }
-
 .o2flow-opinion-select {
     overflow: auto;
     float: left;
-    width: calc(50% - 11px);
+    width: calc(50% - 21px);
     padding-left: 10px;
+    margin-left: 10px;
     border-left: 1px solid #DEDEDE;
-    height: 200px;
+    height: 180px;
 }
-
 .o2flow-opinion-select-item {
     height: 22px;
     line-height: 22px;
@@ -290,8 +284,8 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     opacity: 0.4;
     display: none;
 }
@@ -301,7 +295,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 8px 0px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 0 8px 0;
     display: none;
 }
 .o2flow-handwriting-saveNode {
@@ -316,21 +310,6 @@
     color: #ffffff;
     font-size: 16px;
     cursor: pointer;
-}
-
-.o2flow-org-area {
-    height: 300px;
-}
-.o2flow-org-left-node{
-    width: calc( 50% - 10px );
-    margin-right: 10px;
-}
-.o2flow-org-right-node{
-    width: calc( 50% - 10px );
-    margin-left: 10px;
-}
-.o2flow-org-fullsize-node{
-    width: 100%;
 }
 
 .o2flow-radio-area {
@@ -358,7 +337,7 @@
 /*  color:#666666;*/
 /*}*/
 .o2flow-radio-text {
-    display: inline-block;
+    display: inline;
     margin-left: 2px;
     height: 20px;
     line-height: 20px;
@@ -384,7 +363,7 @@
     color: #4A90E2
 }
 .o2flow-radio2-text {
-    display: inline-block;
+    display: inline;
     margin-left: 2px;
     height: 20px;
     line-height: 20px;
@@ -403,8 +382,9 @@
 }
 
 .o2flow-routegroup-area {
-    height: 100px;
+    height: 90px;
     overflow: auto;
+    padding-top: 4px;
 }
 
 .o2flow-route-wraper {
@@ -417,9 +397,10 @@
 }
 
 .o2flow-route-area {
-    height: 100px;
+    height: 90px;
     overflow: auto;
     padding-left: 10px;
+    padding-top: 4px;
 }
 .o2flow-route-fullsize-area{
     overflow: hidden;
@@ -428,18 +409,40 @@
 }
 
 
+.o2flow-org-area {
+    height: 280px;
+    margin-top:5px;
+}
+
+.o2flow-org-left-node{
+    width: calc( 50% - 10px );
+    margin-right: 10px;
+    margin-top:5px;
+    float: left;
+}
+.o2flow-org-right-node{
+    width: calc( 50% - 10px );
+    margin-left: 10px;
+    margin-top:5px;
+    float: left;
+}
+.o2flow-org-fullsize-node{
+    width: 100%;
+    float: left;
+}
 .o2flow-selector-title{
     height:auto;
     min-height:26px;
     line-height:26px;
     font-size:14px;
     color:#333333;
-    padding-left:2px;
-    background-color:#f7f7f7;
-    overflow:hidden}
+    overflow:hidden
+}
 .o2flow-selector-titletext{
-    margin-left:10px;
-    float:left
+    background: #E6E6E6;
+    border-radius: 10px 10px 1px 1px;
+    padding: 0 10px;
+    float:left;
 }
 .o2flow-selector-errornode{
     float:right;

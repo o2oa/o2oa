@@ -2874,8 +2874,15 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                 if( this.selector.options.hiddenEmptyCategory ){
                     this.node.hide()
                 }else{
-                    this.actionNode.setStyle("background", "transparent");
-                    this.textNode.setStyle("color", "#777");
+                    if( this.selector.options.style === "flow" ){
+                        this.node.setStyles({
+                            "opacity": "0.5",
+                            "cursor": "default"
+                        });
+                    }else{
+                        this.actionNode.setStyle("background", "transparent");
+                        this.textNode.setStyle("color", "#777");
+                    }
                 }
             }
 
