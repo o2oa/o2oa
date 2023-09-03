@@ -978,6 +978,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         var errorNode = new Element("div.o2flow-selector-errornode").inject(titleNode);
 
         var contentNode = new Element("div.o2flow-selector-content").inject(container);
+        contentNode.setStyle( "height", MWF.ProcessFlow_ORG_HEIGHT + "px" );
 
         var org = new MWF.ProcessFlow.Processor.Org(contentNode, this.form, json, this);
         org.ignoreOldData = ignoreOldData;
@@ -1937,7 +1938,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
     createErrorNode: function (text) {
         var _self = this;
         var node;
-        if (this.processor.css.errorContentNode) {
+        if (this.processor.css && this.processor.css.errorContentNode) {
             node = new Element("div", {
                 "styles": this.processor.css.errorContentNode,
                 "text": text

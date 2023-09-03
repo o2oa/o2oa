@@ -228,16 +228,16 @@
 	},
 
 	"selectTopNode" : {
-		"overflow" : "hidden",
-		"background-color" : "#f7f7f7"
+		"overflow": "hidden",
+		"background-color": "#f7f7f7"
 	},
-	"selectTopTextNode" : {
-		"float" : "left",
-		"width" : "40px",
+	"selectTopTextNode": {
+		"float": "left",
+		"width": "40px",
 		"height": "24px",
 		"line-height": "24px",
 		"border-bottom": "1px solid #DEDEDE",
-		"margin-left" : "10px"
+		"margin-left": "10px"
 	},
 	"searchInputDiv": {
 		"height": "24px",
@@ -271,6 +271,16 @@
 		"border" : "1px solid #e3e4e8",
 		"float": "left",
 		"outline": "none"
+	},
+	"searchCancelAction": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/cancel.png) center center / 12px 12px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "25px",
+		"top": "4px",
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer",
+		"display": "none"
 	},
 	"letterActionNode": {
 		"background" : "url(../x_component_Selector/$Selector/flow/icon/alphabet.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",

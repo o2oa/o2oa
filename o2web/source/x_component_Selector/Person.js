@@ -118,6 +118,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.className = "Person"
     },
     load: function(){
+        debugger;
         this.fireEvent("queryLoad",[this]);
         if( this.options.contentUrl ){
             this.loadWithUrl()
@@ -310,20 +311,33 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadWithUrl : function(){
-        var request = new Request.HTML({
-            url: this.options.contentUrl,
-            method: "GET",
-            async: false,
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                this.node = responseTree[0];
+        if( this.options.style === "flow" ){
+            debugger;
+            var node = new Element("div");
+            node.loadHtml( this.options.contentUrl, {
+                "bind": { "lp": MWF.xApplication.Selector.LP },
+                "module": this
+            },function () {
+                this.node = node.getFirst();
                 this.loadContentWithHTML();
                 this.fireEvent("load");
-            }.bind(this),
-            onFailure: function(xhr){
-                alert(xhr);
-            }
-        });
-        request.send();
+            }.bind(this));
+        }else{
+            var request = new Request.HTML({
+                url: this.options.contentUrl,
+                method: "GET",
+                async: false,
+                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                    this.node = responseTree[0];
+                    this.loadContentWithHTML();
+                    this.fireEvent("load");
+                }.bind(this),
+                onFailure: function(xhr){
+                    alert(xhr);
+                }
+            });
+            request.send();
+        }
     },
     loadContentWithHTML : function(){
         debugger;
@@ -359,6 +373,7 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectTopTextNode = this.node.getElement(".MWF_selector_selectTopTextNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
+        this.searchCancelAction = this.node.getElement(".MWF_selector_searchCancelAction");
         this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
@@ -405,6 +420,7 @@ MWF.xApplication.Selector.Person = new Class({
         if (this.selectTopTextNode)this.selectTopTextNode.setStyles(this.css.selectTopTextNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput );
+        if (this.searchCancelAction) this.searchCancelAction.setStyles(this.css.searchCancelAction);
         if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
@@ -688,12 +704,6 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.initLoadSelectItems();
         this.checkLoadSelectItems();
-
-        if( this.letterActionNode ){
-            this.letterActionNode.addEvent("click", function () {
-                this.switchLetterArea()
-            }.bind(this))
-        }
     },
     loadSelectedNodeHTML: function(){
 
@@ -994,16 +1004,35 @@ MWF.xApplication.Selector.Person = new Class({
                 }.bind(this), 800);
 
                 this.searchInput.store("searchTimer", iTimerID);
+                if(this.searchCancelAction)this.searchCancelAction.show();
             }.bind(this),
             "change": function(e){
                 var key = this.searchInput.get("value");
                 if (!key) this.initSearchArea(false);
+                if(this.searchCancelAction)this.searchCancelAction[ key ? "show" : "hide" ]();
             }.bind(this),
             "blur": function(){
                 var key = this.searchInput.get("value");
                 if (!key) this.initSearchArea(false);
+                if(this.searchCancelAction)this.searchCancelAction[ key ? "show" : "hide" ]();
             }.bind(this)
         });
+
+        if( this.letterActionNode ){
+            this.letterActionNode.addEvent("click", function () {
+                this.switchLetterArea()
+            }.bind(this))
+        }
+
+        if( this.searchCancelAction && this.searchInput ){
+            this.searchCancelAction.addEvent("click", function () {
+                this.searchInput.set("value", "");
+                this.searchInput.focus();
+                this.initSearchArea(false);
+                this.searchCancelAction.hide();
+            }.bind(this))
+        }
+
     },
 
     initSearchArea: function(flag){
@@ -1336,6 +1365,7 @@ MWF.xApplication.Selector.Person = new Class({
                 letterNode.addEvents({
                     "click": function(){
                         _self.listPersonByPinyin(this);
+                        if(_self.searchCancelAction)_self.searchCancelAction.show();
                     }
                 });
             }else{
@@ -1360,6 +1390,7 @@ MWF.xApplication.Selector.Person = new Class({
                     }.bind(this),
                     "click": function(){
                         _self.listPersonByPinyin(this);
+                        if(_self.searchCancelAction)_self.searchCancelAction.show();
                     }
                 });
             }

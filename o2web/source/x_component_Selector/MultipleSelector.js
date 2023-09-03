@@ -50,31 +50,43 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     },
     load: function(){
         if( this.options.contentUrl ){
-            this.loadWithUrl()
+            this.loadWithUrl();
         }else {
             if (layout.mobile) {
                 this.loadMobile();
             } else {
                 this.loadPc();
             }
+            this.fireEvent("load");
         }
-        this.fireEvent("load");
     },
     loadWithUrl : function(){
-        var request = new Request.HTML({
-            url: this.options.contentUrl,
-            method: "GET",
-            async: false,
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                this.node = responseTree[0];
+        if( this.options.style === "flow" ){
+            var node = new Element("div");
+            node.loadHtml( this.options.contentUrl, {
+                "bind": { "lp": MWF.xApplication.Selector.LP },
+                "module": this
+            },function () {
+                this.node = node.getFirst();
                 this.loadContentWithHTML();
                 this.fireEvent("load");
-            }.bind(this),
-            onFailure: function(xhr){
-                alert(xhr);
-            }
-        });
-        request.send();
+            }.bind(this));
+        }else{
+            var request = new Request.HTML({
+                url: this.options.contentUrl,
+                method: "GET",
+                async: false,
+                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                    this.node = responseTree[0];
+                    this.loadContentWithHTML();
+                    this.fireEvent("load");
+                }.bind(this),
+                onFailure: function(xhr){
+                    alert(xhr);
+                }
+            });
+            request.send();
+         }
     },
     loadContentWithHTML : function(){
         var container = this.options.injectToBody ? $(document.body) : this.container;
@@ -112,6 +124,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.selectTopTextNode = this.node.getElement(".MWF_selector_selectTopTextNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
+        this.searchCancelAction = this.node.getElement(".MWF_selector_searchCancelAction");
         this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
@@ -157,7 +170,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if (this.selectTopTextNode)this.selectTopTextNode.setStyles(this.css.selectTopTextNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput );
-         if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
+        if (this.searchCancelAction) this.searchCancelAction.setStyles(this.css.searchCancelAction);
+        if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
@@ -600,6 +614,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     selector.selectTopTextNode = pageNode.getElement(".MWF_selector_selectTopTextNode");
                     selector.searchInputDiv = pageNode.getElement(".MWF_selector_searchInputDiv");
                     selector.searchInput = pageNode.getElement(".MWF_selector_searchInput");
+                    selector.searchCancelAction = pageNode.getElement(".MWF_selector_searchCancelAction");
                     selector.letterActionNode = pageNode.getElement(".MWF_selector_letterActionNode");
 
                     selector.flatCategoryScrollNode = pageNode.getElement(".MWF_selector_flatCategoryScrollNode");

@@ -2,9 +2,10 @@
     <div class="MWF_selector_contentNode">
         <div class="MWF_selector_selectNode">
             <div class="MWF_selector_selectTopNode">
-                <div class="MWF_selector_selectTopTextNode">待选</div>
+                <div class="MWF_selector_selectTopTextNode">{{$.lp.waitingSelect}}</div>
                 <div class="MWF_selector_searchInputDiv">
-                    <input class="MWF_selector_searchInput" type="text" placeholder="搜索" />
+                    <input class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}" />
+                    <div class="MWF_selector_searchCancelAction"></div>
                     <div class="MWF_selector_letterActionNode"></div>
                 </div>
             </div>
@@ -18,8 +19,8 @@
         </div>
         <div class="MWF_selector_selectedContainerNode">
             <div class="MWF_selector_selectedTopNode">
-                <div class="MWF_selector_selectedTopTextNode">已选</div>
-                <div class="MWF_selector_emptySelectedNode">清空</div>
+                <div class="MWF_selector_selectedTopTextNode">{{$.lp.selected}}</div>
+                <div class="MWF_selector_emptySelectedNode">{{$.lp.empty}}</div>
             </div>
             <div class="MWF_selector_selectedScrollNode">
                 <div class="MWF_selector_selectedNode"></div>
