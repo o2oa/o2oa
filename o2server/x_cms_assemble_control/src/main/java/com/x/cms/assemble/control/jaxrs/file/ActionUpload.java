@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.file;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -23,6 +24,10 @@ class ActionUpload extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if (StringUtils.isEmpty(fileName)) {
+				fileName = this.fileName(disposition);
+			}
+			FileTools.verifyConstraint(bytes.length, fileName, null);
 			File file = emc.find(id, File.class);
 			if (null == file) {
 				throw new ExceptionEntityNotExist(id, File.class);
@@ -37,11 +42,7 @@ class ActionUpload extends BaseAction {
 			emc.beginTransaction(File.class);
 			file.setLength((long) bytes.length);
 			file.setData(Base64.encodeBase64String(bytes));
-			if (StringUtils.isEmpty(fileName)) {
-				file.setFileName(this.fileName(disposition));
-			} else {
-				file.setFileName(fileName);
-			}
+			file.setFileName(fileName);
 			emc.commit();
 			CacheManager.notify(File.class);
 			Wo wo = new Wo();

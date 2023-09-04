@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.file;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -51,6 +52,7 @@ class ActionEdit extends BaseAction {
 			if (StringUtils.isEmpty(file.getName())) {
 				throw new ExceptionEmptyName();
 			}
+			FileTools.verifyConstraint(1, file.getName(), null);
 			if (emc.duplicateWithRestrictFlags(File.class, File.application_FIELDNAME, file.getApplication(),
 					file.getId(), ListTools.toList(file.getName()))) {
 				throw new ExceptionDuplicateRestrictFlag(File.class, file.getName());
