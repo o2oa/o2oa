@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.file;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -50,6 +51,7 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(file.getName())) {
 				throw new ExceptionEmptyName();
 			}
+			FileTools.verifyConstraint(1, file.getName(), null);
 			if (emc.duplicateWithRestrictFlags(File.class, File.appId_FIELDNAME, file.getAppId(),
 					file.getId(), ListTools.toList(file.getName()))) {
 				throw new ExceptionDuplicateRestrictFlag(File.class, file.getName());
