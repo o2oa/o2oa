@@ -1569,19 +1569,22 @@ MWF.ProcessFlow.Processor.Org = new Class({
 
     hasEmpowerIdentity: function () {
         var data = this.getData();
-        if (!this.empowerChecker) this.empowerChecker = new MWF.ProcessFlow.Processor.EmpowerChecker(this.form, this.json, this.processor);
+        if (!this.empowerChecker){
+            this.empowerChecker = new MWF.ProcessFlow.Processor.EmpowerChecker(this);
+        }
         return this.empowerChecker.hasEmpowerIdentity(data);
     },
     checkEmpower: function (data, callback, container, selectAllNode) {
         if (typeOf(data) === "array" && this.identityOptions && this.json.isCheckEmpower && this.json.identityResultType === "identity") {
-            if (!this.empowerChecker) this.empowerChecker = new MWF.ProcessFlow.Processor.EmpowerChecker(this.form, this.json, this.processor);
+            if (!this.empowerChecker){
+                this.empowerChecker = new MWF.ProcessFlow.Processor.EmpowerChecker(this);
+            }
             this.empowerChecker.selectAllNode = selectAllNode;
             this.empowerChecker.load(data, callback, container);
         } else {
             if (callback) callback(data);
         }
     },
-
     loadCheckEmpower: function (callback, container, selectAllNode) {
         this.checkEmpower(this.getData(), callback, container, selectAllNode)
     },
@@ -1595,7 +1598,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
                 values.push(MWF.org.parseOrgData(d, true, simple));
             }.bind(this));
             this.setData(values);
-            if (callback) callback(values)
+            if (callback) callback(values);
         }.bind(this))
     },
 
@@ -2129,11 +2132,12 @@ MWF.ProcessFlow.Processor.Org = new Class({
 
 MWF.ProcessFlow.Processor.EmpowerChecker = new Class({
     Extends: MWF.APPOrg.EmpowerChecker,
-    initialize: function (form, json, processor) {
-        this.form = form;
-        this.json = json;
-        this.processor = processor;
-        this.flow = processor.flow;
+    initialize: function (org) {
+        this.org = org;
+        this.form = org.form;
+        this.json = org.json;
+        this.processor = org.processor;
+        this.flow = org.processor.flow;
     },
     load: function (data, callback, container) {
         var p = this.getEmpowerData( data );
