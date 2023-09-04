@@ -796,6 +796,9 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             this.options.id = this.view.data.id;
         }.bind(this));
     },
+    saveForm: function(){
+	    this.saveView();
+    },
     preview : function(){
 	    this.view.preview();
     },
