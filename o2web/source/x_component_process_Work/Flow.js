@@ -54,7 +54,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     },
     getSize: function(){
         return {
-            y: this.contentWraper.getSize().y + this.getMarginY(this.contentWraper) + this.getOffsetY(this.node),
+            y: this.contentWraper.getSize().y + this.getMarginY(this.contentWraper) + this.getOffsetY(this.node) + 1,
             x: this.node.getSize().x + this.getMarginY(this.node)
         };
     },
@@ -456,6 +456,7 @@ MWF.ProcessFlow.Processor = new Class({
     initialize: function (container, flow, options) {
         this.setOptions(options);
         this.container = $(container);
+        this.node = this.container;
         this.flow = flow;
         this.task = flow.task;
         this.form = flow.form;
@@ -948,14 +949,16 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         return this.processor.getVisableOrgConfig( this.options.routeId );
     },
     loadOrgs: function () {
-        var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length;
+        var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length, lineNode;
         configVisable.each(function (config, i) {
             var dom, cfgId = config.id;
+            if( i % 2 === 0 )lineNode = new Element("div.o2flow-org-line").inject( this.node );
             if( this.domMap[cfgId] ){
-                dom = this.domMap[cfgId].show();
+                dom = this.domMap[cfgId].show().inject( lineNode );
                 this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
-                dom = new Element("div" ).inject( lastDom || this.node, lastDom ? "after" : "bottom" );
+                //dom = new Element("div" ).inject( lastDom || this.node, lastDom ? "after" : "bottom" );
+                dom = new Element("div" ).inject( lineNode );
                 this.domMap[cfgId] = dom;
                 this.loadOrg(dom, config );
             }
@@ -969,7 +972,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
                     dom.removeClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").addClass("o2flow-org-right-node");
                 }
             }
-            lastDom = dom;
+            //lastDom = dom;
         }.bind(this));
     },
     loadOrg: function (container, json, ignoreOldData) {
@@ -985,7 +988,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         org.errContainer = errorNode;
         org.load();
         this.orgVisableItems.push(org);
-        this.orgMap[json.name] = org;
+        this.orgMap[json.id] = org;
     },
     clearAllOrgs: function () {
         //清空组织所选人
@@ -1459,6 +1462,9 @@ MWF.ProcessFlow.Processor.Org = new Class({
             this.fireEvent("select", [items, values]);
         }.bind(this))
     },
+    selectOnCancel: function () { //移动端才执行
+        //this.validation();
+    },
     selectOnLoad: function (selector) {
         //if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
         this.fireEvent("loadSelector", [selector])
@@ -1571,7 +1577,11 @@ MWF.ProcessFlow.Processor.Org = new Class({
         this.setData(v);
     },
     getData: function () {
-        return this.getValue();
+        if (this.selector) {
+            return this.getSelectedData();
+        } else {
+            return this.getValue();
+        }
     },
     getSelectedData: function () {
         var simple = this.json.storeRange === "simple";
@@ -2035,6 +2045,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
         return true;
     },
     validation: function () {
+        debugger;
         var data = this.getData();
         this.setData(data);
         var flag = true;

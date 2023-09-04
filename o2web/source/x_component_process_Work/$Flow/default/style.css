@@ -413,7 +413,9 @@
     height: 280px;
     margin-top:5px;
 }
-
+.o2flow-org-line{
+    overflow: hidden;
+}
 .o2flow-org-left-node{
     width: calc( 50% - 10px );
     margin-right: 10px;
