@@ -299,7 +299,12 @@ export default content({
       } else if (record.leaveData) {
         statusClassName =  "item-record-status-tag record-status-leave";
       }  else if (record.appealId && statusClassName === "") {
-        statusClassName =  "item-record-status-tag record-status-appeal";
+        // 管理员处理 算正常
+        if (record.appealData && record.appealData.status === 4) {
+          statusClassName =  "";
+        } else {
+          statusClassName =  "item-record-status-tag record-status-appeal";
+        }
       }
     }
     return statusClassName;
@@ -326,7 +331,12 @@ export default content({
       } else if (record.leaveData) {
         tagName =  lp.appeal.leave;
       } else if (record.appealId && tagName === "") {
-        tagName =  lp.appeal.appeal;
+        // 管理员处理 算正常
+        if (record.appealData && record.appealData.status === 4) {
+          tagName =  "";
+        } else {
+          tagName =  lp.appeal.appeal;
+        }
       }
     }
     return tagName;

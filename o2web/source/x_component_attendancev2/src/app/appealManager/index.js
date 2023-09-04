@@ -104,6 +104,12 @@ export default content({
         return lp.appeal.status2;
       } else if (appeal.status === 3) {
         return lp.appeal.status3;
+      } else if (appeal.status === 4) {
+        let name = appeal.updateStatusAdminPerson;
+        if (name && name.indexOf("@") > -1) {
+          name =  name.split("@")[0];
+        }
+        return lp.appeal.status4 + " ["+ name + "]";
       }  
     }
     return "";

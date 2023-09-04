@@ -27,5 +27,6 @@ MWF.xApplication.appstore.application.LP = {
 	"describe": "Descripción de la aplicación",
 	"installSteps": "Instrucciones de instalación y uso",
 	"video": "Video",
-	"appPic": "Capturas de pantalla de la aplicación"
+	"appPic": "Capturas de pantalla de la aplicación",
+	"updateTime": "Hora de actualización"
 }

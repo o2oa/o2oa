@@ -339,7 +339,8 @@ MWF.xApplication.process.Xform.LP = {
         "resumeTitle": "Reanudar desde el estado suspendido",
         "downloadAll": "Descargar todo",
         "downloadAllTitle": "Descargar todo",
-
+        "monitor": "Monitor de proceso",
+        "monitorTitle": "Monitor de proceso",
         "addTask": "Agregar asignación",
         "addTaskTitle": "Agregar un responsable para la etapa actual",
 
@@ -434,6 +435,7 @@ MWF.xApplication.process.Xform.LP = {
     "cancelAssociated": "¿Está seguro de la asociación que desea cancelar con el documento '{title}'?",
     "associatedResult": "Resultado asociado",
     "selectDocNote": "Primero seleccione un documento",
-    "associatedDocument": "Documento asociado"
+    "associatedDocument": "Documento asociado",
+    "docDeleted": "El documento ha sido eliminado."
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -1,17 +1,5 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -26,6 +14,17 @@ import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Meeting_;
 import com.x.meeting.core.entity.Room;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class ActionListForwardMonth extends BaseAction {
 
@@ -44,6 +43,7 @@ class ActionListForwardMonth extends BaseAction {
 			Date end = calendar.getTime();
 			List<Meeting> os = this.list(effectivePerson, business, start, end);
 			List<Wo> wos = Wo.copier.copy(os);
+			this.setOnlineLink(business, effectivePerson, wos);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			// this.decorateRoom(business, wos);

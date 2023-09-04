@@ -13,6 +13,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.detail.model.DetailWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.RecordWo;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
+import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
@@ -45,14 +46,14 @@ abstract class BaseAction extends StandardJaxrsAction {
                 int lateTimes = 0;
                 int leaveEarlierTimes = 0;
                 int absenceTimes = 0;
-                int workDayCount = 0;
+                // int workDayCount = 0;
                 int fieldWorkTimes = 0;
                 int leaveDays = 0;
                 int appealNums = 0;
                 for (AttendanceV2Detail attendanceV2Detail : list) {
-                    if (BooleanUtils.isTrue( attendanceV2Detail.getWorkDay()) && (attendanceV2Detail.getLeaveDays() == null || attendanceV2Detail.getLeaveDays() < 1)) {
-                        workDayCount += 1; //工作日加1
-                    }
+                    // if (BooleanUtils.isTrue( attendanceV2Detail.getWorkDay()) && (attendanceV2Detail.getLeaveDays() == null || attendanceV2Detail.getLeaveDays() < 1)) {
+                    //     workDayCount += 1; //工作日加1
+                    // }
                     if (attendanceV2Detail.getWorkTimeDuration() != null && attendanceV2Detail.getWorkTimeDuration() > 0) {
                         workTimeDuration += attendanceV2Detail.getWorkTimeDuration();
                     }
@@ -97,14 +98,21 @@ abstract class BaseAction extends StandardJaxrsAction {
                                     recordWo.setLeaveData(leaveData);
                                 }
                             }
+                            if (StringUtils.isNotEmpty(recordWo.getAppealId())) {
+                                AttendanceV2AppealInfo appealData = business.entityManagerContainer().find(recordWo.getAppealId(), AttendanceV2AppealInfo.class);
+                                if (appealData != null) {
+                                    recordWo.setAppealData(appealData);
+                                }
+                            }
                         } catch (Exception ignore) {}
                     }
                     detailWo.setRecordList(recordWos);
                     detailWos.add(detailWo);
                 }
-                if (workDayCount > 0) {
+                // 根据出勤天数平均 不是工作日
+                if (attendance > 0) {
                     DecimalFormat df = new DecimalFormat("0.0");
-                    wo.setAverageWorkTimeDuration(df.format(((float) workTimeDuration.intValue() / workDayCount) / 60));
+                    wo.setAverageWorkTimeDuration(df.format(((float) workTimeDuration.intValue() / attendance) / 60));
                 }
                 wo.setWorkTimeDuration(workTimeDuration);
                 wo.setAttendance(attendance);

@@ -114,11 +114,11 @@ public class ResponseFactory {
 					if (wo.getStreamingOutput() != null){
 						return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
-								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).build();
+								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).lastModified(wo.getLastModified()).build();
 					}else {
 						return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
 								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
-								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).build();
+								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).lastModified(wo.getLastModified()).build();
 					}
 				} else {
 					EntityTag tag = new EntityTag(etagWoFile(wo));

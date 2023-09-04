@@ -71,6 +71,10 @@ public class ActionCheckIn extends BaseAction {
             if (record == null) {
                 throw new ExceptionNotExistObject("打卡记录");
             }
+            // 极速打卡不能更新已经打卡的数据
+            if (AttendanceV2CheckInRecord.SOURCE_TYPE_FAST_CHECK.equals(wi.getSourceType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(record.getCheckInResult())) {
+                throw new ExceptionCannotFastCheckIn();
+            }
             String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
             // 是否有班次信息
             if (StringUtils.isNotEmpty(record.getShiftId())) {
@@ -188,7 +192,11 @@ public class ActionCheckIn extends BaseAction {
             }
             record.setCheckInResult(checkInResult);
             record.setSourceDevice(wi.getSourceDevice());
-            record.setDescription(wi.getDescription());
+            if (StringUtils.isNotEmpty(wi.getDescription())) {
+                record.setDescription(wi.getDescription());
+            } else {
+                record.setDescription("");
+            }
             if (workPlace != null) {
                 record.setWorkPlaceId(workPlace.getId());
                 record.setPlaceName(workPlace.getPlaceName());

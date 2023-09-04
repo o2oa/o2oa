@@ -1019,7 +1019,7 @@ o2.xDesktop.Default.StartMenu = new Class({
 
             this.triangleNode = new Element("div.layout_menu_start_triangle").inject(this.layout.menuNode, "after");
             this.hideMessage = function(){ this.hide(); }.bind(this);
-            this.fireEvent("load");
+
             this.layout.addEvent("resize", this.setSize.bind(this));
             this.loadTitle();
             this.loadLnks();

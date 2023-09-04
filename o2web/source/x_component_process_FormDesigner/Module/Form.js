@@ -1070,11 +1070,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		debugger;
 		var existModuleList = {};
 		Object.each(  this.moduleList, function( module ){
-			existModuleList[ module.json.id ] = true;
+			if( module.json && module.json.id )existModuleList[ module.json.id ] = true;
 		});
 		Object.each( this.data.json.moduleList , function( module, key ){
 			//if( !this.node.getElement( "#" + module.id ) && !existModuleList[ module.id ] ){
-			if( !existModuleList[ module.id ] ){
+			if( module && module.id && !existModuleList[ module.id ] ){
 				delete this.data.json.moduleList[key];
 			}
 		}.bind(this));

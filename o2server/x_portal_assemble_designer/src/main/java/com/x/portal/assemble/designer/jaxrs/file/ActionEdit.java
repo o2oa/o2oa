@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.file;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -51,9 +52,13 @@ class ActionEdit extends BaseAction {
 			if (StringUtils.isEmpty(file.getName())) {
 				throw new ExceptionEmptyName();
 			}
+			FileTools.verifyConstraint(1, file.getName(), null);
 			if (emc.duplicateWithRestrictFlags(File.class, File.portal_FIELDNAME, file.getPortal(), file.getId(),
 					ListTools.toList(file.getName()))) {
 				throw new ExceptionDuplicateRestrictFlag(File.class, file.getName());
+			}
+			if(StringUtils.isBlank(file.getShortUrlCode())){
+				file.setShortUrlCode(getShortUrlCode(business, file, 6));
 			}
 			emc.check(file, CheckPersistType.all);
 			emc.commit();
@@ -73,7 +78,7 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = 4289841165185269299L;
 
 		static WrapCopier<Wi, File> copier = WrapCopierFactory.wi(Wi.class, File.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify));
+				ListTools.toList(JpaObject.FieldsUnmodify, File.data_FIELDNAME, File.shortUrlCode_FIELDNAME));
 
 	}
 

@@ -77,8 +77,12 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mNotification && window.o2mNotification.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mNotification)) {
-      window.o2mNotification && window.o2mNotification.postMessage ? window.o2mNotification.postMessage(message) : window.webkit.messageHandlers.o2mNotification.postMessage(message);
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mNotification', message);
+    } else if (window.o2mNotification && window.o2mNotification.postMessage) {
+      window.o2mNotification.postMessage(message);
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mNotification) {
+      window.webkit.messageHandlers.o2mNotification.postMessage(message);
     } else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
@@ -571,8 +575,12 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mUtil && window.o2mUtil.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mUtil)) {
-      window.o2mUtil && window.o2mUtil.postMessage ? window.o2mUtil.postMessage(message) : window.webkit.messageHandlers.o2mUtil.postMessage(message);
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mUtil', message);
+    } else if (window.o2mUtil && window.o2mUtil.postMessage) {
+      window.o2mUtil.postMessage(message);
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mUtil) {
+      window.webkit.messageHandlers.o2mUtil.postMessage(message);
     } else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
@@ -1290,6 +1298,74 @@
   this.o2m.util.navigation.openWindow = _o2m_u_navigation_openWindow;
    
 
+  //o2m.util.navigation.openInBrowser 手机默认浏览器打开当前页面
+  this.o2m.util.navigation.openInBrowserSuccess = function (result) {
+    console.log("util navigation openInBrowser back, result:" + result);
+  };
+  var _o2m_u_navigation_openInBrowser = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.openInBrowserSuccess = onSuccess;
+    }
+    var body = {
+      type: "navigation.openInBrowser",
+      callback: "o2m.util.navigation.openInBrowserSuccess",
+      data: {}
+    };
+    _util_post(body, onFail);
+  };
+  
+  /**
+   * 手机默认浏览器打开当前页面
+   * @method openInBrowser
+   * @memberOf o2m
+   * @o2membercategory util.navigation
+   * @static
+   * @example
+   * o2m.util.navigation.openInBrowser({
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.navigation.openInBrowser = _o2m_u_navigation_openInBrowser;
+
+
+  //o2m.util.navigation.clearCache 清理缓存并刷新页面
+  this.o2m.util.navigation.clearCacheSuccess = function (result) {
+    console.log("util navigation clearCache back, result:" + result);
+  };
+  var _o2m_u_navigation_clearCache = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.clearCacheSuccess = onSuccess;
+    }
+    var body = {
+      type: "navigation.clearCache",
+      callback: "o2m.util.navigation.clearCacheSuccess",
+      data: {}
+    };
+    _util_post(body, onFail);
+  };
+  
+  /**
+   * 清理缓存并刷新页面
+   * @method clearCache
+   * @memberOf o2m
+   * @o2membercategory util.navigation
+   * @static
+   * @example
+   * o2m.util.navigation.clearCache({
+   * onSuccess : function() {
+   *  },
+   *  onFail : function(err) {}
+   *});
+   */
+  this.o2m.util.navigation.clearCache = _o2m_u_navigation_clearCache;
+   
+
 
 
   /** ***** BEGIN BIZ BLOCK *****
@@ -1319,9 +1395,13 @@
       }
     }
     var message = JSON.stringify(body);
-    if ((window.o2mBiz && window.o2mBiz.postMessage) || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mBiz)) {
-      window.o2mBiz && window.o2mBiz.postMessage ? window.o2mBiz.postMessage(message) : window.webkit.messageHandlers.o2mBiz.postMessage(message);
-    } else {
+    if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler('o2mBiz', message);
+    } else if (window.o2mBiz && window.o2mBiz.postMessage) {
+      window.o2mBiz.postMessage(message)
+    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mBiz) {
+      window.webkit.messageHandlers.o2mBiz.postMessage(message);
+    }  else {
       if (onFail && typeof onFail === "function") {
         onFail("请在O2OA移动端使用！");
       }

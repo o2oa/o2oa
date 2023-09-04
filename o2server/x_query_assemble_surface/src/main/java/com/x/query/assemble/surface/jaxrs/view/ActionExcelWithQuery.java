@@ -69,7 +69,7 @@ class ActionExcelWithQuery extends BaseAction {
 					wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
 		}
-		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
+		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());
 		Wo wo = new Wo();
 		wo.setId(excelFlag);

@@ -48,7 +48,7 @@ class ActionSimulate extends BaseAction {
 			wi.groupList = business.organization().group().listWithPerson(wi.person);
 			wi.roleList = business.organization().role().listWithPerson(wi.person);
 
-			StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.threadPool());
+			StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.forkJoinPool());
 			statPlan.access();
 			Wo wo = new Wo();
 			wo.setCalculate(statPlan.getCalculate());

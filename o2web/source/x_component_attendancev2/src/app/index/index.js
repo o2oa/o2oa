@@ -110,7 +110,7 @@ export default content({
   async loadCurrentPersonInfo() {
     content.myDutyList = [];
     this.bind.admin = "";
-    if (o2.AC.isAttendanceManager() && o2.AC.isAdministrator()) {
+    if (o2.AC.isAttendanceManager() || o2.AC.isAdministrator()) {
       this.bind.admin = "admin";
     } else {
       const personInfo = await personalAction("get");
@@ -188,6 +188,12 @@ export default content({
             title: lp.menu.recordList,
             action: "recordManager",
             icon: "o2icon-icon_yuanshijilu"
+          },
+          {
+            id: "2-4",
+            title: lp.menu.appealList,
+            action: "appealAdminManager",
+            icon: "o2icon-icon_kaoiqinyichang"
           },
         ],
       },

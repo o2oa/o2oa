@@ -152,7 +152,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> mergeTaskCompleted(Business business, WorkCompleted workCompleted,
@@ -169,7 +170,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> mergeReadCompleted(Business business, WorkCompleted workCompleted,
@@ -186,7 +188,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> mergeReview(Business business, WorkCompleted workCompleted,
@@ -202,7 +205,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> mergeWorkLog(Business business, WorkCompleted workCompleted,
@@ -218,7 +222,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> mergeRecord(Business business, WorkCompleted workCompleted,
@@ -234,7 +239,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> listDocumentVersion(Business business, WorkCompleted workCompleted,
@@ -247,7 +253,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> listRead(Business business, WorkCompleted workCompleted, List<Read> reads) {
@@ -261,7 +268,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> deleteItem(Business business, List<Item> items) {
@@ -274,7 +282,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> deleteWorkLog(Business business, List<WorkLog> workLogs) {
@@ -287,7 +296,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> deleteRecord(Business business, List<Record> records) {
@@ -300,7 +310,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> deleteDocumentVersion(Business business,
@@ -314,7 +325,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> deleteRead(Business business, List<Read> reads) {
@@ -327,7 +339,8 @@ class ActionMerge extends BaseAction {
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> relateForm(Business business, Form form, StoreForm storeForm) {
@@ -345,7 +358,8 @@ class ActionMerge extends BaseAction {
 					LOGGER.error(e);
 				}
 				storeForm.setRelatedFormMap(map);
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> relateScript(Business business, Form form, StoreForm storeForm) {
@@ -371,7 +385,8 @@ class ActionMerge extends BaseAction {
 					LOGGER.error(e);
 				}
 				storeForm.setRelatedScriptMap(map);
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> relateFormMobile(Business business, Form form, StoreForm storeForm) {
@@ -389,7 +404,8 @@ class ActionMerge extends BaseAction {
 					LOGGER.error(e);
 				}
 				storeForm.setRelatedFormMap(map);
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private CompletableFuture<Void> relateScriptMobile(Business business, Form form, StoreForm storeForm) {
@@ -418,7 +434,8 @@ class ActionMerge extends BaseAction {
 					LOGGER.error(e);
 				}
 				storeForm.setRelatedScriptMap(map);
-			}, ThisApplication.threadPool());
+				// }, ThisApplication.threadPool());
+			}, ThisApplication.forkJoinPool());
 		}
 
 		private void serviceScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)

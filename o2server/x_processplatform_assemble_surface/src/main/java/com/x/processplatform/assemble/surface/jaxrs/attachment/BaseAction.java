@@ -295,7 +295,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -309,7 +309,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	/**

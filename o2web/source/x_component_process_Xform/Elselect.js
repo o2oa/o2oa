@@ -1,4 +1,5 @@
 o2.xDesktop.requireApp("process.Xform", "$Elinput", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Selector", null, false);
 
 if( !o2.APP$ElSelector ){
     o2.xApplication.process.Xform.$ElSelector = o2.APP$ElSelector = new Class({
@@ -301,6 +302,13 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 var text = this.__getOptionsText(options, values);
                 this.node.set("text", text.join(","));
             }.bind(this));
+
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
         }
     },
     __getOptionsText: function(options, values){

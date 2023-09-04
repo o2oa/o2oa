@@ -158,6 +158,7 @@ MWF.xApplication.query.Query.LP = {
     "lastPage": "最后一页",
     "viewExport" : {
         "exportRange" : "导出范围",
+        "fileName": "文件名",
         "to" : "到",
         "item" : "条",
         "description" : "注：有{count}条符合条件的数据。",

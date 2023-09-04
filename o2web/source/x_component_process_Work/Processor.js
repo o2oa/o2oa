@@ -937,46 +937,6 @@ MWF.xApplication.process.Work.Processor = new Class({
             }
         }
 
-        if (routeData.validationScriptText) {
-            var validation = this.form.Macro.exec(routeData.validationScriptText, this);
-            if (!validation || validation.toString() !== "true") {
-                if (typeOf(validation) === "string") {
-                    new mBox.Notice({
-                        type: "error",
-                        position: {"x": "center", "y": "top"},
-                        move: false,
-                        target: this.node,
-                        delayClose: 6000,
-                        content: validation
-                    });
-                    return false;
-                } else {
-                    //"路由校验失败"
-                    new mBox.Notice({
-                        type: "error",
-                        position: {"x": "center", "y": "top"},
-                        move: false,
-                        target: this.node,
-                        delayClose: 6000,
-                        content: MWF.xApplication.process.Work.LP.routeValidFailure
-                    });
-                    return false;
-                }
-            }
-        }
-
-        //var array = [routeName, opinion, medias];
-        //this.node.mask({
-        //    "inject": {"where": "bottom", "target": this.node},
-        //    "destroyOnHide": true,
-        //    "style": {
-        //        "background-color": "#999",
-        //        "opacity": 0.3,
-        //        "z-index":600
-        //    }
-        //});
-        //this.fireEvent("submit", array );
-
         var appendTaskOrgItem;
         if (routeData.type === "appendTask" && routeData.appendTaskIdentityType === "select") {
             if (!this.orgItems || this.orgItems.length === 0) {

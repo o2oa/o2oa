@@ -44,6 +44,8 @@ MWF.xApplication.process.Work.LP = {
     "readPerson": "Reader",
     "systemFlow": "Automatic processing",
 
+    "openWorkError": "You do not have permission to view this document or it has been deleted.",
+
     "rollbackConfirmTitle": "Rollback confirmation",
     "rollbackConfirmContent": "Are you sure you want to rollback the process back to the \"{log}\" state? (Process rollback will clear all information after this state)",
 

@@ -16,9 +16,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2ListPaging extends V2Base {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2ListPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
@@ -28,7 +30,13 @@ class V2ListPaging extends V2Base {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, null);
-			List<Wo> wos = emc.fetchDescPaging(Review.class, Wo.copier, p, page, size, Review.sequence_FIELDNAME);
+			String orderBy = StringUtils.isBlank(wi.getOrderBy()) ? Review.sequence_FIELDNAME : wi.getOrderBy();
+			List<Wo> wos;
+			if(BooleanUtils.isTrue(wi.getAscOrder())){
+				wos = emc.fetchAscPaging(Review.class, Wo.copier, p, page, size, orderBy);
+			}else{
+				wos = emc.fetchDescPaging(Review.class, Wo.copier, p, page, size, orderBy);
+			}
 			result.setData(wos);
 			result.setCount(emc.count(Review.class, p));
 			this.relate(business, result.getData(), wi);

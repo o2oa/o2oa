@@ -963,8 +963,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
     loadStatementFilterWithTemplate: function(){
         var nodes = this.propertyContent.getElements(".MWFStatementFilterWithTemplate");
-        var filtrData = this.data.filterList;
-        var parameterData = this.data.parameterList;
+        var filtrData = this.data.statementFilterList;
+        var parameterData = this.data.statementParameterList;
         var oldFiltrData = Array.clone( filtrData || [] );
         var oldParameterData = Array.clone( parameterData || [] );
         nodes.each(function(node){
@@ -978,10 +978,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         "withForm" : true,
                         "onChange": function(ids){
                             var data = this.getData();
-                            _slef.changeJsonDate(["filterList"], data.filterData);
-                            _slef.changeJsonDate(["parameterList"], data.parameterData);
-                            _slef.checkHistory("filterList", oldFiltrData, data.filterData);
-                            _slef.checkHistory( "parameterList", oldParameterData, data.parameterData );
+                            _slef.changeJsonDate(["statementFilterList"], data.filterData);
+                            _slef.changeJsonDate(["statementParameterList"], data.parameterData);
+                            _slef.checkHistory("statementFilterList", oldFiltrData, data.filterData);
+                            _slef.checkHistory( "statementParameterList", oldParameterData, data.parameterData );
                             oldFiltrData = Array.clone( data.filterData );
                             oldParameterData = Array.clone( data.parameterData );
                         }
@@ -1011,7 +1011,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     },
     loadViewFilterWithTemplate: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilterWithTemplate");
-        var filtrData = this.data.filterList;
+        var filtrData = this.data.viewFilterList;
         var oldValue = Array.clone(filtrData || []);
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilterWithTemplate", function(){
@@ -1019,8 +1019,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 new MWF.xApplication.query.ViewDesigner.widget.ViewFilterWithTemplate(node, this.form.designer, {"filtrData": filtrData, "customData": null}, {
                     "onChange": function(ids){
                         var data = this.getData();
-                        _slef.changeJsonDate(["filterList"], data.data);
-                        _slef.checkHistory("filterList", oldValue, data.data);
+                        _slef.changeJsonDate(["viewFilterList"], data.data);
+                        _slef.checkHistory("viewFilterList", oldValue, data.data);
                         oldValue = Array.clone(data.data);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
                     }
@@ -2417,10 +2417,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                     selected: this.data[sname] === column.column
                                 }).inject( select );
                             }.bind(this))
-                        }.bind(this))
+                        }.bind(this));
 
                         if(callback)callback();
-                    }.bind(this));
+                    }.bind(this), function () {
+                        return true
+                    });
                 }else{
                     viewColumnSelects.each(function (select) {
                         select.empty();
@@ -2499,7 +2501,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var name = viewNode.get("name");
                 var view = this.data[name];
                 if( view && view.id ){
-                    MWF.Actions.get("x_query_assemble_designer").getStatement(view.id, function(json){
+                    MWF.Actions.load("x_query_assemble_designer").StatementAction.get(view.id, function(json){
                         var viewData = JSON.decode(json.data.view || {});
 
                         debugger;
@@ -2520,7 +2522,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         }.bind(this))
 
                         if(callback)callback();
-                    }.bind(this));
+                    }.bind(this), function () {
+                        return true;
+                    });
                 }else{
                     viewColumnSelects.each(function (select) {
                         select.empty();
@@ -3330,14 +3334,21 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     obj.focus();
                     return false;
                 }else if ( value.test(/^\d+$/)  ) {
-                        this.designer.notice(MWF.APPFD.LP.notNumberId, "error", this.module.form.designer.propertyContentArea, {
-                            x: "right",
-                            y: "bottom"
-                        });
-                        obj.focus();
-                        return false;
+                    this.designer.notice(MWF.APPFD.LP.notNumberId, "error", this.module.form.designer.propertyContentArea, {
+                        x: "right",
+                        y: "bottom"
+                    });
+                    obj.focus();
+                    return false;
                 }else if ( value.indexOf("..") > -1 ) {
                     this.designer.notice(MWF.APPFD.LP.notDoubleDotId, "error", this.module.form.designer.propertyContentArea, {
+                        x: "right",
+                        y: "bottom"
+                    });
+                    obj.focus();
+                    return false;
+                }else if ( /\{|\}|\<|\>|\!|\'|\"|\,|\;/i.test( value ) ) {
+                    this.designer.notice(MWF.APPFD.LP.notSpecialCharacterId, "error", this.module.form.designer.propertyContentArea, {
                         x: "right",
                         y: "bottom"
                     });

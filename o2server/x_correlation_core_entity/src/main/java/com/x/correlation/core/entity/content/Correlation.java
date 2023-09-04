@@ -73,6 +73,7 @@ public class Correlation extends SliceJpaObject {
 		this.targetCategory = this.getProperties().getTargetCategory();
 		this.targetStartTime = this.getProperties().getTargetStartTime();
 		this.targetCreatorPerson = this.getProperties().getTargetCreatorPerson();
+		this.view = this.getProperties().getView();
 	}
 
 	public Correlation() {
@@ -94,6 +95,19 @@ public class Correlation extends SliceJpaObject {
 	@Transient
 	@FieldDescribe("关联内容创建人")
 	private String targetCreatorPerson;
+
+	@Transient
+	@FieldDescribe("来源视图")
+	private String view;
+
+	public String getView() {
+		return this.view;
+	}
+
+	public void setView(String view) {
+		this.view = view;
+		this.getProperties().setView(view);
+	}
 
 	public String getTargetTitle() {
 		return this.targetTitle;

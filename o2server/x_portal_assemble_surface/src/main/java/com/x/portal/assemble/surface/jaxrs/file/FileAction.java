@@ -66,6 +66,23 @@ public class FileAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "访问文件内容.义stream格式下载", action = ActionDownloadV2.class)
+	@GET
+	@Path("{flag}/download")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("文件标识(文件id、文件别名或者文件短url编码)") @PathParam("flag") String flag) {
+		ActionResult<ActionDownloadV2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadV2().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "访问文件内容.", action = ActionContent.class)
 	@GET
 	@Path("{flag}/portal/{portalFlag}/content")
@@ -77,6 +94,23 @@ public class FileAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionContent().execute(effectivePerson, flag, applicationFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "访问文件内容.", action = ActionContentV2.class)
+	@GET
+	@Path("{flag}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void contentV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("文件标识(文件id、文件别名或者文件短url编码)") @PathParam("flag") String flag) {
+		ActionResult<ActionContentV2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionContentV2().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

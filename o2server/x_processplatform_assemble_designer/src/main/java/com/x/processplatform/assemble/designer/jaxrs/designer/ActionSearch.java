@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.x.processplatform.core.entity.element.*;
-import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -31,6 +29,26 @@ import com.x.base.core.project.tools.PropertyTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Publish;
+import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionSearch extends BaseAction {
@@ -116,7 +134,7 @@ class ActionSearch extends BaseAction {
 				LOGGER.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<List<Wo>> searchForm(final Wi wi, final List<String> appIdList,
@@ -158,7 +176,7 @@ class ActionSearch extends BaseAction {
 				LOGGER.error(e);
 			}
 			return resWos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private List<Wo> searchProcess(final Wi wi, final List<String> appIdList, final List<String> designerIdList) {

@@ -556,6 +556,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 							if(StringUtils.isBlank(item.getNewData())){
 								continue;
 							}
+							if(jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 0){
+								continue;
+							}
 							dataRecord = new DataRecord(wi.getApplication(), wi.getProcess(), wi.getJob(), fromEntry.getKey());
 							List<DataRecordItem> itemList = new ArrayList<>();
 							itemList.add(item);

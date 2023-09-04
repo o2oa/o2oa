@@ -16,157 +16,6 @@
       "submitScript": {
         "code": "layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();"
       },
-      "events": {
-        "queryLoad" : {
-          "code": "",
-          "html": ""
-        },
-        "beforeLoad" : {
-          "code": "",
-          "html": ""
-        },
-        "postLoad": {
-          "code": "",
-          "html": ""
-        },
-        "afterLoad": {
-          "code": "",
-          "html": ""
-        },
-        "beforeSave": {
-          "code": "",
-          "html": ""
-        },
-        "afterSave": {
-          "code": "",
-          "html": ""
-        },
-        "beforeClose": {
-          "code": "",
-          "html": ""
-        },
-        "beforeProcess": {
-          "code": "",
-          "html": ""
-        },
-        "beforeProcessWork": {
-          "code": "",
-          "html": ""
-        },
-        "afterProcess": {
-          "code": "",
-          "html": ""
-        },
-        "beforeReset":{
-          "code": "",
-          "html": ""
-        },
-        "afterReset":{
-          "code": "",
-          "html": ""
-        },
-        "beforeRetract":{
-          "code": "",
-          "html": ""
-        },
-        "afterRetract":{
-          "code": "",
-          "html": ""
-        },
-        "beforeReroute":{
-          "code": "",
-          "html": ""
-        },
-        "afterReroute":{
-          "code": "",
-          "html": ""
-        },
-        "beforeDelete":{
-          "code": "",
-          "html": ""
-        },
-        "afterDelete":{
-          "code": "",
-          "html": ""
-        },
-        "beforeModulesLoad":{
-          "code": "",
-          "html": ""
-        },
-        "afterModulesLoad":{
-          "code": "",
-          "html": ""
-        },
-        "help": {
-          "code": "",
-          "html": ""
-        },
-        "load": {
-          "code": "",
-          "html": ""
-        },
-        "unload": {
-          "code": "",
-          "html": ""
-        },
-        "click": {
-          "code": "",
-          "html": ""
-        },
-        "dblclick": {
-          "code": "",
-          "html": ""
-        },
-        "keydown": {
-          "code": "",
-          "html": ""
-        },
-        "keypress": {
-          "code": "",
-          "html": ""
-        },
-        "keyup": {
-          "code": "",
-          "html": ""
-        },
-
-        "mousedown": {
-          "code": "",
-          "html": ""
-        },
-        "mousemove": {
-          "code": "",
-          "html": ""
-        },
-        "mouseout": {
-          "code": "",
-          "html": ""
-        },
-        "mouseover": {
-          "code": "",
-          "html": ""
-        },
-        "mouseup": {
-          "code": "",
-          "html": ""
-        },
-        "focus": {
-          "code": "",
-          "html": ""
-        },
-        "blur": {
-          "code": "",
-          "html": ""
-        },
-        "submit": {
-          "code": "",
-          "html": ""
-        },
-        "reset": {
-          "code": "",
-          "html": ""
-        }
-      },
       "moduleList": {
         "actionbar": {
           "id": "actionbar",
@@ -276,7 +125,212 @@
               "cursor": "pointer"
             }
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "multiTools": [
+            {
+              "type": "MWFToolBarButton",
+              "img": "close.png",
+              "title": "{{$.lp.closeTitle}}",
+              "action": "closeWork",
+              "text": "{{$.lp.close}}",
+              "id": "action_close",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "title": "{{$.lp.saveTitle}}",
+              "action": "saveWork",
+              "text": "{{$.lp.save}}",
+              "id": "action_saveData",
+              "control": "allowSave",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submit.png",
+              "title": "{{$.lp.flowTitle}}",
+              "action": "processWork",
+              "text": "{{$.lp.flow}}",
+              "id": "action_processWork",
+              "control": "allowProcessing",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "goback.png",
+              "title": "{{$.lp.goBackTitle}}",
+              "action": "goBack",
+              "text": "{{$.lp.goBack}}",
+              "id": "action_goBack",
+              "control": "allowGoBack",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "reroute.png",
+              "title": "{{$.lp.rerouteTitle}}",
+              "action": "rerouteWork",
+              "text": "{{$.lp.reroute}}",
+              "id": "action_reroute",
+              "control": "allowReroute",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "reset.png",
+              "title": "{{$.lp.resetTitle}}",
+              "action": "resetWork",
+              "text": "{{$.lp.reset}}",
+              "id": "action_reset",
+              "control": "allowReset",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "addTask.png",
+              "title": "{{$.lp.addTaskTitle}}",
+              "action": "addTask",
+              "text": "{{$.lp.addTask}}",
+              "id": "action_addTask",
+              "control": "allowAddTask",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "split.png",
+              "title": "{{$.lp.splitTitle}}",
+              "action": "addSplit",
+              "text": "{{$.lp.split}}",
+              "id": "action_split",
+              "control": "allowAddSplit",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "retract.png",
+              "title": "{{$.lp.retractTitle}}",
+              "action": "retractWork",
+              "text": "{{$.lp.retract}}",
+              "id": "action_retract",
+              "control": "allowRetract",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "rollback.png",
+              "title": "{{$.lp.rollbackTitle}}",
+              "action": "rollback",
+              "text": "{{$.lp.rollback}}",
+              "id": "action_rollback",
+              "control": "allowRollback",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "del.png",
+              "title": "{{$.lp.deleteTitle}}",
+              "action": "deleteWork",
+              "text": "{{$.lp.delete}}",
+              "id": "action_delete",
+              "control": "allowDelete",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "print.png",
+              "title": "{{$.lp.printTitle}}",
+              "action": "printWork",
+              "text": "{{$.lp.print}}",
+              "id": "action_print",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "press.png",
+              "title": "{{$.lp.pressTitle}}",
+              "action": "pressWork",
+              "text": "{{$.lp.press}}",
+              "id": "action_press",
+              "control": "allowPress",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "pause.png",
+              "title": "{{$.lp.pauseTitle}}",
+              "action": "pauseTask",
+              "text": "{{$.lp.pause}}",
+              "id": "action_pause",
+              "control": "allowPause",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "resume.png",
+              "title": "{{$.lp.resumeTitle}}",
+              "action": "resumeTask",
+              "text": "{{$.lp.resume}}",
+              "id": "action_resume",
+              "control": "allowResume",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "downloadAll.png",
+              "title": "{{$.lp.downloadAllTitle}}",
+              "action": "downloadAll",
+              "text": "{{$.lp.downloadAll}}",
+              "id": "action_downloadAll",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "monitor.png",
+              "title": "{{$.lp.monitorTitle}}",
+              "action": "monitor",
+              "text": "{{$.lp.monitor}}",
+              "id": "action_monitor",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            }
+          ]
         },
         "div": {
           "id": "div",
@@ -676,7 +730,7 @@
           "valueType": "text",
           "text": "﹝",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264label_3",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0label_3",
           "moduleName": "label",
           "recoveryStyles": {
             "float": "left",
@@ -693,7 +747,7 @@
           "valueType": "text",
           "text": "﹞",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264label_4",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0label_4",
           "moduleName": "label",
           "recoveryStyles": {
             "float": "left",
@@ -820,7 +874,18 @@
             "color": "#666"
           },
           "isReadonly": false,
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "："
         },
         "label_9": {
           "id": "label_9",
@@ -895,7 +960,7 @@
           "sectionBy": "person",
           "inputType": "text",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264textfield",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0fileno",
           "moduleName": "textfield",
           "showIcon": "no",
           "recoveryStyles": {
@@ -913,40 +978,29 @@
             "text-align": "center",
             "font-size": "16px"
           },
-          "preprocessing": "y"
-        },
-        "fileYaer": {
-          "id": "fileYaer",
-          "type": "Textfield",
-          "dataType": "text",
-          "defaultValue": {
-            "code": "return new Date().getFullYear();",
-            "html": "return new Date().getFullYear();"
+          "preprocessing": "y",
+          "events": {
+            "change": {
+              "code": "this.form.get(\"documenteditor\").reload();",
+              "html": "this.form.get(\"documenteditor\").reload();"
+            }
           },
-          "compute": "create",
-          "section": "no",
-          "sectionBy": "person",
-          "inputType": "text",
-          "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264textfield_1",
-          "moduleName": "textfield",
-          "showIcon": "no",
-          "recoveryStyles": {
-            "border-bottom": "1px solid #ccc",
-            "border-top": "0px",
-            "border-left": "0px",
-            "border-right": "0px",
-            "width": "50px",
-            "height": "30px",
-            "margin-left": "5px"
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
           },
-          "recoveryInputStyles": {
-            "height": "26px",
-            "color": "#666",
-            "text-align": "center",
-            "font-size": "16px"
+          "sectionKeyStyles": {
+            "float": "left"
           },
-          "preprocessing": "y"
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         },
         "departmentWord": {
           "id": "departmentWord",
@@ -961,7 +1015,7 @@
           "sectionBy": "person",
           "inputType": "text",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264textfield",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0departmentWord",
           "moduleName": "textfield",
           "showIcon": "no",
           "recoveryStyles": {
@@ -980,7 +1034,29 @@
             "font-size": "16px",
             "text-align": "center"
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "events": {
+            "change": {
+              "code": "this.form.get(\"documenteditor\").reload();",
+              "html": "this.form.get(\"documenteditor\").reload();"
+            }
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         },
         "copies": {
           "id": "copies",
@@ -995,7 +1071,7 @@
           "sectionBy": "person",
           "inputType": "text",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264textfield",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0copies",
           "moduleName": "textfield",
           "showIcon": "no",
           "recoveryStyles": {
@@ -1014,7 +1090,23 @@
             "font-size": "16px",
             "text-align": "center"
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         },
         "secret": {
           "id": "secret",
@@ -1031,7 +1123,7 @@
           "section": "no",
           "sectionBy": "person",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264select",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0secret",
           "moduleName": "select",
           "recoveryStyles": {
             "border-bottom": "1px solid #999",
@@ -1041,7 +1133,24 @@
             "margin-top": "5px",
             "color": "#666"
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "firstOptionEnable": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "script"
         },
         "publishPortal": {
           "id": "publishPortal",
@@ -1062,7 +1171,19 @@
           "sectionBy": "person",
           "moduleName": "radio",
           "isReadonly": false,
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "countPerline": "0",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "："
         },
         "mainSend": {
           "id": "mainSend",
@@ -1077,7 +1198,7 @@
           "sectionBy": "person",
           "inputType": "text",
           "isSaved": true,
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264textfield",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0mainSend",
           "showIcon": "yes",
           "moduleName": "textfield",
           "recoveryStyles": {
@@ -1090,7 +1211,23 @@
             "height": "26px",
             "color": "#666"
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         },
         "copyTo": {
           "id": "copyTo",
@@ -1105,7 +1242,7 @@
           "sectionBy": "person",
           "inputType": "text",
           "isSaved": true,
-          "pid": "PC6ae82f2a-aa14-4572-a236-9f9e96ffece5copyTo",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0copyTo",
           "showIcon": "yes",
           "moduleName": "textfield",
           "recoveryStyles": {
@@ -1119,7 +1256,22 @@
             "color": "#666"
           },
           "isReadonly": false,
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         },
         "log": {
           "id": "log",
@@ -1187,7 +1339,8 @@
           "filterActivityAlias": [],
           "showReadTitle": "待阅人",
           "showReadCompletedTitle": "已阅人",
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "logType": "record"
         },
         "label_18": {
           "id": "label_18",
@@ -1260,7 +1413,19 @@
           "section": "no",
           "sectionBy": "person",
           "moduleName": "radio",
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "countPerline": "0",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "："
         },
         "label_21": {
           "id": "label_21",
@@ -1347,7 +1512,8 @@
           "filterActivityAlias": [],
           "showReadTitle": "待阅人",
           "showReadCompletedTitle": "已阅人",
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "logType": "record"
         },
         "log_4": {
           "id": "log_4",
@@ -1364,7 +1530,8 @@
           "filterActivityAlias": [],
           "showReadTitle": "待阅人",
           "showReadCompletedTitle": "已阅人",
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "logType": "record"
         },
         "div_3": {
           "id": "div_3",
@@ -1381,25 +1548,6 @@
           },
           "preprocessing": "y"
         },
-        "htmleditor": {
-          "id": "htmleditor",
-          "type": "Htmleditor",
-          "editorProperties": {
-            "autoGrow_maxHeight": 400,
-            "autoGrow_minHeight": 300,
-            "resize_enabled": true,
-            "resize_maxHeight": "3000",
-            "resize_minHeight": "200",
-            "autoParagraph": true,
-            "autoUpdateElement": true,
-            "enterMode": 1,
-            "height": "200",
-            "readOnly": false
-          },
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264htmleditor",
-          "moduleName": "htmleditor",
-          "preprocessing": "y"
-        },
         "attachment": {
           "id": "attachment",
           "type": "Attachment",
@@ -1413,7 +1561,7 @@
           "isDelete": "y",
           "isReplace": "y",
           "isDownload": "y",
-          "pid": "b1cb15d0-1be0-449c-b9aa-573702dac264attachment",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0attachment",
           "moduleName": "attachment",
           "toolbarGroupHidden": [],
           "availableListStyles": [
@@ -1425,7 +1573,17 @@
           "recoveryStyles": {
             "margin-top": "20px"
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "isPreviewAtt": "n",
+          "isEditAtt": "n",
+          "isOpenInOffice": false,
+          "dblclick": "open",
+          "isConfig": "y",
+          "isOrder": "y",
+          "dg_size": "min",
+          "dg_isSizeChange": "n",
+          "dg_resize": "n",
+          "dg_listStyle": "sequence"
         },
         "actionbar_1": {
           "id": "actionbar_1",
@@ -1535,7 +1693,212 @@
               "cursor": "pointer"
             }
           },
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "multiTools": [
+            {
+              "type": "MWFToolBarButton",
+              "img": "close.png",
+              "title": "{{$.lp.closeTitle}}",
+              "action": "closeWork",
+              "text": "{{$.lp.close}}",
+              "id": "action_close",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "title": "{{$.lp.saveTitle}}",
+              "action": "saveWork",
+              "text": "{{$.lp.save}}",
+              "id": "action_saveData",
+              "control": "allowSave",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submit.png",
+              "title": "{{$.lp.flowTitle}}",
+              "action": "processWork",
+              "text": "{{$.lp.flow}}",
+              "id": "action_processWork",
+              "control": "allowProcessing",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "goback.png",
+              "title": "{{$.lp.goBackTitle}}",
+              "action": "goBack",
+              "text": "{{$.lp.goBack}}",
+              "id": "action_goBack",
+              "control": "allowGoBack",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "reroute.png",
+              "title": "{{$.lp.rerouteTitle}}",
+              "action": "rerouteWork",
+              "text": "{{$.lp.reroute}}",
+              "id": "action_reroute",
+              "control": "allowReroute",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "reset.png",
+              "title": "{{$.lp.resetTitle}}",
+              "action": "resetWork",
+              "text": "{{$.lp.reset}}",
+              "id": "action_reset",
+              "control": "allowReset",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "addTask.png",
+              "title": "{{$.lp.addTaskTitle}}",
+              "action": "addTask",
+              "text": "{{$.lp.addTask}}",
+              "id": "action_addTask",
+              "control": "allowAddTask",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "split.png",
+              "title": "{{$.lp.splitTitle}}",
+              "action": "addSplit",
+              "text": "{{$.lp.split}}",
+              "id": "action_split",
+              "control": "allowAddSplit",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "retract.png",
+              "title": "{{$.lp.retractTitle}}",
+              "action": "retractWork",
+              "text": "{{$.lp.retract}}",
+              "id": "action_retract",
+              "control": "allowRetract",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "rollback.png",
+              "title": "{{$.lp.rollbackTitle}}",
+              "action": "rollback",
+              "text": "{{$.lp.rollback}}",
+              "id": "action_rollback",
+              "control": "allowRollback",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "del.png",
+              "title": "{{$.lp.deleteTitle}}",
+              "action": "deleteWork",
+              "text": "{{$.lp.delete}}",
+              "id": "action_delete",
+              "control": "allowDelete",
+              "condition": "",
+              "read": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "print.png",
+              "title": "{{$.lp.printTitle}}",
+              "action": "printWork",
+              "text": "{{$.lp.print}}",
+              "id": "action_print",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "press.png",
+              "title": "{{$.lp.pressTitle}}",
+              "action": "pressWork",
+              "text": "{{$.lp.press}}",
+              "id": "action_press",
+              "control": "allowPress",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "pause.png",
+              "title": "{{$.lp.pauseTitle}}",
+              "action": "pauseTask",
+              "text": "{{$.lp.pause}}",
+              "id": "action_pause",
+              "control": "allowPause",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "resume.png",
+              "title": "{{$.lp.resumeTitle}}",
+              "action": "resumeTask",
+              "text": "{{$.lp.resume}}",
+              "id": "action_resume",
+              "control": "allowResume",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "downloadAll.png",
+              "title": "{{$.lp.downloadAllTitle}}",
+              "action": "downloadAll",
+              "text": "{{$.lp.downloadAll}}",
+              "id": "action_downloadAll",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "monitor.png",
+              "title": "{{$.lp.monitorTitle}}",
+              "action": "monitor",
+              "text": "{{$.lp.monitor}}",
+              "id": "action_monitor",
+              "control": "",
+              "condition": "",
+              "read": true,
+              "system": true
+            }
+          ]
         },
         "auditPeople": {
           "id": "auditPeople",
@@ -1591,19 +1954,198 @@
           "identityRangeNextUnitType": "all",
           "selectUnitType": "all",
           "unitRangeNextUnitType": "all",
-          "preprocessing": "y"
+          "preprocessing": "y",
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "moduleName": "org"
+        },
+        "documenteditor": {
+          "id": "documenteditor",
+          "type": "Documenteditor",
+          "canDoublePage": "n",
+          "defaultValue": {
+            "copies": "",
+            "secret": "",
+            "priority": "",
+            "redHeader": "文件红头",
+            "fileno": "[文号]",
+            "signerTitle": "签发人：",
+            "signer": "[签发人]",
+            "subject": "[文件标题]",
+            "mainSend": "[主送单位：]",
+            "filetext": "[请在此处编辑正文内容]",
+            "attachmentTitle": "附件：",
+            "attachment": "",
+            "issuanceUnit": "[发文机关]",
+            "issuanceDate": "[成文日期]",
+            "annotation": "",
+            "copytoTitle": "抄送：",
+            "copyto": "[抄送]",
+            "copyto2Title": "发：",
+            "copyto2": "[发]",
+            "editionUnit": "[印发机关]",
+            "editionDate": "[印发日期]",
+            "meetingAttendTitle": "出席：",
+            "meetingLeaveTitle": "请假：",
+            "meetingSitTitle": "列席：",
+            "meetingAttend": "",
+            "meetingLeave": "",
+            "meetingSit": "",
+            "meetingRecord": ""
+          },
+          "moduleGroup": "default",
+          "documentTempleteType": "sys",
+          "documentTempleteName": "standard",
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0documenteditor",
+          "isDelay": false,
+          "allowEdit": "y",
+          "allowPrint": "y",
+          "allowHistory": "y",
+          "viewTracesFullScreen": false,
+          "isScale": "n",
+          "fullWidth": "y",
+          "textIndent": "y",
+          "canFullScreen": "y",
+          "toWord": "n",
+          "wordConversionType": "ooxml",
+          "toWordSeal": "y",
+          "toWordTrigger": "submit",
+          "toWordCondition": "always",
+          "firstPageNumber": true,
+          "wordConversionEncryption": false,
+          "copiesSecretPriorityShow": "y",
+          "copiesShow": "a",
+          "copiesValueType": "data",
+          "secretShow": "a",
+          "secretValueType": "data",
+          "priorityShow": "a",
+          "priorityValueType": "data",
+          "redHeaderShow": "a",
+          "redHeaderValueType": "data",
+          "redLineShow": "y",
+          "filenoShow": "a",
+          "filenoValueType": "script",
+          "signerShow": "a",
+          "signerValueType": "data",
+          "subjectShow": "a",
+          "subjectEdit": "n",
+          "subjectValueType": "data",
+          "mainSendShow": "a",
+          "mainSendValueType": "data",
+          "attachmentShow": "a",
+          "attachmentValueType": "data",
+          "attachmentTextEdit": "n",
+          "issuanceUnitShow": "a",
+          "issuanceUnitEdit": "n",
+          "issuanceUnitValueType": "data",
+          "issuanceDateShow": "a",
+          "issuanceDateValueType": "data",
+          "annotationShow": "a",
+          "annotationValueType": "data",
+          "copytoShow": "a",
+          "copytoValueType": "data",
+          "copyto2Show": "a",
+          "copyto2ValueType": "data",
+          "editionUnitShow": "a",
+          "editionUnitValueType": "data",
+          "editionDateShow": "a",
+          "editionDateValueType": "data",
+          "meetingAttendShow": "a",
+          "meetingAttendValueType": "data",
+          "meetingLeaveShow": "a",
+          "meetingLeaveValueType": "data",
+          "meetingSitShow": "a",
+          "meetingSitValueType": "data",
+          "meetingRecordShow": "a",
+          "meetingRecordValueType": "data",
+          "filenoValueScript": {
+            "code": "return this.data.departmentWord + \"﹝\" + this.data.fileYear + \"﹞\" + this.data.fileno + \"号\""
+          },
+          "preprocessing": "y",
+          "copiesValueData": "copies",
+          "secretValueData": "secret",
+          "subjectValueData": "subject",
+          "mainSendValueData": "mainSend",
+          "copytoValueData": "copyTo"
+        },
+        "fileYear": {
+          "id": "fileYear",
+          "type": "Textfield",
+          "dataType": "text",
+          "defaultValue": {
+            "code": "return new Date().getFullYear();",
+            "html": "return new Date().getFullYear();"
+          },
+          "compute": "create",
+          "section": "no",
+          "sectionBy": "person",
+          "inputType": "text",
+          "isSaved": true,
+          "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff0fileYaer",
+          "moduleName": "textfield",
+          "showIcon": "no",
+          "recoveryStyles": {
+            "border-bottom": "1px solid #ccc",
+            "border-top": "0px",
+            "border-left": "0px",
+            "border-right": "0px",
+            "width": "50px",
+            "height": "30px",
+            "margin-left": "5px"
+          },
+          "recoveryInputStyles": {
+            "height": "26px",
+            "color": "#666",
+            "text-align": "center",
+            "font-size": "16px"
+          },
+          "preprocessing": "y",
+          "events": {
+            "change": {
+              "code": "this.form.get(\"documenteditor\").reload();",
+              "html": "this.form.get(\"documenteditor\").reload();"
+            }
+          },
+          "showSectionKey": true,
+          "sectionNodeStyles": {
+            "overflow": "hidden"
+          },
+          "sectionKeyStyles": {
+            "float": "left"
+          },
+          "sectionContentStyles": {
+            "float": "left"
+          },
+          "keyContentSeparator": "：",
+          "isReadonly": false,
+          "sectionMerge": "none",
+          "mergeTypeRead": "default",
+          "sectionKey": "person",
+          "mergeTypeEdit": "default"
         }
       },
       "formStyleType": "official",
-      "pid": "PC1728c000-478e-4810-9aa7-4ae7ea8df5471728c000-478e-4810-9aa7-4ae7ea8df547",
+      "pid": "PC2d802b06-6f31-4de7-a7cd-e92313a28ff02d802b06-6f31-4de7-a7cd-e92313a28ff0",
       "submitFormType": "default",
       "isPrompt": true,
       "promptPosition": "center",
       "afterProcessAction": "close",
       "subformList": [],
-      "$version": "5.2"
+      "$version": "5.2",
+      "isReadonly": false,
+      "languageType": "none",
+      "isHandwriting": "yes"
     },
-    "html": "<div id=\"1728c000-478e-4810-9aa7-4ae7ea8df547\" mwftype=\"form\" class=\"css6ae82f2aaa144572a2369f9e96ffece5 css1728c000478e48109aa74ae7ea8df547\" style=\"\"><div id=\"actionbar\" mwftype=\"actionbar\" style=\"\"><div style=\"background-color: rgb(255, 255, 255); padding: 6px 2px 1px 10px; overflow-wrap: normal; word-break: keep-all; cursor: pointer; overflow: hidden; height: auto; display: block; font-size: 14px; border-top: 2px solid rgb(204, 61, 61);\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" title=\"关闭工作\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" title=\"保存工作\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" title=\"继续流转文件\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">继续流转</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" title=\"调度\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">调度</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">重置处理人</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" title=\"增加拆分分支\" mwfbuttonaction=\"addSplit\" mwfbuttontext=\"增加分支\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">增加分支</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" title=\"撤回\" mwfbuttonaction=\"retractWork\" mwfbuttontext=\"撤回\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">撤回</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" title=\"回溯到指定的环节，不保留流程记录\" mwfbuttonaction=\"rollback\" mwfbuttontext=\"流程回溯\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">流程回溯</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文件\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">删除文件</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" title=\"打印文件\" mwfbuttonaction=\"printWork\" mwfbuttontext=\"打印\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" title=\"催促办理\" mwfbuttonaction=\"pressWork\" mwfbuttontext=\"催促办理\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">催促办理</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" title=\"一键下载\" mwfbuttonaction=\"downloadAll\" mwfbuttontext=\"一键下载\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">一键下载</span></div></div></div><div id=\"label\" mwftype=\"label\" style=\"text-align: center; font-size: 36px; line-height: 60px; font-weight: bold; color: rgb(253, 17, 19); height: 60px; font-family: 宋体;\"></div><div id=\"div\" mwftype=\"div\" style=\"width: 1000px; margin: 20px auto;\"><div id=\"table\" mwftype=\"table\" style=\"background-color: rgb(255, 255, 255);\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\" style=\"border-collapse: collapse;\"><tbody><tr><td id=\"table_table$Td\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; width: 120px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_1\" mwftype=\"label\" style=\"\">密　级</div></td><td id=\"table_table$Td_1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"secret\" mwftype=\"select\" style=\"border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(153, 153, 153); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; margin-top: 5px; color: rgb(102, 102, 102);\"><select></select></div></td><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_2\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">ＸＸＸＸ</div><div id=\"departmentWord\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; float: left; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); font-size: 16px; text-align: center;\"></div><div id=\"label_3\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px; font-size: 24px; text-align: right;\">﹝</div><div id=\"div_1\" mwftype=\"div\" style=\"width: 60px; float: left; text-align: center;\"><div id=\"fileYaer\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); text-align: center; font-size: 16px;\"></div></div><div id=\"label_4\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px; font-size: 24px; text-align: left;\">﹞</div><div id=\"div_2\" mwftype=\"div\" style=\"width: 60px; float: left; text-align: center;\"><div id=\"fileno\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); text-align: center; font-size: 16px;\"></div></div><div id=\"label_5\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">号</div></td><td id=\"table_table$Td_4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_6\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">印数</div><div id=\"copies\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; float: left; width: 70px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); font-size: 16px; text-align: center;\"></div><div id=\"label_7\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">份</div></td></tr><tr><td id=\"table_table$Td_5\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_8\" mwftype=\"label\" style=\"\">文件标题</div></td><td id=\"table_table$Td_6\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"subject\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_10\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_9\" mwftype=\"label\" style=\"\">主　送</div></td><td id=\"table_table$Td_11\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"mainSend\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_15\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_10\" mwftype=\"label\" style=\"\">抄　送</div></td><td id=\"table_table$Td_16\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"copyTo\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_20\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_11\" mwftype=\"label\" style=\"\">拟文部门</div><div id=\"label_12\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_21\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"log\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td><td id=\"table_table$Td_23\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_14\" mwftype=\"label\" style=\"\">拟稿人</div></td><td id=\"table_table$Td_24\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_15\" mwftype=\"label\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_26\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_13\" mwftype=\"label\" style=\"\">是否同意上门户网站</div></td><td id=\"table_table$Td_27\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"publishPortal\" mwftype=\"radio\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_30\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_16\" mwftype=\"label\" style=\"\">会办部门</div><div id=\"label_17\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_31\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"log_1\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr><tr><td id=\"table_table$Td_35\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_18\" mwftype=\"label\" style=\"\">办公室</div><div id=\"label_19\" mwftype=\"label\" style=\"\">意　见</div></td><td id=\"table_table$Td_36\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"log_2\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td><td id=\"table_table$Td_38\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_21\" mwftype=\"label\" style=\"\">核稿人</div></td><td id=\"table_table$Td_39\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div mwftype=\"textfield\" id=\"auditPeople\" style=\"overflow: hidden; position: relative; margin-right: 20px; min-height: 24px; border: 0px solid rgb(153, 153, 153); height: auto; line-height: 30px; font-size: 18px;\"><div style=\"background: transparent; border: 1px solid rgb(153, 153, 153); min-height: 24px; height: 30px; line-height: 30px; color: rgb(102, 102, 102); font-size: 18px; font-family: 宋体;\"></div></div></td></tr><tr><td id=\"table_table$Td_41\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_20\" mwftype=\"label\" style=\"\">是否同意上门户网站</div></td><td id=\"table_table$Td_42\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px; border: 1px solid rgb(253, 17, 19);\"><div id=\"radio\" mwftype=\"radio\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_45\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_22\" mwftype=\"label\" style=\"\">分管领导</div><div id=\"label_23\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_46\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"border: 1px solid rgb(253, 17, 19);\"><div id=\"log_3\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr><tr><td id=\"table_table$Td_13\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; border: 1px solid rgb(253, 17, 19);\"><div id=\"label_24\" mwftype=\"label\" style=\"\">领　　导</div><div id=\"label_25\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_14\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"border: 1px solid rgb(253, 17, 19);\"><div id=\"log_4\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr></tbody></table></div><div id=\"div_3\" mwftype=\"div\" style=\"margin-top: 20px;\"><div id=\"htmleditor\" mwftype=\"itmleditor\" style=\"\"><div style=\"visibility: hidden; display: none;\"></div><div id=\"cke_editor1\" class=\"cke_1 cke cke_reset cke_chrome cke_editor_editor1 cke_ltr cke_browser_webkit\" dir=\"ltr\" lang=\"zh-cn\" role=\"application\"><div class=\"cke_inner cke_reset\" role=\"presentation\"><span id=\"cke_1_top\" class=\"cke_top cke_reset_all\" role=\"presentation\" style=\"height: auto; user-select: none;\"><span id=\"cke_12\" class=\"cke_voice_label\">工具栏</span><span id=\"cke_1_toolbox\" class=\"cke_toolbox\" role=\"group\" aria-labelledby=\"cke_12\" onmousedown=\"return false;\"><span id=\"cke_17\" class=\"cke_toolbar\" aria-labelledby=\"cke_17_label\" role=\"toolbar\"><span id=\"cke_17_label\" class=\"cke_voice_label\">文档</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_18\" class=\"cke_button cke_button__source cke_button_off\" href=\"javascript:void('源码')\" title=\"源码\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_18_label\" aria-describedby=\"cke_18_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(2,event);\" onfocus=\"return CKEDITOR.tools.callFunction(3,event);\" onclick=\"CKEDITOR.tools.callFunction(4,this);return false;\"><span class=\"cke_button_icon cke_button__source_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1848px;background-size:auto;\">&nbsp;</span><span id=\"cke_18_label\" class=\"cke_button_label cke_button__source_label\" aria-hidden=\"false\">源码</span><span id=\"cke_18_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_19\" class=\"cke_button cke_button__save cke_button_disabled \" href=\"javascript:void('保存')\" title=\"保存\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_19_label\" aria-describedby=\"cke_19_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(5,event);\" onfocus=\"return CKEDITOR.tools.callFunction(6,event);\" onclick=\"CKEDITOR.tools.callFunction(7,this);return false;\"><span class=\"cke_button_icon cke_button__save_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1728px;background-size:auto;\">&nbsp;</span><span id=\"cke_19_label\" class=\"cke_button_label cke_button__save_label\" aria-hidden=\"false\">保存</span><span id=\"cke_19_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_20\" class=\"cke_button cke_button__newpage cke_button_disabled \" href=\"javascript:void('新建')\" title=\"新建\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_20_label\" aria-describedby=\"cke_20_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(8,event);\" onfocus=\"return CKEDITOR.tools.callFunction(9,event);\" onclick=\"CKEDITOR.tools.callFunction(10,this);return false;\"><span class=\"cke_button_icon cke_button__newpage_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1464px;background-size:auto;\">&nbsp;</span><span id=\"cke_20_label\" class=\"cke_button_label cke_button__newpage_label\" aria-hidden=\"false\">新建</span><span id=\"cke_20_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_21\" class=\"cke_button cke_button__preview cke_button_off\" href=\"javascript:void('预览')\" title=\"预览\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_21_label\" aria-describedby=\"cke_21_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(11,event);\" onfocus=\"return CKEDITOR.tools.callFunction(12,event);\" onclick=\"CKEDITOR.tools.callFunction(13,this);return false;\"><span class=\"cke_button_icon cke_button__preview_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1656px;background-size:auto;\">&nbsp;</span><span id=\"cke_21_label\" class=\"cke_button_label cke_button__preview_label\" aria-hidden=\"false\">预览</span><span id=\"cke_21_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_22\" class=\"cke_button cke_button__print cke_button_off\" href=\"javascript:void('打印')\" title=\"打印\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_22_label\" aria-describedby=\"cke_22_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(14,event);\" onfocus=\"return CKEDITOR.tools.callFunction(15,event);\" onclick=\"CKEDITOR.tools.callFunction(16,this);return false;\"><span class=\"cke_button_icon cke_button__print_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1680px;background-size:auto;\">&nbsp;</span><span id=\"cke_22_label\" class=\"cke_button_label cke_button__print_label\" aria-hidden=\"false\">打印</span><span id=\"cke_22_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_23\" class=\"cke_button cke_button__templates cke_button_disabled \" href=\"javascript:void('模板')\" title=\"模板\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_23_label\" aria-describedby=\"cke_23_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(17,event);\" onfocus=\"return CKEDITOR.tools.callFunction(18,event);\" onclick=\"CKEDITOR.tools.callFunction(19,this);return false;\"><span class=\"cke_button_icon cke_button__templates_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -456px;background-size:auto;\">&nbsp;</span><span id=\"cke_23_label\" class=\"cke_button_label cke_button__templates_label\" aria-hidden=\"false\">模板</span><span id=\"cke_23_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_24\" class=\"cke_toolbar\" aria-labelledby=\"cke_24_label\" role=\"toolbar\"><span id=\"cke_24_label\" class=\"cke_voice_label\">剪贴板/撤销</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_25\" class=\"cke_button cke_button__cut cke_button_disabled \" href=\"javascript:void('剪切')\" title=\"剪切 (Ctrl+X)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_25_label\" aria-describedby=\"cke_25_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(20,event);\" onfocus=\"return CKEDITOR.tools.callFunction(21,event);\" onclick=\"CKEDITOR.tools.callFunction(22,this);return false;\"><span class=\"cke_button_icon cke_button__cut_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -312px;background-size:auto;\">&nbsp;</span><span id=\"cke_25_label\" class=\"cke_button_label cke_button__cut_label\" aria-hidden=\"false\">剪切</span><span id=\"cke_25_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+X</span></a><a id=\"cke_26\" class=\"cke_button cke_button__copy cke_button_disabled \" href=\"javascript:void('复制')\" title=\"复制 (Ctrl+C)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_26_label\" aria-describedby=\"cke_26_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(23,event);\" onfocus=\"return CKEDITOR.tools.callFunction(24,event);\" onclick=\"CKEDITOR.tools.callFunction(25,this);return false;\"><span class=\"cke_button_icon cke_button__copy_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -264px;background-size:auto;\">&nbsp;</span><span id=\"cke_26_label\" class=\"cke_button_label cke_button__copy_label\" aria-hidden=\"false\">复制</span><span id=\"cke_26_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+C</span></a><a id=\"cke_27\" class=\"cke_button cke_button__paste cke_button_disabled \" href=\"javascript:void('粘贴')\" title=\"粘贴 (Ctrl+V)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_27_label\" aria-describedby=\"cke_27_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(26,event);\" onfocus=\"return CKEDITOR.tools.callFunction(27,event);\" onclick=\"CKEDITOR.tools.callFunction(28,this);return false;\"><span class=\"cke_button_icon cke_button__paste_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -360px;background-size:auto;\">&nbsp;</span><span id=\"cke_27_label\" class=\"cke_button_label cke_button__paste_label\" aria-hidden=\"false\">粘贴</span><span id=\"cke_27_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+V</span></a><a id=\"cke_28\" class=\"cke_button cke_button__pastetext cke_button_disabled \" href=\"javascript:void('粘贴为无格式文本')\" title=\"粘贴为无格式文本 (Ctrl+Shift+V)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_28_label\" aria-describedby=\"cke_28_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(29,event);\" onfocus=\"return CKEDITOR.tools.callFunction(30,event);\" onclick=\"CKEDITOR.tools.callFunction(31,this);return false;\"><span class=\"cke_button_icon cke_button__pastetext_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1560px;background-size:auto;\">&nbsp;</span><span id=\"cke_28_label\" class=\"cke_button_label cke_button__pastetext_label\" aria-hidden=\"false\">粘贴为无格式文本</span><span id=\"cke_28_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+Shift+V</span></a><a id=\"cke_29\" class=\"cke_button cke_button__pastefromword cke_button_disabled \" href=\"javascript:void('从 MS Word 粘贴')\" title=\"从 MS Word 粘贴\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_29_label\" aria-describedby=\"cke_29_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(32,event);\" onfocus=\"return CKEDITOR.tools.callFunction(33,event);\" onclick=\"CKEDITOR.tools.callFunction(34,this);return false;\"><span class=\"cke_button_icon cke_button__pastefromword_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1608px;background-size:auto;\">&nbsp;</span><span id=\"cke_29_label\" class=\"cke_button_label cke_button__pastefromword_label\" aria-hidden=\"false\">从 MS Word 粘贴</span><span id=\"cke_29_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_30\" class=\"cke_button cke_button__undo cke_button_disabled \" href=\"javascript:void('撤消')\" title=\"撤消 (Ctrl+Z)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_30_label\" aria-describedby=\"cke_30_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(35,event);\" onfocus=\"return CKEDITOR.tools.callFunction(36,event);\" onclick=\"CKEDITOR.tools.callFunction(37,this);return false;\"><span class=\"cke_button_icon cke_button__undo_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -2016px;background-size:auto;\">&nbsp;</span><span id=\"cke_30_label\" class=\"cke_button_label cke_button__undo_label\" aria-hidden=\"false\">撤消</span><span id=\"cke_30_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+Z</span></a><a id=\"cke_31\" class=\"cke_button cke_button__redo cke_button_disabled \" href=\"javascript:void('重做')\" title=\"重做 (Ctrl+Y)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_31_label\" aria-describedby=\"cke_31_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(38,event);\" onfocus=\"return CKEDITOR.tools.callFunction(39,event);\" onclick=\"CKEDITOR.tools.callFunction(40,this);return false;\"><span class=\"cke_button_icon cke_button__redo_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1968px;background-size:auto;\">&nbsp;</span><span id=\"cke_31_label\" class=\"cke_button_label cke_button__redo_label\" aria-hidden=\"false\">重做</span><span id=\"cke_31_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+Y</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_32\" class=\"cke_toolbar\" aria-labelledby=\"cke_32_label\" role=\"toolbar\"><span id=\"cke_32_label\" class=\"cke_voice_label\">编辑</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_33\" class=\"cke_button cke_button__find cke_button_off\" href=\"javascript:void('查找')\" title=\"查找\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_33_label\" aria-describedby=\"cke_33_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(41,event);\" onfocus=\"return CKEDITOR.tools.callFunction(42,event);\" onclick=\"CKEDITOR.tools.callFunction(43,this);return false;\"><span class=\"cke_button_icon cke_button__find_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -552px;background-size:auto;\">&nbsp;</span><span id=\"cke_33_label\" class=\"cke_button_label cke_button__find_label\" aria-hidden=\"false\">查找</span><span id=\"cke_33_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_34\" class=\"cke_button cke_button__replace cke_button_disabled \" href=\"javascript:void('替换')\" title=\"替换\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_34_label\" aria-describedby=\"cke_34_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(44,event);\" onfocus=\"return CKEDITOR.tools.callFunction(45,event);\" onclick=\"CKEDITOR.tools.callFunction(46,this);return false;\"><span class=\"cke_button_icon cke_button__replace_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -576px;background-size:auto;\">&nbsp;</span><span id=\"cke_34_label\" class=\"cke_button_label cke_button__replace_label\" aria-hidden=\"false\">替换</span><span id=\"cke_34_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_35\" class=\"cke_button cke_button__selectall cke_button_disabled \" href=\"javascript:void('全选')\" title=\"全选\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_35_label\" aria-describedby=\"cke_35_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(47,event);\" onfocus=\"return CKEDITOR.tools.callFunction(48,event);\" onclick=\"CKEDITOR.tools.callFunction(49,this);return false;\"><span class=\"cke_button_icon cke_button__selectall_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1752px;background-size:auto;\">&nbsp;</span><span id=\"cke_35_label\" class=\"cke_button_label cke_button__selectall_label\" aria-hidden=\"false\">全选</span><span id=\"cke_35_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_36\" class=\"cke_button cke_button__scayt cke_button_expandable cke_button_disabled\" href=\"javascript:void('拼写检查')\" title=\"拼写检查\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_36_label\" aria-describedby=\"cke_36_description\" aria-haspopup=\"menu\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(50,event);\" onfocus=\"return CKEDITOR.tools.callFunction(51,event);\" onclick=\"CKEDITOR.tools.callFunction(52,this);return false;\" aria-expanded=\"false\"><span class=\"cke_button_icon cke_button__scayt_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1896px;background-size:auto;\">&nbsp;</span><span id=\"cke_36_label\" class=\"cke_button_label cke_button__scayt_label\" aria-hidden=\"false\">即时拼写检查</span><span id=\"cke_36_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_37\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_37_label\" role=\"toolbar\"><span id=\"cke_37_label\" class=\"cke_voice_label\">表单</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_38\" class=\"cke_button cke_button__form cke_button_disabled \" href=\"javascript:void('表单')\" title=\"表单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_38_label\" aria-describedby=\"cke_38_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(53,event);\" onfocus=\"return CKEDITOR.tools.callFunction(54,event);\" onclick=\"CKEDITOR.tools.callFunction(55,this);return false;\"><span class=\"cke_button_icon cke_button__form_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -672px;background-size:auto;\">&nbsp;</span><span id=\"cke_38_label\" class=\"cke_button_label cke_button__form_label\" aria-hidden=\"false\">表单</span><span id=\"cke_38_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_39\" class=\"cke_button cke_button__checkbox cke_button_disabled \" href=\"javascript:void('复选框')\" title=\"复选框\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_39_label\" aria-describedby=\"cke_39_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(56,event);\" onfocus=\"return CKEDITOR.tools.callFunction(57,event);\" onclick=\"CKEDITOR.tools.callFunction(58,this);return false;\"><span class=\"cke_button_icon cke_button__checkbox_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -648px;background-size:auto;\">&nbsp;</span><span id=\"cke_39_label\" class=\"cke_button_label cke_button__checkbox_label\" aria-hidden=\"false\">复选框</span><span id=\"cke_39_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_40\" class=\"cke_button cke_button__radio cke_button_disabled \" href=\"javascript:void('单选按钮')\" title=\"单选按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_40_label\" aria-describedby=\"cke_40_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(59,event);\" onfocus=\"return CKEDITOR.tools.callFunction(60,event);\" onclick=\"CKEDITOR.tools.callFunction(61,this);return false;\"><span class=\"cke_button_icon cke_button__radio_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -744px;background-size:auto;\">&nbsp;</span><span id=\"cke_40_label\" class=\"cke_button_label cke_button__radio_label\" aria-hidden=\"false\">单选按钮</span><span id=\"cke_40_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_41\" class=\"cke_button cke_button__textfield cke_button_disabled \" href=\"javascript:void('单行文本')\" title=\"单行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_41_label\" aria-describedby=\"cke_41_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(62,event);\" onfocus=\"return CKEDITOR.tools.callFunction(63,event);\" onclick=\"CKEDITOR.tools.callFunction(64,this);return false;\"><span class=\"cke_button_icon cke_button__textfield_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -888px;background-size:auto;\">&nbsp;</span><span id=\"cke_41_label\" class=\"cke_button_label cke_button__textfield_label\" aria-hidden=\"false\">单行文本</span><span id=\"cke_41_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_42\" class=\"cke_button cke_button__textarea cke_button_disabled \" href=\"javascript:void('多行文本')\" title=\"多行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_42_label\" aria-describedby=\"cke_42_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(65,event);\" onfocus=\"return CKEDITOR.tools.callFunction(66,event);\" onclick=\"CKEDITOR.tools.callFunction(67,this);return false;\"><span class=\"cke_button_icon cke_button__textarea_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -840px;background-size:auto;\">&nbsp;</span><span id=\"cke_42_label\" class=\"cke_button_label cke_button__textarea_label\" aria-hidden=\"false\">多行文本</span><span id=\"cke_42_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_43\" class=\"cke_button cke_button__select cke_button_disabled \" href=\"javascript:void('列表/菜单')\" title=\"列表/菜单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_43_label\" aria-describedby=\"cke_43_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(68,event);\" onfocus=\"return CKEDITOR.tools.callFunction(69,event);\" onclick=\"CKEDITOR.tools.callFunction(70,this);return false;\"><span class=\"cke_button_icon cke_button__select_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -792px;background-size:auto;\">&nbsp;</span><span id=\"cke_43_label\" class=\"cke_button_label cke_button__select_label\" aria-hidden=\"false\">列表/菜单</span><span id=\"cke_43_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_44\" class=\"cke_button cke_button__button cke_button_disabled \" href=\"javascript:void('按钮')\" title=\"按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_44_label\" aria-describedby=\"cke_44_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(71,event);\" onfocus=\"return CKEDITOR.tools.callFunction(72,event);\" onclick=\"CKEDITOR.tools.callFunction(73,this);return false;\"><span class=\"cke_button_icon cke_button__button_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -624px;background-size:auto;\">&nbsp;</span><span id=\"cke_44_label\" class=\"cke_button_label cke_button__button_label\" aria-hidden=\"false\">按钮</span><span id=\"cke_44_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_45\" class=\"cke_button cke_button__imagebutton cke_button_disabled \" href=\"javascript:void('图像按钮')\" title=\"图像按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_45_label\" aria-describedby=\"cke_45_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(74,event);\" onfocus=\"return CKEDITOR.tools.callFunction(75,event);\" onclick=\"CKEDITOR.tools.callFunction(76,this);return false;\"><span class=\"cke_button_icon cke_button__imagebutton_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -720px;background-size:auto;\">&nbsp;</span><span id=\"cke_45_label\" class=\"cke_button_label cke_button__imagebutton_label\" aria-hidden=\"false\">图像按钮</span><span id=\"cke_45_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_46\" class=\"cke_button cke_button__hiddenfield cke_button_disabled \" href=\"javascript:void('隐藏域')\" title=\"隐藏域\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_46_label\" aria-describedby=\"cke_46_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(77,event);\" onfocus=\"return CKEDITOR.tools.callFunction(78,event);\" onclick=\"CKEDITOR.tools.callFunction(79,this);return false;\"><span class=\"cke_button_icon cke_button__hiddenfield_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -696px;background-size:auto;\">&nbsp;</span><span id=\"cke_46_label\" class=\"cke_button_label cke_button__hiddenfield_label\" aria-hidden=\"false\">隐藏域</span><span id=\"cke_46_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_47\" class=\"cke_toolbar\" aria-labelledby=\"cke_47_label\" role=\"toolbar\"><span id=\"cke_47_label\" class=\"cke_voice_label\">基本格式</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_48\" class=\"cke_button cke_button__bold cke_button_disabled \" href=\"javascript:void('加粗')\" title=\"加粗 (Ctrl+B)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_48_label\" aria-describedby=\"cke_48_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(80,event);\" onfocus=\"return CKEDITOR.tools.callFunction(81,event);\" onclick=\"CKEDITOR.tools.callFunction(82,this);return false;\"><span class=\"cke_button_icon cke_button__bold_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -24px;background-size:auto;\">&nbsp;</span><span id=\"cke_48_label\" class=\"cke_button_label cke_button__bold_label\" aria-hidden=\"false\">加粗</span><span id=\"cke_48_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+B</span></a><a id=\"cke_49\" class=\"cke_button cke_button__italic cke_button_disabled \" href=\"javascript:void('倾斜')\" title=\"倾斜 (Ctrl+I)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_49_label\" aria-describedby=\"cke_49_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(83,event);\" onfocus=\"return CKEDITOR.tools.callFunction(84,event);\" onclick=\"CKEDITOR.tools.callFunction(85,this);return false;\"><span class=\"cke_button_icon cke_button__italic_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -48px;background-size:auto;\">&nbsp;</span><span id=\"cke_49_label\" class=\"cke_button_label cke_button__italic_label\" aria-hidden=\"false\">倾斜</span><span id=\"cke_49_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+I</span></a><a id=\"cke_50\" class=\"cke_button cke_button__underline cke_button_disabled \" href=\"javascript:void('下划线')\" title=\"下划线 (Ctrl+U)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_50_label\" aria-describedby=\"cke_50_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(86,event);\" onfocus=\"return CKEDITOR.tools.callFunction(87,event);\" onclick=\"CKEDITOR.tools.callFunction(88,this);return false;\"><span class=\"cke_button_icon cke_button__underline_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -144px;background-size:auto;\">&nbsp;</span><span id=\"cke_50_label\" class=\"cke_button_label cke_button__underline_label\" aria-hidden=\"false\">下划线</span><span id=\"cke_50_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+U</span></a><a id=\"cke_51\" class=\"cke_button cke_button__strike cke_button_disabled \" href=\"javascript:void('删除线')\" title=\"删除线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_51_label\" aria-describedby=\"cke_51_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(89,event);\" onfocus=\"return CKEDITOR.tools.callFunction(90,event);\" onclick=\"CKEDITOR.tools.callFunction(91,this);return false;\"><span class=\"cke_button_icon cke_button__strike_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -72px;background-size:auto;\">&nbsp;</span><span id=\"cke_51_label\" class=\"cke_button_label cke_button__strike_label\" aria-hidden=\"false\">删除线</span><span id=\"cke_51_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_52\" class=\"cke_button cke_button__subscript cke_button_disabled \" href=\"javascript:void('下标')\" title=\"下标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_52_label\" aria-describedby=\"cke_52_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(92,event);\" onfocus=\"return CKEDITOR.tools.callFunction(93,event);\" onclick=\"CKEDITOR.tools.callFunction(94,this);return false;\"><span class=\"cke_button_icon cke_button__subscript_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -96px;background-size:auto;\">&nbsp;</span><span id=\"cke_52_label\" class=\"cke_button_label cke_button__subscript_label\" aria-hidden=\"false\">下标</span><span id=\"cke_52_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_53\" class=\"cke_button cke_button__superscript cke_button_disabled \" href=\"javascript:void('上标')\" title=\"上标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_53_label\" aria-describedby=\"cke_53_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(95,event);\" onfocus=\"return CKEDITOR.tools.callFunction(96,event);\" onclick=\"CKEDITOR.tools.callFunction(97,this);return false;\"><span class=\"cke_button_icon cke_button__superscript_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -120px;background-size:auto;\">&nbsp;</span><span id=\"cke_53_label\" class=\"cke_button_label cke_button__superscript_label\" aria-hidden=\"false\">上标</span><span id=\"cke_53_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_54\" class=\"cke_button cke_button__copyformatting cke_button_disabled \" href=\"javascript:void('格式刷')\" title=\"格式刷 (Ctrl+Shift+C)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_54_label\" aria-describedby=\"cke_54_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(98,event);\" onfocus=\"return CKEDITOR.tools.callFunction(99,event);\" onclick=\"CKEDITOR.tools.callFunction(100,this);return false;\"><span class=\"cke_button_icon cke_button__copyformatting_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -480px;background-size:auto;\">&nbsp;</span><span id=\"cke_54_label\" class=\"cke_button_label cke_button__copyformatting_label\" aria-hidden=\"false\">格式刷</span><span id=\"cke_54_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+Shift+C</span></a><a id=\"cke_55\" class=\"cke_button cke_button__removeformat cke_button_disabled \" href=\"javascript:void('清除格式')\" title=\"清除格式\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_55_label\" aria-describedby=\"cke_55_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(101,event);\" onfocus=\"return CKEDITOR.tools.callFunction(102,event);\" onclick=\"CKEDITOR.tools.callFunction(103,this);return false;\"><span class=\"cke_button_icon cke_button__removeformat_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1704px;background-size:auto;\">&nbsp;</span><span id=\"cke_55_label\" class=\"cke_button_label cke_button__removeformat_label\" aria-hidden=\"false\">清除格式</span><span id=\"cke_55_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_56\" class=\"cke_toolbar\" aria-labelledby=\"cke_56_label\" role=\"toolbar\"><span id=\"cke_56_label\" class=\"cke_voice_label\">段落</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_57\" class=\"cke_button cke_button__numberedlist cke_button_disabled \" href=\"javascript:void('编号列表')\" title=\"编号列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_57_label\" aria-describedby=\"cke_57_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(104,event);\" onfocus=\"return CKEDITOR.tools.callFunction(105,event);\" onclick=\"CKEDITOR.tools.callFunction(106,this);return false;\"><span class=\"cke_button_icon cke_button__numberedlist_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1392px;background-size:auto;\">&nbsp;</span><span id=\"cke_57_label\" class=\"cke_button_label cke_button__numberedlist_label\" aria-hidden=\"false\">编号列表</span><span id=\"cke_57_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_58\" class=\"cke_button cke_button__bulletedlist cke_button_disabled \" href=\"javascript:void('项目列表')\" title=\"项目列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_58_label\" aria-describedby=\"cke_58_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(107,event);\" onfocus=\"return CKEDITOR.tools.callFunction(108,event);\" onclick=\"CKEDITOR.tools.callFunction(109,this);return false;\"><span class=\"cke_button_icon cke_button__bulletedlist_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1344px;background-size:auto;\">&nbsp;</span><span id=\"cke_58_label\" class=\"cke_button_label cke_button__bulletedlist_label\" aria-hidden=\"false\">项目列表</span><span id=\"cke_58_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_59\" class=\"cke_button cke_button__outdent cke_button_disabled \" href=\"javascript:void('减少缩进量')\" title=\"减少缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_59_label\" aria-describedby=\"cke_59_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(110,event);\" onfocus=\"return CKEDITOR.tools.callFunction(111,event);\" onclick=\"CKEDITOR.tools.callFunction(112,this);return false;\"><span class=\"cke_button_icon cke_button__outdent_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1056px;background-size:auto;\">&nbsp;</span><span id=\"cke_59_label\" class=\"cke_button_label cke_button__outdent_label\" aria-hidden=\"false\">减少缩进量</span><span id=\"cke_59_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_60\" class=\"cke_button cke_button__indent cke_button_disabled \" href=\"javascript:void('增加缩进量')\" title=\"增加缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_60_label\" aria-describedby=\"cke_60_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(113,event);\" onfocus=\"return CKEDITOR.tools.callFunction(114,event);\" onclick=\"CKEDITOR.tools.callFunction(115,this);return false;\"><span class=\"cke_button_icon cke_button__indent_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1008px;background-size:auto;\">&nbsp;</span><span id=\"cke_60_label\" class=\"cke_button_label cke_button__indent_label\" aria-hidden=\"false\">增加缩进量</span><span id=\"cke_60_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_61\" class=\"cke_button cke_button__blockquote cke_button_disabled \" href=\"javascript:void('块引用')\" title=\"块引用\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_61_label\" aria-describedby=\"cke_61_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(116,event);\" onfocus=\"return CKEDITOR.tools.callFunction(117,event);\" onclick=\"CKEDITOR.tools.callFunction(118,this);return false;\"><span class=\"cke_button_icon cke_button__blockquote_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -216px;background-size:auto;\">&nbsp;</span><span id=\"cke_61_label\" class=\"cke_button_label cke_button__blockquote_label\" aria-hidden=\"false\">块引用</span><span id=\"cke_61_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_62\" class=\"cke_button cke_button__creatediv cke_button_disabled \" href=\"javascript:void('创建 DIV 容器')\" title=\"创建 DIV 容器\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_62_label\" aria-describedby=\"cke_62_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(119,event);\" onfocus=\"return CKEDITOR.tools.callFunction(120,event);\" onclick=\"CKEDITOR.tools.callFunction(121,this);return false;\"><span class=\"cke_button_icon cke_button__creatediv_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -504px;background-size:auto;\">&nbsp;</span><span id=\"cke_62_label\" class=\"cke_button_label cke_button__creatediv_label\" aria-hidden=\"false\">创建 DIV 容器</span><span id=\"cke_62_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_63\" class=\"cke_button cke_button__justifyleft cke_button_disabled \" href=\"javascript:void('左对齐')\" title=\"左对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_63_label\" aria-describedby=\"cke_63_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(122,event);\" onfocus=\"return CKEDITOR.tools.callFunction(123,event);\" onclick=\"CKEDITOR.tools.callFunction(124,this);return false;\"><span class=\"cke_button_icon cke_button__justifyleft_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1152px;background-size:auto;\">&nbsp;</span><span id=\"cke_63_label\" class=\"cke_button_label cke_button__justifyleft_label\" aria-hidden=\"false\">左对齐</span><span id=\"cke_63_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_64\" class=\"cke_button cke_button__justifycenter cke_button_disabled \" href=\"javascript:void('居中')\" title=\"居中\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_64_label\" aria-describedby=\"cke_64_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(125,event);\" onfocus=\"return CKEDITOR.tools.callFunction(126,event);\" onclick=\"CKEDITOR.tools.callFunction(127,this);return false;\"><span class=\"cke_button_icon cke_button__justifycenter_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1128px;background-size:auto;\">&nbsp;</span><span id=\"cke_64_label\" class=\"cke_button_label cke_button__justifycenter_label\" aria-hidden=\"false\">居中</span><span id=\"cke_64_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_65\" class=\"cke_button cke_button__justifyright cke_button_disabled \" href=\"javascript:void('右对齐')\" title=\"右对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_65_label\" aria-describedby=\"cke_65_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(128,event);\" onfocus=\"return CKEDITOR.tools.callFunction(129,event);\" onclick=\"CKEDITOR.tools.callFunction(130,this);return false;\"><span class=\"cke_button_icon cke_button__justifyright_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1176px;background-size:auto;\">&nbsp;</span><span id=\"cke_65_label\" class=\"cke_button_label cke_button__justifyright_label\" aria-hidden=\"false\">右对齐</span><span id=\"cke_65_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_66\" class=\"cke_button cke_button__justifyblock cke_button_disabled \" href=\"javascript:void('两端对齐')\" title=\"两端对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_66_label\" aria-describedby=\"cke_66_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(131,event);\" onfocus=\"return CKEDITOR.tools.callFunction(132,event);\" onclick=\"CKEDITOR.tools.callFunction(133,this);return false;\"><span class=\"cke_button_icon cke_button__justifyblock_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1104px;background-size:auto;\">&nbsp;</span><span id=\"cke_66_label\" class=\"cke_button_label cke_button__justifyblock_label\" aria-hidden=\"false\">两端对齐</span><span id=\"cke_66_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_67\" class=\"cke_button cke_button__bidiltr cke_button_disabled \" href=\"javascript:void('文字方向为从左至右')\" title=\"文字方向为从左至右\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_67_label\" aria-describedby=\"cke_67_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(134,event);\" onfocus=\"return CKEDITOR.tools.callFunction(135,event);\" onclick=\"CKEDITOR.tools.callFunction(136,this);return false;\"><span class=\"cke_button_icon cke_button__bidiltr_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -168px;background-size:auto;\">&nbsp;</span><span id=\"cke_67_label\" class=\"cke_button_label cke_button__bidiltr_label\" aria-hidden=\"false\">文字方向为从左至右</span><span id=\"cke_67_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_68\" class=\"cke_button cke_button__bidirtl cke_button_disabled \" href=\"javascript:void('文字方向为从右至左')\" title=\"文字方向为从右至左\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_68_label\" aria-describedby=\"cke_68_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(137,event);\" onfocus=\"return CKEDITOR.tools.callFunction(138,event);\" onclick=\"CKEDITOR.tools.callFunction(139,this);return false;\"><span class=\"cke_button_icon cke_button__bidirtl_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -192px;background-size:auto;\">&nbsp;</span><span id=\"cke_68_label\" class=\"cke_button_label cke_button__bidirtl_label\" aria-hidden=\"false\">文字方向为从右至左</span><span id=\"cke_68_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_69\" class=\"cke_button cke_button__language cke_button_disabled cke_button_expandable \" href=\"javascript:void('设置语言')\" title=\"设置语言\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_69_label\" aria-describedby=\"cke_69_description\" aria-haspopup=\"menu\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(140,event);\" onfocus=\"return CKEDITOR.tools.callFunction(141,event);\" onclick=\"CKEDITOR.tools.callFunction(142,this);return false;\"><span class=\"cke_button_icon cke_button__language_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1200px;background-size:auto;\">&nbsp;</span><span id=\"cke_69_label\" class=\"cke_button_label cke_button__language_label\" aria-hidden=\"false\">设置语言</span><span id=\"cke_69_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_70\" class=\"cke_toolbar\" aria-labelledby=\"cke_70_label\" role=\"toolbar\"><span id=\"cke_70_label\" class=\"cke_voice_label\">链接</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_71\" class=\"cke_button cke_button__link cke_button_disabled \" href=\"javascript:void('插入/编辑超链接')\" title=\"插入/编辑超链接 (Ctrl+K)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_71_label\" aria-describedby=\"cke_71_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(143,event);\" onfocus=\"return CKEDITOR.tools.callFunction(144,event);\" onclick=\"CKEDITOR.tools.callFunction(145,this);return false;\"><span class=\"cke_button_icon cke_button__link_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1272px;background-size:auto;\">&nbsp;</span><span id=\"cke_71_label\" class=\"cke_button_label cke_button__link_label\" aria-hidden=\"false\">插入/编辑超链接</span><span id=\"cke_71_description\" class=\"cke_button_label\" aria-hidden=\"false\">快捷键 Ctrl+K</span></a><a id=\"cke_72\" class=\"cke_button cke_button__unlink cke_button_disabled \" href=\"javascript:void('取消超链接')\" title=\"取消超链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_72_label\" aria-describedby=\"cke_72_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(146,event);\" onfocus=\"return CKEDITOR.tools.callFunction(147,event);\" onclick=\"CKEDITOR.tools.callFunction(148,this);return false;\"><span class=\"cke_button_icon cke_button__unlink_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1296px;background-size:auto;\">&nbsp;</span><span id=\"cke_72_label\" class=\"cke_button_label cke_button__unlink_label\" aria-hidden=\"false\">取消超链接</span><span id=\"cke_72_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_73\" class=\"cke_button cke_button__anchor cke_button_disabled \" href=\"javascript:void('插入/编辑锚点链接')\" title=\"插入/编辑锚点链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_73_label\" aria-describedby=\"cke_73_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(149,event);\" onfocus=\"return CKEDITOR.tools.callFunction(150,event);\" onclick=\"CKEDITOR.tools.callFunction(151,this);return false;\"><span class=\"cke_button_icon cke_button__anchor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1248px;background-size:auto;\">&nbsp;</span><span id=\"cke_73_label\" class=\"cke_button_label cke_button__anchor_label\" aria-hidden=\"false\">插入/编辑锚点链接</span><span id=\"cke_73_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_74\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_74_label\" role=\"toolbar\"><span id=\"cke_74_label\" class=\"cke_voice_label\">插入</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_75\" class=\"cke_button cke_button__image cke_button_disabled \" href=\"javascript:void('图像')\" title=\"图像\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_75_label\" aria-describedby=\"cke_75_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(152,event);\" onfocus=\"return CKEDITOR.tools.callFunction(153,event);\" onclick=\"CKEDITOR.tools.callFunction(154,this);return false;\"><span class=\"cke_button_icon cke_button__image_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -960px;background-size:auto;\">&nbsp;</span><span id=\"cke_75_label\" class=\"cke_button_label cke_button__image_label\" aria-hidden=\"false\">图像</span><span id=\"cke_75_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_76\" class=\"cke_button cke_button__flash cke_button_disabled \" href=\"javascript:void('Flash')\" title=\"Flash\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_76_label\" aria-describedby=\"cke_76_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(155,event);\" onfocus=\"return CKEDITOR.tools.callFunction(156,event);\" onclick=\"CKEDITOR.tools.callFunction(157,this);return false;\"><span class=\"cke_button_icon cke_button__flash_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -600px;background-size:auto;\">&nbsp;</span><span id=\"cke_76_label\" class=\"cke_button_label cke_button__flash_label\" aria-hidden=\"false\">Flash</span><span id=\"cke_76_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_77\" class=\"cke_button cke_button__table cke_button_disabled \" href=\"javascript:void('表格')\" title=\"表格\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_77_label\" aria-describedby=\"cke_77_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(158,event);\" onfocus=\"return CKEDITOR.tools.callFunction(159,event);\" onclick=\"CKEDITOR.tools.callFunction(160,this);return false;\"><span class=\"cke_button_icon cke_button__table_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1920px;background-size:auto;\">&nbsp;</span><span id=\"cke_77_label\" class=\"cke_button_label cke_button__table_label\" aria-hidden=\"false\">表格</span><span id=\"cke_77_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_78\" class=\"cke_button cke_button__horizontalrule cke_button_disabled \" href=\"javascript:void('插入水平线')\" title=\"插入水平线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_78_label\" aria-describedby=\"cke_78_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(161,event);\" onfocus=\"return CKEDITOR.tools.callFunction(162,event);\" onclick=\"CKEDITOR.tools.callFunction(163,this);return false;\"><span class=\"cke_button_icon cke_button__horizontalrule_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -912px;background-size:auto;\">&nbsp;</span><span id=\"cke_78_label\" class=\"cke_button_label cke_button__horizontalrule_label\" aria-hidden=\"false\">插入水平线</span><span id=\"cke_78_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_79\" class=\"cke_button cke_button__smiley cke_button_disabled \" href=\"javascript:void('表情符')\" title=\"表情符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_79_label\" aria-describedby=\"cke_79_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(164,event);\" onfocus=\"return CKEDITOR.tools.callFunction(165,event);\" onclick=\"CKEDITOR.tools.callFunction(166,this);return false;\"><span class=\"cke_button_icon cke_button__smiley_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1080px;background-size:auto;\">&nbsp;</span><span id=\"cke_79_label\" class=\"cke_button_label cke_button__smiley_label\" aria-hidden=\"false\">表情符</span><span id=\"cke_79_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_80\" class=\"cke_button cke_button__specialchar cke_button_disabled \" href=\"javascript:void('插入特殊符号')\" title=\"插入特殊符号\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_80_label\" aria-describedby=\"cke_80_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(167,event);\" onfocus=\"return CKEDITOR.tools.callFunction(168,event);\" onclick=\"CKEDITOR.tools.callFunction(169,this);return false;\"><span class=\"cke_button_icon cke_button__specialchar_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1872px;background-size:auto;\">&nbsp;</span><span id=\"cke_80_label\" class=\"cke_button_label cke_button__specialchar_label\" aria-hidden=\"false\">插入特殊符号</span><span id=\"cke_80_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_81\" class=\"cke_button cke_button__pagebreak cke_button_disabled \" href=\"javascript:void('插入打印分页符')\" title=\"插入打印分页符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_81_label\" aria-describedby=\"cke_81_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(170,event);\" onfocus=\"return CKEDITOR.tools.callFunction(171,event);\" onclick=\"CKEDITOR.tools.callFunction(172,this);return false;\"><span class=\"cke_button_icon cke_button__pagebreak_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1512px;background-size:auto;\">&nbsp;</span><span id=\"cke_81_label\" class=\"cke_button_label cke_button__pagebreak_label\" aria-hidden=\"false\">插入打印分页符</span><span id=\"cke_81_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_82\" class=\"cke_button cke_button__iframe cke_button_disabled \" href=\"javascript:void('IFrame')\" title=\"IFrame\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_82_label\" aria-describedby=\"cke_82_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(173,event);\" onfocus=\"return CKEDITOR.tools.callFunction(174,event);\" onclick=\"CKEDITOR.tools.callFunction(175,this);return false;\"><span class=\"cke_button_icon cke_button__iframe_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -936px;background-size:auto;\">&nbsp;</span><span id=\"cke_82_label\" class=\"cke_button_label cke_button__iframe_label\" aria-hidden=\"false\">IFrame</span><span id=\"cke_82_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_83\" class=\"cke_toolbar\" aria-labelledby=\"cke_83_label\" role=\"toolbar\"><span id=\"cke_83_label\" class=\"cke_voice_label\">样式</span><span class=\"cke_toolbar_start\"></span><span id=\"cke_13\" class=\"cke_combo cke_combo__styles cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_13_label\" class=\"cke_combo_label\">样式</span><a class=\"cke_combo_button\" title=\"样式\" tabindex=\"-1\" href=\"javascript:void('样式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_13_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(177,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(178,event);\" onclick=\"CKEDITOR.tools.callFunction(176,this);return false;\"><span id=\"cke_13_text\" class=\"cke_combo_text cke_combo_inlinelabel\">样式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_14\" class=\"cke_combo cke_combo__format cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_14_label\" class=\"cke_combo_label\">格式</span><a class=\"cke_combo_button\" title=\"格式\" tabindex=\"-1\" href=\"javascript:void('格式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_14_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(180,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(181,event);\" onclick=\"CKEDITOR.tools.callFunction(179,this);return false;\"><span id=\"cke_14_text\" class=\"cke_combo_text cke_combo_inlinelabel\">格式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_15\" class=\"cke_combo cke_combo__font cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_15_label\" class=\"cke_combo_label\">字体</span><a class=\"cke_combo_button\" title=\"字体\" tabindex=\"-1\" href=\"javascript:void('字体')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_15_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(183,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(184,event);\" onclick=\"CKEDITOR.tools.callFunction(182,this);return false;\"><span id=\"cke_15_text\" class=\"cke_combo_text cke_combo_inlinelabel\">字体</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_16\" class=\"cke_combo cke_combo__fontsize cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_16_label\" class=\"cke_combo_label\">大小</span><a class=\"cke_combo_button\" title=\"大小\" tabindex=\"-1\" href=\"javascript:void('大小')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_16_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(186,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(187,event);\" onclick=\"CKEDITOR.tools.callFunction(185,this);return false;\"><span id=\"cke_16_text\" class=\"cke_combo_text cke_combo_inlinelabel\">大小</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_84\" class=\"cke_toolbar\" aria-labelledby=\"cke_84_label\" role=\"toolbar\"><span id=\"cke_84_label\" class=\"cke_voice_label\">颜色</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_85\" class=\"cke_button cke_button__textcolor cke_button_expandable cke_button_disabled\" href=\"javascript:void('文本颜色')\" title=\"文本颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_85_label\" aria-describedby=\"cke_85_description\" aria-haspopup=\"listbox\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(188,event);\" onfocus=\"return CKEDITOR.tools.callFunction(189,event);\" onclick=\"CKEDITOR.tools.callFunction(190,this);return false;\" aria-expanded=\"false\"><span class=\"cke_button_icon cke_button__textcolor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -408px;background-size:auto;\">&nbsp;</span><span id=\"cke_85_label\" class=\"cke_button_label cke_button__textcolor_label\" aria-hidden=\"false\">文本颜色</span><span id=\"cke_85_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a><a id=\"cke_86\" class=\"cke_button cke_button__bgcolor cke_button_expandable cke_button_disabled\" href=\"javascript:void('背景颜色')\" title=\"背景颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_86_label\" aria-describedby=\"cke_86_description\" aria-haspopup=\"listbox\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(191,event);\" onfocus=\"return CKEDITOR.tools.callFunction(192,event);\" onclick=\"CKEDITOR.tools.callFunction(193,this);return false;\" aria-expanded=\"false\"><span class=\"cke_button_icon cke_button__bgcolor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -384px;background-size:auto;\">&nbsp;</span><span id=\"cke_86_label\" class=\"cke_button_label cke_button__bgcolor_label\" aria-hidden=\"false\">背景颜色</span><span id=\"cke_86_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_87\" class=\"cke_toolbar\" aria-labelledby=\"cke_87_label\" role=\"toolbar\"><span id=\"cke_87_label\" class=\"cke_voice_label\">工具</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_88\" class=\"cke_button cke_button__maximize cke_button_off\" href=\"javascript:void('全屏')\" title=\"全屏\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_88_label\" aria-describedby=\"cke_88_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(194,event);\" onfocus=\"return CKEDITOR.tools.callFunction(195,event);\" onclick=\"CKEDITOR.tools.callFunction(196,this);return false;\"><span class=\"cke_button_icon cke_button__maximize_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1416px;background-size:auto;\">&nbsp;</span><span id=\"cke_88_label\" class=\"cke_button_label cke_button__maximize_label\" aria-hidden=\"false\">全屏</span><span id=\"cke_88_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_89\" class=\"cke_button cke_button__showblocks cke_button_off\" href=\"javascript:void('显示区块')\" title=\"显示区块\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_89_label\" aria-describedby=\"cke_89_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(197,event);\" onfocus=\"return CKEDITOR.tools.callFunction(198,event);\" onclick=\"CKEDITOR.tools.callFunction(199,this);return false;\"><span class=\"cke_button_icon cke_button__showblocks_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 -1800px;background-size:auto;\">&nbsp;</span><span id=\"cke_89_label\" class=\"cke_button_label cke_button__showblocks_label\" aria-hidden=\"false\">显示区块</span><span id=\"cke_89_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_90\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_90_label\" role=\"toolbar\"><span id=\"cke_90_label\" class=\"cke_voice_label\">about</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_91\" class=\"cke_button cke_button__about cke_button_off\" href=\"javascript:void('关于 CKEditor 4')\" title=\"关于 CKEditor 4\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_91_label\" aria-describedby=\"cke_91_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(200,event);\" onfocus=\"return CKEDITOR.tools.callFunction(201,event);\" onclick=\"CKEDITOR.tools.callFunction(202,this);return false;\"><span class=\"cke_button_icon cke_button__about_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4114/plugins/icons.png?t=J39A');background-position:0 0px;background-size:auto;\">&nbsp;</span><span id=\"cke_91_label\" class=\"cke_button_label cke_button__about_label\" aria-hidden=\"false\">关于 CKEditor 4</span><span id=\"cke_91_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span></span></span><div id=\"cke_1_contents\" class=\"cke_contents cke_reset\" role=\"presentation\" style=\"height: 200px;\"><span id=\"cke_95\" class=\"cke_voice_label\">按 ALT+0 获得帮助</span><iframe src=\"\" frameborder=\"0\" class=\"cke_wysiwyg_frame cke_reset\" style=\"width: 100%; height: 100%;\" aria-describedby=\"cke_95\" tabindex=\"0\" allowtransparency=\"true\"></iframe></div><span id=\"cke_1_bottom\" class=\"cke_bottom cke_reset_all\" role=\"presentation\" style=\"user-select: none;\"><span id=\"cke_1_resizer\" class=\"cke_resizer cke_resizer_vertical cke_resizer_ltr\" title=\"拖拽以改变大小\" onmousedown=\"CKEDITOR.tools.callFunction(0, event)\">◢</span><span id=\"cke_1_path_label\" class=\"cke_voice_label\">元素路径</span><span id=\"cke_1_path\" class=\"cke_path\" role=\"group\" aria-labelledby=\"cke_1_path_label\"><span class=\"cke_path_empty\">&nbsp;</span></span></span></div></div></div></div><div id=\"attachment\" mwftype=\"itmleditor\" style=\"margin-top: 20px;\"><div style=\"border: 1px solid rgb(182, 182, 182); min-height: 180px; background: rgb(255, 255, 255); margin-top: 10px; overflow: hidden;\"><div style=\"height: 40px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/bg.png&quot;); border-top: 1px solid rgb(255, 255, 255); border-bottom: 1px solid rgb(182, 182, 182);\"><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"上传\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/upload_gray.png&quot;);\"></div></div><div title=\"删除\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/delete_gray.png&quot;);\"></div></div><div title=\"替换\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/replace_gray.png&quot;);\"></div></div><div class=\"separateNode\" style=\"width: 1px; height: 16px; margin-top: 5px; margin-left: 5px; margin-right: 5px; border-left: 1px solid rgb(188, 188, 188); background-color: rgb(241, 241, 241); float: left;\"></div><div title=\"下载\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/download_gray.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"列表\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/list.png&quot;);\"></div></div><div title=\"序列\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/seq.png&quot;);\"></div></div><div title=\"图标\" style=\"float: left; width: 26px; height: 26px; cursor: default; background: url(&quot;../o2_core/o2/widget/$AttachmentController/default/selectedbg.png&quot;);\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/icon.png&quot;);\"></div></div><div title=\"预览\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/preview.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: right; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;); margin-right: 7px;\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"简洁模式\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/min.png&quot;);\"></div></div></div></div></div><div class=\"contentScrollNode\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; min-height: 130px;\"><div class=\"content\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; margin-right: 6px;\"></div></div><div style=\"height: 7px; border-top: 1px solid rgb(182, 182, 182); background-color: rgb(232, 232, 232);\"><div style=\"height: 7px; cursor: row-resize;\"></div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\" style=\"\"><div style=\"background-color: rgb(255, 255, 255); padding: 6px 2px 1px 10px; overflow-wrap: normal; word-break: keep-all; cursor: pointer; overflow: hidden; height: auto; display: block; font-size: 14px; border-top: 2px solid rgb(204, 61, 61);\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" title=\"关闭工作\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" title=\"保存工作\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" title=\"继续流转文件\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">继续流转</span></div><div mwfnodetype=\"MWFToolBarMenu\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/tool.png\" title=\"管理工具\" mwfbuttonaction=\"\" mwfbuttontext=\"工具\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" title=\"调度\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" title=\"撤回\" mwfbuttonaction=\"retractWork\" mwfbuttontext=\"撤回\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文件\"></div><div mwfnodetype=\"MWFToolBarMenuItem\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" title=\"打印文件\" mwfbuttonaction=\"printWork\" mwfbuttontext=\"打印\"></div><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/tool.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer;\">工具</span><div style=\"display: block; float: left; padding-left: 2px; padding-right: 2px; padding-top: 5px; height: 18px; color: rgb(255, 0, 0); cursor: pointer;\"><img src=\"../o2_core/o2/widget/$Toolbar/xform_red_simple/downicon.gif\"></div><div class=\"MWFMenu\" style=\"border-width: 1px; border-style: solid; border-color: rgb(115, 138, 181) rgb(60, 91, 148) rgb(60, 91, 148) rgb(115, 138, 181); background-color: rgb(247, 243, 247); padding: 2px; overflow: hidden; font-size: 12px; display: none; z-index: 999; opacity: 0; position: absolute; float: left; min-width: 120px; box-shadow: rgb(170, 170, 170) 3px 3px 10px; cursor: default;\"><div style=\"display: block; position: static; height: 24px; line-height: 24px; border: 1px solid rgb(247, 243, 247); background-color: rgb(247, 243, 247);\"><div style=\"display: block; float: left; width: 24px; height: 24px; text-align: center;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" style=\"height: 16px; width: 16px; margin-top: 3px;\"></div><div style=\"display: block; float: left; height: 24px; width: 1px; background-color: rgb(204, 204, 204); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div><div style=\"display: block; position: static; height: 24px; margin-left: 35px; margin-right: 30px; line-height: 24px;\">调度</div></div><div style=\"display: block; position: static; height: 24px; line-height: 24px; border: 1px solid rgb(247, 243, 247); background-color: rgb(247, 243, 247);\"><div style=\"display: block; float: left; width: 24px; height: 24px; text-align: center;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" style=\"height: 16px; width: 16px; margin-top: 3px;\"></div><div style=\"display: block; float: left; height: 24px; width: 1px; background-color: rgb(204, 204, 204); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div><div style=\"display: block; position: static; height: 24px; margin-left: 35px; margin-right: 30px; line-height: 24px;\">重置处理人</div></div><div style=\"display: block; position: static; height: 24px; line-height: 24px; border: 1px solid rgb(247, 243, 247); background-color: rgb(247, 243, 247);\"><div style=\"display: block; float: left; width: 24px; height: 24px; text-align: center;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" style=\"height: 16px; width: 16px; margin-top: 3px;\"></div><div style=\"display: block; float: left; height: 24px; width: 1px; background-color: rgb(204, 204, 204); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div><div style=\"display: block; position: static; height: 24px; margin-left: 35px; margin-right: 30px; line-height: 24px;\">撤回</div></div><div style=\"display: block; position: static; height: 24px; line-height: 24px; border: 1px solid rgb(247, 243, 247); background-color: rgb(247, 243, 247);\"><div style=\"display: block; float: left; width: 24px; height: 24px; text-align: center;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" style=\"height: 16px; width: 16px; margin-top: 3px;\"></div><div style=\"display: block; float: left; height: 24px; width: 1px; background-color: rgb(204, 204, 204); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div><div style=\"display: block; position: static; height: 24px; margin-left: 35px; margin-right: 30px; line-height: 24px;\">删除文件</div></div><div style=\"display: block; position: static; height: 24px; line-height: 24px; border: 1px solid rgb(247, 243, 247); background-color: rgb(247, 243, 247);\"><div style=\"display: block; float: left; width: 24px; height: 24px; text-align: center;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" style=\"height: 16px; width: 16px; margin-top: 3px;\"></div><div style=\"display: block; float: left; height: 24px; width: 1px; background-color: rgb(204, 204, 204); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div><div style=\"display: block; position: static; height: 24px; margin-left: 35px; margin-right: 30px; line-height: 24px;\">打印</div></div></div></div><div mwfnodetype=\"MWFToolBarSeparator\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/\" title=\"\" mwfbuttonaction=\"\" mwfbuttontext=\"\" style=\"display: block; float: left; margin-bottom: 5px; margin-top: 5px; height: 22px; width: 1px; background-color: rgb(136, 136, 136); border-right: 1px solid rgb(255, 255, 255); overflow: hidden;\"></div></div></div></div>",
+    "html": "<div id=\"2d802b06-6f31-4de7-a7cd-e92313a28ff0\" mwftype=\"form\" class=\"css2d802b066f314de7a7cde92313a28ff0\" style=\"\"><div id=\"actionbar\" mwftype=\"actionbar\" style=\"\"><div style=\"background-color: rgb(255, 255, 255); padding: 6px 2px 1px 10px; overflow-wrap: normal; word-break: keep-all; cursor: pointer; overflow: hidden; height: auto; display: block; font-size: 14px; border-top: 2px solid rgb(204, 61, 61);\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" title=\"关闭文档\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" title=\"保存文档\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" title=\"继续流转文档\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">继续流转</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/goback.png\" title=\"退回到已经过的活动\" mwfbuttonaction=\"goBack\" mwfbuttontext=\"退回\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/goback.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">退回</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" title=\"调度文档\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">调度</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">重置处理人</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/addTask.png\" title=\"在当前活动添加处理人\" mwfbuttonaction=\"addTask\" mwfbuttontext=\"加签\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/addTask.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">加签</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" title=\"增加拆分分支\" mwfbuttonaction=\"addSplit\" mwfbuttontext=\"增加分支\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">增加分支</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" title=\"待办撤回\" mwfbuttonaction=\"retractWork\" mwfbuttontext=\"撤回\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">撤回</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" title=\"回溯到指定的环节，不保留流程记录\" mwfbuttonaction=\"rollback\" mwfbuttontext=\"流程回溯\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">流程回溯</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文档\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">删除文档</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" title=\"打印文档\" mwfbuttonaction=\"printWork\" mwfbuttontext=\"打印\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" title=\"催促办理\" mwfbuttonaction=\"pressWork\" mwfbuttontext=\"催促办理\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">催促办理</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/pause.png\" title=\"待办挂起\" mwfbuttonaction=\"pauseTask\" mwfbuttontext=\"挂起\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/pause.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">挂起</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/resume.png\" title=\"从挂起状态恢复\" mwfbuttonaction=\"resumeTask\" mwfbuttontext=\"挂起恢复\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/resume.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">挂起恢复</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" title=\"一键下载\" mwfbuttonaction=\"downloadAll\" mwfbuttontext=\"一键下载\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">一键下载</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/monitor.png\" title=\"流程监控\" mwfbuttonaction=\"monitor\" mwfbuttontext=\"流程监控\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/monitor.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">流程监控</span></div></div></div><div id=\"label\" mwftype=\"label\" style=\"text-align: center; font-size: 36px; line-height: 60px; font-weight: bold; color: rgb(253, 17, 19); height: 60px; font-family: 宋体;\"></div><div id=\"div\" mwftype=\"div\" style=\"width: 1000px; margin: 20px auto;\"><div id=\"table\" mwftype=\"table\" style=\"background-color: rgb(255, 255, 255);\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\" style=\"border-collapse: separate;\"><tbody><tr><td id=\"table_table$Td\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px; width: 120px;\"><div id=\"label_1\" mwftype=\"label\" style=\"\">密　级</div></td><td id=\"table_table$Td_1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"secret\" mwftype=\"select\" style=\"border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(153, 153, 153); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; margin-top: 5px; color: rgb(102, 102, 102);\"><select></select></div></td><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"font-size: 18px;\"><div id=\"label_2\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">ＸＸＸＸ</div><div id=\"departmentWord\" mwftype=\"textfield\" style=\"overflow: visible; position: relative; margin-right: 0px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; float: left; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); font-size: 16px; text-align: center;\"></div><div id=\"label_3\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px; font-size: 24px; text-align: right;\">﹝</div><div id=\"div_1\" mwftype=\"div\" style=\"width: 60px; float: left; text-align: center;\"><div id=\"fileYear\" mwftype=\"textfield\" style=\"overflow: visible; position: relative; margin-right: 0px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); text-align: center; font-size: 16px;\"></div></div><div id=\"label_4\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px; font-size: 24px; text-align: left;\">﹞</div><div id=\"div_2\" mwftype=\"div\" style=\"width: 60px; float: left; text-align: center;\"><div id=\"fileno\" mwftype=\"textfield\" style=\"overflow: visible; position: relative; margin-right: 0px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; width: 50px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); text-align: center; font-size: 16px;\"></div></div><div id=\"label_5\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">号</div></td><td id=\"table_table$Td_4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"label_6\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">印数</div><div id=\"copies\" mwftype=\"textfield\" style=\"overflow: visible; position: relative; margin-right: 0px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial; float: left; width: 70px; height: 30px; margin-left: 5px;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102); font-size: 16px; text-align: center;\"></div><div id=\"label_7\" mwftype=\"label\" style=\"float: left; color: rgb(253, 17, 19); line-height: 30px;\">份</div></td></tr><tr><td id=\"table_table$Td_5\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_8\" mwftype=\"label\" style=\"\">文件标题</div></td><td id=\"table_table$Td_6\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"subject\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_10\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_9\" mwftype=\"label\" style=\"\">主　送</div></td><td id=\"table_table$Td_11\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"mainSend\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_15\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_10\" mwftype=\"label\" style=\"\">抄　送</div></td><td id=\"table_table$Td_16\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"copyTo\" mwftype=\"textfield\" style=\"overflow: hidden; position: relative; margin-right: 20px; padding-right: 4px; border-width: 0px 0px 1px; border-bottom-style: solid; border-bottom-color: rgb(204, 204, 204); border-top-style: initial; border-top-color: initial; border-left-style: initial; border-left-color: initial; border-right-style: initial; border-right-color: initial;\"><input style=\"background: transparent; width: 100%; border: 0px; height: 26px; color: rgb(102, 102, 102);\"></div></td></tr><tr><td id=\"table_table$Td_20\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_11\" mwftype=\"label\" style=\"\">拟文部门</div><div id=\"label_12\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_21\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"log\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td><td id=\"table_table$Td_23\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_14\" mwftype=\"label\" style=\"\">拟稿人</div></td><td id=\"table_table$Td_24\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"label_15\" mwftype=\"label\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_26\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_13\" mwftype=\"label\" style=\"\">是否同意上门户网站</div></td><td id=\"table_table$Td_27\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"publishPortal\" mwftype=\"radio\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_30\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_16\" mwftype=\"label\" style=\"\">会办部门</div><div id=\"label_17\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_31\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"log_1\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr><tr><td id=\"table_table$Td_35\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_18\" mwftype=\"label\" style=\"\">办公室</div><div id=\"label_19\" mwftype=\"label\" style=\"\">意　见</div></td><td id=\"table_table$Td_36\" rowspan=\"1\" colspan=\"2\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"log_2\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td><td id=\"table_table$Td_38\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_21\" mwftype=\"label\" style=\"\">核稿人</div></td><td id=\"table_table$Td_39\" rowspan=\"2\" colspan=\"1\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div mwftype=\"textfield\" id=\"auditPeople\" style=\"overflow: hidden; position: relative; margin-right: 20px; min-height: 24px; border: 0px solid rgb(153, 153, 153); height: auto; line-height: 30px; font-size: 18px;\"><div style=\"background: transparent; border: 1px solid rgb(153, 153, 153); min-height: 24px; height: 30px; line-height: 30px; color: rgb(102, 102, 102); font-size: 18px; font-family: 宋体;\"></div></div></td></tr><tr><td id=\"table_table$Td_41\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_20\" mwftype=\"label\" style=\"\">是否同意上门户网站</div></td><td id=\"table_table$Td_42\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(51, 51, 51); font-size: 18px; min-height: 30px;\"><div id=\"radio\" mwftype=\"radio\" style=\"\"></div></td></tr><tr><td id=\"table_table$Td_45\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_22\" mwftype=\"label\" style=\"\">分管领导</div><div id=\"label_23\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_46\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"\"><div id=\"log_3\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr><tr><td id=\"table_table$Td_13\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 255, 255); color: rgb(253, 17, 19); font-weight: bold; height: 30px; line-height: 30px; text-align: center; font-size: 18px;\"><div id=\"label_24\" mwftype=\"label\" style=\"\">领　　导</div><div id=\"label_25\" mwftype=\"label\" style=\"\">意　　见</div></td><td id=\"table_table$Td_14\" rowspan=\"1\" colspan=\"4\" mwftype=\"table$Td\" style=\"\"><div id=\"log_4\" mwftype=\"log\" style=\"\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div></td></tr></tbody></table></div><div id=\"div_3\" mwftype=\"div\" style=\"margin-top: 20px;\"><div mwftype=\"documenteditor\" id=\"documenteditor\" style=\"\"></div></div><div id=\"attachment\" mwftype=\"itmleditor\" style=\"margin-top: 20px;\"><div style=\"border: 1px solid rgb(182, 182, 182); min-height: 180px; background: rgb(255, 255, 255); margin-top: 10px; overflow: hidden;\"><div style=\"height: 40px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/bg.png&quot;); border-top: 1px solid rgb(255, 255, 255); border-bottom: 1px solid rgb(182, 182, 182);\"><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"上传\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/upload_gray.png&quot;);\"></div></div><div title=\"删除\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/delete_gray.png&quot;);\"></div></div><div title=\"替换\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/replace_gray.png&quot;);\"></div></div><div class=\"separateNode\" style=\"width: 1px; height: 16px; margin-top: 5px; margin-left: 5px; margin-right: 5px; border-left: 1px solid rgb(188, 188, 188); background-color: rgb(241, 241, 241); float: left;\"></div><div title=\"下载\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/download_gray.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"列表\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/list.png&quot;);\"></div></div><div title=\"序列\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/seq.png&quot;);\"></div></div><div title=\"图标\" style=\"float: left; width: 26px; height: 26px; cursor: default; background: url(&quot;../o2_core/o2/widget/$AttachmentController/default/selectedbg.png&quot;);\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/icon.png&quot;);\"></div></div><div title=\"预览\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/preview.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: right; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;); margin-right: 7px;\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"简洁模式\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/min.png&quot;);\"></div></div></div></div></div><div class=\"contentScrollNode\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; min-height: 130px;\"><div class=\"content\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; margin-right: 6px;\"></div></div><div style=\"height: 7px; border-top: 1px solid rgb(182, 182, 182); background-color: rgb(232, 232, 232);\"><div style=\"height: 7px; cursor: row-resize;\"></div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\" style=\"\"><div style=\"background-color: rgb(255, 255, 255); padding: 6px 2px 1px 10px; overflow-wrap: normal; word-break: keep-all; cursor: pointer; overflow: hidden; height: auto; display: block; font-size: 14px; border-top: 2px solid rgb(204, 61, 61);\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" title=\"关闭文档\" mwfbuttonaction=\"closeWork\" mwfbuttontext=\"关闭\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/close.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" title=\"保存文档\" mwfbuttonaction=\"saveWork\" mwfbuttontext=\"保存\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/save.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" title=\"继续流转文档\" mwfbuttonaction=\"processWork\" mwfbuttontext=\"继续流转\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/submit.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">继续流转</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/goback.png\" title=\"退回到已经过的活动\" mwfbuttonaction=\"goBack\" mwfbuttontext=\"退回\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/goback.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">退回</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" title=\"调度文档\" mwfbuttonaction=\"rerouteWork\" mwfbuttontext=\"调度\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reroute.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">调度</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" title=\"重置处理人\" mwfbuttonaction=\"resetWork\" mwfbuttontext=\"重置处理人\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/reset.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">重置处理人</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/addTask.png\" title=\"在当前活动添加处理人\" mwfbuttonaction=\"addTask\" mwfbuttontext=\"加签\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/addTask.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">加签</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" title=\"增加拆分分支\" mwfbuttonaction=\"addSplit\" mwfbuttontext=\"增加分支\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/split.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">增加分支</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" title=\"待办撤回\" mwfbuttonaction=\"retractWork\" mwfbuttontext=\"撤回\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/retract.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">撤回</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" title=\"回溯到指定的环节，不保留流程记录\" mwfbuttonaction=\"rollback\" mwfbuttontext=\"流程回溯\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/rollback.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">流程回溯</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" title=\"删除文件\" mwfbuttonaction=\"deleteWork\" mwfbuttontext=\"删除文档\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/del.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">删除文档</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" title=\"打印文档\" mwfbuttonaction=\"printWork\" mwfbuttontext=\"打印\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/print.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" title=\"催促办理\" mwfbuttonaction=\"pressWork\" mwfbuttontext=\"催促办理\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/press.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">催促办理</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/pause.png\" title=\"待办挂起\" mwfbuttonaction=\"pauseTask\" mwfbuttontext=\"挂起\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/pause.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">挂起</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/resume.png\" title=\"从挂起状态恢复\" mwfbuttonaction=\"resumeTask\" mwfbuttontext=\"挂起恢复\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/resume.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">挂起恢复</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" title=\"一键下载\" mwfbuttonaction=\"downloadAll\" mwfbuttontext=\"一键下载\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/downloadAll.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">一键下载</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/monitor.png\" title=\"流程监控\" mwfbuttonaction=\"monitor\" mwfbuttontext=\"流程监控\" style=\"display: block; position: static; float: left; border: 1px solid rgb(255, 255, 255); color: inherit; background-color: rgb(255, 255, 255); height: 30px; margin-right: 8px; padding-left: 2px; padding-right: 2px; cursor: pointer; border-radius: 5px;\"><span style=\"display: block; float: left; padding: 7px 1px 1px; cursor: pointer;\"><img src=\"../x_component_process_FormDesigner/Module/Actionbar/default/tools/xform_red_simple/monitor.png\" style=\"height: 16px; width: 16px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 30px; padding-left: 2px; padding-right: 2px; line-height: 30px; cursor: pointer; color: rgb(0, 0, 0);\">流程监控</span></div></div></div></div>",
     "id": "",
     "isNewForm": true
   },

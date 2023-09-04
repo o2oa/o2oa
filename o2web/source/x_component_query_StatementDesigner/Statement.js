@@ -796,6 +796,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.scriptText = this.jpqlScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.jpqlScriptEditor.load({"code": this.json.scriptText})
@@ -808,10 +811,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.ScriptArea", function () {
                 this.jpqlCountScriptEditor = new o2.widget.ScriptArea(this.jpqlCountScriptArea, {
                     "isbind": false,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
                     "maxObj": this.designer.designNode,
                     "title": this.designer.lp.scriptTitle,
+                    "type": "service",
                     "onChange": function () {
                         this.json.countScriptText = this.jpqlCountScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.jpqlCountScriptEditor.load({"code": this.json.countScriptText})
@@ -831,6 +839,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.sqlScriptText = this.sqlScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.sqlScriptEditor.load({"code": this.json.sqlScriptText})
@@ -842,10 +853,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             o2.require("o2.widget.ScriptArea", function () {
                 this.sqlCountScriptEditor = new o2.widget.ScriptArea(this.sqlCountScriptArea, {
                     "isbind": false,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
                     "maxObj": this.designer.designNode,
                     "title": this.designer.lp.sqlScriptTitle,
+                    "type": "service",
                     "onChange": function () {
                         this.json.sqlCountScriptText = this.sqlCountScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.sqlCountScriptEditor.load({"code": this.json.sqlCountScriptText})
@@ -962,6 +978,73 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.dynamicTableContent.set("text", "");
         }
     },
+    loadEditor: function(){
+        switch (this.json.format) {
+            case "sql":
+                this.jpqlOfficalTable.hide();
+                this.sqlOfficalTable.show();
+
+                this.jpqlArea.hide();
+                this.jpqlScriptArea.hide();
+                this.sqlArea.show();
+                this.sqlScriptArea.hide();
+                this.loadSqlEditor();
+
+                this.jpqlCountArea.hide();
+                this.jpqlCountScriptArea.hide();
+                this.sqlCountArea.show();
+                this.sqlCountScriptArea.hide();
+                this.loadSqlCountEditor();
+                break;
+            case "sqlScript":
+                this.jpqlOfficalTable.hide();
+                this.sqlOfficalTable.show();
+
+                this.jpqlArea.hide();
+                this.jpqlScriptArea.hide();
+                this.sqlArea.hide();
+                this.sqlScriptArea.show();
+                this.loadSqlScriptEditor();
+
+                this.jpqlCountArea.hide();
+                this.jpqlCountScriptArea.hide();
+                this.sqlCountArea.hide();
+                this.sqlCountScriptArea.show();
+                this.loadSqlCountScriptEditor();
+                break;
+            case "script":
+                this.jpqlOfficalTable.show();
+                this.sqlOfficalTable.hide();
+
+                this.jpqlArea.hide();
+                this.jpqlScriptArea.show();
+                this.sqlArea.hide();
+                this.sqlScriptArea.hide();
+                this.loadJpqlScriptEditor();
+
+                this.jpqlCountArea.hide();
+                this.jpqlCountScriptArea.show();
+                this.sqlCountArea.hide();
+                this.sqlCountScriptArea.hide();
+                this.loadJpqlCountScriptEditor();
+                break;
+            default:
+                this.jpqlOfficalTable.show();
+                this.sqlOfficalTable.hide();
+
+                this.jpqlArea.show();
+                this.jpqlScriptArea.hide();
+                this.sqlArea.hide();
+                this.sqlScriptArea.hide();
+                this.loadJpqlEditor();
+
+                this.jpqlCountArea.show();
+                this.jpqlCountScriptArea.hide();
+                this.sqlCountArea.hide();
+                this.sqlCountScriptArea.hide();
+                this.loadJpqlCountEditor();
+        }
+    },
     setEvent: function () {
         this.designerArea.addEvent("click", function (e) {
             this.selected();
@@ -971,72 +1054,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             debugger;
             if (e.target.checked) {
                 var v = e.target.get("value");
-                switch (v) {
-                    case "sql":
-                        this.jpqlOfficalTable.hide();
-                        this.sqlOfficalTable.show();
-
-                        this.jpqlArea.hide();
-                        this.jpqlScriptArea.hide();
-                        this.sqlArea.show();
-                        this.sqlScriptArea.hide();
-                        this.loadSqlEditor();
-
-                        this.jpqlCountArea.hide();
-                        this.jpqlCountScriptArea.hide();
-                        this.sqlCountArea.show();
-                        this.sqlCountScriptArea.hide();
-                        this.loadSqlCountEditor();
-                        break;
-                    case "sqlScript":
-                        this.jpqlOfficalTable.hide();
-                        this.sqlOfficalTable.show();
-
-                        this.jpqlArea.hide();
-                        this.jpqlScriptArea.hide();
-                        this.sqlArea.hide();
-                        this.sqlScriptArea.show();
-                        this.loadSqlScriptEditor();
-
-                        this.jpqlCountArea.hide();
-                        this.jpqlCountScriptArea.hide();
-                        this.sqlCountArea.hide();
-                        this.sqlCountScriptArea.show();
-                        this.loadSqlCountScriptEditor();
-                        break;
-                    case "script":
-                        this.jpqlOfficalTable.show();
-                        this.sqlOfficalTable.hide();
-
-                        this.jpqlArea.hide();
-                        this.jpqlScriptArea.show();
-                        this.sqlArea.hide();
-                        this.sqlScriptArea.hide();
-                        this.loadJpqlScriptEditor();
-
-                        this.jpqlCountArea.hide();
-                        this.jpqlCountScriptArea.show();
-                        this.sqlCountArea.hide();
-                        this.sqlCountScriptArea.hide();
-                        this.loadJpqlCountScriptEditor();
-                        break;
-                    default:
-                        this.jpqlOfficalTable.show();
-                        this.sqlOfficalTable.hide();
-
-                        this.jpqlArea.show();
-                        this.jpqlScriptArea.hide();
-                        this.sqlArea.hide();
-                        this.sqlScriptArea.hide();
-                        this.loadJpqlEditor();
-
-                        this.jpqlCountArea.show();
-                        this.jpqlCountScriptArea.hide();
-                        this.sqlCountArea.hide();
-                        this.sqlCountScriptArea.hide();
-                        this.loadJpqlCountEditor();
-                }
                 this.json.format = v;
+                this.loadEditor();
                 this.setDynamicTableName();
             }
             this.loadFieldSelect();
@@ -1138,6 +1157,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     // }
                     break;
             }
+            this.loadEditor();
         }.bind(this));
 
         this.fieldSelect.addEvent("change", function (ev) {

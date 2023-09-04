@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
@@ -43,6 +44,8 @@ class ActionSetIcon extends BaseAction {
 			String icon = Base64.encodeBase64String(output.toByteArray());
 			emc.beginTransaction(Portal.class);
 			portal.setIcon(icon);
+			portal.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+			portal.setLastUpdateTime(new Date());
 			emc.commit();
 			Wo wo = new Wo();
 			CacheManager.notify(Portal.class);

@@ -56,15 +56,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		final String workLogJob = job;
 
 		CompletableFuture<List<WoTask>> tasksFuture = CompletableFuture.supplyAsync(() -> this.tasks(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoTaskCompleted>> taskCompletedsFuture = CompletableFuture
-				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.threadPool());
+				.supplyAsync(() -> this.taskCompleteds(workLogJob), ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoRead>> readsFuture = CompletableFuture.supplyAsync(() -> this.reads(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<List<WoReadCompleted>> readCompletedsFuture = CompletableFuture
-				.supplyAsync(() -> this.readCompleteds(workLogJob), ThisApplication.threadPool());
+				.supplyAsync(() -> this.readCompleteds(workLogJob), ThisApplication.forkJoinPool());
 		CompletableFuture<List<WorkLog>> workLogsFuture = CompletableFuture.supplyAsync(() -> this.workLogs(workLogJob),
-				ThisApplication.threadPool());
+				ThisApplication.forkJoinPool());
 		CompletableFuture<Boolean> controlFuture = CompletableFuture.supplyAsync(() -> {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -76,7 +76,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 
 		if (BooleanUtils.isFalse(controlFuture.get())) {
 			throw new ExceptionAccessDenied(effectivePerson, workOrWorkCompleted);
@@ -291,7 +291,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME,
-						Task.unit_FIELDNAME, Task.routeName_FIELDNAME, Task.opinion_FIELDNAME,
+						Task.unit_FIELDNAME, Task.ROUTENAME_FIELDNAME, Task.opinion_FIELDNAME,
 						Task.opinionLob_FIELDNAME, Task.startTime_FIELDNAME, Task.activityName_FIELDNAME,
 						Task.activityToken_FIELDNAME, Task.empowerFromIdentity_FIELDNAME, Task.properties_FIELDNAME),
 				null);
@@ -306,7 +306,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				WoTaskCompleted.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.identity_FIELDNAME, TaskCompleted.unit_FIELDNAME,
-						TaskCompleted.routeName_FIELDNAME, TaskCompleted.opinion_FIELDNAME,
+						TaskCompleted.ROUTENAME_FIELDNAME, TaskCompleted.opinion_FIELDNAME,
 						TaskCompleted.opinionLob_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
 						TaskCompleted.activityName_FIELDNAME, TaskCompleted.completedTime_FIELDNAME,
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,

@@ -78,7 +78,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
         }
 
-        var opts, defaultOpts = this.getDefaultOptions();
+        var opts, firstOpts = this.getFirstOption();
         switch (this.json.itemType) {
             case "dict":
                 opts = this.getOptionsWithDict( async, refresh ); break;
@@ -87,13 +87,20 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             case "statement":
                 opts = this.getOptionsWithStatement( async, refresh ); break;
         }
-        if( (defaultOpts && typeOf(defaultOpts.then) === "function" ) || (opts && typeOf(opts.then) === "function" ) ){
-            return Promise.all( [defaultOpts, opts] ).then(function (arr) {
-                return this._contactOption( arr[0], arr[1] );
+        if( opts && typeOf(opts.then) === "function" ){
+            return Promise.resolve(opts).then(function ( opts ) {
+                return this._contactOption( firstOpts, opts );
             }.bind(this));
         }else{
-            return this._contactOption( defaultOpts, opts );
+            return this._contactOption( firstOpts, opts );
         }
+        // if( (defaultOpts && typeOf(defaultOpts.then) === "function" ) || (opts && typeOf(opts.then) === "function" ) ){
+        //     return Promise.all( [defaultOpts, opts] ).then(function (arr) {
+        //         return this._contactOption( arr[0], arr[1] );
+        //     }.bind(this));
+        // }else{
+        //     return this._contactOption( defaultOpts, opts );
+        // }
     },
     _contactOption: function(opt1, opt2){
         var optA, optB;
@@ -106,8 +113,10 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         });
         return optB;
     },
-    getDefaultOptions: function(){
-        return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
+    getFirstOption: function(){
+        //return this.form.Macro.exec(((this.json.defaultOptionsScript) ? this.json.defaultOptionsScript.code : ""), this);
+        if( !this.json.firstOptionEnable )return [];
+        return  [this.json.firstOption||"|"];
     },
 
     /**
@@ -214,6 +223,14 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
             return this.parseDictOptions(data);
         }
     },
+    getString: function( d ){
+        switch (o2.typeOf(d)) {
+            case "null": return "";
+            case "string":  return d;
+            case "boolean": case "number": case "date": return d.toString();
+            default: return "";
+        }
+    },
     parseDictOptions: function (d) {
         var arr = [], value, text, valuekey = this.json.dictValueKey, textkey = this.json.dictTextKey;
         switch ( o2.typeOf(d) ) {
@@ -222,32 +239,32 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                     switch ( o2.typeOf(i) ) {
                         case "object":
                             if( valuekey && textkey ){
-                                value = i[ valuekey ] || "";
-                                text = i[ textkey ] || "";
+                                value = this.getString( i[valuekey] );
+                                text = this.getString( i[textkey] );
                                 arr.push( text + "|" + value );
                             }else if( valuekey ){
-                                arr.push( i[ valuekey ] || "" );
+                                arr.push( this.getString( i[valuekey] ) );
                             }else if( textkey ){
-                                arr.push( i[ textkey ] || "" );
+                                arr.push( this.getString(i[textkey] ));
                             }
                             break;
                         case "null": break;
                         default: arr.push( i.toString() ); break;
                     }
-                });
+                }.bind(this));
                 return arr;
             case "object":
                 Object.each(d, function (i, key) {
                     switch ( o2.typeOf(i) ) {
                         case "object":
                             if( valuekey && textkey ){
-                                value = i[ valuekey ] || "";
-                                text = i[ textkey ] || "";
+                                value = this.getString( i[valuekey] );
+                                text = this.getString(i[ textkey] );
                                 arr.push( value + "|" + text );
                             }else if( valuekey ){
-                                arr.push( i[ valuekey ] || "" );
+                                arr.push( this.getString( i[valuekey] ) );
                             }else if( textkey ){
-                                arr.push( i[ textkey ] || "" );
+                                arr.push( this.getString(i[ textkey] ) );
                             }
                             break;
                         case "null": break;
@@ -268,8 +285,8 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.viewFilterList && this.json.viewFilterList.length){
+            this.json.viewFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
@@ -293,15 +310,15 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         json.grid.each(function(d){
             var i = d.data || {};
             if( valuekey && textkey ){
-                value = valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "");
-                text = textkey === "bundle" ? d.bundle : (i[ textkey ] || "");
+                value = valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] ));
+                text = textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] ));
                 arr.push( text + "|" + value );
             }else if( valuekey ){
-                arr.push( valuekey === "bundle" ? d.bundle : (i[ valuekey ] || "") );
+                arr.push( valuekey === "bundle" ? d.bundle : (this.getString( i[valuekey] )) );
             }else if( textkey ){
-                arr.push( textkey === "bundle" ? d.bundle : (i[ textkey ] || "") );
+                arr.push( textkey === "bundle" ? d.bundle : (this.getString(i[ textkey] )) );
             }
-        })
+        }.bind(this))
         return arr.unique();
     },
 
@@ -312,16 +329,16 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
         var asy = o2.typeOf( async ) === "boolean" ? async : (this.json.itemViewAsync !== false);
 
         var filter = [];
-        if (this.json.filterList && this.json.filterList.length){
-            this.json.filterList.each(function(entry){
+        if (this.json.statementFilterList && this.json.statementFilterList.length){
+            this.json.statementFilterList.each(function(entry){
                 entry.value = this.form.Macro.exec(entry.code.code, this);
                 filter.push(entry);
             }.bind(this));
         }
 
         var parameter = {};
-        if( this.json.parameterList && this.json.parameterList.length ){
-            this.json.parameterList.each(function(entry){
+        if( this.json.statementParameterList && this.json.statementParameterList.length ){
+            this.json.statementParameterList.each(function(entry){
                 parameter[entry.parameter] = this.parseParameter(entry);
             }.bind(this));
         }
@@ -421,7 +438,7 @@ MWF.xApplication.process.Xform.$Selector = MWF.APP$Selector = new Class(
                 break;
             }
         }
-        return obj;
+        return this.getString( obj );
     }
 
 });

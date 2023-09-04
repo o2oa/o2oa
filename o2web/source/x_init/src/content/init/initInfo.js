@@ -1,8 +1,6 @@
 import {component} from '@o2oa/oovm';
-import {dom} from '@o2oa/util';
 import {Dialog} from '@o2oa/ui';
 import {executeServer, stopServer} from '../../common/action.js';
-import {notice} from '../../common/notice.js';
 
 const template = `
 <div class="pane_content" style="padding: 2rem 2rem">
@@ -15,7 +13,7 @@ const template = `
         </div>
         
         <div class="line">
-            <div class="info"><span class="icon ooicon-check"></span>数据库：{{$.database.type}}</div>
+            <div class="info"><span class="icon ooicon-check"></span>数据库：{{$.database.type==='$configured' ? '已初始化数据库' : $.database.type}}</div>
         </div>
         
         <div class="line">

@@ -27,6 +27,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Objects;
+
 @Schema(name = "Widget", description = "门户组件.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -101,6 +103,13 @@ public class Widget extends SliceJpaObject {
     @CitationNotExist(fields = { "name", "id",
             "alias" }, type = Widget.class, equals = @Equal(property = "portal", field = "portal")))
     private String alias;
+
+    public static final String category_FIELDNAME = "category";
+    @FieldDescribe("分类")
+    @Column(length = length_255B, name = ColumnNamePrefix + category_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + category_FIELDNAME)
+    @CheckPersist(allowEmpty = true, simplyString = false)
+    private String category;
 
     public static final String description_FIELDNAME = "description";
     @FieldDescribe("描述.")
@@ -198,4 +207,11 @@ public class Widget extends SliceJpaObject {
         this.hasMobile = hasMobile;
     }
 
+    public String getCategory() {
+        return Objects.toString(this.category, "");
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

@@ -129,7 +129,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				LOGGER.error(e);
 			}
 			return value;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected String createWorkProcessing(String processId, JsonElement jsonElement) throws Exception {

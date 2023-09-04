@@ -60,6 +60,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             "MWFType": this.json.type
         });
 
+        this.documentList = [];
 
         var button = this.node.getElement("button");
         if( this.isReadonly() ){
@@ -75,14 +76,15 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             this.button.addEvent("click", function(){
                 this.selectedData = null;
                 this.selectView(function(data){
-                    if(data.length === 0){
-                        this.form.notice(MWF.xApplication.process.Xform.LP.selectDocNote, "info");
-                        return;
-                    }
+                    // if(data.length === 0){
+                    //     this.form.notice(MWF.xApplication.process.Xform.LP.selectDocNote, "info");
+                    //     return;
+                    // }
                     var d = data.map(function (d) {
                         return {
                             "type": d.type === "process" ? "processPlatform" : "cms",
                             "site": this.json.site || this.json.id,
+                            "view": d.view,
                             "bundle": d.bundle
                         }
                     }.bind(this));
@@ -102,22 +104,59 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         this.loadAssociatedDocument();
 	},
     selectDocument: function(data){
-        o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(this.form.businessData.work.job, {
-            targetList: data
-        }, function (json) {
-            this.status = "showResult";
-            if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-            var okNode = this.dlg.button.getFirst();
-            if(okNode){
-                okNode.hide();
-                var cancelButton = okNode.getNext();
-                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+        this.cancelAllAssociated( function () {
+            if( data && data.length ){
+                o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.createWithJob(this.form.businessData.work.job, {
+                    targetList: data
+                }, function (json) {
+                    this.status = "showResult";
+                    if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+                    var okNode = this.dlg.button.getFirst();
+                    if(okNode){
+                        okNode.hide();
+                        var cancelButton = okNode.getNext();
+                        if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                    }
+                    if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
+                        this.showCreateResult(json.data.failureList, json.data.successList);
+                    }
+                    this.loadAssociatedDocument();
+                }.bind(this));
+            }else{
+                this.status = "showResult";
+                this.loadAssociatedDocument();
+                if( this.dlg )this.dlg.close();
             }
-            if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
-                this.showCreateResult(json.data.failureList, json.data.successList);
-            }
-            this.loadAssociatedDocument();
         }.bind(this));
+    },
+    cancelAllAssociated: function( callback ){
+	    var _self = this;
+	    if( this.documentList.length ){
+            var ids = [];
+            if( this.json.reserve === false ){
+                ids = this.documentList.map(function (doc) {
+                    return doc.id;
+                });
+            }else{
+                var viewIds = (this.json.queryView || []).map(function (view) {
+                   return view.id;
+                });
+                var docs = this.documentList.filter(function (doc) {
+                    return viewIds.contains( doc.view );
+                });
+                ids = docs.map(function (doc) {
+                    return doc.id;
+                });
+            }
+            o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(this.getBundle(), {
+                idList: ids
+            },function (json) {
+                //this.documentList = [];
+                if(callback)callback();
+            }.bind(this));
+        }else{
+	        if(callback)callback();
+        }
     },
     loadAssociatedDocument: function(){
         this.documentListNode.empty();
@@ -246,8 +285,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
     },
     cancelAssociated: function(e, d, itemNode){
-	    var lp = MWF.xApplication.process.Xform.LP;
-	    var _self = this;
+        var lp = MWF.xApplication.process.Xform.LP;
+        var _self = this;
         this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
             o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(_self.form.businessData.work.job, {
                 idList: [d.id]
@@ -305,10 +344,21 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 return d.targetBundle;
             });
 
-            var disableSelectJobs = Array.clone(selectedJobs);
+            var disableSelectJobs = [];
+            //var disableSelectJobs = Array.clone(selectedJobs);
             disableSelectJobs.push( this.getBundle() );
 
+            debugger;
+
             var viewJsonList = [];
+
+            this.selectedBundleMap = {};
+            this.documentList.each(function (d) {
+                var viewid = d.properties.view;
+                if( !this.selectedBundleMap[viewid] )this.selectedBundleMap[viewid] = [];
+                this.selectedBundleMap[viewid].push( d.targetBundle );
+            }.bind(this));
+
             viewDataList.each(function (viewData) {
                 var filter = null;
                 var filterList = (this.json.viewFilterScriptList || []).filter(function (f) {
@@ -329,9 +379,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     "isExpand": this.json.isExpand || "no",
                     "showActionbar" : this.json.actionbar === "show",
                     "filter": filter,
-                    // "defaultSelectedScript" : function (obj) {
-                    //     return selectedJobs.contains(obj.data.bundle);
-                    // },
+                    "defaultSelectedScript" : function (obj) {
+                        return selectedJobs.contains(obj.data.bundle);
+                    },
                     "selectedAbleScript" : function (obj) {
                         return !disableSelectJobs.contains(obj.data.bundle);
                     }
@@ -387,12 +437,24 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                                 var array = [];
                                 _self.viewList.each(function (view) {
-                                    var data = view.getData();
-                                    data.each(function (d) {
-                                        d.type = view.json.type;
+                                    var orginData = [], orginBundles = _self.selectedBundleMap[view.json.id] || [];
+                                    orginData = orginBundles.map(function(bundle){
+                                        return {
+                                            bundle: bundle,
+                                            type: view.json.type,
+                                            view: view.json.id
+                                        };
                                     }.bind(this));
-                                    array = array.concat(data);
-                                });
+                                    var data = [], data1 = view.getData();
+                                    data1.each(function (d) {
+                                        if( !orginBundles.contains( d.bundle ) ){
+                                            d.type = view.json.type;
+                                            d.view = view.json.id;
+                                            data.push( d );
+                                        }
+                                    }.bind(this));
+                                    array = array.concat(orginData, data);
+                                }.bind(this));
 
                                 _self.fireEvent("selectResult", [array]);
                                 if (callback) callback(array, this);
@@ -404,6 +466,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                             "action": function(){this.close();}
                         }
                     ],
+                    "onQueryClose": function () {
+                        this.dlg = null;
+                    }.bind(this),
                     "onPostShow": function(){
                         if(layout.mobile){
                             dlg.node.setStyle("z-index",200);
@@ -421,51 +486,57 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                             this.viewList = [];
                             viewJsonList.each(function (viewJson, index) {
-
                                 var tabViewNode = Element("div", {"styles": {"height": "100%"}});
                                 var pageViewNode = new Element("div.pageViewNode").inject(tabViewNode);
-                                //this.viewArea.inject(this.pageViewNode);
 
                                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
+                                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ];
+
                                 //this.viewPage.showTabIm();
                                 var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+
+                                pageViewNode.setStyle("height", viewHeight);
+
+                                var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
+                                    "isloadContent": this.status !== "showResult",
+                                    "isloadActionbar": this.status !== "showResult",
+                                    "isloadSearchbar": this.status !== "showResult",
+                                    "style": "select",
+                                    "onLoadView": function(){
+                                        this.fireEvent("loadView");
+                                    }.bind(this),
+                                    "onSelect": function(item){
+                                        this.fireEvent("select", [item]);
+                                    }.bind(this),
+                                    "onUnselect": function(item){
+                                        selectedBundles.erase( item.data.bundle );
+                                        this.fireEvent("unselect", [item]);
+                                    }.bind(this),
+                                    "onOpenDocument": function(options, item){
+                                        this.openOptions = {
+                                            "options": options,
+                                            "item": item
+                                        };
+                                        this.fireEvent("openViewDocument", [this.openOptions]);
+                                        this.openOptions = null;
+                                    }.bind(this)
+                                }, this.form.app, this.form.Macro);
+
+                                viewPage.Viewer = view;
+                                this.viewList.push(view);
+
                                 viewPage.addEvent("postShow", function () {
-                                    if( viewPage.Viewer )return;
-
-                                    pageViewNode.setStyle("height", viewHeight);
-
-                                    var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
-                                        "isloadContent": this.status !== "showResult",
-                                        "isloadActionbar": this.status !== "showResult",
-                                        "isloadSearchbar": this.status !== "showResult",
-                                        "style": "select",
-                                        "onLoadView": function(){
-                                            this.fireEvent("loadView");
-                                        }.bind(this),
-                                        "onSelect": function(item){
-                                            this.fireEvent("select", [item]);
-                                        }.bind(this),
-                                        "onUnselect": function(item){
-                                            this.fireEvent("unselect", [item]);
-                                        }.bind(this),
-                                        "onOpenDocument": function(options, item){
-                                            this.openOptions = {
-                                                "options": options,
-                                                "item": item
-                                            };
-                                            this.fireEvent("openViewDocument", [this.openOptions]);
-                                            this.openOptions = null;
-                                        }.bind(this)
-                                    }, this.form.app, this.form.Macro);
-
-                                    viewPage.Viewer = view;
-                                    this.viewList.push(view);
+                                    if( viewPage.Viewer && viewPage.Viewer.node ){
+                                        viewPage.Viewer.setContentHeight();
+                                    }
+                                    // var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
+                                    // pageViewNode.setStyle("height", viewHeight);
                                 }.bind(this));
 
                                 if( index === 0 )viewPage.showTabIm();
 
-                            }.bind(this))
+                            }.bind(this));
 
 
                         }.bind(this));
@@ -498,11 +569,23 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
     },
     openDoc: function(e, d){
 	    if( d.targetType === "processPlatform" ){
-            this.form.Macro.environment.form.openJob(d.targetBundle, null, null, function ( app ) {
-                this.fireEvent("openDocument", [app]); //options 传入的事件
+            o2.Actions.load("x_processplatform_assemble_surface").JobAction.findWorkWorkCompleted(d.targetBundle, function( json ){
+                var workCompletedList = json.data.workCompletedList || [], workList = json.data.workList || [];
+                if( !workCompletedList.length && !workList.length ){
+                    this.form.notice(MWF.xApplication.process.Xform.LP.docDeleted, "info");
+                }else{
+                    this.form.Macro.environment.form.openJob(d.targetBundle, null, null, function ( app ) {
+                        this.fireEvent("openDocument", [app]); //options 传入的事件
+                    }.bind(this));
+                }
             }.bind(this));
         }else{
-            this.form.Macro.environment.form.openDocument(d.targetBundle);
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_get(d.targetBundle, function(){
+                this.form.Macro.environment.form.openDocument(d.targetBundle);
+            }.bind(this), function(){
+                this.form.notice(MWF.xApplication.process.Xform.LP.docDeleted, "info");
+                return true;
+            }.bind(this))
         }
     }
 	

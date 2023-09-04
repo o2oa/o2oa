@@ -172,10 +172,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkPreviewAttAction: function () {
-        if(layout.mobile){
-            this.setActionDisabled(this.previewAttAction);
-            this.setActionDisabled(this.min_previewAttAction);
-        } else if (this.options.isPreviewAtt === "hidden" ){
+        // if(layout.mobile){
+        //     this.setActionDisabled(this.previewAttAction);
+        //     this.setActionDisabled(this.min_previewAttAction);
+        // } else
+        if (this.options.isPreviewAtt === "hidden" ){
             this.setActionHidden(this.previewAttAction);
             this.setActionHidden(this.min_previewAttAction);
         } else if (!this.options.isPreviewAtt){
@@ -658,11 +659,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.deleteAction = this.createAction(this.editActionsGroupNode, "delete", o2.LP.widget["delete"], function (e, node) {
             this.deleteAttachment(e, node);
         }.bind(this));
-        if(!layout.mobile){
+        //if(!layout.mobile){
             this.previewAttAction = this.createAction(this.editActionsGroupNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
                 this.previewAttachment(e, node);
             }.bind(this));
-        }
+        //}
 
         if(!layout.mobile){
             this.editAttAction = this.createAction(this.editActionsGroupNode, "editAtt", o2.LP.widget["editAtt"], function (e, node) {
@@ -750,12 +751,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     this.downloadAttachment(e, node);
                 }.bind(this));
 
-            if(!layout.mobile){
+            //if(!layout.mobile){
                 this.min_previewAttAction = this.createAction(this.minActionAreaNode, "previewAtt", o2.LP.widget["previewAtt"], function (e, node) {
                     this.previewAttachment(e, node);
                 }.bind(this));
 
-            }
+            //}
 
         }
         if (!hiddenGroup.contains("config")) {
@@ -1460,6 +1461,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "toolbarGroupHidden": this.json.toolbarGroupHidden || [],
             "onOrder": function () {
                 this.fireEvent("change");
+                this.save();
             }.bind(this)
         };
         if (this.readonly) options.readonly = true;
@@ -1509,6 +1511,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             } else {
                 this._setBusinessData([]);
             }
+        }
+    },
+    save: function(){
+        if( this.json.id.indexOf("..") > 0 )return;
+        if (this.attachmentController) {
+            var values = [];
+            if (this.attachmentController.attachments.length) {
+                values = this.attachmentController.attachments.map(function (d) {
+                    return d.data.name;
+                });
+            }
+            var modifedData = {};
+            modifedData[ this.json.id ] = values;
+            this.form.workAction.saveData(function () {
+                if(this.form.businessData.originalData)this.form.businessData.originalData[this.json.id] = values;
+            }.bind(this), function(){
+                return true;
+            }, this.form.businessData.work.id, modifedData, false);
         }
     },
 
@@ -1605,6 +1625,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     this.setAttachmentBusinessData();
                     this.fireEvent("upload", [json.data]);
                     this.fireEvent("change");
+
+                    this.save();
                 }.bind(this))
             }
             this.attachmentController.checkActions();
@@ -1716,6 +1738,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             case "OnlyOffice":
                 this.editOnlyOffice(att);
                 break;
+            case "WpsOffice":
+                this.editWpsOffice(att);
+                break;
             default :
                 this.editLibreOffice(att);
 
@@ -1758,6 +1783,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
     },
+    editWpsOffice : function (att){
+
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"write",
+            "jars" : jars,
+            "appId":  "WpsOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "WpsOfficeEditor", options);
+    },
     editLibreOffice : function (att){
 
         this.form.notice("not support");
@@ -1795,6 +1838,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.setAttachmentBusinessData();
             this.fireEvent("afterDelete", [attachment.data]);
             this.fireEvent("change");
+
+            this.save();
         }.bind(this));
     },
 
@@ -1881,6 +1926,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     }
 
                     this.attachmentController.checkActions();
+
+                    this.save();
                 }.bind(this))
             }.bind(this), null, true, accept, size, function (o) { //错误的回调
                 if (o.messageId && this.attachmentController.messageItemList) {
@@ -2532,6 +2579,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             case "OnlyOffice":
                 this.previewOnlyOffice();
                 break;
+            case "WpsOffice":
+                this.previewWpsOffice();
+                break;
             default :
                 this.previewLibreOffice();
 
@@ -2574,6 +2624,24 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             "appId":  "OnlyOfficeEditor" + att.data.id
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
+    },
+    previewWpsOffice : function (){
+        var att = this.att;
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"view",
+            "jars" : jars,
+            "appId":  "WpsOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "WpsOfficeEditor", options);
     },
     previewLibreOffice : function (){
 
@@ -2691,6 +2759,8 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),

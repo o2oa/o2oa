@@ -5,22 +5,59 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 		return this.form.businessData.document.id;
 	},
 	selectDocument: function(data){
-		o2.Actions.load("x_cms_assemble_control").CorrelationAction.createWithDocument(this.form.businessData.document.id, {
-			targetList: data
-		}, function (json) {
-		    this.status = "showResult";
-            if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-            var okNode = this.dlg.button.getFirst();
-            if(okNode){
-                okNode.hide();
-                var cancelButton = okNode.getNext();
-                if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+        this.cancelAllAssociated( function () {
+            if( data && data.length ){
+                o2.Actions.load("x_cms_assemble_control").CorrelationAction.createWithDocument(this.form.businessData.document.id, {
+                    targetList: data
+                }, function (json) {
+                    this.status = "showResult";
+                    if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
+                    var okNode = this.dlg.button.getFirst();
+                    if(okNode){
+                        okNode.hide();
+                        var cancelButton = okNode.getNext();
+                        if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                    }
+                    if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
+                        this.showCreateResult(json.data.failureList, json.data.successList);
+                    }
+                    this.loadAssociatedDocument();
+                }.bind(this));
+            }else{
+                this.status = "showResult";
+                this.loadAssociatedDocument();
+                if( this.dlg )this.dlg.close();
             }
-            if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
-                this.showCreateResult(json.data.failureList, json.data.successList);
+        }.bind(this));
+	},
+	cancelAllAssociated: function( callback ){
+		var _self = this;
+		if( this.documentList.length ){
+			var ids = [];
+            if( this.json.reserve === false ){
+                ids = this.documentList.map(function (doc) {
+                    return doc.id;
+                });
+            }else{
+                var viewIds = (this.json.queryView || []).map(function (view) {
+                   return view.id;
+                });
+                var docs = this.documentList.filter(function (doc) {
+                    return viewIds.contains( doc.view );
+                });
+                ids = docs.map(function (doc) {
+                    return doc.id;
+                });
             }
-			this.loadAssociatedDocument();
-		}.bind(this));
+			o2.Actions.load("x_cms_assemble_control").CorrelationAction.deleteWithDocument(this.getBundle(), {
+				idList: ids
+			},function (json) {
+				this.documentList = [];
+				if(callback)callback();
+			}.bind(this));
+		}else{
+			if(callback)callback();
+		}
 	},
 	loadAssociatedDocument: function(){
 		this.documentListNode.empty();

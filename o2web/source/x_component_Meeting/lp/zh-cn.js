@@ -168,6 +168,7 @@ MWF.xApplication.Meeting.LP = {
     "meetingModeSelectText": ["线下会议","线上会议"],
     "meetingModeSelectValue": ["offline","online"],
     "meetingUrl": "会议链接",
+    "openMeetingUrl": "打开会议链接",
     "meetingNumber": "会议号",
     "netMeetingAbb": "网",
     "yes": "是",

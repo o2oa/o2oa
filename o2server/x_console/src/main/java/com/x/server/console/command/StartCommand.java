@@ -1,10 +1,6 @@
 package com.x.server.console.command;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonObject;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -60,31 +57,25 @@ public class StartCommand {
 		}
 	};
 
-	private static boolean ifInitServerNecessary() throws Exception {
+	private static boolean ifInitServerNecessary() {
 		// 密码为空且数据库文件不存在
-		return (ifInitServerNecessarySetPassword()
-				&& (!Files.exists(Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE))));
+		return ifInitServerNecessarySetPassword() && (!ifInitServerNecessaryLocalRepositoryDataH2Exists());
 	}
 
-	private static boolean ifInitServerNecessarySetPassword() throws Exception {
+	private static boolean ifInitServerNecessaryLocalRepositoryDataH2Exists() {
+		return Files.exists(Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE));
+	}
+
+//	private static boolean ifInitServerNecessaryExternalDataSourcesConfigured() {
+//		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
+//				ExternalDataSources.class);
+//		return (null != obj) && BooleanUtils.isTrue(obj.enable());
+//	}
+
+	private static boolean ifInitServerNecessarySetPassword() {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);
 		String value = XGsonBuilder.extractString(jsonObject, "password");
 		return StringUtils.isBlank(value);
-	}
-
-	private static boolean ifInitServerNecessaryUpgradeLocalRepositoryDataH2() throws IOException, URISyntaxException {
-		Path path = Config.path_local_repository_data(true).resolve(H2Tools.FILENAME_DATABASE);
-		if (Files.exists(path)) {
-			Optional<String> jarVersion = H2Tools.jarVersion();
-			Optional<String> localRepositoryDataH2Version = H2Tools.localRepositoryDataH2Version();
-			return ((jarVersion.isPresent() && localRepositoryDataH2Version.isPresent())
-					&& (!StringUtils.equalsIgnoreCase(jarVersion.get(), localRepositoryDataH2Version.get())));
-		}
-		return false;
-	}
-
-	private static boolean ifInitServerNecessaryExternalDataSources() throws Exception {
-		return (ifInitServerNecessarySetPassword() || ifInitServerNecessaryUpgradeLocalRepositoryDataH2());
 	}
 
 	public static Consumer<Matcher> consumer() {

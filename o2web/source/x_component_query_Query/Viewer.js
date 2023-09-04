@@ -201,7 +201,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }.bind(this))
         }.bind(this));
     },
-    _loadUserInterface : function( callback ){
+    _loadUserInterface: function( callback ){
+
+        this.viewJson = this.bindLP( this.viewJson );
+        this.json = this.bindLP( this.json );
+
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
         if( this.options.isloadSearchbar )this.createSearchNode();
@@ -214,6 +218,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     loadLayout: function(){
+
         /**
          * @summary 视图的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
@@ -339,7 +344,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         var lp = this.lp.viewExport;
         var node = this.exportExcelDlgNode = new Element("div");
-        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.fileName + "：" +
+            "   <input class='filename' value='' style='margin-left: 14px;width: 350px;'><span>"+
+            "</div>";
+        html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
             "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
             "   <input class='end' value='"+ ( this.exportExcelEnd || Math.min( total, max ) ) +"' ><span>"+lp.item+"</span>" +
             "</div>";
@@ -373,6 +381,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     "action": function (d, e) {
                         var start = node.getElement(".start").get("value");
                         var end = node.getElement(".end").get("value");
+                        var filename = node.getElement(".filename").get("value");
                         if( !start || !end ){
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
                             return false;
@@ -386,7 +395,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                         debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
-                        this._exportView(start, end);
+                        this._exportView(start, end, filename);
                         dlg.close();
                     }.bind(this)
                 },
@@ -398,10 +407,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             ]
         });
     },
-    _exportView: function(start, end){
+    _exportView: function(start, end, filename){
 
         var bundleList = this.bundleItems.slice(start-1, end);
-        var excelName = this.json.name + "(" + start + "-" + end + ").xlsx";
+        var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
 
         var action = MWF.Actions.get("x_query_assemble_surface");
 
@@ -538,7 +547,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
 
             this.entries = {};
-            debugger;
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
@@ -714,9 +722,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 };
             }else{
                 json = this.viewJson.pagingList[0];
-                var jsonStr = JSON.stringify(json);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
-                json = JSON.parse(jsonStr);
+                // var jsonStr = JSON.stringify(json);
+                // jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                // json = JSON.parse(jsonStr);
             }
             /**
              * @summary 视图的分页组件对象.
@@ -778,6 +786,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
                         }
+                        this.fireEvent("loadView"); //options 传入的事件
                         this.fireEvent("postLoad"); //用户配置的事件
                         this.lookuping = false;
                         if(callback)callback(this);
@@ -846,6 +855,45 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this), null, async === false ? false : true );
     },
     showAssociatedDocumentResult: function(failureList, successList){
+        debugger;
+        var fL = [];
+        failureList.each(function( f ){
+            if( f.properties.view === this.json.id )fL.push( f.targetBundle );
+        }.bind(this));
+
+        var sl = [];
+        successList.each(function( f ){
+            if( f.properties.view === this.json.id )sl.push( f.targetBundle );
+        }.bind(this));
+
+        var d = {};
+        d.bundleList = fL.concat( sl );
+        d.key = this.bundleKey;
+
+        if( d.bundleList.length ){
+            this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+                var resultJson, viewData = json.data;
+
+                debugger;
+
+                if (this.viewJson.group.column){
+                    resultJson = [];
+                    json.data.groupGrid.each(function (g) {
+                        resultJson = resultJson.concat( g.list );
+                    })
+                }else{
+                    resultJson = json.data.grid;
+                }
+
+                this._showAssociatedDocumentResult( resultJson, failureList, successList );
+
+            }.bind(this), null, true );
+        }else{
+            this._showAssociatedDocumentResult( [], failureList, successList );
+        }
+
+    },
+    _showAssociatedDocumentResult: function(resultJson, failureList, successList){
         this.entries.$result = {
             "id": "$result",
             "column": "$result",
@@ -869,6 +917,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             if (this.json.titleStyles) titleCell.setStyles(this.json.titleStyles);
         }
 
+        if(this.expandAllNode){
+            this.expandAllNode.hide();
+        }
+
         while (this.viewTable.rows.length>1){
             this.viewTable.deleteRow(-1);
         }
@@ -878,21 +930,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         this.contentAreaNode.scrollTo(0, 0);
 
-        this.gridJson = this.selectedItems.map(function (item) {
+        this.gridJson = resultJson.map(function (item) {
             var flag = true;
-            if( !item.data.data )item.data.data = {};
+            if( !item.data )item.data = {};
             failureList.each(function (d) {
-                if( item.data.bundle === d.bundle ){
-                    item.data.$failure = true;
-                    item.data.data.$result = d.$result || this.lp.noPermission;
+                if( item.bundle === d.bundle ){
+                    item.$failure = true;
+                    item.data.$result = d.$result || this.lp.noPermission;
                     flag = false;
                 }
             }.bind(this));
             if( flag ){
-                item.data.data.$result = this.lp.associationSuccess;
+                item.data.$result = this.lp.associationSuccess;
             }
-            item.data.$selectedEnable = false;
-            return item.data;
+            item.$selectedEnable = false;
+            return item;
         }.bind(this));
         //if( this.paging )this.paging.hide();
         if(this.actionbarAreaNode)this.actionbarAreaNode.hide();
@@ -1123,6 +1175,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
+    },
+    bindLP: function( json ){
+        var jsonStr = JSON.stringify( json );
+        jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+        return JSON.parse(jsonStr);
     },
     getLookupAction: function(callback){
         if (!this.lookupAction){
@@ -3221,9 +3278,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
             //alert(this.readonly)
 
             if( this.json.multiTools ){
-                var jsonStr = JSON.stringify(this.json.multiTools);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
-                this.json.multiTools = JSON.parse(jsonStr);
+                // var jsonStr = JSON.stringify(this.json.multiTools);
+                // jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                // this.json.multiTools = JSON.parse(jsonStr);
                 this.json.multiTools.each( function (tool) {
                     if( tool.system ){
                         if( !this.json.hideSystemTools ){
@@ -3633,13 +3690,13 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
 
         debugger;
         Object.each(this.view.entries, function(c, k){
+            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
             if (this.view.hideColumns.indexOf(k)===-1){
                 var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-                if (k!== this.view.viewJson.group.column){
-                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                //if (k!== this.view.viewJson.group.column){
                     var v = cell;
                     if (c.isHtml){
                         td.set("html", v);
@@ -3649,9 +3706,9 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
                     if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
                     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                     if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
-                }else{
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                }
+                // }else{
+                //     if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                // }
 
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, c)

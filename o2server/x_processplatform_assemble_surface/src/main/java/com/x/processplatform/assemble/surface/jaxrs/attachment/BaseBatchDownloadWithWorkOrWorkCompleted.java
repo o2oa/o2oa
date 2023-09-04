@@ -1,10 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import com.x.processplatform.assemble.surface.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,11 +18,6 @@ import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.general.core.entity.GeneralFile;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
-import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -29,10 +26,14 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 
 	protected String adjustFileName(String fileName, String title) {
 		if (StringUtils.isBlank(fileName)) {
-			if (title.length() > 60) {
-				title = title.substring(0, 60);
+			if(StringUtils.isNotBlank(title)) {
+				if (title.length() > 60) {
+					title = title.substring(0, 60);
+				}
+				fileName = title + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
+			}else{
+				fileName = DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 			}
-			fileName = title + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
 		} else {
 			String extension = FilenameUtils.getExtension(fileName);
 			if (StringUtils.isEmpty(extension)) {
@@ -59,29 +60,16 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 		return attachmentList;
 	}
 
-	protected Pair<String, String> getTitleAndJob(EffectivePerson effectivePerson, Business business, String workId)
-			throws Exception {
-		Work work = business.entityManagerContainer().fetch(workId, Work.class);
-		if (work != null) {
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
+	protected List<Pair<String, String>> getTitleAndJob(EffectivePerson effectivePerson, Business business, String workIds) {
+		List<Pair<String, String>> list = new ArrayList<>();
+		Set<String> workIdSet = new HashSet<>(Arrays.asList(workIds.split(SITE_SEPARATOR)));
+		for(String workId : workIdSet) {
+			Control control = new JobControlBuilder(effectivePerson, business, workId).enableAllowVisit().build();
+			if (BooleanUtils.isTrue(control.getAllowVisit())) {
+				list.add(Pair.of(StringUtils.isBlank(control.getWorkTitle()) ? "无标题" : control.getWorkTitle(), control.getWorkJob()));
 			}
-			return Pair.of(work.getTitle(), work.getJob());
-		} else {
-			WorkCompleted workCompleted = business.entityManagerContainer().fetch(workId, WorkCompleted.class);
-			if (null == workCompleted) {
-				throw new ExceptionEntityExist(workId);
-			}
-			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
-					.enableAllowVisit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
-				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
-						workCompleted.getTitle(), workCompleted.getId());
-			}
-			return Pair.of(workCompleted.getTitle(), workCompleted.getJob());
 		}
+		return list;
 	}
 
 	protected void assembleFile(Business business, Map<String, byte[]> map, String files) throws Exception {
@@ -102,6 +90,54 @@ class BaseBatchDownloadWithWorkOrWorkCompleted extends BaseAction {
 						emc.commit();
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * 下载附件并打包为zip
+	 *
+	 * @param readableMap
+	 * @param os
+	 * @throws Exception
+	 */
+	protected void downToZip(final Map<String, List<Attachment>> readableMap, OutputStream os, Map<String, byte[]> otherAttMap)
+			throws Exception {
+		Map<String, Attachment> filePathMap = new HashMap<>();
+		List<String> emptyFolderList = new ArrayList<>();
+		/* 生成zip压缩文件内的目录结构 */
+		if (readableMap != null) {
+			for(String key : readableMap.keySet()) {
+				String encodeKey = StringUtils.replaceEach(key, Business.FILENAME_SENSITIVES_KEY, Business.FILENAME_SENSITIVES_EMPTY);
+				for (Attachment att : readableMap.get(key)) {
+					String name = StringUtils.replaceEach(att.getName(), Business.FILENAME_SENSITIVES_KEY, Business.FILENAME_SENSITIVES_EMPTY);
+					name = encodeKey + File.separator + name;
+					if (filePathMap.containsKey(name)) {
+						name = encodeKey + File.separator + att.getSite() + "-" + name;
+					}
+					filePathMap.put(name, att);
+				}
+			}
+		}
+		try (ZipOutputStream zos = new ZipOutputStream(os)) {
+			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
+				zos.putNextEntry(new ZipEntry(entry.getKey()));
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+						entry.getValue().getStorage());
+				entry.getValue().readContent(mapping, zos);
+			}
+
+			if (otherAttMap != null) {
+				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), Business.FILENAME_SENSITIVES_KEY,
+							Business.FILENAME_SENSITIVES_EMPTY)));
+					zos.write(entry.getValue());
+				}
+			}
+
+			// 往zip里添加空文件夹
+			for (String emptyFolder : emptyFolderList) {
+				zos.putNextEntry(new ZipEntry(emptyFolder));
 			}
 		}
 	}

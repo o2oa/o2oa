@@ -1,7 +1,5 @@
 import {component} from '@o2oa/oovm';
-import {dom} from '@o2oa/util';
 import {serverStatus, echoServer} from '../../common/action.js';
-import {notice} from '../../common/notice.js';
 
 const template = `
 <div class="pane_content" style="padding: 2rem 2rem">

@@ -752,12 +752,15 @@ MWF.xApplication.process.Application.List = new Class({
 		});
 		if (idx!==-1) this.selectedList.splice(idx, 1);
 	},
-	open : function (work,workCompleted){
+	open : function (work,workCompleted,jobId){
 		var options = {
 			"workId": work,
 			"workCompletedId": workCompleted,
 			"appId":  "process.Work" + work
 		};
+		if(o2.typeOf(jobId)=="string"){
+			options.jobId = jobId;
+		}
 
 		layout.desktop.openApplication(null, "process.Work", options);
 
@@ -3430,7 +3433,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							new Element("td", {
 								text: path,
 								rowspan : updateNum,
-								style : "border-right:1px solid rgb(230, 230, 230)"
+								style : "border-right:1px solid #E6E6E6;background:#F7F7F7;font-weight:500"
 							}).inject(trNode);
 						}
 						item.personName = item.person.split("@")[0];

@@ -1,0 +1,55 @@
+<div class="manager-box white-bg">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.appealManagerTitle}}</div>
+    </div>
+    <div class="manager-box-content">
+        <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
+            <!--人员组织选择  -->
+            <div class="margin-right">
+                <o-org-person-selector
+                    oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+                    oo-model="filterList"></o-org-person-selector>
+            </div>
+
+            <!-- 日期选择 -->
+            <div class="margin-top margin-right">
+                <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker>
+                <span style="margin: 0 10px;">{{$.lp.until}}</span>
+                <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
+            </div>
+            <div class="margin-top margin-right">
+                <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.detailTable.person}}</th>
+                <th>{{$.lp.appeal.date}}</th>
+                <th>{{$.lp.appeal.dutyType}}</th>
+                <th>{{$.lp.appeal.recordTime}}</th>
+                <th>{{$.lp.appeal.recordResult}}</th>
+                <th>{{$.lp.appeal.status}}</th>
+                
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.appealList" oo-item="g">
+                <td>{{ $m.formatPersonName(g.value.userId)}}</td>
+                <td>{{g.value.recordDateString}}</td>
+                <td>{{ g.value.record.checkInType == 'OnDuty' ? $.lp.onDuty : $.lp.offDuty }}</td>
+                <td>{{ g.value.recordDate }}</td>
+                <td class="{{this.formatRecordResultClass(g.value.record)}}">{{  $m.formatRecordResult(g.value.record) }}</td>
+                <td>{{  $m.formatAppealStatus(g.value) }}</td>
+                 
+                <td>
+                    <span class="operator_link_underline" oo-if="g.value.status === 0"
+                        @click="this.clickDealAppeal(g.value)">{{$.lp.appeal.dealAppeal}}</span>
+                   
+                    
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$.pagerData"   @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
+</div>

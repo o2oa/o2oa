@@ -283,6 +283,8 @@ public class WorkControlBuilder {
 		if (null == work) {
 			return control;
 		}
+		control.setWorkTitle(work.getTitle());
+		control.setWorkJob(work.getJob());
 		Arrays.<Pair<Boolean, Consumer<Control>>>asList(Pair.of(ifAllowManage, this::computeAllowManage),
 				Pair.of(ifAllowVisit, this::computeAllowVisit),
 				Pair.of(ifAllowProcessing, this::computeAllowProcessing),
@@ -369,7 +371,7 @@ public class WorkControlBuilder {
 
 	/**
 	 * 管理员可以删除,或者活动设置了可以删除&&有待办
-	 * 
+	 *
 	 * @param control
 	 */
 	private void computeAllowDelete(Control control) {
@@ -390,7 +392,7 @@ public class WorkControlBuilder {
 					&& BooleanUtils.isTrue(work.getSplitting())) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
-					computeAllowAddSplitLoopNode(control, node);					
+					computeAllowAddSplitLoopNode(control, node);
 				}
 			}
 		} catch (Exception e) {
@@ -425,7 +427,7 @@ public class WorkControlBuilder {
 	/**
 	 * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
 	 * 3.回溯活动如果经过一些非人工环节那么也可以召回.
-	 * 
+	 *
 	 * @param business
 	 * @param effectivePerson
 	 * @param work
@@ -471,7 +473,7 @@ public class WorkControlBuilder {
 
 	/**
 	 * 条件为1.允许提醒,2.有已办,3.非只有当前人一条待办.
-	 * 
+	 *
 	 * @param control
 	 */
 	private void computeAllowPress(Control control) {
@@ -528,7 +530,7 @@ public class WorkControlBuilder {
 
 	/**
 	 * 在退回处理过程中如果有getGoBackStore说明下一步需要jump,那么禁用以下功能.
-	 * 
+	 *
 	 * @param wo
 	 * @param work
 	 */

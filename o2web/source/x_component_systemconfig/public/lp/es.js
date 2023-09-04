@@ -802,6 +802,10 @@ o2.xApplication.systemconfig.LP = {
         "accessControlAllowOrigin": "Permitir origen de solicitudes cruzadas (CORS)",
         "accessControlAllowOriginInfo": "Configurar la marca Access-Control-Allow-Origin en las respuestas http para permitir solicitudes CORS. Por ejemplo: https://www.o2oa.net",
 
+        "contentSecurityPolicy": "Content-Security-Policy",
+        "contentSecurityPolicyInfo": "La cabecera HTTP Content-Security-Policy en la respuesta permite a los administradores de un sitio web controlar los recursos que el User-Agent puede cargar a una pagina. Con algunas (Poquísimas) excepciones, las políticas implican principalmente especificar el servidor de origen la protección de puntos finales del script. Esto ayuda a protegerse contra ataques Cross-site scripting (XSS (en-US)).",
+        "contentSecurityPolicyInfo2": "Ver：<a target='_blank' href='https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy'>https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy</a>",
+
         "personUnitOrderByAsc": "Ordenar personas y organizaciones en orden ascendente",
         "personUnitOrderByAscInfo": "¿Desea ordenar los datos de personas y organizaciones en orden ascendente al mostrarlos? El valor predeterminado es 'true'. Si lo configura como 'false', se ordenarán en orden descendente.",
 
@@ -1137,6 +1141,16 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageApp": "Aplicación",
         "appIndexPageSettings": "Configuración",
 
+        "appIndexCenteredTitle": "Si la página de inicio de la aplicación móvil está en el Centro",
+        "appIndexCenteredInfo": "La página de inicio de la aplicación móvil está en el centro, y el número de páginas no será configurable.",
+
+        "appIndexCmsFilterTitle": "Centro de información de la página de inicio",
+        "appIndexCmsFilterCategoryInfo": "Condiciones de consulta de clasificación de la lista del Centro de información, si está vacío, se consultará todo.",
+        "appIndexTaskFilterTitle": "Centro de oficinas de la página de inicio",
+        "appIndexTaskFilterProcessInfo": "Condiciones de consulta del proceso de lista del Centro de oficinas, si está vacío, se consultará todo.",
+        "appIndexTaskFilterProcessSelectorTitle": "Selección de procesos",
+        "appIndexCmsFilterCategroySelectorTitle": "Selección de clasificación",
+
         "systemMessageSwitch": "Mostrar notificaciones del sistema",
         "systemMessageSwitchInfo": "Indica si las notificaciones del sistema se muestran en la lista de mensajes de la app móvil.",
         "systemMessageCanClickInfo": "Indica si las notificaciones del sistema pueden ser abiertas haciendo clic sobre ellas en la app móvil.",
@@ -1379,7 +1393,11 @@ o2.xApplication.systemconfig.LP = {
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3":"Almacenamiento en la nube de Amazon",
 				"min":"Almacenamiento MinIO"
-			}
+			},
+            "protocoloDataInfo": {
+                "ali": "Si no ha instalado el complemento de integración Aliyun OSS en el mercado de aplicaciones, instálelo primero",
+                "min": "Si no ha instalado el complemento de integración de almacenamiento en la nube MinIO en el mercado de aplicaciones, instálelo primero"
+            }
         },
         "removeNodeConfigTitle": "Confirmación",
 		"removeNodeConfig": "Está a punto de eliminar el nodo de almacenamiento \"{name}\". Esta acción podría afectar al almacenamiento de archivos existente en el sistema.<br>¿Está seguro de querer eliminar el nodo de almacenamiento\"{name}\"?",

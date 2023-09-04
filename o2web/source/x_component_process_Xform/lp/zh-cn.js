@@ -341,7 +341,8 @@ MWF.xApplication.process.Xform.LP = {
         "resumeTitle": "从挂起状态恢复",
         "downloadAll": "一键下载",
         "downloadAllTitle": "一键下载",
-
+        "monitor": "流程监控",
+        "monitorTitle": "流程监控",
         "addTask": "加签",
         "addTaskTitle": "在当前活动添加处理人",
 
@@ -450,7 +451,8 @@ MWF.xApplication.process.Xform.LP = {
     "cancelAssociated": "确定要取消和文档“{title}”的关联?",
     "associatedResult": "关联结果",
     "selectDocNote": "请先选择文档",
-    "associatedDocument": "关联文档"
+    "associatedDocument": "关联文档",
+    "docDeleted": "文档已经被删除。"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

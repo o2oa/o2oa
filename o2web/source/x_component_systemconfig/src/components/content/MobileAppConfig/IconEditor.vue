@@ -2,7 +2,8 @@
   <div>
     <div class="item_title">{{title}}</div>
     <div class="item_img_area lightColor_bg">
-      <img ref="imgNode" :src="'data:image/png;base64,'+value.value" alt=""/>
+      <img ref="imgNode" :src="'../'+value.path" alt="" v-if="value.path" @load="loadImage"/>
+      <img ref="imgNode" :src="'data:image/png;base64,'+value.value" alt="" v-else/>
       <div>
         <div><button class="mainColor_bg" @click="changeImage">{{lp._appConfig.changeImage}}</button></div>
         <div style="margin-top: 20px"><button @click="changeToDefault">{{lp._appConfig.defaultImage}}</button></div>
@@ -58,9 +59,19 @@ const uploadImage = (e) => {
     });
   }
 }
+// 在线图片加载完成后计算大小
+const loadImage = () => {
+  if (imgNode.value){
+      imgSize.value = {
+        x: imgNode.value.naturalWidth,
+        y: imgNode.value.naturalHeight
+      }
+    }
+}
 
 onMounted(()=>{
   nextTick(()=>{
+    // base64  图片加载完成后直接读取大小
     if (imgNode.value){
       imgSize.value = {
         x: imgNode.value.naturalWidth,

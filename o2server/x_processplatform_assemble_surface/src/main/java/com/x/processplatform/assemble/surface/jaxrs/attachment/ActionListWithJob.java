@@ -79,7 +79,7 @@ class ActionListWithJob extends BaseAction {
 				LOGGER.error(e);
 			}
 			return wos;
-		}, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithJob$Wo")

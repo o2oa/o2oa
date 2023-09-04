@@ -283,23 +283,41 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 var name = "lp-"+o2.language;
                 var application = this.businessData.document.appId;
 
-                var p1 = this.documentAction.getDictRoot(name, application, function(d){
-                    return d.data;
-                }, function(){});
-                var p2 = this.documentAction.getScriptByNameV2(name, application, function(d){
-                    return this.Macro.exec(d.data.text, this);
-                }.bind(this), function(){});
+                var p1 = new Promise(function(resolve, reject){
+                    this.documentAction.getDictRoot(name, application, function(d){
+                        resolve( d.data );
+                    }, function(){
+                        reject("");
+                        return true;
+                    });
+                }.bind(this));
+
+                var p2 = new Promise(function(resolve, reject){
+                    this.documentAction.getScriptByNameV2(name, application, function(d){
+                        if (d.data.text) {
+                            resolve( this.Macro.exec(d.data.text, this) );
+                        }
+                    }.bind(this), function(){
+                        reject("");
+                        return true;
+                    });
+                }.bind(this));
+
                 languageJson = Promise.any([p1, p2]);
             }
 
             if (languageJson){
                 if (languageJson.then && o2.typeOf(languageJson.then)=="function"){
                     languageJson.then(function(json) {
+                        if (!json.data){
+                            var o = Object.clone(json);
+                            json.data = o;
+                        }
                         MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, json);
                         if (callback) callback(true);
                     }, function(){
                         if (callback) callback(true);
-                    })
+                    });
                 }else{
                     MWF.xApplication.cms.Xform.LP.form = Object.merge(MWF.xApplication.cms.Xform.LP.form, languageJson);
                     if (callback) callback(true);

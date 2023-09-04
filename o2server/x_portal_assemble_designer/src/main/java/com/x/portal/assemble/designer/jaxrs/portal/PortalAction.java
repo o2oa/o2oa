@@ -182,6 +182,24 @@ public class PortalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示当前用户可以管理的Portal的简要信息.", action = ActionListSummaryV2.class)
+	@POST
+	@Path("list/summary/v2")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listSummaryV2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  JsonElement jsonElement) {
+		ActionResult<List<ActionListSummaryV2.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListSummaryV2().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示当前用户在指定分类下可以管理的Portal的简要信息包含page.", action = ActionListSummaryWithPortalCategory.class)
 	@GET
 	@Path("list/summary/portalcategory/{portalCategory}")

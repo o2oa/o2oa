@@ -147,6 +147,7 @@ class ActionPagingManage extends BaseAction {
 			List<Meeting> os = em.createQuery(cqMeeting).getResultList();
 
 			List<Wo> wos = Wo.copier.copy(os);
+			this.setOnlineLink(business, effectivePerson, wos);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			result.setData(wos);

@@ -11,6 +11,7 @@ Object.assign(o2.APP$Elinput.prototype, {
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead() );
     },
+    reload: function(){},
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
@@ -29,7 +30,15 @@ Object.assign(o2.APP$Elinput.prototype, {
         this.validationMode();
     },
     __setReadonly: function(data){
-        if (this.isReadonly()) this.node.set("text", data);
+        if (this.isReadonly()) {
+            this.node.set("text", data);
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+        }
     },
     getInputData: function(){
         return this.json[this.json.$id];

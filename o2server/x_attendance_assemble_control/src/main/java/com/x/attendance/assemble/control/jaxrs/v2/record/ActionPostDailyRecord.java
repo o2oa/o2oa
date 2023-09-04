@@ -7,6 +7,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateError;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
@@ -61,10 +62,13 @@ public class ActionPostDailyRecord extends BaseAction {
                 recordDate = DateTools.parse(wi.getDate(), DateTools.format_yyyyMMdd);
             } catch (Exception ignore) {}
             if (recordDate == null) {
-                throw new ExceptionWithMessage("日期格式不正确!");
+                throw new ExceptionWithMessage("日期格式不正确！");
             }
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("打卡日期：" + wi.getDate());
+            }
+            if (recordDate.after(new Date())) {
+                throw new ExceptionWithMessage("不能导入未来的数据！");
             }
 
             List<Date> recordList = new ArrayList<>();
@@ -115,6 +119,18 @@ public class ActionPostDailyRecord extends BaseAction {
                                     group, shift, emc);
                         }
                     }
+                } else { 
+                    // 可能是节假日没有班次的情况，但是导入数据还是作为正常的打开数据的
+                    deleteOldRecords(p.getDistinguishedName(), wi.getDate(), emc, business);
+                    // 没有班次 只读取两条数据
+                    Date onDutyRecordTime = recordList.get(0);
+                    saveRecord(AttendanceV2CheckInRecord.OnDuty, p.getDistinguishedName(), wi.getDate(), onDutyRecordTime,
+                            null, null, null,
+                            group, null, emc);
+                    Date offDutyRecordTime = recordList.get(1);
+                    saveRecord(AttendanceV2CheckInRecord.OffDuty, p.getDistinguishedName(), wi.getDate(), offDutyRecordTime,
+                            null, null, null,
+                            group, null, emc);
                 }
             } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) {
                 // 先删除老的

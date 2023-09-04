@@ -82,9 +82,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         if(this.node){
             this.node.empty();
             this.node.setStyles({
-                "position": "relative",
-                "background-color": "#eee"
+                "position": "relative"
             });
+            if( !this.json.styles || (!this.json.styles["background"] && !this.json.styles["background-color"] )){
+                this.node.setStyle("background-color", "#eee");
+            }
         }
         var status = this.getComponentStatus() || {};
         var options = this.getComponentOptions() || {};

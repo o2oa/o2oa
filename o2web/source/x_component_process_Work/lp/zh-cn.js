@@ -45,6 +45,8 @@ MWF.xApplication.process.Work.LP = {
     "readPerson": "阅读人",
     "systemFlow": "系统自动处理",
 
+    "openWorkError": "您没有权限查看该文档或该文档已删除。",
+
     "rollbackConfirmTitle": "流程回溯确认",
     "rollbackConfirmContent": "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）",
 

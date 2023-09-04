@@ -2,7 +2,7 @@
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.leaveManagerTitle}}</div>
     </div>
-    <div style="padding: 20px;">{{ $m.search($.menu.id === '3-4') }}
+    <div class="manager-box-content">{{ $m.search($.menu.id === '3-4') }}
         <div class="form" oo-if="$.menu.id === '3-4'">
             <!--人员组织选择  -->
             <div style="margin-right: 10px;float: left;">
@@ -31,7 +31,7 @@
                 <th>{{$.lp.leave.endTime}}</th>
                 <!-- <th>{{$.lp.leave.leaveDays}}</th> -->
                 <th>{{$.lp.leave.desc}}</th>
-                <th style="width: 10%;">{{$.lp.operate}}</th>
+                <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.leaveList" oo-item="d">
                 <td>{{ $m.formatName(d.value.person)}}</td>

@@ -13,6 +13,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class ActionListByPage extends BaseAction {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("person {}, page: {}, size: {}", person.getDistinguishedName(), adjustPage, adjustPageSize);
             }
-            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, person.getDistinguishedName());
+            List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, ListTools.toList(person.getDistinguishedName()), null, null);
             List< Wo> wos =   Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for ( Wo detail : wos) {
@@ -41,7 +42,7 @@ public class ActionListByPage extends BaseAction {
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().appealCount(person.getDistinguishedName()));
+            result.setCount(business.getAttendanceV2ManagerFactory().appealCount(ListTools.toList(person.getDistinguishedName()), null, null));
             return result;
         }
     }

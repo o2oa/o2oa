@@ -3443,19 +3443,19 @@ MWF.xScript.Environment = function(ev){
          *  "title": "", //选择界面的title
          *  "values": [], //已选择的值
          *
-         *  "groups": [], //选择的群组范围，选择人员和群组时有效。
+         *  "groups": [], //选择的群组范围，选择群组时有效。
          *
-         *  "units": [], //选择的组织范围，选择身份和群组时有效
+         *  "units": [], //选择的组织范围，选择身份和组织时有效
          *  "resultType" : "", //可以设置成"person"(个人)，那么结果返回个人。选择身份时有效。用在选择人员，但是需要按照组织层级展现的场景。
          *  "dutys": [], //选择的职务范围，选择身份时有效。
-         *  "categoryType": "", //如果指定了选择的职务范围（dutys不为空），按unit(组织)还是按duty(职务)来展现分类，默认为按unit。该参数在选择身份时有效。
+         *  "categoryType": "", //可使用unit或duty。如果指定了选择的职务范围（dutys不为空），按unit(组织)还是按duty(职务)来展现分类，默认为按unit。该参数在选择身份时有效。
          *
-         *  "include" : [], //增加的可选项
+         *  "noUnit" : false, //在选择身份的时候，是否只使用include选项。
+         *  "include" : [], //增加的可选项。选择身份的时候，没有传units表示选中全员，include不生效，可以使用onUnit选项表示只使用include选项。
          *  "exclude" : [], //排除的可选项
          *
-         *  "expand": false, //默认是否展开，选择身份和群组时有效
-         *  "expandSubEnable" : true, //是否允许展开下一层，选择身份和群组时有效
-         *  "selectAllEnable" : true,  //分类是否允许全选下一层，选择身份和群组时有效
+         *  "expandSubEnable" : true, //是否允许展开下一层，选择身份和组织时有效
+         *  "selectAllEnable" : true,  //分类是否允许全选下一层，选择身份和组织时有效
          *
          *  "level1Indent" : 10, //第一级的缩进
          *  "indent" : 10, //后续的缩进
@@ -3540,7 +3540,7 @@ MWF.xScript.Environment = function(ev){
          *  }
          *});
          * @example
-         * //同时选择组织、群组、身份
+         * //同时选择组织、群组、身份、个人
          * var selector = this.form.selectOrg(null, {
          *   types: ["unit", "group", "identity", "person"],
          *   onComplete : function( selectedItemList ){
@@ -4016,7 +4016,7 @@ MWF.xScript.Environment = function(ev){
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。（当前表单或页面在浏览器单独打开的时候该参数有效。）
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
          * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
-         * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查(默认根据流程的新建检查配置，设置true则不进行新建检查。
+         * @param {Boolean} [skipDraftCheck]  - 是否跳过新建检查（默认根据流程的新建检查配置），设置true则不进行新建检查。
          * @example
          //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");

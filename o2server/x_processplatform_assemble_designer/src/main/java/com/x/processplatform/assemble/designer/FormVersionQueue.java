@@ -1,14 +1,5 @@
 package com.x.processplatform.assemble.designer;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
@@ -21,6 +12,17 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.processplatform.core.entity.element.FormVersion;
 import com.x.processplatform.core.entity.element.FormVersion_;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author sword
+ */
 public class FormVersionQueue extends AbstractQueue<FormVersion> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormVersionQueue.class);
@@ -39,35 +41,30 @@ public class FormVersionQueue extends AbstractQueue<FormVersion> {
     }
 
     private void cleanAndSave(Business business, FormVersion formVersion, Integer count) throws Exception {
-        List<String> keepIds = this.keepIds(business, formVersion, count);
-        EntityManager em = business.entityManagerContainer().get(FormVersion.class);
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<FormVersion> cq = cb.createQuery(FormVersion.class);
-        Root<FormVersion> root = cq.from(FormVersion.class);
-        Predicate p = cb.equal(root.get(FormVersion_.form), formVersion.getForm());
-        p = cb.and(p, cb.not(root.get(FormVersion_.id).in(keepIds)));
-        cq.select(root).where(p);
-        List<FormVersion> os = em.createQuery(cq).getResultList();
+        Long num = business.entityManagerContainer().countEqual(FormVersion.class,
+                FormVersion.form_FIELDNAME, formVersion.getForm());
         business.entityManagerContainer().beginTransaction(FormVersion.class);
-        for (FormVersion o : os) {
-            business.entityManagerContainer().remove(o, CheckRemoveType.all);
+        if(num.intValue() > count.intValue()) {
+            EntityManager em = business.entityManagerContainer().get(FormVersion.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<FormVersion> cq = cb.createQuery(FormVersion.class);
+            Root<FormVersion> root = cq.from(FormVersion.class);
+            Predicate p = cb.equal(root.get(FormVersion_.form), formVersion.getForm());
+            cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.sequence)));
+            List<FormVersion> os = em.createQuery(cq).getResultList();
+            if (count > 1) {
+                if (os.size() <= count) {
+                    os = Collections.emptyList();
+                } else {
+                    os = os.subList(count - 1, os.size());
+                }
+            }
+            for (FormVersion o : os) {
+                business.entityManagerContainer().remove(o, CheckRemoveType.all);
+            }
         }
         business.entityManagerContainer().persist(formVersion, CheckPersistType.all);
         business.entityManagerContainer().commit();
-    }
-
-    private List<String> keepIds(Business business, FormVersion formVersion, Integer count) throws Exception {
-        EntityManager em = business.entityManagerContainer().get(FormVersion.class);
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<String> cq = cb.createQuery(String.class);
-        Root<FormVersion> root = cq.from(FormVersion.class);
-        Predicate p = cb.equal(root.get(FormVersion_.form), formVersion.getForm());
-        cq.select(root.get(FormVersion_.id)).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
-        TypedQuery<String> query = em.createQuery(cq);
-        if (count > 1) {
-            query.setMaxResults(count - 1);
-        }
-        return query.getResultList();
     }
 
 }

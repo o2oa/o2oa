@@ -49,6 +49,7 @@ class ActionCreateTypeCms extends BaseAction {
 					} else {
 						v.setTargetTitle(o.getTargetTitle());
 						v.setSite(o.getSite());
+						v.setView(o.getView());
 						emc.check(v, CheckPersistType.all);
 					}
 				} catch (Exception e) {

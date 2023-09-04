@@ -65,13 +65,13 @@ public class ActionImportExcel extends BaseAction {
                 try {
                     ActionPostDailyRecord.Wi thisWi = new ActionPostDailyRecord.Wi();
                     thisWi.setPerson(AttendanceV2Helper.getExcelCellStringValue(row.getCell(0)));
-                    thisWi.setDate(AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)));
-                    thisWi.setOnDutyTime1(AttendanceV2Helper.getExcelCellStringValue(row.getCell(2)));
-                    thisWi.setOffDutyTime1(AttendanceV2Helper.getExcelCellStringValue(row.getCell(3)));
-                    thisWi.setOnDutyTime2(AttendanceV2Helper.getExcelCellStringValue(row.getCell(4)));
-                    thisWi.setOffDutyTime2(AttendanceV2Helper.getExcelCellStringValue(row.getCell(5)));
-                    thisWi.setOnDutyTime3(AttendanceV2Helper.getExcelCellStringValue(row.getCell(6)));
-                    thisWi.setOffDutyTime3(AttendanceV2Helper.getExcelCellStringValue(row.getCell(7)));
+                    thisWi.setDate(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(1), DateTools.format_yyyyMMdd));
+                    thisWi.setOnDutyTime1(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(2), DateTools.format_HHmm));
+                    thisWi.setOffDutyTime1(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(3), DateTools.format_HHmm));
+                    thisWi.setOnDutyTime2(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(4), DateTools.format_HHmm));
+                    thisWi.setOffDutyTime2(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(5), DateTools.format_HHmm));
+                    thisWi.setOnDutyTime3(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(6), DateTools.format_HHmm));
+                    thisWi.setOffDutyTime3(AttendanceV2Helper.getExcelCellDateFormat(row.getCell(7), DateTools.format_HHmm));
                     ActionPostDailyRecord.Wo result = ThisApplication.context().applications().postQuery(x_attendance_assemble_control.class, "v2/record/import/daily", thisWi).getData(ActionPostDailyRecord.Wo.class);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("处理结果，{}", result.toString());
@@ -83,7 +83,7 @@ public class ActionImportExcel extends BaseAction {
             }
             ActionResult<Wo> result = new ActionResult<>();
             // 存储 excel 文件
-            String name = "attendance_record_data_input_" + DateTools.formatDate(new Date()) + ".xlsx";
+            String name = "attendance_record_data_input_" + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".xlsx";
             workbook.write(os);
             StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
             GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,

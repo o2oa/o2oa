@@ -131,7 +131,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeWork(Business business, String job, SnapProperties snapProperties,
@@ -147,7 +148,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeTask(Business business, String job, SnapProperties snapProperties,
@@ -163,7 +165,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeTaskCompleted(Business business, String job, SnapProperties snapProperties,
@@ -179,7 +182,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeRead(Business business, String job, SnapProperties snapProperties,
@@ -195,7 +199,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeReadCompleted(Business business, String job, SnapProperties snapProperties,
@@ -211,7 +216,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeReview(Business business, String job, SnapProperties snapProperties,
@@ -227,7 +233,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeWorkLog(Business business, String job, SnapProperties snapProperties,
@@ -243,7 +250,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeRecord(Business business, String job, SnapProperties snapProperties,
@@ -259,7 +267,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeDocumentVersion(Business business, String job, SnapProperties snapProperties,
@@ -275,7 +284,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeDocSign(Business business, String job, SnapProperties snapProperties,
@@ -291,7 +301,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> mergeDocSignScrawl(Business business, String job, SnapProperties snapProperties,
@@ -318,7 +329,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteItem(Business business, List<Item> items) {
@@ -331,7 +343,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteWork(Business business, List<Work> works) {
@@ -345,7 +358,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteWork(Business business, WorkCompleted workCompleted) {
@@ -357,7 +371,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteTask(Business business, List<Task> tasks) {
@@ -371,7 +386,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteTaskCompleted(Business business, List<TaskCompleted> taskCompleteds) {
@@ -385,7 +401,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteRead(Business business, List<Read> reads) {
@@ -399,7 +416,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteReadCompleted(Business business, List<ReadCompleted> readCompleteds) {
@@ -413,7 +431,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteReview(Business business, List<Review> reviews) {
@@ -427,7 +446,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteWorkLog(Business business, List<WorkLog> workLogs) {
@@ -440,7 +460,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteRecord(Business business, List<Record> records) {
@@ -453,7 +474,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteDocumentVersion(Business business, List<DocumentVersion> documentVersions) {
@@ -466,7 +488,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteDocSign(Business business, List<DocSign> docSigns) {
@@ -479,7 +502,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	private CompletableFuture<Void> deleteDocSignScrawl(Business business, List<DocSignScrawl> docSignScrawls) {
@@ -499,7 +523,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteItem(Business business, String job) {
@@ -512,7 +537,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteWork(Business business, String job) {
@@ -526,7 +552,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteWorkCompleted(Business business, String job) {
@@ -541,7 +568,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteTask(Business business, String job) {
@@ -555,7 +583,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteTaskCompleted(Business business, String job) {
@@ -570,7 +599,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteRead(Business business, String job) {
@@ -584,7 +614,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteReadCompleted(Business business, String job) {
@@ -599,7 +630,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteReview(Business business, String job) {
@@ -613,7 +645,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteWorkLog(Business business, String job) {
@@ -627,7 +660,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteRecord(Business business, String job) {
@@ -640,7 +674,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteDocumentVersion(Business business, String job) {
@@ -654,7 +689,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteDocSign(Business business, String job) {
@@ -668,7 +704,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 
 	protected CompletableFuture<Void> deleteDocSignScrawl(Business business, String job) {
@@ -689,6 +726,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		}, ThisApplication.threadPool());
+			// }, ThisApplication.threadPool());
+		}, ThisApplication.forkJoinPool());
 	}
 }

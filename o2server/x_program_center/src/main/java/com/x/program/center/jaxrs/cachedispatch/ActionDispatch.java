@@ -37,7 +37,7 @@ class ActionDispatch extends BaseAction {
 					} catch (Exception e) {
 						logger.error(e);
 					}
-				}, ThisApplication.threadPool());
+				}, ThisApplication.forkJoinPool());
 			}
 		}
 		Wo wo = new Wo();

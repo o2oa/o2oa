@@ -270,10 +270,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			// this.editModules = [];
 
-			if( !layout.mobile ){
-				this.node.setStyle("overflow-x", "auto");
-				this.node.setStyle("overflow-y", "hidden");
-			}
+			// if( !layout.mobile ){
+			// 	this.node.setStyle("overflow-x", "auto");
+			// 	this.node.setStyle("overflow-y", "hidden");
+			// }
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
@@ -2097,7 +2097,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !this.exportenable && !this.importenable )return;
 
 			var position = ["leftTop","centerTop","rightTop"].contains( this.json.impexpPosition || "" ) ? "top" : "bottom";
-			var container = new Element("div").inject(this.node, position);
+			var container = new Element("div", {style: "overflow:hidden;"}).inject(this.node, position);
 
 			this.importExportAreaNode = new Element("div").inject( container );
 			if( ["leftTop","leftBottom"].contains( this.json.impexpPosition || "" ) ){

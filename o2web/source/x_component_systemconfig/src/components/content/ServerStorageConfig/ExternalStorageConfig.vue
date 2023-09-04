@@ -109,7 +109,8 @@
     <div class="item_storage_editorArea" ref="externalEditorArea">
       <BaseInput v-if="currentNodeData.key" :label="lp._storageServer.external.key" v-model:value="currentNodeData.key"/>
       <BaseInput :label="lp._storageServer.external.name" v-model:value="currentNodeData.name"/>
-      <BaseSelect :label="lp._storageServer.external.protocol" v-model:value="currentNodeData.protocol" :options="lp._storageServer.external.protocolData"/>
+      <BaseSelect :label="lp._storageServer.external.protocol" v-model:value="currentNodeData.protocol" :options="lp._storageServer.external.protocolData" @change="(value)=>{switchProtocolInfo(value)}"/>
+      <div v-if="protocolInfo" v-text="protocolInfo" class="item_info" style="padding-left:120px;"></div>
       <BaseInput :label="lp._storageServer.external.host" v-model:value="currentNodeData.host"/>
       <BaseInput :label="lp._storageServer.external.port" input-type="number" v-model:value="currentNodeData.port"/>
       <BaseInput :label="lp._storageServer.external.username" v-model:value="currentNodeData.username"/>
@@ -127,6 +128,7 @@ import BaseBoolean from "@/components/item/BaseBoolean";
 import BaseInput from "@/components/item/BaseInput";
 import BaseSelect from "@/components/item/BaseSelect";
 
+const protocolInfo = ref();
 const storageData = ref();
 const externalEditorArea = ref();
 const currentNodeData = ref({});
@@ -150,6 +152,10 @@ const initData = {
 const storageType = computed(()=>{
   return (storageData.value && storageData.value.enable) ? 'external' : 'inner'
 });
+
+const switchProtocolInfo = (protocol)=>{
+  protocolInfo.value = lp._storageServer.external.protocolDataInfo[protocol];
+}
 
 const enableExternal = (e)=>{
   const title = lp._storageServer.enableExternalTitle;
@@ -245,6 +251,11 @@ const openEditDlg = (data, node, cb, width, height)=>{
 
 const editStorageNode = (key)=>{
   const data = (o2.typeOf(key)==='string') ? storageData.value.store[key] : key;
+
+  if( data && data.protocol ){
+    switchProtocolInfo(data.protocol);
+  }
+
   openEditDlg(data, externalEditorArea, (dlg)=>{
     if (currentNodeData.value.hasOwnProperty('key') && !currentNodeData.value.key){
       // component.notice(lp._storageServer.inputStorageNodeKey, 'error');

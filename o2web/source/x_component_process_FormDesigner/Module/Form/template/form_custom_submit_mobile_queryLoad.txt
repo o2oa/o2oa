@@ -50,6 +50,10 @@ window.O2ProcessorMobile = new Class({
 
         }else if (this.status === "closed" ) {
             this.node.show();
+
+            //强制刷新路由
+            //this.refreshRoute();
+
             // this.positionSeted = false; //重新设置位置
             // this.setSize( this.getCurrentRouteOrgList().length );
             var currentRoute = this.selectedRoute ? this.selectedRoute.retrieve("route") : "";
@@ -63,7 +67,9 @@ window.O2ProcessorMobile = new Class({
                 "position" : "absolute",
                 "z-index" : "101"
             })
+
             this.loadContent();
+
             this.setEvents();
             this.node.inject(this.container);
             this.status = "show";
@@ -109,7 +115,11 @@ window.O2ProcessorMobile = new Class({
         }
 
         this.routeGroupObject = null;
+        this.selectedRouteGroup = null;
+        if( this.routeGroupArea )this.routeGroupArea.empty();
         this.getRouteGroupList();
+
+        if(this.routeSelectorArea)this.routeSelectorArea.empty();
 
         var orgLength = this.getMaxOrgLength();
         if (orgLength === 0) { //流程选人数量为0
