@@ -210,7 +210,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         if (process.serviceList) process.serviceList.each(function(a){ checkActivity(a); });
         if (process.routeList) process.routeList.each(function(a){ checkActivity(a); });
 
-        if (isSameApp){
+        if (!isSameApp){
             process.isNewProcess = true;
             this.app.restActions.saveProcess(process, function(){
                 if (success) success();

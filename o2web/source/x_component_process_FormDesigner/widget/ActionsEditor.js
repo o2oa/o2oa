@@ -308,7 +308,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             this.scriptArea = new MWF.widget.ScriptArea(this.scriptNode, {
                 "title": this.editor.designer.lp.actionbar.editScript,
                 "isbind": false,
-                "maxObj": this.editor.designer.formContentNode,
+                "maxObj": this.editor.options.scriptMaxObj || this.editor.designer.formContentNode,
                 "key": "actionScript",
                 "onChange": function(){
                     this.data.actionScript = this.scriptArea.editor.getValue();
@@ -335,7 +335,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         this.conditionArea = new MWF.widget.ScriptArea(this.conditionNode, {
             "title": this.editor.designer.lp.actionbar.editCondition,
             "isbind": false,
-            "maxObj": this.editor.designer.formContentNode,
+            "maxObj": this.editor.options.scriptMaxObj || this.editor.designer.formContentNode,
             "onChange": function(){
                 this.data.condition = this.conditionArea.editor.getValue();
                 if (this.data.condition){

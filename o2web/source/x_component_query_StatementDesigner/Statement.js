@@ -796,6 +796,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.scriptText = this.jpqlScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.jpqlScriptEditor.load({"code": this.json.scriptText})
@@ -814,6 +817,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.countScriptText = this.jpqlCountScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.jpqlCountScriptEditor.load({"code": this.json.countScriptText})
@@ -833,6 +839,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.sqlScriptText = this.sqlScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.sqlScriptEditor.load({"code": this.json.sqlScriptText})
@@ -850,6 +859,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     "type": "service",
                     "onChange": function () {
                         this.json.sqlCountScriptText = this.sqlCountScriptEditor.toJson().code;
+                    }.bind(this),
+                    "onSave": function () {
+                        this.designer.saveStatement();
                     }.bind(this)
                 });
                 this.sqlCountScriptEditor.load({"code": this.json.sqlCountScriptText})

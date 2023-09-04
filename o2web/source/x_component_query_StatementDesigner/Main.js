@@ -553,7 +553,12 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             this.options.id = this.statement.data.id;
         }.bind(this));
     },
-
+    saveView: function(){
+        this.saveStatement();
+    },
+    saveForm: function(){
+	    this.saveStatement();
+    },
     statementHelp: function(){
 	    window.open("../x_component_query_StatementDesigner/$Statement/tutorial/tutorial-statement.html", "o2statement")
         // var content = new Element("div", {"styles": {"margin": "20px"}});
