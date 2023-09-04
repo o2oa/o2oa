@@ -1738,6 +1738,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             case "OnlyOffice":
                 this.editOnlyOffice(att);
                 break;
+            case "WpsOffice":
+                this.editWpsOffice(att);
+                break;
             default :
                 this.editLibreOffice(att);
 
@@ -1779,6 +1782,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "appId":  "OnlyOfficeEditor" + att.data.id
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
+    },
+    editWpsOffice : function (att){
+
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"write",
+            "jars" : jars,
+            "appId":  "WpsOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "WpsOfficeEditor", options);
     },
     editLibreOffice : function (att){
 
@@ -2558,6 +2579,9 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             case "OnlyOffice":
                 this.previewOnlyOffice();
                 break;
+            case "WpsOffice":
+                this.previewWpsOffice();
+                break;
             default :
                 this.previewLibreOffice();
 
@@ -2600,6 +2624,24 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
             "appId":  "OnlyOfficeEditor" + att.data.id
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
+    },
+    previewWpsOffice : function (){
+        var att = this.att;
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"view",
+            "jars" : jars,
+            "appId":  "WpsOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "WpsOfficeEditor", options);
     },
     previewLibreOffice : function (){
 
