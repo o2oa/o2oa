@@ -1045,15 +1045,15 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     },
     isOrgsHasEmpower: function () {
         if (!this.orgVisableItems || !this.orgVisableItems.length) return true;
-        var flag = false;
         this.needCheckEmpowerOrg = [];
-        this.orgVisableItems.each(function (item) {
-            if (item.hasEmpowerIdentity()) {
-                this.needCheckEmpowerOrg.push(item);
-                flag = true;
-            }
+        var ps = this.orgVisableItems.map(function (item) {
+            return Promise.resolve( item.hasEmpowerIdentity() ).then(function ( flag ) {
+                if( flag )this.needCheckEmpowerOrg.push(item);
+            });
         }.bind(this));
-        return flag;
+        return Promise.all( ps ).then(function () {
+            return this.needCheckEmpowerOrg.length > 0;
+        }.bind(this));
     },
     saveOrgs: function (keepSilent) {
         if (!this.orgVisableItems || !this.orgVisableItems.length) return true;
@@ -1088,11 +1088,14 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         }
         if (!this.validationOrgs()) return false;
 
-        if (!this.isOrgsHasEmpower()) {
-            if (callback) callback();
-            return true;
-        }
-        this.showEmpowerDlg(callback);
+        Promise.resolve( this.isOrgsHasEmpower() ).then(function (flag) {
+            if( flag ){
+                this.showEmpowerDlg(callback);
+            }else{
+                if (callback) callback();
+                return true;
+            }
+        }.bind(this));
     },
     handwriting: function () {
         if( !this.tablet )this.createHandwriting();
@@ -1104,7 +1107,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             "edge": "center"
         });
     },
-    createHandwriting: function () {
+    showEmpowerDlg: function () {
         this.handwritingMask.inject( this.flow.node );
         this.handwritingNode.show().inject(this.flow.node, "after");
         //兼容以前的默认高宽
@@ -2130,94 +2133,92 @@ MWF.ProcessFlow.Processor.EmpowerChecker = new Class({
         this.form = form;
         this.json = json;
         this.processor = processor;
-        this.css = this.processor.css;
-        this.checkedAllItems = true;
+        this.flow = processor.flow;
     },
     load: function (data, callback, container) {
-        if (typeOf(data) === "array" && this.json.isCheckEmpower && this.json.identityResultType === "identity") {
-            var array = [];
-            data.each(function (d) {
-                if (d.distinguishedName) {
-                    var flag = d.distinguishedName.substr(d.distinguishedName.length - 1, 1).toLowerCase();
-                    if (flag === "i") {
-                        array.push(d.distinguishedName)
-                    }
-                }
-            }.bind(this));
-            if (array.length > 0) {
-                o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
-                    "application": (this.form.businessData.work || this.form.businessData.workCompleted).application,
-                    "process": (this.form.businessData.work || this.form.businessData.workCompleted).process,
-                    "work": (this.form.businessData.work || this.form.businessData.workCompleted).id,
-                    "identityList": array
-                }, function (json) {
-                    var arr = [];
-                    json.data.each(function (d) {
-                        if (d.fromIdentity !== d.toIdentity) arr.push(d);
-                    });
-                    if (arr.length > 0) {
-                        this.openSelectEmpower(arr, data, callback, container);
-                    } else {
-                        if (callback) callback(data);
-                    }
-                }.bind(this), function () {
-                    if (callback) callback(data);
-                }.bind(this))
+        var p = this.getEmpowerData( data );
+        return Promise.resolve(p).then(function ( eArr ) {
+            if (eArr.length > 0) {
+                this.loadDom(eArr, data, container);
             } else {
                 if (callback) callback(data);
             }
-        } else {
-            if (callback) callback(data);
-        }
+        }.bind(this));
+    },
+    loadDom: function(eArr, data, container){
+        var titleNode = new Element("div.o2flow-empower-areaTitle").inject(container);
+        new Element("div.o2flow-empower-areaTitleText", { text: this.json.title }).inject(titleNode);
+        var selectAllNode = new Element("div.o2flow-empower-selectAllNode").inject( titleNode );
+        var contentNode = new Element("div.o2flow-empower-areaContent").inject(container);
+
+        this.selectAllRadio = new MWF.ProcessFlow.widget.Radio2(selectAllNode, this.flow, {
+            optionList: [{
+                value: true, text: this.flow.lp.selectAll
+            }],
+            value: true
+        }).load();
+
+        this.empowerCheckbox = new MWF.ProcessFlow.widget.Checkbox(contentNode, this.flow, {
+            optionList: eArr.map(function (e) {
+                return {
+                    value: e.id,
+                    text: e.fromIdentity.split("@")[0] + this.flow.lp.empowerTo + e.toIdentity.split("@")[0],
+                    data: e
+                };
+            })
+        }).load();
     },
     hasEmpowerIdentity: function (data) {
-        var flag = false;
-        if (typeOf(data) === "array" && this.json.isCheckEmpower && this.json.identityResultType === "identity") {
-            var array = [];
-            data.each(function (d) {
-                if (d.distinguishedName) {
-                    var flag = d.distinguishedName.substr(d.distinguishedName.length - 1, 1).toLowerCase();
-                    if (flag === "i") array.push(d.distinguishedName)
-                }
-            }.bind(this));
-            if (array.length > 0) {
-                o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
-                    "application": (this.form.businessData.work || this.form.businessData.workCompleted).application,
-                    "process": (this.form.businessData.work || this.form.businessData.workCompleted).process,
-                    "work": (this.form.businessData.work || this.form.businessData.workCompleted).id,
-                    "identityList": array
-                }, function (json) {
-                    var arr = [];
-                    json.data.each(function (d) {
-                        if (d.fromIdentity !== d.toIdentity)
-                            arr.push(d);
-                    });
-                    if (arr.length > 0) {
-                        flag = true;
-                    }
-                }.bind(this), null, false)
-            }
-        }
-        return flag;
+        var p = this.getEmpowerData( data );
+        return Promise.resolve(p).then(function ( arr ) {
+            return arr.length > 0;
+        });
     },
-    openSelectEmpower: function (data, orgData, callback, container) {
-        var node = new Element("div", {"styles": this.css.empowerAreaNode});
-        //var html = "<div style=\"line-height: 30px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
-        var html = "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
-        node.set("html", html);
-        var itemNode = node.getLast();
-        this.getEmpowerItems(itemNode, data);
-        node.inject(container || this.form.app.content);
-
-        if (this.selectAllNode) {
-            var selectNode = this.createSelectAllEmpowerNode();
-            selectNode.inject(this.selectAllNode);
-            if (this.checkedAllItems) {
-                selectNode.store("isSelected", true);
-                selectNode.setStyles(this.css.empowerSelectAllItemNode_selected);
-            }
-        }
+    isNeedCheck: function(data){
+        return typeOf(data) === "array" && this.json.isCheckEmpower && this.json.identityResultType === "identity";
     },
+    getIdentityDn: function( data ){
+        return data.filter(function (d) {
+            return d.distinguishedName && d.distinguishedName.substr(d.distinguishedName.length - 1, 1).toLowerCase() === "i";
+        }).map(function (d) {
+            return d.distinguishedName;
+        });
+    },
+    getEmpowerData: function(data){
+        if( !this.isNeedCheck(data) )return [];
+        var array = this.getIdentityDn( data );
+        if( array.length < 1)return [];
+        return o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
+            "application": (this.form.businessData.work || this.form.businessData.workCompleted).application,
+            "process": (this.form.businessData.work || this.form.businessData.workCompleted).process,
+            "work": (this.form.businessData.work || this.form.businessData.workCompleted).id,
+            "identityList": array
+        }, function (json) {
+            return json.data.filter(function (d) {
+                return d.fromIdentity !== d.toIdentity;
+            });
+        }.bind(this), function () {
+            return [];
+        })
+    },
+    // openSelectEmpower: function (data, orgData, callback, container) {
+    //     var node = new Element("div", {"styles": this.css.empowerAreaNode});
+    //     //var html = "<div style=\"line-height: 30px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
+    //     var html = "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
+    //     node.set("html", html);
+    //     var itemNode = node.getLast();
+    //     this.getEmpowerItems(itemNode, data);
+    //     node.inject(container || this.form.app.content);
+    //
+    //     if (this.selectAllNode) {
+    //         var selectNode = this.createSelectAllEmpowerNode();
+    //         selectNode.inject(this.selectAllNode);
+    //         if (this.checkedAllItems) {
+    //             selectNode.store("isSelected", true);
+    //             selectNode.setStyles(this.css.empowerSelectAllItemNode_selected);
+    //         }
+    //     }
+    // },
     getSelectedData: function (callback) {
         var json = {};
         this.empowerSelectNodes.each(function (node) {
@@ -2654,3 +2655,85 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
     }
 });
 
+MWF.ProcessFlow.widget.Checkbox = new Class({
+    Implements: [Options, Events],
+    options: {
+        optionList: [],
+        values: []
+    },
+    initialize: function( container, flow, options ){
+        this.container = container;
+        this.flow = flow;
+        this.lp = flow.lp;
+        this.setOptions( options );
+    },
+    load: function(){
+        this.checkedItems = [];
+        this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp, "optionList": this.options.optionList}, "module": this}, function(){
+            if( this.options.values.length )this.setValue( this.options.values );
+            this.fireEvent("load");
+        }.bind(this));
+    },
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/widget/checkbox.html";
+    },
+    setValue: function( values ){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        values = typeOf( values ) === "array" ? values : [values];
+        this.container.getElements(".o2flow-radio").each(function (el) {
+            if(values.contains( el.dataset["o2Value"] )){
+                this.check(el)
+            }
+        }.bind(this))
+    },
+    getData: function( value ){
+        if( !value )value = this.getValue();
+        var arr = this.options.optionList.filter(function (o) {
+            return o.value === value;
+        });
+        return arr[0] || null;
+    },
+    getValue: function(){
+        return this.checkedItems.map(function (item) {
+            return item.dataset["o2Value"];
+        });
+    },
+    getText: function(){
+        return this.checkedItems.map(function (item) {
+            return item.dataset["o2Text"];
+        });
+    },
+    toggle: function( ev ){
+        var el = this.flow.getEl(ev, "o2flow-radio");
+        if( this.checkedItems.contains( el ) ){
+            this.uncheck( el, true )
+        }else{
+            this.check( el )
+        }
+    },
+    check: function(el){
+        el.addClass("o2flow-radio-active");
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
+        el.dataset["o2Checked"] = true;
+        this.checkedItems.push(el);
+        this.removeRequireStyle();
+        this.fireEvent("check", [el, el.dataset["o2Value"]])
+    },
+    uncheck: function(el, isFire){
+        el.removeClass("o2flow-radio-active");
+        el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
+        el.dataset["o2Checked"] = false;
+        this.checkedItems.erase(el);
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
+    },
+    setRequireStyle: function(){
+        this.container.addClass("o2flow-invalid-bg");
+    },
+    removeRequireStyle: function(){
+        if(this.container.hasClass("o2flow-invalid-bg")){
+            this.container.removeClass("o2flow-invalid-bg");
+        }
+    }
+});
