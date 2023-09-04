@@ -91,7 +91,8 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
             var actionContent = this.data[name];
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
                     "isSystemTool" : true,
                     "noEditShow": true,
@@ -124,7 +125,8 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
                 // actionEditor.load(this.module.defaultToolBarsData);
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "noEditShow": true,
                     "noReadShow": true,
                     "onChange": function () {
@@ -144,7 +146,8 @@ MWF.xApplication.query.StatementDesigner.Property = MWF.SDProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "isSystemTool": true,
                     "systemToolsAddress": "../x_component_query_StatementDesigner/$Statement/toolbars.json",
                     "noCreate": true,
