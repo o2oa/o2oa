@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.file;
 
+import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.URLTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,6 +46,7 @@ class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(file.getName())) {
 				throw new ExceptionEmptyName();
 			}
+			FileTools.verifyConstraint(1, file.getName(), null);
 			emc.beginTransaction(File.class);
 			if (StringUtils.isNotEmpty(file.getAlias())) {
 				if (emc.duplicateWithFlags(file.getId(), File.class, file.getAlias())) {
