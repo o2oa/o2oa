@@ -456,12 +456,12 @@
     position:relative
 }
 
-.empowerNode{
+.o2flow-empower-node{
     width:840px;
     height:400px;
     background-color:#fff
 }
-.empowerTitleNode{
+.o2flow-empower-titleNode{
     margin-left:10px;
     line-height:40px;
     color:#333333;
@@ -472,16 +472,16 @@
     font-size:12px;
     overflow:hidden
 }
-.empowerTable{
+.o2flow-empower-table{
 }
-.empowerOddTd{
+.o2flow-empower-oddTd{
     width:50%
 }
-.empowerEvenTd{
+.o2flow-empower-evenTd{
     width:50%;
     border-left:5px solid #ffffff
 }
-.empowerAreaTitle{
+.o2flow-empower-areaTitle{
     height:26px;
     line-height:26px;
     font-size:14px;
@@ -490,7 +490,7 @@
     background-color:#f7f7f7;
     overflow:hidden
 }
-.empowerAreaTitleText{
+.o2flow-empower-areaTitleText{
     margin-left:10px;
     float:left
 }
@@ -498,12 +498,15 @@
     float:right;
     margin-right:5px
 }
-.empowerAreaContent{
+.o2flow-empower-areaContent{
     margin-bottom:10px;
     position:relative;
     border:1px solid #ccc;
     height:240px;
     overflow:auto
+}
+.o2flow-empower-selectAllNode{
+    float: right;
 }
 .empowerSelectAllItemNode{
     height:26px;

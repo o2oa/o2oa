@@ -699,6 +699,7 @@ MWF.ProcessFlow.Processor = new Class({
             }
         }
 
+        debugger;
         this.currentOrgList.saveOrgsWithCheckEmpower(function () {
             var appandTaskIdentityList;
             if (appendTaskOrgItem) {
@@ -1063,9 +1064,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         return flag;
     },
     saveOrgsWithCheckEmpower: function (callback) {
-        var currentRoute = this.selectedRouteNode ? this.selectedRouteNode.retrieve("route") : "";
-
-        var visableOrg = this.getVisableOrgConfig( currentRoute || this.selectedRouteId || "" );
+        var visableOrg = this.getVisableOrgConfig();
         var needOrgLength = visableOrg.length;
 
         var loadedOrgLength = 0;
@@ -1095,27 +1094,96 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         }
         this.showEmpowerDlg(callback);
     },
+    handwriting: function () {
+        if( !this.tablet )this.createHandwriting();
+        this.handwritingMask.show();
+        this.handwritingNode.show();
+        this.handwritingNode.position({
+            "relativeTo": this.flow.node,
+            "position": "center",
+            "edge": "center"
+        });
+    },
+    createHandwriting: function () {
+        this.handwritingMask.inject( this.flow.node );
+        this.handwritingNode.show().inject(this.flow.node, "after");
+        //兼容以前的默认高宽
+        var x = 600;
+        var y = 320;
+
+        x = Math.max(this.options.tabletWidth || x, 600);
+        this.options.tabletWidth = x;
+        y = Math.max(this.options.tabletHeight ? (parseInt(this.options.tabletHeight) + 110) : y, 320);
+
+        var zidx = this.flow.node.getStyle("z-index");
+        this.handwritingNode.setStyles({
+            "height": "" + y + "px",
+            "width": "" + x + "px",
+            "z-index": zidx + 1
+        });
+        this.handwritingNode.position({
+            "relativeTo": this.flow.node,
+            "position": "center",
+            "edge": "center"
+        });
+
+        var h = this.handwritingSaveNode.getSize().y + this.flow.getOffsetY(this.handwritingSaveNode);
+        this.handwritingAreaNode.setStyle("height", "" + ( y - h ) + "px");
+
+        MWF.require("MWF.widget.Tablet", function () {
+            var handWritingOptions = {
+                "style": "default",
+                "toolHidden": this.options.tabletToolHidden || [],
+                "contentWidth": this.options.tabletWidth || 0,
+                "contentHeight": this.options.tabletHeight || 0,
+                "onSave": function (base64code, base64Image, imageFile) {
+                    if( !this.tablet.isBlank() ){
+                        this.handwritingFile = imageFile;
+                        this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
+                        addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
+                        this.removeRequireStyle();
+                    }else{
+                        this.handwritingFile = null;
+                        this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                        removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                    }
+                    this.handwritingNode.hide();
+                    this.handwritingMask.hide();
+
+                }.bind(this),
+                "onCancel": function () {
+                    this.handwritingFile = null;
+                    this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                    removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                    this.handwritingNode.hide();
+                    this.handwritingMask.hide();
+                }.bind(this)
+            };
+
+            this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
+            this.tablet.load();
+        }.bind(this));
+    },
+
     showEmpowerDlg: function (callback) {
 
-        var empowerNode = new Element("div.empowerNode", {"styles": this.css.empowerNode});
-        var empowerTitleNode = new Element("div", {
-            text: MWF.xApplication.process.Xform.LP.empowerDlgText,
-            styles: this.css.empowerTitleNode
+        var empowerNode = new Element("div.o2flow-empower-node");
+        var empowerTitleNode = new Element("div.o2flow-empower-titleNode", {
+            text: MWF.xApplication.process.Xform.LP.empowerDlgText
         }).inject(empowerNode);
 
         var orgs = this.needCheckEmpowerOrg;
         var len = orgs.length;
         var lines = ((len + 1) / 2).toInt();
 
-        var empowerTable = new Element("table", {
-            "cellspacing": 0, "cellpadding": 0, "border": 0, "width": "100%",
-            "styles": this.css.empowerTable
+        var empowerTable = new Element("table.o2flow-empower-table", {
+            "cellspacing": 0, "cellpadding": 0, "border": 0, "width": "100%"
         }).inject(empowerNode);
 
         for (var n = 0; n < lines; n++) {
             var tr = new Element("tr").inject(empowerTable);
-            new Element("td", {"width": "50%", "styles": this.css.empowerOddTd}).inject(tr);
-            new Element("td", {"width": "50%", "styles": this.css.empowerEvenTd}).inject(tr);
+            new Element("td.o2flow-empower-oddTd").inject(tr);
+            new Element("td.o2flow-empower-evenTd").inject(tr);
         }
 
         var trs = empowerTable.getElements("tr");
@@ -1133,35 +1201,29 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
                 sNode = (i % 2 === 0) ? tr.getFirst("td") : tr.getLast("td");
             }
 
-            var titleNode = new Element("div.empowerAreaTitle", {
-                "styles": this.css.empowerAreaTitle
-            }).inject(sNode);
+            var titleNode = new Element("div.o2flow-empower-areaTitle").inject(sNode);
 
-            var titleTextNode = new Element("div.empowerAreaTitleText", {
-                "text": org.json.title,
-                "styles": this.css.empowerAreaTitleText
+            var titleTextNode = new Element("div.o2flow-empower-areaTitleText", {
+                "text": org.json.title
             }).inject(titleNode);
 
-            var selectAllNode = new Element("div", {
-                styles: {
-                    float: "right"
-                }
-            }).inject(titleNode);
+            var selectAllNode = new Element("div.o2flow-empower-selectAllNode").inject(titleNode);
 
-            var contentNode = new Element("div.empowerAreaContent", {
-                "styles": this.css.empowerAreaContent
-            }).inject(sNode);
+            var contentNode = new Element("div.o2flow-empower-areaContent").inject(sNode);
 
             org.loadCheckEmpower(null, contentNode, selectAllNode);
 
         }.bind(this));
 
-        empowerNode.setStyle("height", lines * MWF.ProcessFlow_ORG_HEIGHT + 20);
         var width = 840;
+        empowerNode.setStyle("height", lines * MWF.ProcessFlow_ORG_HEIGHT + 20);
         empowerNode.setStyle("width", width + "px");
+        empowerNode.setStyle("opacity", 0);
 
         this.node.getParent().mask({
-            "style": this.css.mask
+            "opacity": 0.7,
+            "background-color": "#eee",
+            "z-index": 1002
         });
         this.empowerDlg = o2.DL.open({
             "title": MWF.xApplication.process.Xform.LP.selectEmpower,
@@ -1172,21 +1234,16 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             "width": width + 40, //600,
             "height": "auto", //dlgHeight,
             "mark": false,
-            "onPostLoad": function () {
-                if (this.nodeWidth) {
-                    this.node.setStyle("width", this.nodeWidth + "px");
-                }
-                if (this.nodeHeight) {
-                    this.node.setStyle("height", this.nodeHeight + "px");
-                }
+            "onPostShow": function () {
+                if (this.nodeWidth)this.node.setStyle("width", this.nodeWidth + "px");
+                if (this.nodeHeight)this.node.setStyle("height", this.nodeHeight + "px");
+                empowerNode.setStyle("opacity", 1);
             },
             "buttonList": [
                 {
                     "type": "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": function (d, e) {
-                        //if (this.empowerDlg) this.empowerDlg.okButton.click();
-
                         orgs.each(function (org, i) {
                             org.saveCheckedEmpowerData(function () {
                                 if (i === orgs.length - 1) {
@@ -1208,13 +1265,6 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
                 }
             ]
         });
-    },
-    isSameArray: function (arr1, arr2) {
-        if (arr1.length !== arr2.length) return false;
-        for (var i = 0; i < arr1.length; i++) {
-            if (arr1[i] !== arr2[i]) return false;
-        }
-        return true;
     },
 });
 
