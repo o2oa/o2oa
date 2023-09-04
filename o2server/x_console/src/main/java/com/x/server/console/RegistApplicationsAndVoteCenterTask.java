@@ -1,6 +1,7 @@
 package com.x.server.console;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -29,7 +30,8 @@ public class RegistApplicationsAndVoteCenterTask implements Job {
 				// 先选举center
 				Config.resource_node_eventQueue().put(XGsonBuilder.instance().toJsonTree(new VoteCenterEvent()));
 			}
-			if (BooleanUtils.isTrue(Servers.centerServerIsStarted())) {
+			if (StringUtils.equalsIgnoreCase(Config.node(), Config.resource_node_centersPirmaryNode())) {
+				// if (BooleanUtils.isTrue(Servers.centerServerIsStarted())) {
 				// 刷新本地application
 				Config.resource_node_eventQueue()
 						.put(XGsonBuilder.instance().toJsonTree(new RefreshApplicationsEvent()));
