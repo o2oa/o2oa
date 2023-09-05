@@ -2107,6 +2107,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
 
         //处理忽略授权
+        debugger;
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
 
         var _self = this;
@@ -2499,8 +2500,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "isResize": false,
                 "content": flowNode,
                 "maskNode": this.app.content,
-                "positionHeight": 890,
-                "maxHeight": 890,
+                "positionHeight": 900,
+                "maxHeight": 900,
                 "maxHeightPercent": "98%",
                 "minTop": 5,
                 "width": "auto",
