@@ -9,9 +9,10 @@
             <div class="MWF_selector_selectTopNode">
                 <div class="MWF_selector_selectTopTextNode">{{$.lp.waitingSelect}}</div>
                 <div class="MWF_selector_searchInputDiv">
+                    <i class="MWF_selector_searchIcon o2icon-search11 {{if $.options.mainColorEnable}}mainColor_color{{end if}}"></i>
                     <input class="MWF_selector_searchInput" type="text" placeholder="{{$.lp.searchDescription}}" />
                     <div class="MWF_selector_searchCancelAction"></div>
-                    <div class="MWF_selector_letterActionNode"></div>
+                    <i class="MWF_selector_letterActionNode o2icon-sort-alpha-asc"></i>
                 </div>
             </div>
             <div class="MWF_selector_letterAreaNode" style="display: none;"></div>
@@ -25,7 +26,7 @@
         <div class="MWF_selector_selectedContainerNode">
             <div class="MWF_selector_selectedTopNode">
                 <div class="MWF_selector_selectedTopTextNode">{{$.lp.selected}}</div>
-                <div class="MWF_selector_emptySelectedNode">{{$.lp.empty}}</div>
+                <div class="MWF_selector_emptySelectedNode {{if $.options.mainColorEnable}}mainColor_color{{end if}}">{{$.lp.empty}}</div>
             </div>
             <div class="MWF_selector_selectedScrollNode">
                 <div class="MWF_selector_selectedNode"></div>

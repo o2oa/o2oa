@@ -315,10 +315,11 @@ MWF.xApplication.Selector.Person = new Class({
             debugger;
             var node = new Element("div");
             node.loadHtml( this.options.contentUrl, {
-                "bind": { "lp": MWF.xApplication.Selector.LP },
+                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
                 "module": this
             },function () {
                 this.node = node.getFirst();
+                this.node.loadCss("../x_component_Selector/$Selector/flow/style.css");
                 this.loadContentWithHTML();
                 this.fireEvent("load");
             }.bind(this));
@@ -494,6 +495,13 @@ MWF.xApplication.Selector.Person = new Class({
         this.letterAreaNode.setStyle("display", showing ? "none" : "" );
 
         this.letterActionNode.setStyles( showing ? this.css.letterActionNode : this.css.letterActionNode_active )
+        if( showing ){
+            this.letterActionNode.removeClass("MWF_selector_letterActionNode_active");
+            if( this.options.mainColorEnable )this.letterActionNode.removeClass("mainColor_color");
+        }else{
+            this.letterActionNode.addClass("MWF_selector_letterActionNode_active");
+            if( this.options.mainColorEnable )this.letterActionNode.addClass("mainColor_color");
+        }
 
         if( this.letterAreaNode.offsetParent )this.loadLetters();
 

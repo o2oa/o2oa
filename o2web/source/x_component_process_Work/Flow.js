@@ -11,7 +11,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         addTaskEnable: true,
         resetEnable: true,
         processOptions: {},
-        mainColorEnable: false
+        mainColorEnable: true
     },
     initialize: function (container, task, options, form) {
         this.setOptions(options);
@@ -340,6 +340,7 @@ MWF.ProcessFlow.Reset = new Class({
         } else {
             defaultOpt = {
                 "type": "identity",
+                "mainColorEnable": this.flow.options.mainColorEnable,
                 "style": "flow",
                 "width": "auto",
                 "height": MWF.ProcessFlow_ORG_HEIGHT,
@@ -1235,6 +1236,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
     getDefaultOptions: function(){
         return {
             "style": "flow",
+            "mainColorEnable": this.processor.flow.options.mainColorEnable,
             "width": "auto",
             "height": MWF.ProcessFlow_ORG_HEIGHT,
             "embedded": true,
@@ -2239,7 +2241,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     mouseover: function () {
                         this.addClass("o2flow-quick-select-item-active");
                         this.getFirst().addClass("o2flow-quick-select-item-contnet-active");
-                        if( _self.options.mainColorEnable ){
+                        if( _self.flow.options.mainColorEnable ){
                             this.addClass("mainColor_bg");
                             this.getFirst().addClass("mainColor_bg");
                         }
@@ -2247,7 +2249,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     mouseout: function () {
                         this.removeClass("o2flow-quick-select-item-active");
                         this.getFirst().removeClass("o2flow-quick-select-item-contnet-active");
-                        if( _self.options.mainColorEnable ) {
+                        if( _self.flow.options.mainColorEnable ) {
                             this.removeClass("mainColor_bg");
                             this.getFirst().removeClass("mainColor_bg");
                         }
@@ -2429,6 +2431,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
             "edge": "center"
         });
 
+        if( this.flow.options.mainColorEnable )this.handwritingSaveNode.addClass("mainColor_bg");
         var h = this.handwritingSaveNode.getSize().y + this.flow.getOffsetY(this.handwritingSaveNode);
         this.handwritingAreaNode.setStyle("height", "" + ( y - h ) + "px");
 
@@ -2537,6 +2540,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
             this.uncheck( this.checkedItems[0] );
         }
         el.addClass("o2flow-radio-active");
+        if( this.flow.options.mainColorEnable )el.addClass("mainColor_bg");
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
@@ -2545,6 +2549,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
     },
     uncheck: function(el, isFire){
         el.removeClass("o2flow-radio-active");
+        if( this.flow.options.mainColorEnable )el.removeClass("mainColor_bg");
         el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
@@ -2557,16 +2562,16 @@ MWF.ProcessFlow.widget.Radio = new Class({
         if(this.container.hasClass("o2flow-invalid-bg")){
             this.container.removeClass("o2flow-invalid-bg");
         }
-    }
-    // overItemNode: function (ev) {
+    },
+    // over: function (ev) {
     //     var el = this.flow.getEl(ev, "o2flow-radio");
     //     if( !el.dataset["o2Checked"] ){
-    //         el.addClass("o2flow-radio-over")
+    //         el.getElement("i").addClass("o2flow-radio-over");
     //     }
     // },
-    // outItemNode: function (ev) {
+    // out: function (ev) {
     //     var el = this.flow.getEl(ev, "o2flow-radio");
-    //     el.removeClass("o2flow-radio-over")
+    //     el.getElement("i").removeClass("o2flow-radio-over")
     // }
 });
 
@@ -2597,7 +2602,9 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
             this.uncheck( this.checkedItems[0] );
         }
         el.addClass("o2flow-radio2-active");
+        if( this.flow.options.mainColorEnable )el.addClass("mainColor_color");
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").addClass("mainColor_color");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
         this.removeRequireStyle();
@@ -2605,7 +2612,9 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
     },
     uncheck: function(el, isFire){
         el.removeClass("o2flow-radio2-active");
+        if( this.flow.options.mainColorEnable )el.removeClass("mainColor_color");
         el.getElement("i").removeClass("o2icon-radio-checked").addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").removeClass("mainColor_color");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
         if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
@@ -2673,6 +2682,7 @@ MWF.ProcessFlow.widget.Checkbox = new Class({
     },
     check: function(el){
         el.addClass("o2flow-radio-active");
+        if( this.flow.options.mainColorEnable )el.addClass("mainColor_bg");
         el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-checkbox").addClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
@@ -2681,6 +2691,7 @@ MWF.ProcessFlow.widget.Checkbox = new Class({
     },
     uncheck: function(el, isFire){
         el.removeClass("o2flow-radio-active");
+        if( this.flow.options.mainColorEnable )el.removeClass("mainColor_bg");
         el.getElement("i").removeClass("o2icon-checkbox").addClass("o2icon-icon_circle").removeClass("o2flow-radio-icon");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);

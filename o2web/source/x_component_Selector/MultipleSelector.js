@@ -64,10 +64,11 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if( this.options.style === "flow" ){
             var node = new Element("div");
             node.loadHtml( this.options.contentUrl, {
-                "bind": { "lp": MWF.xApplication.Selector.LP },
+                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
                 "module": this
             },function () {
                 this.node = node.getFirst();
+                this.node.loadCss("../x_component_Selector/$Selector/flow/style.css");
                 this.loadContentWithHTML();
                 this.fireEvent("load");
             }.bind(this));
