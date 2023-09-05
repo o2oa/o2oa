@@ -1509,6 +1509,7 @@ MWF.ProcessFlow.Processor.Org = new Class({
         this.checkEmpower(this.getData(), callback, container);
     },
     saveCheckedEmpowerData: function (callback) {
+        debugger;
         var data = this.getData();
         var simple = this.json.storeRange === "simple";
         //this.empowerChecker.replaceEmpowerIdentity(data, function( newData ){

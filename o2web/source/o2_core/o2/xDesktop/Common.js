@@ -524,7 +524,7 @@ MWF.org = {
     },
     parseIdentityData: function(data, flat, simple){
         if( simple ){
-            var data = {
+            var ndata = {
                 "id": data.id,
                 "name": data.name,
                 "distinguishedName": data.distinguishedName,
@@ -533,9 +533,9 @@ MWF.org = {
                 "unit": data.unit,
                 "unitName": data.unitName,
             };
-            if( data.ignoreEmpower )rData.ignoreEmpower = true;
-            if( data.ignoredEmpower )rData.ignoredEmpower = true;
-            return data;
+            if( data.ignoreEmpower )ndata.ignoreEmpower = true;
+            if( data.ignoredEmpower )ndata.ignoredEmpower = true;
+            return ndata;
         }
         var rData = {
             "id": data.id,
