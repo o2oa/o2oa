@@ -120,6 +120,9 @@
     height: 100%;
     position: relative;
 }
+.o2flow-bg-opacity{
+    background-color: rgba(74, 144, 226, 0.12)
+}
 
 .o2flow-navi {
     position: absolute;
@@ -139,6 +142,10 @@
     margin-left: -3px;
     margin-top: 16px;
     margin-bottom: 16px;
+}
+.o2flow-navi-item-active{
+    border-color:#4A90E2;
+    color: #4A90E2;
 }
 
 .o2flow-content-scrollNode {
@@ -193,6 +200,14 @@
     line-height: 30px;
     overflow: hidden;
     padding: 0 10px 0 10px;
+}
+.o2flow-quick-select-item-active{
+    background-color: #4A90E2;
+    color: #fff;
+}
+.o2flow-quick-select-item-contnet-active{
+    background-color: #4A90E2;
+    color: #fff;
 }
 
 .o2flow-quick-select-itemtitle {

@@ -11,6 +11,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         addTaskEnable: true,
         resetEnable: true,
         processOptions: {},
+        mainColorEnable: false
     },
     initialize: function (container, task, options, form) {
         this.setOptions(options);
@@ -76,11 +77,13 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     changeAction: function( action ){
         if( this.currentAction ){
             this[ this.currentAction+"ContentNode" ].hide();
-            this[ this.currentAction+"TitleNode" ].removeClass("mainColor_color").removeClass("mainColor_border");
+            this[ this.currentAction+"TitleNode" ].removeClass("o2flow-navi-item-active");
+            if( this.options.mainColorEnable )this[ this.currentAction+"TitleNode" ].removeClass("mainColor_color").removeClass("mainColor_border");
         }
 
         this[ action+"ContentNode" ].show();
-        this[ action+"TitleNode" ].addClass("mainColor_color").addClass("mainColor_border");
+        this[ action+"TitleNode" ].addClass("o2flow-navi-item-active");
+        if( this.options.mainColorEnable )this[ action+"TitleNode" ].addClass("mainColor_color").addClass("mainColor_border");
 
         this.currentAction = action;
 
@@ -2229,11 +2232,26 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             }
         ];
 
+        var _self = this;
         data.each( function (d) {
             var item = new Element("div.o2flow-quick-select-item", {
                 events: {
-                    mouseover: function () { this.addClass("mainColor_bg"); this.getFirst().addClass("mainColor_bg"); },
-                    mouseout: function () { this.removeClass("mainColor_bg"); this.getFirst().removeClass("mainColor_bg"); }
+                    mouseover: function () {
+                        this.addClass("o2flow-quick-select-item-active");
+                        this.getFirst().addClass("o2flow-quick-select-item-contnet-active");
+                        if( _self.options.mainColorEnable ){
+                            this.addClass("mainColor_bg");
+                            this.getFirst().addClass("mainColor_bg");
+                        }
+                    },
+                    mouseout: function () {
+                        this.removeClass("o2flow-quick-select-item-active");
+                        this.getFirst().removeClass("o2flow-quick-select-item-contnet-active");
+                        if( _self.options.mainColorEnable ) {
+                            this.removeClass("mainColor_bg");
+                            this.getFirst().removeClass("mainColor_bg");
+                        }
+                    }
                 }
             }).inject( this.contentNode );
             var title = new Element("div.o2flow-quick-select-itemtitle", {
@@ -2366,10 +2384,16 @@ MWF.ProcessFlow.widget.Opinion = new Class({
         this.removeRequireStyle();
     },
     overItemNode: function (ev) {
-        ev.target.addClass("mainColor_bg_opacity")
+        ev.target.addClass("o2flow-bg-opacity");
+        if( this.flow.options.mainColorEnable ){
+            ev.target.addClass("mainColor_bg_opacity");
+        }
     },
     outItemNode: function (ev) {
-        ev.target.removeClass("mainColor_bg_opacity")
+        ev.target.removeClass("o2flow-bg-opacity");
+        if( this.flow.options.mainColorEnable ) {
+            ev.target.removeClass("mainColor_bg_opacity");
+        }
     },
 
     handwriting: function () {
