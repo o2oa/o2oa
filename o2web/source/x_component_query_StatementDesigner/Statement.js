@@ -198,6 +198,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 default:
                     if(this.jpqlEditor)this.jpqlEditor.resize();
             }
+            this.loadEditor();
         }.bind(this))
 
         this.tabCountNode = Element("div");
@@ -223,6 +224,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 default:
                     if( this.jpqlCountEditor )this.jpqlCountEditor.resize();
             }
+            this.loadEditor();
         }.bind(this))
 
         // this.tabSqlNode = Element("div");
