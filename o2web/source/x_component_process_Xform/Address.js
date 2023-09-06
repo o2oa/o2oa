@@ -43,6 +43,7 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+        this.loadVal();
         //new Element("select").inject(this.node);
     },
     _loadNodeEdit: function(){
@@ -106,6 +107,8 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
                 //this._setEnvironmentData(v);
             }
         }.bind(this));
+
+        this.loadVal();
     },
     _searchOptions: function(value, callback, comboxValueObject){
         value = value.toLowerCase();
