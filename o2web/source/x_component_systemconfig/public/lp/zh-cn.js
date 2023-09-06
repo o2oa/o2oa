@@ -1042,8 +1042,8 @@ o2.xApplication.systemconfig.LP = {
         "searchMaxPageSize": "搜索每页最大数量",
         "searchMaxPageSizeInfo": "搜索返回结果每页的最大数量",
 
-        "moreLikeThisMaxSize": "关联文档最大返回数量",
-        "moreLikeThisMaxSizeInfo": "关联文档检索的最大返回数量",
+        "moreLikeThisMaxSize": "相关推荐最大返回数量",
+        "moreLikeThisMaxSizeInfo": "相关推荐检索的最大返回数量",
 
         "workIndexAttachment": "是否对流转中文档的附件进行索引",
         "workIndexAttachmentInfo": "是否对流转中文档的附件进行索引。（对附件进行索引，根据不同的业务量，可能需要较强的服务器性能和更大的内存）",
@@ -1149,6 +1149,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageContact": "通讯录",
         "appIndexPageApp": "应用",
         "appIndexPageSettings": "设置",
+
+        "appIndexCenteredTitle": "移动App首页是否居中",
+        "appIndexCenteredInfo": "移动App首页居中，页面个数将不可配置",
 
         "appIndexCmsFilterTitle": "首页信息中心",
         "appIndexCmsFilterCategoryInfo": "信息中心列表分类查询条件，为空就是都查询",

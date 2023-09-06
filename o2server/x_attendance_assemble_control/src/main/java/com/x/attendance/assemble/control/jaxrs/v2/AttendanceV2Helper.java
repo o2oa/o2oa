@@ -30,6 +30,12 @@ import java.util.List;
 public class AttendanceV2Helper {
 
 
+    /**
+     * 是否是今天之前的日期
+     * @param date
+     * @return
+     * @throws Exception
+     */
     public static boolean beforeToday(String date) throws Exception {
         Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
         Date today = new Date(); 

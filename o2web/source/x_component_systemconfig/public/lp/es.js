@@ -1037,8 +1037,8 @@ o2.xApplication.systemconfig.LP = {
         "searchMaxPageSize": "Número máximo de resultados por página de búsqueda",
         "searchMaxPageSizeInfo": "El número máximo de resultados que se mostrarán en cada página de resultados de búsqueda.",
 
-        "moreLikeThisMaxSize": "Número máximo de documentos relacionados en la búsqueda",
-        "moreLikeThisMaxSizeInfo": "El número máximo de documentos relacionados que se mostrarán en una búsqueda.",
+        "moreLikeThisMaxSize": "Número máximo de recomendaciones relacionadas devueltas",
+        "moreLikeThisMaxSizeInfo": "El número máximo de devoluciones para búsquedas de recomendaciones relacionadas",
 
         "workIndexAttachment": "Índice de archivos adjuntos en documentos en proceso",
         "workIndexAttachmentInfo": "Activar o desactivar el índice de archivos adjuntos en los documentos en proceso. El índice de archivos adjuntos puede requerir un servidor más potente y más memoria dependiendo del volumen de negocios.",
@@ -1140,6 +1140,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageContact": "Libreta de direcciones",
         "appIndexPageApp": "Aplicación",
         "appIndexPageSettings": "Configuración",
+
+        "appIndexCenteredTitle": "Si la página de inicio de la aplicación móvil está en el Centro",
+        "appIndexCenteredInfo": "La página de inicio de la aplicación móvil está en el centro, y el número de páginas no será configurable.",
 
         "appIndexCmsFilterTitle": "Centro de información de la página de inicio",
         "appIndexCmsFilterCategoryInfo": "Condiciones de consulta de clasificación de la lista del Centro de información, si está vacío, se consultará todo.",

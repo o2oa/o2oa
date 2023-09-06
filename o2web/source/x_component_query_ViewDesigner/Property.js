@@ -374,7 +374,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 var htmlArea = new MWF.widget.HtmlEditorArea(node, {
                     "title": title,
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "maxObj": this.designer.editContentNode || this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
                         this.data[name] = htmlArea.getValue();
                         this.changeData(name);
@@ -387,7 +387,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     //     }
                     // }.bind(this),
                     "onSave": function(){
-                        this.designer.saveForm();
+                        this.designer.saveView();
                     }.bind(this)
                 });
                 htmlArea.load({"code": scriptContent});
@@ -980,7 +980,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.EventsEditor", function () {
                 var eventsEditor = new MWF.xApplication.process.FormDesigner.widget.EventsEditor(events, this.designer, {
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.contentNode
+                    "maxObj": this.designer.editContentNode || this.designer.contentNode
                 });
                 eventsEditor.load(eventsObj, this.data, name);
             }.bind(this));
@@ -998,7 +998,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             var actionContent = this.data[name];
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "systemToolsAddress": "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "isSystemTool" : true,
                     "noEditShow": true,
@@ -1031,7 +1032,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 // actionEditor.load(this.module.defaultToolBarsData);
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "noEditShow": true,
                     "noReadShow": true,
                     "onChange": function () {
@@ -1051,7 +1053,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function () {
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
-                    "maxObj": this.propertyNode.parentElement.parentElement,
+                    "maxObj": this.designer.editContentNode || this.propertyNode.parentElement.parentElement,
+                    "scriptMaxObj": this.designer.editContentNode,
                     "isSystemTool": true,
                     "systemToolsAddress": "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "noCreate": true,

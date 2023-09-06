@@ -201,7 +201,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }.bind(this))
         }.bind(this));
     },
-    _loadUserInterface : function( callback ){
+    _loadUserInterface: function( callback ){
+
+        this.viewJson = this.bindLP( this.viewJson );
+        this.json = this.bindLP( this.json );
+
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
         if( this.options.isloadSearchbar )this.createSearchNode();
@@ -214,6 +218,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
     loadLayout: function(){
+
         /**
          * @summary 视图的节点，mootools封装过的Dom对象，可以直接使用原生的js和moootools方法访问和操作该对象。
          * @see https://mootools.net/core/docs/1.6.0/Element/Element
@@ -542,7 +547,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             }
 
             this.entries = {};
-            debugger;
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
                 if (!column.hideColumn){
@@ -718,9 +722,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 };
             }else{
                 json = this.viewJson.pagingList[0];
-                var jsonStr = JSON.stringify(json);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
-                json = JSON.parse(jsonStr);
+                // var jsonStr = JSON.stringify(json);
+                // jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                // json = JSON.parse(jsonStr);
             }
             /**
              * @summary 视图的分页组件对象.
@@ -782,6 +786,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
                         }
+                        this.fireEvent("loadView"); //options 传入的事件
                         this.fireEvent("postLoad"); //用户配置的事件
                         this.lookuping = false;
                         if(callback)callback(this);
@@ -1170,6 +1175,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
+    },
+    bindLP: function( json ){
+        var jsonStr = JSON.stringify( json );
+        jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+        return JSON.parse(jsonStr);
     },
     getLookupAction: function(callback){
         if (!this.lookupAction){
@@ -3268,9 +3278,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class(
             //alert(this.readonly)
 
             if( this.json.multiTools ){
-                var jsonStr = JSON.stringify(this.json.multiTools);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
-                this.json.multiTools = JSON.parse(jsonStr);
+                // var jsonStr = JSON.stringify(this.json.multiTools);
+                // jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.query.Query.LP.form});
+                // this.json.multiTools = JSON.parse(jsonStr);
                 this.json.multiTools.each( function (tool) {
                     if( tool.system ){
                         if( !this.json.hideSystemTools ){

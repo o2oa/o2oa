@@ -1,8 +1,8 @@
 package com.x.server.console;
 
-import java.io.BufferedReader;
+import java.io.Console;
+import java.io.IOError;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -21,14 +21,14 @@ public class CommandThreads {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandThreads.class);
 
-	private static volatile boolean isRunning = true;
+	private static volatile boolean running = true;
 
-	private static Thread commandReadThread;
+	private static Thread commandFromConsoleThread;
+	private static Thread commandFromFileThread;
 	private static Thread commandExecuteThread;
 
 	public static void join() {
 		try {
-			commandReadThread.join();
 			commandExecuteThread.join();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -41,37 +41,55 @@ public class CommandThreads {
 	}
 
 	public static void start(LinkedBlockingQueue<String> commandQueue) {
-		isRunning = true;
-		commandReadThread = createCommandReadThread(commandQueue);
+		running = true;
+		commandFromConsoleThread = createCommandFromConsoleThread(commandQueue);
+		commandFromFileThread = createCommandFromFileThread(commandQueue);
 		commandExecuteThread = createCommandExecuteThread(commandQueue);
-		commandReadThread.start();
+		commandFromConsoleThread.start();
+		commandFromFileThread.start();
 		commandExecuteThread.start();
 	}
 
 	public static void stop() {
-		isRunning = false;
-		if (null != commandReadThread) {
-			commandReadThread.interrupt();
+		running = false;
+		if (null != commandFromConsoleThread && commandFromConsoleThread.isAlive()) {
+			commandFromConsoleThread.interrupt();
+		}
+		if (null != commandFromFileThread) {
+			commandFromFileThread.interrupt();
 		}
 		if (null != commandExecuteThread) {
 			commandExecuteThread.interrupt();
 		}
 	}
 
-	private static Thread createCommandReadThread(LinkedBlockingQueue<String> commandQueue) {
+	private static Thread createCommandFromConsoleThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-				while (isRunning) {
-					fromSystemIn(commandQueue, reader);
+			Console console;
+			while (running && ((console = System.console()) != null)) {
+				try {
+					fromConsole(commandQueue, console);
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				} catch (IOError ioe) {
+					break;
+				}
+			}
+		}, "commandFromConsoleThread");
+	}
+
+	private static Thread createCommandFromFileThread(LinkedBlockingQueue<String> commandQueue) {
+		return new Thread(() -> {
+			while (running) {
+				try {
 					fromFile(commandQueue);
 					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 				}
-			} catch (InterruptedException ie) {
-				Thread.currentThread().interrupt();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}, "commandFromThread");
+		}, "commandFromFileThread");
 	}
 
 	/**
@@ -99,7 +117,7 @@ public class CommandThreads {
 	}
 
 	/**
-	 * 读取System.in中的输入值并写入commandQueue
+	 * 从System.console读取输入值并写入commandQueue,需要使用System.console如果使用system.in导致windows控制台没有输出,可以盲打.
 	 * 
 	 * @param commandQueue
 	 * @param reader
@@ -107,23 +125,19 @@ public class CommandThreads {
 	 * @throws InterruptedException
 	 * @throws
 	 */
-	private static void fromSystemIn(LinkedBlockingQueue<String> commandQueue, BufferedReader reader)
+	private static void fromConsole(LinkedBlockingQueue<String> commandQueue, Console console)
 			throws InterruptedException {
-		try {
-			if (reader.ready()) {
-				String consoleCmd = reader.readLine();
-				if (null != consoleCmd) {
-					commandQueue.put(consoleCmd);
-				}
+		if (null != console) {
+			String consoleCmd = console.readLine();
+			if (null != consoleCmd) {
+				commandQueue.put(consoleCmd);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
 	private static Thread createCommandExecuteThread(LinkedBlockingQueue<String> commandQueue) {
 		return new Thread(() -> {
-			while (isRunning) {
+			while (running) {
 				try {
 					String cmd = commandQueue.take();
 					if (StringUtils.isNotBlank(cmd)) {

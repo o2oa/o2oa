@@ -1045,7 +1045,7 @@ o2.xApplication.systemconfig.LP = {
         "searchMaxPageSize": "Maximum number of search pages per page",
         "searchMaxPageSizeInfo": "The maximum number of search results per page",
 
-        "moreLikeThisMaxSize": "Maximum number of associated documents to return",
+        "moreLikeThisMaxSize": "Maximum number of related documents to return",
         "moreLikeThisMaxSizeInfo": "The maximum number of related documents retrieved",
 
         "workIndexAttachment": "Whether to index the attachment of the document in circulation",
@@ -1151,6 +1151,9 @@ o2.xApplication.systemconfig.LP = {
         "appIndexPageContact": "Contact",
         "appIndexPageApp": "App",
         "appIndexPageSettings": "Setting",
+
+        "appIndexCenteredTitle": "Is the mobile app homepage centered",
+        "appIndexCenteredInfo": "The homepage of the mobile app is centered, and the number of pages will not be configurable",
 
         "appIndexCmsFilterTitle": "Home Information Center",
         "appIndexCmsFilterCategoryInfo": "Information center list classification query criteria, if left blank, all queries will be queried",
