@@ -74,7 +74,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             this.fireEvent("load");
         }
     },
-    changeAction: function( action ){
+    changeAction: function( action, quickData ){
         if( this.currentAction ){
             this[ this.currentAction+"ContentNode" ].hide();
             this[ this.currentAction+"TitleNode" ].removeClass("o2flow-navi-item-active");
@@ -89,18 +89,19 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
         switch (action) {
             case "process":
-                this.loadProcessor();
+                this.loadProcessor( quickData );
                 break;
             case "addTask":
-                this.loadAddTask();
+                this.loadAddTask( quickData );
                 break;
             case "reset":
-                this.loadReset();
+                this.loadReset( quickData );
                 break;
         }
     },
-    loadProcessor: function () {
+    loadProcessor: function ( quickData ) {
         if( this.processor ){
+            if( quickData )this.processor.setQuickData( quickData );
             this.resize();
             return;
         }
@@ -118,9 +119,11 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
                 }.bind(this)
             })
         );
+        this.processor.load( quickData );
     },
-    loadReset: function(){
+    loadReset: function( quickData ){
         if( this.reset ){
+            if( quickData )this.reset.setQuickData( quickData );
             this.resize();
             return;
         }
@@ -138,9 +141,11 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
                 }.bind(this)
             })
         );
+        this.reset.load( quickData );
     },
-    loadAddTask: function(){
+    loadAddTask: function( quickData ){
         if( this.addTask ){
+            if( quickData )this.addTask.setQuickData( quickData );
             this.resize();
             return;
         }
@@ -158,6 +163,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
                 }.bind(this)
             })
         );
+        this.addTask.load( quickData );
     },
     loadQuickSelect: function(){
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelect(
@@ -236,6 +242,7 @@ MWF.ProcessFlow.Reset = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options:{
+        data: null,
         style: "default"
     },
     initialize: function (container, flow, options) {
@@ -246,15 +253,20 @@ MWF.ProcessFlow.Reset = new Class({
         this.form = flow.form;
         this.lp = flow.lp;
         this.businessData = this.form.businessData;
-        this.load();
     },
-    load: function(){
+    load: function( quickData ){
+        this.quickData = quickData || {};
         this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp}, "module": this}, function(){
             this.loadOpinion();
             this.loadOrg();
             this.afterLoad();
             this.fireEvent("load");
         }.bind(this));
+    },
+    setQuickData: function( data ){
+        if(this.keepOption)this.keepOption.setValue( data.keepTask ? "true" : null );
+        if(this.opinion)this.opinion.setValue( data.opinion || "" );
+        if(this.selector && this.selector.selector)this.selector.selector.setValues( data.organizations ? (data.organizations.default || []) : [] );
     },
     getUrl: function(){
         return this.flow.path+this.flow.options.style+"/reset.html";
@@ -263,24 +275,30 @@ MWF.ProcessFlow.Reset = new Class({
 
     },
     afterLoad: function () {
-        debugger;
         this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this.flow, {
             optionList: [{
                 text: this.lp.keepTask,
                 value: "true"
-            }]
+            }],
+            value: (this.quickData.keepTask) ? "true" : null
         });
         this.keepOption.load();
     },
     loadOpinion: function(){
         var opt = Object.clone(this.flow.options.opinionOptions);
         opt.isHandwriting = this.options.isHandwriting;
+        if( this.quickData.opinion ){
+            opt.opinion = this.quickData.opinion;
+            delete this.quickData.opinion;
+        }
         this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
         this.opinion.load();
     },
     loadOrg: function(){
         this.getSelOptions( function (options) {
-            this.selector = new MWF.O2Selector(this.orgsArea, options)
+            options.values =  this.quickData.organizations ? (this.quickData.organizations.default || []) : [];
+            if(this.quickData.organizations)delete this.quickData.organizations.default;
+            this.selector = new MWF.O2Selector(this.orgsArea, options);
         }.bind(this) );
     },
     getSelOptions: function( callback ){
@@ -454,6 +472,7 @@ MWF.ProcessFlow.Processor = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
+        "defaultRouteGroup": "",
         "defaultRoute": ""
     },
 
@@ -467,9 +486,17 @@ MWF.ProcessFlow.Processor = new Class({
         this.lp = flow.lp;
         this.businessData = this.form.businessData;
         this.routeOrgMap = {};
-        this.load();
     },
-    load: function(){
+    load: function( quickData ){
+        this.quickData = quickData;
+        if( quickData )quickData.rId = quickData.routeId;
+        if( quickData && (quickData.routeId || quickData.routeName) ){
+            this.opinion.defaultRoute = quickData.routeId || quickData.routeName;
+            delete quickData.routeId;
+            delete quickData.routeName;
+            this.opinion.defaultRouteGroup = quickData.routeGroup;
+            delete quickData.routeGroup;
+        }
         this.container.loadHtml(this.flow.path+this.flow.options.style+"/process.html", {"bind": {"lp": this.lp}, "module": this}, function(){
             this.loadOpinion();
             this.loadRouteOrGroupList();
@@ -483,9 +510,34 @@ MWF.ProcessFlow.Processor = new Class({
             this.loadEventFired = true;
         }
     },
+    setQuickData: function( quickData ){
+        this.quickData = quickData;
+        if(quickData)quickData.rId = quickData.routeId;
+        if( this.routeGroupRadio && quickData.routeGroup ){
+            if( quickData.routeId || quickData.routeName ){
+                this.options.defaultRoute = quickData.routeId || quickData.routeName;
+                delete quickData.routeId;
+                delete quickData.routeName;
+            }
+            this.routeGroupRadio.setValue( quickData.routeGroup );
+            delete quickData.routeGroup;
+        }else{
+            this.routeRadio.setValue( quickData.routeId );
+            delete quickData.routeId;
+        }
+        if(this.opinion){
+            this.opinion.setValue( quickData.opinion || "" );
+            delete quickData.opinion;
+        }
+        //if(this.selector && this.selector.selector)this.selector.selector.setValues( data.organizations ? (data.organizations.default || []) : [] );
+    },
     loadOpinion: function(){
         var opt = Object.clone(this.flow.options.opinionOptions);
         opt.isHandwriting = this.options.isHandwriting;
+        if( this.quickData && this.quickData.opinion ){
+            opt.opinion = this.quickData.opinion;
+            delete this.quickData.opinion;
+        }
         this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
         this.opinion.load();
     },
@@ -511,13 +563,16 @@ MWF.ProcessFlow.Processor = new Class({
         var routeGroupNames =  keys.map(function (k) { return this.splitByStartNumber(k).name; }.bind(this));
 
         var defaultValue;
-        if( keys.length === 1 ){
+        if( keys.length === 1 ) {
             defaultValue = routeGroupNames[0];
+        }else if( this.opinion.defaultRouteGroup ){
+            defaultValue = this.opinion.defaultRouteGroup;
+            this.opinion.defaultRouteGroup = "";
         }else if( this.options.defaultRoute ){
             routeGroupNames.each(function (routeGroupName) {
                 if( defaultValue )return;
                 var routeList = this.routeGroupObject[routeGroupName];
-                matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
+                var matchRoutes = routeList.filter(function(r){ return r.id === this.options.defaultRoute || r.name === this.options.defaultRoute; }.bind(this));
                 if( matchRoutes.length )defaultValue = routeGroupName;
             }.bind(this));
         }
@@ -542,7 +597,7 @@ MWF.ProcessFlow.Processor = new Class({
                 if( defaultValue ){
                     this.setValue( defaultValue );
                 }else{
-                    _self.loadOrgs(0);
+                    _self.loadOrgs();
                 }
             }
         });
@@ -571,6 +626,7 @@ MWF.ProcessFlow.Processor = new Class({
 
             if( route.id === this.options.defaultRoute || route.name === this.options.defaultRoute) {
                 defaultRoute = route.id;
+                this.options.defaultRoute = "";
                 isSelectedDefault = true;
             }else if ( !isSelectedDefault && (routeConfigList.length == 1 || route.sole )) { //sole表示优先路由
                 defaultRoute = route.id;
@@ -953,19 +1009,33 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     getVisableOrgConfig: function(){
         return this.processor.getVisableOrgConfig( this.options.routeId );
     },
+    getQuickOrgData: function( orgConfig ){
+        if( !this.processor.quickData )return;
+        if( this.processor.quickData.rId !== this.options.routeId )return;
+        if( !this.processor.quickData.organizations || !this.processor.quickData.organizations.length )return;
+        var d = this.processor.quickData.organizations[orgConfig.name];
+        delete this.processor.quickData.organizations[orgConfig.name];
+        return d;
+    },
     loadOrgs: function () {
         var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length, lineNode;
         configVisable.each(function (config, i) {
-            var dom, cfgId = config.id;
+            var dom, cfgId = config.id, quickOrgData = this.getQuickOrgData( config );
+            debugger;
             if( i % 2 === 0 )lineNode = new Element("div.o2flow-org-line").inject( this.node );
             if( this.domMap[cfgId] ){
                 dom = this.domMap[cfgId].show().inject( lineNode );
+                if( quickOrgData && this.orgMap[cfgId]){
+                    var org = this.orgMap[cfgId];
+                    org.setData( quickOrgData );
+                    org.resetSelectorData();
+                }
                 this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
                 //dom = new Element("div" ).inject( lastDom || this.node, lastDom ? "after" : "bottom" );
                 dom = new Element("div" ).inject( lineNode );
                 this.domMap[cfgId] = dom;
-                this.loadOrg(dom, config );
+                this.loadOrg(dom, config, false, quickOrgData );
             }
 
             if( (i + 1 === len) && (len % 2 === 1) ){ //fullsize
@@ -980,7 +1050,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             //lastDom = dom;
         }.bind(this));
     },
-    loadOrg: function (container, json, ignoreOldData) {
+    loadOrg: function (container, json, ignoreOldData, quickOrgData) {
         var titleNode = new Element("div.o2flow-selector-title").inject(container);
         new Element("div.o2flow-selector-titletext", { "text": json.title }).inject(titleNode);
         var errorNode = new Element("div.o2flow-selector-errornode").inject(titleNode);
@@ -991,7 +1061,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         var org = new MWF.ProcessFlow.Processor.Org(contentNode, this.form, json, this);
         org.ignoreOldData = ignoreOldData;
         org.errContainer = errorNode;
-        org.load();
+        org.load( quickOrgData );
         this.orgVisableItems.push(org);
         this.orgMap[json.id] = org;
     },
@@ -1210,9 +1280,10 @@ MWF.ProcessFlow.Processor.Org = new Class({
         this.orgAction = MWF.Actions.get("x_organization_assemble_control");
         this.setOptions(options);
     },
-    load: function () {
+    load: function ( quickData ) {
         var options = this.getOptions();
         if (options) {
+            if( quickData )options.values = quickData;
             this.selector = new MWF.O2Selector(this.container, options);
         }
     },
@@ -2219,20 +2290,172 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             {
                 type: "process",
                 text: "选择[送办理]，意见：请办理，处理人：张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四",
+                data: {
+                    "process": "",
+                    "processName": "",
+                    "activity": "",
+                    "activityName": "",
+                    "person": "",
+                    "action": "process",
+                    "data": {
+                        "routeGroup": "同意",
+                        "routeId": "05562c80-91f9-446c-902f-6aae911c71da",
+                        "routeName": "送办理",
+                        "keepTask": true,
+                        "opinion": "已选择请办理",
+                        "organizations": {
+                            "blPerson1": [
+                                {
+                                    "distinguishedName": "张三@zhb_zhangsan@I",
+                                    "id": "b7c7db79-0241-4989-b31a-fbba5c17ada2",
+                                    "name": "张三",
+                                    "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
+                                    "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
+                                    "unitLevelName": "演示公司/综合部",
+                                    "unitName": "综合部"
+                                },
+                                {
+                                    "distinguishedName": "張世文@39d71dc8-4f60-4949-a480-137a5cd50ae1@I",
+                                    "id": "b9291c0e-be6b-4aff-a3e7-3860baa623af",
+                                    "name": "張世文",
+                                    "person": "5369f64f-057e-4211-a980-ec3f2118d47b",
+                                    "unit": "359cf0cd-1a29-4af2-8df7-26f6dafd980d",
+                                    "unitLevelName": "中國移動香港公司/資訊科技部/系統運行及維護",
+                                    "unitName": "系統運行及維護"
+                                },
+                                {
+                                    "distinguishedName": "陈家雷@c48b435e-0337-44f3-a3ac-45ce236252f8@I",
+                                    "id": "c48b435e-0337-44f3-a3ac-45ce236252f8",
+                                    "ignoredEmpower": true,
+                                    "name": "陈家雷",
+                                    "person": "acab9598-6c15-43a8-8e98-297545030b0c",
+                                    "unit": "98d1d9dd-5db3-40a8-a8b2-815624160e6b",
+                                    "unitLevelName": "兰德网络技术有限公司/兰德/服务交付部/贵州移动",
+                                    "unitName": "贵州移动"
+                                }
+                            ],
+                            "blPerson4": [
+                                {
+                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
+                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
+                                    "name": "蔡艳红",
+                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
+                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
+                                    "unitLevelName": "贵州移动1",
+                                    "unitName": "贵州移动1"
+                                }
+                            ],
+                            "blPerson5": [
+                                {
+                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
+                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
+                                    "name": "蔡艳红",
+                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
+                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
+                                    "unitLevelName": "贵州移动1",
+                                    "unitName": "贵州移动1"
+                                }
+                            ],
+                            "blPerson6": [
+                                {
+                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
+                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
+                                    "name": "蔡艳红",
+                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
+                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
+                                    "unitLevelName": "贵州移动1",
+                                    "unitName": "贵州移动1"
+                                }
+                            ]
+                        }
+                    }
+                }
             },
             {
                 type: "process",
                 text: "选择[送核稿]，意见：请核稿，处理人：王五",
+                data: {
+                    "process": "",
+                    "processName": "",
+                    "activity": "",
+                    "activityName": "",
+                    "person": "",
+                    "action": "process",
+                    "data": {
+                        "routeGroup": "同意",
+                        "routeId": "ae3aab39-1065-4fbc-aa7a-7a44aadfd4d7",
+                        "routeName": "送核稿",
+                        "keepTask": true,
+                        "opinion": "已选择请核稿",
+                        "organizations": {
+                            "hgPerson": [
+                                {
+                                    "distinguishedName": "张三@zhb_zhangsan@I",
+                                    "id": "b7c7db79-0241-4989-b31a-fbba5c17ada2",
+                                    "name": "张三",
+                                    "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
+                                    "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
+                                    "unitLevelName": "演示公司/综合部",
+                                    "unitName": "综合部"
+                                }
+                            ]
+                        }
+                    }
+                }
             },
             {
                 type: "addTask",
                 text:  "选择[前加签]，意见：请处理，加签人：赵六",
+                data: {
+                    "process": "",
+                    "processName": "",
+                    "activity": "",
+                    "activityName": "",
+                    "person": "",
+                    "action": "addTask",
+                    "data": {
+                        "routeId": "",
+                        "routeName": "前加签",
+                        "keepTask": true,
+                        "opinion": "已加签请处理",
+                        "organizations": {}
+                    }
+                }
             },
             {
                 type: "reset",
-                text: "保留待办，意见：请处理，重置给：王五"
+                text: "保留待办，意见：请处理，重置给：王五",
+                data: {
+                    "process": "",
+                    "processName": "",
+                    "activity": "",
+                    "activityName": "",
+                    "person": "",
+                    "action": "reset",
+                    "data": {
+                        "routeId": "",
+                        "routeName": "",
+                        "keepTask": true,
+                        "opinion": "已重置请处理",
+                        "organizations": {
+                            "default": [
+                                {
+                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
+                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
+                                    "name": "蔡艳红",
+                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
+                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
+                                    "unitLevelName": "贵州移动1",
+                                    "unitName": "贵州移动1"
+                                }
+                            ]
+                        }
+                    }
+                }
             }
         ];
+
+
 
         var _self = this;
         data.each( function (d) {
@@ -2253,9 +2476,15 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                             this.removeClass("mainColor_bg");
                             this.getFirst().removeClass("mainColor_bg");
                         }
+                    },
+                    click: function () {
+                        var d = Object.clone( item.retrieve("data"));
+                        _self.flow.changeAction( d.type, d.data.data );
+                        _self.hide();
                     }
                 }
             }).inject( this.contentNode );
+            item.store( "data", d );
             var title = new Element("div.o2flow-quick-select-itemtitle", {
                 text: this.flow.lp.flowActions[d.type]
             }).inject( item );
@@ -2289,10 +2518,11 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                 "person": "",
                 "action": "",
                 "data": {
+                    "routeGroup": "",
                     "routeId": "",
                     "routeName": "",
                     "keepTask": true,
-                    "idea": "",
+                    "opinion": "",
                     "organizations": {}
                 }
             }
@@ -2501,6 +2731,7 @@ MWF.ProcessFlow.widget.Radio = new Class({
         while( this.checkedItems.length ){
             this.uncheck( this.checkedItems[0] );
         }
+        if( typeOf( values ) === "null" )return;
         values = typeOf( values ) === "array" ? values : [values];
         this.container.getElements(".o2flow-radio").each(function (el) {
             if(values.contains( el.dataset["o2Value"] )){
