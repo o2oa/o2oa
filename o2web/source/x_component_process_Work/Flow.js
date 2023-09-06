@@ -47,10 +47,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
-            debugger;
             this.changeAction( this.navi[0].key );
             this.loadQuickSelect();
-            //this.checkLoadEvent();
         }.bind(this));
     },
     getSize: function(){
@@ -61,14 +59,9 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     },
     checkLoadEvent: function(){
         if( this.cssLoaded && this.firstActionLoaded){
-            // var nodeSize = this.node.getSize();
-            // this.container.setStyles({
-            //     "height": nodeSize.y,
-            //     "width": nodeSize.x
-            // });
             if( this.currentAction === "process" ){
                 if( this.processor.getMaxOrgLength() > 1 ){
-                    this.node.addClass("o2flow-node-wide").removeClass("o2flow-node")
+                    this.node.addClass("o2flow-node-wide").removeClass("o2flow-node");
                 }
             }
             this.fireEvent("load");
@@ -405,8 +398,6 @@ MWF.ProcessFlow.Reset = new Class({
             this.orgItem.clearTooltip();
         }
         if (this.node) this.node.empty();
-        // delete this.task;
-        // delete this.node;
     },
 });
 
@@ -424,47 +415,6 @@ MWF.ProcessFlow.AddTask = new Class({
         // });
         // this.keepOption.load();
     },
-    // load: function(){
-    //     this.content = this.container;
-    //
-    //     this.opinionTitle = new Element("div", {
-    //         "styles": this.css.opinionTitle,
-    //         "text": "加签意见"
-    //     }).inject(this.content);
-    //     this.opinionArea = new Element("div", {"styles": this.css.opinionArea}).inject(this.content);
-    //
-    //     this.setOpinion();
-    //
-    //     this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
-    //     this.orgsTitle = new Element("div", {
-    //         "styles": this.css.orgsTitle,
-    //         "text": "加签人"
-    //     }).inject(this.orgsArea);
-    //
-    //     this.loadOrg();
-    //
-    //
-    //     var _self = this;
-    //     ["前加签","后加签"].each(function (text) {
-    //         var routeNode = new Element("div", {
-    //             "styles": this.css.routeNode,
-    //             "text": text
-    //         }).inject(this.content);
-    //
-    //         routeNode.addEvents({
-    //             "mouseover": function (e) {
-    //                 _self.overRoute(this);
-    //             },
-    //             "mouseout": function (e) {
-    //                 _self.outRoute(this);
-    //             },
-    //             "click": function (e) {
-    //                 _self.selectRoute(this);
-    //             }
-    //         });
-    //     }.bind(this))
-    //     this.fireEvent("load");
-    // },
 })
 
 MWF.ProcessFlow.Processor = new Class({
@@ -491,10 +441,10 @@ MWF.ProcessFlow.Processor = new Class({
         this.quickData = quickData;
         if( quickData )quickData.rId = quickData.routeId;
         if( quickData && (quickData.routeId || quickData.routeName) ){
-            this.opinion.defaultRoute = quickData.routeId || quickData.routeName;
+            this.options.defaultRoute = quickData.routeId || quickData.routeName;
             delete quickData.routeId;
             delete quickData.routeName;
-            this.opinion.defaultRouteGroup = quickData.routeGroup;
+            this.options.defaultRouteGroup = quickData.routeGroup;
             delete quickData.routeGroup;
         }
         this.container.loadHtml(this.flow.path+this.flow.options.style+"/process.html", {"bind": {"lp": this.lp}, "module": this}, function(){
@@ -759,7 +709,6 @@ MWF.ProcessFlow.Processor = new Class({
             }
         }
 
-        debugger;
         this.currentOrgList.saveOrgsWithCheckEmpower(function () {
             var appandTaskIdentityList;
             if (appendTaskOrgItem) {
@@ -1012,7 +961,7 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
     getQuickOrgData: function( orgConfig ){
         if( !this.processor.quickData )return;
         if( this.processor.quickData.rId !== this.options.routeId )return;
-        if( !this.processor.quickData.organizations || !this.processor.quickData.organizations.length )return;
+        if( !this.processor.quickData.organizations )return;
         var d = this.processor.quickData.organizations[orgConfig.name];
         delete this.processor.quickData.organizations[orgConfig.name];
         return d;
@@ -1021,7 +970,6 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length, lineNode;
         configVisable.each(function (config, i) {
             var dom, cfgId = config.id, quickOrgData = this.getQuickOrgData( config );
-            debugger;
             if( i % 2 === 0 )lineNode = new Element("div.o2flow-org-line").inject( this.node );
             if( this.domMap[cfgId] ){
                 dom = this.domMap[cfgId].show().inject( lineNode );
@@ -1105,7 +1053,6 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         }
     },
     errorHeightChange: function () {
-        debugger;
         this.checkErrorHeightOverflow(true)
     },
     validationOrgs: function () {
@@ -1585,7 +1532,6 @@ MWF.ProcessFlow.Processor.Org = new Class({
         this.checkEmpower(this.getData(), callback, container);
     },
     saveCheckedEmpowerData: function (callback) {
-        debugger;
         var data = this.getData();
         var simple = this.json.storeRange === "simple";
         //this.empowerChecker.replaceEmpowerIdentity(data, function( newData ){
@@ -2099,7 +2045,6 @@ MWF.ProcessFlow.Processor.Org = new Class({
         return true;
     },
     validation: function () {
-        debugger;
         var data = this.getData();
         this.setData(data);
         var flag = true;
@@ -2366,7 +2311,22 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                                     "unitLevelName": "贵州移动1",
                                     "unitName": "贵州移动1"
                                 }
-                            ]
+                            ],
+                            "group1": [
+                                {
+                                    "distinguishedName": "运维群组@f2637ec1-d3be-4076-8dde-df88892cb4da@G",
+                                    "id": "f2637ec1-d3be-4076-8dde-df88892cb4da",
+                                    "name": "运维群组"
+                                }
+                            ],
+                            "department1": [
+                                {
+                                    "distinguishedName": "南京基地@9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec@U",
+                                    "id": "9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec",
+                                    "levelName": "兰德纵横/南京基地",
+                                    "name": "南京基地"
+                                }
+                            ],
                         }
                     }
                 }
