@@ -1127,14 +1127,21 @@ MWF.xApplication.Selector.Person = new Class({
                     this.selectedItems.push(selecteditem);
                     if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(v, selecteditem);
                 }else if( typeOf(v)==="string" ){
-                    this._getItem(function(json){
+                    var fun = function(json){
                         if( !json || !json.data )return;
                         this.options.values[i] = json.data;
                         json.data.isFromValues = true;
                         var selecteditem = this._newItemSelected(json.data, this, null);
                         this.selectedItems.push(selecteditem);
                         if(this.addToSelectedItemsMap)this.addToSelectedItemsMap(json.data, selecteditem);
-                    }.bind(this), null, v, false);
+                    }.bind(this);
+                    if( this.options.resultType === "person" && this.selectType === "identity" && v.split("@").getLast().toLowerCase() === "p" ){
+                        this.orgAction.getPerson(function(json){
+                            fun(json);
+                        }.bind(this), null, v, false);
+                    }else{
+                        this._getItem(fun, null, v, false);
+                    }
                 }
                 // this._getItem(function(json){
                 // 	this.selectedItems.push(this._newItemSelected(json.data, this, null));
