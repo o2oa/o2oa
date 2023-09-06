@@ -26,9 +26,8 @@ public class ExceptionAccessDenied extends LanguagePromptException {
 		this.setLanguageKey(this.getClass().getName() + "_1");
 	}
 
-	public ExceptionAccessDenied(EffectivePerson effectivePerson, String message) {
-		super(defaultMessage, effectivePerson.getDistinguishedName(), Objects.toString(message, ""));
-		this.setLanguageKey(this.getClass().getName() + "_2");
+	public ExceptionAccessDenied(EffectivePerson effectivePerson, String flag) {
+		super("用户:{} 访问对象:{}, 权限不足.", effectivePerson.getDistinguishedName(), Objects.toString(flag, ""));
 	}
 
 	public ExceptionAccessDenied(String person, String flag) {
