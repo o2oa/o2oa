@@ -1120,7 +1120,6 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         }.bind(this));
     },
     showEmpowerDlg: function (callback) {
-
         var empowerNode = new Element("div.o2flow-empower-node");
         empowerNode.loadCss( this.flow.path + this.flow.options.style + "/style.css" );
         var empowerTitleNode = new Element("div.o2flow-empower-titleNode", {
@@ -1178,7 +1177,8 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
             //"container" : this.node,
             "width": width + 40, //600,
             "height": "auto", //dlgHeight,
-            "mark": false,
+            "mark": true,
+            "zindex": 1001,
             "onPostShow": function () {
                 if (this.nodeWidth)this.node.setStyle("width", this.nodeWidth + "px");
                 if (this.nodeHeight)this.node.setStyle("height", this.nodeHeight + "px");
