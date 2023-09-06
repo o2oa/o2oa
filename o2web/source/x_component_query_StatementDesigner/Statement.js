@@ -198,6 +198,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 default:
                     if(this.jpqlEditor)this.jpqlEditor.resize();
             }
+            this.loadEditor();
         }.bind(this))
 
         this.tabCountNode = Element("div");
@@ -223,6 +224,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 default:
                     if( this.jpqlCountEditor )this.jpqlCountEditor.resize();
             }
+            this.loadEditor();
         }.bind(this))
 
         // this.tabSqlNode = Element("div");
@@ -907,8 +909,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }.bind(this));
     },
     addFilterSample: function(){
-        var filterList = this.filterListEditor.editor.getValue();
-        filterList = JSON.parse( filterList );
+        var filterList = this.filterListEditor.editor.getValue() || [];
+        try{
+            filterList = JSON.parse( filterList );
+        }catch (e) {
+            filterList = [];
+        }
         filterList.push({
             "path": ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o.title",
             "comparison":"like",
@@ -917,8 +923,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         });
         this.filterListEditor.editor.setValue( JSON.stringify(filterList, null, 4) );
 
-        var parameter = this.jsonEditor.editor.getValue();
-        parameter = JSON.parse( parameter );
+        var parameter = this.jsonEditor.editor.getValue() || {};
+        try{
+            parameter = JSON.parse( parameter );
+        }catch (e) {
+            parameter = {};
+        }
         parameter[ ["sql", "sqlScript"].contains(this.json.format) ? "xtitle" : "o_title" ] = "%关于%";
         this.jsonEditor.editor.setValue( JSON.stringify(parameter, null, 4) );
 

@@ -1045,7 +1045,7 @@ o2.xApplication.systemconfig.LP = {
         "searchMaxPageSize": "Maximum number of search pages per page",
         "searchMaxPageSizeInfo": "The maximum number of search results per page",
 
-        "moreLikeThisMaxSize": "Maximum number of associated documents to return",
+        "moreLikeThisMaxSize": "Maximum number of related documents to return",
         "moreLikeThisMaxSizeInfo": "The maximum number of related documents retrieved",
 
         "workIndexAttachment": "Whether to index the attachment of the document in circulation",
