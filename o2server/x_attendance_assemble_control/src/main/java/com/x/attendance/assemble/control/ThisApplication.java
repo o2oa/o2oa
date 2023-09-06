@@ -1,5 +1,8 @@
 package com.x.attendance.assemble.control;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.attendance.assemble.control.processor.monitor.MonitorFileDataOpt;
@@ -43,6 +46,9 @@ public class ThisApplication {
 
     // V2
     public static final QueueAttendanceV2Detail queueV2Detail = new QueueAttendanceV2Detail();
+    
+    // 同步执行器  这里还有集群服务器的问题
+    public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public static void init() throws Exception {
         try {
@@ -89,6 +95,7 @@ public class ThisApplication {
             CacheManager.shutdown();
             DataProcessThreadFactory.getInstance().showdown();
             MonitorFileDataOpt.stop();
+            executor.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }
