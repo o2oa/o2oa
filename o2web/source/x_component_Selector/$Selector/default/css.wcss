@@ -256,20 +256,33 @@
 	},
 	"searchInputDiv": {
 		"height": "30px",
-		"border-bottom": "1px solid #999"
+		"border-bottom": "1px solid #999",
+		"position": "relative"
 	},
 	"searchInput": {
-		"width": "325px",
+		"width": "303px",
 		"height": "24px",
 		"border": "0px",
 		"margin": "3px",
-		"outline": "none"
+		"outline": "none",
+		"padding-right" : "22px"
 	},
 	"searchInputSingle": {
-		"width": "325px",
+		"width": "303px",
 		"height": "24px",
 		"border": "0px",
-		"margin": "3px"
+		"margin": "3px",
+		"padding-right" : "22px"
+	},
+	"searchCancelAction": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/cancel.png) center center / 14px 14px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "0px",
+		"top": "0px",
+		"height": "28px",
+		"width": "22px",
+		"cursor": "pointer",
+		"display": "none"
 	},
 	"letterAreaMobileNode": {
         "padding": "0px 9px",

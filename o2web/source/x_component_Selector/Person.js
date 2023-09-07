@@ -956,6 +956,12 @@ MWF.xApplication.Selector.Person = new Class({
             "placeholder" : MWF.SelectorLP.searchDescription,
             "type": "text"
         }).inject(this.searchInputDiv);
+
+        if( this.css.searchCancelAction ){
+            this.searchCancelAction = new Element("div.searchCancelAction", {
+                "styles": this.css.searchCancelAction
+            }).inject( this.searchInputDiv);
+        }
         this.initSearchInput();
 
         if( this.options.hasLetter ){
@@ -1158,16 +1164,28 @@ MWF.xApplication.Selector.Person = new Class({
                 }.bind(this), 800);
 
                 this.selectedSearchInput.store("searchTimer", iTimerID);
+                if(this.selectedSearchCancelAction)this.selectedSearchCancelAction.show();
             }.bind(this),
             "change": function(e){
                 var key = this.selectedSearchInput.get("value");
                 if (!key) this.selectedSearch();
+                if(this.selectedSearchCancelAction)this.selectedSearchCancelAction[ key ? "show" : "hide" ]();
             }.bind(this),
             "blur": function(){
                 var key = this.selectedSearchInput.get("value");
                 if (!key) this.selectedSearch();
+                if(this.selectedSearchCancelAction)this.selectedSearchCancelAction[ key ? "show" : "hide" ]();
             }.bind(this)
         });
+
+        if( this.selectedSearchCancelAction && this.selectedSearchInput ){
+            this.selectedSearchCancelAction.addEvent("click", function () {
+                this.selectedSearchInput.set("value", "");
+                this.selectedSearchInput.focus();
+                this.selectedSearch();
+                this.selectedSearchCancelAction.hide();
+            }.bind(this))
+        }
     },
 
     selectedSearch: function(){
@@ -1248,6 +1266,12 @@ MWF.xApplication.Selector.Person = new Class({
                 "placeholder" : MWF.SelectorLP.searchDescription,
                 "type": "text"
             }).inject(this.selectedSearchInputDiv);
+
+            if( this.css.searchCancelAction ){
+                this.selectedSearchCancelAction = new Element("div.selectedSearchCancelAction", {
+                    "styles": this.css.searchCancelAction
+                }).inject( this.selectedSearchInputDiv);
+            }
             this.initSelectedSearchInput();
         }
 
@@ -2251,6 +2275,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.checkTextNodeIndent(this.textNode, this.selector.css.selectorItemTextNode_selected);
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.addClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
+            }
             if ((this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer) && this.selector.css.selectorItemActionNode_single_selected) {
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_single_selected);
             }
@@ -2306,11 +2334,19 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
         if (!this.isSelected){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.removeClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
+            }
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.addClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
+            }
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
             }
@@ -2333,6 +2369,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+                if( this.selector.options.style === "flow" ){
+                    this.actionNode.addClass("o2icon-checkbox");
+                    if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
+                }
                 if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
@@ -2382,6 +2422,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+                if( this.selector.options.style === "flow" ){
+                    this.actionNode.addClass("o2icon-checkbox");
+                    if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
+                }
                 if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
@@ -2412,6 +2456,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.removeClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
+            }
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
             }
@@ -2439,6 +2487,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( itemSearch.textNode, this.selector.css.selectorItemTextNode );
 
                     itemSearch.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+                    if( this.selector.options.style === "flow" ){
+                        this.actionNode.removeClass("o2icon-checkbox");
+                        if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
+                    }
                     if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         itemSearch.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
@@ -2477,6 +2529,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( item.textNode, this.selector.css.selectorItemTextNode );
 
                     item.actionNode.setStyles(this.selector.css.selectorItemActionNode);
+                    if( this.selector.options.style === "flow" ){
+                        this.actionNode.removeClass("o2icon-checkbox");
+                        if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
+                    }
                     if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
@@ -2620,12 +2676,20 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (!this.isSelected){
             var styles = this.selector.css.selectorSelectedItemActionNode || this.selector.css.selectorItemActionNode;
             this.actionNode.setStyles(styles);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.removeClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.removeClass("mainColor_color");
+            }
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) &&
                 ( this.selector.css.selectorSelectedItemActionNode_single || this.selector.css.selectorItemActionNode_single )  ){
                 this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single || this.selector.css.selectorItemActionNode_single );
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
+            if( this.selector.options.style === "flow" ){
+                this.actionNode.addClass("o2icon-checkbox");
+                if( this.selector.options.mainColorEnable )this.actionNode.addClass("mainColor_color");
+            }
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
             }

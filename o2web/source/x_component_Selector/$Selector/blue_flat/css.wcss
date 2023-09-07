@@ -242,18 +242,19 @@
 		"line-height": "40px",
 		"font-size": "14px",
 		"color": "#666666",
-        "background": "transparent"
+        "background": "transparent",
+		"position": "relative"
 	},
 	"searchInput": {
-	  	"width" : "96%",
+	  	"width" : "calc( 100% - 46px )",
 		"height": "24px",
-		"border": "0px",
 		"margin-top": "8px",
 		"font-size": "14px",
-	  	"padding-left" : "5px",
-	  	"background" : "url(../x_component_Selector/$Selector/process/icon/search.png) 96% center no-repeat rgb(255, 255, 255)",
+	  	"background" : "url(../x_component_Selector/$Selector/process/icon/search.png) 5px center no-repeat rgb(255, 255, 255)",
 	  	"border" : "1px solid #e2e3e7",
 	  	"border-radius" : "2px",
+		"padding-right" : "22px",
+		"padding-left": "22px",
 		"outline": "none"
 	},
 	"searchInputSingle": {
@@ -261,6 +262,16 @@
 		"height": "22px",
 		"border": "0px",
 		"margin": "3px"
+	},
+	"searchCancelAction": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/cancel.png) center center / 12px 12px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"right": "6px",
+		"top": "10px",
+		"height": "22px",
+		"width": "22px",
+		"cursor": "pointer",
+		"display": "none"
 	},
 	"letterAreaMobileNode": {
         "padding": "0px 9px",
