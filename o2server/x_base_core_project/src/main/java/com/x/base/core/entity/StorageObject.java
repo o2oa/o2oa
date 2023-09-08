@@ -27,6 +27,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
@@ -492,10 +493,6 @@ public abstract class StorageObject extends SliceJpaObject {
 	private long hdfsUpdateContent(StorageMapping mapping, InputStream input) throws Exception {
 		try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
 				.get(hdfsConfiguration(mapping))) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println(getPrefix(mapping));
-			System.out.println(this.path());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			org.apache.hadoop.fs.Path path = new org.apache.hadoop.fs.Path(getPrefix(mapping), this.path());
 			if (fileSystem.exists(path)) {
 				fileSystem.delete(path, false);
@@ -627,6 +624,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		configuration.set("fs.default.name",
 				StorageProtocol.hdfs + "://" + mapping.getHost() + ":" + mapping.getPort());
 		configuration.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+		configuration.set("fs.hdfs.impl.disable.cache", BooleanUtils.TRUE);
 		return configuration;
 	}
 
@@ -648,27 +646,6 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-//	private Long computeIfHandleEncrypt(InputStream input, OutputStream output)
-//			throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-//		if (StringUtils.isNotBlank(this.getEncryptKey())) {
-//			Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
-//			cipher.init(Cipher.ENCRYPT_MODE, computeIfEncryptKeyAbsent());
-//			try (CipherOutputStream cipherOutputStream = new CipherOutputStream(output, cipher)) {
-//				byte[] buffer = new byte[4096];
-//				int bytesRead;
-//				long length = 0L;
-//				while ((bytesRead = input.read(buffer)) != -1) {
-//					cipherOutputStream.write(buffer, 0, bytesRead);
-//					length += bytesRead;
-//				}
-//				return length;
-//			}
-//
-//		} else {
-//			return IOUtils.copyLarge(input, output);
-//		}
-//	}
-
 	private Long computeIfHandleDecrypt(InputStream inputStream, OutputStream outputStream) throws IOException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 		byte[] iv = new byte[12]; // Read the IV from the encrypted stream
@@ -689,26 +666,6 @@ public abstract class StorageObject extends SliceJpaObject {
 			return length;
 		}
 	}
-
-//	private Long computeIfHandleDecrypt(InputStream input, OutputStream output)
-//			throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-//		if (StringUtils.isNotBlank(this.getEncryptKey())) {
-//			Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
-//			cipher.init(Cipher.DECRYPT_MODE, computeIfEncryptKeyAbsent());
-//			try (CipherInputStream cipherInputStream = new CipherInputStream(input, cipher)) {
-//				byte[] buffer = new byte[4096];
-//				int bytesRead;
-//				long length = 0L;
-//				while ((bytesRead = cipherInputStream.read(buffer)) != -1) {
-//					output.write(buffer, 0, bytesRead);
-//					length += bytesRead;
-//				}
-//				return length;
-//			}
-//		} else {
-//			return IOUtils.copyLarge(input, output);
-//		}
-//	}
 
 	private SecretKey computeIfEncryptKeyAbsent() {
 		return new SecretKeySpec(this.getEncryptKey().getBytes(), CRYPTOGRAPHIC_ALGORITHM_AES);
