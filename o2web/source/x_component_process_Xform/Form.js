@@ -2434,7 +2434,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return null;
     },
 
-    flowWork: function( defaultRoute ){
+    flowWork: function ( defaultRoute ) {
+        if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
+            var flowWorkFun = function () {
+                this.removeEvent( "afterLoad", flowWorkFun );
+                this._flowWork( defaultRoute )
+            }.bind(this);
+            this.addEvent("afterLoad", flowWorkFun)
+        }else{
+            this._flowWork( defaultRoute );
+        }
+    },
+    _flowWork: function( defaultRoute ){
         var _self = this;
 
         if (!this.businessData.work.startTime) {
