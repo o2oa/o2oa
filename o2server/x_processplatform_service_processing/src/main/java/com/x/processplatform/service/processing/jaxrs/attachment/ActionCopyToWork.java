@@ -14,6 +14,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -99,7 +100,7 @@ class ActionCopyToWork extends BaseAction {
 						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
 								.get(Attachment.class, o.getStorage());
 						byte[] bs = o.readContent(fromStorageMapping);
-						attachment.saveContent(mapping, bs, w.getName());
+						attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncryptEnable());
 					}
 					adds.add(attachment);
 				}

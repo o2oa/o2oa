@@ -54,7 +54,7 @@ class ActionManageBatchUpdate extends BaseAction {
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
 						emc.beginTransaction(Attachment.class);
-						attachment.updateContent(mapping, bytes, fileName);
+						attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
 						if (BooleanUtils.isTrue(Config.query().getExtractImage())
 								&& ExtractTextTools.supportImage(attachment.getName())
 								&& ExtractTextTools.available(bytes)) {

@@ -8,6 +8,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -52,7 +53,7 @@ class ActionUploadCallback extends BaseAction {
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
-			attachment.saveContent(mapping, bytes, fileName);
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			// emc.beginTransaction(Work.class);
 			emc.beginTransaction(Attachment.class);

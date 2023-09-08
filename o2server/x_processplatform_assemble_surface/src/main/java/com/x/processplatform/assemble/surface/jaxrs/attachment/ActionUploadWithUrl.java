@@ -111,7 +111,7 @@ class ActionUploadWithUrl extends BaseAction {
 			this.verifyConstraint(bytes.length, fileName, null);
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-			attachment.saveContent(mapping, bytes, fileName);
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			if (BooleanUtils.isTrue(Config.query().getExtractImage())
 					&& ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {

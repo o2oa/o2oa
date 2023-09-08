@@ -98,7 +98,7 @@ public class ActionFileUploadWithUrl extends BaseAction {
 					attachment.getText());
 		}
 
-		attachment.saveContent(mapping, bytes, wi.getFileName());
+		attachment.saveContent(mapping, bytes, wi.getFileName(), Config.general().getStorageEncryptEnable());
 		attachment = fileInfoServiceAdv.saveAttachment( wi.getDocId(), attachment );
 
 		CacheManager.notify( FileInfo.class );

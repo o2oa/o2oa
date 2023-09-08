@@ -66,9 +66,12 @@ class ActionUploadWithWork extends BaseAction {
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
-			attachment.saveContent(mapping, bytes, fileName);
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(Config.general().getStorageEncryptEnable());
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
 					&& ExtractTextTools.available(bytes)) {
 				attachment.setText(ExtractTextTools.image(bytes));

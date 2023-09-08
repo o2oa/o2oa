@@ -6,6 +6,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -54,7 +55,7 @@ class ActionPreviewImage extends BaseAction {
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,
 					effectivePerson.getDistinguishedName());
-			generalFile.saveContent(gfMapping, bytes, name);
+			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncryptEnable());
 			emc.beginTransaction(GeneralFile.class);
 			emc.persist(generalFile, CheckPersistType.all);
 			emc.commit();

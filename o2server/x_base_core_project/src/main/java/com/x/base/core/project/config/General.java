@@ -34,11 +34,11 @@ public class General extends ConfigObject {
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
 	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
 			File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName(),
-			FileWriter.class.getName(), java.lang.System.class.getName(), Paths.class.getName(),
-			Files.class.getName(), FileOutputStream.class.getName(), RandomAccessFile.class.getName(),
-			Socket.class.getName(), ServerSocket.class.getName(), ZipFile.class.getName(),
-			ZipInputStream.class.getName(), ZipOutputStream.class.getName(), ScriptEngine.class.getName(),
-			ScriptEngineManager.class.getName(), URL.class.getName(), URI.class.getName());
+			FileWriter.class.getName(), java.lang.System.class.getName(), Paths.class.getName(), Files.class.getName(),
+			FileOutputStream.class.getName(), RandomAccessFile.class.getName(), Socket.class.getName(),
+			ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
+			ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
+			URL.class.getName(), URI.class.getName());
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -54,6 +54,7 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
+	private static final Boolean DEFAULT_STORAGEENCRYPTENABLE = false;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -73,6 +74,7 @@ public class General extends ConfigObject {
 		o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
 		o.httpWhiteList = DEFAULT_HTTPWHITELIST;
 		o.attachmentConfig = new AttachmentConfig();
+		o.storageEncryptEnable = DEFAULT_STORAGEENCRYPTENABLE;
 		return o;
 	}
 
@@ -126,6 +128,13 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("外部http接口服务地址白名单，*代表不限制.")
 	private List<String> httpWhiteList;
+
+	@FieldDescribe("启用存储加密.")
+	private Boolean storageEncryptEnable;
+
+	public Boolean getStorageEncryptEnable() {
+		return BooleanUtils.isTrue(storageEncryptEnable);
+	}
 
 	public String getIdFormatCheckRegular() {
 		return this.idFormatCheckRegular;
