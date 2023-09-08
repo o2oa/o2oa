@@ -1762,7 +1762,6 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
         this.fireEvent("select", this.lineWidth )
     },
     drawPreview : function( lineWidth ){
-        debugger;
         if( !lineWidth )lineWidth = this.options.lineWidth || 20;
         var canvas = this.canvas;
         var ctx = this.ctx;
