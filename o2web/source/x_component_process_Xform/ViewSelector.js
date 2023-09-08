@@ -366,6 +366,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     "width": width,
                     "height": height,
                     "html": "",
+                    "maxHeightPercent": layout.mobile ? "100%" : "98%",
                     "maskNode": layout.mobile?$(document.body) : this.form.app.content,
                     "container": layout.mobile?$(document.body) : this.form.app.content,
                     "buttonList": [
