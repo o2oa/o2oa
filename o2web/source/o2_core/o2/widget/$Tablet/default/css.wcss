@@ -61,6 +61,12 @@
         "padding": "23px 5px 5px 5px",
         "cursor": "pointer"
     },
+    "toolItemIconfont": {
+        "margin": "15px 3px 10px 3px",
+        "color": "#666",
+        "float": "left",
+        "cursor": "pointer"
+    },
     "toolRightItem": {
         "margin": "15px 10px 10px 3px",
         "color": "#666",

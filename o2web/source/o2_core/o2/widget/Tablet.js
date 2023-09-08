@@ -8,6 +8,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "style": "default",
         "path": o2.session.path+"/widget/$Tablet/",
 
+        "iconfontEnable": false,
+        "mainColorEnable": false,
+
         "contentWidth" : 0, //绘图区域宽度，不制定则基础 this.node的宽度
         "contentHeight" : 0, //绘图区域高度，不制定则基础 this.node的高度 - 操作条高度
 
@@ -32,6 +35,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "reset",
             "cancel"
         ],
+
         "toolHidden": [],
         "description" : "", //描述文字
         "imageSrc": "",
@@ -100,6 +104,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         };
 
         this._loadCss();
+
+        if( this.options.iconfontEnable ){
+            this.node.loadCss(this.path + this.options.style+"/style.css");
+        }
+
         this.fireEvent("init");
     },
     load: function(  ){
@@ -1100,7 +1109,7 @@ o2.widget.Tablet.Toolbar = new Class({
         items = items.clean();
 
         var html = "";
-        var style = "toolItem";
+        var style = this.tablet.options.iconfontEnable ? "toolItemIconfont" : "toolItem";
         items.each( function( item ){
             switch( item ){
                 case "|":
@@ -1168,7 +1177,14 @@ o2.widget.Tablet.Toolbar = new Class({
             var item =  el.get("item");
             if ( item ) {
                 this.items[ item ] = el;
-                el.setStyle("background-image","url("+ imagePath + item +"_normal.png)");
+                if( _self.tablet.options.iconfontEnable ){
+                    var text = el.get("text");
+                    el.set("text", "");
+                    new Element("i.o2icon-"+item).inject( el, "top" );
+                    new Element("div", {text: text}).inject( el );
+                }else{
+                    el.setStyle("background-image","url("+ imagePath + item +"_normal.png)");
+                }
                 el.addEvents({
                     mouseover : function(){
                         _self._setItemNodeActive(this.el);
@@ -1273,8 +1289,12 @@ o2.widget.Tablet.Toolbar = new Class({
             if( ["fontSize","fontFamily"].contains( itemName ) ){
                 itemNode.hide();
             }else{
-                itemNode.setStyles( this.css.toolItem_disable );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+                if( this.tablet.options.iconfontEnable ){
+
+                }else {
+                    itemNode.setStyles(this.css.toolItem_disable);
+                    itemNode.setStyle("background-image", "url(" + this.imagePath + item + "_disable.png)");
+                }
             }
         }
     },
@@ -1289,8 +1309,12 @@ o2.widget.Tablet.Toolbar = new Class({
                     }
                 }
             }else{
-                itemNode.setStyles( this.css.toolItem_over );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+                if( this.tablet.options.iconfontEnable ){
+
+                }else {
+                    itemNode.setStyles(this.css.toolItem_over);
+                    itemNode.setStyle("background-image", "url(" + this.imagePath + item + "_active.png)");
+                }
             }
         }
     },
@@ -1305,9 +1329,13 @@ o2.widget.Tablet.Toolbar = new Class({
                     }
                 }
             }else{
-                var style = itemNode.get("styles");
-                itemNode.setStyles( this.css[style] );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+                if( this.tablet.options.iconfontEnable ){
+
+                }else{
+                    var style = itemNode.get("styles");
+                    itemNode.setStyles( this.css[style] );
+                    itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+                }
             }
         }
     }

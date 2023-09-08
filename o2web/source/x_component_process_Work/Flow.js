@@ -2631,6 +2631,8 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 "toolHidden": this.options.tabletToolHidden || [],
                 "contentWidth": this.options.tabletWidth || 0,
                 "contentHeight": this.options.tabletHeight || 0,
+                "iconfontEnable": true,
+                "mainColorEnable": this.flow.options.mainColorEnable,
                 "onSave": function (base64code, base64Image, imageFile) {
                     if( !this.tablet.isBlank() ){
                         this.handwritingFile = imageFile;
