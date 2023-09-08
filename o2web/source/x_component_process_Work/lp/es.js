@@ -26,6 +26,7 @@ MWF.xApplication.process.Work.LP = {
     "reroute": "Reenrutar",
     "addSplit": "Agregar bifurcación",
     "rollback": "Retorno del flujo de trabajo",
+    "goBack": "volver",
 
     "phone": "Teléfono móvil",
     "mail": "Correo electrónico",
@@ -77,6 +78,21 @@ MWF.xApplication.process.Work.LP = {
     "selectIdentityInfo": "Se detectó que tiene múltiples tareas pendientes con diferentes identidades. Por favor seleccione una identidad para procesar esta tarea",
 
     "org": "Organización",
-    "duty": "Posición"
+    "duty": "Posición",
+
+    "flowActions": {
+        "addTask": "Agregar firma",
+        "restablecer": "restablecer",
+        "proceso": "enviar",
+    },
+    "opinion": "opinión",
+    "addTaskPerson": "Añadido",
+    "inputOpinionNote": "Por favor escribe tu opinión aquí",
+    "resetTo": "restablecer a",
+    "keepTask": "Guardar mis tareas pendientes",
+    "quickSelect": "Selección Rápida",
+    "empowerTo": "autorizar a",
+    "selectAll": "Seleccionar todo",
+    "noQuickSelectDataNote": "El sistema no ha registrado los datos que usted seleccionó en el nodo actual, seleccione manualmente esta vez."
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

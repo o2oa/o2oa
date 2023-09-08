@@ -92,6 +92,7 @@ MWF.xApplication.process.Work.LP = {
     "keepTask": "保留我的待办",
     "quickSelect": "快速选择",
     "empowerTo": "授权给",
-    "selectAll": "全选"
+    "selectAll": "全选",
+    "noQuickSelectDataNote": "系统还没有记录到您在当前节点选择的数据，这次请先手动选择。"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

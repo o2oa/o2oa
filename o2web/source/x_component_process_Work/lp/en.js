@@ -24,8 +24,9 @@ MWF.xApplication.process.Work.LP = {
     "myfile": "Myfile",
     "reset": "Reset",
     "reroute": "Reroute",
-    "addSplit": "Addsplit",
+    "addSplit": "AddSplit",
     "rollback": "Rollback",
+    "goBack": "GoBack",
 
     "phone": "Phone",
     "mail": "Mail",
@@ -77,6 +78,21 @@ MWF.xApplication.process.Work.LP = {
     "selectIdentityInfo": "It is detected that you have multiple pending identities for the current job, please select an identity to handle this job",
 
     "org": "Unit",
-    "duty": "Duty"
+    "duty": "Duty",
+
+    "flowActions": {
+         "addTask": "Add signature",
+         "reset": "reset",
+         "process": "submit",
+     },
+     "opinion": "opinion",
+     "addTaskPerson": "Addee",
+     "inputOpinionNote": "Please fill in your opinion here",
+     "resetTo": "reset to",
+     "keepTask": "Keep my to-do",
+     "quickSelect": "QuickSelect",
+     "empowerTo": "authorize to",
+     "selectAll": "Select all",
+     "noQuickSelectDataNote": "The system has not recorded the data you selected at the current node. Please select manually this time."
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;
