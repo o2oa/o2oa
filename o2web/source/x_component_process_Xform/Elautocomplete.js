@@ -66,12 +66,17 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     },
     _createEventFunction: function(methods, k){
         methods["$loadElEvent_"+k.camelCase()] = function(){
-            this.validationMode();
-            if (k==="change") this._setBusinessData(this.getInputData());
+            var flag = true;
+            if (k==="change") {
+                this.validationMode();
+                this._setBusinessData(this.getInputData());
+                if( !this.validation() )flag = false;
+            }
             if (this.json.events && this.json.events[k] && this.json.events[k].code){
                 this.form.Macro.fire(this.json.events[k].code, this, arguments);
             }
             if(k==="select"){
+                this.validationMode();
                 var arr = [];
                 var d = this._getBusinessData();
                 if( arguments[0] && arguments[0].value )arr.push(arguments[0].value);
@@ -81,7 +86,9 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
                     }
                 }
                 this._setBusinessData(arr[0]);
+                this.validation();
             }
+            if( flag )this.fireEvent(k, arguments);
         }.bind(this);
     },
     appendVueExtend: function(app){
