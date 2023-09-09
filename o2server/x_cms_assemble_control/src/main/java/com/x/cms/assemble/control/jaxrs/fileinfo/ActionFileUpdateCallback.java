@@ -112,7 +112,7 @@ public class ActionFileUpdateCallback extends BaseAction {
 							attachment.getText());
 				}
 
-				attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
+				attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 				attachment = fileInfoServiceAdv.updateAttachment(docId, old_attId, attachment, mapping);
 //
 //				List<String> keys = new ArrayList<>();

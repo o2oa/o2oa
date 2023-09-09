@@ -60,7 +60,7 @@ public class ActionFileUpload extends BaseAction {
 					attachment.getText());
 		}
 
-		attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
+		attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 		attachment = fileInfoServiceAdv.saveAttachment( docId, attachment );
 
 		CacheManager.notify( FileInfo.class );

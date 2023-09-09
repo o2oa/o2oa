@@ -100,7 +100,7 @@ class ActionCopyToWork extends BaseAction {
 						StorageMapping fromStorageMapping = ThisApplication.context().storageMappings()
 								.get(Attachment.class, o.getStorage());
 						byte[] bs = o.readContent(fromStorageMapping);
-						attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncryptEnable());
+						attachment.saveContent(mapping, bs, w.getName(), Config.general().getStorageEncrypt());
 					}
 					adds.add(attachment);
 				}

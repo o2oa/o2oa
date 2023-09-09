@@ -252,7 +252,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
 							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
-									Config.general().getStorageEncryptEnable());
+									Config.general().getStorageEncrypt());
 							if (attachment.getOrderNumber() != null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}

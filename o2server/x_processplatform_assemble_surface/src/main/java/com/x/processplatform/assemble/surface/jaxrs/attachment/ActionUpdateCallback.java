@@ -54,7 +54,7 @@ class ActionUpdateCallback extends BaseAction {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
 			emc.beginTransaction(Attachment.class);
-			attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
+			attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			emc.commit();
 			WoObject woObject = new WoObject();

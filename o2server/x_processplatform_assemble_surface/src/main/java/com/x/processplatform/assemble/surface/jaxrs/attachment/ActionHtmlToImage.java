@@ -99,7 +99,7 @@ class ActionHtmlToImage extends BaseAction {
 		if (work != null) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, wi.getSite());
-			attachment.saveContent(mapping, bytes, name, Config.general().getStorageEncryptEnable());
+			attachment.saveContent(mapping, bytes, name, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, name));
 			emc.beginTransaction(Attachment.class);
 			emc.persist(attachment, CheckPersistType.all);
@@ -110,7 +110,7 @@ class ActionHtmlToImage extends BaseAction {
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,
 					effectivePerson.getDistinguishedName());
-			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncryptEnable());
+			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncrypt());
 			emc.beginTransaction(GeneralFile.class);
 			emc.persist(generalFile, CheckPersistType.all);
 			emc.commit();

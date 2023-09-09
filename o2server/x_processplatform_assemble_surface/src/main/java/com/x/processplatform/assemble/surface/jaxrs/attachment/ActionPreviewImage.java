@@ -55,7 +55,7 @@ class ActionPreviewImage extends BaseAction {
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,
 					effectivePerson.getDistinguishedName());
-			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncryptEnable());
+			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncrypt());
 			emc.beginTransaction(GeneralFile.class);
 			emc.persist(generalFile, CheckPersistType.all);
 			emc.commit();

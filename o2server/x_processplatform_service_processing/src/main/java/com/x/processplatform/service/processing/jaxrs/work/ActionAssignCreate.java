@@ -145,7 +145,7 @@ class ActionAssignCreate extends BaseAction {
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
 		} else {
 			toAttachment.setOrderNumber(formAttachment.getOrderNumber());
-			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName(), Config.general().getStorageEncryptEnable());
+			toAttachment.saveContent(toMapping, o.readContent(fromMapping), o.getName(), Config.general().getStorageEncrypt());
 		}
 	}
 

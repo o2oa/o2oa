@@ -27,6 +27,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
@@ -148,18 +149,18 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	public Long saveContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
 		try (InputStream input = new ByteArrayInputStream(bytes)) {
-			return saveContent(mapping, input, name, false);
+			return saveContent(mapping, input, name, 0);
 		}
 	}
 
-	public Long saveContent(StorageMapping mapping, byte[] bytes, String name, boolean encrypt) throws Exception {
+	public Long saveContent(StorageMapping mapping, byte[] bytes, String name, Integer encrypt) throws Exception {
 		try (InputStream input = new ByteArrayInputStream(bytes)) {
 			return saveContent(mapping, input, name, encrypt);
 		}
 	}
 
 	public Long saveContent(StorageMapping mapping, InputStream input, String name) throws Exception {
-		return this.saveContent(mapping, input, name, false);
+		return this.saveContent(mapping, input, name, 0);
 	}
 
 	/**
@@ -172,44 +173,44 @@ public abstract class StorageObject extends SliceJpaObject {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long saveContent(StorageMapping mapping, InputStream input, String name, boolean encrypt) throws Exception {
+	public Long saveContent(StorageMapping mapping, InputStream input, String name, Integer encrypt) throws Exception {
 		this.setDeepPath(mapping.getDeepPath());
 		return this.updateContent(mapping, input, name, encrypt);
 	}
 
 	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
 		try (InputStream input = new ByteArrayInputStream(bytes)) {
-			return updateContent(mapping, input, null, false);
+			return updateContent(mapping, input, null, 0);
 		}
 	}
 
 	public Long updateContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
 		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
-			return updateContent(mapping, input, name, false);
+			return updateContent(mapping, input, name, 0);
 		}
 	}
 
-	public Long updateContent(StorageMapping mapping, byte[] bytes, boolean encrypt) throws Exception {
+	public Long updateContent(StorageMapping mapping, byte[] bytes, Integer encrypt) throws Exception {
 		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
 			return updateContent(mapping, input, null, encrypt);
 		}
 	}
 
-	public Long updateContent(StorageMapping mapping, byte[] bytes, String name, boolean encrypt) throws Exception {
+	public Long updateContent(StorageMapping mapping, byte[] bytes, String name, Integer encrypt) throws Exception {
 		try (ByteArrayInputStream input = new ByteArrayInputStream(bytes)) {
 			return updateContent(mapping, input, name, encrypt);
 		}
 	}
 
 	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
-		return updateContent(mapping, input, null, false);
+		return updateContent(mapping, input, null, 0);
 	}
 
 	public Long updateContent(StorageMapping mapping, InputStream input, String name) throws Exception {
-		return updateContent(mapping, input, name, false);
+		return updateContent(mapping, input, name, 0);
 	}
 
-	public Long updateContent(StorageMapping mapping, InputStream input, boolean encrypt) throws Exception {
+	public Long updateContent(StorageMapping mapping, InputStream input, Integer encrypt) throws Exception {
 		return updateContent(mapping, input, null, encrypt);
 	}
 
@@ -223,15 +224,16 @@ public abstract class StorageObject extends SliceJpaObject {
 	 * @return
 	 * @throws Exception
 	 */
-	public Long updateContent(StorageMapping mapping, InputStream input, String name, boolean encrypt)
+	public Long updateContent(StorageMapping mapping, InputStream input, String name, Integer encrypt)
 			throws Exception {
+		Objects.requireNonNull(encrypt);
 		if (StringUtils.isNotEmpty(name)) {
 			this.setName(name);
 			this.setExtension(StringUtils.lowerCase(FilenameUtils.getExtension(name)));
 		}
-		if (encrypt) {
+		if ((encrypt == 1) || (encrypt == 2)) {
 			if (StringUtils.isBlank(this.getEncryptKey())) {
-				this.setEncryptKey(StringUtils.substring(StringTools.uniqueToken(), 0, 32));
+				this.setEncryptKey(encrypt.toString() + StringUtils.substring(StringTools.uniqueToken(), 0, 31));
 			}
 		} else {
 			this.setEncryptKey("");
@@ -630,6 +632,72 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	private Long computeIfHandleEncrypt(InputStream inputStream, OutputStream outputStream)
 			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		if (StringUtils.isNotBlank(this.getEncryptKey())) {
+			if (StringUtils.startsWith(this.getEncryptKey(), "1")) {
+				return encryptAES(inputStream, outputStream);
+			} else if (StringUtils.startsWith(this.getEncryptKey(), "2")) {
+				return encryptAESGCMNoPadding(inputStream, outputStream);
+			} else {
+				throw new IllegalStateException("error encrypt type.");
+			}
+		} else {
+			return IOUtils.copyLarge(inputStream, outputStream);
+		}
+	}
+
+	private Long computeIfHandleDecrypt(InputStream inputStream, OutputStream outputStream) throws IOException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+		if (StringUtils.isNotBlank(this.getEncryptKey())) {
+			if (StringUtils.startsWith(this.getEncryptKey(), "1")) {
+				return decryptAES(inputStream, outputStream);
+			} else if (StringUtils.startsWith(this.getEncryptKey(), "2")) {
+				return decryptAESGCMNoPadding(inputStream, outputStream);
+			} else {
+				throw new IllegalStateException("error encrypt type.");
+			}
+		} else {
+			return IOUtils.copyLarge(inputStream, outputStream);
+		}
+	}
+
+	private SecretKey computeIfEncryptKeyAbsent() {
+		return new SecretKeySpec(this.getEncryptKey().getBytes(), CRYPTOGRAPHIC_ALGORITHM_AES);
+	}
+
+	private Long encryptAES(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
+		cipher.init(Cipher.ENCRYPT_MODE, computeIfEncryptKeyAbsent());
+		try (CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				cipherOutputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
+	}
+
+	private Long decryptAES(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
+		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES);
+		cipher.init(Cipher.DECRYPT_MODE, computeIfEncryptKeyAbsent());
+		try (CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher)) {
+			byte[] buffer = new byte[4096];
+			int bytesRead;
+			long length = 0L;
+			while ((bytesRead = cipherInputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+				length += bytesRead;
+			}
+			return length;
+		}
+	}
+
+	private Long encryptAESGCMNoPadding(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
 		Cipher cipher = Cipher.getInstance(CRYPTOGRAPHIC_ALGORITHM_AES_GCM_NOPADDING);
 		cipher.init(Cipher.ENCRYPT_MODE, computeIfEncryptKeyAbsent());
 		byte[] iv = cipher.getIV();
@@ -646,8 +714,9 @@ public abstract class StorageObject extends SliceJpaObject {
 		}
 	}
 
-	private Long computeIfHandleDecrypt(InputStream inputStream, OutputStream outputStream) throws IOException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+	private Long decryptAESGCMNoPadding(InputStream inputStream, OutputStream outputStream)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
+			InvalidAlgorithmParameterException {
 		byte[] iv = new byte[12]; // Read the IV from the encrypted stream
 		if (12 != inputStream.read(iv)) {
 			throw new IllegalStateException("Read the IV from the encrypted stream error.");
@@ -665,10 +734,6 @@ public abstract class StorageObject extends SliceJpaObject {
 			}
 			return length;
 		}
-	}
-
-	private SecretKey computeIfEncryptKeyAbsent() {
-		return new SecretKeySpec(this.getEncryptKey().getBytes(), CRYPTOGRAPHIC_ALGORITHM_AES);
 	}
 
 }

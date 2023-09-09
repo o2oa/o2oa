@@ -261,7 +261,7 @@ class ActionRestore extends BaseAction {
 					}
 					if (null != mapping) {
 						byte[] bytes = Base64.decodeBase64(content);
-						o.updateContent(mapping, bytes, Config.general().getStorageEncryptEnable());
+						o.updateContent(mapping, bytes, Config.general().getStorageEncrypt());
 					}
 				}
 				emc.persist(o, CheckPersistType.all);

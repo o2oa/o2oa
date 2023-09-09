@@ -80,7 +80,7 @@ public class ActionFileUpdate extends BaseAction {
 		}
 
 		//文件存储
-		attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
+		attachment.updateContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 		//完成替换逻辑
 		attachment = fileInfoServiceAdv.updateAttachment( docId, old_attId, attachment, mapping );
 

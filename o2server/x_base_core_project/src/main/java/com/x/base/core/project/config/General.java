@@ -1,16 +1,5 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.Host;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -22,10 +11,27 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.Host;
 
 public class General extends ConfigObject {
 
@@ -54,7 +60,7 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
-	private static final Boolean DEFAULT_STORAGEENCRYPTENABLE = false;
+	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -74,7 +80,7 @@ public class General extends ConfigObject {
 		o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
 		o.httpWhiteList = DEFAULT_HTTPWHITELIST;
 		o.attachmentConfig = new AttachmentConfig();
-		o.storageEncryptEnable = DEFAULT_STORAGEENCRYPTENABLE;
+		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
 		return o;
 	}
 
@@ -129,11 +135,15 @@ public class General extends ConfigObject {
 	@FieldDescribe("外部http接口服务地址白名单，*代表不限制.")
 	private List<String> httpWhiteList;
 
-	@FieldDescribe("启用存储加密.")
-	private Boolean storageEncryptEnable;
+	@FieldDescribe("存储加密.1:AES,2:AES/GCM/NoPadding,空或者其他值不加密.")
+	private Integer storageEncrypt;
 
-	public Boolean getStorageEncryptEnable() {
-		return BooleanUtils.isTrue(storageEncryptEnable);
+	public Integer getStorageEncrypt() {
+		if (this.storageEncrypt == null || this.storageEncrypt < 0 || this.storageEncrypt > 2) {
+			return DEFAULT_STORAGEENCRYPT;
+		} else {
+			return this.storageEncrypt;
+		}
 	}
 
 	public String getIdFormatCheckRegular() {
@@ -205,7 +215,7 @@ public class General extends ConfigObject {
 		Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST)
 				: new HashSet<>(httpWhiteList);
 		if (httpWhiteSet.isEmpty() || httpWhiteSet.contains(DEFAULT_HTTP_WHITE)) {
-			return Collections.EMPTY_LIST;
+			return new ArrayList<>();
 		}
 		httpWhiteSet.add(Host.ROLLBACK_IPV4);
 		httpWhiteSet.add(Collect.Default_server);
@@ -240,7 +250,7 @@ public class General extends ConfigObject {
 				"xapp", "text", "zip", "rar", "mp3", "mp4", "png", "jpg", "gif");
 
 		@FieldDescribe("不允许上传的文件后缀")
-		private List<String> fileTypeExcludes = Collections.EMPTY_LIST;
+		private List<String> fileTypeExcludes = new ArrayList<>();
 
 		public Integer getFileSize() {
 			return fileSize;

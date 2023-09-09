@@ -53,7 +53,7 @@ class ActionUploadCallback extends BaseAction {
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
-			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncryptEnable());
+			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
 			attachment.setType((new Tika()).detect(bytes, fileName));
 			// emc.beginTransaction(Work.class);
 			emc.beginTransaction(Attachment.class);

@@ -243,7 +243,7 @@ public class ActionPersistPublishContent extends BaseAction {
 									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
 							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
-									Config.general().getStorageEncryptEnable());
+									Config.general().getStorageEncrypt());
 							if (attachment.getOrderNumber() != null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}
@@ -289,7 +289,7 @@ public class ActionPersistPublishContent extends BaseAction {
 							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
 									mapping_fileInfo, copyFileInfo.getName(), copyFileInfo.getSite());
 							fileInfo.saveContent(mapping_fileInfo, attachment_content, copyFileInfo.getName(),
-									Config.general().getStorageEncryptEnable());
+									Config.general().getStorageEncrypt());
 							fileInfo.setName(copyFileInfo.getName());
 							emc.check(document, CheckPersistType.all);
 							emc.persist(fileInfo, CheckPersistType.all);
