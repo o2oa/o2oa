@@ -12,28 +12,31 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class TestAESGCMNoPadding {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-	public static final String CRYPTOGRAPHIC_ALGORITHM_AES = "AES";
+public class TestAESGCMNoPadding extends TestAES {
+
 	public static final String CRYPTOGRAPHIC_ALGORITHM_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
-	public static final String KEY = "123456789abcdefg";
 
-	public static void main(String[] args) throws Exception {
-
-		String inputFile = "/data/Temp/o2server-8.1.1-linux-x64.zip";
-		String encryptedFile = "/data/Temp/en.zip";
-		String decryptedFile = "/data/Temp/de.zip";
-
+	@Test
+	void encrypt() throws Exception {
+		long length = 0;
 		try (InputStream input = Files.newInputStream(Paths.get(inputFile));
 				OutputStream output = Files.newOutputStream(Paths.get(encryptedFile))) {
-			encryptAESGCMNoPadding(input, output);
+			length = encryptAESGCMNoPadding(input, output);
 		}
+		Assertions.assertTrue(length > 0);
+	}
 
+	@Test
+	void decrypt() throws Exception {
+		long length = 0;
 		try (InputStream input = Files.newInputStream(Paths.get(encryptedFile));
 				OutputStream output = Files.newOutputStream(Paths.get(decryptedFile))) {
-			decryptAESGCMNoPadding(input, output);
+			length = decryptAESGCMNoPadding(input, output);
 		}
-
+		Assertions.assertTrue(length > 0);
 	}
 
 	private static Long encryptAESGCMNoPadding(InputStream inputStream, OutputStream outputStream) throws Exception {

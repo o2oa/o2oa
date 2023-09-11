@@ -11,27 +11,35 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 public class TestAES {
 
 	public static final String CRYPTOGRAPHIC_ALGORITHM_AES = "AES";
 	public static final String KEY = "123456789abcdefg";
+	public static final String inputFile = "/data/Temp/1_9.txt";
+	public static final String encryptedFile = "/data/Temp/1_9_aes.data";
+	public static final String decryptedFile = "/data/Temp/1_9_aes.txt";
 
-	public static void main(String[] args) throws Exception {
-
-		String inputFile = "/data/Temp/o2server-8.1.1-linux-x64.zip";
-		String encryptedFile = "/data/Temp/en.zip";
-		String decryptedFile = "/data/Temp/de.zip";
-
+	@Test
+	void encrypt() throws Exception {
+		long length = 0;
 		try (InputStream input = Files.newInputStream(Paths.get(inputFile));
 				OutputStream output = Files.newOutputStream(Paths.get(encryptedFile))) {
-			encryptAES(input, output);
+			length = encryptAES(input, output);
 		}
+		Assertions.assertTrue(length > 0);
+	}
 
+	@Test
+	void decrypt() throws Exception {
+		long length = 0;
 		try (InputStream input = Files.newInputStream(Paths.get(encryptedFile));
 				OutputStream output = Files.newOutputStream(Paths.get(decryptedFile))) {
-			decryptAES(input, output);
+			length = decryptAES(input, output);
 		}
-
+		Assertions.assertTrue(length > 0);
 	}
 
 	private static Long encryptAES(InputStream inputStream, OutputStream outputStream) throws Exception {
