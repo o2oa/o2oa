@@ -241,6 +241,7 @@ public class ActionPreCheck extends BaseAction {
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.persist(noCheckRecord, CheckPersistType.all);
         emc.commit();
+        LOGGER.info("打卡记录保存：{}, {}, {} ", person, today, AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn);
         return noCheckRecord;
     }
 

@@ -423,6 +423,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.persist(noCheckRecord, CheckPersistType.all);
         emc.commit();
+        logger.info("打卡记录保存：{}, {}, {} ", person, today, AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
         return noCheckRecord;
     }
 }
