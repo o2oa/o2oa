@@ -92,23 +92,43 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     isEmpty : function(){
         return !this.getData();
     },
+    getMax: function( value ){
+        if( isNaN(value) )return value;
+        if( typeOf( value ) === "string" )value = parseFloat(value);
+        if( !isNaN( this.json.max )){
+            var max = this.json.max;
+            if( typeOf( max ) === "string" )max = parseFloat(max);
+            return Math.min( max, value );
+        }else{
+            return value;
+        }
+    },
+    getMin: function( value ){
+        if( isNaN(value) )return value;
+        if( typeOf( value ) === "string" )value = parseFloat(value);
+        if( !isNaN( this.json.min )){
+            var min = this.json.min;
+            if( typeOf( min ) === "string" )min = parseFloat(min);
+            return Math.max( min, value );
+        }else{
+            return value;
+        }
+    },
     getInputData: function( flag ){
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");
-            if( flag )return o2.typeOf(v) === "string" ? v.toFloat() : v;  //不判断，直接返回原值
+            v = this.unformatNumber( v );
+            //if( flag )return o2.typeOf(v) === "string" ? v.toFloat() : v;  //不判断，直接返回原值
             var n = v.toFloat();
+            n = this.getMax( n );
+            n = this.getMin( n );
             return (isNaN(n)) ? (this.json.emptyValue === "string" ? "" : 0) : n;
             //return (isNaN(n)) ? 0 : n;
         }else{
             return this._getBusinessData();
         }
-        return v;
+        //return v;
     },
-    // getInputData: function(){
-    //     var n = this.node.getElement("input").get("value").toFloat();
-    //     if ((isNaN(n))) {this.setData('0')};
-    //     return (isNaN(n)) ? 0 : n;
-    // },
 
     unformatNumber: function(str){
         return str.replace(/,/g, "");
@@ -137,14 +157,15 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                     }
                 }
             }
-            if( this.json.digitsToSeparateNote && parseInt(this.json.digitsToSeparateNote) > 1 ){
-                var digits = parseInt(this.json.digitsToSeparateNote);
+            if( this.json.digitsToSeparate && parseInt(this.json.digitsToSeparate) > 1 ){
+                if( typeOf( str ) === "number" )str = str.toString();
+                var digits = parseInt(this.json.digitsToSeparate);
                 var reg = new RegExp( "(\\d{"+digits+"}\\B)" ,"g");
                 var arr = str.split(".");
                 var i = arr[0].split("").reverse().join("")
                     .replace(reg, "$1,")
                     .split("").reverse().join("");
-                str = arr.length > 1 ? i : ( i + arr[1] );
+                str = arr.length > 1 ? ( i + "." + arr[1] ) : i ;
             }
         }
         return str;
@@ -152,8 +173,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
 
     validationFormat: function(){
         if( !this.node.getElement("input") )return true;
-        var n = this.node.getElement("input").get("value");
-        n = this.unformatNumber(n);
+        var n = this.getInputData();
         if (isNaN(n)) {
             if( n === "" && this.json.emptyValue === "string" ){
                 return true;
@@ -161,67 +181,82 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                 this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
                 return false;
             }
-        }else{
-            this.node.getFirst().set("value", this.formatNumber(n));
         }
         return true;
     },
+
+    // validationFormat: function(){
+    //     if( !this.node.getElement("input") )return true;
+    //     var n = this.node.getElement("input").get("value");
+    //     n = this.unformatNumber(n);
+    //     if (isNaN(n)) {
+    //         if( n === "" && this.json.emptyValue === "string" ){
+    //             return true;
+    //         }else{
+    //             this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
+    //             return false;
+    //         }
+    //     }else{
+    //         this.node.getFirst().set("value", this.formatNumber(n));
+    //     }
+    //     return true;
+    // },
     validationConfigItem: function(routeName, data){
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getInputData();
-            var originN = this.getInputData( true );
+            var strN = n.toString();
 
             if( n === "" && this.json.emptyValue === "string" )n = 0;
 
-            var v = (data.valueType=="value") ? n : n.length;
-            var originV = (data.valueType=="value") ? originN : originN.length;
+            var v = (data.valueType=="value") ? n : strN.length;
+            var strV = (data.valueType=="value") ? strN : strN.length;
 
             switch (data.operateor){
                 case "isnull":
-                    if (!originV && originV.toString()!=='0'){
+                    if (!strV && strV.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notnull":
-                    if (originV){
+                    if (strV){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "gt":
-                    if (v>data.value){
+                    if (v>parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "lt":
-                    if (v<data.value){
+                    if (v<parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "equal":
-                    if (v==data.value){
+                    if (v==parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "neq":
-                    if (v!=data.value){
+                    if (v!=parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "contain":
-                    if (originV.toString().indexOf(data.value)!=-1){
+                    if (strV.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (originV.toString().indexOf(data.value)==-1){
+                    if (strV.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -289,22 +324,13 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
 
         this.node.getFirst().addEvent("change", function(){
+            debugger;
             this.validationMode();
             if (this.validation()) {
                 var value = this.getInputData("change");
-                var uv = this.unformatNumber( value );
-
-                if( !this.isNumber( uv ) ){
-                    this._setBusinessData(uv);
-                }else{
-                    var v = this.getMax( uv );
-                    v = this.getMin( v );
-                    this._setBusinessData(v);
-                }
-
-                // var v = this.isNumber( uv ) ? parseFloat(uv) : uv;
-                // this._setBusinessData(v);
-
+                this._setBusinessData(value);
+                debugger;
+                this.node.getFirst().set("value", this.formatNumber( value.toString() ));
                 this.fireEvent("change");
             }
         }.bind(this));
@@ -315,26 +341,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         this.node.getFirst().addEvent("keyup", function(){
             this.validationMode();
         }.bind(this));
-    },
-    getMax: function( value ){
-        if( typeOf( value ) === "string" )value = parseFloat(value);
-        var max;
-        if( !isNaN( this.json.max )){
-            if( typeOf( this.json.max ) === "string" )max = parseFloat(this.json.max);
-            return Math.min( max, value );
-        }else{
-            return value;
-        }
-    },
-    getMin: function( value ){
-        if( typeOf( value ) === "string" )value = parseFloat(value);
-        var min;
-        if( !isNaN( this.json.min )){
-            if( typeOf( this.json.min ) === "string" )min = parseFloat(this.json.min);
-            return Math.max( min, value );
-        }else{
-            return value;
-        }
     },
     _computeValue: function(value){
         if( this.json.defaultValue && this.json.defaultValue.code){
@@ -350,13 +356,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        // if( this.json.emptyValue === "string" ){
-        //     if( value === "" || typeOf(value)==="null" )value = this._computeValue();
-        // }else{
-        //     if( value === 0 || typeOf(value)==="null" )value = this._computeValue();
-        // }
         if( value === 0 || value === "" || typeOf(value)==="null" )value = this._computeValue();
-        //if (!value) value = this._computeValue();
         if( ( value === "" || typeOf(value)==="null" ) && this.json.emptyValue === "string"){
             return "";
         }else{
@@ -388,19 +388,19 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     validationConfigItemExcel: function(data){
         if (data.status=="all"){
             var n = this.getInputData();
-            var originN = this.getInputData( true );
+            var strN = n.toString();
 
             if( n === "" && this.json.emptyValue === "string" )n = 0;
 
             var v = (data.valueType=="value") ? n : n.length;
-            var originV = (data.valueType=="value") ? originN : originN.length;
+            var strV = (data.valueType=="value") ? strN : strN.length;
 
             switch (data.operateor){
                 case "isnull":
-                    if (!originV && originV.toString()!=='0')return data.prompt;
+                    if (!strV && strV.toString()!=='0')return data.prompt;
                     break;
                 case "notnull":
-                    if (originV)return data.prompt;
+                    if (strV)return data.prompt;
                     break;
                 case "gt":
                     if (v>data.value)return data.prompt;
@@ -415,10 +415,10 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                     if (v!=data.value)return data.prompt;
                     break;
                 case "contain":
-                    if (originV.toString().indexOf(data.value)!=-1)return data.prompt;
+                    if (strV.toString().indexOf(data.value)!=-1)return data.prompt;
                     break;
                 case "notcontain":
-                    if (originV.toString().indexOf(data.value)==-1)return data.prompt;
+                    if (strV.toString().indexOf(data.value)==-1)return data.prompt;
                     break;
             }
         }
