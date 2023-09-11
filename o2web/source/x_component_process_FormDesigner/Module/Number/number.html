@@ -39,6 +39,12 @@
                     <input type="radio" name="emptyValue" value="string" text{($.emptyValue=='string')?'checked':''}/>{{$.lp.showNullString}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.separator}}:</td>
+                <td class="editTableValue">
+                    <input type="number" name="digitsToSeparate" value="text{$.digitsToSeparate || '0'}" class="editTableInput"/>
+                </td>
+            </tr>
 		</table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
