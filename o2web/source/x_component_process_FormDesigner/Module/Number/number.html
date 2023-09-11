@@ -40,9 +40,22 @@
                 </td>
             </tr>
             <tr>
-                <td class="editTableTitle">{{$.lp.separator}}:</td>
+                <td class="editTableTitle">{{$.lp.digitsToSeparate}}:</td>
                 <td class="editTableValue">
-                    <input type="number" name="digitsToSeparate" value="text{$.digitsToSeparate || '0'}" class="editTableInput"/>
+                    <input type="number" name="digitsToSeparate" value="text{$.digitsToSeparate}" class="editTableInput"/>
+                    <div style="padding: 5px;">{{$.lp.digitsToSeparateNote}}</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.max}}:</td>
+                <td class="editTableValue">
+                    <input type="number" name="max" value="text{$.max}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.min}}:</td>
+                <td class="editTableValue">
+                    <input type="number" name="min" value="text{$.min}" class="editTableInput"/>
                 </td>
             </tr>
 		</table>

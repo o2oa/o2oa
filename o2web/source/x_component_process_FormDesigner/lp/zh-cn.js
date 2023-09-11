@@ -545,6 +545,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "complete": "完整",
         "simple": "精简",
         "separator": "分隔符",
+        "digitsToSeparate": "分隔符位数",
+        "digitsToSeparateNote": "每几个数位添加,分隔符，如千分位为每3位数添加分隔符，那么填3。",
         "asyncMode": "异步模式",
         "asyncLoad": "异步加载",
 

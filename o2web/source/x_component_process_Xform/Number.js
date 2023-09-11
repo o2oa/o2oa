@@ -110,6 +110,9 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     //     return (isNaN(n)) ? 0 : n;
     // },
 
+    unformatNumber: function(str){
+        return str.replace(/,/g, "");
+    },
     formatNumber: function(str){
         var v = (str || "0").toFloat();
         if (v){
@@ -127,12 +130,21 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                         pos_decimal = str.length;
                         str += '.';
                     }
-                    decimalStr = (str).substr(pos_decimal+1, (str).length);
+                    var decimalStr = (str).substr(pos_decimal+1, (str).length);
                     while (decimalStr.length < decimals){
                         str += '0';
                         decimalStr += 0;
                     }
                 }
+            }
+            if( this.json.digitsToSeparateNote && parseInt(this.json.digitsToSeparateNote) > 1 ){
+                var digits = parseInt(this.json.digitsToSeparateNote);
+                var reg = new RegExp( "(\\d{"+digits+"}\\B)" ,"g");
+                var arr = str.split(".");
+                var i = arr[0].split("").reverse().join("")
+                    .replace(reg, "$1,")
+                    .split("").reverse().join("");
+                str = arr.length > 1 ? i : ( i + arr[1] );
             }
         }
         return str;
@@ -141,6 +153,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     validationFormat: function(){
         if( !this.node.getElement("input") )return true;
         var n = this.node.getElement("input").get("value");
+        n = this.unformatNumber(n);
         if (isNaN(n)) {
             if( n === "" && this.json.emptyValue === "string" ){
                 return true;
@@ -151,32 +164,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }else{
             this.node.getFirst().set("value", this.formatNumber(n));
         }
-        // var v = n.toFloat();
-        // if (v){
-        //     if (this.json.decimals && (this.json.decimals!="*")){
-        //
-        //         var decimals = this.json.decimals.toInt();
-        //
-        //         var p = Math.pow(10,decimals);
-        //         var f_x = Math.round(v*p)/p;
-        //         var s_x = f_x.toString();
-        //
-        //         if (decimals>0){
-        //             var pos_decimal = s_x.indexOf('.');
-        //             if (pos_decimal < 0){
-        //                 pos_decimal = s_x.length;
-        //                 s_x += '.';
-        //             }
-        //             decimalStr = (s_x).substr(pos_decimal+1, (s_x).length);
-        //             while (decimalStr.length < decimals){
-        //                 s_x += '0';
-        //                 decimalStr += 0;
-        //             }
-        //         }
-        //
-        //         this.node.getFirst().set("value", s_x);
-        //     }
-        // }
         return true;
     },
     validationConfigItem: function(routeName, data){
@@ -305,8 +292,19 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
             this.validationMode();
             if (this.validation()) {
                 var value = this.getInputData("change");
-                var v = this.isNumber( value ) ? parseFloat(value) : value;
-                this._setBusinessData(v);
+                var uv = this.unformatNumber( value );
+
+                if( !this.isNumber( uv ) ){
+                    this._setBusinessData(uv);
+                }else{
+                    var v = this.getMax( uv );
+                    v = this.getMin( v );
+                    this._setBusinessData(v);
+                }
+
+                // var v = this.isNumber( uv ) ? parseFloat(uv) : uv;
+                // this._setBusinessData(v);
+
                 this.fireEvent("change");
             }
         }.bind(this));
@@ -317,6 +315,26 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         this.node.getFirst().addEvent("keyup", function(){
             this.validationMode();
         }.bind(this));
+    },
+    getMax: function( value ){
+        if( typeOf( value ) === "string" )value = parseFloat(value);
+        var max;
+        if( !isNaN( this.json.max )){
+            if( typeOf( this.json.max ) === "string" )max = parseFloat(this.json.max);
+            return Math.min( max, value );
+        }else{
+            return value;
+        }
+    },
+    getMin: function( value ){
+        if( typeOf( value ) === "string" )value = parseFloat(value);
+        var min;
+        if( !isNaN( this.json.min )){
+            if( typeOf( this.json.min ) === "string" )min = parseFloat(this.json.min);
+            return Math.max( min, value );
+        }else{
+            return value;
+        }
     },
     _computeValue: function(value){
         if( this.json.defaultValue && this.json.defaultValue.code){
