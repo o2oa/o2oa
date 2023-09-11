@@ -208,6 +208,7 @@ public class ActionCheckIn extends BaseAction {
             record.setRecordAddress(wi.getRecordAddress());
             emc.check(record, CheckPersistType.all);
             emc.commit();
+            LOGGER.info("checkIn 打卡 数据记录， 打卡人员：{}, 打卡日期：{}, 打卡结果：{} ", effectivePerson.getDistinguishedName(), today, checkInResult);
             // 异常数据
             generateAppealInfo(record, groups.get(0).getFieldWorkMarkError(), emc, business);
             Wo wo = new Wo();
