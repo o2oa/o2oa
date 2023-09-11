@@ -109,6 +109,7 @@ o2.widget.JavascriptEditor = new Class({
         // }
     },
     loadMonaco: function(callback){
+        MWF.require("MWF.xDesktop.shortcut");
         if (o2.editorData.javascriptEditor){
             this.theme = o2.editorData.javascriptEditor.monaco_theme;
             this.fontSize = o2.editorData.javascriptEditor.fontSize;
