@@ -144,12 +144,16 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
     _createEventFunction: function(methods, k){
         methods["$loadElEvent_"+k.camelCase()] = function(){
-            this.validationMode();
-            if (k==="change") this._setBusinessData(this.getInputData());
+            var flag = true;
+            if (k==="change"){
+                this.validationMode();
+                this._setBusinessData(this.getInputData());
+                if( !this.validation() )flag = false;
+            }
             if (this.json.events && this.json.events[k] && this.json.events[k].code){
                 this.form.Macro.fire(this.json.events[k].code, this, arguments);
             }
-            this.fireEvent(k, arguments);
+            if( flag )this.fireEvent(k, arguments);
         }.bind(this);
     },
     _createVueMethods: function(){
