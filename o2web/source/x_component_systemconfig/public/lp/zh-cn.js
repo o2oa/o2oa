@@ -793,6 +793,9 @@ o2.xApplication.systemconfig.LP = {
         "exposeJest": "是否输出Restful API文档页面",
         "exposeJestInfo": "输出Restful API文档可以通过URL：<a href='{url}' target='_blank'>Restful API</a> 访问。",
 
+        "storageEncrypt": "是否对附件进行加密",
+        "storageEncryptInfo": "如果开启，系统将对流程平台、内容管理及企业网盘中上传的附件进行加密存储。",
+
         "scriptingBlockedClasses": "服务端脚本禁用的Java类",
         "scriptingBlockedClassesInfo": "在此设置不允许在服务端脚本中使用的Java类，用逗号分隔。",
 

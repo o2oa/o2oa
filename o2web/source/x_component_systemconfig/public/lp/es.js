@@ -790,6 +790,9 @@ o2.xApplication.systemconfig.LP = {
         "exposeJest": "¿Mostrar página de documentación de API Restful?",
         "exposeJestInfo": "Si habilita la muestra de documentación de la API Restful, puede acceder a ella mediante la URL: <a href='{url}' target='_blank'>API Restful</a>.",
 
+        "storageEncrypt": "Si cifrar archivos adjuntos",
+        "storageEncryptInfo": "Si está activado, el sistema cifrará y almacenará los archivos adjuntos cargados en la plataforma de proceso, la administración de contenido y el disco de red empresarial.",
+
         "scriptingBlockedClasses": "Clases de Java deshabilitadas para scripts del servidor",
         "scriptingBlockedClassesInfo": "Puede configurar las clases de Java que no se permiten utilizar en los scripts del servidor aquí. Separe las clases con comas.",
 

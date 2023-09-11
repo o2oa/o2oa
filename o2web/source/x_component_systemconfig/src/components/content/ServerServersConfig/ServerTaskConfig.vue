@@ -118,6 +118,10 @@
     <div class="systemconfig_item_info" v-html="lp._serversConfig.exposeJestInfo.replaceAll('{url}', getJestUrl())"></div>
     <BaseBoolean v-model:value="generalData.exposeJest" @change="(v)=>{saveConfig('general', 'exposeJest', v)}"/>
 
+    <div class="systemconfig_item_title">{{lp._serversConfig.storageEncrypt}}</div>
+    <div class="systemconfig_item_info" v-html="lp._serversConfig.storageEncryptInfo"></div>
+    <BaseBoolean v-model:value="generalData.storageEncrypt" @change="(v)=>{saveConfig('general', 'storageEncrypt', !v ? 0 : 1)}"/>
+
 <!--    <BaseItem-->
 <!--        :title="lp._serversConfig.scriptingBlockedClasses"-->
 <!--        :info="lp._serversConfig.scriptingBlockedClassesInfo"-->
