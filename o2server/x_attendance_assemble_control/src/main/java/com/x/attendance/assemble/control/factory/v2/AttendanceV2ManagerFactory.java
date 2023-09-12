@@ -29,22 +29,25 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
+     * @param assistAdmin   协助管理员
      * @param name           可以为空
      * @return
      * @throws Exception
      */
     public List<AttendanceV2Group> listGroupWithNameByPage(Integer adjustPage,
-            Integer adjustPageSize, String name) throws Exception {
+            Integer adjustPageSize,String assistAdmin, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
         Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%");
-            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
-        } else {
-            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
+            p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
+        if (StringUtils.isNotEmpty(assistAdmin)) {
+            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();
     }
@@ -54,19 +57,23 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 分页查询需要
      * 
      * @param name 可以为空
+     * @param assistAdmin   协助管理员
      * @return
      * @throws Exception
      */
-    public Long groupCountWithName(String name) throws Exception {
+    public Long groupCountWithName(String assistAdmin, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%");
-            return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+            p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
-        return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+        if (StringUtils.isNotEmpty(assistAdmin)) {
+            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        }
+        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
     }
 
     /**

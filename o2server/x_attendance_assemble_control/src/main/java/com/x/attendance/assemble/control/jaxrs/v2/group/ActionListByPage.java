@@ -41,10 +41,15 @@ public class ActionListByPage extends BaseAction {
             if (wi == null) {
                 wi = new Wi();
             }
+            String assistAdmin = null;
+            // 不是管理员 只查询协助管理员的数据
+            if(!business.isManager(effectivePerson)){
+                assistAdmin = effectivePerson.getDistinguishedName();
+            }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             List<AttendanceV2Group> list = business.getAttendanceV2ManagerFactory().listGroupWithNameByPage(adjustPage,
-                    adjustPageSize, wi.getName());
+                    adjustPageSize, assistAdmin, wi.getName());
             List<Wo> wos = Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for (Wo group : wos) {
@@ -59,7 +64,7 @@ public class ActionListByPage extends BaseAction {
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(wi.getName()));
+            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(assistAdmin, wi.getName()));
             return result;
         }
     }
