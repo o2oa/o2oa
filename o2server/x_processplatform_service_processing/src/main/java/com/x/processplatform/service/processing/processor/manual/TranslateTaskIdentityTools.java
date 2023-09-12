@@ -54,8 +54,8 @@ public class TranslateTaskIdentityTools {
 		if (ListTools.isNotEmpty(manual.getTaskIdentityList())) {
 			taskIdentities.addIdentities(manual.getTaskIdentityList());
 		}
-		if (null != manual.getTaskParticipant()) {
-			taskIdentities.addIdentities(taskParticipant(aeiObjects, manual));
+		if ((null != manual.getTaskParticipant()) && StringUtils.isNotBlank(manual.getTaskParticipant().getType())) {
+			taskIdentities.addIdentities(participant(aeiObjects, manual));
 		}
 		/* 选择了职务 */
 		taskIdentities.addIdentities(duty(aeiObjects, manual));
@@ -109,10 +109,10 @@ public class TranslateTaskIdentityTools {
 		return ListTools.trim(list, true, true);
 	}
 
-	private static List<String> taskParticipant(AeiObjects aeiObjects, Manual manual) throws Exception {
+	private static List<String> participant(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<String> list = new ArrayList<>();
-		switch (manual.getTaskParticipant().getType()) {
-		case ManualProperties.TaskParticipant.TYPE_ACTIVITY:
+		switch (Objects.toString(manual.getTaskParticipant().getType(), "")) {
+		case ManualProperties.Participant.TYPE_ACTIVITY:
 			if ((null != manual.getTaskParticipant().getData())
 					&& (manual.getTaskParticipant().getData().isJsonArray())) {
 				final List<String> taskParticipantActivities = new ArrayList<>();
@@ -123,14 +123,15 @@ public class TranslateTaskIdentityTools {
 						.map(TaskCompleted::getIdentity).filter(StringUtils::isNotBlank).forEach(list::add);
 			}
 			break;
-		case ManualProperties.TaskParticipant.TYPE_MAINTENANCE:
+		case ManualProperties.Participant.TYPE_MAINTENANCE:
 			if (StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
 				list.add(aeiObjects.getProcess().getMaintenanceIdentity());
 			}
 			break;
-		// 默认为 ManualProperties.TaskParticipant.TYPE_MAINTENANCE
-		default:
+		case ManualProperties.Participant.TYPE_CREATOR:
 			list.add(aeiObjects.getWork().getCreatorIdentity());
+			break;
+		default:
 			break;
 		}
 		return list;

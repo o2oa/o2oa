@@ -38,7 +38,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
-import com.x.processplatform.core.entity.element.ManualProperties.TaskParticipant;
+import com.x.processplatform.core.entity.element.ManualProperties.Participant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -103,11 +103,11 @@ public class Manual extends Activity {
 		this.properties = properties;
 	}
 
-	@FieldDescribe("流程参与者作为处理人设置.")
+	@FieldDescribe("流程参与者作为待办人设置.")
 	@Transient
-	private TaskParticipant taskParticipant;
+	private Participant taskParticipant;
 
-	public TaskParticipant getTaskParticipant() {
+	public Participant getTaskParticipant() {
 		if (null != taskParticipant) {
 			return this.taskParticipant;
 		} else {
@@ -115,7 +115,7 @@ public class Manual extends Activity {
 		}
 	}
 
-	public void setTaskParticipant(TaskParticipant taskParticipant) {
+	public void setTaskParticipant(Participant taskParticipant) {
 		this.taskParticipant = taskParticipant;
 		this.getProperties().setTaskParticipant(taskParticipant);
 	}

@@ -32,15 +32,15 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("人工环节工作流转后执行脚本文本.")
 	private String manualAfterProcessingScriptText;
 
-	@FieldDescribe("流程参与者作为处理人设置.")
-	private TaskParticipant taskParticipant;
+	@FieldDescribe("流程参与者作为待办人设置.")
+	private Participant taskParticipant;
 
-	public TaskParticipant getTaskParticipant() {
+	public Participant getTaskParticipant() {
 		return taskParticipant;
 	}
 
-	public void setTaskParticipant(TaskParticipant taskParticipant) {
-		this.taskParticipant = taskParticipant;
+	public void setTaskParticipant(Participant participant) {
+		this.taskParticipant = participant;
 	}
 
 	public String getManualAfterProcessingScript() {
@@ -186,7 +186,7 @@ public class ManualProperties extends JsonProperties {
 
 	}
 
-	public static class TaskParticipant extends GsonPropertyObject {
+	public static class Participant extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 8552496027679106938L;
 
@@ -194,8 +194,10 @@ public class ManualProperties extends JsonProperties {
 		public static final String TYPE_ACTIVITY = "activity";
 		public static final String TYPE_MAINTENANCE = "maintenance";
 
+		@FieldDescribe("creator:work创建者,activity:流程环节已办身份(参与流转),maintenance:流程维护身份.空值和其他值则忽略.")
 		private String type;
 
+		@FieldDescribe("type=activity,data为活动环节id(数组).")
 		private JsonElement data;
 
 		public String getType() {
