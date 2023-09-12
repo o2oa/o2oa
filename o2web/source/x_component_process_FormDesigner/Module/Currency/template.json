@@ -81,6 +81,8 @@
 			"html": ""
 		}
 	},
+	"decimals": 2,
+	"currencySymbol": "¥",
     "inputType": "text",
 	"properties": {},
 	"class": "",

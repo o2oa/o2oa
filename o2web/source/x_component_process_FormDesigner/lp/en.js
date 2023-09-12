@@ -898,6 +898,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "text": "Text",
         "number": "Number",
         "currencySymbol": "currency symbol",
+        "currencySymbolStyles": "Currency symbol styles",
         "datetime": "Datetime",
         "boolean": "Boolean",
         "resultType": "Result type",

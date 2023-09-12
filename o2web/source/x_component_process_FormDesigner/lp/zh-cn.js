@@ -900,6 +900,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "text": "文本",
         "number": "数字",
         "currencySymbol": "货币符号",
+        "currencySymbolStyles": "货币符号样式",
         "datetime": "日期",
         "boolean": "布尔",
         "resultType": "结果保存类型",

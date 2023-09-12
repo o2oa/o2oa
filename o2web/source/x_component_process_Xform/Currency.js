@@ -15,70 +15,18 @@ MWF.xDesktop.requireApp("process.Xform", "Number", null, false);
 MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
     Implements: [Events],
     Extends: MWF.APPNumber,
-    iconStyle: "numberIcon",
-    unformatNumber: function(str){
-        return str.replace(/,/g, "");
-    },
-    formatNumber: function(str){
-        var v = (str || "0").toFloat();
-        if (v){
-            if (this.json.decimals && (this.json.decimals!="*")){
-
-                var decimals = this.json.decimals.toInt();
-
-                var p = Math.pow(10,decimals);
-                var f_x = Math.round(v*p)/p;
-                str = f_x.toString();
-
-                if (decimals>0){
-                    var pos_decimal = str.indexOf('.');
-                    if (pos_decimal < 0){
-                        pos_decimal = str.length;
-                        str += '.';
-                    }
-                    var decimalStr = (str).substr(pos_decimal+1, (str).length);
-                    while (decimalStr.length < decimals){
-                        str += '0';
-                        decimalStr += 0;
-                    }
-                }
-            }
-            if( this.json.digitsToSeparate && parseInt(this.json.digitsToSeparate) > 1 ){
-                if( typeOf( str ) === "number" )str = str.toString();
-                var digits = parseInt(this.json.digitsToSeparate);
-                var reg = new RegExp( "(\\d{"+digits+"}\\B)" ,"g");
-                var arr = str.split(".");
-                var i = arr[0].split("").reverse().join("")
-                    .replace(reg, "$1,")
-                    .split("").reverse().join("");
-                str = arr.length > 1 ? ( i + "." + arr[1] ) : i ;
-            }
-        }
-        return str;
-    },
-
-    validationFormat: function(){
-        if( !this.node.getElement("input") )return true;
-        var n = this.getInputData();
-        if (isNaN(n)) {
-            if( n === "" && this.json.emptyValue === "string" ){
-                return true;
-            }else{
-                this.notValidationMode(MWF.xApplication.process.Xform.LP.notValidation_number);
-                return false;
-            }
-        }
-        return true;
-    },
+    iconStyle: "currencyIcon",
 
     _resetNodeEdit: function(){
         var input = new Element("input", {
             "styles": {
                 "background": "transparent",
                 "width": "100%",
-                "border": "0px"
+                "border": "0px",
+                "padding-left": "20px"
             }
         });
+        input.setStyles( this.json.recoveryInputStyles || {} );
 
         var node = new Element("div", {"styles": {
                 "overflow": "hidden",
@@ -86,14 +34,30 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
                 "margin-right": "20px",
                 "padding-right": "4px"
             }}).inject(this.node, "after");
+        node.setStyles( this.json.recoveryStyles || {} );
         input.inject(node);
+
+        if( this.json.currencySymbol ){
+            var symbole = new Element("div.MWFCurrencySymbol", {
+                styles:{
+                    "position": "absolute",
+                    "width": "20px",
+                    "height": "20px",
+                    "top": "0px",
+                    "left": "0px"
+                },
+                text: this.json.currencySymbol
+            }).inject( node );
+            symbole.setStyles( this.json.recoveryStyles || {} );
+        }
 
         this.node.destroy();
         this.node = node;
     },
 
     _loadNodeEdit: function(){
-        if (!this.json.preprocessing) this._resetNodeEdit();
+        //if (!this.json.preprocessing) this._resetNodeEdit();
+        this._resetNodeEdit();
         var input = this.node.getFirst();
         if( !input && this.nodeHtml ){
             this.node.set("html", this.nodeHtml);
