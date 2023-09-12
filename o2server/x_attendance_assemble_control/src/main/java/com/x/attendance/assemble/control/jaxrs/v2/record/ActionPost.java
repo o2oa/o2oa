@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.record;
 
+
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +14,6 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
-import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -24,6 +24,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
 
@@ -32,6 +34,10 @@ import com.x.base.core.project.tools.DateTools;
  * Copyright © 2023 O2. All rights reserved.
  */
 public class ActionPost extends BaseAction {
+
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ActionPost.class);
+
 
     ActionResult<Wo> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
@@ -84,6 +90,7 @@ public class ActionPost extends BaseAction {
                 // 固定班制
                 if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
                     String recordDateString = DateTools.format( record.getRecordDate(), DateTools.format_yyyyMMdd);
+                    record.setRecordDateString(recordDateString);
                     // 正常的班次id
                     String shiftId = group.getWorkDateProperties().shiftIdWithDate(record.getRecordDate());
                     // 是否特殊工作日
@@ -97,9 +104,9 @@ public class ActionPost extends BaseAction {
                     if (StringUtils.isNotEmpty(shiftId)) {
                         AttendanceV2Shift shift = emc.find(shiftId, AttendanceV2Shift.class);
                         if (shift != null) {
-                            List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
-                            if (timeList!= null && !timeList.isEmpty()) {
-
+                            if (shift != null) {
+                                record.setShiftId(shift.getId());
+                                record.setShiftName(shift.getShiftName());
                             }
                         }
                     }
@@ -110,6 +117,7 @@ public class ActionPost extends BaseAction {
             emc.beginTransaction(AttendanceV2CheckInRecord.class);
             emc.persist(record, CheckPersistType.all);
             emc.commit();
+            LOGGER.info("打卡记录保存：{}, {}, {} ", person, record.getRecordDateString(), record.getCheckInResult());
             result.setData(new Wo(record.getId()));
             return result;
         }
