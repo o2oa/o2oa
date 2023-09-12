@@ -461,6 +461,23 @@
       "font-family": "宋体"
     }
   },
+  "currency": {
+    "styles": {
+      "border-bottom": "1px solid #999999",
+      "height": "auto",
+      "font-size": "18px",
+      "line-height": "30px",
+      "overflow": "visible"
+    },
+    "inputStyles": {
+      "border": "0px",
+      "height": "30px",
+      "line-height": "30px",
+      "font-size": "18px",
+      "color": "#666",
+      "font-family": "宋体"
+    }
+  },
   "address": {
     "styles": {
       "border-bottom": "1px solid #999999",

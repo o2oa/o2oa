@@ -21,7 +21,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		    	"title": MWF.LP.process.formAction.deleteCol
 		    }
 		],
-		"allowModules": ["textfield", "number", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label",
+		"allowModules": ["textfield", "number", "currency", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label",
 			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment", "elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",
 			"elswitch", "elslider", "eltime", "eldate", "eldatetime", "elrate"]
 	},

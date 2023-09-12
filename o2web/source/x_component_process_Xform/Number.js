@@ -118,16 +118,13 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");
             v = this.unformatNumber( v );
-            //if( flag )return o2.typeOf(v) === "string" ? v.toFloat() : v;  //不判断，直接返回原值
             var n = v.toFloat();
             n = this.getMax( n );
             n = this.getMin( n );
             return (isNaN(n)) ? (this.json.emptyValue === "string" ? "" : 0) : n;
-            //return (isNaN(n)) ? 0 : n;
         }else{
             return this._getBusinessData();
         }
-        //return v;
     },
 
     unformatNumber: function(str){
@@ -324,12 +321,10 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
 
         this.node.getFirst().addEvent("change", function(){
-            debugger;
             this.validationMode();
             if (this.validation()) {
                 var value = this.getInputData("change");
                 this._setBusinessData(value);
-                debugger;
                 this.node.getFirst().set("value", this.formatNumber( value.toString() ));
                 this.fireEvent("change");
             }
@@ -365,7 +360,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
     },
     __setValue: function(value){
-        var v = this.isNumber( value ) ? parseFloat(value) : value;
+        var v = typeOf( value ) === "string" ? this.unformatNumber( value ) : value;
+        v = this.isNumber( v ) ? parseFloat( v ) : v;
         this._setBusinessData(v);
         var val = value;
         if( this.json.emptyValue === "string" ){
@@ -392,7 +388,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
 
             if( n === "" && this.json.emptyValue === "string" )n = 0;
 
-            var v = (data.valueType=="value") ? n : n.length;
+            var v = (data.valueType=="value") ? n : strN.length;
             var strV = (data.valueType=="value") ? strN : strN.length;
 
             switch (data.operateor){

@@ -8,6 +8,7 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Label", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Div", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Textfield", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Number", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Currency", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Personfield", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Calendar", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Textarea", null, false);

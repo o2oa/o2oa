@@ -482,6 +482,23 @@
       "border-bottom": "1px solid #DCDFE6"
     }
   },
+  "currency": {
+    "styles": {
+      "border-bottom": "0px solid #DCDFE6",
+      "border-top": "0px",
+      "border-left": "0px",
+      "border-right": "0px",
+      "line-height": "30px",
+      "overflow": "visible"
+    },
+    "inputStyles": {
+      "font-size" : "100%",
+      "height": "30px",
+      "color": "#535861",
+      "border": "1px solid transparent",
+      "border-bottom": "1px solid #DCDFE6"
+    }
+  },
   "personfield": {
     "styles": {
       "border-bottom": "0px solid #DCDFE6",

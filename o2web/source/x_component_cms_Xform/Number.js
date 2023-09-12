@@ -6,57 +6,57 @@ MWF.xApplication.cms.Xform.Number = MWF.CMSNumber =  new Class({
         var flag = (data.status=="all") ? true: (routeName == "publish");
         if (flag){
             var n = this.getInputData();
-            var originN = this.getInputData( true );
+            var strN = n.toString();
 
             if( n === "" && this.json.emptyValue === "string" )n = 0;
 
-            var v = (data.valueType=="value") ? n : n.length;
-            var originV = (data.valueType=="value") ? originN : originN.length;
+            var v = (data.valueType=="value") ? n : strN.length;
+            var strV = (data.valueType=="value") ? strN : strN.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!originV && originV.toString()!=='0'){
+                    if (!strV && strV.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notnull":
-                    if (originV){
+                    if (strV){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "gt":
-                    if (v>data.value){
+                    if (v>parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "lt":
-                    if (v<data.value){
+                    if (v<parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "equal":
-                    if (v==data.value){
+                    if (v==parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "neq":
-                    if (v!=data.value){
+                    if (v!=parseFloat(data.value)){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "contain":
-                    if (originV.toString().indexOf(data.value)!=-1){
+                    if (strV.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (originV.toString().indexOf(data.value)==-1){
+                    if (strV.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
