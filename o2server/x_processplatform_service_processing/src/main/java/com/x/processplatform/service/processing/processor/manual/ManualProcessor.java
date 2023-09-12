@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,6 +44,7 @@ import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualProperties;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -311,6 +311,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 		if (ListTools.isNotEmpty(manual.getTaskIdentityList())) {
 			return true;
 		}
+		/* 指定了流程参与者 */
+		if ((null != manual.getTaskParticipant()) && (StringUtils.equalsAnyIgnoreCase(
+				manual.getTaskParticipant().getType(), ManualProperties.Participant.TYPE_CREATOR,
+				ManualProperties.Participant.TYPE_MAINTENANCE)
+				|| (StringUtils.equalsIgnoreCase(manual.getTaskParticipant().getType(),
+						ManualProperties.Participant.TYPE_ACTIVITY) && (null != manual.getTaskParticipant().getData())
+						&& manual.getTaskParticipant().getData().isJsonArray()
+						&& (!manual.getTaskParticipant().getData().getAsJsonArray().isEmpty())))) {
+			return true;
+		}
 		/* 选择了职务 */
 		if (StringUtils.isNotBlank(manual.getTaskDuty())) {
 			return true;
@@ -322,13 +332,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 		/* 使用脚本计算 */
 		if (StringUtils.isNotEmpty(manual.getTaskScript())) {
 			return true;
-		} else {
-			if (StringUtils.isNotEmpty(manual.getTaskScriptText())) {
-				Matcher matcher = StringTools.EMPTY_SCRIPT_CODE_REGEX.matcher(manual.getTaskScriptText());
-				if (StringUtils.isNotBlank(StringUtils.trimToEmpty(matcher.replaceAll("")))) {
-					return true;
-				}
-			}
+		} else if (StringTools.ifScriptHasEffectiveCode(manual.getTaskScriptText())) {
+			return true;
 		}
 		/* 指定处理组织 */
 		if (ListTools.isNotEmpty(manual.getTaskUnitList())) {
