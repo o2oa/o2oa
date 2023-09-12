@@ -72,6 +72,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadMaplist();
                     this.loadQueryTablePublisher();
                     this.loadGobackActivityConfig();
+                    this.loadActivityParticipant();
 
                     this.hideAdvanced();
                 }.bind(this));
@@ -161,7 +162,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
                         });
-
+                        input.addEvent("change", function(e){
+                            property.setCheckboxValue(jsondata, this, id);
+                        });
+                        input.addEvent("blur", function(e){
+                            property.setCheckboxValue(jsondata, this, id);
+                        });
+                        property.setCheckboxValue(jsondata, input, id);
 						break;
 					default:
 						input.addEvent("change", function(e){
@@ -217,6 +224,27 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             value = options[idx].get("value");
         }
         this.data[name] = value;
+    },
+    setCheckboxValue: function(name, input, id){
+        var nodes = this.propertyContent.querySelectorAll('input[name="'+id+name+'"]');
+        var value = [];
+        nodes.forEach(function(node){
+            if (node.checked){
+                value.push(node.value);
+            }
+        });
+        var names = name.split(".");
+        var o = this.data;
+
+        while (names.length>1){
+            var k = names.shift();
+            if (!o.hasOwnProperty(k)){
+                o[k] = {};
+            }
+            o=o[k];
+        }
+        var key = names.shift();
+        o[key] = value;
     },
 	setRadioValue: function(name, input){
 		if (input.checked){
@@ -1489,5 +1517,51 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 }.bind(this));
             }.bind(this));
         }
+    },
+    loadActivityParticipant: function(){
+        var nodes = this.propertyContent.getElements(".MWFActivityParticipant");
+        if(nodes.length){
+            var id = this.process.process.id;
+            if (this.activity) id = this.activity.data.id;
+            if (this.route) id = this.route.data.id;
+            var property = this;
+            if (!this.data.taskParticipant) this.data.taskParticipant = {type: "", data:""}
+            var ids = (this.data.taskParticipant && this.data.taskParticipant.data) ? JSON.parse(this.data.taskParticipant.data) : [];
+
+            nodes.each(function(node){
+                var jsondata = "taskParticipant.data";
+
+                Object.keys(this.process.manuals).forEach(function(k){
+                    var a = this.process.manuals[k];
+                    var label = new Element('label', {
+                        html: "<input name='"+id+jsondata+"' type='checkbox' value='"+a.data.id+"'>"+a.data.name
+                    });
+                    const input = label.firstChild;
+                    input.addEvent("keydown", function(e){
+                        e.stopPropagation();
+                    });
+                    input.addEvent("change", function(e){
+                        var v = property.getCheckboxValue(id+jsondata);
+                        property.data.taskParticipant.data = JSON.stringify(v);
+                    });
+                    input.addEvent("blur", function(e){
+                        var v = property.getCheckboxValue(id+jsondata);
+                        property.data.taskParticipant.data = JSON.stringify(v);
+                    });
+
+                    label.inject(node);
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+    getCheckboxValue: function (name){
+        var nodes = this.propertyContent.querySelectorAll('input[name="'+name+'"]');
+        var value = [];
+        nodes.forEach(function(node){
+            if (node.checked){
+                value.push(node.value);
+            }
+        });
+        return value
     }
 });

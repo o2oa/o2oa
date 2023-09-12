@@ -110,6 +110,28 @@
                     <div class="MWFFormFieldPerson" name="taskDataPathList"></div>
                 </td>
             </tr>
+
+            <tr>
+                <td class="editTableTitle">{{$.lp.participant}}:</td>
+                <td class="editTableValue">
+                    <label><input class="editTableRadio" name="taskParticipant.type" text{(!$.taskParticipant || !$.taskParticipant.type)?'checked':''} type="radio" value=""
+                        onclick="if (this.checked){ var nodes = this.getParent('td').getChildren('div'); nodes.setStyle('display', 'none'); }"/>{{$.lp.participant_none}}</label>
+                    <label><input class="editTableRadio" name="taskParticipant.type" text{($.taskParticipant && $.taskParticipant.type=='creator')?'checked':''} type="radio" value="creator"
+                           onclick="if (this.checked){ var nodes = this.getParent('td').getChildren('div'); nodes.setStyle('display', 'none'); nodes[0].setStyle('display', 'block'); }"/>{{$.lp.participant_creator}}</label>
+                    <label><input class="editTableRadio" name="taskParticipant.type" text{($.taskParticipant && $.taskParticipant.type=='maintenance')?'checked':''} type="radio" value="maintenance"
+                           onclick="if (this.checked){ var nodes = this.getParent('td').getChildren('div'); nodes.setStyle('display', 'none'); nodes[1].setStyle('display', 'block'); }"/>{{$.lp.participant_maintenance}}</label>
+                    <label><input class="editTableRadio" name="taskParticipant.type" text{($.taskParticipant && $.taskParticipant.type=='activity')?'checked':''} type="radio" value="activity"
+                                  onclick="if (this.checked){ var nodes = this.getParent('td').getChildren('div'); nodes.setStyle('display', 'none'); nodes[2].setStyle('display', 'block'); }"/>{{$.lp.participant_activity}}</label>
+
+                    <div style="color: #999999; font-size: 12px; display: text{($.taskParticipant && $.taskParticipant.type=='creator')?'block':'none'}">{{$.lp.participant_creator_info}}</div>
+                    <div style="color: #999999; font-size: 12px; display: text{($.taskParticipant && $.taskParticipant.type=='maintenance')?'block':'none'}">{{$.lp.participant_maintenance_info}}</div>
+                    <div style="display: text{($.taskParticipant && $.taskParticipant.type=='activity')?'block':'none'}">
+                        <div style="color: #999999; font-size: 12px;">{{$.lp.participant_activity_info}}</div>
+                        <div class="MWFActivityParticipant"></div>
+                    </div>
+
+                </td>
+            </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.script}}:</td>
                 <td class="editTableValue">
