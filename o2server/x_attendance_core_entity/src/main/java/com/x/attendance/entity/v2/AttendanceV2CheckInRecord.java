@@ -65,7 +65,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
 
     public static final String userId_FIELDNAME = "userId";
-    @FieldDescribe("打卡的用户标识")
+    @FieldDescribe("打卡的用户标识DN")
     @Column(length = length_96B, name = ColumnNamePrefix + userId_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String userId;

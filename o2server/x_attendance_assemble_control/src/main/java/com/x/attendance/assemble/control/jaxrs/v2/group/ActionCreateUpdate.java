@@ -35,13 +35,22 @@ public class ActionCreateUpdate extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            if(!business.isManager(effectivePerson)){
-                throw new ExceptionAccessDenied(effectivePerson);
-            }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isEmpty(wi.getGroupName())) {
                 throw new ExceptionEmptyParameter("考勤组名称");
             }
+            if(!business.isManager(effectivePerson)){
+                 // 协助管理员只能修改 
+                 if(StringUtils.isEmpty(wi.getId())) {
+                    throw new ExceptionAccessDenied(effectivePerson);
+                } else {
+                    AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
+                    if (group.getAssistAdminList() == null || !group.getAssistAdminList().contains(effectivePerson.getDistinguishedName())) {
+                        throw new ExceptionAccessDenied(effectivePerson);
+                    }
+                }
+            }
+
             // 名称不能相同
             List<AttendanceV2Group> checkNameGroup = emc.listEqual(AttendanceV2Group.class, AttendanceV2Group.groupName_FIELDNAME, wi.getGroupName());
             if (checkNameGroup != null && !checkNameGroup.isEmpty()) {

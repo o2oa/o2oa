@@ -156,5 +156,9 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
         public static final String table = "ATTEND_V2_ALERT_MESSAGE";
     }
 
+    public static class AttendanceV2GroupSchedule {
+        public static final String table = "ATTEND_V2_GROUP_SCHEDULE";
+    }
+
 
 }

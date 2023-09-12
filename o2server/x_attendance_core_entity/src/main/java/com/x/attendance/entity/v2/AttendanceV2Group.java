@@ -96,6 +96,17 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String operator;
 
+
+	public static final String assistAdminList_FIELDNAME = "assistAdminList";
+	@FieldDescribe("协助管理员.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ assistAdminList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + assistAdminList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + assistAdminList_FIELDNAME)
+	@ElementIndex(name = TABLE + assistAdminList_FIELDNAME + ElementIndexNameSuffix)
+	private List<String> assistAdminList;
+
 	public static final String participateList_FIELDNAME = "participateList";
 	@FieldDescribe("考勤打卡人员、组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -307,4 +318,14 @@ public class AttendanceV2Group extends SliceJpaObject {
 	public void setFieldWorkMarkError(Boolean fieldWorkMarkError) {
 		this.fieldWorkMarkError = fieldWorkMarkError;
 	}
+
+	public List<String> getAssistAdminList() {
+		return assistAdminList;
+	}
+
+	public void setAssistAdminList(List<String> assistAdminList) {
+		this.assistAdminList = assistAdminList;
+	}
+
+	
 }
