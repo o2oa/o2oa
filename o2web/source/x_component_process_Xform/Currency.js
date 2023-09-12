@@ -7,7 +7,7 @@ MWF.xDesktop.requireApp("process.Xform", "Number", null, false);
  * var field = this.form.get("name"); //获取组件
  * //方法2
  * var field = this.target; //在组件事件脚本中获取
- * @extends MWF.xApplication.process.Xform.Currency
+ * @extends MWF.xApplication.process.Xform.Number
  * @o2category FormComponents
  * @o2range {Process|CMS}
  * @hideconstructor
@@ -16,14 +16,31 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
     Implements: [Events],
     Extends: MWF.APPNumber,
     iconStyle: "currencyIcon",
-
+    _loadMergeAmountReadNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        this.node.set("text", this.formatNumber(total.toString()));
+        this.loadSymboleRead();
+    },
+    _loadMergeAverageReadNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        var average = total.div(  new Decimal(Object.keys(data).length) );
+        this.node.set("text", this.formatNumber(average.toString()));
+        this.loadSymboleRead();
+    },
     _resetNodeEdit: function(){
         var input = new Element("input", {
             "styles": {
                 "background": "transparent",
                 "width": "100%",
-                "border": "0px",
-                "padding-left": "20px"
+                "border": "0px"
             }
         });
         input.setStyles( this.json.recoveryInputStyles || {} );
@@ -38,17 +55,27 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         input.inject(node);
 
         if( this.json.currencySymbol ){
-            var symbole = new Element("div.MWFCurrencySymbol", {
-                styles:{
-                    "position": "absolute",
-                    "width": "20px",
-                    "height": "20px",
-                    "top": "0px",
-                    "left": "0px"
-                },
+            var symbole = new Element("span.MWFCurrencySymbol", {
                 text: this.json.currencySymbol
-            }).inject( node );
-            symbole.setStyles( this.json.recoveryStyles || {} );
+            });
+
+            symbole.inject( node.offsetParent !== null ? node : this.form.node );
+
+            symbole.setStyles( this.json.symbolStyles || {} );
+
+            var width = symbole.getSize().x + 5;
+            input.setStyles({
+                "padding-left": width + "px",
+                "width": "calc( 100% - " + width +"px )"
+            });
+
+            if( node.offsetParent === null )symbole.inject( node );
+
+            symbole.setStyles({
+                "top": "0px",
+                "left": "0px",
+                "position": "absolute"
+            });
         }
 
         this.node.destroy();
@@ -96,5 +123,49 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         this.node.getFirst().addEvent("keyup", function(){
             this.validationMode();
         }.bind(this));
+    },
+    __setData: function(data, fireChange){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        if (this.node.getFirst()){
+            this.node.getFirst().set("value", this.formatNumber(data));
+            this.checkDescription();
+            this.validationMode();
+        }else{
+            this.node.set("text", this.formatNumber(data));
+            this.loadSymboleRead();
+        }
+        if (fireChange && old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
+    __setValue: function(value){
+        var v = typeOf( value ) === "string" ? this.unformatNumber( value ) : value;
+        v = this.isNumber( v ) ? parseFloat( v ) : v;
+        this._setBusinessData(v);
+        var val = value;
+        if( this.json.emptyValue === "string" ){
+            if( typeOf(v)==="null" )val = "";
+            if( v === 0 )val = "0";
+        }else{
+            if( v === 0 || v === "" || typeOf(v)==="null" )val = "0";
+        }
+        if (this.node.getFirst()) this.node.getFirst().set("value", value || val);
+        if (this.isReadonly()) {
+            this.node.set("text", value || val);
+            this.loadSymboleRead()
+        }
+        this.moduleValueAG = null;
+        this.fieldModuleLoaded = true;
+        return value;
+    },
+    loadSymboleRead: function () {
+        var symbole = new Element("span.MWFCurrencySymbol", {
+            text: this.json.currencySymbol,
+            styles: this.json.symbolStyles || {}
+        }).inject(this.node, "top");
+        var paddingRight = symbole.getStyle("padding-right");
+        if( typeOf(paddingRight) === "string" && parseInt(paddingRight) === 0 ){
+            symbole.setStyle("padding-right", "5px");
+        }
     }
 });

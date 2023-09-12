@@ -455,7 +455,8 @@
       "height": "26px",
       "color": "#666",
       "border-bottom": "1px solid #ccc"
-    }
+    },
+    "symbolStyles": {}
   },
   "personfield": {
     "styles": {

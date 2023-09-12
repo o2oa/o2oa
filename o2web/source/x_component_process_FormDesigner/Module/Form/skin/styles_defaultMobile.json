@@ -469,6 +469,9 @@
       "font-size": "18px",
       "float": "right",
       "text-align": "right"
+    },
+    "symbolStyles": {
+      "font-size": "18px"
     }
   },
   "personfield": {

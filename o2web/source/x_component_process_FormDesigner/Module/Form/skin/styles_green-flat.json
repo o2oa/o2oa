@@ -535,6 +535,10 @@
       "border-bottom": "1px solid #dcdfe6",
       "border-radius": "4px",
       "overflow": "visible"
+    },
+    "symbolStyles": {
+      "padding-left": "4px",
+      "line-height": "40px"
     }
   },
   "personfield": {

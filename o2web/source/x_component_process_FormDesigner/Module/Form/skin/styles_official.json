@@ -476,6 +476,10 @@
       "font-size": "18px",
       "color": "#666",
       "font-family": "宋体"
+    },
+    "symbolStyles": {
+      "padding-left": "2px",
+      "line-height": "34px"
     }
   },
   "address": {

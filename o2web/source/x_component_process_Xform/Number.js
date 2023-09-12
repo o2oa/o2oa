@@ -12,7 +12,9 @@ MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
  * @o2range {Process|CMS}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
+MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
+    /** @lends MWF.xApplication.process.Xform.Number# */
+    {
     Implements: [Events],
     Extends: MWF.APPTextfield,
     iconStyle: "numberIcon",
@@ -92,6 +94,26 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     isEmpty : function(){
         return !this.getData();
     },
+    /**
+     * @summary 传入值获取适配最大值和最小值的数值.
+     * @example
+     * //如果最大值设置为500，最小值为100
+     *
+     * var value = this.form.get('field').getRangeValue( 300 );
+     * //value为300
+     *
+     * var value = this.form.get('field').getRangeValue( 10000 );
+     * //value为500
+     *
+     * var value = this.form.get('field').getRangeValue( 1 );
+     * //value为100
+     * @param value {String|Nummber}
+     * @return {Number} 获取适配最大值和最小值的数值.
+     */
+    getRangeValue: function( value ){
+        var v = this.getMax( value );
+        return this.getMin( v );
+    },
     getMax: function( value ){
         if( isNaN(value) )return value;
         if( typeOf( value ) === "string" )value = parseFloat(value);
@@ -115,8 +137,9 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
     },
     getInputData: function( flag ){
-        if (this.node.getFirst()){
-            var v = this.node.getElement("input").get("value");
+        var input = this.node.getElement("input");
+        if (input){
+            var v = input.get("value");
             v = this.unformatNumber( v );
             var n = v.toFloat();
             n = this.getMax( n );
@@ -127,9 +150,32 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
     },
 
+
+    /**
+     * @summary 传入文本获取清除逗号的数值
+     * @example
+     * var value = this.form.get('field').unformatNumber( "30,000" );
+     * //value为30000
+     * @param str{String} 文本
+     * @return {Number} 获取清除逗号的数值.
+     */
     unformatNumber: function(str){
         return str.replace(/,/g, "");
     },
+    /**
+     * @summary 传入文本或数值根据配置的小数位数和分隔符返回字符串
+     * @example
+     * //假设组件的设置为千分位分隔，保留小数两位
+     *
+     * var value = this.form.get('field').formatNumber( "30000.123" );
+     * //value为字符串"30,000.12"
+     *
+     * var value = this.form.get('field').formatNumber( 30000.123 );
+     * //value为字符串"30,000.12"
+     *
+     * @param str{String|Number}
+     * @return {Number} 根据配置的小数位数和分隔符返回字符串
+     */
     formatNumber: function(str){
         var v = (str || "0").toFloat();
         if (v){
@@ -348,6 +394,21 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
             }
         }
     },
+
+    __setData: function(data, fireChange){
+        var old = this.getInputData();
+        this._setBusinessData(data);
+        if (this.node.getFirst()){
+            this.node.getFirst().set("value", this.formatNumber(data));
+            this.checkDescription();
+            this.validationMode();
+        }else{
+            this.node.set("text", this.formatNumber(data));
+        }
+        if (fireChange && old!==data) this.fireEvent("change");
+        this.moduleValueAG = null;
+    },
+
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();

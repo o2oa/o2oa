@@ -173,7 +173,8 @@
   },
   "currency": {
     "styles": {},
-    "inputStyles": {}
+    "inputStyles": {},
+    "symbolStyles": {}
   },
   "personfield": {
     "styles": {},

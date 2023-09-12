@@ -497,6 +497,10 @@
       "color": "#535861",
       "border": "1px solid transparent",
       "border-bottom": "1px solid #DCDFE6"
+    },
+    "symbolStyles": {
+      "padding-left": "2px",
+      "line-height": "34px"
     }
   },
   "personfield": {

@@ -592,7 +592,8 @@
       "font-size": "15px",
       "float": "left",
       "text-align": "right"
-    }
+    },
+    "symbolStyles": {}
   },
   "personfield": {
     "styles": {
