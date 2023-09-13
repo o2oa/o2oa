@@ -93,11 +93,15 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 
 		this.node.set({
 			"id": this.json.id,
-			"MWFType": this.json.type,
-			"styles": {
-				"display": "inline"
-			}
+			"MWFType": this.json.type
 		});
+		if( this.json.recoveryStyles && this.json.recoveryStyles.display ){
+            this.node.setStyle("display", this.json.recoveryStyles.display);
+		}else if( this.json.styles && this.json.styles.display ){
+            this.node.setStyle("display", this.json.styles.display);
+        }else{
+            this.node.setStyle("display", "inline");
+        }
 		this.setOptions();
 	},
     _loadDomEvents: function(){
