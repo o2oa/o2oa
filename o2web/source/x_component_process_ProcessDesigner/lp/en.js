@@ -319,6 +319,16 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewerId": "Review Id",
 		"unit": "Unit",
 
+		"participant": "Process role",
+		"participant_creator": "initiator",
+		"participant_activity": "Participant",
+		"participant_maintenance": "Maintainer",
+		"participant_none": "None",
+
+		"participant_creator_info": "Set the initiator of the process instance as the handler of the current activity",
+		"participant_maintenance_info": "Set the maintainer of the process as the handler of the current activity",
+		"participant_activity_info": "Set the handler of the activity that the process instance has transferred as the handler of the current activity. Please select the activity below",
+
 		"splitScript": "Split Value Script",
 		"embed": "Embed",
 		"selectProcess": "Select Process",

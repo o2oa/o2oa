@@ -1,6 +1,24 @@
 package com.x.base.core.project.tools;
 
-import com.x.base.core.project.logger.MessageFormatter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.StringTokenizer;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -11,16 +29,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.security.SecureRandom;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.x.base.core.project.logger.MessageFormatter;
 
 public class StringTools {
 
@@ -29,7 +38,7 @@ public class StringTools {
 	}
 
 	// 空代码判断正则表达式
-	public static final Pattern EMPTY_SCRIPT_CODE_REGEX = Pattern.compile("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*");
+	private static final Pattern EMPTY_SCRIPT_CODE_REGEX = Pattern.compile("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*");
 
 	// 脚本文本
 	public static final Pattern SCRIPTTEXT_REGEX = Pattern.compile("^\\((.+?)\\)$");

@@ -327,6 +327,16 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewerId": "身份",
 		"unit": "组织",
 
+		"participant": "流程角色",
+		"participant_creator": "启动者",
+		"participant_activity": "活动参与者",
+		"participant_maintenance": "维护者",
+		"participant_none": "无",
+
+		"participant_creator_info": "将流程实例的启动者，作为当前活动的处理人",
+		"participant_maintenance_info": "将流程的维护者，作为当前活动的处理人",
+		"participant_activity_info": "将流程实例已经流转过的活动的处理人，作为当前活动的处理人，请在下面选择活动",
+
 		"splitScript": "拆分依据脚本",
 		"embed": "调用",
 		"selectProcess": "选择流程",
