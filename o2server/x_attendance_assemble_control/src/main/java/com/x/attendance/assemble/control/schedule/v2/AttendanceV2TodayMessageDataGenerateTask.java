@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 每天凌晨 3 点半，生成当前需要发送消息的数据
+ * 每天凌晨 3 点半，生成当天需要发送消息的数据
  * Created by fancyLou on 2023/5/8.
  * Copyright © 2023 O2. All rights reserved.
  */

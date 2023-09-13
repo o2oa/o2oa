@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
@@ -23,7 +24,8 @@ public class ActionGet extends BaseAction {
         }
         ActionResult<Wo> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            AttendanceV2Shift shift = emc.find(id, AttendanceV2Shift.class);
+            Business business = new Business(emc);
+            AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(id, AttendanceV2Shift.class);
             if (shift == null) {
                 throw new ExceptionNotExistObject("班次:" + id);
             }

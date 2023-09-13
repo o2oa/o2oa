@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotOperateGroup;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
@@ -51,6 +52,9 @@ public class ActionRebuildDetailWithGroupDate  extends BaseAction {
             AttendanceV2Group group = emc.find(groupId, AttendanceV2Group.class);
             if (group == null) {
                 throw new ExceptionNotExistObject("考勤组"+groupId);
+            }
+            if (group.getStatus() != null && group.getStatus() == AttendanceV2Group.status_auto) {
+                throw new ExceptionCannotOperateGroup(groupId);
             }
             List<String> trueList =  AttendanceV2Helper.calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
             group.setTrueParticipantList(trueList);

@@ -16,7 +16,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class ActionListByPage extends BaseAction {
                     // 班次对象返回
                     if (group.getWorkDateProperties() != null && AttendanceV2Group.CHECKTYPE_Fixed.equals( group.getCheckType())) {
                         AttendanceV2GroupWorkDayProperties properties = group.getWorkDateProperties();
-                        setPropertiesShiftData(emc, properties);
+                        setPropertiesShiftData(business, properties);
                     }
                 }
             }
@@ -87,6 +86,8 @@ public class ActionListByPage extends BaseAction {
 
 
     public static class Wo extends AttendanceV2Group {
+
+        private static final long serialVersionUID = -7147244243285527997L;
 
         @FieldDescribe("考勤成员数量")
         private int trueParticipantSize;

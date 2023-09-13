@@ -8,6 +8,7 @@ import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -45,6 +46,7 @@ public class ActionDelete extends BaseAction {
             emc.beginTransaction(AttendanceV2Shift.class);
             emc.delete(AttendanceV2Shift.class, shift.getId());
             emc.commit();
+            CacheManager.notify(AttendanceV2Shift.class);// 清除缓存
             Wo wo = new Wo();
             wo.setValue(true);
             result.setData(wo);

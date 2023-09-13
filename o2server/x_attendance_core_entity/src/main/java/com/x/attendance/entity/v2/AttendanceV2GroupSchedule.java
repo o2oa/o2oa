@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class AttendanceV2GroupSchedule  extends SliceJpaObject {
 
 
+	private static final long serialVersionUID = 3969460398955957421L;
 	private static final String TABLE = com.x.attendance.entity.PersistenceProperties.AttendanceV2GroupSchedule.table;
 
 	public String getId() {
@@ -83,9 +84,8 @@ public class AttendanceV2GroupSchedule  extends SliceJpaObject {
   private String scheduleDateString;
    
   public static final String shiftId_FIELDNAME = "shiftId";
-	@FieldDescribe("当天绑定的班次id.")
+	@FieldDescribe("当天绑定的班次id, 为空就是休息.")
 	@Column(length = length_64B, name = ColumnNamePrefix + shiftId_FIELDNAME)
-  @CheckPersist(allowEmpty = false)
 	private String shiftId;
 
 	public String getGroupId() {

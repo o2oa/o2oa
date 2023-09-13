@@ -102,7 +102,7 @@ public class ActionPost extends BaseAction {
                         shiftId = null;
                     }
                     if (StringUtils.isNotEmpty(shiftId)) {
-                        AttendanceV2Shift shift = emc.find(shiftId, AttendanceV2Shift.class);
+                        AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(shiftId, AttendanceV2Shift.class);
                         if (shift != null) {
                             if (shift != null) {
                                 record.setShiftId(shift.getId());

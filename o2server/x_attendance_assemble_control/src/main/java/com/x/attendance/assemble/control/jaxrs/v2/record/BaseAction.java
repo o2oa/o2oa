@@ -84,8 +84,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                 preDutyTime = "18:00";
             }
         }
+        String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
         if (recordDate != null) {
-            String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
             // 根据班次判断打卡结果
             if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed) && shift != null) {
                 // 上班打卡
