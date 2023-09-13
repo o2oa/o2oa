@@ -9,6 +9,11 @@
     "text": MWF.APPPOD.LP.modules.textfield,
     "className": "Textfield"
   },
+  "number": {
+    "icon": "number.png",
+    "text": MWF.APPPOD.LP.modules.number,
+    "className": "Number"
+  },
   "org": {
     "icon": "personfield.png",
     "text": MWF.APPPOD.LP.modules.org,
@@ -48,6 +53,11 @@
     "icon": "combox.png",
     "text": MWF.APPPOD.LP.modules.combox,
     "className": "Combox"
+  },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.APPPOD.LP.modules.currency,
+    "className": "Currency"
   },
   "datatable": {
     "icon": "datagrid.png",

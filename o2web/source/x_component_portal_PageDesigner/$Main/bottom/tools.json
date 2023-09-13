@@ -99,6 +99,11 @@
     "text": MWF.APPPOD.LP.modules.textarea,
     "className": "Textarea"
   },
+  "number": {
+    "icon": "number.png",
+    "text": MWF.APPPOD.LP.modules.number,
+    "className": "Number"
+  },
   "select": {
     "icon": "select.png",
     "text": MWF.APPPOD.LP.modules.select,
@@ -123,6 +128,11 @@
     "icon": "combox.png",
     "text": MWF.APPPOD.LP.modules.combox,
     "className": "Combox"
+  },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.APPPOD.LP.modules.currency,
+    "className": "Currency"
   },
   "widget": {
     "icon": "subpage.png",

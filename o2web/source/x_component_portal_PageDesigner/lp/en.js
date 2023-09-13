@@ -264,6 +264,7 @@ MWF.APPPOD.LP = {
         "label": "Label",
         "textfield": "Textfield",
         "number": "Number",
+        "currency": "Currency",
         "org": "Org",
         "calendar": "Calendar",
         "textarea": "Textarea",

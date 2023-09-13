@@ -259,68 +259,8 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 				}
 			}.bind(this));
 		},
-		_loadTotal: function(){
-			var totalData = {};
-			if (!this.totalFlag)return totalData;
-			if (!this.totalDiv)this._loadTotalTr();
-			var data;
-			if( this.isShowAllSection ){
-				data = { data : [] };
-				Object.each( this.getBusinessDataById(), function (d, key) {
-					if( !["data","total"].contains(key) ){
-						data.data = data.data.concat( d.data )
-					}
-				});
-			}else if( this.isMergeRead ){
-				data = this.data;
-			}else{
-				data = this.getValue();
-			}
-			this.totalColumns.each(function(column, index){
-				var json = column.moduleJson;
-				if(!json)return;
-
-				var pointLength = 0; //小数点后的最大数位
-				var tmpV;
-				if (column.type === "count"){
-					tmpV = data.data.length;
-				}else if(column.type === "number"){
-					tmpV = new Decimal(0);
-					for (var i=0; i<data.data.length; i++){
-						var d = data.data[i];
-						if(d[json.id]){
-							tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-							var v = d[json.id].toString();
-							if( v.indexOf(".") > -1 ){
-								pointLength = Math.max(pointLength, v.split(".")[1].length);
-							}
-						}
-					}
-				}
-				if( isNaN( tmpV ) ){
-					totalData[json.id] = "";
-					column.td.set("text", "" );
-				}else{
-					if( pointLength > 0 && tmpV.toString() !== "0" ){
-						var s = tmpV.toString();
-						if( s.indexOf(".") > -1 ){
-							var length = s.split(".")[1].length;
-							if( length < pointLength ){
-								totalData[json.id] = s + "0".repeat(pointLength-length);
-							}else{
-								totalData[json.id] = s;
-							}
-						}else{
-							totalData[json.id] = s +"."+ "0".repeat(pointLength);
-						}
-					}else{
-						totalData[json.id] = tmpV.toString();
-					}
-					column.td.set("text", totalData[json.id] );
-				}
-			}.bind(this));
-			data.total = totalData;
-			return totalData;
+		_getTotalTr: function(){
+			return this.totalDiv;
 		},
 		_createLineNode: function(beforeNode){
 			var div;
@@ -657,63 +597,8 @@ MWF.xApplication.process.Xform.DatatableMobile.SectionLine =  new Class({
 			}
 		}.bind(this));
 	},
-	_loadTotal: function(){
-		var totalData = {};
-		if( !this.datatable.totalFlag )return totalData;
-		if (!this.totalDiv)this._loadTotalTr();
-		var data;
-		if( this.datatable.isShowAllSection ){
-			Object.each( this.datatable.getBusinessDataById(), function (d, k) {
-				if( this.sectionKey === k )data = d
-			}.bind(this))
-		}else{
-			data = this.data.data;
-		}
-		this.totalColumns.each(function(column, index){
-			var json = column.moduleJson;
-			if(!json)return;
-
-			var pointLength = 0; //小数点后的最大数位
-			var tmpV;
-			if (column.type === "count"){
-				tmpV = data.data.length;
-			}else if(column.type === "number"){
-				tmpV = new Decimal(0);
-				for (var i=0; i<data.data.length; i++){
-					var d = data.data[i];
-					if(d[json.id]){
-						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-						var v = d[json.id].toString();
-						if( v.indexOf(".") > -1 ){
-							pointLength = Math.max(pointLength, v.split(".")[1].length);
-						}
-					}
-				}
-			}
-			if( isNaN( tmpV ) ){
-				totalData[json.id] = "";
-				column.td.set("text", "" );
-			}else{
-				if( pointLength > 0 && tmpV.toString() !== "0" ){
-					var s = tmpV.toString();
-					if( s.indexOf(".") > -1 ){
-						var length = s.split(".")[1].length;
-						if( length < pointLength ){
-							totalData[json.id] = s + "0".repeat(pointLength-length);
-						}else{
-							totalData[json.id] = s;
-						}
-					}else{
-						totalData[json.id] = s +"."+ "0".repeat(pointLength)
-					}
-				}else{
-					totalData[json.id] = tmpV.toString();
-				}
-				column.td.set("text", totalData[json.id]);
-			}
-		}.bind(this));
-		data.total = totalData;
-		return totalData;
+	_getTotalTr: function(){
+		return this.totalDiv;
 	},
 	getLastTr: function () {
 		if( this.totalDiv )return this.totalDiv;
