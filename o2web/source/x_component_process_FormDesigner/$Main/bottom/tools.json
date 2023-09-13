@@ -14,11 +14,6 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.number,
     "className": "Number"
   },
-  "currency": {
-    "icon": "currency.png",
-    "text": MWF.xApplication.process.FormDesigner.LP.modules.currency,
-    "className": "Currency"
-  },
   "org": {
     "icon": "personfield.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.org,
@@ -53,6 +48,11 @@
     "icon": "combox.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.combox,
     "className": "Combox"
+  },
+  "currency": {
+    "icon": "currency.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.currency,
+    "className": "Currency"
   },
   "opinion": {
     "icon": "opinion.png",
