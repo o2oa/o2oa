@@ -609,6 +609,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var json = column.moduleJson;
 				if(!json)return;
 
+				debugger;
+
 				var pointLength = 0; //小数点后的最大数位
 				var tmpV;
 				if (column.type === "count"){
