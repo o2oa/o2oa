@@ -260,7 +260,8 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
 									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
-							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
+							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
+									Config.general().getStorageEncrypt());
 							if(attachment.getOrderNumber()!=null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}

@@ -133,7 +133,7 @@ class ActionSave extends BaseAction {
 				signScrawl.setType(DocSignScrawl.SCRAWL_TYPE_BASE64);
 				signScrawl.setName(name);
 				StorageMapping mapping = ThisApplication.context().storageMappings().random(DocSignScrawl.class);
-				signScrawl.saveContent(mapping, bytes, name);
+				signScrawl.saveContent(mapping, bytes, name, Config.general().getStorageEncrypt());
 			}
 		}
 		if (jsonObject.has(DocSignScrawl.width_FIELDNAME)) {
@@ -186,7 +186,7 @@ class ActionSave extends BaseAction {
 		DocSignScrawl signScrawl = new DocSignScrawl(docSign, name);
 		signScrawl.setType(DocSignScrawl.SCRAWL_TYPE_IMAGE);
 		StorageMapping mapping = ThisApplication.context().storageMappings().random(DocSignScrawl.class);
-		signScrawl.saveContent(mapping, bytes, name);
+		signScrawl.saveContent(mapping, bytes, name, Config.general().getStorageEncrypt());
 		return signScrawl;
 	}
 

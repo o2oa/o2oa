@@ -77,7 +77,7 @@ class ActionHtmlToPdf extends BaseAction {
 			}
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
 			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, person);
-			generalFile.saveContent(gfMapping, bytes, name);
+			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncrypt());
 			EntityManagerContainer emc = business.entityManagerContainer();
 			emc.beginTransaction(GeneralFile.class);
 			emc.persist(generalFile, CheckPersistType.all);

@@ -27,6 +27,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
@@ -45,20 +46,22 @@ import com.x.processplatform.core.entity.content.Attachment;
 
 /**
  * 直接发布文档内容
+ * 
  * @author O2LEE
  *
  */
 public class ActionPersistPublishContent extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishContent.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionPersistPublishContent.class);
 
-	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement,
+			EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Document document = null;
-		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Boolean check = true;
 
-		if ( StringUtils.isEmpty( wi.getCategoryId() ) ) {
+		if (StringUtils.isEmpty(wi.getCategoryId())) {
 			throw new ExceptionDocumentCategoryIdEmpty();
 		}
 
@@ -66,17 +69,17 @@ public class ActionPersistPublishContent extends BaseAction {
 		AppInfo appInfo = null;
 
 		Document oldDocument = documentQueryService.get(wi.getId());
-		if(oldDocument != null){
-			categoryInfo = categoryInfoServiceAdv.get( oldDocument.getCategoryId() );
+		if (oldDocument != null) {
+			categoryInfo = categoryInfoServiceAdv.get(oldDocument.getCategoryId());
 			appInfo = appInfoServiceAdv.get(oldDocument.getAppId());
-		}else{
-			categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
-			if(categoryInfo != null) {
+		} else {
+			categoryInfo = categoryInfoServiceAdv.get(wi.getCategoryId());
+			if (categoryInfo != null) {
 				appInfo = appInfoServiceAdv.get(categoryInfo.getAppId());
 			}
 		}
 
-		if(categoryInfo == null){
+		if (categoryInfo == null) {
 			throw new ExceptionCategoryInfoNotExists(wi.getCategoryId());
 		}
 		if (appInfo == null) {
@@ -84,12 +87,12 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		Business business = new Business(null);
-		if(!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, oldDocument)){
+		if (!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, oldDocument)) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		// 查询分类设置的编辑表单
-		if ( StringUtils.isEmpty(categoryInfo.getFormId() )) {
+		if (StringUtils.isEmpty(categoryInfo.getFormId())) {
 			throw new ExceptionCategoryFormIdEmpty();
 		}
 
@@ -124,18 +127,18 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		if (check) {
-			wi.setDocumentType( categoryInfo.getDocumentType() );
+			wi.setDocumentType(categoryInfo.getDocumentType());
 			wi.setAppId(categoryInfo.getAppId());
 			wi.setAppName(appInfo.getAppName());
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
 
-			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
-				wi.setDocumentType( categoryInfo.getDocumentType() );
+			if (StringUtils.isEmpty(wi.getDocumentType())) {
+				wi.setDocumentType(categoryInfo.getDocumentType());
 			}
-			if( !"信息".equals(wi.getDocumentType()) && !"数据".equals( wi.getDocumentType() )) {
-				wi.setDocumentType( "信息" );
+			if (!"信息".equals(wi.getDocumentType()) && !"数据".equals(wi.getDocumentType())) {
+				wi.setDocumentType("信息");
 			}
 			if (wi.getPictureList() != null && !wi.getPictureList().isEmpty()) {
 				wi.setHasIndexPic(true);
@@ -145,36 +148,37 @@ public class ActionPersistPublishContent extends BaseAction {
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-				if ( StringUtils.isNotEmpty( wi.getIdentity())) {
-					wi.setCreatorIdentity( wi.getIdentity() );
-					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity(wi.getIdentity()));
+				if (StringUtils.isNotEmpty(wi.getIdentity())) {
+					wi.setCreatorIdentity(wi.getIdentity());
+					wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getIdentity()));
 				}
 
-				if ( StringUtils.isEmpty( wi.getCreatorPerson())) {
-					wi.setCreatorPerson( effectivePerson.getDistinguishedName() );
+				if (StringUtils.isEmpty(wi.getCreatorPerson())) {
+					wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 				}
 
-				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
+				if (StringUtils.isEmpty(wi.getCreatorIdentity())) {
 					if (StringUtils.equals(EffectivePerson.CIPHER, effectivePerson.getDistinguishedName())
-							|| StringUtils.equals(Token.defaultInitialManager, effectivePerson.getDistinguishedName())) {
+							|| StringUtils.equals(Token.defaultInitialManager,
+									effectivePerson.getDistinguishedName())) {
 						wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
 						wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 						wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
 						wi.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
-					}else {
-						//尝试一下根据传入的用户或者当前用户获取用户的第一个身份
-						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( wi.getCreatorPerson() ) );
+					} else {
+						// 尝试一下根据传入的用户或者当前用户获取用户的第一个身份
+						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson(wi.getCreatorPerson()));
 					}
 				}
 
 				if (!StringUtils.equals(EffectivePerson.CIPHER, wi.getCreatorIdentity())
 						&& !StringUtils.equals(Token.defaultInitialManager, wi.getCreatorIdentity())) {
-					//说明是实际的用户，并不使用cipher和xadmin代替
-					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
-						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
-						wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
-						wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
-					}else {
+					// 说明是实际的用户，并不使用cipher和xadmin代替
+					if (StringUtils.isNotEmpty(wi.getCreatorIdentity())) {
+						wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getCreatorIdentity()));
+						wi.setCreatorUnitName(userManagerService.getUnitNameByIdentity(wi.getCreatorIdentity()));
+						wi.setCreatorTopUnitName(userManagerService.getTopUnitNameByIdentity(wi.getCreatorIdentity()));
+					} else {
 						Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
 						result.error(exception);
 					}
@@ -186,25 +190,25 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(wi.getTitle())) {
-				wi.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
+			if (StringUtils.isEmpty(wi.getTitle())) {
+				wi.setTitle(appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档");
 			}
 		}
 
 		if (check) {
 			try {
-				if(!DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())){
+				if (!DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())) {
 					wi.setDocStatus(DocumentStatus.PUBLISHED.getValue());
 				}
 				if (wi.getPublishTime() == null) {
 					wi.setPublishTime(new Date());
 				}
-				document =  Wi.copier.copy(wi);
+				document = Wi.copier.copy(wi);
 				document.getProperties().setDocumentNotify(wi.getDocumentNotify());
 				document.getProperties().setCloudPictures(wi.getCloudPictures());
-				document.setId( wi.getId() );
+				document.setId(wi.getId());
 				document.setPpFormId(wi.getWf_formId());
-				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
+				document = documentPersistService.save(document, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -213,9 +217,9 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
-		//从流程管理中复制所有的附件到CMS
+		// 从流程管理中复制所有的附件到CMS
 		if (check) {
-			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
+			if (wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0) {
 				FileInfo fileInfo = null;
 				Attachment attachment = null;
 				StorageMapping mapping_attachment = null;
@@ -230,14 +234,17 @@ public class ActionPersistPublishContent extends BaseAction {
 							emc.beginTransaction(FileInfo.class);
 							emc.beginTransaction(Document.class);
 
-							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
+							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class,
+									attachment.getStorage());
 							attachment_content = attachment.readContent(mapping_attachment);
 
 							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
-							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, attachment.getName(), attachment.getSite());
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
+									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
-							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
-							if(attachment.getOrderNumber()!=null) {
+							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
+									Config.general().getStorageEncrypt());
+							if (attachment.getOrderNumber() != null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}
 							fileInfo.setName(attachment.getName());
@@ -258,9 +265,9 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
-		//从CMS其他文档中复制所有的附件到CMS
+		// 从CMS其他文档中复制所有的附件到CMS
 		if (check) {
-			if ( wi.getCms_attachmentIds() != null && wi.getCms_attachmentIds().length > 0 ) {
+			if (wi.getCms_attachmentIds() != null && wi.getCms_attachmentIds().length > 0) {
 				FileInfo fileInfo = null;
 				FileInfo copyFileInfo = null;
 				StorageMapping mapping_attachment = null;
@@ -274,12 +281,15 @@ public class ActionPersistPublishContent extends BaseAction {
 							emc.beginTransaction(FileInfo.class);
 							emc.beginTransaction(Document.class);
 
-							mapping_attachment = ThisApplication.context().storageMappings().get(FileInfo.class, copyFileInfo.getStorage());
+							mapping_attachment = ThisApplication.context().storageMappings().get(FileInfo.class,
+									copyFileInfo.getStorage());
 							attachment_content = copyFileInfo.readContent(mapping_attachment);
 
 							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
-							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, copyFileInfo.getName(), copyFileInfo.getSite());
-							fileInfo.saveContent(mapping_fileInfo, attachment_content, copyFileInfo.getName());
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
+									mapping_fileInfo, copyFileInfo.getName(), copyFileInfo.getSite());
+							fileInfo.saveContent(mapping_fileInfo, attachment_content, copyFileInfo.getName(),
+									Config.general().getStorageEncrypt());
 							fileInfo.setName(copyFileInfo.getName());
 							emc.check(document, CheckPersistType.all);
 							emc.persist(fileInfo, CheckPersistType.all);
@@ -295,24 +305,24 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		Wo wo = new Wo();
-		wo.setId( document.getId() );
-		result.setData( wo );
+		wo.setId(document.getId());
+		result.setData(wo);
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				logService.log(emc, wi.getCreatorIdentity(),
-						document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(),
-						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
+				logService.log(emc, wi.getCreatorIdentity(), document.getCategoryAlias() + ":" + document.getTitle(),
+						document.getAppId(), document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		if ( check && !wi.getSkipPermission() ) {
-			//将读者以及作者信息持久化到数据库中
+		if (check && !wi.getSkipPermission()) {
+			// 将读者以及作者信息持久化到数据库中
 			try {
-				if(oldDocument==null || wi.getReaderList() != null || wi.getAuthorList() != null) {
-					documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(), wi.getAuthorList());
+				if (oldDocument == null || wi.getReaderList() != null || wi.getAuthorList() != null) {
+					documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(),
+							wi.getAuthorList());
 				}
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
@@ -326,7 +336,8 @@ public class ActionPersistPublishContent extends BaseAction {
 		return result;
 	}
 
-	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name, String site) throws Exception {
+	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name,
+			String site) throws Exception {
 		String fileName = UUID.randomUUID().toString();
 		String extension = FilenameUtils.getExtension(name);
 		FileInfo attachment = new FileInfo();
@@ -361,41 +372,42 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	public static class Wi {
 
-		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi(Wi.class, Document.class, null,
+				null);
 
 		private String id = null;
 
-		@FieldDescribe( "文档操作者身份" )
+		@FieldDescribe("文档操作者身份")
 		private String identity = null;
 
-		@FieldDescribe( "启动流程的JobId." )
+		@FieldDescribe("启动流程的JobId.")
 		private String wf_jobId = null;
 
-		@FieldDescribe( "启动流程的WorkId." )
+		@FieldDescribe("启动流程的WorkId.")
 		private String wf_workId = null;
 
-		@FieldDescribe( "流程的表单Id." )
+		@FieldDescribe("流程的表单Id.")
 		private String wf_formId = null;
 
-		@FieldDescribe( "启动流程的附件列表." )
+		@FieldDescribe("启动流程的附件列表.")
 		private String[] wf_attachmentIds = null;
 
-		@FieldDescribe( "内容管理其他文档的附件列表，非必填" )
+		@FieldDescribe("内容管理其他文档的附件列表，非必填")
 		private String[] cms_attachmentIds = null;
 
-		@FieldDescribe( "文档数据JSON对象." )
+		@FieldDescribe("文档数据JSON对象.")
 		private JsonElement docData = null;
 
-		@FieldDescribe( "文档读者，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
+		@FieldDescribe("文档读者，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称")
 		private List<PermissionInfo> readerList = null;
 
-		@FieldDescribe( "文档编辑者, ，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称" )
+		@FieldDescribe("文档编辑者, ，Json数组，权限对象需要包含四个属性:<br/>permission权限类别：读者|阅读|作者|管理,  <br/>permissionObjectType使用者类别：所有人|组织|人员|群组, <br/>permissionObjectCode使用者编码：所有人|组织编码|人员UID|群组编码, <br/>permissionObjectName使用者名称：所有人|组织名称|人员名称|群组名称")
 		private List<PermissionInfo> authorList = null;
 
 		private List<String> cloudPictures = null;
 
-		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）， True|False." )
-		private Boolean skipPermission  = false;
+		@FieldDescribe("不修改权限（跳过权限设置，保留原来的设置）， True|False.")
+		private Boolean skipPermission = false;
 
 		@FieldDescribe("文档摘要，70字以内")
 		private String summary;
