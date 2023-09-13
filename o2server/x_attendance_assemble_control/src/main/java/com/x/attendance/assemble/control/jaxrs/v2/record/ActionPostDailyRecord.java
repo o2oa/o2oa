@@ -82,7 +82,6 @@ public class ActionPostDailyRecord extends BaseAction {
             if (groups == null || groups.isEmpty()) {
                 throw new ExceptionNotExistObject("没有对应的考勤组" );
             }
-
             AttendanceV2Group group = groups.get(0); // 考勤组
             // 固定班制
             if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
@@ -97,7 +96,7 @@ public class ActionPostDailyRecord extends BaseAction {
                     shiftId = null;
                 }
                 if (StringUtils.isNotEmpty(shiftId)) {
-                    AttendanceV2Shift shift = emc.find(shiftId, AttendanceV2Shift.class);
+                    AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(shiftId, AttendanceV2Shift.class);
                     if (shift != null) { // 有班次对象
                         List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
                         if (timeList == null || timeList.isEmpty()) {

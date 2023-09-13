@@ -37,6 +37,9 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
             List<AttendanceV2Group> list = emc.listAll(AttendanceV2Group.class);
             if (list != null && !list.isEmpty()) {
                 for (AttendanceV2Group group : list) {
+                    if (group.getStatus() != null && group.getStatus() == AttendanceV2Group.status_auto) {
+                        continue;  // 跳过自动保存的数据
+                    }
                     try {
                         // 处理部门人员重新搜索计算
                         List<String> trueList = AttendanceV2Helper.calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());

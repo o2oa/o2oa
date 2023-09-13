@@ -78,7 +78,7 @@ public class ActionCheckIn extends BaseAction {
             String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
             // 是否有班次信息
             if (StringUtils.isNotEmpty(record.getShiftId())) {
-                AttendanceV2Shift shift = emc.find(record.getShiftId(), AttendanceV2Shift.class);
+                AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(record.getShiftId(), AttendanceV2Shift.class);
                 if (shift == null) {
                     throw new ExceptionNotExistObject("班次对象");
                 }

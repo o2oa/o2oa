@@ -3,6 +3,10 @@ package com.x.attendance.assemble.control.factory.v2;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.*;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -12,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by fancyLou on 2023/1/31.
@@ -19,9 +24,40 @@ import java.util.List;
  */
 public class AttendanceV2ManagerFactory extends AbstractFactory {
 
+    protected Cache.CacheCategory cacheCategory;
+
+
     public AttendanceV2ManagerFactory(Business business) throws Exception {
         super(business);
     }
+
+    /**
+     * 缓存对象
+     * @param <T>
+     * @param flag
+     * @param clz
+     * @return
+     * @throws Exception
+     */
+	public <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
+		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(clz);
+		T t = null;
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		if (optional.isPresent()) {
+			if (null != optional.get()) {
+				t = (T) optional.get();
+			}
+		} else {
+			t = this.entityManagerContainer().flag(flag, clz);
+			if (t != null) {
+				this.entityManagerContainer().get(clz).detach(t);
+				CacheManager.put(cacheCategory, cacheKey, t );
+			}
+		}
+		return t;
+	}
+
 
     /**
      * 查询考勤组列表
@@ -588,5 +624,38 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         } else {
             return em.createQuery(cq.select(cb.count(root))).getSingleResult();
         }
+    }
+
+    /**
+     * 查询 排班数据
+     * 
+     * @param groupId 必填 考勤组 id
+     * @param month 月份字段  yyyy-MM
+     * @param day 时间字段  yyyy-MM-dd
+     * @param person 人员 dn 
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2GroupSchedule> listGroupSchedule(String groupId, String month, String day, String person) throws Exception {
+        if (StringUtils.isEmpty(groupId)) {
+            return null;
+        }
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2GroupSchedule.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2GroupSchedule> cq = cb.createQuery(AttendanceV2GroupSchedule.class);
+        Root<AttendanceV2GroupSchedule> root = cq.from(AttendanceV2GroupSchedule.class);
+        Predicate p = cb.equal(root.get(AttendanceV2GroupSchedule_.groupId), groupId);
+        if (StringUtils.isNotEmpty(month)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.scheduleMonthString), month));
+        }
+        if (StringUtils.isNotEmpty(day)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.scheduleDateString), day));
+        }
+        if (StringUtils.isNotEmpty(person)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.userId), person));
+        }
+        cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2GroupSchedule_.scheduleDateString)));
+         
+        return em.createQuery(cq).getResultList();
     }
 }
