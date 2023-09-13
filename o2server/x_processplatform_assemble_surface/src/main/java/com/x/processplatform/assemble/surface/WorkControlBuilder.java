@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -21,6 +22,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
@@ -517,10 +519,15 @@ public class WorkControlBuilder {
 			control.setAllowGoBack(false);
 			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (hasTaskWithWork() && BooleanUtils.isNotFalse(manual.getAllowGoBack())
-						&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-								|| taskCountWithWork() <= 1)) {
-					control.setAllowGoBack(true);
+				if (hasTaskWithWork() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
+					if (Objects.equals(ManualMode.parallel, manual.getManualMode())) {
+						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+								|| taskCountWithWork() <= 1) {
+							control.setAllowGoBack(true);
+						}
+					} else {
+						control.setAllowGoBack(true);
+					}
 				}
 			}
 		} catch (Exception e) {
