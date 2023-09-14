@@ -111,7 +111,7 @@ public class WorkCompletedControlBuilder {
 
 	private void computeAllowManage(Control control) {
 		try {
-			control.setAllowVisit(canManage());
+			control.setAllowManage(canManage());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
