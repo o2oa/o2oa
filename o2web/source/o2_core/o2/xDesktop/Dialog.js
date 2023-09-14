@@ -3,7 +3,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
 	Extends: o2.widget.Dialog,
     options : {
 	    "zindex": null,
-        maxHeightPercent : "98%"
+        "maxHeightPercent": "98%"
     },
 //	_markShow: function(){
 //

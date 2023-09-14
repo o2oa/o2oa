@@ -275,7 +275,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
     okStartProcess: function(identity){
         var data = {
             "title": this.data.name+"-"+this.lp.unnamed,
-            //"identity": this.identityArea.get("value")
+            "latest": this.options.latest,
+            "skipDraftCheck": this.options.skipDraftCheck,
             "identity": identity
         };
         if( this.options.workData ){

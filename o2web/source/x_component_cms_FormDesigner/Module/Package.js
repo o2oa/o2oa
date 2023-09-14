@@ -7,6 +7,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Label", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Div", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Textfield", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Number", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Currency", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Personfield", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Orgfield", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Readerfield", null, false);

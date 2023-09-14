@@ -1430,7 +1430,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             "string": ["htmledit", "radio", "select", "textarea", "textfield"],
             "person": ["personfield", "readerfield","authorfield", "org", "reader","author"],
             "date": ["calender"],
-            "number": ["number"],
+            "number": ["number","currency"],
             "array": ["checkbox"]
         };
         fieldList = [];

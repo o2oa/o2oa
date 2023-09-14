@@ -159,6 +159,11 @@
     "styles": {},
     "inputStyles": {}
   },
+  "currency": {
+    "styles": {},
+    "inputStyles": {},
+    "symbolStyles": {}
+  },
   "personfield": {
     "styles": {},
     "inputStyles": {}

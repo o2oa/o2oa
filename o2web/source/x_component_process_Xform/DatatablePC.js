@@ -588,10 +588,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}.bind(this));
 		},
+		_getTotalTr: function(){
+			return this.totalTr;
+		},
 		_loadTotal: function(){
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
-			if (!this.totalTr)this._loadTotalTr();
+			if (!this._getTotalTr())this._loadTotalTr();
 			var data;
 			if( this.isShowAllSection ){
 				data = { data : [] };
@@ -609,48 +612,94 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				var json = column.moduleJson;
 				if(!json)return;
 
-				var pointLength = 0; //小数点后的最大数位
-				var tmpV;
-				if (column.type === "count"){
-					tmpV = data.data.length;
-				}else if(column.type === "number"){
-					tmpV = new Decimal(0);
-					for (var i=0; i<data.data.length; i++){
-						var d = data.data[i];
-						if(d[json.id]){
-							tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-							var v = d[json.id].toString();
-							if( v.indexOf(".") > -1 ){
-								pointLength = Math.max(pointLength, v.split(".")[1].length);
-							}
-						}
-					}
-				}
-
-				if( isNaN( tmpV ) ){
-					totalData[json.id] = "";
-					column.td.set("text", "" );
-				}else{
-					if( pointLength > 0 && tmpV.toString() !== "0" ){
-						var s = tmpV.toString();
-						if( s.indexOf(".") > -1 ){
-							var length = s.split(".")[1].length;
-							if( length < pointLength ){
-								totalData[json.id] = s + "0".repeat(pointLength-length);
-							}else{
-								totalData[json.id] = s;
-							}
-						}else{
-							totalData[json.id] = s +"."+ "0".repeat(pointLength)
-						}
-					}else{
-						totalData[json.id] = tmpV.toString();
-					}
-					column.td.set("text", totalData[json.id] );
-				}
+				var total = this._loadColumnTotal( column, data );
+				if( typeOf(total) !== "null" )totalData[json.id] = total;
 			}.bind(this));
 			data.total = totalData;
 			return totalData;
+		},
+		_loadColumnTotal: function(column, data){
+			var json = column.moduleJson;
+			if(!json)return;
+
+			var pointLength = 0; //小数点后的最大数位
+			var tmpV;
+			if (column.type === "count"){
+				tmpV = data.data.length;
+			}else if(column.type === "number"){
+				tmpV = new Decimal(0);
+				for (var i=0; i<data.data.length; i++){
+					var d = data.data[i];
+					if(d[json.id]){
+						var v = this.formatDecimals( json, d[json.id].toFloat() );
+						tmpV = tmpV.plus(v ? v.toFloat() : 0);
+						if( v.indexOf(".") > -1 ){
+							pointLength = Math.max(pointLength, v.split(".")[1].length);
+						}
+					}
+				}
+			}
+
+			if( isNaN( tmpV ) ) {
+				column.td.set("text", "");
+				return;
+			}
+
+			var s = tmpV.toString(), total;
+			if( json.decimals && (json.decimals!=="*")){
+				total = this.formatDecimals( json, s.toFloat());
+			}else if( pointLength <= 0 || s === "0" ){
+				total = s;
+			}else if( s.indexOf(".") > -1 ){
+				var length = s.split(".")[1].length;
+				total = length < pointLength ? (s + "0".repeat(pointLength-length)) : s
+			}else{
+				total = s +"."+ "0".repeat(pointLength);
+			}
+
+			column.td.set("text", this.formatSeparate( json, total ) );
+			if( json.currencySymbol ){
+				new Element("span", {"text": json.currencySymbol, "style":"padding-right:5px"}).inject( column.td, "top" );
+			}
+			return total;
+		},
+		formatDecimals: function( json, v ){
+			var str;
+			if (json.decimals && (json.decimals!=="*")) { //小数点数位
+
+				var decimals = json.decimals.toInt();
+
+				var p = Math.pow(10, decimals);
+				var f_x = Math.round(v * p) / p;
+				str = f_x.toString();
+
+				if (decimals > 0) {
+					var pos_decimal = str.indexOf('.');
+					if (pos_decimal < 0) {
+						pos_decimal = str.length;
+						str += '.';
+					}
+					var decimalStr = (str).substr(pos_decimal + 1, (str).length);
+					while (decimalStr.length < decimals) {
+						str += '0';
+						decimalStr += 0;
+					}
+				}
+			}
+			return str || v.toString();
+		},
+		formatSeparate: function(json, str){
+			if( typeOf( str ) === "number" )str = str.toString();
+			if( json.digitsToSeparate && parseInt(json.digitsToSeparate) > 1 ){
+				var digits = parseInt(json.digitsToSeparate);
+				var reg = new RegExp( "(\\d{"+digits+"}\\B)" ,"g");
+				var arr = str.split(".");
+				var i = arr[0].split("").reverse().join("")
+					.replace(reg, "$1,")
+					.split("").reverse().join("");
+				str = arr.length > 1 ? ( i + "." + arr[1] ) : i ;
+			}
+			return str;
 		},
 		isTotalNumberModule: function( id ){
 			return this.totalNumberModuleIds.contains(id)
@@ -2527,10 +2576,13 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			}
 		}.bind(this));
 	},
+	_getTotalTr: function(){
+		return this.totalTr;
+	},
 	_loadTotal: function(){
 		var totalData = {};
 		if( !this.datatable.totalFlag )return totalData;
-		if (!this.totalTr)this._loadTotalTr();
+		if (!this._getTotalTr())this._loadTotalTr();
 		var data;
 		if( this.datatable.isShowAllSection ){
 			Object.each( this.datatable.getBusinessDataById(), function (d, k) {
@@ -2543,45 +2595,8 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 			var json = column.moduleJson;
 			if(!json)return;
 
-			var pointLength = 0; //小数点后的最大数位
-			var tmpV;
-			if (column.type === "count"){
-				tmpV = data.data.length;
-			}else if(column.type === "number"){
-				tmpV = new Decimal(0);
-				for (var i=0; i<data.data.length; i++){
-					var d = data.data[i];
-					if(d[json.id]){
-						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
-						var v = d[json.id].toString();
-						if( v.indexOf(".") > -1 ){
-							pointLength = Math.max(pointLength, v.split(".")[1].length);
-						}
-					}
-				}
-			}
-
-			if( isNaN( tmpV ) ){
-				totalData[json.id] = "";
-				column.td.set("text", "" );
-			}else{
-				if( pointLength > 0 && tmpV.toString() !== "0" ){
-					var s = tmpV.toString();
-					if( s.indexOf(".") > -1 ){
-						var length = s.split(".")[1].length;
-						if( length < pointLength ){
-							totalData[json.id] = s + "0".repeat(pointLength-length);
-						}else{
-							totalData[json.id] = s;
-						}
-					}else{
-						totalData[json.id] = s +"."+ "0".repeat(pointLength)
-					}
-				}else{
-					totalData[json.id] = tmpV.toString();
-				}
-				column.td.set("text", totalData[json.id] );
-			}
+			var total = this.datatable._loadColumnTotal( column, data );
+            if( typeOf(total) !== "null" )totalData[json.id] = total;
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
@@ -4375,6 +4390,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 					}.bind(this));
 					break;
 				case "Number":
+				case "Currency":
 				case "Elnumber":
 					if (isNaN(d)){
 						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );

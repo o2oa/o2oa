@@ -227,6 +227,7 @@ MWF.APPPOD.LP = {
         "label": "文本",
         "textfield": "文本字段",
         "number": "数字字段",
+        "currency": "货币字段",
         "org": "人员组织",
         "calendar": "日期选择",
         "textarea": "多行文本",

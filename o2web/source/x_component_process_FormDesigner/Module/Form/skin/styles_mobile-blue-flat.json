@@ -577,6 +577,24 @@
       "text-align": "right"
     }
   },
+  "currency": {
+    "styles": {
+      "border": "0px solid #979797",
+      "border-radius": "0px",
+      "color": "#000"
+    },
+    "inputStyles": {
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
+      "height": "auto",
+      "color": "#000",
+      "font-size": "15px",
+      "float": "left",
+      "text-align": "right"
+    },
+    "symbolStyles": {}
+  },
   "personfield": {
     "styles": {
       "border": "0px",

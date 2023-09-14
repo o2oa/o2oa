@@ -2671,6 +2671,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
 
     processWork: function ( defaultRoute ) {
+        if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
+            var processWorkFun = function () {
+                this.removeEvent( "afterLoad", processWorkFun );
+                this._processWork( defaultRoute )
+            }.bind(this);
+            this.addEvent("afterLoad", processWorkFun)
+        }else{
+            this._processWork( defaultRoute );
+        }
+    },
+    _processWork: function( defaultRoute ) {
         var _self = this;
 
         if (!this.businessData.work.startTime) {

@@ -227,6 +227,7 @@ MWF.APPPOD.LP = {
         "label": "Texto",
         "textfield": "Campo de texto",
         "number": "Numérico",
+        "currency": "moneda",
         "org": "Organización",
         "calendar": "Fecha y hora",
         "textarea": "Texto multilínea",

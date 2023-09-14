@@ -464,6 +464,28 @@
       "font-family": "宋体"
     }
   },
+  "currency": {
+    "styles": {
+      "border-bottom": "0px",
+      "border": "0px solid #cccccc",
+      "height": "auto",
+      "font-size": "18px",
+      "line-height": "30px",
+      "overflow": "visible"
+    },
+    "inputStyles": {
+      "border": "1px solid #cccccc",
+      "height": "30px",
+      "line-height": "30px",
+      "font-size": "18px",
+      "color": "#666",
+      "font-family": "宋体"
+    },
+    "symbolStyles": {
+      "padding-left": "5px",
+      "line-height": "34px"
+    }
+  },
   "address": {
     "styles": {
       "border-bottom": "0px",

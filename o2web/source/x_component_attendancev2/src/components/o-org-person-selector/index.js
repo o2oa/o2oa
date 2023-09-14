@@ -27,8 +27,10 @@ export default content({
     afterRender() {
         if (this.bind.value.length > 0) {
           let newShowValue = [];
+          let selectedResult = [];
           for (let index = 0; index < this.bind.value.length; index++) {
             const element = this.bind.value[index];
+            selectedResult.push(element);
             const a = element.split("@");
             if (a && a.length > 0 ) {
               newShowValue.push(a[0]);
@@ -37,6 +39,7 @@ export default content({
             }
           }
           this.bind.showValue = newShowValue.join(", ");
+          this.bind.selectedResult = selectedResult;
         }
     },
     leaveIcon() {

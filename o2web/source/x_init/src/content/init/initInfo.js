@@ -51,7 +51,7 @@ const style = `
     color: green;
 }
 .ooicon-cancel{
-    color: red;
+    color: #999999;
 }
 .infoArea{
     display: flex;
