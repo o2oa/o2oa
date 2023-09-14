@@ -57,6 +57,9 @@ public class ActionRebuildDetailWithGroupDate  extends BaseAction {
                 throw new ExceptionCannotOperateGroup(groupId);
             }
             List<String> trueList =  AttendanceV2Helper.calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
+            if (trueList == null || trueList.isEmpty()) {
+                throw new ExceptionEmptyParameter("考勤打卡人员、组织");
+            }
             group.setTrueParticipantList(trueList);
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);
