@@ -77,12 +77,14 @@ public class ActionCreateUpdate extends BaseAction {
                     if (wi.getWorkDateProperties() == null || !wi.getWorkDateProperties().validateNotEmpty()) {
                         throw new ExceptionEmptyParameter("考勤工作日设置");
                     }
+                } else if (AttendanceV2Group.CHECKTYPE_Arrangement.equals(wi.getCheckType())) { 
+                    // 排班制 暂时没有更多校验
                 } else if (AttendanceV2Group.CHECKTYPE_Free.equals(wi.getCheckType())) { // 自由班制
                     if (StringUtils.isEmpty(wi.getWorkDateList())) {
                         throw new ExceptionEmptyParameter("考勤工作日设置");
                     }
                 } else {
-                    throw new   ExceptionEmptyParameter("打卡类型");
+                    throw new ExceptionEmptyParameter("打卡类型");
                 }
                 if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
                     throw new ExceptionEmptyParameter("工作场所列表");

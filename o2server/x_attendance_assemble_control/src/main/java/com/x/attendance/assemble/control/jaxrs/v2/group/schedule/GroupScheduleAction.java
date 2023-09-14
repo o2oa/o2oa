@@ -38,7 +38,7 @@ public class GroupScheduleAction extends StandardJaxrsAction {
     public void listMonth(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                        @JaxrsParameterDescribe("考勤组ID") @PathParam("groupId") String groupId,
                        @JaxrsParameterDescribe("月份：yyyy-MM") @PathParam("month") String month) {
-        ActionResult<ActionScheduleList.Wo> result = new ActionResult<>();
+        ActionResult<ActionScheduleList.ScheduleValueWo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionScheduleList().execute(groupId, month);
@@ -49,6 +49,24 @@ public class GroupScheduleAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
     
+    @JaxrsMethodDescribe(value = "排班数据查询，后端接口.", action = ActionScheduleListFilter.class)
+    @POST
+    @Path("list/filter")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void  listFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                            JsonElement jsonElement) {
+        ActionResult<ActionScheduleListFilter.ScheduleValueWo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionScheduleListFilter().execute(jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "月份排班.", action = ActionSchedulePost.class)
     @POST
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
