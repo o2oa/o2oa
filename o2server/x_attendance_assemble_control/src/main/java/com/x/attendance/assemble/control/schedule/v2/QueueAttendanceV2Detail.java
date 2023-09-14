@@ -388,7 +388,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         emc.commit();
     }
 
-    // 未打卡保存
+    // 未打卡保存 todo offDutyNext
     private AttendanceV2CheckInRecord saveNoCheckInRecord(EntityManagerContainer emc, String person, String dutyType,
                                                           AttendanceV2Group group, AttendanceV2Shift shift, String today,
                                                           String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit) throws Exception {
