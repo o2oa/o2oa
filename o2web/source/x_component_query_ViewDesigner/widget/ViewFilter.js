@@ -1152,11 +1152,17 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
     },
     getText: function(){
         var lp = this.app.lp.filter;
-        if( this.data.formatType === "numberValue" ){
-            return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " "+this.data.value+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
-        }else{
-            return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " \""+this.data.value+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+        var value = "";
+        if( this.data.value ){
+            if( this.data.formatType === "numberValue" ){
+                value = this.data.value+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "")
+            }else{
+                value = " \""+this.data.value+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+            }
+        }else if( this.data.code && this.data.code.code ){
+            value =  " " + (lp.script||"脚本") +":\"" + this.data.code.code.substr(0, 200) + "\"";
         }
+        return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " "+value;
     },
     reload: function(data){
         this.data = data;

@@ -1204,11 +1204,15 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameter = new C
     },
     getText: function () {
         var lp = MWF.APPDSMD.LP.filter;
-        if (this.data.formatType === "numberValue") {
-            return this.data.title + " " + this.data.parameter + " " + this.data.value;
-        } else {
-            return this.data.title + " " + this.data.parameter + " \"" + this.data.value + "\"";
+        var value = "";
+        if( this.data.valueType === "script" ){
+            var code = (this.data.valueScript && this.data.valueScript.code) ? this.data.valueScript.code : "";
+            value =  " " + (lp.script||"脚本") +":\"" + code.substr(0, 200) + "\"";
+        }else{
+            value = (this.data.formatType === "numberValue") ? (" " + this.data.value) : (" \"" + this.data.value + "\"");
+            value = " " + (lp.input||"输入") + ":" + value;
         }
+        return this.data.title + " " + this.data.parameter + value;
     },
     reload: function (data) {
         this.data = data;
@@ -1297,10 +1301,21 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemFilter = new Clas
         this.filter.currentItem = this;
         this.filter.setData(this.data);
     },
-    getText: function () {
+    getText: function(){
         var lp = MWF.APPDSMD.LP.filter;
-        return this.data.title + "(" + this.data.path + ")";
-    },
+        var value = "";
+        if( this.data.code && this.data.code.code ){
+            value =  " " + (lp.script||"脚本") +":\"" + this.data.code.code.substr(0, 200) + "\"";
+        }else if( this.data.value ){
+            value = this.data.formatType === "numberValue" ? this.data.value : " \""+this.data.value+"\""
+        }
+        return this.data.path+" "+lp[this.data.comparison] + " "+value;
+    }
+    // getText: function () {
+    //     debugger;
+    //     var lp = MWF.APPDSMD.LP.filter;
+    //     return this.data.title + "(" + this.data.path + ")";
+    // },
 });
 
 
@@ -1316,8 +1331,21 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter.ItemParameterForm = n
     },
     getText: function () {
         var lp = MWF.APPDSMD.LP.filter;
-        return this.data.parameter
+        var value = "";
+        if( this.data.valueType === "script" ){
+            var code = (this.data.valueScript && this.data.valueScript.code) ? this.data.valueScript.code : "";
+            value =  " " + (lp.script||"脚本") +":\"" + code.substr(0, 200) + "\"";
+        }else{
+            value = (this.data.formatType === "numberValue") ? (" " + this.data.value) : (" \"" + this.data.value + "\"");
+            value = " " + (lp.input||"输入") + ":" + value;
+        }
+        return (this.data.title || "") + " " + this.data.parameter + value;
     },
+    // getText: function () {
+    //     debugger;
+    //     var lp = MWF.APPDSMD.LP.filter;
+    //     return this.data.parameter
+    // },
     selected: function () {
         if( this.filter.verificationNode ){
             this.filter.verificationNode.destroy();
