@@ -2563,8 +2563,11 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
     },
     previewPdf : function(){
         this.app.getAttachmentUrl(this.att, function (url) {
-            window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url)
-        });
+            if(layout.mobile){
+                location.href = "../o2_lib/pdfjs/web/viewer.html?file=" + url;
+            }else{
+                window.open("../o2_lib/pdfjs/web/viewer.html?file=" + url);
+            }        });
     },
     previewOffice : function(){
 
