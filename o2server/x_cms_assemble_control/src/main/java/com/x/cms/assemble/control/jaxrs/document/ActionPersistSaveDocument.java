@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -46,25 +47,27 @@ import org.w3c.dom.DocumentType;
 
 /**
  * 保存文档
+ * 
  * @author O2LEE
  *
  */
 public class ActionPersistSaveDocument extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionPersistSaveDocument.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionPersistSaveDocument.class);
 
-	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement,
+			EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Boolean check = true;
-		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Document document = Wi.copier.copy(wi);
-		document.setId( wi.getId() );
+		document.setId(wi.getId());
 		String identity = wi.getIdentity();
-		if( StringUtils.isBlank(identity)) {
-			identity = userManagerService.getPersonIdentity( effectivePerson.getDistinguishedName(), identity );
+		if (StringUtils.isBlank(identity)) {
+			identity = userManagerService.getPersonIdentity(effectivePerson.getDistinguishedName(), identity);
 		}
 
-		if ( StringUtils.isEmpty( wi.getCategoryId() ) ) {
+		if (StringUtils.isEmpty(wi.getCategoryId())) {
 			throw new ExceptionDocumentCategoryIdEmpty();
 		}
 
@@ -72,17 +75,17 @@ public class ActionPersistSaveDocument extends BaseAction {
 		AppInfo appInfo = null;
 
 		Document oldDocument = documentQueryService.get(document.getId());
-		if(oldDocument != null){
-			categoryInfo = categoryInfoServiceAdv.get( oldDocument.getCategoryId() );
+		if (oldDocument != null) {
+			categoryInfo = categoryInfoServiceAdv.get(oldDocument.getCategoryId());
 			appInfo = appInfoServiceAdv.get(oldDocument.getAppId());
-		}else{
-			categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
-			if(categoryInfo != null) {
+		} else {
+			categoryInfo = categoryInfoServiceAdv.get(wi.getCategoryId());
+			if (categoryInfo != null) {
 				appInfo = appInfoServiceAdv.get(categoryInfo.getAppId());
 			}
 		}
 
-		if(categoryInfo == null){
+		if (categoryInfo == null) {
 			throw new ExceptionCategoryInfoNotExists(wi.getCategoryId());
 		}
 		if (appInfo == null) {
@@ -90,12 +93,12 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		Business business = new Business(null);
-		if(!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, oldDocument)){
+		if (!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, oldDocument)) {
 			throw new ExceptionAccessDenied(effectivePerson, document);
 		}
 
 		// 查询分类设置的编辑表单
-		if ( StringUtils.isEmpty(categoryInfo.getFormId() )) {
+		if (StringUtils.isEmpty(categoryInfo.getFormId())) {
 			throw new ExceptionCategoryFormIdEmpty();
 		}
 
@@ -131,43 +134,48 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			document.setAppId(appInfo.getId());
-			document.setAppAlias( appInfo.getAppAlias());
+			document.setAppAlias(appInfo.getAppAlias());
 			document.setAppName(appInfo.getAppName());
 			document.setCategoryName(categoryInfo.getCategoryName());
 			document.setCategoryAlias(categoryInfo.getCategoryAlias());
-			document.setDocumentType( categoryInfo.getDocumentType() );
+			document.setDocumentType(categoryInfo.getDocumentType());
 
-			if( !"信息".equals(document.getDocumentType()) && !"数据".equals( document.getDocumentType() )) {
-				document.setDocumentType( "信息" );
+			if (!"信息".equals(document.getDocumentType()) && !"数据".equals(document.getDocumentType())) {
+				document.setDocumentType("信息");
 			}
 		}
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if( StringUtils.isNotEmpty( identity )) {
-					document.setCreatorIdentity( identity );
+				if (StringUtils.isNotEmpty(identity)) {
+					document.setCreatorIdentity(identity);
 				}
 
-				if (StringUtils.isEmpty( document.getCreatorIdentity() )) {
+				if (StringUtils.isEmpty(document.getCreatorIdentity())) {
 					if (StringUtils.equals(EffectivePerson.CIPHER, effectivePerson.getDistinguishedName())
-							|| StringUtils.equals(Token.defaultInitialManager, effectivePerson.getDistinguishedName())) {
+							|| StringUtils.equals(Token.defaultInitialManager,
+									effectivePerson.getDistinguishedName())) {
 						document.setCreatorIdentity(effectivePerson.getDistinguishedName());
 						document.setCreatorPerson(effectivePerson.getDistinguishedName());
 						document.setCreatorUnitName(effectivePerson.getDistinguishedName());
 						document.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
-					}else {
-						//尝试一下根据当前用户获取用户的第一个身份
-						document.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+					} else {
+						// 尝试一下根据当前用户获取用户的第一个身份
+						document.setCreatorIdentity(
+								userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName()));
 					}
 				}
 
 				if (!StringUtils.equals(EffectivePerson.CIPHER, document.getCreatorIdentity())
 						&& !StringUtils.equals(Token.defaultInitialManager, document.getCreatorIdentity())) {
-					if (StringUtils.isNotEmpty( document.getCreatorIdentity() )) {
-						document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( document.getCreatorIdentity() ) );
-						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( document.getCreatorIdentity() ) );
-						document.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( document.getCreatorIdentity() ) );
-					}else {
+					if (StringUtils.isNotEmpty(document.getCreatorIdentity())) {
+						document.setCreatorPerson(
+								userManagerService.getPersonNameWithIdentity(document.getCreatorIdentity()));
+						document.setCreatorUnitName(
+								userManagerService.getUnitNameByIdentity(document.getCreatorIdentity()));
+						document.setCreatorTopUnitName(
+								userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity()));
+					} else {
 						Exception exception = new ExceptionPersonHasNoIdentity(document.getCreatorIdentity());
 						result.error(exception);
 					}
@@ -179,17 +187,17 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if( DocumentStatus.PUBLISHED.getValue().equals(wi.getDocStatus()) ||
-					DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())) {
-				if( document.getPublishTime() == null ) {
-					document.setPublishTime( new Date() );
+			if (DocumentStatus.PUBLISHED.getValue().equals(wi.getDocStatus())
+					|| DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())) {
+				if (document.getPublishTime() == null) {
+					document.setPublishTime(new Date());
 				}
 			}
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(document.getTitle())) {
-				document.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
+			if (StringUtils.isEmpty(document.getTitle())) {
+				document.setTitle(appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档");
 			}
 		}
 
@@ -201,13 +209,13 @@ public class ActionPersistSaveDocument extends BaseAction {
 				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
-				wo.setId( document.getId() );
-				result.setData( wo );
+				wo.setId(document.getId());
+				result.setData(wo);
 
-				//检查是否需要删除热点图片
+				// 检查是否需要删除热点图片
 				try {
-					ThisApplication.queueDocumentUpdate.send( document );
-				} catch ( Exception e1 ) {
+					ThisApplication.queueDocumentUpdate.send(document);
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			} catch (Exception e) {
@@ -218,9 +226,9 @@ public class ActionPersistSaveDocument extends BaseAction {
 			}
 		}
 
-		//从流程管理中复制所有的附件到CMS
+		// 从流程管理中复制所有的附件到CMS
 		if (check) {
-			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
+			if (wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0) {
 				FileInfo fileInfo = null;
 				Attachment attachment = null;
 				StorageMapping mapping_attachment = null;
@@ -235,14 +243,17 @@ public class ActionPersistSaveDocument extends BaseAction {
 							emc.beginTransaction(FileInfo.class);
 							emc.beginTransaction(Document.class);
 
-							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
+							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class,
+									attachment.getStorage());
 							attachment_content = attachment.readContent(mapping_attachment);
 
 							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
-							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, attachment.getName(), attachment.getSite());
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
+									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
-							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
-							if(attachment.getOrderNumber()!=null) {
+							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName(),
+									Config.general().getStorageEncrypt());
+							if (attachment.getOrderNumber() != null) {
 								fileInfo.setSeqNumber(attachment.getOrderNumber());
 							}
 							fileInfo.setName(attachment.getName());
@@ -264,9 +275,10 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			try {//将读者以及作者信息持久化到数据库中
-				if(oldDocument==null || wi.getReaderList() != null || wi.getAuthorList() != null){
-					documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+			try {// 将读者以及作者信息持久化到数据库中
+				if (oldDocument == null || wi.getReaderList() != null || wi.getAuthorList() != null) {
+					documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(),
+							wi.getAuthorList());
 				}
 			} catch (Exception e) {
 				check = false;
@@ -278,7 +290,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 		return result;
 	}
 
-	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name, String site) throws Exception {
+	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name,
+			String site) throws Exception {
 		String fileName = UUID.randomUUID().toString();
 		String extension = FilenameUtils.getExtension(name);
 		FileInfo attachment = new FileInfo();
@@ -311,7 +324,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		return attachment;
 	}
 
-	public static class Wi{
+	public static class Wi {
 
 		@FieldDescribe("ID，非必填，更新时必填写，不然就是新增文档")
 		private String id;
@@ -322,7 +335,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe("分类ID，<font style='color:red'>必填</font>")
 		private String categoryId;
 
-		@FieldDescribe( "文档操作者身份，如果不传入则取登录者信息。" )
+		@FieldDescribe("文档操作者身份，如果不传入则取登录者信息。")
 		private String identity = null;
 
 		@FieldDescribe("文档摘要，非必填")
@@ -337,35 +350,35 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe("首页图片列表，非必填")
 		private List<String> pictureList = null;
 
-		@FieldDescribe( "数据的路径列表，非必填" )
+		@FieldDescribe("数据的路径列表，非必填")
 		private String[] dataPaths = null;
 
-		@FieldDescribe( "启动流程的JobId，非必填" )
+		@FieldDescribe("启动流程的JobId，非必填")
 		private String wf_jobId = null;
 
-		@FieldDescribe( "启动流程的WorkId，非必填" )
+		@FieldDescribe("启动流程的WorkId，非必填")
 		private String wf_workId = null;
 
-		@FieldDescribe( "启动流程的附件列表，非必填" )
+		@FieldDescribe("启动流程的附件列表，非必填")
 		private String[] wf_attachmentIds = null;
 
-		@FieldDescribe( "文档数据，非必填" )
+		@FieldDescribe("文档数据，非必填")
 		private JsonElement docData = null;
 
-		@FieldDescribe( "文档读者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}" )
+		@FieldDescribe("文档读者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}")
 		private List<PermissionInfo> readerList = null;
 
-		@FieldDescribe( "文档编辑者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}" )
+		@FieldDescribe("文档编辑者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}")
 		private List<PermissionInfo> authorList = null;
 
 		@FieldDescribe("定时发布文档消息提醒对象(参数同消息发布接口对象).")
 		private DocumentNotify documentNotify;
 
-		@FieldDescribe( "图片列表，非必填" )
+		@FieldDescribe("图片列表，非必填")
 		private List<String> cloudPictures = null;
 
-		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置），非必填" )
-		private Boolean skipPermission  = false;
+		@FieldDescribe("不修改权限（跳过权限设置，保留原来的设置），非必填")
+		private Boolean skipPermission = false;
 
 		@FieldDescribe("业务数据String值01.")
 		private String stringValue01;
@@ -378,7 +391,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		private String importBatchName;
 
-		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi(Wi.class, Document.class, null,
+				JpaObject.FieldsUnmodifyExcludeId);
 
 		public String getId() {
 			return id;
@@ -453,7 +467,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		public String[] getDataPaths() {
-			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
+			if (dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")) {
 				return null;
 			}
 			return dataPaths;

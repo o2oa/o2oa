@@ -792,6 +792,9 @@ o2.xApplication.systemconfig.LP = {
         "exposeJest": "Whether to output the Restful API documentation page",
         "exposeJestInfo": "The output Restful API documentation can be accessed through the URL: <a href='{url}' target='_blank'>Restful API.</a>.",
 
+        "storageEncrypt": "Whether to encrypt attachments",
+        "storageEncryptInfo": "If turned on, the system will encrypt and store attachments uploaded in the process platform, content management, and enterprise network disk.",
+
         "scriptingBlockedClasses": "Java classes disabled by server-side scripting",
         "scriptingBlockedClassesInfo": "Set Java classes that are not allowed to be used in server-side scripts here, and multiple Java classes are separated by commas.",
 

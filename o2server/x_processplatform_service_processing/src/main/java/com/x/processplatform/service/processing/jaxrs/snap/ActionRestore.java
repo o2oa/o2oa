@@ -13,6 +13,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -260,7 +261,7 @@ class ActionRestore extends BaseAction {
 					}
 					if (null != mapping) {
 						byte[] bytes = Base64.decodeBase64(content);
-						o.updateContent(mapping, bytes);
+						o.updateContent(mapping, bytes, Config.general().getStorageEncrypt());
 					}
 				}
 				emc.persist(o, CheckPersistType.all);

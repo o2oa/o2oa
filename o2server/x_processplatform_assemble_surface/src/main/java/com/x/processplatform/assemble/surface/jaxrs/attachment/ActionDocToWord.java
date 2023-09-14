@@ -95,7 +95,7 @@ class ActionDocToWord extends BaseAction {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						attachment.getStorage());
 				emc.beginTransaction(Attachment.class);
-				attachment.updateContent(mapping, bytes, wi.getFileName());
+				attachment.updateContent(mapping, bytes, wi.getFileName(), Config.general().getStorageEncrypt());
 				attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 				attachment.setLastUpdatePerson(person);
 				attachment.setLastUpdateTime(new Date());
@@ -118,7 +118,7 @@ class ActionDocToWord extends BaseAction {
 				attachment.setActivityName(work.getActivityName());
 				attachment.setActivityToken(work.getActivityToken());
 				attachment.setActivityType(work.getActivityType());
-				attachment.saveContent(mapping, bytes, wi.getFileName());
+				attachment.saveContent(mapping, bytes, wi.getFileName(), Config.general().getStorageEncrypt());
 				attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 				emc.persist(attachment, CheckPersistType.all);
 				emc.commit();

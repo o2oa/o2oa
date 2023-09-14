@@ -31,7 +31,7 @@ const props = defineProps({
     default: {}
   }
 });
-const ev = ref(props.value);
+const ev = ref(!!props.value);
 watch(
     () => props.value,
     (v) =>  ev.value = v

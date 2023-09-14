@@ -772,18 +772,20 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         }
     },
     _loadSqlCountEditor : function(){
-        o2.require("o2.widget.JavascriptEditor", function () {
-            this.sqlCountEditor = new o2.widget.JavascriptEditor(this.sqlCountEditorNode, {
-                "title": "SQL",
-                "option": {"mode": "sql"}
-            });
-            this.sqlCountEditor.load(function () {
-                this.sqlCountEditor.editor.setValue(this.json.sqlCount);
-                this.sqlCountEditor.addEditorEvent("change", function () {
-                    this.data.sqlCount = this.sqlCountEditor.getValue();
+        if (!this.sqlCountEditor) {
+            o2.require("o2.widget.JavascriptEditor", function () {
+                this.sqlCountEditor = new o2.widget.JavascriptEditor(this.sqlCountEditorNode, {
+                    "title": "SQL",
+                    "option": {"mode": "sql"}
+                });
+                this.sqlCountEditor.load(function () {
+                    this.sqlCountEditor.editor.setValue(this.json.sqlCount);
+                    this.sqlCountEditor.addEditorEvent("change", function () {
+                        this.data.sqlCount = this.sqlCountEditor.getValue();
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
-        }.bind(this), false);
+            }.bind(this), false);
+        }
     },
 
     loadJpqlScriptEditor: function () {

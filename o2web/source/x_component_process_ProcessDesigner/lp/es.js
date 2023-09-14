@@ -319,6 +319,16 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"reviewerId": "Identificación",
 		"unit": "Organización",
 
+		"participante": "Rol del proceso",
+		"participant_creator": "iniciador",
+		"participant_activity": "Participante",
+		"participant_maintenance": "Mantenedor",
+		"participant_none": "Ninguno",
+
+		"participant_creator_info": "Establecer el iniciador de la instancia del proceso como el controlador de la actividad actual",
+		"participant_maintenance_info": "Establecer el mantenedor del proceso como el manejador de la actividad actual",
+		"participant_activity_info": "Establezca el controlador de la actividad que la instancia de proceso ha transferido como el controlador de la actividad actual. Seleccione la actividad a continuación",
+
 		"splitScript": "Script de criterios de división",
 		"embed": "Llamar",
 		"selectProcess": "Subflujo",

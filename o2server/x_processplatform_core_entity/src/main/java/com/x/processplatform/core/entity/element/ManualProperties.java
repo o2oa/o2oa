@@ -32,6 +32,17 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("人工环节工作流转后执行脚本文本.")
 	private String manualAfterProcessingScriptText;
 
+	@FieldDescribe("流程参与者作为待办人设置.")
+	private Participant taskParticipant;
+
+	public Participant getTaskParticipant() {
+		return taskParticipant;
+	}
+
+	public void setTaskParticipant(Participant participant) {
+		this.taskParticipant = participant;
+	}
+
 	public String getManualAfterProcessingScript() {
 		return manualAfterProcessingScript;
 	}
@@ -110,7 +121,7 @@ public class ManualProperties extends JsonProperties {
 		@FieldDescribe("路由方式,step:正常流转,jump:跳转到退回发起的环节,custom:用户指定.")
 		private String way;
 
-		@FieldDescribe("有多条待办时是否允许退回.")
+		@FieldDescribe("在人工环节并行模式下有多条待办时是否允许退回,此配置仅针对人工环节并行模式.")
 		private Boolean multiTaskEnable;
 
 		public Boolean getMultiTaskEnable() {
@@ -171,6 +182,38 @@ public class ManualProperties extends JsonProperties {
 
 		public void setWay(String way) {
 			this.way = way;
+		}
+
+	}
+
+	public static class Participant extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 8552496027679106938L;
+
+		public static final String TYPE_CREATOR = "creator";
+		public static final String TYPE_ACTIVITY = "activity";
+		public static final String TYPE_MAINTENANCE = "maintenance";
+
+		@FieldDescribe("creator:work创建者,activity:流程环节已办身份(参与流转),maintenance:流程维护身份.空值和其他值则忽略.")
+		private String type;
+
+		@FieldDescribe("type=activity,data为活动环节id(数组).")
+		private JsonElement data;
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public JsonElement getData() {
+			return data;
+		}
+
+		public void setData(JsonElement data) {
+			this.data = data;
 		}
 
 	}

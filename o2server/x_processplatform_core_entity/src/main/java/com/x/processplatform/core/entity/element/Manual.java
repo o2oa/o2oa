@@ -38,6 +38,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
+import com.x.processplatform.core.entity.element.ManualProperties.Participant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -83,6 +84,7 @@ public class Manual extends Activity {
 			this.allowGoBack = this.getProperties().getAllowGoBack();
 			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
+			this.taskParticipant = this.getProperties().getTaskParticipant();
 		}
 	}
 
@@ -99,6 +101,23 @@ public class Manual extends Activity {
 
 	public void setProperties(ManualProperties properties) {
 		this.properties = properties;
+	}
+
+	@FieldDescribe("流程参与者作为待办人设置.")
+	@Transient
+	private Participant taskParticipant;
+
+	public Participant getTaskParticipant() {
+		if (null != taskParticipant) {
+			return this.taskParticipant;
+		} else {
+			return this.getProperties().getTaskParticipant();
+		}
+	}
+
+	public void setTaskParticipant(Participant taskParticipant) {
+		this.taskParticipant = taskParticipant;
+		this.getProperties().setTaskParticipant(taskParticipant);
 	}
 
 	public static final String CUSTOMDATA_FIELDNAME = "customData";
