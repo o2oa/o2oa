@@ -2351,7 +2351,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var dlg = o2.DL.open(options);
 
     },
-    startDraftProcess: function () {
+    startDraftProcess: function ( action ) {
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
             //    if (callback) callback();
@@ -2385,7 +2385,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 //     if (layout.app) layout.app.$openWithSelf = true;
                 //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 // }
-                this.app.options.action = "processTask";
+                this.app.options.action = action || "processTask";
                 this.app.reload();
 
                 //this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
@@ -2446,14 +2446,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     _flowWork: function( defaultRoute ){
-        var _self = this;
-
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
-                    this.processWork_mobile( defaultRoute );
+                    this.flowWork_mobile( defaultRoute );
                 }.bind(this), 100);
             } else {
                 this.flowWork_pc( defaultRoute );
@@ -2463,8 +2461,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     flowWork_pc: function ( defaultRoute ) {
         var _self = this;
         //? 添加事件
-        // this.fireEvent("beforeProcessWork");
-        // if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+        this.fireEvent("beforeFlowWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
 
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
@@ -2483,8 +2481,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var setSize = function (notRecenter) {
 
-            debugger;
-
             var dlg = this;
             if (!dlg || !dlg.node) return;
             dlg.node.setStyle("display", "block");
@@ -2500,7 +2496,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "padding-right": "0px"
             });
 
-            var s = dlg.setContentSize();
+            s = dlg.setContentSize();
             if (!notRecenter) dlg.reCenter();
         };
 
@@ -2552,6 +2548,33 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this), function () {
             if (this.flowDlg) setSize.call(this.flowDlg, true)
         }.bind(this), defaultRoute);
+    },
+    flowWork_mobile: function ( defaultRoute ) {
+        if (this.app.inBrowser) {
+            this.app.content.setStyle("height", document.body.getSize().y);
+        }
+
+        this.fireEvent("beforeFlowWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+
+        if (!this.formCustomValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        if (!this.formValidation("", "")) {
+            this.app.content.unmask();
+            return false;
+        }
+
+        var processNode = new Element("div", { "styles": this.app.css.flowNode_mobile }).inject(document.body);
+        processNode.position({
+            relativeTo: this.app.content,
+            position: "topcenter",
+            edge: "topcenter"
+        });
+        this.loadFlow(processNode, null, null, null, defaultRoute);
     },
     loadFlow: function (hanlderNode, style, postLoadFun, resizeFun, defaultRoute) {
         var _self = this;
@@ -2608,7 +2631,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }.bind(this));
                     }else{
                         _self.submitWork(routeName, opinion, medias, function () {
-                            debugger;
                             this.destroy();
                             hanlderNode.destroy();
                             if (_self.flowDlg) _self.flowDlg.close();
@@ -2651,22 +2673,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         };
 
-        // var processOptions = {
-        //    "defaultRoute": defaultRoute,
-            // "onPostLoad": function () {
-            //     //if (postLoadFun) postLoadFun(this);
-            //
-            //     //? _self.fireEvent("afterLoadProcessor", [this]);
-            // },
-            // "onCancel": function () {
-            //     hanlderNode.destroy();
-            //     _self.app.content.unmask();
-            //     delete this;
-            // },
-
-        //};
-
-        this.flow = new MWF.xApplication.process.Work.Flow(innerNode || hanlderNode, this.businessData.task, options, this);
+        if( this.json.mode == "Mobile" ){
+            this.flow = new MWF.xApplication.process.Work.FlowMobile(innerNode || hanlderNode, this.businessData.task, options, this);
+        }else{
+            this.flow = new MWF.xApplication.process.Work.Flow(innerNode || hanlderNode, this.businessData.task, options, this);
+        }
     },
 
 

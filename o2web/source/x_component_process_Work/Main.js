@@ -713,6 +713,9 @@ MWF.xApplication.process.Work.Main = new Class({
                     if (this.options.action=="processTask"){
                         this.appForm.processWork();
                         this.options.action = "";
+                    }else if( this.options.action=="flowTask" ){
+                        this.appForm.flowWork();
+                        this.options.action = "";
                     }
 
                     this.fireEvent("postLoadForm", [this]);
