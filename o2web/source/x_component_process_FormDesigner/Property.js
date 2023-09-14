@@ -2537,7 +2537,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
         }.bind(this));
     },
-
     loadDictionaryIncluder : function(){
         var nodes = this.propertyContent.getElements(".MWFDictionaryIncluder");
         if (nodes.length){

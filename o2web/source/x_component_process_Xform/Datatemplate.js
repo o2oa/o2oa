@@ -3304,6 +3304,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 					}.bind(this));
 					break;
 				case "Number":
+				case "Currency":
 				case "Elnumber":
 					if (isNaN(d)){
 						lineData.errorTextList.push( colInfor + d + lp.notValidNumber + lp.fullstop );

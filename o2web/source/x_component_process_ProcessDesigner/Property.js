@@ -643,7 +643,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
     getFormFields: function(data){
         if (data){
             var fieldTypeList = ["textfield", "textarea", "select", "radio", "personfield",
-                "orgfield", "org", "number", "eltime", "elswitch", "elslider", "elselect", "elrate",
+                "orgfield", "org", "number", "currency", "eltime", "elswitch", "elslider", "elselect", "elrate",
                 "elradio", "elnumber", "elinput", "eldatetime", "eldate", "elcolorpicker", "elcheckbox",
                 "elcascader", "elautocomplete", "combox", "checkbox", "calendar", "address"];
 

@@ -16,6 +16,8 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Tab", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Tree", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Iframe", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Textfield", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Number", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Currency", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Personfield", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Org", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Calendar", null, false);

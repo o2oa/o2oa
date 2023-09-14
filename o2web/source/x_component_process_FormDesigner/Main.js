@@ -1445,7 +1445,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             "string": ["htmledit", "radio", "select", "textarea", "textfield","imageclipper","htmleditor","tinymceeditor"],
             "person": ["personfield","orgfield","org"],
             "date": ["calender"],
-            "number": ["number"],
+            "number": ["number","currency"],
             "array": ["checkbox"]
         };
         fieldList = [];
