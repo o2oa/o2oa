@@ -2257,6 +2257,13 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
             this.errNode = this.createErrorNode(text).inject(this.node, "after");
             this.showNotValidationMode(this.node);
+
+            var parentNode = this.errNode;
+            while( parentNode && parentNode.offsetParent === null ){
+                parentNode = parentNode.getParent();
+            }
+
+            if ( parentNode && !parentNode.isIntoView()) parentNode.scrollIntoView(false);
         }
     },
     showNotValidationMode: function (node) {
