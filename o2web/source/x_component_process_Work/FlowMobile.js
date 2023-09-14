@@ -154,25 +154,6 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
         this.contentScrollNode.addEvent("scroll", function () {
             if(this.quickSelector.status === "display")this.quickSelector.hide();
         }.bind(this))
-    },
-    submit: function(){
-        switch ( this.currentAction ) {
-            case "process":
-                this.processor.submit();
-                break;
-            case "addTask":
-                this.addTask.submit();
-                break;
-            case "reset":
-                this.reset.submit();
-                break;
-        }
-    },
-    destroy: function () {
-        if( this.processor )this.processor.destroy();
-        if( this.reset )this.reset.destroy();
-        if( this.addTask )this.addTask.destroy();
-        if(this.quickSelector)this.quickSelector.destroy();
     }
 });
 
