@@ -247,6 +247,8 @@ MWF.xApplication.attendancev2.LP = {
     participatesErrorNotEmtpy: "参与考勤人员、组织不能为空！",
     startDateEmptyPlaceholder: "请选择开始日期!",
     endDateEmptyPlaceholder: "请选择结束日期!",
+    endDateCannotSmaller: "结束日期不能小于开始日期!",
+    startDateAndEndDateMoreThan: "日期间隔不可超过31天!",
   },
   detailRecordList: {
     title: "打卡记录",
