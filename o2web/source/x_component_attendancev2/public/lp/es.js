@@ -260,6 +260,8 @@ MWF.xApplication.attendancev2.LP = {
       "¡Las personas u organizaciones para la asistencia no pueden estar vacías!",
     startDateEmptyPlaceholder: "¡Seleccione la fecha de inicio!",
     endDateEmptyPlaceholder: "¡Seleccione la fecha de finalización!",
+    endDateCannotSmaller: "La fecha de finalización no puede ser inferior a la fecha de inicio!",
+    startDateAndEndDateMoreThan: "El intervalo de fechas no puede exceder los 31 días!",
   },
   detailRecordList: {
     title: "Registro de asistencia",
