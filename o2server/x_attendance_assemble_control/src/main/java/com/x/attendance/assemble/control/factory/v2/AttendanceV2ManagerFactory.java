@@ -2,10 +2,15 @@ package com.x.attendance.assemble.control.factory.v2;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,11 +29,30 @@ import java.util.Optional;
  */
 public class AttendanceV2ManagerFactory extends AbstractFactory {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttendanceV2ManagerFactory.class);
+
+
     protected Cache.CacheCategory cacheCategory;
 
 
     public AttendanceV2ManagerFactory(Business business) throws Exception {
         super(business);
+    }
+
+
+    /**
+     * 内部请求 获取用户某一天的考勤组班次情况
+     * @param person 人员 dn
+     * @param date yyyy-MM-dd
+     * @return
+     * @throws Exception
+     */
+    public WoGroupShift getGroupShiftByPersonDate(String person, String date) throws Exception {
+        WoGroupShift result = ThisApplication.context().applications().getQuery(x_attendance_assemble_control.class, "v2/group/person/"+person+"/date/"+date ).getData(WoGroupShift.class);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("处理结果，{}", result.toString());
+        }
+        return result;
     }
 
     /**

@@ -2,8 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
-import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -43,16 +43,20 @@ public class ActionPreCheck extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             // 查询当前用户的考勤组
             Business business = new Business(emc);
-            List<AttendanceV2Group> groups = business.getAttendanceV2ManagerFactory()
-                    .listGroupWithPerson(effectivePerson.getDistinguishedName());
-            if (groups == null || groups.isEmpty()) {
+            Date nowDate = new Date();
+            String today = DateTools.format(nowDate, DateTools.format_yyyyMMdd);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("日期：{}", today);
+            }
+            WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(effectivePerson.getDistinguishedName(), today);
+            if (woGroupShift == null || woGroupShift.getGroup() == null) {
                 result.setData(cannotCheckIn("没有对应的考勤组"));
                 return result;
             }
-            AttendanceV2Group group = groups.get(0);
+            AttendanceV2Group group = woGroupShift.getGroup();
             // 处理并发的问题
             List<AttendanceV2CheckInRecord> recordList = ThisApplication.executor
-                    .submit(new CallableImpl(effectivePerson.getDistinguishedName(), group)).get();
+                    .submit(new CallableImpl(effectivePerson.getDistinguishedName(), group, woGroupShift.getShift())).get();
             if (recordList == null || recordList.isEmpty()) {
                 result.setData(cannotCheckIn("没有对应的上下班打卡时间"));
                 return result;
@@ -79,10 +83,12 @@ public class ActionPreCheck extends BaseAction {
 
         private String person;
         private AttendanceV2Group group;
+        private AttendanceV2Shift shift;
 
-        private CallableImpl(String person, AttendanceV2Group group) {
+        private CallableImpl(String person, AttendanceV2Group group, AttendanceV2Shift shift) {
             this.person = person;
             this.group = group;
+            this.shift = shift;
         }
 
         @Override
@@ -99,21 +105,8 @@ public class ActionPreCheck extends BaseAction {
                 // 按照时间顺序查询出打卡列表
                 List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory()
                         .listRecordWithPersonAndDate(person, today);
-                if (recordList != null && !recordList.isEmpty()) {
-                    // 自动处理 已经过来的打卡记录 记录为未打卡
-                    dealWithOvertimeRecord(emc, nowDate, today, recordList);
-                    return recordList; // 数据已存在直接返回
-                }
-                // 固定班制
-                if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
-                    try {
-                        fixedCheckTypeDeal(emc, business, person, group, nowDate, today, recordList);
-                    } catch (Exception e) {
-                        LOGGER.error(e);
-                        return null;
-                    }
-                } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) {
-                    // 排班制数据处理
+                if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) {
+                    // 排班制数据处理 排班制有可能有跨天的打卡 所以要先查询昨天的打卡记录
                     Date yesterday = DateTools.addDay(nowDate, -1);
                     String yesterdayString = DateTools.format(yesterday, DateTools.format_yyyyMMdd);
                     if (LOGGER.isDebugEnabled()) {
@@ -126,12 +119,33 @@ public class ActionPreCheck extends BaseAction {
                         // 昨天的数据 并且跨天 并且未打卡
                         if (last.getOffDutyNextDay() && last.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
                             LOGGER.info("返回昨日的数据，有跨天的还未完成的打卡");
-                            return yesterdayRecordList;
+                            Date onDutyAfterTime;
+                            if (StringUtils.isEmpty(last.getPreDutyTimeAfterLimit())) {
+                                onDutyAfterTime = DateTools.parse(today + " " + last.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                                onDutyAfterTime = DateTools.addMinutes(onDutyAfterTime, 60);// 跨天的最后一条数据 超过 60 分钟
+                            } else {
+                                onDutyAfterTime = DateTools.parse(today + " " + last.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+                            }
+                            // 如果没有在限制时间结束前 就是返回昨天未完成的打卡记录
+                            if (!nowDate.after(onDutyAfterTime)) {
+                                return yesterdayRecordList;
+                            } else {
+                                // 超过了打卡结束限制时间，直接生成未打卡数据
+                                update2NoCheckInRecord(emc, last);
+                            }
                         }
                     }
-                    // 查询排班数据生成打卡记录
-                    arrangementCheckTypeDeal(emc, business, person, group, nowDate, today, recordList);
                 }
+                if (recordList != null && !recordList.isEmpty()) {
+                    // 自动处理 已经过来的打卡记录 记录为未打卡
+                    dealWithOvertimeRecord(emc, nowDate, today, recordList);
+                    return recordList;
+                }
+
+                if (shift != null) {
+                    dealShiftForRecord(shift, emc, business, person, group, nowDate, today, recordList);
+                }
+ 
                 // 如果没有数据，可能是自由工时 或者 休息日没有班次信息的情况下 只需要生成一条上班一条下班的打卡记录
                 if (recordList == null || recordList.isEmpty()) {
                     recordList = new ArrayList<>();
@@ -151,70 +165,6 @@ public class ActionPreCheck extends BaseAction {
             }
         }
 
-    }
-
-    /**
-     * 排班制的数据处理
-     * @param emc
-     * @param business
-     * @param person
-     * @param group
-     * @param nowDate
-     * @param today
-     * @param recordList
-     * @throws Exception
-     */
-    private void arrangementCheckTypeDeal(EntityManagerContainer emc, Business business, String person,
-            AttendanceV2Group group, Date nowDate,
-            String today, List<AttendanceV2CheckInRecord> recordList) throws Exception {
-        List<AttendanceV2GroupSchedule> schedules = business.getAttendanceV2ManagerFactory()
-                .listGroupSchedule(group.getId(), null, today, person);
-        if (schedules == null || schedules.isEmpty()) { // 休息日或者没有排班
-            return;
-        }
-        AttendanceV2GroupSchedule schedule = schedules.get(0);
-        if (StringUtils.isEmpty(schedule.getShiftId())) {
-            LOGGER.info("没有班次 id ， person {} date {}", person, today);
-            return;
-        }
-        String shiftId = schedule.getShiftId();
-        AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(shiftId, AttendanceV2Shift.class);
-        if (shift != null) { // 有班次对象
-            dealShiftForRecord(shift, emc, business, person, group, nowDate, today, recordList);
-        }
-    }
-
-    /**
-     * 固定班次的数据处理
-     * 
-     * @param emc
-     * @param business
-     * @param person
-     * @param group
-     * @param nowDate
-     * @param today
-     * @param recordList
-     * @throws Exception
-     */
-    private void fixedCheckTypeDeal(EntityManagerContainer emc, Business business, String person,
-            AttendanceV2Group group, Date nowDate, String today, List<AttendanceV2CheckInRecord> recordList)
-            throws Exception {
-        // 正常的班次id
-        String shiftId = group.getWorkDateProperties().shiftIdWithDate(nowDate);
-        // 是否特殊工作日
-        if (StringUtils.isEmpty(shiftId)) {
-            shiftId = AttendanceV2Helper.specialWorkDayShift(today, group);
-        }
-        // 是否特殊节假日 清空shiftid
-        if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(today, group)) {
-            shiftId = null;
-        }
-        if (StringUtils.isNotEmpty(shiftId)) {
-            AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(shiftId, AttendanceV2Shift.class);
-            if (shift != null) { // 有班次对象
-                dealShiftForRecord(shift, emc, business, person, group, nowDate, today, recordList);
-            }
-        }
     }
 
     /**
