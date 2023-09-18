@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2GroupSchedule;
@@ -38,7 +39,7 @@ public class ActionSchedulePost extends BaseAction {
     if (StringUtils.isEmpty(wi.getMonth())) {
       throw new ExceptionEmptyParameter("month");
     }
-    if (!isValidMonthString(wi.getMonth())) {
+    if (!AttendanceV2Helper.isValidMonthString(wi.getMonth())) {
       throw new ExceptionWithMessage("月份格式不正确！");
     }
     if (wi.getSchedule() == null || wi.getSchedule().isEmpty()) {

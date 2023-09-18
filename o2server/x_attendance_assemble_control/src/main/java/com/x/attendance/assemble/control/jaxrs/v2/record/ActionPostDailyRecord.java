@@ -7,6 +7,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateError;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -38,11 +39,10 @@ import java.util.List;
 public class ActionPostDailyRecord extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionPostDailyRecord.class);
 
-
     ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            if(!business.isManager(effectivePerson)){
+            if (!business.isManager(effectivePerson)) {
                 throw new ExceptionAccessDenied(effectivePerson);
             }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -60,7 +60,8 @@ public class ActionPostDailyRecord extends BaseAction {
             Date recordDate = null;
             try {
                 recordDate = DateTools.parse(wi.getDate(), DateTools.format_yyyyMMdd);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
             if (recordDate == null) {
                 throw new ExceptionWithMessage("日期格式不正确！");
             }
@@ -78,63 +79,44 @@ public class ActionPostDailyRecord extends BaseAction {
             addRecordTimes(wi.getDate(), wi.getOffDutyTime2(), recordList);
             addRecordTimes(wi.getDate(), wi.getOnDutyTime3(), recordList);
             addRecordTimes(wi.getDate(), wi.getOffDutyTime3(), recordList);
-            List<AttendanceV2Group> groups = business.getAttendanceV2ManagerFactory().listGroupWithPerson(p.getDistinguishedName());
-            if (groups == null || groups.isEmpty()) {
-                throw new ExceptionNotExistObject("没有对应的考勤组" );
+            // 考勤组和班次
+            WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory()
+                    .getGroupShiftByPersonDate(p.getDistinguishedName(), wi.getDate());
+            if (woGroupShift == null || woGroupShift.getGroup() == null) {
+                throw new ExceptionNotExistObject("没有对应的考勤组");
             }
-            AttendanceV2Group group = groups.get(0); // 考勤组
-            // 固定班制
-            if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
-                // 正常的班次id
-                String shiftId = group.getWorkDateProperties().shiftIdWithDate(recordDate);
-                // 是否特殊工作日
-                if (StringUtils.isEmpty(shiftId)) {
-                    shiftId = AttendanceV2Helper.specialWorkDayShift(wi.getDate(), group);
+            AttendanceV2Group group = woGroupShift.getGroup(); // 考勤组
+            AttendanceV2Shift shift = woGroupShift.getShift(); // 班次
+            // 固定班制 或者 排班制
+            if ((group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)
+                    || group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) && shift != null) {
+                List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
+                if (timeList == null || timeList.isEmpty()) {
+                    throw new ExceptionWithMessage("没有对应的上下班打卡时间");
                 }
-                // 是否特殊节假日 清空shiftid
-                if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(wi.getDate(), group)) {
-                    shiftId = null;
-                }
-                if (StringUtils.isNotEmpty(shiftId)) {
-                    AttendanceV2Shift shift = business.getAttendanceV2ManagerFactory().pick(shiftId, AttendanceV2Shift.class);
-                    if (shift != null) { // 有班次对象
-                        List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
-                        if (timeList == null || timeList.isEmpty()) {
-                            throw new ExceptionWithMessage("没有对应的上下班打卡时间" );
-                        }
-                        // 先删除老的
-                        deleteOldRecords(p.getDistinguishedName(), wi.getDate(), emc, business);
-                        for (int i = 0; i < timeList.size(); i++) {
-                            AttendanceV2ShiftCheckTime shiftCheckTime = timeList.get(i);
-                            // 上班打卡
-                            int recordIndex = i * 2;
-                            Date onDutyRecordTime = recordList.get(recordIndex);
-                            saveRecord(AttendanceV2CheckInRecord.OnDuty, p.getDistinguishedName(), wi.getDate(), onDutyRecordTime,
-                                    shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(), shiftCheckTime.getOnDutyTimeAfterLimit(),
-                                    group, shift, emc);
-                            Date offDutyRecordTime = recordList.get(recordIndex + 1);
-                            saveRecord(AttendanceV2CheckInRecord.OffDuty, p.getDistinguishedName(), wi.getDate(), offDutyRecordTime,
-                                    shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(), shiftCheckTime.getOffDutyTimeAfterLimit(),
-                                    group, shift, emc);
-                        }
-                    }
-                } else { 
-                    // 可能是节假日没有班次的情况，但是导入数据还是作为正常的打开数据的
-                    deleteOldRecords(p.getDistinguishedName(), wi.getDate(), emc, business);
-                    // 没有班次 只读取两条数据
-                    Date onDutyRecordTime = recordList.get(0);
-                    saveRecord(AttendanceV2CheckInRecord.OnDuty, p.getDistinguishedName(), wi.getDate(), onDutyRecordTime,
-                            null, null, null,
-                            group, null, emc);
-                    Date offDutyRecordTime = recordList.get(1);
-                    saveRecord(AttendanceV2CheckInRecord.OffDuty, p.getDistinguishedName(), wi.getDate(), offDutyRecordTime,
-                            null, null, null,
-                            group, null, emc);
-                }
-            } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) {
                 // 先删除老的
                 deleteOldRecords(p.getDistinguishedName(), wi.getDate(), emc, business);
-                // 自由打卡 只读取两条数据
+                for (int i = 0; i < timeList.size(); i++) {
+                    AttendanceV2ShiftCheckTime shiftCheckTime = timeList.get(i);
+                    // 上班打卡
+                    int recordIndex = i * 2;
+                    Date onDutyRecordTime = recordList.get(recordIndex);
+                    saveRecord(AttendanceV2CheckInRecord.OnDuty, p.getDistinguishedName(), wi.getDate(),
+                            onDutyRecordTime,
+                            shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(),
+                            shiftCheckTime.getOnDutyTimeAfterLimit(),
+                            group, shift, emc);
+                    Date offDutyRecordTime = recordList.get(recordIndex + 1);
+                    saveRecord(AttendanceV2CheckInRecord.OffDuty, p.getDistinguishedName(), wi.getDate(),
+                            offDutyRecordTime,
+                            shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(),
+                            shiftCheckTime.getOffDutyTimeAfterLimit(),
+                            group, shift, emc);
+                }
+            } else {
+                // 先删除老的
+                deleteOldRecords(p.getDistinguishedName(), wi.getDate(), emc, business);
+                // 自由打卡或者节假日没有班次的情况 只读取两条数据
                 Date onDutyRecordTime = recordList.get(0);
                 saveRecord(AttendanceV2CheckInRecord.OnDuty, p.getDistinguishedName(), wi.getDate(), onDutyRecordTime,
                         null, null, null,
@@ -143,11 +125,10 @@ public class ActionPostDailyRecord extends BaseAction {
                 saveRecord(AttendanceV2CheckInRecord.OffDuty, p.getDistinguishedName(), wi.getDate(), offDutyRecordTime,
                         null, null, null,
                         group, null, emc);
-            } else {
-                throw new ExceptionWithMessage("考勤组考勤类型错误，未知的类型："+ group.getCheckType() );
             }
             LOGGER.info("导入数据成功，发起考勤数据生成，Date：{} person: {}", wi.getDate(), p.getDistinguishedName());
-            ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(p.getDistinguishedName(), wi.getDate()));
+            ThisApplication.queueV2Detail
+                    .send(new QueueAttendanceV2DetailModel(p.getDistinguishedName(), wi.getDate()));
 
             Wo wo = new Wo();
             wo.setValue(true);
@@ -157,18 +138,17 @@ public class ActionPostDailyRecord extends BaseAction {
         }
     }
 
-
     private void addRecordTimes(String date, String dutyTime, List<Date> recordList) {
-            try {
-                String timeStr = date + " " + dutyTime + ":00";
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("打卡时间：" + timeStr);
-                }
-                Date time = DateTools.parse(timeStr, DateTools.format_yyyyMMddHHmmss);
-                recordList.add(time);
-            } catch (Exception ignore) {
-                recordList.add(null);
+        try {
+            String timeStr = date + " " + dutyTime + ":00";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("打卡时间：" + timeStr);
             }
+            Date time = DateTools.parse(timeStr, DateTools.format_yyyyMMddHHmmss);
+            recordList.add(time);
+        } catch (Exception ignore) {
+            recordList.add(null);
+        }
     }
 
     public static class Wo extends WrapBoolean {
@@ -176,9 +156,7 @@ public class ActionPostDailyRecord extends BaseAction {
         private static final long serialVersionUID = 7899934340364883697L;
     }
 
-
     public static class Wi extends GsonPropertyObject {
-
 
         private static final long serialVersionUID = -8017286362885456659L;
         @FieldDescribe("用户唯一标识")

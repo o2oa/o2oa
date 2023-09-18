@@ -93,26 +93,7 @@ public class RecordAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
-
-//
-//
-//    @JaxrsMethodDescribe(value = "创建或更新打卡记录.", action = ActionPost.class)
-//    @POST
-//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void createOrUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//                               JsonElement jsonElement) {
-//        ActionResult<ActionPost.Wo> result = new ActionResult<>();
-//        EffectivePerson effectivePerson = this.effectivePerson(request);
-//        try {
-//            result = new ActionPost().execute(effectivePerson, jsonElement);
-//        } catch (Exception e) {
-//            logger.error(e, effectivePerson, request, jsonElement);
-//            result.error(e);
-//        }
-//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//    }
-
+ 
 
 
     @JaxrsMethodDescribe(value = "获取导入打卡记录数据的模版.", action = ActionExcelTemplate.class)

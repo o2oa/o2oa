@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2GroupSchedule;
@@ -34,12 +35,12 @@ public class ActionScheduleListFilter  extends BaseAction {
       LOGGER.debug("排班数据查询  groupId {} month {} date {} person {}", wi.getGroupId(), wi.getGroupId(), wi.getDate(), wi.getPerson());
     }
     if (StringUtils.isNotEmpty(wi.getMonth())) {
-      if (!isValidMonthString(wi.getMonth())) {
+      if (!AttendanceV2Helper.isValidMonthString(wi.getMonth())) {
         throw new ExceptionWithMessage("月份格式不正确！");
       }
     }
     if (StringUtils.isNotEmpty(wi.getDate())) {
-      if (!isValidDateString(wi.getDate())) {
+      if (!AttendanceV2Helper.isValidDateString(wi.getDate())) {
         throw new ExceptionWithMessage("日期格式不正确！");
       }
     }
