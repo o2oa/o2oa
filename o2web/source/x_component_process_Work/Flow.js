@@ -340,27 +340,17 @@ MWF.ProcessFlow.Reset = new Class({
         }
     },
     getSelDefaultOptions: function(){
-        var defaultOpt;
-        if (layout.mobile) {
-            defaultOpt = {
-                "type": "identity",
-                "style": "default",
-                "zIndex": 3000,
-                "count": this.businessData.activity.resetCount || 0
-            };
-        } else {
-            defaultOpt = {
-                "type": "identity",
-                "mainColorEnable": this.flow.options.mainColorEnable,
-                "style": "flow",
-                "width": "auto",
-                "height": MWF.ProcessFlow_ORG_HEIGHT,
-                "count": this.businessData.activity.resetCount || 0,
-                "embedded": true,
-                "hasLetter": false, //字母
-                "hasTop": true //可选、已选的标题
-            };
-        }
+        var defaultOpt = {
+            "type": "identity",
+            "mainColorEnable": this.flow.options.mainColorEnable,
+            "style": "flow",
+            "width": "auto",
+            "height": MWF.ProcessFlow_ORG_HEIGHT,
+            "count": this.businessData.activity.resetCount || 0,
+            "embedded": true,
+            "hasLetter": false, //字母
+            "hasTop": true //可选、已选的标题
+        };
         if (this.form.json.selectorStyle) {
             defaultOpt = Object.merge(Object.clone(this.form.json.selectorStyle), defaultOpt);
             if (this.form.json.selectorStyle.style) defaultOpt.style = this.form.json.selectorStyle.style;
@@ -1093,13 +1083,9 @@ MWF.ProcessFlow.Processor.OrgList = new Class({
         if ( this.orgVisableItems && this.orgVisableItems.length)loadedOrgLength = this.orgVisableItems.length;
 
         if( needOrgLength !== loadedOrgLength ){
-            MWF.xDesktop.notice(
-                "error",
-                {"x": "center", "y": "center"},
+            this.flow.noticeError(
                 MWF.xApplication.process.Work.LP.loadedOrgCountUnexpected,
-                this.node,
-                {"x": 0, "y": 30},
-                {"closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000}
+                this.node
             );
             return false;
         }
@@ -1432,43 +1418,9 @@ MWF.ProcessFlow.Processor.Org = new Class({
         }.bind(this));
         return options;
     },
-    selectOnComplete: function (items) { //移动端才执行
-        var array = [];
-        items.each(function (item) {
-            array.push(item.data);
-        }.bind(this));
-
-        var simple = this.json.storeRange === "simple";
-
-        this.checkEmpower(array, function (data) {
-            var values = [];
-            data.each(function (d) {
-                values.push(MWF.org.parseOrgData(d, true, simple));
-            }.bind(this));
-
-            this.setData(values);
-
-            //this.validationMode();
-            //this.validation();
-
-            this.container.empty();
-            this.loadOrgWidget(values, this.container);
-
-            this.selector = null;
-
-            this.fireEvent("select", [items, values]);
-        }.bind(this))
-    },
-    selectOnCancel: function () { //移动端才执行
-        //this.validation();
-    },
     selectOnLoad: function (selector) {
         //if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
         this.fireEvent("loadSelector", [selector])
-    },
-    selectOnClose: function () {
-        var v = this._getBusinessData();
-        //if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
     loadOrgWidget: function (value, node) {
         var height = node.getStyle("height").toInt();

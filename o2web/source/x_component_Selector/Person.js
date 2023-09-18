@@ -132,6 +132,8 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
     loadMobile: function(){
+        this.overrideSelectedItems();
+
         this.maskRelativeNode = $(document.body);
         this.maskRelativeNode.mask({
             "destroyOnHide": true,
@@ -168,16 +170,40 @@ MWF.xApplication.Selector.Person = new Class({
         //var height = size.y;
         this.contentNode.setStyle("height", ""+height+"px");
 
-
-        this.loadContent();
-
         this.node.inject($(document.body));
         this.node.setStyles({
             "top": "0px",
             "left": "0px"
         });
 
+        this.loadContent();
+
         this.setEvent();
+    },
+    overrideSelectedItems: function(){
+       var  _self = this;
+
+        var oldPush = this.selectedItems.push;
+        this.selectedItems.push = function(){
+            oldPush.apply(this, arguments);
+            _self.setSelectedCount();
+        };
+
+        var oldErase = this.selectedItems.erase;
+        this.selectedItems.erase = function(){
+            oldErase.apply(this, arguments);
+            _self.setSelectedCount();
+        };
+
+        var oldConcat = this.selectedItems.concat;
+        this.selectedItems.concat = function(){
+            oldConcat.apply(this, arguments);
+            _self.setSelectedCount();
+        };
+    },
+    setSelectedCount: function(){
+
+        this.selectedCountBottomNode.set("text", this.selectedItems.length);
     },
     setMaskResize: function(){
         var size = this.container.getSize();
@@ -820,12 +846,15 @@ MWF.xApplication.Selector.Person = new Class({
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
-        var height;
+        debugger;
+        var formActionY = 0;
         if( isFormWithAction ){
-            height = size.y-40-20-6-20;
-        }else{
-            height = size.y;
+            var formActions = document.getElement(".o2_form_mobile_actions");
+            if(formActions)formActionY = formActions.getSize().y - this.getOffsetY(formActions);
         }
+
+        var height = size.y - formActionY;
+
         this.selectNode.setStyle("height", ""+height+"px");
 
         this.searchInputDiv = new Element("div.searchInputDiv", {
@@ -853,11 +882,26 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.itemAreaScrollNode
         }).inject(this.selectNode);
 
-        if( isFormWithAction ){
-            height = size.y-40-20-78-20;
-        }else{
-            height = size.y-42-31-40;
-        }
+        this.selectedCountBottomNode = new Element("div.selectedCountBottomNode", {
+            "styles": {
+                "height": "40px",
+                "line-height": "40px"
+            },
+            "events":{
+                "click": function () {
+                    this.selectedScrollNode.show();
+                }.bind(this)
+            }
+        }).inject(this.selectNode);
+
+        debugger;
+        var y = this.getOffsetY(this.itemAreaScrollNode);
+        if(this.searchInputDiv)y = y - this.searchInputDiv.getSize().x - this.getOffsetY(this.searchInputDiv);
+        if(this.letterAreaNode)y = y- this.letterAreaNode.getSize().y - this.getOffsetY(this.letterAreaNode);
+        if(this.selectedCountBottomNode)y = y- this.selectedCountBottomNode.getSize().y - this.getOffsetY(this.selectedCountBottomNode);
+
+        height = height - y - formActionY;
+
         this.itemAreaScrollNode.setStyle("height", ""+height+"px");
         this.itemAreaScrollNode.setStyle("overflow", "auto");
 
@@ -868,6 +912,8 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.itemAreaNode
         }).inject(this.itemAreaScrollNode);
         this.itemSearchAreaNode.setStyle("display", "none");
+
+
 
         //MWF.require("MWF.widget.ScrollBar", function(){
         //    var _self = this;
