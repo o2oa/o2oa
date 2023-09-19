@@ -203,7 +203,17 @@ MWF.xApplication.Selector.Person = new Class({
     },
     setSelectedCount: function(){
 
-        this.selectedCountBottomNode.set("text", this.selectedItems.length);
+        this.selectedCountNode.set("text", this.selectedItems.length);
+    },
+    loadSelectedCountNode: function(){
+        this.selectedCountLableNode = new Element("div", {
+            "style": "float:left",
+            "text": "已选择："
+        }).inject( this.selectedCountNode );
+        this.selectedCountTextNode = new Element("div", {
+            "style": "float:left",
+            "text": "0"
+        }).inject( this.selectedCountNode );
     },
     setMaskResize: function(){
         var size = this.container.getSize();
@@ -846,14 +856,13 @@ MWF.xApplication.Selector.Person = new Class({
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
-        debugger;
         var formActionY = 0;
         if( isFormWithAction ){
-            var formActions = document.getElement(".o2_form_mobile_actions");
-            if(formActions)formActionY = formActions.getSize().y - this.getOffsetY(formActions);
+            // var formActions = document.getElement(".o2_form_mobile_actions");
+            // if(formActions)formActionY = formActions.getSize().y - this.getOffsetY(formActions);
         }
 
-        var height = size.y - formActionY;
+        var height = size.y - formActionY - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
 
         this.selectNode.setStyle("height", ""+height+"px");
 
@@ -882,25 +891,27 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.itemAreaScrollNode
         }).inject(this.selectNode);
 
-        this.selectedCountBottomNode = new Element("div.selectedCountBottomNode", {
-            "styles": {
-                "height": "40px",
-                "line-height": "40px"
-            },
+        this.selectedCountNode = new Element("div.selectedCountNode", {
+            "styles": this.css.selectedCountNodeMobile,
             "events":{
                 "click": function () {
+                    this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
+                    this.node.mask({
+                        "destroyOnHide": true,
+                        "style": this.css.selectedMaskNodeMobile
+                    });
                     this.selectedScrollNode.show();
                 }.bind(this)
             }
         }).inject(this.selectNode);
+        this.loadSelectedCountNode();
 
-        debugger;
         var y = this.getOffsetY(this.itemAreaScrollNode);
-        if(this.searchInputDiv)y = y - this.searchInputDiv.getSize().x - this.getOffsetY(this.searchInputDiv);
-        if(this.letterAreaNode)y = y- this.letterAreaNode.getSize().y - this.getOffsetY(this.letterAreaNode);
-        if(this.selectedCountBottomNode)y = y- this.selectedCountBottomNode.getSize().y - this.getOffsetY(this.selectedCountBottomNode);
+        if(this.searchInputDiv)y = y + this.searchInputDiv.getSize().y + this.getOffsetY(this.searchInputDiv);
+        if(this.letterAreaNode)y = y + this.letterAreaNode.getSize().y + this.getOffsetY(this.letterAreaNode);
+        if(this.selectedCountNode)y = y + this.selectedCountNode.getSize().y + this.getOffsetY(this.selectedCountNode);
 
-        height = height - y - formActionY;
+        height = height - y;
 
         this.itemAreaScrollNode.setStyle("height", ""+height+"px");
         this.itemAreaScrollNode.setStyle("overflow", "auto");
@@ -1360,11 +1371,11 @@ MWF.xApplication.Selector.Person = new Class({
 
     loadSelectedNodeMobile: function(){
         this.selectedScrollNode = new Element("div.selectedScrollNode", {
-            "styles": this.css.selectedScrollNode
+            "styles": this.css.selectedScrollNodeMobile
         }).inject(this.contentNode);
 
         this.selectedNode = new Element("div.selectedNode", {
-            "styles": this.css.selectedNode
+            "styles": this.css.selectedNodeMobile
         }).inject(this.selectedScrollNode);
 
         this.setSelectedItem();
