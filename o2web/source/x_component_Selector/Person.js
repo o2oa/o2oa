@@ -896,11 +896,10 @@ MWF.xApplication.Selector.Person = new Class({
             "events":{
                 "click": function () {
                     this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
-                    this.node.mask({
-                        "destroyOnHide": true,
-                        "style": this.css.selectedMaskNodeMobile
-                    });
-                    this.selectedScrollNode.show();
+                    this.selectedMaskNode = new Element("div", {
+                        "styles": this.css.selectedMaskNodeMobile
+                    }).inject( this.node );
+                    this.selectedScrollNode.show().inject( this.node );
                 }.bind(this)
             }
         }).inject(this.selectNode);
@@ -1373,6 +1372,11 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectedScrollNode = new Element("div.selectedScrollNode", {
             "styles": this.css.selectedScrollNodeMobile
         }).inject(this.contentNode);
+
+        this.selectedTitleNode = new Element("div.selectedTitleNodeMobile", {
+            "styles": this.css.selectedTitleNodeMobile,
+            "text": "已选择"
+        }).inject(this.selectedScrollNode);
 
         this.selectedNode = new Element("div.selectedNode", {
             "styles": this.css.selectedNodeMobile
