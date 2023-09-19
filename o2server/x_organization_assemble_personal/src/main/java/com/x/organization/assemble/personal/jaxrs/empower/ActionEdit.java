@@ -10,6 +10,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -42,9 +43,11 @@ class ActionEdit extends BaseAction {
 			String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
 			if (StringUtils.isEmpty(fromPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());
-			} else {
-				empower.setFromPerson(fromPerson);
 			}
+			if (effectivePerson.isNotManager() && effectivePerson.isNotPerson(empower.getFromPerson())) {
+				throw new ExceptionAccessDenied(effectivePerson, empower);
+			}
+			empower.setFromPerson(fromPerson);
 			String toPerson = this.getPersonDNWithIdentityDN(business, empower.getToIdentity());
 			if (StringUtils.isEmpty(toPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getToIdentity());
