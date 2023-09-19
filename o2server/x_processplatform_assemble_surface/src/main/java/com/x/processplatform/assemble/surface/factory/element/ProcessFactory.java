@@ -141,10 +141,10 @@ public class ProcessFactory extends ElementFactory {
 		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
 		// 如果限定了终端,对终端进行判断
 		if (StringUtils.isNotEmpty(terminal)) {
-			p = cb.and(p,
-					cb.and(cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
-							cb.equal(root.get(Process_.startableTerminal), terminal)),
-							cb.notEqual(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_NONE)));
+			p = cb.and(p, cb.or(cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL),
+					cb.equal(root.get(Process_.startableTerminal), terminal),
+					cb.equal(root.get(Process_.startableTerminal), ""),
+					cb.isNull(root.get(Process_.startableTerminal))));
 		}
 		cq.select(root.get(Process_.id)).where(p);
 		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
