@@ -35,7 +35,8 @@ export default content({
                 onDutyTimeAfterLimit: "",
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
-                offDutyTimeAfterLimit: ""
+                offDutyTimeAfterLimit: "",
+                offDutyNextDay: false
             },
             time2: {
                 onDutyTime: "",
@@ -43,7 +44,8 @@ export default content({
                 onDutyTimeAfterLimit: "",
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
-                offDutyTimeAfterLimit: ""
+                offDutyTimeAfterLimit: "",
+                offDutyNextDay: false
             },
             time3: {
                 onDutyTime: "",
@@ -51,7 +53,8 @@ export default content({
                 onDutyTimeAfterLimit: "",
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
-                offDutyTimeAfterLimit: ""
+                offDutyTimeAfterLimit: "",
+                offDutyNextDay: false
             },
             typeList: [
                 {
@@ -78,6 +81,16 @@ export default content({
     clickChangeLimitWorkTime(){
         this.bind.form.needLimitWorkTime = !this.bind.form.needLimitWorkTime;
     },
+    clickChangeOffDutyNextDay(timeType) {
+        if (timeType === 1) {
+            this.bind.time1.offDutyNextDay = !this.bind.time1.offDutyNextDay;
+        } else if (timeType === 2) {
+            this.bind.time2.offDutyNextDay = !this.bind.time2.offDutyNextDay;
+        }  else if (timeType === 3) {
+            this.bind.time3.offDutyNextDay = !this.bind.time3.offDutyNextDay;
+        }
+        this.calWorkTime();
+    },
     // 前端显示
     formatWorkTime(workTime) {
         return convertMinutesToHoursAndMinutes(workTime);
@@ -88,9 +101,12 @@ export default content({
         if (this.bind.timeType === 1) {
             workTime = this._calTimeMinute(this.bind.time1);
         } else if (this.bind.timeType === 2) {
+            this.bind.time1.offDutyNextDay = false;// 最后一个下班才能是跨天的
             workTime += this._calTimeMinute(this.bind.time1);
             workTime += this._calTimeMinute(this.bind.time2);
         } else if (this.bind.timeType === 3) {
+            this.bind.time1.offDutyNextDay = false;// 最后一个下班才能是跨天的
+            this.bind.time2.offDutyNextDay = false;// 最后一个下班才能是跨天的
             workTime += this._calTimeMinute(this.bind.time1);
             workTime += this._calTimeMinute(this.bind.time2);
             workTime += this._calTimeMinute(this.bind.time3);
@@ -112,6 +128,10 @@ export default content({
             const offDutyTimeminute = parseInt(offDutyTime[1]);
             offDutyDate.setHours(offDutyTimehour);
             offDutyDate.setMinutes(offDutyTimeminute);
+            if (time.offDutyNextDay) {
+                // 增加 1 天
+                offDutyDate.setDate(offDutyDate.getDate() + 1);
+            }
             workTime = (offDutyDate.getTime() - onDutyDate.getTime()) / 1000 / 60; // 分钟数
         }
         return workTime;
@@ -157,6 +177,7 @@ export default content({
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
+            this.bind.time1.offDutyNextDay = false; // 最后一个下班才能是跨天的
             myForm.properties.timeList.push(this.bind.time1);
             myForm.properties.timeList.push(this.bind.time2);
         } else if (this.bind.timeType === 3) {
@@ -168,6 +189,8 @@ export default content({
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
+            this.bind.time1.offDutyNextDay = false;// 最后一个下班才能是跨天的
+            this.bind.time2.offDutyNextDay = false;// 最后一个下班才能是跨天的
             myForm.properties.timeList.push(this.bind.time1);
             myForm.properties.timeList.push(this.bind.time2);
             myForm.properties.timeList.push(this.bind.time3);
