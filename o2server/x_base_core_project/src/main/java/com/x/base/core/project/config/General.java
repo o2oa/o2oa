@@ -13,8 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -61,6 +63,7 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
+	private static final Boolean DEFAULT_SECURITYCLEARANCEENABLE = false;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -81,6 +84,7 @@ public class General extends ConfigObject {
 		o.httpWhiteList = DEFAULT_HTTPWHITELIST;
 		o.attachmentConfig = new AttachmentConfig();
 		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
+		o.securityClearanceEnable = DEFAULT_SECURITYCLEARANCEENABLE;
 		return o;
 	}
 
@@ -137,6 +141,34 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("存储加密.1:AES,2:AES/GCM/NoPadding,空或者其他值不加密.")
 	private Integer storageEncrypt;
+
+	@FieldDescribe("默认主体密级标识.")
+	private Integer defaultSubjectSecurityClearance;
+
+	@FieldDescribe("主体密级标识配置.")
+	private Map<Integer, String> subjectSecurityClearance;
+
+	@FieldDescribe("客体密级标识配置.")
+	private Map<Integer, String> objectSecurityClearance;
+
+	@FieldDescribe("启用密级标识.")
+	private Boolean securityClearanceEnable;
+
+	public Boolean getSecurityClearanceEnable() {
+		return securityClearanceEnable;
+	}
+
+	public Integer getDefaultSubjectSecurityClearance() {
+		return defaultSubjectSecurityClearance;
+	}
+
+	public Map<Integer, String> getSubjectSecurityClearance() {
+		return subjectSecurityClearance == null ? new HashMap<>() : this.subjectSecurityClearance;
+	}
+
+	public Map<Integer, String> getObjectSecurityClearance() {
+		return objectSecurityClearance == null ? new HashMap<>() : this.objectSecurityClearance;
+	}
 
 	public Integer getStorageEncrypt() {
 		if (this.storageEncrypt == null || this.storageEncrypt < 0 || this.storageEncrypt > 2) {

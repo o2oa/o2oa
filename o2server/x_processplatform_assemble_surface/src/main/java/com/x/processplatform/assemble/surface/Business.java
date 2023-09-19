@@ -1,32 +1,71 @@
 package com.x.processplatform.assemble.surface;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.organization.Person;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
-import com.x.processplatform.assemble.surface.factory.content.*;
-import com.x.processplatform.assemble.surface.factory.element.*;
+import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
+import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
+import com.x.processplatform.assemble.surface.factory.content.JobFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReadFactory;
+import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
+import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
+import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
+import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
+import com.x.processplatform.assemble.surface.factory.element.ApplicationFactory;
+import com.x.processplatform.assemble.surface.factory.element.BeginFactory;
+import com.x.processplatform.assemble.surface.factory.element.CancelFactory;
+import com.x.processplatform.assemble.surface.factory.element.ChoiceFactory;
+import com.x.processplatform.assemble.surface.factory.element.DelayFactory;
+import com.x.processplatform.assemble.surface.factory.element.EmbedFactory;
+import com.x.processplatform.assemble.surface.factory.element.EndFactory;
+import com.x.processplatform.assemble.surface.factory.element.FileFactory;
+import com.x.processplatform.assemble.surface.factory.element.FormFactory;
+import com.x.processplatform.assemble.surface.factory.element.InvokeFactory;
+import com.x.processplatform.assemble.surface.factory.element.ManualFactory;
+import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
+import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
+import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
+import com.x.processplatform.assemble.surface.factory.element.PublishFactory;
+import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
+import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
+import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
+import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.assemble.surface.factory.service.CenterServiceFactory;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Business {
 
@@ -563,6 +602,26 @@ public class Business {
 	public boolean ifPersonHasTaskCompletedWithJob(String person, String job) throws Exception {
 		return emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME, person,
 				TaskCompleted.job_FIELDNAME, job) > 0;
+	}
+
+	/**
+	 * 用户是否有足够的密级标识等级.
+	 * 
+	 * @param person
+	 * @param objectSecurityClearance
+	 * @return
+	 */
+	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
+		try {
+			Person p = this.organization().person().getObject(person);
+			Integer value = p.getSubjectSecurityClearance();
+			if (null != value) {
+				return value >= objectSecurityClearance;
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
 	}
 
 }
