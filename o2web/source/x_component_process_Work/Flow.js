@@ -2194,92 +2194,33 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     "activityName": "",
                     "person": "",
                     "action": "process",
-                    "data": {
-                        "routeGroup": "同意",
-                        "routeId": "05562c80-91f9-446c-902f-6aae911c71da",
-                        "routeName": "送办理",
-                        "keepTask": true,
-                        "opinion": "已选择请办理",
-                        "organizations": {
-                            "blPerson1": [
-                                {
-                                    "distinguishedName": "张三@zhb_zhangsan@I",
-                                    "id": "b7c7db79-0241-4989-b31a-fbba5c17ada2",
-                                    "name": "张三",
-                                    "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
-                                    "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
-                                    "unitLevelName": "演示公司/综合部",
-                                    "unitName": "综合部"
-                                },
-                                {
-                                    "distinguishedName": "張世文@39d71dc8-4f60-4949-a480-137a5cd50ae1@I",
-                                    "id": "b9291c0e-be6b-4aff-a3e7-3860baa623af",
-                                    "name": "張世文",
-                                    "person": "5369f64f-057e-4211-a980-ec3f2118d47b",
-                                    "unit": "359cf0cd-1a29-4af2-8df7-26f6dafd980d",
-                                    "unitLevelName": "中國移動香港公司/資訊科技部/系統運行及維護",
-                                    "unitName": "系統運行及維護"
-                                },
-                                {
-                                    "distinguishedName": "陈家雷@c48b435e-0337-44f3-a3ac-45ce236252f8@I",
-                                    "id": "c48b435e-0337-44f3-a3ac-45ce236252f8",
-                                    "ignoredEmpower": true,
-                                    "name": "陈家雷",
-                                    "person": "acab9598-6c15-43a8-8e98-297545030b0c",
-                                    "unit": "98d1d9dd-5db3-40a8-a8b2-815624160e6b",
-                                    "unitLevelName": "兰德网络技术有限公司/兰德/服务交付部/贵州移动",
-                                    "unitName": "贵州移动"
-                                }
-                            ],
-                            "blPerson4": [
-                                {
-                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
-                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
-                                    "name": "蔡艳红",
-                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
-                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
-                                    "unitLevelName": "贵州移动1",
-                                    "unitName": "贵州移动1"
-                                }
-                            ],
-                            "blPerson5": [
-                                {
-                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
-                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
-                                    "name": "蔡艳红",
-                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
-                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
-                                    "unitLevelName": "贵州移动1",
-                                    "unitName": "贵州移动1"
-                                }
-                            ],
-                            "blPerson6": [
-                                {
-                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
-                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
-                                    "name": "蔡艳红",
-                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
-                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
-                                    "unitLevelName": "贵州移动1",
-                                    "unitName": "贵州移动1"
-                                }
-                            ],
-                            "group1": [
-                                {
-                                    "distinguishedName": "运维群组@f2637ec1-d3be-4076-8dde-df88892cb4da@G",
-                                    "id": "f2637ec1-d3be-4076-8dde-df88892cb4da",
-                                    "name": "运维群组"
-                                }
-                            ],
-                            "department1": [
-                                {
-                                    "distinguishedName": "南京基地@9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec@U",
-                                    "id": "9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec",
-                                    "levelName": "兰德纵横/南京基地",
-                                    "name": "南京基地"
-                                }
-                            ],
-                        }
+
+                    "routeGroup": "同意",
+                    "routeId": "05562c80-91f9-446c-902f-6aae911c71da",
+                    "routeName": "送办理",
+                    "keepTask": true,
+                    "opinion": "已选择请办理",
+                    "organizations": {
+                        "blPerson1": [
+                            "张三@zhb_zhangsan@I",
+                            "張世文@39d71dc8-4f60-4949-a480-137a5cd50ae1@I",
+                            "陈家雷@c48b435e-0337-44f3-a3ac-45ce236252f8@I"
+                        ],
+                        "blPerson4": [
+                            "蔡艳红@00450000000000000000_204@I"
+                        ],
+                        "blPerson5": [
+                            "蔡艳红@00450000000000000000_204@I"
+                        ],
+                        "blPerson6": [
+                            "蔡艳红@00450000000000000000_204@I"
+                        ],
+                        "group1": [
+                            "运维群组@f2637ec1-d3be-4076-8dde-df88892cb4da@G"
+                        ],
+                        "department1": [
+                            "南京基地@9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec@U"
+                        ],
                     }
                 }
             },
@@ -2293,25 +2234,15 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     "activityName": "",
                     "person": "",
                     "action": "process",
-                    "data": {
-                        "routeGroup": "同意",
-                        "routeId": "ae3aab39-1065-4fbc-aa7a-7a44aadfd4d7",
-                        "routeName": "送核稿",
-                        "keepTask": true,
-                        "opinion": "已选择请核稿",
-                        "organizations": {
-                            "hgPerson": [
-                                {
-                                    "distinguishedName": "张三@zhb_zhangsan@I",
-                                    "id": "b7c7db79-0241-4989-b31a-fbba5c17ada2",
-                                    "name": "张三",
-                                    "person": "97941ea3-e3eb-4db7-aaf6-1263b048d909",
-                                    "unit": "e56ef746-a923-494b-bdfe-81ab65c523da",
-                                    "unitLevelName": "演示公司/综合部",
-                                    "unitName": "综合部"
-                                }
-                            ]
-                        }
+                    "routeGroup": "同意",
+                    "routeId": "ae3aab39-1065-4fbc-aa7a-7a44aadfd4d7",
+                    "routeName": "送核稿",
+                    "keepTask": true,
+                    "opinion": "已选择请核稿",
+                    "organizations": {
+                        "hgPerson": [
+                            "张三@zhb_zhangsan@I"
+                        ]
                     }
                 }
             },
@@ -2325,13 +2256,12 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     "activityName": "",
                     "person": "",
                     "action": "addTask",
-                    "data": {
-                        "routeId": "",
-                        "routeName": "前加签",
-                        "keepTask": true,
-                        "opinion": "已加签请处理",
-                        "organizations": {}
-                    }
+
+                    "routeId": "",
+                    "routeName": "前加签",
+                    "keepTask": true,
+                    "opinion": "已加签请处理",
+                    "organizations": {}
                 }
             },
             {
@@ -2344,24 +2274,15 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     "activityName": "",
                     "person": "",
                     "action": "reset",
-                    "data": {
-                        "routeId": "",
-                        "routeName": "",
-                        "keepTask": true,
-                        "opinion": "已重置请处理",
-                        "organizations": {
-                            "default": [
-                                {
-                                    "distinguishedName": "蔡艳红@00450000000000000000_204@I",
-                                    "id": "70f37618-266f-4d0d-8627-ea434bc827ae",
-                                    "name": "蔡艳红",
-                                    "person": "83de86fc-60bc-4b4c-955c-1085915865a4",
-                                    "unit": "3af179fb-8b7a-4963-a032-3b6bff158f50",
-                                    "unitLevelName": "贵州移动1",
-                                    "unitName": "贵州移动1"
-                                }
-                            ]
-                        }
+
+                    "routeId": "",
+                    "routeName": "",
+                    "keepTask": true,
+                    "opinion": "已重置请处理",
+                    "organizations": {
+                        "default": [
+                            "蔡艳红@00450000000000000000_204@I"
+                        ]
                     }
                 }
             }
@@ -2402,7 +2323,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                     },
                     click: function () {
                         var d = Object.clone( item.retrieve("data"));
-                        _self.flow.changeAction( d.type, d.data.data );
+                        _self.flow.changeAction( d.type, d.data );
                         _self.hide();
                     }
                 }
