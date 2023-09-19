@@ -6,6 +6,7 @@ import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTimeProperties;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.DateTools;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -58,8 +59,14 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
         String onDuty = time.getOnDutyTime().replace(":", "");
         String offDuty = time.getOffDutyTime().replace(":", "");
-        if (Integer.parseInt(onDuty) > Integer.parseInt(offDuty)) {
-            throw new ExceptionOnDutyOffDuty("上班时间不能大于下班时间");
+        if (BooleanUtils.isTrue(time.getOffDutyNextDay())) {
+            if (Integer.parseInt(offDuty) > Integer.parseInt(onDuty)) {
+                throw new ExceptionOnDutyOffDuty("跨天的下班时间不能大于上班时间");
+            }
+        } else {
+            if (Integer.parseInt(onDuty) > Integer.parseInt(offDuty)) {
+                throw new ExceptionOnDutyOffDuty("上班时间不能大于下班时间");
+            }
         }
         if (StringUtils.isNotEmpty(time.getOnDutyTimeBeforeLimit())) {
             String onDutyBefore = time.getOnDutyTimeBeforeLimit().replace(":", "");

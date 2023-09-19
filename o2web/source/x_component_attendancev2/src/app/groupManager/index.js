@@ -89,6 +89,8 @@ export default content({
           return "";
         });
         return dayList.join("、") + " " + lp.groupForm.checkTypeFree;
+    } else if (group.checkType === "3") {
+      return lp.groupForm.checkTypeArrangement;
     }
     return "";
   },

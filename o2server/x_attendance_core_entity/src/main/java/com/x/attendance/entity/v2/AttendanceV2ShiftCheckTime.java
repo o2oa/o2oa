@@ -9,6 +9,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
  */
 public class AttendanceV2ShiftCheckTime  extends GsonPropertyObject {
 
+    private static final long serialVersionUID = -6411723100579845550L;
     private String onDutyTime; // 上班打卡时间 如 09:00
     private String onDutyTimeBeforeLimit; // onDutyTime前打卡限制
     private String onDutyTimeAfterLimit; // onDutyTime后打卡限制

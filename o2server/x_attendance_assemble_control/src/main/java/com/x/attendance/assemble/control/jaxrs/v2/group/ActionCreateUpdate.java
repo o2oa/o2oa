@@ -71,7 +71,7 @@ public class ActionCreateUpdate extends BaseAction {
             wi.setTrueParticipantList(trueList);
 
             // 正常保存 需要更多校验
-            if (wi.getStatus() != AttendanceV2Group.status_auto) {
+            if (!(wi.getStatus() != null && wi.getStatus() == AttendanceV2Group.status_auto)) {
                 // 固定班制
                 if (AttendanceV2Group.CHECKTYPE_Fixed.equals(wi.getCheckType())) {
                     if (wi.getWorkDateProperties() == null || !wi.getWorkDateProperties().validateNotEmpty()) {
