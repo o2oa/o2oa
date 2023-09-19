@@ -54,8 +54,8 @@
                         <td>{{d.value.leaveEarlierTimes}}</td>
                         <td>{{d.value.absenceTimes}}</td>
                         <td>{{d.value.fieldWorkTimes}}</td>
-                        <td oo-each="d.value.detailList" oo-item="detail">
-                            <span class="operator_link_underline" @click="this.openRecordList(detail.value)">{{ $m.formatRecordList(detail.value.recordList)}}</span>
+                        <td oo-each="$.tableHeaderList" oo-item="h">
+                            <span oo-if="$m.checkDateDetail(h.value, d.value)" class="operator_link_underline" @click="this.openRecordList(h.value, d.value)" >{{ $m.formatRecordList(h.value, d.value)}}</span>
                         </td>
                     </tr>
                 </tbody>
