@@ -1,6 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -458,16 +457,16 @@ public class PersonAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIconWithPerson.class)
+    @JaxrsMethodDescribe(value = "获取个人头像.", action = ActionGetIcon.class)
     @GET
     @Path("{flag}/icon")
     @Consumes(MediaType.APPLICATION_JSON)
     public void getIconWithPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("个人标识") @PathParam("flag") String flag) {
-        ActionResult<ActionGetIconWithPerson.Wo> result = new ActionResult<>();
+            @JaxrsParameterDescribe("个人标识或者身份标志") @PathParam("flag") String flag) {
+        ActionResult<ActionGetIcon.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionGetIconWithPerson().execute(effectivePerson, flag);
+            result = new ActionGetIcon().execute(effectivePerson, flag);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
