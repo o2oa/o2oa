@@ -293,8 +293,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
         var styleNode = $("style" + this.json.id);
-        if (styleNode) styleNode.destroy();
-        if (cssText) {
+        //if (styleNode) styleNode.destroy();
+        if (!styleNode && cssText) {
 
             //删除注释
             cssText = cssText.replace(/\/\*[\s\S]*?\*\/\n|([^:]|^)\/\/.*\n$/g, '').replace(/\\n/, '');
@@ -332,10 +332,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
             }
 
-            var styleNode = document.createElement("style");
+            styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
             styleNode.id = "style" + this.json.id;
-            styleNode.inject(this.container, "before");
+            styleNode.inject(document.head, "before");
 
             if (styleNode.styleSheet) {
                 var setFunc = function () {
@@ -2433,6 +2433,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     processWork: function ( defaultRoute ) {
+        if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
+            var processWorkFun = function () {
+                this.removeEvent( "afterLoad", processWorkFun );
+                this._processWork( defaultRoute )
+            }.bind(this);
+            this.addEvent("afterLoad", processWorkFun)
+        }else{
+            this._processWork( defaultRoute );
+        }
+    },
+    _processWork: function( defaultRoute ) {
         var _self = this;
 
         if (!this.businessData.work.startTime) {

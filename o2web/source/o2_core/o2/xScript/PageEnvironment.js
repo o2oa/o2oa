@@ -1309,21 +1309,23 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         };
 
         this.statement = {
-            execute: function (obj, callback, async) {
-                if( obj.format ){
-                    return this._execute(obj, callback, async, obj.format);
+        execute: function (obj, callback, async) {
+            if( obj.format ){
+                return this._execute(obj, callback, async, obj.format);
+            }else{
+                if( this.needCheckFormat(obj) ){
+                    var result;
+                    var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, function(json){
+                        result = this._execute(obj, callback, async, json.data.format);
+                        return result;
+                    }.bind(this), null, async);
+                    return result || p;
                 }else{
-                    if( this.needCheckFormat(obj) ){
-                        var p = MWF.Actions.load("x_query_assemble_surface").StatementAction.getFormat(obj.name, null, null, async);
-                        Promise.resolve(p).then(function (json) {
-                            return this._execute(obj, callback, async, json.data.format);
-                        }.bind(this));
-                    }else{
-                        return this._execute(obj, callback, async, "");
-                    }
-
+                    return this._execute(obj, callback, async, "");
                 }
-            },
+
+            }
+        },
             needCheckFormat: function(s){
                 if( s.format )return false;
                 if( typeOf(s.parameter) === "object" ){
@@ -1358,6 +1360,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 if( !parameter )parameter = {};
                 var filterList = [];
                 (filter || []).each(function (d) {
+                    if( !d.logic )d.logic = "and";
+
                     //var parameterName = d.path.replace(/\./g, "_");
                     var pName = d.path.replace(/\./g, "_");
 

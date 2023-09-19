@@ -100,7 +100,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "columnValue" : "列值",
         "contain" : "包含",
         "from" : "从",
-        "in": "包含"
+        "in": "包含",
+        "script": "脚本",
+        "input":"输入"
     },
     "delete_filterItem_title": "删除过滤条件确认",
     "delete_filterItem": "您确定要删除当前过滤条件吗？",

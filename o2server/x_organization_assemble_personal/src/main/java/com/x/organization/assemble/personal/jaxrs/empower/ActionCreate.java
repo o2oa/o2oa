@@ -10,6 +10,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -23,6 +24,7 @@ class ActionCreate extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -32,9 +34,11 @@ class ActionCreate extends BaseAction {
 			String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
 			if (StringUtils.isEmpty(fromPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());
-			} else {
-				empower.setFromPerson(fromPerson);
 			}
+			if (effectivePerson.isNotManager() && effectivePerson.isNotPerson(fromPerson)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+			empower.setFromPerson(fromPerson);
 			String toPerson = this.getPersonDNWithIdentityDN(business, empower.getToIdentity());
 			if (StringUtils.isEmpty(toPerson)) {
 				throw new ExceptionPersonNotExistWithIdentity(empower.getToIdentity());
@@ -61,6 +65,8 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5274738999456055263L;
 
 	}
 

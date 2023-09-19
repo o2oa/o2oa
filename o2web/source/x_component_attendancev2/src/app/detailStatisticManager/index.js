@@ -23,6 +23,7 @@ export default content({
       filterList: [],
       statisticList: [],
       tableHeaderList:[] // detail 
+
     };
   },
   beforeRender() {
@@ -45,8 +46,29 @@ export default content({
       this.bind.units = units;
     }
   },
-  afterRender() {
-     
+  // yyyy-MM-dd 
+  _toDate(dateString) {
+    var dateParts = dateString.split("-"); // 将字符串拆分为年、月和日部分
+    var year = parseInt(dateParts[0], 10); // 将年份部分解析为整数
+    var month = parseInt(dateParts[1], 10) - 1; // 将月份部分解析为整数（月份从0开始）
+    var day = parseInt(dateParts[2], 10); // 将日部分解析为整数
+    return new Date(year, month, day); // 创建Date对象
+  },
+  // 间隔天数
+  _dateDiffInDays(date1, date2) {
+    const timeDiff = date2.getTime() - date1.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    return Math.abs(daysDiff); // 如果需要考虑日期的顺序，请移除 Math.abs
+  },
+  // 日期列表
+  _dateRangeToStringList(startDate, endDate) {
+    const dateList = [];
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      dateList.push(formatDate(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1); // 增加一天
+    }
+    return dateList;
   },
   validateForm() {
     if (this.bind.filterList.length < 1) {
@@ -61,6 +83,16 @@ export default content({
       o2.api.page.notice(lp.detailStatisticList.endDateEmptyPlaceholder, 'error');
       return false;
     }
+    const start = this._toDate(this.bind.form.startDate);
+    const end = this._toDate(this.bind.form.endDate);
+    if (end < start) {
+      o2.api.page.notice(lp.detailStatisticList.endDateCannotSmaller, 'error');
+      return false;
+    }
+    if (this._dateDiffInDays(start, end) > 31) {
+      o2.api.page.notice(lp.detailStatisticList.startDateAndEndDateMoreThan, 'error');
+      return false;
+    }
     return true;
   },
   search() {
@@ -68,23 +100,58 @@ export default content({
   },
   async loadDetailList() {
     showLoading(this);
+    this._showTableHeader();
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);
     const list =  json || [];
-    if (list.length > 0) {
-      const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
-      this.bind.tableHeaderList = firstDetailList;
-    }
     this.bind.statisticList = list;
     hideLoading(this);
   },
-  async openRecordList(detail) {
-    this.$topParent.openRecordListVm({bind: { recordList: detail.recordList||[] }})
+  _showTableHeader() {
+    const start = this._toDate(this.bind.form.startDate);
+    const end = this._toDate(this.bind.form.endDate);
+    this.bind.tableHeaderList = this._dateRangeToStringList(start, end);
   },
-  formatRecordList(recordList){
+  async openRecordList(date, staticItem) {
+    const list = staticItem.detailList || [];
+    let detail = null;
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.recordDateString && element.recordDateString == date) {
+        detail = element;
+        break;
+      }
+    }
+    if (detail) {
+      const recordList = detail.recordList || [];
+      this.$topParent.openRecordListVm({bind: { recordList:  recordList }})
+    }
+  },
+  // 是否有 detail
+  checkDateDetail(date, staticItem) {
+    const list = staticItem.detailList || [];
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.recordDateString && element.recordDateString == date) {
+        return true;
+      }
+    }
+    return false;
+  },
+  formatRecordList(date, staticItem){
     let result = "";
-    if (recordList && recordList.length > 0) {
+    const list = staticItem.detailList || [];
+    let detail = null;
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.recordDateString && element.recordDateString == date) {
+        detail = element;
+        break;
+      }
+    }
+    if (detail) {
+      const recordList = detail.recordList || [];
       for (let index = 0; index < recordList.length; index++) {
         const element = recordList[index];
         result +=  (element.checkInType === 'OnDuty' ? lp.onDuty : lp.offDuty) + ": "+ this._formatRecordResult(element);

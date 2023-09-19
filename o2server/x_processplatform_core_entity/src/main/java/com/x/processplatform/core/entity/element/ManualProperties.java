@@ -110,7 +110,7 @@ public class ManualProperties extends JsonProperties {
 		@FieldDescribe("路由方式,step:正常流转,jump:跳转到退回发起的环节,custom:用户指定.")
 		private String way;
 
-		@FieldDescribe("有多条待办时是否允许退回.")
+		@FieldDescribe("在人工环节并行模式下有多条待办时是否允许退回,此配置仅针对人工环节并行模式.")
 		private Boolean multiTaskEnable;
 
 		public Boolean getMultiTaskEnable() {

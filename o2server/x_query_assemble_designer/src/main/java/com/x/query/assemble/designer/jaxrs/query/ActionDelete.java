@@ -47,13 +47,13 @@ class ActionDelete extends BaseAction {
                 throw new ExceptionQueryAccessDenied(effectivePerson.getDistinguishedName(), query.getName(),
                         query.getId());
             }
-            emc.beginTransaction(View.class);
-            for (View _o : this.listView(business, query)) {
+            emc.beginTransaction(Stat.class);
+            for (Stat _o : this.listStat(business, query)) {
                 emc.remove(_o, CheckRemoveType.all);
             }
             emc.commit();
-            emc.beginTransaction(Stat.class);
-            for (Stat _o : this.listStat(business, query)) {
+            emc.beginTransaction(View.class);
+            for (View _o : this.listView(business, query)) {
                 emc.remove(_o, CheckRemoveType.all);
             }
             emc.commit();
@@ -62,13 +62,13 @@ class ActionDelete extends BaseAction {
                 emc.remove(_o, CheckRemoveType.all);
             }
             emc.commit();
-            emc.beginTransaction(Table.class);
-            for (Table _o : this.listTable(business, query)) {
+            emc.beginTransaction(ImportModel.class);
+            for (ImportModel _o : this.listImportModel(business, query)) {
                 emc.remove(_o, CheckRemoveType.all);
             }
             emc.commit();
-            emc.beginTransaction(ImportModel.class);
-            for (ImportModel _o : this.listImportModel(business, query)) {
+            emc.beginTransaction(Table.class);
+            for (Table _o : this.listTable(business, query)) {
                 emc.remove(_o, CheckRemoveType.all);
             }
             emc.commit();
