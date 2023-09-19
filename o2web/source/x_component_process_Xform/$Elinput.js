@@ -38,6 +38,18 @@ Object.assign(o2.APP$Elinput.prototype, {
             if (this.json.elStyles){
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
+
+            this.fireEvent("postLoad");
+            if( this.moduleSelectAG && typeOf(this.moduleSelectAG.then) === "function" ){
+                this.moduleSelectAG.then(function () {
+                    this.fireEvent("load");
+                    this.isLoaded = true;
+                }.bind(this));
+            }else{
+                this.fireEvent("load");
+                this.isLoaded = true;
+            }
+
         }
     },
     getInputData: function(){

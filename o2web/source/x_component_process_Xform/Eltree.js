@@ -106,6 +106,18 @@ MWF.xApplication.process.Xform.Eltree = MWF.APPEltree =  new Class(
         "elEvents": ["node-click", "node-contextmenu", "check-change", "check", "current-change","node-expand",
             "node-collapse","node-drag-start","node-drag-enter","node-drag-leave","node-drag-over","node-drag-end","node-drop"]
     },
+    __setReadonly: function(data){
+        if (this.isReadonly()) {
+            this.node.set("text", data);
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+
+        }
+    },
     _loadNode: function(){
         // if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();
