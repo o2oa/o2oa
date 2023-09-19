@@ -244,6 +244,26 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "按传入数据更新指定表中指定行数据.", action = ActionRowPartUpdate.class)
+	@POST
+	@Path("{tableFlag}/row/{id}/part/update")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void rowPartUpdate(@Suspended final AsyncResponse asyncResponse,
+						   @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+						   @JaxrsParameterDescribe("行标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionRowPartUpdate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionRowPartUpdate().execute(effectivePerson, tableFlag, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新指定表中指定行数据.", action = ActionRowDelete.class)
 	@DELETE
 	@Path("{tableFlag}/row/{id}")
