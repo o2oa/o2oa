@@ -29,59 +29,53 @@ import java.util.Optional;
  */
 public class AttendanceV2ManagerFactory extends AbstractFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AttendanceV2ManagerFactory.class);
-
-
     protected Cache.CacheCategory cacheCategory;
-
 
     public AttendanceV2ManagerFactory(Business business) throws Exception {
         super(business);
     }
 
-
     /**
      * 内部请求 获取用户某一天的考勤组班次情况
+     * 
      * @param person 人员 dn
-     * @param date yyyy-MM-dd
+     * @param date   yyyy-MM-dd
      * @return
      * @throws Exception
      */
     public WoGroupShift getGroupShiftByPersonDate(String person, String date) throws Exception {
-        WoGroupShift result = ThisApplication.context().applications().getQuery(x_attendance_assemble_control.class, "v2/group/person/"+person+"/date/"+date ).getData(WoGroupShift.class);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("处理结果，{}", result.toString());
-        }
-        return result;
+        return ThisApplication.context().applications()
+                .getQuery(x_attendance_assemble_control.class, "v2/group/person/" + person + "/date/" + date)
+                .getData(WoGroupShift.class);
     }
 
     /**
      * 缓存对象
+     * 
      * @param <T>
      * @param flag
      * @param clz
      * @return
      * @throws Exception
      */
-	public <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
-		Cache.CacheCategory cacheCategory = new Cache.CacheCategory(clz);
-		T t = null;
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
-		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
-		if (optional.isPresent()) {
-			if (null != optional.get()) {
-				t = (T) optional.get();
-			}
-		} else {
-			t = this.entityManagerContainer().flag(flag, clz);
-			if (t != null) {
-				this.entityManagerContainer().get(clz).detach(t);
-				CacheManager.put(cacheCategory, cacheKey, t );
-			}
-		}
-		return t;
-	}
-
+    public <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
+        Cache.CacheCategory cacheCategory = new Cache.CacheCategory(clz);
+        T t = null;
+        Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), flag);
+        Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+        if (optional.isPresent()) {
+            if (null != optional.get()) {
+                t = (T) optional.get();
+            }
+        } else {
+            t = this.entityManagerContainer().flag(flag, clz);
+            if (t != null) {
+                this.entityManagerContainer().get(clz).detach(t);
+                CacheManager.put(cacheCategory, cacheKey, t);
+            }
+        }
+        return t;
+    }
 
     /**
      * 查询考勤组列表
@@ -89,13 +83,13 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
-     * @param assistAdmin   协助管理员
+     * @param assistAdmin    协助管理员
      * @param name           可以为空
      * @return
      * @throws Exception
      */
     public List<AttendanceV2Group> listGroupWithNameByPage(Integer adjustPage,
-            Integer adjustPageSize,String assistAdmin, String name) throws Exception {
+            Integer adjustPageSize, String assistAdmin, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
@@ -116,8 +110,8 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 查询考勤组总数
      * 分页查询需要
      * 
-     * @param name 可以为空
-     * @param assistAdmin   协助管理员
+     * @param name        可以为空
+     * @param assistAdmin 协助管理员
      * @return
      * @throws Exception
      */
@@ -543,9 +537,10 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = cb.between(root.get(AttendanceV2AppealInfo_.recordDate), startDate, endDate);
         p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId));
-        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
-        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN));
-          
+        p = cb.and(p, cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
+        p = cb.and(p,
+                cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN));
+
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
         return em.createQuery(cq).getResultList();
     }
@@ -654,13 +649,14 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 查询 排班数据
      * 
      * @param groupId 必填 考勤组 id
-     * @param month 月份字段  yyyy-MM
-     * @param day 时间字段  yyyy-MM-dd
-     * @param person 人员 dn 
+     * @param month   月份字段 yyyy-MM
+     * @param day     时间字段 yyyy-MM-dd
+     * @param person  人员 dn
      * @return
      * @throws Exception
      */
-    public List<AttendanceV2GroupSchedule> listGroupSchedule(String groupId, String month, String day, String person) throws Exception {
+    public List<AttendanceV2GroupSchedule> listGroupSchedule(String groupId, String month, String day, String person)
+            throws Exception {
         if (StringUtils.isEmpty(groupId)) {
             return null;
         }
@@ -679,7 +675,7 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
             p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.userId), person));
         }
         cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2GroupSchedule_.scheduleDateString)));
-         
+
         return em.createQuery(cq).getResultList();
     }
 }

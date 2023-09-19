@@ -83,6 +83,7 @@ public class ActionGetWithShiftByPersonDate extends BaseAction {
           }
         }
       }
+      result.setData(wo);
     }
     return result;
   }
