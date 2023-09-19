@@ -128,7 +128,7 @@ public class ActionUploadWithUrl extends BaseAction {
 
 		private static final long serialVersionUID = -3707551996175419386L;
 
-		@FieldDescribe("文件类型")
+		@FieldDescribe("文件类型：processPlatformJob|processPlatformForm|mindInfo|portalPage|cmsDocument|forumDocument|forumReply|component|teamworkProject")
 		private String referenceType;
 
 		@FieldDescribe("文件名称,带扩展名的文件名.")
