@@ -204,6 +204,7 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     __setReadonly: function(data){
         if (this.isReadonly()){
             this._loadOptions();
+            this.fireEvent("postLoad");
             Promise.resolve(this.json.options || this.moduleSelectAG).then(function(options){
                 if (data){
                     var text = this.__getOptionsText(options, data);
@@ -214,6 +215,9 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
                     if (this.json.elStyles){
                         this.node.setStyles( this._parseStyles(this.json.elStyles) );
                     }
+
+                    this.fireEvent("load");
+                    this.isLoaded = true;
                 }
             }.bind(this));
         }

@@ -70,6 +70,10 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
             if (this.json.elStyles){
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
+
+            this.fireEvent("postLoad");
+            this.fireEvent("load");
+            this.isLoaded = true;
         }
     },
     _appendVueData: function(){
