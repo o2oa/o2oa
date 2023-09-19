@@ -10,7 +10,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Datatable", "Datatable$Title", "Datatable$Data",
 			"Datatemplate", "Htmleditor", "TinyMCEEditor", "Number", "Office", "Orgfield", "Personfield", "Readerfield", "Authorfield", "Org",
 			"Reader", "Author", "Radio", "Select", "Textarea", "Textfield", "Address","Combox",
-			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch"],
+			"Elcascader","Elcheckbox","Elcolorpicker", "Eldate", "Eldatetime", "Elinput", "Elnumber", "Elradio", "Elrate", "Elselect", "Elslider", "Elswitch", "ElTime"],
 		"injectActions" : [
 			{
 				"name" : "top",
