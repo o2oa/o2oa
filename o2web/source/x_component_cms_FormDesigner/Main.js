@@ -66,6 +66,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             this.copyModule();
         }.bind(this));
         this.addEvent("paste", function(e){
+            if( e.target && e.target.tagName && e.target.tagName.toLowerCase() === "textarea" )return;
             this.pasteModule();
             e.preventDefault();
         }.bind(this));
