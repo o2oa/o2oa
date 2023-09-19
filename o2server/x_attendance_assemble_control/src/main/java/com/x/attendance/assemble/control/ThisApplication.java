@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -16,12 +17,21 @@ import com.x.attendance.assemble.control.schedule.v2.AttendanceV2MessageSendTask
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2TodayMessageDataGenerateTask;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2Detail;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
+import com.x.attendance.entity.v2.AttendanceV2Config;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 
 public class ThisApplication {
+
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ThisApplication.class);
+
 
     private ThisApplication() {
         // nothing
@@ -76,11 +86,21 @@ public class ThisApplication {
             context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
 
             /////////////////// V2///
+            AttendanceV2Config config = null; // 配置对象
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+                if (configs != null && !configs.isEmpty()) {
+                    config = configs.get(0);
+                }
+                if (config != null) {
+                    LOGGER.info("配置文件读取 {}", config.toString());
+                }
+            }
             // 处理考勤统计相关的队列
             context.startQueue(queueV2Detail);
             // 每天凌晨3点，计算前一天的考勤数据
             context.schedule(AttendanceV2DetailGenerateTask.class, "0 0 3 * * ?");
-            // 每天凌晨 3 点半，重新计算当前要发送消息的数据。
+            // 每天凌晨 3 点半，重新计算当天要发送消息的数据。
             context.schedule(AttendanceV2TodayMessageDataGenerateTask.class, "0 30 3 * * ?");
             // 4点钟开始 每 5 分钟检查 发送考勤相关消息的任务
             context.schedule(AttendanceV2MessageSendTask.class, "0 0/5 4-23 * * ?");

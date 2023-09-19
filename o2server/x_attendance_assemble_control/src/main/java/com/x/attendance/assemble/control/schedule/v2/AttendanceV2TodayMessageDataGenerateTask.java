@@ -13,6 +13,7 @@ import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.quartz.JobExecutionContext;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,16 +35,21 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
             Date nowDate = new Date();
             logger.info("======================新版考勤消息生成定时器开始执行，日期：{}=============================", nowDate.toString());
             if (logger.isDebugEnabled()) {
-                logger.debug("首先删除旧数据=====================");
+                logger.debug("首先删除旧数据=====================7 天以前的数据");
             }
-            emc.beginTransaction(AttendanceV2AlertMessage.class);
-            List<AttendanceV2AlertMessage> list = emc.listAll(AttendanceV2AlertMessage.class);
-            if (list != null && !list.isEmpty()) {
-                for (AttendanceV2AlertMessage attendanceV2AlertMessage : list) {
-                    emc.remove(attendanceV2AlertMessage);
+            Business business = new Business(emc);
+            Date now = new Date();
+            now = DateTools.addDay(now, -7);
+            List<AttendanceV2AlertMessage> messageList = business.getAttendanceV2ManagerFactory().listAlertMessageBeforeDate(now);
+            if (messageList != null && !messageList.isEmpty()) {
+                List<String> ids = new ArrayList<>();
+                for (int i = 0; i < messageList.size(); i++) {
+                    ids.add(messageList.get(i).getId());
                 }
+                emc.beginTransaction(AttendanceV2AlertMessage.class);
+                emc.delete(AttendanceV2AlertMessage.class, ids);
+                emc.commit();
             }
-            emc.commit();
             if (logger.isDebugEnabled()) {
                 logger.debug(" 开始创建新的数据=====================");
             }
@@ -58,7 +64,6 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
             if (!BooleanUtils.isTrue(config.getCheckInAlertEnable())) {
                 return;
             }
-
             String today = DateTools.format(nowDate, DateTools.format_yyyyMMdd);
             if (logger.isDebugEnabled()) {
                 logger.debug("日期：{}", today);
@@ -67,7 +72,6 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
             if (groups == null || groups.isEmpty()) {
                 return;
             }
-            Business business =  new Business(emc);
             for (AttendanceV2Group group : groups) {
                 // 无效考勤组
                 if (group.getStatus() == AttendanceV2Group.status_auto) {
