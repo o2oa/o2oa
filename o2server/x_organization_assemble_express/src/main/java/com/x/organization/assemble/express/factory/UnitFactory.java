@@ -8,9 +8,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.core.entity.PersistenceProperties;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.Unit_;
+import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -338,5 +336,14 @@ public class UnitFactory extends AbstractFactory {
 		list = this.sort(list);
 		List<String> values = ListTools.extractProperty(list, JpaObject.DISTINGUISHEDNAME, String.class, true, true);
 		return values;
+	}
+
+	public Long countBySuper(String superId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Unit.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Unit> root = cq.from(Unit.class);
+		Predicate p = cb.equal(root.get(Unit_.superior), superId);
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 }
