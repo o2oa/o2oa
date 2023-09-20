@@ -7,6 +7,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_PARALLEL));
 		afterCommon(tickets, ticket);
 		ticket.next(targets);
 		List<Ticket> fellow = tickets.listFellow(ticket);
@@ -20,6 +21,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_QUEUE));
 		afterCommon(tickets, ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		ticket.next(list.get(0));
@@ -34,6 +36,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_SINGLE));
 		afterCommon(tickets, ticket);
 		ticket.next(targets);
 		List<Ticket> fellow = tickets.listFellow(ticket);
@@ -51,6 +54,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_PARALLEL));
 		beforeCommon(tickets, ticket);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		fellow.addAll(targets);
@@ -62,6 +66,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_QUEUE));
 		beforeCommon(tickets, ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		List<Ticket> fellow = tickets.listFellow(ticket);
@@ -73,6 +78,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_SINGLE));
 		beforeCommon(tickets, ticket);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		fellow.addAll(targets);

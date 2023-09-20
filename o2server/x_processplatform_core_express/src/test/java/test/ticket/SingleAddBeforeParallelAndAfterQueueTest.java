@@ -33,11 +33,11 @@ class SingleAddBeforeParallelAndAfterQueueTest {
 		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
-		tickets.add(opt.get(), p2, true, Tickets.MODE_PARALLEL);
+		tickets.add(opt.get(), p2, Tickets.POSITION_BEFORE, Tickets.MODE_PARALLEL);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("E,F,G", value);
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LF");
-		tickets.add(opt1.get(), p3, false, Tickets.MODE_QUEUE);
+		tickets.add(opt1.get(), p3, Tickets.POSITION_AFTER, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("E,G,I", value);
 		tickets.completed("LI");

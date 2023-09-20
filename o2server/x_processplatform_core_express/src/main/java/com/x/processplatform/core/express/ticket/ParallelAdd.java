@@ -3,10 +3,13 @@ package com.x.processplatform.core.express.ticket;
 import java.util.Collection;
 import java.util.List;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+
 class ParallelAdd implements Add {
 
 	@Override
 	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_PARALLEL));
 		afterCommon(ticket);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		fellow.addAll(targets);
@@ -19,6 +22,8 @@ class ParallelAdd implements Add {
 
 	@Override
 	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_QUEUE));
+		System.out.println("!!!!!!!!!!!!afterQueue");
 		afterCommon(ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
@@ -27,12 +32,15 @@ class ParallelAdd implements Add {
 		fellow.add(list.get(0));
 		Tickets.interconnectedAsFellow(fellow);
 		List<Ticket> next = tickets.listNext(ticket);
-		list.get(list.size() - 1).next(next);
+		System.out.println(XGsonBuilder.toJson(next));
+//		list.get(list.size() - 1).next(next);
+		list.stream().forEach(o -> o.appendNext(next));
 		ticket.clearSibling();
 	}
 
 	@Override
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_SINGLE));
 		afterCommon(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets);
@@ -47,6 +55,7 @@ class ParallelAdd implements Add {
 
 	@Override
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_PARALLEL));
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		fellow.addAll(targets);
 		Tickets.interconnectedAsFellow(fellow);
@@ -57,6 +66,7 @@ class ParallelAdd implements Add {
 
 	@Override
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_QUEUE));
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
@@ -68,6 +78,7 @@ class ParallelAdd implements Add {
 
 	@Override
 	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.mode(Tickets.MODE_SINGLE));
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		sibling.addAll(targets);
 		Tickets.interconnectedAsSibling(sibling);

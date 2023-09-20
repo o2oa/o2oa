@@ -15,12 +15,16 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+
 public class Tickets {
 
 	public static final String MODE_PARALLEL = "parallel";
 	public static final String MODE_QUEUE = "queue";
 	public static final String MODE_SINGLE = "single";
 	public static final String MODE_GRAB = "grab";
+	public static final String POSITION_BEFORE = "before";
+	public static final String POSITION_AFTER = "after";
 
 	protected Map<String, Ticket> context = new LinkedHashMap<>();
 
@@ -36,11 +40,11 @@ public class Tickets {
 
 		Tickets tickets = new Tickets();
 
-		tickets.mode = MODE_GRAB;
+		tickets.mode = MODE_SINGLE;
 
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> {
 			o.sibling(targets);
-			o.mode(MODE_GRAB);
+			o.mode(MODE_SINGLE);
 			tickets.context.put(o.label(), o);
 		});
 
@@ -52,11 +56,11 @@ public class Tickets {
 
 		Tickets tickets = new Tickets();
 
-		tickets.mode = MODE_SINGLE;
+		tickets.mode = MODE_GRAB;
 
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> {
 			o.sibling(targets);
-			o.mode(MODE_SINGLE);
+			o.mode(MODE_GRAB);
 			tickets.context.put(o.label(), o);
 		});
 
@@ -121,6 +125,14 @@ public class Tickets {
 		return this;
 	}
 
+	public Tickets add(String label, Collection<String> targets, String position, String addMode) {
+		return add(label, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
+	}
+
+	public Tickets add(Ticket ticket, Collection<Ticket> targets, String position, String addMode) {
+		return add(ticket, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
+	}
+
 	public Tickets add(String label, Collection<String> targets, boolean before, String addMode) {
 		Optional<Ticket> opt = this.findTicketWithLabel(label);
 		if (opt.isPresent()) {
@@ -178,7 +190,7 @@ public class Tickets {
 	 * 列示sibling
 	 * 
 	 * @param ticket
-	 * @param selfInclude 是否排除第一个参数对象ticket
+	 * @param selfInclude 是否包含第一个参数对象ticket,false则排除.
 	 * @return
 	 */
 	protected List<Ticket> listSibling(Ticket ticket, boolean selfInclude) {
@@ -210,7 +222,7 @@ public class Tickets {
 	}
 
 	protected List<Ticket> listNext(Ticket ticket) {
-		return this.listSibling(ticket, false).stream().flatMap(o -> o.next().stream()).distinct().map(context::get)
+		return this.listSibling(ticket, true).stream().flatMap(o -> o.next().stream()).distinct().map(context::get)
 				.filter(Objects::nonNull).flatMap(o -> o.sibling().stream()).distinct().map(context::get)
 				.filter(Objects::nonNull).collect(Collectors.toList());
 	}
@@ -248,6 +260,11 @@ public class Tickets {
 	public List<Ticket> listNextTo(Ticket ticket) {
 		return this.context.values().stream().filter(o -> o.next().contains(ticket.label()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public String toString() {
+		return XGsonBuilder.toJson(this);
 	}
 
 }

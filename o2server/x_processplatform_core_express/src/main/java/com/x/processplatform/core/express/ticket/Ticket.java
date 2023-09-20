@@ -1,6 +1,7 @@
 package com.x.processplatform.core.express.ticket;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -26,10 +27,13 @@ public class Ticket {
 
 	private String target;
 
+	// 兄弟
 	private List<String> sibling;
 
+	// 伙伴
 	private List<String> fellow;
 
+	// 后续
 	private List<String> next;
 
 	private String mode;
@@ -95,6 +99,33 @@ public class Ticket {
 
 	public Ticket clearNext() {
 		this.next().clear();
+		return this;
+	}
+
+	public Ticket appendSibling(Ticket... tickets) {
+		return appendSibling(Arrays.asList(tickets));
+	}
+
+	public Ticket appendSibling(List<Ticket> list) {
+		list.stream().forEach(o -> this.sibling().add(o.label()));
+		return this;
+	}
+
+	public Ticket appendFellow(Ticket... tickets) {
+		return appendFellow(Arrays.asList(tickets));
+	}
+
+	public Ticket appendFellow(List<Ticket> list) {
+		list.stream().forEach(o -> this.fellow().add(o.label()));
+		return this;
+	}
+
+	public Ticket appendNext(Ticket... tickets) {
+		return appendNext(Arrays.asList(tickets));
+	}
+
+	public Ticket appendNext(List<Ticket> list) {
+		list.stream().forEach(o -> this.next().add(o.label()));
 		return this;
 	}
 
