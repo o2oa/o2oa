@@ -29,6 +29,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "waitingSelect" : "En espera de selección",
     "selected" : "Seleccionado",
     "empty" : "Vaciar",
+    "remove": "Eliminar",
+    "selected2": "Seleccionado",
 
     "identity" : "Identidad",
     "person" : "Persona",
@@ -43,6 +45,14 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "group" : "Grupo",
     "unit" : "Organización",
     "systemList" : "Lista de sistemas",
+
+    "quantifier": {
+        "person": "persona",
+        "identity": "identidad",
+        "unit": "unidad",
+        "group": "grupo",
+        "role": "rol"
+    },
 
     "appType" : {
         "process": "Proceso",

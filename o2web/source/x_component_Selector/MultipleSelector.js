@@ -330,15 +330,46 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.contentNode.setStyle("height", ""+height+"px");
         this.contentNode.setStyle("margin-top", "2px");
 
-        this.loadContent();
-
         this.node.inject($(document.body));
+
+        this.loadSelectedCountNode();
+
+        this.loadContent();
         this.node.setStyles({
             "top": "0px",
             "left": "0px"
         });
 
         this.setEvent();
+    },
+    loadSelectedCountNode: function(){
+        this.selectedCountNode = new Element("div.selectedCountNode", {
+            "styles": this.css.selectedCountNodeMobile,
+            "events":{
+                "click": function () {
+                    this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
+                    this.selectedMaskNode = new Element("div", {
+                        "styles": this.css.selectedMaskNodeMobile,
+                        "events":{
+                            "click": function () {
+                                this.selectedScrollNode.hide();
+                                this.selectedMaskNode.destroy();
+                            }.bind(this)
+                        }
+                    }).inject( this.node );
+                    this.selectedScrollNode.show().inject( this.node );
+                }.bind(this)
+            }
+        }).inject(this.node);
+
+        this.selectedCountLabelNode = new Element("div", {
+            "style": "float:left; font-weight:bold; padding-right:5px;",
+            "text": MWF.SelectorLP.selected2
+        }).inject( this.selectedCountNode );
+        this.selectedCountTextNode = new Element("div", {
+            "style": "float:left; padding-left:5px;",
+            "text": (MWF.SelectorLP.quantifier[ this.selectType ] || "") + ":0"
+        }).inject( this.selectedCountNode );
     },
     loadPc: function(){
         this.css.maskNode["z-index"] = this.options.zIndex;
@@ -565,9 +596,14 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
 
-            if( index === 0 && this.contentHeight && !this.tabContainer ){
+            if( index === 0 && this.contentHeight ){
                 //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabContainer ) - tab.tabContainer.getStyle("height").toInt();
-                this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+                if( !this.tabContainer ){
+                    this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+                }
+                if( this.selectedCountNode ){
+                    this.contentHeight = this.contentHeight - this.getOffsetY( this.selectedCountNode ) - this.selectedCountNode.getStyle("height").toInt();
+                }
             }
 
             var t = type.capitalize();
@@ -607,6 +643,10 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
                 this.selectors[t] = new MWF.xApplication.Selector[t](this.container, options );
                 var selector = this.selectors[t];
+                selector.inMulitple = true;
+
+                var itemAreaScrollNode;
+
                 if( this.options.contentUrl ){
                     pageNode.set("html", this.contentHTML);
                     pageNode.setStyle("height", this.contentHeight);
@@ -648,7 +688,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
                     if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
                         var startY=0, y=0;
-                        var itemAreaScrollNode = selector.itemAreaScrollNode;
+                        itemAreaScrollNode = selector.itemAreaScrollNode;
                         itemAreaScrollNode.addEvents({
                             'touchstart' : function( ev ){
                                 var touch = ev.touches[0]; //获取第一个触点
@@ -661,7 +701,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                             'touchend' : function( ev ){
                                 if (startY - y > 10) { //向上滑动超过10像素
                                     var obj = this.selectors.Person;
-                                    obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
+                                    if(obj._scrollEvent)obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
                                 }
                                 startY = 0;
                                 y = 0;
@@ -676,38 +716,15 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     if( this.contentHeight )this.selectors[t].options.height = this.contentHeight;
 
                     this.selectors[t].loadContent( pageNode );
-                    this.selectors[t].setSize();
+                    if( !layout.mobile )this.selectors[t].setSize();
 
                     if( layout.mobile ){
 
-                        var containerSize = this.container.getSize();
-                        var bodySize = $(document.body).getSize();
+                        tab.addEvent("postShow", function () {
+                            this.setSelectNodeSizeMobile(t, index, tab);
+                        }.bind(this))
 
-                        var size = {
-                            "x" : Math.min( containerSize.x, bodySize.x ),
-                            "y" : Math.min( containerSize.y, bodySize.y )
-                        };
-
-                        var height;
-                        if( isFormWithAction ){
-                            height = size.y-40-20-6-20;
-                        }else{
-                            height = size.y;
-                        }
-                        if(this.selectors[t].selectNode){
-                            this.selectors[t].selectNode.setStyle("height", ""+height+"px");
-                        }
-                        if( isFormWithAction ){
-                            height = size.y-40-20-78 - 20;
-                        }else{
-                            height = size.y-42-31-40;
-                        }
-                        height = height - 5;
-                        var itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
-                        if( itemAreaScrollNode ){
-                            itemAreaScrollNode.setStyle("height", ""+height+"px");
-                        }
-
+                        itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
                         if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
                             var startY=0, y=0;
                             itemAreaScrollNode.addEvents({
@@ -745,6 +762,61 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 if( index == 0 )tab.showIm();
             }.bind(this));
         }.bind(this));
+    },
+    setSelectNodeSizeMobile: function(t, index, tab){
+        if( tab.isSetSize )return;
+        tab.isSetSize = true;
+        if( index === 0 ){
+            debugger;
+            var containerSize = this.container.getSize();
+            var bodySize = $(document.body).getSize();
+
+            var size = {
+                "x" : Math.min( containerSize.x, bodySize.x ),
+                "y" : Math.min( containerSize.y, bodySize.y )
+            };
+
+            this.contentHeight = size.y;
+            if( !this.tabContainer ){
+                this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+            }
+            if( this.selectedCountNode ){
+                this.contentHeight = this.contentHeight - this.getOffsetY( this.selectedCountNode ) - this.selectedCountNode.getStyle("height").toInt();
+            }
+            var formActionY = 0;
+            // height = height - formActionY - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
+            // if(this.selectedCountNode)height = height - this.selectedCountNode.getSize().y - this.getOffsetY(this.selectedCountNode);
+            // this.contentHeight = height;
+
+            var sel = this.selectors[t];
+            var offsetY = this.getOffsetY(sel.itemAreaScrollNode);
+            if(sel.searchInputDiv)offsetY = offsetY + sel.searchInputDiv.getSize().y + this.getOffsetY(sel.searchInputDiv);
+            if(sel.letterAreaNode)offsetY = offsetY + sel.letterAreaNode.getSize().y + this.getOffsetY(sel.letterAreaNode);
+
+            this.itemAreaHeight = this.contentHeight - offsetY;
+        }
+
+
+        // if( isFormWithAction ){
+        //     height = size.y-40-20-6-20;
+        // }else{
+        //     height = size.y;
+        // }
+        if(this.selectors[t].selectNode){
+            this.selectors[t].selectNode.setStyle("height", ""+this.contentHeight+"px");
+        }
+
+        // if( isFormWithAction ){
+        //     height = size.y-40-20-78 - 20;
+        // }else{
+        //     height = size.y-42-31-40;
+        // }
+        //height = height - 5;
+
+        itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
+        if( itemAreaScrollNode ){
+            itemAreaScrollNode.setStyle("height", ""+this.itemAreaHeight+"px");
+        }
     },
     getValueByType : function( values, type ){
         var result = [];

@@ -115,7 +115,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
     _init : function(){
         this.selectType = "person";
-        this.className = "Person"
+        this.className = "Person";
     },
     load: function(){
         debugger;
@@ -202,17 +202,37 @@ MWF.xApplication.Selector.Person = new Class({
         };
     },
     setSelectedCount: function(){
-
-        this.selectedCountNode.set("text", this.selectedItems.length);
+        var quantifier = MWF.SelectorLP.quantifier[ this.selectType ] || "";
+        if(this.selectedCountTextNode)this.selectedCountTextNode.set("text", quantifier + ":"+ this.selectedItems.length );
+        if(this.selectedTitleCountNode)this.selectedTitleCountNode.set("text", "("+ quantifier + ":" + this.selectedItems.length +")");
     },
     loadSelectedCountNode: function(){
-        this.selectedCountLableNode = new Element("div", {
-            "style": "float:left",
-            "text": "已选择："
+        this.selectedCountNode = new Element("div.selectedCountNode", {
+            "styles": this.css.selectedCountNodeMobile,
+            "events":{
+                "click": function () {
+                    this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
+                    this.selectedMaskNode = new Element("div", {
+                        "styles": this.css.selectedMaskNodeMobile,
+                        "events":{
+                            "click": function () {
+                                this.selectedScrollNode.hide();
+                                this.selectedMaskNode.destroy();
+                            }.bind(this)
+                        }
+                    }).inject( this.node );
+                    this.selectedScrollNode.show().inject( this.node );
+                }.bind(this)
+            }
+        }).inject(this.selectNode);
+
+        this.selectedCountLabelNode = new Element("div", {
+            "style": "float:left; font-weight:bold; padding-right:5px;",
+            "text": MWF.SelectorLP.selected2
         }).inject( this.selectedCountNode );
         this.selectedCountTextNode = new Element("div", {
-            "style": "float:left",
-            "text": "0"
+            "style": "float:left; padding-left:5px;",
+            "text": (MWF.SelectorLP.quantifier[ this.selectType ] || "") + ":0"
         }).inject( this.selectedCountNode );
     },
     setMaskResize: function(){
@@ -653,9 +673,9 @@ MWF.xApplication.Selector.Person = new Class({
             }
         }else{
             if (layout.mobile){
-                // if (this.options.count.toInt()!==1) this.loadSelectedNodeMobile();
                 this.loadSelectedNodeMobile();
                 this.loadSelectNodeMobile();
+                this.setSelectedItem();
             }else{
                 this.loadSelectNode();
                 if( this.options.hasShuttle ){
@@ -854,17 +874,20 @@ MWF.xApplication.Selector.Person = new Class({
             "y" : Math.min( containerSize.y, bodySize.y )
         };
 
-        var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
+        var height;
+        if( !this.inMulitple ){
+            var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
 
-        var formActionY = 0;
-        if( isFormWithAction ){
-            // var formActions = document.getElement(".o2_form_mobile_actions");
-            // if(formActions)formActionY = formActions.getSize().y - this.getOffsetY(formActions);
+            var formActionY = 0;
+            if( isFormWithAction ){
+                // var formActions = document.getElement(".o2_form_mobile_actions");
+                // if(formActions)formActionY = formActions.getSize().y - this.getOffsetY(formActions);
+            }
+
+            height = size.y - formActionY - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
+            this.selectNode.setStyle("height", ""+height+"px");
         }
 
-        var height = size.y - formActionY - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
-
-        this.selectNode.setStyle("height", ""+height+"px");
 
         this.searchInputDiv = new Element("div.searchInputDiv", {
             "styles": this.css.searchInputDiv
@@ -891,28 +914,18 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.itemAreaScrollNode
         }).inject(this.selectNode);
 
-        this.selectedCountNode = new Element("div.selectedCountNode", {
-            "styles": this.css.selectedCountNodeMobile,
-            "events":{
-                "click": function () {
-                    this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
-                    this.selectedMaskNode = new Element("div", {
-                        "styles": this.css.selectedMaskNodeMobile
-                    }).inject( this.node );
-                    this.selectedScrollNode.show().inject( this.node );
-                }.bind(this)
-            }
-        }).inject(this.selectNode);
         this.loadSelectedCountNode();
 
-        var y = this.getOffsetY(this.itemAreaScrollNode);
-        if(this.searchInputDiv)y = y + this.searchInputDiv.getSize().y + this.getOffsetY(this.searchInputDiv);
-        if(this.letterAreaNode)y = y + this.letterAreaNode.getSize().y + this.getOffsetY(this.letterAreaNode);
-        if(this.selectedCountNode)y = y + this.selectedCountNode.getSize().y + this.getOffsetY(this.selectedCountNode);
+        if( !this.inMulitple ) {
+            var y = this.getOffsetY(this.itemAreaScrollNode);
+            if (this.searchInputDiv) y = y + this.searchInputDiv.getSize().y + this.getOffsetY(this.searchInputDiv);
+            if (this.letterAreaNode) y = y + this.letterAreaNode.getSize().y + this.getOffsetY(this.letterAreaNode);
+            if (this.selectedCountNode) y = y + this.selectedCountNode.getSize().y + this.getOffsetY(this.selectedCountNode);
 
-        height = height - y;
+            height = height - y;
 
-        this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+            this.itemAreaScrollNode.setStyle("height", "" + height + "px");
+        }
         this.itemAreaScrollNode.setStyle("overflow", "auto");
 
         this.itemAreaNode = new Element("div.itemAreaNode", {
@@ -1374,15 +1387,20 @@ MWF.xApplication.Selector.Person = new Class({
         }).inject(this.contentNode);
 
         this.selectedTitleNode = new Element("div.selectedTitleNodeMobile", {
-            "styles": this.css.selectedTitleNodeMobile,
-            "text": "已选择"
+            "styles": this.css.selectedTitleNodeMobile
         }).inject(this.selectedScrollNode);
+        this.selectedTitleLabelNode = new Element("span", {
+            "style": "font-weight:bold; padding-right:5px;",
+            "text": MWF.SelectorLP.selected2
+        }).inject(this.selectedTitleNode);
+        this.selectedTitleCountNode = new Element("span", {
+            "text": "(0)"
+        }).inject(this.selectedTitleNode);
+
 
         this.selectedNode = new Element("div.selectedNode", {
             "styles": this.css.selectedNodeMobile
         }).inject(this.selectedScrollNode);
-
-        this.setSelectedItem();
 
         // MWF.require("MWF.widget.ScrollBar", function(){
         //     var _self = this;
@@ -2665,14 +2683,22 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         }.bind(this));
     },
     postLoad : function(){
-        if( this.selector.css.selectorSelectedItemActionNode ){
+        if( this.selector.css.selectorSelectedItemTextNode ){
+            this.textNode.setStyles(this.selector.css.selectorSelectedItemTextNode);
+        }
+        if( layout.mobile && !this.selector.contentUrl ){
+            this.actionNode.set("text", MWF.SelectorLP.remove );
+            if( this.selector.css.selectedItemActionNodeMobile ){
+                this.actionNode.setStyles( this.selector.css.selectedItemActionNodeMobile );
+            }
+            if( this.selector.css.selectorItemMobile ){
+                this.node.setStyles( this.selector.css.selectorItemMobile );
+            }
+        }else if( this.selector.css.selectorSelectedItemActionNode ){
             this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode );
             if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorSelectedItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single );
             }
-        }
-        if( this.selector.css.selectorSelectedItemTextNode ){
-            this.textNode.setStyles(this.selector.css.selectorSelectedItemTextNode);
         }
     },
     getData: function(callback){
