@@ -183,8 +183,42 @@ const hideLoading = async (component) => {
   }
 }
 
+/**
+ * 
+ * @param {*} person 
+ * @returns 
+ */
+const formatPersonName = (person) => {
+  if (person && person.indexOf("@") > -1) {
+    return person.split("@")[0];
+  }
+  return person;
+}
+/**
+ * 获取传入日期所在的月份所有日期
+ * @param {Date} inputDate 
+ * @returns []
+ */
+const getAllDatesInMonth = (inputDate) => {
+  const result = [];
+  const currentDate = new Date(inputDate);
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  // 确定月份的第一天
+  const firstDayOfMonth = new Date(year, month, 1);
+  // 从第一天开始，递增日期直到月份变化
+  let currentDateInMonth = firstDayOfMonth;
+  while (currentDateInMonth.getMonth() === month) {
+    result.push(new Date(currentDateInMonth));
+    currentDateInMonth.setDate(currentDateInMonth.getDate() + 1);
+  }
+  return result;
+}
+
 
 export {
+  getAllDatesInMonth,
+  formatPersonName,
   setJSONValue,
   lpFormat,
   isInt,
