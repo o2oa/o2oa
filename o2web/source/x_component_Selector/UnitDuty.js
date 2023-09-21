@@ -257,24 +257,5 @@ MWF.xApplication.Selector.UnitDuty.ItemCategory = new Class({
     },
     afterLoad: function(){
         if (this.level===1) this.clickItem();
-    },
-    // loadItemChildren: function(callback){
-    //     if (!this.itemLoaded){
-    //         o2.Actions.load("x_organization_assemble_control").UnitDutyAction.listWithUnit(function(idJson){
-    //             idJson.data.each(function(idSubData){
-    //                 if( !this.selector.isExcluded( idSubData ) ) {
-    //                     var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
-    //                     this.selector.items.push(item);
-    //                     if(this.subItems)this.subItems.push( item );
-    //                 }
-    //                 this.itemLoaded = true;
-    //             }.bind(this));
-    //             if (callback) callback();
-    //         }.bind(this), null, this.data.distinguishedName);
-    //         // }
-    //     }else{
-    //         if (callback) callback( );
-    //     }
-    // }
-    //for flat category end
+    }
 });
