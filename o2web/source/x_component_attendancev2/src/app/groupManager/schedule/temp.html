@@ -1,4 +1,3 @@
-
 <div class="cc-mask cc-mask-show" id="scheduleFormBox">
   <div class="sl-dialog" id="scheduleFormDialog">
     <div class="sl-dialog-header">
@@ -6,7 +5,45 @@
       <button class="close" @click="closeSelf"><i class="o2icon-icon_close"></i></button>
     </div>
     <div class="sl-dialog-content">
-      
+      <div class="schedule_table_container" id="scheduleContainer">
+        <!-- header -->
+        <div class="schedule_table_header">
+          <div class="schedule_table_name">姓名</div>
+          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h">
+            <div class="date">{{h.value.text}}</div>
+            <div class="weekTitle">{{ h.value.day }}</div>
+          </div>
+        </div>
+        <!-- row -->
+        <div class="schedule_table_row" oo-each="$.trueParticipantList" oo-item="person">
+          <div class="schedule_table_name">
+            <div class="name_text">{{ $m.personName(person.value) }}</div>
+          </div>
+          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h" @click="clickScheduleBox">
+            <div class="schedule_cell">
+              <div class="schedule_cell_text"> </div>
+            </div>
+          </div>
+        </div>
+        <div class="schedule_selectedFrame" id="selectedFrame" style="display: none;">
+          <div style="position: absolute; top: 0px; left: 0px; width: 100%;">
+            <div class="t-popup"
+              style="position: absolute;margin: 0px;">
+              <div class="t-popup__content" style="margin: 0px; padding: 0px; border-radius: 8px;">
+                <div  class="selected_popup">
+                  <div  class="schedule_list">
+                    <!-- 班次列表 -->
+                  </div>
+                  <div  class="schedule_clear">
+                    清除
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="sl-dialog-footer">
       <span>
