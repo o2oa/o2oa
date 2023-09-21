@@ -778,7 +778,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _loadMobileActions: function (node, callback) {
         var tools = [];
         this._loadMobileDefaultTools(function () {
-
+            
             var jsonStr;
             if( this.json.multiTools ){
                 jsonStr = JSON.stringify(this.json.multiTools);
@@ -839,13 +839,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var buttonWidth = (size.x - splitSize.x * (count + 1) - (count * 2)) / count;
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.text === "继续流转" || tool.text === "撤回" || tool.id === "action_processWork" || tool.id === "action_retract") {
+                var classBg = "";
+                if (tool.action === "processWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                } else if (tool.text === "删除文件" || tool.id === "action_delete") {
+                    classBg = "mainColor_bg";
+                } else if (tool.action === "deleteWork" || tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 actionStyle.width = buttonWidth + "px";
-                var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                var action = new Element("div", { "styles": actionStyle, "class": classBg, "text": tool.text }).inject(node);
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -858,7 +860,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (this[t.action]) this[t.action](e);
                         }
                     }.bind(this);
-                    if (tool.text === "继续流转" || tool.id === "action_processWork") {
+                    if (tool.action === "processWork" || tool.id === "action_processWork") {
                         //输入法激活的时候，需要一段时间等待输入法关闭
                         window.setTimeout(clickFun, 100)
                     } else {
@@ -876,9 +878,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = 0; i < 3; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.text === "继续流转" || tool.text === "撤回") {
+                var classBg = "";
+                if (tool.action === "processWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                } else if (tool.text === "删除文件") {
+                    classBg = "mainColor_bg";
+                } else if (tool.action === "deleteWork") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 if (i == 2) {
@@ -889,7 +893,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }.bind(this));
                 } else {
                     actionStyle.width = (buttonWidth * 2) + "px";
-                    var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(node);
+                    var action = new Element("div", { "styles": actionStyle, "class": classBg, "text": tool.text }).inject(node);
                     if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                     action.store("tool", tool);
                     action.addEvent("click", function (e) {
@@ -929,9 +933,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.text === "继续流转" || tool.text === "撤回") {
+                if (tool.action === "processWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                } else if (tool.text === "删除文件") {
+                } else if (tool.action === "deleteWork") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 actionStyle.width = "100%";
@@ -964,7 +968,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (count == 2) this.css.html5ActionButton.width = "49%";
             tools.each(function (tool) {
 
-                var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": tool.text }).inject(node);
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -983,7 +987,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.css.html5ActionButton.width = "38%"
             for (var i = 0; i < 2; i++) {
                 tool = tools[i];
-                var action = new Element("div", { "styles": this.css.html5ActionButton, "text": tool.text }).inject(node);
+                var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": tool.text }).inject(node);
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -1030,7 +1034,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.actionMoreArea.setStyle("width", "" + w + "px");
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
-                var action = new Element("div", { "styles": this.css.html5ActionOtherButton, "text": tool.text }).inject(this.actionMoreArea);
+                var action = new Element("div", { "styles": this.css.html5ActionOtherButton, "class": "mainColor_color", "text": tool.text }).inject(this.actionMoreArea);
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
