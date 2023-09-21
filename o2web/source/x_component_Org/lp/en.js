@@ -95,7 +95,9 @@ MWF.xApplication.Org.LP = {
 
 	"dutyName": "Duty name",
 	"dutyMembers": "Members",
-
+    "editDuty": "Edit Duty",
+    "modifySuccess": "Modify successful",
+    "modifyFail": "Modify failed",
 	
 	"deleteDutyTitle": "Delete Duty confirmation",
     "deleteDuty": "Are you sure you want to delete the selected Duty?",

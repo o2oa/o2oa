@@ -95,7 +95,9 @@ MWF.xApplication.Org.LP = {
 
     "dutyName": "职务名称",
     "dutyMembers": "成员",
-
+    "editDuty": "编辑职务",
+    "modifySuccess": "修改成功",
+    "modifyFail": "修改失败",
 
     "deleteDutyTitle": "删除职务确认",
     "deleteDuty": "您确定要删除选中的职务吗？",

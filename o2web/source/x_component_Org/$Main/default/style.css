@@ -87,3 +87,17 @@
 .o2icon-off:before {
   content: "\e9bb";
 }
+.duty-wrap{
+  display: flex;
+  align-items: center;
+}
+.duty-area{
+  overflow: hidden;
+}
+.edit-duty-icon{
+  height: 16px;
+  width: 30px;
+  display: block;
+  cursor: pointer;
+  padding: 8px 0px 5px 0px;
+}
