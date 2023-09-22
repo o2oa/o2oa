@@ -228,7 +228,142 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
     },
     resize: function () {
         this.fireEvent("resize");
-    }
+    },
+    getRouteGroupConfig: function () {
+        if (this.routeGroupObject) return this.routeGroupObject;
+        this.routeGroupObject = {};
+        this.routeGroupNameList = [];
+        this.hasRouteGroup = false;
+        var routeList = this.getRouteConfigList();
+        routeList.each(function (route, i) {
+
+            if (route.hiddenScriptText && this.form && this.form.Macro) { //如果隐藏路由，返回
+                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
+            }
+
+            if (route.displayNameScriptText && this.form && this.form.Macro) { //如果有显示名称公式
+                route.displayName = this.form.Macro.exec(route.displayNameScriptText, this);
+            } else {
+                route.displayName = route.name;
+            }
+
+            if (route.decisionOpinion) {
+                this.hasRouteGroup = true;
+                route.decisionOpinion.split("#").each(function (rg) {
+                    this.routeGroupNameList.combine([rg]);
+                    var d = this.splitByStartNumber(rg);
+                    if (!this.routeGroupObject[d.name]) this.routeGroupObject[d.name] = [];
+                    this.routeGroupObject[d.name].push(route);
+                }.bind(this))
+            } else {
+                var defaultName = MWF.xApplication.process.Work.LP.defaultDecisionOpinionName;
+                this.routeGroupNameList.combine([defaultName]);
+                if (!this.routeGroupObject[defaultName]) this.routeGroupObject[defaultName] = [];
+                this.routeGroupObject[defaultName].push(route);
+            }
+        }.bind(this));
+        return this.routeGroupObject;
+    },
+    getRouteConfigList: function () {
+        if(this.routeConfigList)return this.routeConfigList;
+
+        if (this.task.routeNameDisable){
+            this.routeConfigList = [{
+                "id": o2.uuid(),
+                "asyncSupported": false,
+                "soleDirect": false,
+                "name": "继续流转",
+                "alias": "",
+                "selectConfigList": []
+            }];
+            return this.routeConfigList;
+        }
+
+        if( this.form && this.form.businessData && this.form.businessData.routeList ){
+            this.form.businessData.routeList.sort( function(a, b){
+                var aIdx = parseInt(a.orderNumber || "9999999");
+                var bIdx = parseInt(b.orderNumber || "9999999");
+                return aIdx - bIdx;
+            }.bind(this));
+            this.form.businessData.routeList.each( function(d){
+                d.selectConfigList = JSON.parse(d.selectConfig || "[]");
+            }.bind(this));
+            this.routeConfigList = this.form.businessData.routeList;
+        }
+        if (!this.routeConfigList) {
+            o2.Actions.get("x_processplatform_assemble_surface").listRoute({"valueList": this.task.routeList}, function (json) {
+                json.data.sort(function(a, b){
+                    var aIdx = parseInt(a.orderNumber || "9999999");
+                    var bIdx = parseInt(b.orderNumber || "9999999");
+                    return aIdx - bIdx;
+                }.bind(this));
+                json.data.each(function (d) {
+                    d.selectConfigList = JSON.parse(d.selectConfig || "[]");
+                }.bind(this));
+                this.routeConfigList = json.data;
+            }.bind(this), null, false);
+        }
+        return this.routeConfigList;
+    },
+    getRouteConfig: function (routeId) {
+        var routeList = this.getRouteConfigList();
+        for (var i = 0; i < routeList.length; i++) {
+            if (routeList[i].id === routeId || routeList[i].name === routeId) {
+                return routeList[i];
+            }
+        }
+    },
+    getOrgConfig: function (routeId) {
+        var routeList = this.getRouteConfigList();
+        for (var i = 0; i < routeList.length; i++) {
+            if (routeList[i].id === routeId) {
+                return routeList[i].selectConfigList;
+            }
+        }
+    },
+    getVisableOrgConfig: function (routeId) {
+        var selectConfigList = this.getOrgConfig(routeId);
+        var list = [];
+        (selectConfigList || []).each(function (config) {
+            if (!this.isOrgHidden(config)) {
+                list.push(config);
+            }
+        }.bind(this));
+        return list;
+    },
+    isOrgHidden: function (d) {
+        if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
+            var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
+            if (hidden && hidden.toString() === "true") return true;
+        }
+        return false;
+    },
+    getMaxOrgLength: function () {
+        var routeList = this.getRouteConfigList();
+        var length = 0;
+        routeList.each(function (route) {
+            if (route.hiddenScriptText) { //如果隐藏路由，返回
+                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
+            }
+            length = Math.max(length, this.getVisableOrgConfig( route.id ).length);
+        }.bind(this));
+        return length;
+    },
+    splitByStartNumber: function (str) {
+        var obj = {
+            name: "",
+            order: ""
+        };
+        for (var i = 0; i < str.length; i++) {
+            if (parseInt(str.substr(i, 1)).toString() !== "NaN") {
+                obj.order = obj.order + str.substr(i, 1);
+            } else {
+                obj.name = str.substr(i, str.length);
+                break;
+            }
+        }
+        return obj;
+    },
 });
 
 MWF.ProcessFlow.Reset = new Class({
@@ -495,12 +630,12 @@ MWF.ProcessFlow.Processor = new Class({
     loadRouteGroupList: function(){
         var keys = this.routeGroupNameList;
         keys.sort(function (a, b) {
-            var aIdx = parseInt(this.splitByStartNumber(a).order || "9999999");
-            var bIdx = parseInt(this.splitByStartNumber(b).order || "9999999");
+            var aIdx = parseInt(this.flow.splitByStartNumber(a).order || "9999999");
+            var bIdx = parseInt(this.flow.splitByStartNumber(b).order || "9999999");
             return aIdx - bIdx;
         }.bind(this));
 
-        var routeGroupNames =  keys.map(function (k) { return this.splitByStartNumber(k).name; }.bind(this));
+        var routeGroupNames =  keys.map(function (k) { return this.flow.splitByStartNumber(k).name; }.bind(this));
 
         var defaultValue;
         if( keys.length === 1 ) {
@@ -755,124 +890,29 @@ MWF.ProcessFlow.Processor = new Class({
         });
     },
     getRouteGroupConfig: function () {
-        if (this.routeGroupObject) return this.routeGroupObject;
-        this.routeGroupObject = {};
-        this.routeGroupNameList = [];
-        this.hasRouteGroup = false;
-        var routeList = this.getRouteConfigList();
-        routeList.each(function (route, i) {
-
-            if (route.hiddenScriptText && this.form && this.form.Macro) { //如果隐藏路由，返回
-                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
-            }
-
-            if (route.displayNameScriptText && this.form && this.form.Macro) { //如果有显示名称公式
-                route.displayName = this.form.Macro.exec(route.displayNameScriptText, this);
-            } else {
-                route.displayName = route.name;
-            }
-
-            if (route.decisionOpinion) {
-                this.hasRouteGroup = true;
-                route.decisionOpinion.split("#").each(function (rg) {
-                    this.routeGroupNameList.combine([rg]);
-                    var d = this.splitByStartNumber(rg);
-                    if (!this.routeGroupObject[d.name]) this.routeGroupObject[d.name] = [];
-                    this.routeGroupObject[d.name].push(route);
-                }.bind(this))
-            } else {
-                var defaultName = MWF.xApplication.process.Work.LP.defaultDecisionOpinionName;
-                this.routeGroupNameList.combine([defaultName]);
-                if (!this.routeGroupObject[defaultName]) this.routeGroupObject[defaultName] = [];
-                this.routeGroupObject[defaultName].push(route);
-            }
-        }.bind(this));
-        return this.routeGroupObject;
+        var config = this.flow.getRouteGroupConfig();
+        this.routeGroupObject = this.flow.routeGroupObject;
+        this.routeGroupNameList = this.flow.routeGroupNameList;
+        this.hasRouteGroup = this.flow.hasRouteGroup;
+        return config;
     },
     getRouteConfigList: function () {
-        if(this.routeConfigList)return this.routeConfigList;
-
-        if (this.task.routeNameDisable){
-            this.routeConfigList = [{
-                "id": o2.uuid(),
-                "asyncSupported": false,
-                "soleDirect": false,
-                "name": "继续流转",
-                "alias": "",
-                "selectConfigList": []
-            }];
-            return this.routeConfigList;
-        }
-
-        if( this.form && this.form.businessData && this.form.businessData.routeList ){
-            this.form.businessData.routeList.sort( function(a, b){
-                var aIdx = parseInt(a.orderNumber || "9999999");
-                var bIdx = parseInt(b.orderNumber || "9999999");
-                return aIdx - bIdx;
-            }.bind(this));
-            this.form.businessData.routeList.each( function(d){
-                d.selectConfigList = JSON.parse(d.selectConfig || "[]");
-            }.bind(this));
-            this.routeConfigList = this.form.businessData.routeList;
-        }
-        if (!this.routeConfigList) {
-            o2.Actions.get("x_processplatform_assemble_surface").listRoute({"valueList": this.task.routeList}, function (json) {
-                json.data.sort(function(a, b){
-                    var aIdx = parseInt(a.orderNumber || "9999999");
-                    var bIdx = parseInt(b.orderNumber || "9999999");
-                    return aIdx - bIdx;
-                }.bind(this));
-                json.data.each(function (d) {
-                    d.selectConfigList = JSON.parse(d.selectConfig || "[]");
-                }.bind(this));
-                this.routeConfigList = json.data;
-            }.bind(this), null, false);
-        }
-        return this.routeConfigList;
+        return this.flow.getRouteConfigList();
     },
     getRouteConfig: function (routeId) {
-        var routeList = this.getRouteConfigList();
-        for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].id === routeId) {
-                return routeList[i];
-            }
-        }
+        return this.flow.getRouteConfig( routeId );
     },
     getOrgConfig: function (routeId) {
-        var routeList = this.getRouteConfigList();
-        for (var i = 0; i < routeList.length; i++) {
-            if (routeList[i].id === routeId) {
-                return routeList[i].selectConfigList;
-            }
-        }
+        return this.flow.getOrgConfig( routeId );
     },
     getVisableOrgConfig: function (routeId) {
-        var selectConfigList = this.getOrgConfig(routeId);
-        var list = [];
-        (selectConfigList || []).each(function (config) {
-            if (!this.isOrgHidden(config)) {
-                list.push(config);
-            }
-        }.bind(this));
-        return list;
+        return this.flow.getVisableOrgConfig(routeId);
     },
     isOrgHidden: function (d) {
-        if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
-            var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
-            if (hidden && hidden.toString() === "true") return true;
-        }
-        return false;
+        return this.flow.isOrgHidden(d);
     },
     getMaxOrgLength: function () {
-        var routeList = this.getRouteConfigList();
-        var length = 0;
-        routeList.each(function (route) {
-            if (route.hiddenScriptText) { //如果隐藏路由，返回
-                if (this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true") return;
-            }
-            length = Math.max(length, this.getVisableOrgConfig( route.id ).length);
-        }.bind(this));
-        return length;
+        return this.flow.getMaxOrgLength();
     },
     getOffsetY: function (node) {
         return (node.getStyle("margin-top").toInt() || 0) +
@@ -881,21 +921,6 @@ MWF.ProcessFlow.Processor = new Class({
             (node.getStyle("padding-bottom").toInt() || 0) +
             (node.getStyle("border-top-width").toInt() || 0) +
             (node.getStyle("border-bottom-width").toInt() || 0);
-    },
-    splitByStartNumber: function (str) {
-        var obj = {
-            name: "",
-            order: ""
-        };
-        for (var i = 0; i < str.length; i++) {
-            if (parseInt(str.substr(i, 1)).toString() !== "NaN") {
-                obj.order = obj.order + str.substr(i, 1);
-            } else {
-                obj.name = str.substr(i, str.length);
-                break;
-            }
-        }
-        return obj;
     },
     // setSize: function (currentOrgLength, flag) {
     //     this.flow.resize()
@@ -2341,14 +2366,14 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
         }.bind(this))
     },
     filterData: function( onekeyList ){
-        //var onekeyList = listData(); 
-        onekeyList.filter(function (d) {
-            var flag = (d.action === "process" && this.flow.processEnable) || (d.action === "reset" && this.flow.resetEnable) || (d.action === "addTask" && this.flow.addTaskEnable);
+        //var onekeyList = listData();
+        debugger;
+        return onekeyList.filter(function (d) {
+            var flag = (d.data.action === "process" && this.flow.processEnable) || (d.data.action === "reset" && this.flow.resetEnable) || (d.data.action === "addTask" && this.flow.addTaskEnable);
             if( !flag )return false;
-            if( d.action === "process" && !this.flow.getRouteConfig(d.data.routeName) )return false;
+            if( d.data.action === "process" && !this.flow.getRouteConfig(d.data.routeName) )return false;
             return true;
         }.bind(this));
-        this.onekeyList = onekeyList;
     },
     listData: function () {
         return [
