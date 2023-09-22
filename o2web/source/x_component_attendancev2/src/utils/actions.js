@@ -109,6 +109,16 @@ function groupAction(method, ...args) {
   return doAction("x_attendance_assemble_control", "GroupAction", method, args);
 }
 
+/**
+ * 排班API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function  groupScheduleAction(method, ...args) {
+  return doAction("x_attendance_assemble_control", "GroupScheduleAction", method, args);
+}
+
 
 /**
  * 考勤详细分页查询
@@ -311,4 +321,5 @@ export {
   leaveActionListByPaging,
   leaveAction,
   recordActionListByPaging,
+  groupScheduleAction,
 };

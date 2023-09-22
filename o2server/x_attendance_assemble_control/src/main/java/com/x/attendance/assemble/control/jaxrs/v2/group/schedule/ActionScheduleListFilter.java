@@ -26,7 +26,7 @@ public class ActionScheduleListFilter  extends BaseAction {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionScheduleListFilter.class);
   
-  ActionResult<ScheduleValueWo> execute(JsonElement jsonElement) throws Exception {
+  ActionResult<List<ScheduleWo>> execute(JsonElement jsonElement) throws Exception {
     Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
     if (StringUtils.isEmpty(wi.getGroupId())) {
       throw new ExceptionEmptyParameter("groupId");
@@ -44,16 +44,32 @@ public class ActionScheduleListFilter  extends BaseAction {
         throw new ExceptionWithMessage("日期格式不正确！");
       }
     }
-    ActionResult<ScheduleValueWo> result = new ActionResult<>();
+    ActionResult<List<ScheduleWo>> result = new ActionResult<>();
     try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
       Business business = new Business(emc);
       List<AttendanceV2GroupSchedule> list = business.getAttendanceV2ManagerFactory().listGroupSchedule(wi.getGroupId(), wi.getMonth(),
           wi.getDate(), wi.getPerson());
-      ScheduleValueWo wo = new ScheduleValueWo();
-      wo.setScheduleValue( toMap(list, business) );
-      result.setData(wo);
+      result.setData(tWos(list, business));
     }
     return result;
+  }
+
+  private List<ScheduleWo> tWos(List<AttendanceV2GroupSchedule> list, Business business) {
+    if (list == null || list.isEmpty()) {
+      return Collections.emptyList();
+    }
+    return list.stream().filter(Objects::nonNull)
+                .map(element -> {
+                  ScheduleWo scheduleWo = ScheduleWo.copier.copy(element);
+                            if (StringUtils.isNotEmpty(element.getShiftId())) {
+                                try {
+                                  scheduleWo.setShift(business.getAttendanceV2ManagerFactory().pick(element.getShiftId(), AttendanceV2Shift.class));
+                                } catch (Exception e) {
+                                  LOGGER.error(e);
+                                }
+                            }
+                            return scheduleWo;
+                }).collect(Collectors.toList());
   }
 
   private Map<String, List<ScheduleWo>> toMap(List<AttendanceV2GroupSchedule> list, Business business) throws Exception {

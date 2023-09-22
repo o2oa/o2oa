@@ -472,7 +472,7 @@ export default content({
   startSchedule() {
     this.submit((result)=>{
       console.log(result);
-      this.openScheduleWindow({bind: {trueParticipantList: result.trueParticipantList || [] }})
+      this.openScheduleWindow({bind: {trueParticipantList: result.trueParticipantList || [], groupId: result.id}})
     })
     
   },

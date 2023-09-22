@@ -2,8 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.group.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,8 +40,8 @@ public class ActionSchedulePost extends BaseAction {
     if (!AttendanceV2Helper.isValidMonthString(wi.getMonth())) {
       throw new ExceptionWithMessage("月份格式不正确！");
     }
-    if (wi.getSchedule() == null || wi.getSchedule().isEmpty()) {
-      throw new ExceptionEmptyParameter("schedule");
+    if (wi.getScheduleList() == null || wi.getScheduleList().isEmpty()) {
+      throw new ExceptionEmptyParameter("排班数据");
     }
     try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
       Business business = new Business(emc);
@@ -58,21 +56,17 @@ public class ActionSchedulePost extends BaseAction {
         emc.delete(AttendanceV2GroupSchedule.class, deleteIds);
         emc.commit();
       }
-      for (Entry<String, List<ScheduleWi>> entry : wi.getSchedule().entrySet()) {
-        String dn = entry.getKey();
-        List<ScheduleWi> scheduleWis = entry.getValue();
-        if (scheduleWis != null && !scheduleWis.isEmpty()) {
-          for (ScheduleWi sWi : scheduleWis) {
-            sWi.setId(null);
-            AttendanceV2GroupSchedule s = ScheduleWi.copier.copy(sWi);
-            s.setUserId(dn);
-            s.setGroupId(wi.getGroupId());
-            s.setScheduleMonthString(wi.getMonth());
-            emc.beginTransaction(AttendanceV2GroupSchedule.class);
-            emc.persist(s, CheckPersistType.all);
-            emc.commit();
-          }
+      for (ScheduleWi sWi : wi.getScheduleList()) {
+        sWi.setId(null);
+        if (StringUtils.isEmpty(sWi.getUserId()) || StringUtils.isEmpty(sWi.getShiftId())) {
+          continue; // 无效数据 丢弃
         }
+        AttendanceV2GroupSchedule s = ScheduleWi.copier.copy(sWi);
+        s.setGroupId(wi.getGroupId());
+        s.setScheduleMonthString(wi.getMonth());
+        emc.beginTransaction(AttendanceV2GroupSchedule.class);
+        emc.persist(s, CheckPersistType.all);
+        emc.commit();
       }
       Wo wo = new Wo();
       wo.setValue(true);
@@ -97,15 +91,15 @@ public class ActionSchedulePost extends BaseAction {
     @FieldDescribe("月份: yyyy-MM")
     private String month;
 
-    @FieldDescribe("排班数据，key 是人员 DN， value 是AttendanceV2GroupSchedule 对象列表.")
-    private Map<String, List<ScheduleWi>> schedule;
+    @FieldDescribe("排班数据 ")
+    private List<ScheduleWi> scheduleList;
 
-    public Map<String, List<ScheduleWi>> getSchedule() {
-      return schedule;
+    public List<ScheduleWi> getScheduleList() {
+      return scheduleList;
     }
 
-    public void setSchedule(Map<String, List<ScheduleWi>> schedule) {
-      this.schedule = schedule;
+    public void setScheduleList(List<ScheduleWi> scheduleList) {
+      this.scheduleList = scheduleList;
     }
 
     public String getGroupId() {

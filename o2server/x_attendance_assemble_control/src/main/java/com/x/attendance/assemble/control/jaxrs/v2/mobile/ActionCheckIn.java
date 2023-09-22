@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -70,6 +71,9 @@ public class ActionCheckIn extends BaseAction {
             AttendanceV2CheckInRecord record = emc.find(wi.getRecordId(), AttendanceV2CheckInRecord.class);
             if (record == null) {
                 throw new ExceptionNotExistObject("打卡记录");
+            }
+            if (!effectivePerson.getDistinguishedName().equals(record.getUserId())) {
+                throw new ExceptionWithMessage("用户不匹配，无法打卡！");
             }
             // 极速打卡不能更新已经打卡的数据
             if (AttendanceV2CheckInRecord.SOURCE_TYPE_FAST_CHECK.equals(wi.getSourceType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(record.getCheckInResult())) {

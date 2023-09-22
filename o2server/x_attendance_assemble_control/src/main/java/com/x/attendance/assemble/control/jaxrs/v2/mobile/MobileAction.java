@@ -17,7 +17,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by fancyLou on 2023/2/22.
@@ -50,7 +49,7 @@ public class MobileAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "打卡.", action = ActionCheckIn.class)
+    @JaxrsMethodDescribe(value = "打卡，打卡之前需要先调用preCheckIn接口获取数据.", action = ActionCheckIn.class)
     @POST
     @Path("check")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

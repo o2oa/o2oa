@@ -1,0 +1,38 @@
+<div class="cc-mask cc-mask-show" id="selectShift">
+  <div class="sl-dialog" id="selectShiftBox">
+    <div class="sl-dialog-header">
+        <span class="title">{{$.title}}</span>
+        <button class="close" @click="closeSelectShift"><i class="o2icon-icon_off"></i></button>
+    </div>
+    <div class="sl-dialog-content">
+      <div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+          <thead>
+              <th style="width: 10%;">{{$.lp.choose}}</th>
+              <th>{{$.lp.shiftName}}</th>
+              <th>{{$.lp.checkInTime}}</th>
+          </thead>
+          <tbody class="selector">
+            <tr oo-each="$.shiftList" oo-item="shift" @click="this.chooseShift(shift.value)">
+              <td>
+                <div class="icon"><i
+                  class="{{ ($.shiftSelected.length > 0 && $m.isContainShift(shift.value)) ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+              </div>
+              </td>
+              <td>{{shift.value.shiftName}}</td>
+              <td>{{shift.value.properties.timeList[0].onDutyTime + ' - ' + shift.value.properties.timeList[shift.value.properties.timeList.length-1].offDutyTime}}</td>
+          </tr>
+          </tbody>
+          
+      </table>
+      </div>
+      <!-- 分页组件 -->
+      <o-pager oo-prop="$.pagerData" @refresh-data="loadData"></o-pager>
+    </div>
+    <div class="sl-dialog-footer">
+      <span>
+          <button class="mainColor_bg" @click="submit">{{$.lp.positive}}</button>
+      </span>
+  </div>
+  </div>
+</div>

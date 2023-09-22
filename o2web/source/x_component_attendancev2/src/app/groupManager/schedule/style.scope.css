@@ -122,13 +122,77 @@
   border-radius: 8px;
 }
 .selected_popup {
-  width: 322px;
-  height: 100px;
+  width: 250px;
   box-sizing: border-box;
   border: 1px solid #e7e7e7;
   box-shadow: 0 8px 16px rgba(0,0,0,.12);
   border-radius: 8px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  padding: 10px;
+}
+.schedule_list {
+  display: flex;
+  flex-direction: column;
+  line-height: 20px;
+  text-align: center;
+  width: 100%;
+}
+.schedule_list_item {
+  cursor: pointer;
+  margin-top: 8px;
+}
+.schedule_clear {
+  width: 100%;
+  line-height: 20px;
+  text-align: center;
+  margin: 8px 0;
+  cursor: pointer;
+}
+.row-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+/* 色块 */
+.shift_color_item {
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  margin-right: 5px;
+  background-color: var(--att-record-status-normal-color);
+}
+.shift_color_0 {
+  background-color: var(--att-record-status-normal-color)!important;
+  color: #fff;
+}
+.shift_color_1 {
+  background-color:var(--att-record-status-late-color)!important;
+  color: #fff;
+}
+.shift_color_2 {
+  background-color: var(--att-record-status-leave-color)!important;
+  color: #fff;
+}
+.shift_color_3 {
+  background-color: var(--att-record-status-serilate-color)!important;
+  color: #fff;
+}
+.shift_color_4 {
+  background-color: var(--att-record-status-fieldwork-color)!important;
+  color: #fff;
+}
+.shift_color_5 {
+  background-color: var(--att-record-status-nosign-color)!important;
+  color: #fff;
+}
+.shift_color_6 {
+  background-color: var(--att-record-status-appeal-color)!important;
+  color: #fff;
+}
+.shift_color_7 {
+  background-color: var(--att-record-status-early-color)!important;
+  color: #fff;
+}
+.shift_color_8 {
+  background-color: var(--att-record-status-absenteeism-color)!important;
+  color: #fff;
 }

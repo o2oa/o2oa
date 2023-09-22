@@ -12,6 +12,8 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
@@ -38,7 +40,7 @@ public class GroupScheduleAction extends StandardJaxrsAction {
     public void listMonth(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                        @JaxrsParameterDescribe("考勤组ID") @PathParam("groupId") String groupId,
                        @JaxrsParameterDescribe("月份：yyyy-MM") @PathParam("month") String month) {
-        ActionResult<ActionScheduleList.ScheduleValueWo> result = new ActionResult<>();
+        ActionResult<List<BaseAction.ScheduleWo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionScheduleList().execute(groupId, month);
@@ -56,7 +58,7 @@ public class GroupScheduleAction extends StandardJaxrsAction {
     @Consumes(MediaType.APPLICATION_JSON)
     public void  listFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                             JsonElement jsonElement) {
-        ActionResult<ActionScheduleListFilter.ScheduleValueWo> result = new ActionResult<>();
+        ActionResult<List<BaseAction.ScheduleWo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionScheduleListFilter().execute(jsonElement);
