@@ -128,6 +128,12 @@ const formatDate = (date) => {
     day < 10 ? "0" + day : day
   }`;
 };
+// 格式化日期为  YYYY-MM
+const formatMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return `${year}-${month < 10 ? "0" + month : month}`;
+}
 
 // 格式化分钟数为 xx小时xx分钟
 const convertMinutesToHoursAndMinutes = (minutes) => {
@@ -215,6 +221,15 @@ const getAllDatesInMonth = (inputDate) => {
   return result;
 }
 
+const storageSet = (key, item) => {
+  localStorage.setItem(key, JSON.stringify(item));
+}
+const storageGet = (key) => {
+  const item = localStorage.getItem(key);
+  // 使用JSON.parse将字符串还原为JavaScript对象
+  return JSON.parse(item);
+}
+
 
 export {
   getAllDatesInMonth,
@@ -226,8 +241,11 @@ export {
   isPositiveInt,
   isEmpty,
   formatDate,
+  formatMonth,
   convertMinutesToHoursAndMinutes,
   convertTo2DArray,
   showLoading,
-  hideLoading
+  hideLoading,
+  storageSet,
+  storageGet,
 };

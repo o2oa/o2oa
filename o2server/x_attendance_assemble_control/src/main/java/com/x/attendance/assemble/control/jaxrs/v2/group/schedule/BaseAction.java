@@ -1,7 +1,5 @@
 package com.x.attendance.assemble.control.jaxrs.v2.group.schedule;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 

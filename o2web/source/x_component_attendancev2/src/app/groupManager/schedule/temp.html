@@ -1,10 +1,26 @@
 <div class="cc-mask cc-mask-show" id="scheduleFormBox">
+  <!-- header -->
   <div class="sl-dialog" id="scheduleFormDialog">
     <div class="sl-dialog-header">
       <span class="title">{{$.lp.scheduleForm.title}}</span>
       <button class="close" @click="closeSelf"><i class="o2icon-icon_close"></i></button>
     </div>
+    <!-- content -->
     <div class="sl-dialog-content">
+      <!-- toolbar -->
+      <div style="display: flex; flex-wrap: wrap;">
+        <div class="row-box  margin-left" oo-each="$.shiftSelector.shiftSelected" oo-item="shift">
+          <div class="{{this.shiftIndexClassName(shift.index)}}"></div>
+          <div class="margin-left-s">{{shift.value.shiftName}}</div>
+        </div>
+        <!-- 操作班次按钮 -->
+        <div @click="openShiftSelector" style="margin: 20px;">
+          <div class="icon"><i class="o2icon-icon_bianji"></i>
+            <label class="operator_link_underline primary_color">{{$.lp.groupForm.shift}}</label>
+          </div>
+        </div>
+      </div>
+      <!-- table -->
       <div class="schedule_table_container" id="scheduleContainer">
         <!-- header -->
         <div class="schedule_table_header">
@@ -19,25 +35,28 @@
           <div class="schedule_table_name">
             <div class="name_text">{{ $m.personName(person.value) }}</div>
           </div>
-          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h" @click="clickScheduleBox">
-            <div class="schedule_cell">
-              <div class="schedule_cell_text"> </div>
+          <div class="schedule_table_day" oo-each="$.dateList" oo-item="h"
+            @click="this.clickScheduleBox(h.value.dateString, person.value, $event)">
+            <div class="{{this.scheduleDateClass(h.value.dateString, person.value, $.scheduleList)}}">
+              <div class="schedule_cell_text">{{ $m.scheduleDateShow(h.value.dateString, person.value, $.scheduleList) }}</div>
             </div>
           </div>
         </div>
+        <!-- 选择班次的弹出框 -->
         <div class="schedule_selectedFrame" id="selectedFrame" style="display: none;">
           <div style="position: absolute; top: 0px; left: 0px; width: 100%;">
-            <div class="t-popup"
-              style="position: absolute;margin: 0px;">
+            <div class="t-popup" style="position: absolute;margin: 0px;">
               <div class="t-popup__content" style="margin: 0px; padding: 0px; border-radius: 8px;">
-                <div  class="selected_popup">
-                  <div  class="schedule_list">
+                <div class="selected_popup">
+                  <div class="schedule_list">
                     <!-- 班次列表 -->
+                    <div class="schedule_list_item" oo-each="$.shiftSelector.shiftSelected" oo-item="shift" @click="this.chooseShiftOnDate(shift.value)">
+                      {{shift.value.shiftName}}
+                    </div>
                   </div>
-                  <div  class="schedule_clear">
+                  <div class="schedule_clear" @click="clearShiftOnDate">
                     清除
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -45,6 +64,7 @@
         </div>
       </div>
     </div>
+    <!-- footer -->
     <div class="sl-dialog-footer">
       <span>
         <button class="lightColor_bg" @click="closeSelf">{{$.lp.cancel}}</button>
@@ -52,4 +72,5 @@
       </span>
     </div>
   </div>
+  <select-shift-multiple oo-prop="$.shiftSelector" oo-if="$.shiftSelectorOpen"></select-shift-multiple>
 </div>
