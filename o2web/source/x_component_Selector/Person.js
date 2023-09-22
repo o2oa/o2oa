@@ -204,9 +204,16 @@ MWF.xApplication.Selector.Person = new Class({
     setSelectedCount: function(){
         var quantifier = MWF.SelectorLP.quantifier[ this.selectType ] || "";
         if(this.selectedCountTextNode)this.selectedCountTextNode.set("text", quantifier + ":"+ this.selectedItems.length );
-        if(this.selectedTitleCountNode)this.selectedTitleCountNode.set("text", "("+ quantifier + ":" + this.selectedItems.length +")");
+        if(this.selectedTitleCountNode){
+            if( this.inMulitple ){
+                this.selectedTitleCountNode.set("text", quantifier + ":" + this.selectedItems.length );
+            }else{
+                this.selectedTitleCountNode.set("text", "("+ quantifier + ":" + this.selectedItems.length +")");
+            }
+        }
     },
     loadSelectedCountNode: function(){
+        if( this.inMulitple )return;
         this.selectedCountNode = new Element("div.selectedCountNode", {
             "styles": this.css.selectedCountNodeMobile,
             "events":{
@@ -216,22 +223,22 @@ MWF.xApplication.Selector.Person = new Class({
                         "styles": this.css.selectedMaskNodeMobile,
                         "events":{
                             "click": function () {
-                                this.selectedScrollNode.hide();
+                                this.selectedWrapNode.hide();
                                 this.selectedMaskNode.destroy();
                             }.bind(this)
                         }
                     }).inject( this.node );
-                    this.selectedScrollNode.show().inject( this.node );
+                    this.selectedWrapNode.show().inject( this.node );
                 }.bind(this)
             }
         }).inject(this.selectNode);
 
         this.selectedCountLabelNode = new Element("div", {
-            "style": "float:left; font-weight:bold; padding-right:5px;",
+            "styles": this.css.selectedCountLabelNodeMobile,
             "text": MWF.SelectorLP.selected2
         }).inject( this.selectedCountNode );
         this.selectedCountTextNode = new Element("div", {
-            "style": "float:left; padding-left:5px;",
+            "styles": this.css.selectedCountTextNodeMobile,
             "text": (MWF.SelectorLP.quantifier[ this.selectType ] || "") + ":0"
         }).inject( this.selectedCountNode );
     },
@@ -1382,13 +1389,14 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     loadSelectedNodeMobile: function(){
-        this.selectedScrollNode = new Element("div.selectedScrollNode", {
-            "styles": this.css.selectedScrollNodeMobile
+        if( this.inMulitple )return;
+        this.selectedWrapNode = new Element("div.selectedWrapNode", {
+            "styles": this.css.selectedWrapNodeMobile
         }).inject(this.contentNode);
 
         this.selectedTitleNode = new Element("div.selectedTitleNodeMobile", {
             "styles": this.css.selectedTitleNodeMobile
-        }).inject(this.selectedScrollNode);
+        }).inject(this.selectedWrapNode);
         this.selectedTitleLabelNode = new Element("span", {
             "style": "font-weight:bold; padding-right:5px;",
             "text": MWF.SelectorLP.selected2
@@ -1396,6 +1404,10 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectedTitleCountNode = new Element("span", {
             "text": "(0)"
         }).inject(this.selectedTitleNode);
+
+        this.selectedScrollNode = new Element("div.selectedScrollNode", {
+            "styles": this.css.selectedScrollNodeMobile
+        }).inject(this.selectedWrapNode);
 
 
         this.selectedNode = new Element("div.selectedNode", {
@@ -1408,7 +1420,7 @@ MWF.xApplication.Selector.Person = new Class({
         //         "style":"xApp_Organization_Explorer", "where": "before", "distance": 100, "friction": 4,"axis": {"x": false, "y": true}
         //     });
         // }.bind(this));
-        this.selectedScrollNode.setStyle("display", "none");
+        this.selectedWrapNode.setStyle("display", "none");
     },
 
     setSelectedItem: function(){
@@ -2589,7 +2601,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if (this.selectedItem){
             this.selector.selectedItems.erase(this.selectedItem);
             if(this.selector.deleteFromSelectedItemsMap)this.selector.deleteFromSelectedItemsMap(this.selectedItem.data);
-            debugger;
 
             if( this.selector.isCheckStatusOrCount()){
                 this.selectedItem.items.each(function(item){
@@ -2748,6 +2759,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     //    }
     //},
     overItem: function(){
+        if( layout.mobile )return;
         if (!this.isSelected ){
             if( this.selector.css.selectorItem_selected_over ){
                 this.node.setStyles(this.selector.css.selectorItem_selected_over);
@@ -2761,6 +2773,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         }
     },
     outItem: function(){
+        if( layout.mobile )return;
         if (!this.isSelected){
             var styles = this.selector.css.selectorSelectedItem || this.selector.css.selectorItem;
             this.node.setStyles(styles);
