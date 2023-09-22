@@ -346,6 +346,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.setEvent();
     },
     loadSelectedNodeMobile: function(){
+        this.css.selectedWrapNodeMobile["z-index"] = this.options.zIndex + 2;
         this.selectedWrapNode = new Element("div.selectedWrapNode", {
             "styles": this.css.selectedWrapNodeMobile
         }).inject(this.contentNode);

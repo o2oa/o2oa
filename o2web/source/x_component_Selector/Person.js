@@ -1390,6 +1390,7 @@ MWF.xApplication.Selector.Person = new Class({
 
     loadSelectedNodeMobile: function(){
         if( this.inMulitple )return;
+        this.css.selectedWrapNodeMobile["z-index"] = this.options.zIndex + 2;
         this.selectedWrapNode = new Element("div.selectedWrapNode", {
             "styles": this.css.selectedWrapNodeMobile
         }).inject(this.contentNode);

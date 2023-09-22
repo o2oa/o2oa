@@ -2288,6 +2288,8 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             }
         ];
 
+        data = this.filterData(data);
+
         if( !data || !data.length ){
             new Element("div.o2flow-quick-select-item", {
                 text: this.flow.lp.noQuickSelectDataNote
@@ -2338,8 +2340,8 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             }).inject( item )
         }.bind(this))
     },
-    filterOneKeyData: function(){
-        var onekeyList = listData();
+    filterData: function( onekeyList ){
+        //var onekeyList = listData(); 
         onekeyList.filter(function (d) {
             var flag = (d.action === "process" && this.flow.processEnable) || (d.action === "reset" && this.flow.resetEnable) || (d.action === "addTask" && this.flow.addTaskEnable);
             if( !flag )return false;
