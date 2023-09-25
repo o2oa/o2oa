@@ -6,13 +6,16 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -30,6 +33,8 @@ import com.x.base.core.project.tools.DefaultCharset;
  * @author sword
  */
 public class TernaryManagement extends ConfigObject {
+
+	private static final long serialVersionUID = -4506350734689617177L;
 
 	public static final String initPassword = "o2oa@2022";
 
@@ -317,6 +322,41 @@ public class TernaryManagement extends ConfigObject {
 	@FieldDescribe("安全审计员账号密码.")
 	private String auditManagerPassword;
 
+	@FieldDescribe("启用密级标识.")
+	private Boolean securityClearanceEnable;
+
+	@FieldDescribe("系统密级标识.")
+	private Integer systemSecurityClearance;
+
+	@FieldDescribe("默认主体密级标识.")
+	private Integer defaultSubjectSecurityClearance;
+
+	@FieldDescribe("主体密级标识配置.")
+	private Map<String, Integer> subjectSecurityClearance;
+
+	@FieldDescribe("客体密级标识配置.")
+	private Map<String, Integer> objectSecurityClearance;
+
+	public Boolean getSecurityClearanceEnable() {
+		return BooleanUtils.isTrue(securityClearanceEnable);
+	}
+
+	public Integer getSystemSecurityClearance() {
+		return systemSecurityClearance;
+	}
+
+	public Integer getDefaultSubjectSecurityClearance() {
+		return defaultSubjectSecurityClearance;
+	}
+
+	public Map<String, Integer> getSubjectSecurityClearance() {
+		return subjectSecurityClearance == null ? new HashMap<>() : this.subjectSecurityClearance;
+	}
+
+	public Map<String, Integer> getObjectSecurityClearance() {
+		return objectSecurityClearance == null ? new HashMap<>() : this.objectSecurityClearance;
+	}
+
 	public Boolean getEnable() {
 		return enable;
 	}
@@ -368,4 +408,5 @@ public class TernaryManagement extends ConfigObject {
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		this.auditManagerPassword = Crypto.formattedDefaultEncrypt(auditManagerPassword);
 	}
+
 }

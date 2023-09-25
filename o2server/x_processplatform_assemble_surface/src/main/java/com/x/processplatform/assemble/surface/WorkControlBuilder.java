@@ -189,7 +189,7 @@ public class WorkControlBuilder {
 
 	private boolean readable() throws Exception {
 		if (null == readable) {
-			this.readable = ((!BooleanUtils.isTrue(Config.general().getSecurityClearanceEnable()))
+			this.readable = ((!BooleanUtils.isTrue(Config.ternaryManagement().getSecurityClearanceEnable()))
 					|| business.ifPersonHasSufficientSecurityClearance(effectivePerson.getDistinguishedName(),
 							work.getObjectSecurityClearance()))
 					&& (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
