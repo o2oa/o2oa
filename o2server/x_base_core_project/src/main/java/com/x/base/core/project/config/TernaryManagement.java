@@ -50,6 +50,10 @@ public class TernaryManagement extends ConfigObject {
 	public static final String INIT_AUDIT_MANAGER_DISTINGUISHED_NAME = "安全审计员@auditManager@P";
 	public static final String INIT_AUDIT_MANAGER_NAME = "安全审计员";
 
+	public static final Boolean DEFAULT_SECURITYCLEARANCEENABLE = false;
+	public static final Integer DEFAULT_SYSTEMSECURITYCLEARANCE = 200;
+	public static final Integer DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE = 100;
+
 	private transient String _systemManagerPassword;
 
 	private transient String _securityManagerPassword;
@@ -66,6 +70,11 @@ public class TernaryManagement extends ConfigObject {
 		this.systemManagerPassword = "";
 		this.securityManagerPassword = "";
 		this.auditManagerPassword = "";
+		this.securityClearanceEnable = DEFAULT_SECURITYCLEARANCEENABLE;
+		this.systemSecurityClearance = DEFAULT_SYSTEMSECURITYCLEARANCE;
+		this.defaultSubjectSecurityClearance = DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE;
+		this.subjectSecurityClearance = Map.of("重要", 400, "一般", 300, "内部", 200, "义务", 100);
+		this.objectSecurityClearance = Map.of("机密", 400, "秘密", 300, "内部", 200, "非密", 100);
 	}
 
 	public boolean isTernaryManagement(String name) {
