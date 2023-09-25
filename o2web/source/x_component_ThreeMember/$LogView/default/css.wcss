@@ -278,7 +278,7 @@
     "width": "26px",
     "background-repeat": "no-repeat",
     "background-position": "center center",
-    "background-image": "url(../x_component_ThreeMember/$Main/default/icon/config.png)"
+    "background-image": "url(../x_component_ThreeMember/$LogView/default/icon/layout.png)"
   },
 
   "naviNode": {
@@ -400,6 +400,34 @@
     "background-color" : "#F2F5F7",
     "color" : "#666666"
   },
+
+  "naviConfigItemNode" : {
+    "background-color" : "#fff",
+    "cursor" : "pointer",
+    "color" : "#666666",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
+    "font-size": "14px"
+  },
+  "naviConfigItemNode_current" : {
+    "background-color" : "#F2F5F7",
+    "cursor" : "pointer",
+    "color" : "#4A90E2",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
+    "font-size": "14px"
+  },
+  "naviConfigItemNode_over" : {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+
   "naviActionNode": {
     "margin": "10px auto 10px auto",
     "width": "160px",

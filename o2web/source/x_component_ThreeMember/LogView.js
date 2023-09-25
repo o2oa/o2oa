@@ -88,6 +88,26 @@ MWF.xApplication.ThreeMember.LogView = new Class({
         // this.setContentSize();
 
     },
+    toConfig: function(){
+        if (this.view) {
+            this.view.destroy();
+            this.view = null;
+        }
+        this.naviNode.empty();
+        this.topContentNode.empty();
+        this.contentNode.empty();
+        this.navi = new MWF.xApplication.ThreeMember.LogView.ConfigNavi(this, this.naviNode, {});
+    },
+    toView: function(){
+        if (this.view) {
+            this.view.destroy();
+            this.view = null;
+        }
+        this.naviNode.empty();
+        this.topContentNode.empty();
+        this.contentNode.empty();
+        this.navi = new MWF.xApplication.ThreeMember.LogView.Navi(this, this.naviNode, {});
+    },
     getOffsetY: function (node) {
         return (node.getStyle("margin-top").toInt() || 0) +
             (node.getStyle("margin-bottom").toInt() || 0) +
@@ -123,6 +143,56 @@ MWF.xApplication.ThreeMember.LogView = new Class({
 
         this.view = new MWF.xApplication.ThreeMember.LogView.View(viewContainerNode, this.app, this, {
             templateUrl: this.path + this.options.style + "/listItem.json",
+            "pagingEnable": true,
+            "wrapView": true,
+            "noItemText": this.lp.noItem,
+            // "scrollType": "window",
+            "pagingPar": {
+                pagingBarUseWidget: true,
+                position: ["bottom"],
+                style: "blue_round",
+                hasReturn: false,
+                currentPage: this.options.viewPageNum,
+                countPerPage: 15,
+                visiblePages: 9,
+                hasNextPage: true,
+                hasPrevPage: true,
+                hasTruningBar: true,
+                hasJumper: true,
+                returnText: "",
+                hiddenWithDisable: false,
+                text: {
+                    prePage: "",
+                    nextPage: "",
+                    firstPage: this.lp.firstPage,
+                    lastPage: this.lp.lastPage
+                },
+                onPostLoad: function () {
+                    debugger;
+                    this.setContentSize();
+                }.bind(this)
+            }
+        }, {
+            lp: this.lp
+        });
+        var fData = filterData || {};
+        if( !fData.startTime )fData.startTime = this.form.getItem("startTime").getValue();
+        if( !fData.endTime )fData.endTime = this.form.getItem("endTime").getValue();
+        Object.each( (this.navi ? this.navi.currentStatus : {}) || {}, function (value, key) {
+            fData[key] = value;
+        });
+        this.view.filterData = fData;
+        this.view.load();
+    },
+    loadConfigView: function(filterData){
+        if (this.view) this.view.destroy();
+        this.contentNode.empty();
+        var viewContainerNode = this.viewContainerNode = new Element("div.viewContainerNode", {
+            "styles": this.css.viewContainerNode
+        }).inject(this.contentNode);
+
+        this.view = new MWF.xApplication.ThreeMember.LogView.ConfigView(viewContainerNode, this.app, this, {
+            templateUrl: this.path + this.options.style + "/listItemConfig.json",
             "pagingEnable": true,
             "wrapView": true,
             "noItemText": this.lp.noItem,
@@ -326,7 +396,12 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
 
         this.configNode = new Element("div.naviConfigNode", {
             "styles": this.css.naviConfigNode,
-            "text": this.explorer.lp.logConfig
+            "text": this.explorer.lp.logConfig,
+            "events": {
+                "click": function () {
+                    this.explorer.toConfig();
+                }.bind(this)
+            }
         }).inject(this.node);
 
         new Element("div.naviConfigIconNode", {
@@ -771,42 +846,372 @@ MWF.xApplication.ThreeMember.LogView.ConfigNavi = new Class({
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
-        this.configNode = new Element("div.naviConfigNode", {
+        this.configNode = new Element("div.naviViewNode", {
             "styles": this.css.naviViewNode,
-            "text": this.explorer.lp.viewLog
+            "text": this.explorer.lp.viewLog,
+            "events": {
+                "click": function () {
+                    this.explorer.toView();
+                }.bind(this)
+            }
         }).inject(this.node);
 
-        new Element("div.naviConfigIconNode", {
+        new Element("div.naviViewIconNode", {
             "styles": this.css.naviViewIconNode
         }).inject(this.configNode, "top");
 
         o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule(function (json) {
             json.data.valueList.each(function (text) {
-                this.createMenuNode(text);
+                this.createConfigItemNode(text);
             }.bind(this));
             this.setContentSize();
             this.setContentSizeFun = this.setContentSize.bind(this);
             this.app.addEvent("resize", this.setContentSizeFun);
         }.bind(this));
     },
+    createConfigItemNode: function (text) {
+        var _self = this;
+        var configItemNode = new Element("div", {
+            "styles": this.css.naviConfigItemNode,
+            "text": text
+        });
+
+        // var textNode = new Element("div", {
+        //     "styles": this.css.naviConfigItemTextNode,
+        //     "text": text
+        // }).inject(configItemNode);
+
+        configItemNode.inject(this.areaNode);
+
+        var configItemObj = {
+            "module": text,
+            "collapse": true,
+            "node": configItemNode
+        };
+        configItemNode.addEvents({
+            "mouseover": function () {
+                if (_self.currentConfigNode != this) this.setStyles(_self.explorer.css.naviConfigItemNode_over);
+            },
+            "mouseout": function () {
+                if (_self.currentConfigNode != this) this.setStyles(_self.explorer.css.naviConfigItemNode);
+            },
+            "click": function (ev) {
+                _self.setCurrentConfig(configItemObj);
+                ev.stopPropagation();
+            }
+        });
+        if (this.options.module === text) {
+            configItemNode.click()
+        }
+    },
     destroy: function(){
         if(this.setContentSizeFun)this.app.removeEvent("resize", this.setContentSizeFun );
         this.scrollNode.destroy();
     },
-    setCurrentMenu: function (menuObj) {
-        this.cancelCurrent();
-        this.currentStatus = {
-            module: menuObj.module
-        };
-        this.currentMenu = menuObj.node;
-        menuObj.node.setStyles(this.css.naviMenuNode_current);
-        // this.explorer.form.reset();
-        if(this.explorer.options.filterModule) {
-            this.explorer.form.getItem("module").setValue(menuObj.module);
-            this.explorer.form.getItem("module").items[0].fireEvent("change");
+    cancelCurrentConfig: function () {
+        // if (this.currentMenu) {
+        //     this.currentMenu.setStyles(this.css.naviMenuNode);
+        //     this.currentMenu.setStyles(this.css.naviMenuNode_normal);
+        //     this.currentMenu = false;
+        // }
+        // if (this.currentItem) {
+        //     this.currentItem.setStyles(this.css.naviItemNode);
+        //     this.currentItem = false;
+        // }
+        // if (this.currentAll) {
+        //     this.currentAll.setStyles(this.css.naviAllNode_normal);
+        //     this.currentAll = false;
+        // }
+        if (this.currentConfigNode) {
+            this.currentConfigNode.setStyles(this.css.naviConfigItemNode);
+            this.currentConfigNode = false;
         }
-        this.explorer.loadView({"module": menuObj.module})
+        this.currentStatus = null;
+    },
+    setCurrentConfig: function (configItemObj) {
+        this.cancelCurrentConfig();
+        this.currentStatus = {
+            module: configItemObj.module
+        };
+        this.currentConfigNode = configItemObj.node;
+        configItemObj.node.setStyles(this.css.naviConfigItemNode_current);
+
+        // if(this.explorer.options.filterModule) {
+        //     this.explorer.form.getItem("module").setValue(menuObj.module);
+        //     this.explorer.form.getItem("module").items[0].fireEvent("change");
+        // }
+        this.explorer.loadConfigView({"module": configItemObj.module});
     }
+});
+
+MWF.xApplication.ThreeMember.LogView.ConfigView = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexView,
+    _createDocument: function (data, index) {
+        return new MWF.xApplication.ThreeMember.LogView.ConfigDocument(this.viewNode, data, this.explorer, this, null, index);
+    },
+    _getCurrentPageData: function (callback, count, pageNum) {
+        this.clearBody();
+        if (!count) count = 15;
+        if (!pageNum) {
+            if (this.pageNum) {
+                pageNum = this.pageNum = this.pageNum + 1;
+            } else {
+                pageNum = this.pageNum = 1;
+            }
+        } else {
+            this.pageNum = pageNum;
+        }
+
+        var filter = this.filterData || {};
+        o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listPaging(pageNum, count, filter, function (json) {
+            if (!json.data) json.data = [];
+            if (!json.count) json.count = 0;
+            if (callback) callback(json);
+        }.bind(this))
+    },
+    _removeDocument: function (documentData, all) {
+
+    },
+    _create: function () {
+
+    },
+    _openDocument: function (documentData) {
+        var form = new MWF.xApplication.ThreeMember.LogView.ConfigForm({app: this.app}, documentData );
+        form.edit();
+    },
+    _queryCreateViewNode: function () {
+
+    },
+    _postCreateViewNode: function (viewNode) {
+
+    },
+    _queryCreateViewHead: function () {
+
+    },
+    _postCreateViewHead: function (headNode) {
+
+    }
+
+});
+
+MWF.xApplication.ThreeMember.LogView.ConfigDocument = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
+    mouseoverDocument: function (itemNode, ev) {
+        var removeNode = itemNode.getElements("[styles='removeNode']")[0];
+        if (removeNode) removeNode.setStyle("opacity", 1)
+    },
+    mouseoutDocument: function (itemNode, ev) {
+        var removeNode = itemNode.getElements("[styles='removeNode']")[0];
+        if (removeNode) removeNode.setStyle("opacity", 0)
+    },
+    _queryCreateDocumentNode: function (itemData) {
+    },
+    _postCreateDocumentNode: function (itemNode, itemData) {
+        //var iconNode = itemNode.getElements("[item='icon']")[0];
+        //MWF.getJSON( this.view.pictureUrlHost + iconNode.get("picUrl"), function( json ){
+        //    iconNode.set("src", json.data.value);
+        //} )
+    },
+    open: function () {
+        this.view._openDocument(this.data);
+    }
+});
+
+MWF.xApplication.ThreeMember.LogView.ConfigForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "attendanceV2",
+        "width": "800",
+        "height": "700",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : false,
+        "draggable": true,
+        "maxAction" : true,
+        "resizeable" : true,
+        "closeAction": true,
+        "title": MWF.xApplication.ThreeMember.LP.configDetail,
+        "hideBottomWhenReading": true,
+        "closeByClickMaskWhenReading": true,
+    },
+    _postLoad: function(){
+        o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.get(this.data.id, function (json) {
+            this.data = json.data;
+            // if( this.data.sendData ){
+            //     this.setSize( null, 700 );
+            // }else{
+            //     this.setSize( null, 400 );
+            // }
+            this._createTableContent_();
+        }.bind(this))
+    },
+    _createTableContent: function(){},
+    _createTableContent_: function () {
+        var data = this.data;
+        this.formTableArea.set("html", this.getHtml());
+        this.formTableContainer.setStyle("width","90%");
+
+        var contextText = [""], contextValue = [""];
+        Object.each(layout.serviceAddressList, function (value, key) {
+            contextText.push( value.name + "(" + key +")" );
+            contextValue.push( key );
+        });
+        var context = "";
+        if( this.data.matchUrl ){
+            context = this.data.matchUrl.split("/")[1] || "";
+        }
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, data, {
+                isEdited: this.isEdited || this.isNew,
+                style : "attendance",
+                hasColon : true,
+                itemTemplate: {
+                    context: { text : this.lp.moduleSelect, type : "select", selectValue: contextValue, selectText: contextText, value: context, event:{
+                        change: function () {
+                            this.setActionSelect()
+                        }.bind(this)
+                    }},
+                    action: {"text": this.lp.actionSelect, type:"select", event:{
+                            change: function () {
+                                this.setMethodSelect()
+                            }.bind(this)
+                        }},
+                    method: {"text": this.lp.methodSelect, type:"select", event:{
+                        change: function (item, ev) {
+                            debugger;
+                            var v = item.getValue();
+                            if( v.contains("||") ){
+                                var vs = v.split("||");
+                                this.form.getItem("httpType").setValue(vs[0]);
+                                var url = "/"+ this.form.getItem("context").getValue() + "/"+ vs[1];
+                                this.form.getItem("matchUrl").setValue( url );
+                            }else{
+                                this.form.getItem("httpType").setValue("");
+                                this.form.getItem("matchUrl").setValue( "" );
+                            }
+                        }.bind(this)
+                    }},
+                    module: { text : this.lp.module },
+                    operation: { text : this.lp.operation, type : "text" },
+                    httpType: { text : this.lp.httpType, type : "select", selectValue: ["", "GET","POST","PUT","DELETE"] },
+                    status: { text : this.lp.httpStatus, type : "select", selectValue: [true, false], selectText:["启用","禁用"] },
+                    matchUrl: { text : this.lp.httpUrl },
+                }
+            }, this.app);
+            this.form.load();
+            //this.loadScriptEditor();
+            this.setActionSelect();
+            this.setMethodSelect();
+        }.bind(this), true);
+    },
+    setActionSelect: function(){
+        var root = this.form.getItem("context").getValue();
+        if( root ){
+            var json = this.getApi( root );
+            var selectValue =  json.map(function (j) {
+                return j.name;
+            });
+            this.form.getItem("action").resetItemOptions( [""].concat(selectValue) );
+        }else{
+            this.form.getItem("action").resetItemOptions( [] );
+        }
+        this.form.getItem("method").resetItemOptions( [] );
+    },
+    setMethodSelect: function(){
+        var root = this.form.getItem("context").getValue();
+        var action = this.form.getItem("action").getValue();
+        if( root && action ){
+            var json = this.getApi( root );
+            var texts = [""];
+            var values = [""];
+            json.each(function (j) {
+                if( j.name === action ){
+                    j.methods.each(function (m) {
+                        texts.push(m.name);
+                        values.push( m.method + "||" + m.uri.replace( /{[^}]+}/g, "*"));
+                        debugger;
+                    });
+                }
+            });
+            this.form.getItem("method").resetItemOptions( values, texts );
+        }else{
+            this.form.getItem("method").resetItemOptions( [] );
+        }
+    },
+    getApi: function( root ){
+        if( !this.loadedActions )this.loadedActions = {};
+        if (this.loadedActions[root]) return this.loadedActions[root];
+        //if (MWF.Actions.loadedActions[root]) return MWF.Actions.loadedActions[root];
+        var jaxrs = null;
+        var url = MWF.Actions.getHost(root)+"/"+root+"/describe/api.json";
+        MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
+        this.loadedActions[root] = jaxrs;
+        return jaxrs;
+    },
+    getHtml : function(){
+        return  "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='table-layout:fixed;'>" +
+            "<tr><td styles='formTableTitle' lable='context' width='70' ></td>" +
+            "    <td styles='formTableValue' item='context' colspan='3'></td>" +
+            "<tr><td styles='formTableTitle' lable='action' width='70' ></td>" +
+            "    <td styles='formTableValue' item='action' width='200'></td>" +
+            "    <td styles='formTableTitle' lable='method' width='100'></td>" +
+            "    <td styles='formTableValue' item='method' width='200'></td></tr>" +
+            "<tr><td styles='formTableTitle' width='70' ></td>" +
+            "    <td styles='formTableValue' colspan='3'>"+this.lp.selectNote+"</td>" +
+            "<tr><td styles='formTableTitle' lable='module'></td>" +
+            "    <td styles='formTableValue' item='module'></td>" +
+            "    <td styles='formTableTitle' lable='operation'></td>" +
+            "    <td styles='formTableValue' item='operation'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='httpType'></td>" +
+            "    <td styles='formTableValue' item='httpType'></td>" +
+            "    <td styles='formTableTitle' lable='status'></td>" +
+            "    <td styles='formTableValue' item='status'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='matchUrl'></td>" +
+            "    <td styles='formTableValue' item='matchUrl' colspan='3'></td></tr>" +
+            "</table>"+
+            "<div item='sendData'></div>";
+    },
+    // loadScriptEditor:function(){
+    //     if( !this.data.sendData )return;
+    //     MWF.require("MWF.widget.JavascriptEditor", null, false);
+    //     var value;
+    //     try{
+    //         debugger;
+    //         var json = JSON.parse(this.data.sendData);
+    //         value = JSON.stringify(json, null, "\t");
+    //     }catch (e) {}
+    //
+    //     var sendDataNode = this.formTableContainer.getElement('[item="sendData"]');
+    //     if( value ){
+    //         this.scriptEditor = new MWF.widget.JavascriptEditor(sendDataNode, {
+    //             "forceType": "ace",
+    //             "option": {"value": value, "mode" : "json" }
+    //         });
+    //         this.scriptEditor.load(function(){
+    //             this.scriptEditor.setValue(value);
+    //             this.scriptEditor.editor.setReadOnly(true);
+    //             this.addEvent("afterResize", function () {
+    //                 this.resizeScript();
+    //             }.bind(this))
+    //             this.addEvent("queryClose", function () {
+    //                 this.scriptEditor.destroy();
+    //             }.bind(this))
+    //             this.resizeScript();
+    //         }.bind(this));
+    //     }else{
+    //         this.form.getItem("sendData1").container.set("text", this.data.sendData);
+    //         sendDataNode.hide();
+    //     }
+    // },
+    // resizeScript: function () {
+    //     var size = this.formTableContainer.getSize();
+    //     var tableSize = this.formTableContainer.getElement('table').getSize();
+    //     this.formTableContainer.getElement('[item="sendData"]').setStyle("height", size.y - tableSize.y);
+    //     if(this.scriptEditor && this.scriptEditor.editor)this.scriptEditor.editor.resize();
+    // }
 });
 
 var getDateDiff = function (publishTime) {
