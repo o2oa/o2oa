@@ -29,9 +29,9 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  * @author Rui
  *
  */
-class ActionTerminate extends BaseAction {
+class V2Terminate extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTerminate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Terminate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
