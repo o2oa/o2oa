@@ -44,6 +44,8 @@ MWF.xApplication.ThreeMember.LP = {
 	"justNow" : "Ahora mismo",
 	"publishJustNow": "Recién publicado",
 
+	"logConfig": "Configuración de registro",
+
 	"home": "Ingresar al sistema",
 	"syncLogSuccess": "Sincronización de registros exitosa",
 	"process": "Administración de procesos",

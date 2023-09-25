@@ -44,6 +44,9 @@ MWF.xApplication.ThreeMember.LP = {
 	"justNow" : "刚才",
 	"publishJustNow": "刚刚发表",
 
+	"logConfig": "配置日志",
+	"viewLog": "查看日志",
+
 	"home": "进入系统",
 	"syncLogSuccess": "同步日志成功",
 	"process": "流程管理",

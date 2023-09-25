@@ -240,18 +240,56 @@
 
 
   "naviScrollNode" : {
-    "overflow": "auto"
+    "overflow": "auto",
+    "height": "inherit"
   },
   "naviAreaNode" : {
 
   },
+  "naviConfigNode": {
+    "height": "50px",
+    "font-size": "16px",
+    "color": "#333333",
+    "line-height": "50px",
+    "border-top": "1px solid #cccccc",
+    "cursor": "pointer",
+    "display": "flex",
+    "justify-content": "center"
+  },
+  "naviConfigIconNode": {
+    "height": "50px",
+    "width": "26px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$Main/default/icon/config.png)"
+  },
+  "naviViewNode": {
+    "height": "50px",
+    "font-size": "16px",
+    "color": "#333333",
+    "line-height": "50px",
+    "border-top": "1px solid #cccccc",
+    "cursor": "pointer",
+    "display": "flex",
+    "justify-content": "center"
+  },
+  "naviViewIconNode": {
+    "height": "50px",
+    "width": "26px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$Main/default/icon/config.png)"
+  },
+
   "naviNode": {
     "width": "230px",
     "height": "100%",
     "overflow": "hidden",
     "float": "left",
     "position": "static",
-    "background-color" : "#fff"
+    "background-color" : "#fff",
+    "display": "flex",
+    "flex-direction": "column"
   },
   "naviTopNode" : {
     "line-height": "50px",

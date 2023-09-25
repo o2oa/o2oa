@@ -324,6 +324,15 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
+        this.configNode = new Element("div.naviConfigNode", {
+            "styles": this.css.naviConfigNode,
+            "text": this.explorer.lp.logConfig
+        }).inject(this.node);
+
+        new Element("div.naviConfigIconNode", {
+            "styles": this.css.naviConfigIconNode
+        }).inject(this.configNode, "top");
+
         // this.naviTopNode = new Element("div.naviTopNode", {
         //     "styles": this.css.naviTopNode,
         //     "text": this.explorer.lp.title
@@ -534,14 +543,14 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         })
     },
     setContentSize: function () {
-        var nodeSize = this.explorer.node.getSize();
-        var h = nodeSize.y - this.explorer.getOffsetY(this.explorer.node);
-        this.node.setStyle("height", h);
-
-        if( this.naviActionNode ){
-            h = h - this.naviActionNode.getSize().y - this.explorer.getOffsetY(this.naviActionNode);
-        }
-        this.scrollNode.setStyle("height", h);
+        // var nodeSize = this.explorer.node.getSize();
+        // var h = nodeSize.y - this.explorer.getOffsetY(this.explorer.node);
+        // this.node.setStyle("height", h);
+        //
+        // if( this.naviActionNode ){
+        //     h = h - this.naviActionNode.getSize().y - this.explorer.getOffsetY(this.naviActionNode);
+        // }
+        // this.scrollNode.setStyle("height", h);
     }
 });
 
@@ -752,6 +761,51 @@ MWF.xApplication.ThreeMember.LogView.LogForm = new Class({
         var tableSize = this.formTableContainer.getElement('table').getSize();
         this.formTableContainer.getElement('[item="sendData"]').setStyle("height", size.y - tableSize.y);
         if(this.scriptEditor && this.scriptEditor.editor)this.scriptEditor.editor.resize();
+    }
+});
+
+MWF.xApplication.ThreeMember.LogView.ConfigNavi = new Class({
+    Extends: MWF.xApplication.ThreeMember.LogView.Navi,
+    load: function () {
+
+        this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
+        this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
+
+        this.configNode = new Element("div.naviConfigNode", {
+            "styles": this.css.naviViewNode,
+            "text": this.explorer.lp.viewLog
+        }).inject(this.node);
+
+        new Element("div.naviConfigIconNode", {
+            "styles": this.css.naviViewIconNode
+        }).inject(this.configNode, "top");
+
+        o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule(function (json) {
+            json.data.valueList.each(function (text) {
+                this.createMenuNode(text);
+            }.bind(this));
+            this.setContentSize();
+            this.setContentSizeFun = this.setContentSize.bind(this);
+            this.app.addEvent("resize", this.setContentSizeFun);
+        }.bind(this));
+    },
+    destroy: function(){
+        if(this.setContentSizeFun)this.app.removeEvent("resize", this.setContentSizeFun );
+        this.scrollNode.destroy();
+    },
+    setCurrentMenu: function (menuObj) {
+        this.cancelCurrent();
+        this.currentStatus = {
+            module: menuObj.module
+        };
+        this.currentMenu = menuObj.node;
+        menuObj.node.setStyles(this.css.naviMenuNode_current);
+        // this.explorer.form.reset();
+        if(this.explorer.options.filterModule) {
+            this.explorer.form.getItem("module").setValue(menuObj.module);
+            this.explorer.form.getItem("module").items[0].fireEvent("change");
+        }
+        this.explorer.loadView({"module": menuObj.module})
     }
 });
 
