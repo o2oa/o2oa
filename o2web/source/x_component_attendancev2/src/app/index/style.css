@@ -476,6 +476,7 @@
   padding: 20px;
   overflow: auto;
   flex: 1;
+  position: relative;
 }
 
 /* form */
