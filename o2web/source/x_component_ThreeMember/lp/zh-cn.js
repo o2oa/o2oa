@@ -54,6 +54,8 @@ MWF.xApplication.ThreeMember.LP = {
 	"actionSelect": "选择分类",
 	"methodSelect": "选择服务",
 	"selectNote": "注：选择模块、选择分类和选择服务只为了方便自动填写类型和请求地址，不保存数据到后台。",
+	"createSuccess": "创建成功",
+	"updateSuccess": "保存成功",
 
 	"home": "进入系统",
 	"syncLogSuccess": "同步日志成功",

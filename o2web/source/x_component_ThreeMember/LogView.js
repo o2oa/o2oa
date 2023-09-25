@@ -394,19 +394,22 @@ MWF.xApplication.ThreeMember.LogView.Navi = new Class({
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
-        this.configNode = new Element("div.naviConfigNode", {
-            "styles": this.css.naviConfigNode,
-            "text": this.explorer.lp.logConfig,
-            "events": {
-                "click": function () {
-                    this.explorer.toConfig();
-                }.bind(this)
-            }
-        }).inject(this.node);
+        if( !o2.AC.isAuditManager() || o2.AC.isSystemManager() || this.app.managerEnabled ){
+            this.configNode = new Element("div.naviConfigNode", {
+                "styles": this.css.naviConfigNode,
+                "text": this.explorer.lp.logConfig,
+                "events": {
+                    "click": function () {
+                        this.explorer.toConfig();
+                    }.bind(this)
+                }
+            }).inject(this.node);
 
-        new Element("div.naviConfigIconNode", {
-            "styles": this.css.naviConfigIconNode
-        }).inject(this.configNode, "top");
+            new Element("div.naviConfigIconNode", {
+                "styles": this.css.naviConfigIconNode
+            }).inject(this.configNode, "top");
+        }
+
 
         // this.naviTopNode = new Element("div.naviTopNode", {
         //     "styles": this.css.naviTopNode,
@@ -846,6 +849,7 @@ MWF.xApplication.ThreeMember.LogView.ConfigNavi = new Class({
         this.scrollNode = new Element("div.naviScrollNode", {"styles": this.css.naviScrollNode}).inject(this.node);
         this.areaNode = new Element("div.naviAreaNode", {"styles": this.css.naviAreaNode}).inject(this.scrollNode);
 
+
         this.configNode = new Element("div.naviViewNode", {
             "styles": this.css.naviViewNode,
             "text": this.explorer.lp.viewLog,
@@ -946,6 +950,113 @@ MWF.xApplication.ThreeMember.LogView.ConfigNavi = new Class({
 
 MWF.xApplication.ThreeMember.LogView.ConfigView = new Class({
     Extends: MWF.xApplication.Template.Explorer.ComplexView,
+    loadFilter: function () {
+        var lp = MWF.xApplication.ThreeMember.LP;
+        this.fileterNode = new Element("div.fileterNode", {
+            "styles": this.css.fileterNode
+        }).inject(this.topContentNode);
+
+        var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='filterTable'>" + //style='width: 900px;'
+            "<tr>";
+        if( !o2.AC.isAuditManager() || o2.AC.isSystemManager() || this.app.managerEnabled ){
+            html += "<td styles='filterTableTitle' lable='person'></td>" +
+                "<td styles='filterTableValue' item='person'></td>";
+        }
+        if( this.options.filterModule ) {
+            html +=   "<td styles='filterTableTitle' lable='module'></td>" +
+                "    <td styles='filterTableValue' item='module'></td>" +
+                "    <td styles='filterTableTitle' lable='operation'></td>" +
+                "    <td styles='filterTableValue' item='operation'></td>";
+        }
+        html +=  "<td styles='filterTableTitle' lable='startTime'></td>" +
+            "    <td styles='filterTableValue' item='startTime' style='width: 150px;'></td>" +
+            "    <td styles='filterTableTitle' lable='endTime'></td>" +
+            "    <td styles='filterTableValue' item='endTime' style='width: 150px;'></td>" +
+            "    <td styles='filterTableValue' item='action'></td>" +
+            "    <td styles='filterTableValue' item='reset'></td>" +
+            "</tr>" +
+            "</table>";
+        this.fileterNode.set("html", html);
+
+
+        this.form = new MForm(this.fileterNode, {}, {
+            style: "attendance",
+            isEdited: true,
+            itemTemplate: {
+                person: {
+                    "text": lp.person,
+                    "type": "org",
+                    "orgType": "identity",
+                    "orgOptions": {"resultType": "person"},
+                    "style": {"min-width": "100px"},
+                    "orgWidgetOptions": {"disableInfor": true}
+                },
+                module: {
+                    "text": lp.module,
+                    "type": "select",
+                    "style": {"max-width": "150px"},
+                    "selectValue": function () {
+                        var array = [""];
+                        o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listModule(function (json) {
+                            array = array.concat(json.data.valueList);
+                        }.bind(this), null, false);
+                        return array;
+                    },
+                    "event": {
+                        "change": function (item, ev) {
+                            var array;
+                            var v = item.getValue();
+                            if (v) {
+                                o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.listOperation(v, function (json) {
+                                    array = [""].concat(json.data.valueList);
+                                }.bind(this), null, false);
+                            } else {
+                                array = [];
+                            }
+                            item.form.getItem("operation").resetItemOptions(array, array)
+                        }.bind(this)
+                    }
+                },
+                operation: {text: lp.operation, "type": "select", "style": {"max-width": "150px"}, "selectValue": []},
+                startTime: {
+                    text: lp.startTime,
+                    "tType": "datetime",
+                    "defaultValue": new Date().decrement('day', 1).format("%Y-%m-%d") + " 00:00:00",
+                    "calendarOptions": {"secondEnable": true, "format": "db", "clearEnable": false}
+                },
+                endTime: {
+                    text: lp.endTime,
+                    "tType": "datetime",
+                    "defaultValue": new Date().format("%Y-%m-%d") + " 23:59:59",
+                    "calendarOptions": {"secondEnable": true, "format": "db", "clearEnable": false}
+                },
+                action: {
+                    "value": lp.query, type: "button", className: "filterButton", event: {
+                        click: function () {
+                            var result = this.form.getResult(false, null, false, true, false);
+                            for (var key in result) {
+                                if (!result[key]) {
+                                    delete result[key];
+                                } else if (key === "person" && result[key].length > 0) {
+                                    result[key] = result[key][0].split("@")[1];
+                                }
+                            }
+                            this.loadView(result);
+                        }.bind(this)
+                    }
+                },
+                reset: {
+                    "value": lp.reset, type: "button", className: "filterButtonGrey", event: {
+                        click: function () {
+                            this.form.reset();
+                            this.loadView();
+                        }.bind(this)
+                    }
+                },
+            }
+        }, this, this.css);
+        this.form.load();
+    },
     _createDocument: function (data, index) {
         return new MWF.xApplication.ThreeMember.LogView.ConfigDocument(this.viewNode, data, this.explorer, this, null, index);
     },
@@ -976,7 +1087,7 @@ MWF.xApplication.ThreeMember.LogView.ConfigView = new Class({
 
     },
     _openDocument: function (documentData) {
-        var form = new MWF.xApplication.ThreeMember.LogView.ConfigForm({app: this.app}, documentData );
+        var form = new MWF.xApplication.ThreeMember.LogView.ConfigForm({app: this.app, view:this}, documentData );
         form.edit();
     },
     _queryCreateViewNode: function () {
@@ -1035,6 +1146,7 @@ MWF.xApplication.ThreeMember.LogView.ConfigForm = new Class({
         "title": MWF.xApplication.ThreeMember.LP.configDetail,
         "hideBottomWhenReading": true,
         "closeByClickMaskWhenReading": true,
+        "buttonList": [{ "type":"ok" }, { "type":"cancel" }]
     },
     _postLoad: function(){
         o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.get(this.data.id, function (json) {
@@ -1094,11 +1206,11 @@ MWF.xApplication.ThreeMember.LogView.ConfigForm = new Class({
                             }
                         }.bind(this)
                     }},
-                    module: { text : this.lp.module },
-                    operation: { text : this.lp.operation, type : "text" },
-                    httpType: { text : this.lp.httpType, type : "select", selectValue: ["", "GET","POST","PUT","DELETE"] },
-                    status: { text : this.lp.httpStatus, type : "select", selectValue: [true, false], selectText:["启用","禁用"] },
-                    matchUrl: { text : this.lp.httpUrl },
+                    module: { text : this.lp.module, notEmpty: true },
+                    operation: { text : this.lp.operation, type : "text", notEmpty: true },
+                    httpType: { text : this.lp.httpType, type : "select", selectValue: ["", "GET","POST","PUT","DELETE"] , notEmpty: true},
+                    status: { text : this.lp.httpStatus, type : "select", selectValue: ["true", "false"], selectText:["启用","禁用"], notEmpty: true, value: this.data.status === false ? "false": "true" },
+                    matchUrl: { text : this.lp.httpUrl, notEmpty: true },
                 }
             }, this.app);
             this.form.load();
@@ -1157,22 +1269,40 @@ MWF.xApplication.ThreeMember.LogView.ConfigForm = new Class({
             "    <td styles='formTableValue' item='context' colspan='3'></td>" +
             "<tr><td styles='formTableTitle' lable='action' width='70' ></td>" +
             "    <td styles='formTableValue' item='action' width='200'></td>" +
-            "    <td styles='formTableTitle' lable='method' width='100'></td>" +
+            "    <td styles='formTableTitleRight' lable='method' width='100'></td>" +
             "    <td styles='formTableValue' item='method' width='200'></td></tr>" +
             "<tr><td styles='formTableTitle' width='70' ></td>" +
             "    <td styles='formTableValue' colspan='3'>"+this.lp.selectNote+"</td>" +
             "<tr><td styles='formTableTitle' lable='module'></td>" +
             "    <td styles='formTableValue' item='module'></td>" +
-            "    <td styles='formTableTitle' lable='operation'></td>" +
+            "    <td styles='formTableTitleRight' lable='operation'></td>" +
             "    <td styles='formTableValue' item='operation'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='httpType'></td>" +
             "    <td styles='formTableValue' item='httpType'></td>" +
-            "    <td styles='formTableTitle' lable='status'></td>" +
+            "    <td styles='formTableTitleRight' lable='status'></td>" +
             "    <td styles='formTableValue' item='status'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='matchUrl'></td>" +
             "    <td styles='formTableValue' item='matchUrl' colspan='3'></td></tr>" +
-            "</table>"+
-            "<div item='sendData'></div>";
+            "</table>";
+    },
+    _ok: function (data, callback) {
+        debugger;
+        this.data.status = this.data.status !== "false";
+        if( this.data.id ){
+            o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.update( this.data.id, data, function(json){
+                if( callback )callback(json);
+            }.bind(this), function( errorObj ){
+                var error = JSON.parse( errorObj.responseText );
+                this.app.notice( error.message, error );
+            }.bind(this));
+        }else{
+            o2.Actions.load("x_auditlog_assemble_control").AuditConfigAction.save( data, function(json){
+                if( callback )callback(json);
+            }.bind(this), function( errorObj ){
+                var error = JSON.parse( errorObj.responseText );
+                this.app.notice( error.message, error );
+            }.bind(this));
+        }
     },
     // loadScriptEditor:function(){
     //     if( !this.data.sendData )return;
