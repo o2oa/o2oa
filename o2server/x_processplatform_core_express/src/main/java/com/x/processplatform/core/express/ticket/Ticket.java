@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.StringUtils;
 
 public class Ticket {
@@ -63,26 +64,32 @@ public class Ticket {
 
 	}
 
+	public Ticket sibling(Ticket... sibling) {
+		return sibling(Arrays.asList(sibling));
+	}
+
 	public Ticket sibling(Collection<Ticket> sibling) {
-		this.sibling = sibling.stream().map(Ticket::label).collect(Collectors.toList());
+		this.sibling = sibling.stream().map(Ticket::label).distinct().collect(Collectors.toList());
 		this.sibling.remove(this.label);
 		return this;
 	}
 
+	public Ticket fellow(Ticket... fellow) {
+		return fellow(Arrays.asList(fellow));
+	}
+
 	public Ticket fellow(Collection<Ticket> fellow) {
-		this.fellow = fellow.stream().map(Ticket::label).collect(Collectors.toList());
+		this.fellow = fellow.stream().map(Ticket::label).distinct().collect(Collectors.toList());
 		this.fellow.remove(this.label);
 		return this;
 	}
 
-	public Ticket next(Collection<Ticket> next) {
-		this.next = next.stream().map(Ticket::label).collect(Collectors.toList());
-		this.next.remove(this.label);
-		return this;
+	public Ticket next(Ticket... next) {
+		return next(Arrays.asList(next));
 	}
 
-	public Ticket next(Ticket... next) {
-		this.next = Stream.of(next).map(Ticket::label).collect(Collectors.toList());
+	public Ticket next(Collection<Ticket> next) {
+		this.next = next.stream().map(Ticket::label).distinct().collect(Collectors.toList());
 		this.next.remove(this.label);
 		return this;
 	}
@@ -106,26 +113,48 @@ public class Ticket {
 		return appendSibling(Arrays.asList(tickets));
 	}
 
-	public Ticket appendSibling(List<Ticket> list) {
-		list.stream().forEach(o -> this.sibling().add(o.label()));
-		return this;
-	}
-
 	public Ticket appendFellow(Ticket... tickets) {
 		return appendFellow(Arrays.asList(tickets));
-	}
-
-	public Ticket appendFellow(List<Ticket> list) {
-		list.stream().forEach(o -> this.fellow().add(o.label()));
-		return this;
 	}
 
 	public Ticket appendNext(Ticket... tickets) {
 		return appendNext(Arrays.asList(tickets));
 	}
 
+	public Ticket appendSibling(List<Ticket> list) {
+		list.stream().forEach(o -> {
+			if (!StringUtils.equals(this.label(), o.label())) {
+				if (!this.sibling().contains(o.label())) {
+					this.sibling().add(o.label());
+				}
+				if (!o.sibling().contains(this.label())) {
+					o.sibling().add(this.label());
+				}
+			}
+		});
+		return this;
+	}
+
+	public Ticket appendFellow(List<Ticket> list) {
+		list.stream().forEach(o -> {
+			if (!StringUtils.equals(this.label(), o.label())) {
+				if (!this.fellow().contains(o.label())) {
+					this.fellow().add(o.label());
+				}
+				if (!o.fellow().contains(this.label())) {
+					o.fellow().add(this.label());
+				}
+			}
+		});
+		return this;
+	}
+
 	public Ticket appendNext(List<Ticket> list) {
-		list.stream().forEach(o -> this.next().add(o.label()));
+		list.stream().forEach(o -> {
+			if (!StringUtils.equals(this.label(), o.label())) {
+				this.next().add(o.label());
+			}
+		});
 		return this;
 	}
 
