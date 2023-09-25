@@ -227,6 +227,9 @@ MWF.xApplication.attendancev2.LP = {
   },
   scheduleForm: {
     title: "排班",
+    shift: "排班班次",
+    cycle: "排班周期",
+    restShift: "休息",
   },
   dateCycle: {
     none: "无",

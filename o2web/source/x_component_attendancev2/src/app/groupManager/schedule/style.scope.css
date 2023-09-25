@@ -1,3 +1,10 @@
+
+.schedule_tool_line {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
 .schedule_table_container {
   position: relative;
 }
@@ -145,6 +152,15 @@
   text-align: center;
   margin: 8px 0;
   cursor: pointer;
+  border-top: 1px solid #e7e7e7;
+}
+.schedule_cycle_list_item {
+  display: flex;
+  flex-direction: row;
+  padding: 2px 3px;
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  margin-right: 8px;
 }
 .row-box {
   display: flex;

@@ -26,7 +26,9 @@ export default content({
         shiftSelected: []
       },
       // 排班数据
-      scheduleList: []
+      scheduleList: [],
+      // 排班周期
+      shiftCycleList: [], // 班次 id
     };
   },
   // 先查询数据
@@ -44,24 +46,11 @@ export default content({
     this.bind.currentDate = now;
     // 班次本地缓存数据
     this.loadLocalData();
+    // 
+    this.loadDateTable();
     // 排班数据 根据月份查询
     this.loadMonthScheduleList();
-    // 人员日期表格数据
-    let dateList = [];
-    const currentMonthDateList = getAllDatesInMonth(now);
-    if (currentMonthDateList && currentMonthDateList.length > 0) {
-      for (let index = 0; index < currentMonthDateList.length; index++) {
-        const element = currentMonthDateList[index];
-        const dName = this.dayName(element.getDay());
-        dateList.push({
-          date: element,
-          text: `${element.getDate()}`,
-          day: dName,
-          dateString: formatDate(element)
-        });
-      }
-    }
-    this.bind.dateList = dateList;
+    
   },
   afterRender() {
     this.initUI();
@@ -127,7 +116,10 @@ export default content({
   },
   // 切换月份
   changeMonthValue(date) {
+    date.setDate(1);
     this.bind.month = formatMonth(date);
+    this.bind.currentDate = date;
+    this.loadDateTable()
     // 处理刷新
     this.loadMonthScheduleList();
   },
@@ -135,6 +127,25 @@ export default content({
   loadLocalData() {
     const shiftList = storageGet('shiftList_'+this.bind.groupId);
     this.bind.shiftSelector.shiftSelected = shiftList || [];
+  },
+  // 根据日期展现表格
+  loadDateTable() {
+    // 人员日期表格数据
+    let dateList = [];
+    const currentMonthDateList = getAllDatesInMonth(this.bind.currentDate);
+    if (currentMonthDateList && currentMonthDateList.length > 0) {
+      for (let index = 0; index < currentMonthDateList.length; index++) {
+        const element = currentMonthDateList[index];
+        const dName = this.dayName(element.getDay());
+        dateList.push({
+          date: element,
+          text: `${element.getDate()}`,
+          day: dName,
+          dateString: formatDate(element)
+        });
+      }
+    }
+    this.bind.dateList = dateList;
   },
   // 获取月份数据
   async loadMonthScheduleList() {
@@ -246,7 +257,13 @@ export default content({
     this.bind.shiftSelectorOpen = false;
   },
   // 点击排班方格
-  clickScheduleBox(date, person, e) {
+  clickScheduleBox(date, person, cycle, e) {
+    // 绑定当前点击日期和人员
+    this.bind.clickDate = date;
+    this.bind.clickPerson = person;
+    // 班次周期
+    this.bind.clickForCycle = cycle;
+    // 选择框
     const target = e.currentTarget;
     const divWidth = target.offsetWidth; // 获取 div 元素的宽度
     const divHeight = target.offsetHeight; // 获取 div 元素的高度
@@ -255,9 +272,6 @@ export default content({
     const offsetX = divRect.left - containerRect.left; // 计算 div 元素相对于上级元素的横向偏移
     const offsetY = divRect.top - containerRect.top; // 计算 div 元素相对于上级元素的纵向偏移
     this._openChooseBox(divWidth, divHeight, offsetX, offsetY);
-    // 绑定当前点击日期和人员
-    this.bind.clickDate = date;
-    this.bind.clickPerson = person;
   },
   // 打开下拉选择班次的框
   _openChooseBox(divWidth, divHeight, offsetX, offsetY) {
@@ -304,39 +318,108 @@ export default content({
   },
   // 选择班次
   chooseShiftOnDate(shift) {
-    let exist = false;
-    for (let index = 0; index < this.bind.scheduleList.length; index++) {
-      const element = this.bind.scheduleList[index];
-      if (element.scheduleDateString === this.bind.clickDate && element.userId === this.bind.clickPerson) {
-         element.shift = shift;
-         this.bind.scheduleList[index] = element;
-         exist = true;
+    if (this.bind.clickForCycle) { // 班次周期
+      this.bind.shiftCycleList.push(shift);
+    } else {
+      let exist = false;
+      for (let index = 0; index < this.bind.scheduleList.length; index++) {
+        const element = this.bind.scheduleList[index];
+        if (element.scheduleDateString === this.bind.clickDate && element.userId === this.bind.clickPerson) {
+          element.shift = shift;
+          this.bind.scheduleList[index] = element;
+          exist = true;
+        }
       }
-    }
-    if (!exist) {
-      this.bind.scheduleList.push({
-        scheduleDateString: this.bind.clickDate,
-        userId: this.bind.clickPerson,
-        shift: shift,
-        shiftId: shift.id
-      });
+      if (!exist) {
+        this.bind.scheduleList.push({
+          scheduleDateString: this.bind.clickDate,
+          userId: this.bind.clickPerson,
+          shift: shift,
+          shiftId: shift.id
+        });
+      }
     }
     this._closeChooseBox();
   },
-  // 清除班次
+  // 按照排班周期排班
+  scheduleByCycle() {
+    if (this.bind.clickDate && this.bind.shiftCycleList.length > 0) {
+      const date = new Date(this.bind.clickDate);
+      const dateList = this._getMonthDates(date);
+      const cycleList = this.bind.shiftCycleList;
+      let cycleIndex = 0;
+      for (let index = 0; index < dateList.length; index++) {
+        const element = dateList[index];
+        const forDate = formatDate(element);
+        const shift = cycleList[cycleIndex];
+        const scheduleIndex = this.bind.scheduleList.findIndex((item)=> item.scheduleDateString === forDate && item.userId === this.bind.clickPerson);
+        if (shift.id === "rest") {
+          if (scheduleIndex > -1) {
+            this.bind.scheduleList.splice(scheduleIndex, 1);
+          }
+        } else {
+          if (scheduleIndex > -1) {
+            this.bind.scheduleList[scheduleIndex].shift = shift;
+            this.bind.scheduleList[scheduleIndex].shiftId = shift.id;
+          } else {
+            this.bind.scheduleList.push({
+              scheduleDateString: forDate,
+              userId: this.bind.clickPerson,
+              shift: shift,
+              shiftId: shift.id
+            });
+          }
+        }
+        
+        if (cycleIndex >= cycleList.length - 1) {
+          cycleIndex = 0;
+        } else {
+          cycleIndex++;
+        }
+      }
+    }
+    this._closeChooseBox();
+  },
+  // date 日期到所在月最后一天的所有日期数据
+  _getMonthDates(date) {
+    // 获取给定日期的年份和月份
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    // 创建一个新的Date对象，将日期设置为下个月的第一天
+    const nextMonth = new Date(year, month + 1, 1);
+    // 使用循环生成该月的所有日期数据
+    const dates = [];
+    let currentDate = date;
+    while (currentDate < nextMonth) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  },
+  // 清除班次 或者 班次周期中的休息
   clearShiftOnDate() {
-    let i = -1;
-    for (let index = 0; index < this.bind.scheduleList.length; index++) {
-      const element = this.bind.scheduleList[index];
-      if (element.scheduleDateString === this.bind.clickDate && element.userId === this.bind.clickPerson) {
-        i = index;
-        break;
+    if (this.bind.clickForCycle) { // 班次周期
+      this.bind.shiftCycleList.push({
+        id: "rest",
+        shiftName: lp.scheduleForm.restShift
+      });
+    }  else { // 清除班次
+      const existingItemIndex = this.bind.scheduleList.findIndex(item => item.scheduleDateString === this.bind.clickDate && item.userId === this.bind.clickPerson);
+      if (existingItemIndex > -1) {
+        this.bind.scheduleList.splice(existingItemIndex, 1);
       }
-    }
-    if (i > -1) {
-      this.bind.scheduleList.splice(i, 1);
     }
     this._closeChooseBox();
   },
-  
+  // 删除排班周期的一条数据
+  deleteCycleShift(shift) {
+    if (!shift) {
+      return;
+    }
+    const existingItemIndex = this.bind.shiftCycleList.findIndex(item => item.id === shift.id);
+    if (existingItemIndex > -1) {
+      this.bind.shiftCycleList.splice(existingItemIndex, 1);
+    }
+  },
+
 });
