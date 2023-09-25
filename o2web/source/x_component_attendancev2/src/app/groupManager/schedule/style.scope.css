@@ -122,12 +122,11 @@
   border-radius: 8px;
 }
 .selected_popup {
-  width: 250px;
+  width: 150px;
   box-sizing: border-box;
   border: 1px solid #e7e7e7;
   box-shadow: 0 8px 16px rgba(0,0,0,.12);
   border-radius: 8px;
-  padding: 10px;
 }
 .schedule_list {
   display: flex;
@@ -196,3 +195,51 @@
   background-color: var(--att-record-status-absenteeism-color)!important;
   color: #fff;
 }
+
+
+.schedule-date-picker {
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  position: relative;
+  display: inline-block;
+  padding: 2px 10px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 14px;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 18px;
+  border: 1px solid #dedede;
+  transition: all 0.3s;
+  align-items: center;
+}
+.schedule-date-picker-input {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.schedule-date-picker-input .input {
+  position: relative;
+  margin-right: 10px;
+  display: inline-block;
+  color: #666666;
+  font-size: 14px;
+  transition: all 0.3s;
+  flex: auto;
+  min-width: 1px;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  width: 96px;
+  text-align: center;
+}
+.schedule-date-picker-input .icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  color: #999999;
+  cursor: pointer;
+}
+ 

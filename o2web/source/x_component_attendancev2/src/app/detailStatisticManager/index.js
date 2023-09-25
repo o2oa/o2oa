@@ -67,7 +67,7 @@ export default content({
     if (this.validateForm()) {this.loadDetailList();}
   },
   async loadDetailList() {
-    showLoading(this);
+    await showLoading(this);
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);

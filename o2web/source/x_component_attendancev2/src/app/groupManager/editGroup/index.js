@@ -598,7 +598,7 @@ export default content({
       return date+"|"+cycle;
     });
     myForm.noNeedCheckInDateList = noNeedCheckInDateList;
-    if (callback) {
+    if (callback && callback instanceof Function && myForm.status  !== 1) {
       myForm.status = 2;
     } else {
       myForm.status = 1;
@@ -606,7 +606,7 @@ export default content({
 
     const result = await groupAction("createOrUpdate", myForm);
     console.log(result);
-    if (callback) {
+    if (callback && callback instanceof Function) {
       this.bind.form.id = result.id;
       callback(result);
     } else {
