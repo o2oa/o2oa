@@ -9,6 +9,14 @@
     <div class="sl-dialog-content">
       <!-- toolbar -->
       <div style="display: flex; flex-wrap: wrap;">
+        <div class="schedule-date-picker">
+          <div class="schedule-date-picker-input">
+            <span class="input" >{{$.month}}</span>
+            <div class="icon" ><i class="o2icon-icon_rili"></i></div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap;">
         <div class="row-box  margin-left" oo-each="$.shiftSelector.shiftSelected" oo-item="shift">
           <div class="{{this.shiftIndexClassName(shift.index)}}"></div>
           <div class="margin-left-s">{{shift.value.shiftName}}</div>
@@ -68,7 +76,7 @@
     <div class="sl-dialog-footer">
       <span>
         <button class="lightColor_bg" @click="closeSelf">{{$.lp.cancel}}</button>
-        <button class="mainColor_bg" @click="submit">{{$.lp.positive}}</button>
+        <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
       </span>
     </div>
   </div>

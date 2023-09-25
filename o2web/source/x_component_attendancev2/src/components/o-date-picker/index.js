@@ -10,6 +10,7 @@ export default content({
     bind() {
         return {
             lp,
+            monthOnly: false,
             showClear: false,
             value: "",
             key:"" // 反写回去的对象key值，多层用.分割 如 form.startTime
@@ -17,7 +18,7 @@ export default content({
     },
     afterRender() {
         MWF.require("MWF.widget.Calendar", function(){
-          var defaultView = "day";
+          var defaultView = this.bind.monthOnly? "month" : "day";
           var options = {
               "style": "xform",
               "secondEnable" : false,
@@ -25,7 +26,7 @@ export default content({
               "clearEnable": false,
               "isTime": false,
               "timeOnly": false,
-              "monthOnly" : false,
+              "monthOnly" : this.bind.monthOnly,
               "yearOnly" : false,
               "defaultDate": null,
               "defaultView" : defaultView,
@@ -68,10 +69,18 @@ export default content({
       const year = date.getFullYear();
       const month = (date.getMonth() + 1) > 9 ? `${date.getMonth() + 1}`:`0${(date.getMonth() + 1)}`;
       const day = (date.getDate()) > 9 ? `${date.getDate()}`:`0${date.getDate()}`;
-      const chooseDate = `${year}-${month}-${day}`;
-      this.bind.value = chooseDate;
-      // 反写到oo-model
-      this.component.updateModel(chooseDate);
+      if (this.bind.monthOnly) {
+        const chooseDate = `${year}-${month}`;
+        this.bind.value = chooseDate;
+        // 反写到oo-model
+        this.component.updateModel(chooseDate);
+      } else {
+        const chooseDate = `${year}-${month}-${day}`;
+        this.bind.value = chooseDate;
+        // 反写到oo-model
+        this.component.updateModel(chooseDate);
+      }
+      
     },
      
 });

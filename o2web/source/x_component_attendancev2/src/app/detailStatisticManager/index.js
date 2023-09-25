@@ -99,14 +99,14 @@ export default content({
     if (this.validateForm()) {this.loadDetailList();}
   },
   async loadDetailList() {
-    showLoading(this);
+    await showLoading(this);
     this._showTableHeader();
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);
     const list =  json || [];
     this.bind.statisticList = list;
-    hideLoading(this);
+    await hideLoading(this);
   },
   _showTableHeader() {
     const start = this._toDate(this.bind.form.startDate);

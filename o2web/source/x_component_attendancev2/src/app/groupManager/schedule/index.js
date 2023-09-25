@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, storageSet, storageGet, isEmpty } from "../../../utils/common";
+import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, storageSet, storageGet, isEmpty, showLoading, hideLoading } from "../../../utils/common";
 import { groupScheduleAction } from "../../../utils/actions";
 import selectShiftMultiple from "../../shiftManager/selectShiftMultiple";
 import style from "./style.scope.css";
@@ -31,14 +31,22 @@ export default content({
   },
   // 先查询数据
   async beforeRender() {
-    if (!this.bind.trueParticipantList || this.bind.trueParticipantList.length < 1) {
-      // 提示错误信息
-    }
+    // if (!this.bind.trueParticipantList || this.bind.trueParticipantList.length < 1) {
+    //   // 提示错误信息
+    // }
+    // if (isEmpty(this.bind.groupId)) {
+
+    // }
+    // 初始化月份日期数据
     const now = new Date();
+    now.setDate(1);// 设置每月的 1 号
     this.bind.month = formatMonth(now);
     this.bind.currentDate = now;
+    // 班次本地缓存数据
     this.loadLocalData();
+    // 排班数据 根据月份查询
     this.loadMonthScheduleList();
+    // 人员日期表格数据
     let dateList = [];
     const currentMonthDateList = getAllDatesInMonth(now);
     if (currentMonthDateList && currentMonthDateList.length > 0) {
@@ -56,6 +64,12 @@ export default content({
     this.bind.dateList = dateList;
   },
   afterRender() {
+    this.initUI();
+    // 加载月份选择器
+    this.loadMonthPicker();
+  },
+  // 初始化界面
+  initUI() {
     const mask = this.dom.querySelector("#scheduleFormBox");
     mask.style["z-index"] = "1999";
     const dialog = this.dom.querySelector("#scheduleFormDialog");
@@ -82,17 +96,72 @@ export default content({
     dialog.style.left = left + "px";
     dialog.style.top = top + "px";
   },
+  loadMonthPicker() {
+    MWF.require("MWF.widget.Calendar", function(){
+      var options = {
+          "style": "xform",
+          "secondEnable" : false,
+          "timeSelectType" : "select",
+          "clearEnable": false,
+          "isTime": false,
+          "timeOnly": false,
+          "monthOnly" : true,
+          "yearOnly" : false,
+          "defaultDate": null,
+          "defaultView" : "month",
+          "target":  document.body,
+          "onComplate": function(formateDate, date){
+              this.changeMonthValue(date);
+          }.bind(this)
+          
+      };
+      if (this.bind.month && this.bind.month != "") {
+        options.baseDate  = new Date(this.bind.month);
+      }
+      let bindDom = this.dom.querySelector(".input");
+      if (!bindDom) {
+        bindDom = this.dom;
+      }
+      this.calendar = new MWF.widget.Calendar(bindDom, options);
+    }.bind(this));
+  },
+  // 切换月份
+  changeMonthValue(date) {
+    this.bind.month = formatMonth(date);
+    // 处理刷新
+    this.loadMonthScheduleList();
+  },
   // 本地存储数据
   loadLocalData() {
-    const shiftList = storageGet('shiftList');
+    const shiftList = storageGet('shiftList_'+this.bind.groupId);
     this.bind.shiftSelector.shiftSelected = shiftList || [];
   },
   // 获取月份数据
   async loadMonthScheduleList() {
+    await showLoading(this);
     console.log("开始获取月份数据", this.bind.month, this.bind.groupId);
     const list = await groupScheduleAction("listMonth", this.bind.groupId, this.bind.month);
-    this.bind.scheduleList = list || [];
+    const scheduleList = list || [];
+    this.loadShift(scheduleList);
+    this.bind.scheduleList = scheduleList;
+    hideLoading(this);
   },
+  // 如果本地缓存中没有班次数据，根据返回的排班结果中获取班次数据
+  loadShift(scheduleList) {
+    // 已经有班次数据 不需要处理了
+    if (this.bind.shiftSelector.shiftSelected.length === 0 && scheduleList.length > 0) {
+      let shiftList = [];
+      for (let index = 0; index < scheduleList.length; index++) {
+        const element = scheduleList[index].shift;
+        const existingItemIndex = shiftList.findIndex(item => item.id === element.id);
+        if (existingItemIndex === -1) {
+          shiftList.push(element);
+        }
+      }
+      this.bind.shiftSelector.shiftSelected = shiftList;
+    }
+  },
+  // 班次列表的颜色样式
   shiftIndexClassName(index) {
     return "shift_color_item shift_color_"+index;
   },
@@ -117,6 +186,7 @@ export default content({
         return "";             
     }
   },
+  // 方格内班次名显示
   scheduleDateShow(date, person) {
     for (let index = 0; index < this.bind.scheduleList.length; index++) {
       const element = this.bind.scheduleList[index];
@@ -126,7 +196,7 @@ export default content({
     }
     return "";
   },
-  // 方框的 class
+  // 方格内班次 样式
   scheduleDateClass(date, person) {
     let className = "schedule_cell";
     let shiftId = "";
@@ -151,9 +221,10 @@ export default content({
   closeSelf() {
     this.component.destroy();
   },
+  // 提交排班数据
   async submit() {
     console.log(this.bind);
-    storageSet('shiftList', this.bind.shiftSelector.shiftSelected);
+    storageSet('shiftList_'+this.bind.groupId, this.bind.shiftSelector.shiftSelected);
     const body = {
       groupId: this.bind.groupId,
       month: this.bind.month,
@@ -163,7 +234,6 @@ export default content({
     console.log(result);
     this.closeSelf(); 
   },
-  //
   personName(person) {
     return formatPersonName(person);
   },
@@ -267,5 +337,6 @@ export default content({
       this.bind.scheduleList.splice(i, 1);
     }
     this._closeChooseBox();
-  }
+  },
+  
 });
