@@ -77,12 +77,9 @@ class ParallelAdd implements Add {
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
-		sibling.addAll(targets);
-		Tickets.interconnectedAsSibling(sibling);
-		fellow.addAll(targets);
-		Tickets.interconnectedAsFellow(fellow);
+		Tickets.interconnectedAsSibling(targets);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next));
+		targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
 	}
 
 }

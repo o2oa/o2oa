@@ -36,9 +36,6 @@ class SingleAddAfterParallelTest {
 		tickets.add(opt.get(), p2, false, Tickets.MODE_PARALLEL);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("E,F,G", value);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(tickets);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		tickets.completed("LF");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("E,G", value);

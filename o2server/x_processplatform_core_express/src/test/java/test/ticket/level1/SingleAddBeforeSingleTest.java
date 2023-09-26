@@ -35,11 +35,10 @@ class SingleAddBeforeSingleTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, true, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		// @Todo ??Assertions.assertEquals("E,F,G", value);
-		Assertions.assertEquals("A,C,E,F,G", value);
+		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LF");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("B", value);
+		Assertions.assertEquals("A,B,C", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
