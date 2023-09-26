@@ -56,6 +56,13 @@ MWF.xApplication.ThreeMember.LP = {
 	"selectNote": "注：选择模块、选择分类和选择服务只为了方便自动填写类型和请求地址，不保存数据到后台。",
 	"createSuccess": "创建成功",
 	"updateSuccess": "保存成功",
+	"allConfig": "所有日志配置",
+	"deleteConfig": "删除日志配置",
+	"deleteConfigText": "删除后不能恢复，确定要删除该日志配置？",
+	"deleteConfigOK": "成功删除配置",
+	"createConfig": "创建日志配置",
+
+	"delete": "删除",
 
 	"home": "进入系统",
 	"syncLogSuccess": "同步日志成功",

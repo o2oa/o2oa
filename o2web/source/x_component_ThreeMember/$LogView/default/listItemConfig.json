@@ -75,17 +75,17 @@
     {
       "name": "actionList",
       "head": {
-        "html": "<th styles='normalThNode' lable='view'></th>",
+        "html": "<th styles='normalThNode' lable='delete'></th>",
         "width": "30"
       },
       "content": {
-        "html": "<td styles='normalTdNode'><div styles='openAction' item='openAction'></div></td>",
+        "html": "<td styles='normalTdNode'><div styles='deleteAction' item='deleteAction'></div></td>",
         "items": {
-          "openAction": {
-            "title": "viewDetail",
-            "action": "open",
-            "styles" : "openAction",
-            "mouseoverStyles": "openAction_over"
+          "deleteAction": {
+            "title": "deleteConfig",
+            "action": "remove",
+            "styles" : "deleteAction",
+            "mouseoverStyles": "deleteAction_over"
           }
         }
       }
