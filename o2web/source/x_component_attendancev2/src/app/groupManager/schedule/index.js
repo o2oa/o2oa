@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, storageSet, storageGet, isEmpty, showLoading, hideLoading } from "../../../utils/common";
+import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, isEmpty, showLoading, hideLoading } from "../../../utils/common";
 import { groupScheduleAction } from "../../../utils/actions";
 import selectShiftMultiple from "../../shiftManager/selectShiftMultiple";
 import style from "./style.scope.css";
@@ -33,20 +33,14 @@ export default content({
   },
   // 先查询数据
   async beforeRender() {
-    // if (!this.bind.trueParticipantList || this.bind.trueParticipantList.length < 1) {
-    //   // 提示错误信息
-    // }
-    // if (isEmpty(this.bind.groupId)) {
-
-    // }
     // 初始化月份日期数据
     const now = new Date();
     now.setDate(1);// 设置每月的 1 号
     this.bind.month = formatMonth(now);
     this.bind.currentDate = now;
-    // 班次本地缓存数据
-    this.loadLocalData();
-    // 
+    // 班次和排班周期等配置数据
+    await this.loadConfigData();
+    // 日期人员表格
     this.loadDateTable();
     // 排班数据 根据月份查询
     this.loadMonthScheduleList();
@@ -123,10 +117,14 @@ export default content({
     // 处理刷新
     this.loadMonthScheduleList();
   },
-  // 本地存储数据
-  loadLocalData() {
-    const shiftList = storageGet('shiftList_'+this.bind.groupId);
-    this.bind.shiftSelector.shiftSelected = shiftList || [];
+  // 班次和排班周期等配置数据
+  async loadConfigData() {
+    const config = await groupScheduleAction("configByGroupId", this.bind.groupId);
+    if (config && config.scheduleConfigJson) {
+      const jsonObj = JSON.parse(config.scheduleConfigJson);
+      this.bind.shiftSelector.shiftSelected = jsonObj.shiftSelected || [];
+      this.bind.shiftCycleList = jsonObj.shiftCycleList || [];
+    }
   },
   // 根据日期展现表格
   loadDateTable() {
@@ -234,15 +232,21 @@ export default content({
   },
   // 提交排班数据
   async submit() {
-    console.log(this.bind);
-    storageSet('shiftList_'+this.bind.groupId, this.bind.shiftSelector.shiftSelected);
+    await showLoading(this);
+    // 排班班次列表和周期列表的数据作为配置存到后台，方便后续使用
+    const scheduleConfigJson = {
+      shiftSelected: this.bind.shiftSelector.shiftSelected,
+      shiftCycleList: this.bind.shiftCycleList
+    };
     const body = {
       groupId: this.bind.groupId,
       month: this.bind.month,
-      scheduleList: this.bind.scheduleList
+      scheduleList: this.bind.scheduleList,
+      scheduleConfigJson: JSON.stringify(scheduleConfigJson)
     };
     const result = await groupScheduleAction("postMonth", body);
     console.log(result);
+    await hideLoading(this);
     this.closeSelf(); 
   },
   personName(person) {

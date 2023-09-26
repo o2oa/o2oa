@@ -678,4 +678,22 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
 
         return em.createQuery(cq).getResultList();
     }
+
+    /**
+     * 查询排班配置数据
+     * @param groupId
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2GroupScheduleConfig> listGroupScheduleConfig(String groupId) throws Exception {
+        if (StringUtils.isEmpty(groupId)) {
+            return null;
+        }
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2GroupScheduleConfig.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2GroupScheduleConfig> cq = cb.createQuery(AttendanceV2GroupScheduleConfig.class);
+        Root<AttendanceV2GroupScheduleConfig> root = cq.from(AttendanceV2GroupScheduleConfig.class);
+        Predicate p = cb.equal(root.get(AttendanceV2GroupScheduleConfig_.groupId), groupId);
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
 }
