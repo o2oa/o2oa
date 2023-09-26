@@ -157,30 +157,31 @@ public class Tickets {
 		} else {
 			add = new SingleAdd();
 		}
-		if (before) {
-			switch (addMode) {
-			case MODE_PARALLEL:
+		switch (addMode) {
+		case MODE_PARALLEL:
+			targets.stream().forEach(o -> o.mode(MODE_PARALLEL));
+			if (before) {
 				add.beforeParallel(this, ticket, targets);
-				break;
-			case MODE_QUEUE:
-				add.beforeQueue(this, ticket, targets);
-				break;
-			default:
-				add.beforeSingle(this, ticket, targets);
-				break;
-			}
-		} else {
-			switch (addMode) {
-			case MODE_PARALLEL:
+			} else {
 				add.afterParallel(this, ticket, targets);
-				break;
-			case MODE_QUEUE:
-				add.afterQueue(this, ticket, targets);
-				break;
-			default:
-				add.afterSingle(this, ticket, targets);
-				break;
 			}
+			break;
+		case MODE_QUEUE:
+			targets.stream().forEach(o -> o.mode(MODE_QUEUE));
+			if (before) {
+				add.beforeQueue(this, ticket, targets);
+			} else {
+				add.afterQueue(this, ticket, targets);
+			}
+			break;
+		default:
+			targets.stream().forEach(o -> o.mode(MODE_SINGLE));
+			if (before) {
+				add.beforeSingle(this, ticket, targets);
+			} else {
+				add.afterSingle(this, ticket, targets);
+			}
+			break;
 		}
 		targets.stream().forEach(o -> this.context.put(o.label(), o));
 		return this;
