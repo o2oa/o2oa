@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
@@ -10,6 +11,40 @@
 	</parent>
 	<artifactId>x_base_core_project</artifactId>
 	<packaging>jar</packaging>
+	<properties>
+		<graalvm.version>22.2.0</graalvm.version>
+		<compiler.dir>${project.build.directory}/compiler</compiler.dir>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+			<version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+			<version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>profiler</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>chromeinspector</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -26,7 +61,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.entity.tools.MetaModelBuilder
+							<mainClass>
+								com.x.base.core.entity.tools.MetaModelBuilder
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
@@ -45,7 +81,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.entity.tools.EnhanceBaseBuilder
+							<mainClass>
+								com.x.base.core.entity.tools.EnhanceBaseBuilder
 							</mainClass>
 							<arguments>
 								<argument>${project.build.directory}</argument>
