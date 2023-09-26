@@ -18,7 +18,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		@Override
 		public boolean test(Entry<String, Integer> o) {
-			return (null != o.getValue()) && o.getValue() >= systemSecurityClearance;
+			return (null != o.getValue()) && o.getValue() <= systemSecurityClearance;
 		}
 
 	}

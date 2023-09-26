@@ -50,8 +50,8 @@ public class TernaryManagement extends ConfigObject {
 	public static final String INIT_AUDIT_MANAGER_NAME = "安全审计员";
 
 	public static final Boolean DEFAULT_SECURITYCLEARANCEENABLE = false;
-	public static final Integer DEFAULT_SYSTEMSECURITYCLEARANCE = 200;
-	public static final Integer DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE = 100;
+	public static final Integer DEFAULT_SYSTEMSECURITYCLEARANCE = 400;
+	public static final Integer DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE = 200;
 
 	private transient String _systemManagerPassword;
 
