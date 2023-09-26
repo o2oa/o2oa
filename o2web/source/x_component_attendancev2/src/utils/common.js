@@ -220,16 +220,36 @@ const getAllDatesInMonth = (inputDate) => {
   }
   return result;
 }
-
+/**
+ * localStorage 存储
+ * @param {*} key 
+ * @param {*} item 
+ */
 const storageSet = (key, item) => {
   localStorage.setItem(key, JSON.stringify(item));
 }
+/**
+ * localStorage 获取存储数据
+ * @param {*} key 
+ * @returns 
+ */
 const storageGet = (key) => {
   const item = localStorage.getItem(key);
   // 使用JSON.parse将字符串还原为JavaScript对象
   return JSON.parse(item);
 }
 
+/**
+ * 替换字符串特定内容
+ * @param {*} originalString 原字符串
+ * @param {*} searchString  被替换的内容
+ * @param {*} replacement 替换成的内容
+ * @returns 
+ */
+const replaceCustomString = (originalString, searchString, replacement) => {
+  var replacedString = originalString.replace(new RegExp(searchString, 'g'), replacement);
+  return replacedString;
+}
 
 export {
   getAllDatesInMonth,
@@ -248,4 +268,5 @@ export {
   hideLoading,
   storageSet,
   storageGet,
+  replaceCustomString,
 };

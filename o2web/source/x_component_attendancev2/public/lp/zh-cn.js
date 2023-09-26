@@ -235,6 +235,8 @@ MWF.xApplication.attendancev2.LP = {
     section: "第",
     day: "天",
     monthInfo: "切换月份会自动保存当前月份的数据！",
+    copyFromLastMonthBtn: "复制上月排班数据",
+    copyConfirmInfo: "确定要复制{month}的数据到当前吗？",
   },
   dateCycle: {
     none: "无",
