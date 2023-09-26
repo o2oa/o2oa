@@ -15,6 +15,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.content.WorkLog", "com.x.processplatform.core.entity.content.Record",
 		"com.x.processplatform.core.entity.content.KeyLock", "com.x.processplatform.core.entity.content.DocSign",
 		"com.x.processplatform.core.entity.content.DocSignScrawl", "com.x.processplatform.core.entity.content.DataRecord",
+		"com.x.processplatform.core.entity.content.TaskProcessMode",
 		"com.x.processplatform.core.entity.content.DocumentVersion", "com.x.processplatform.core.entity.element.Agent",
 		"com.x.processplatform.core.entity.element.Application", "com.x.processplatform.core.entity.element.Publish",
 		"com.x.processplatform.core.entity.element.ApplicationDict",

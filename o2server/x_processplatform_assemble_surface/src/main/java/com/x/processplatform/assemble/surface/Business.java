@@ -136,6 +136,15 @@ public class Business {
 		return task;
 	}
 
+	private TaskProcessModeFactory taskProcessMode;
+
+	public TaskProcessModeFactory taskProcessMode() throws Exception {
+		if (null == this.taskProcessMode) {
+			this.taskProcessMode = new TaskProcessModeFactory(this);
+		}
+		return taskProcessMode;
+	}
+
 	private TaskCompletedFactory taskCompleted;
 
 	public TaskCompletedFactory taskCompleted() throws Exception {
