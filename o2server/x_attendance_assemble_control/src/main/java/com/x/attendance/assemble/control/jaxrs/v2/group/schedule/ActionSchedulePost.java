@@ -11,6 +11,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2GroupSchedule;
+import com.x.attendance.entity.v2.AttendanceV2GroupScheduleConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -68,6 +69,24 @@ public class ActionSchedulePost extends BaseAction {
         emc.persist(s, CheckPersistType.all);
         emc.commit();
       }
+      // 保存配置
+      try {
+        List<AttendanceV2GroupScheduleConfig> configs = business.getAttendanceV2ManagerFactory().listGroupScheduleConfig(wi.getGroupId());
+        AttendanceV2GroupScheduleConfig config;
+        if (configs != null && !configs.isEmpty()) {
+          config = configs.get(0);
+        } else {
+          config = new AttendanceV2GroupScheduleConfig();
+        }
+        config.setGroupId(wi.getGroupId());
+        config.setScheduleConfigJson(wi.getScheduleConfigJson());
+        emc.beginTransaction(AttendanceV2GroupScheduleConfig.class);
+        emc.persist(config, CheckPersistType.all);
+        emc.commit();
+      }catch (Exception e) {
+        LOGGER.error(e);
+      }
+
       Wo wo = new Wo();
       wo.setValue(true);
       result.setData(wo);
@@ -93,6 +112,19 @@ public class ActionSchedulePost extends BaseAction {
 
     @FieldDescribe("排班数据 ")
     private List<ScheduleWi> scheduleList;
+
+    @FieldDescribe("排班的一些配置数据")
+    private String scheduleConfigJson;
+
+    
+
+    public String getScheduleConfigJson() {
+      return scheduleConfigJson;
+    }
+
+    public void setScheduleConfigJson(String scheduleConfigJson) {
+      this.scheduleConfigJson = scheduleConfigJson;
+    }
 
     public List<ScheduleWi> getScheduleList() {
       return scheduleList;

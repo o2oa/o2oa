@@ -32,6 +32,24 @@ public class GroupScheduleAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(GroupScheduleAction.class);
 
 
+    @JaxrsMethodDescribe(value = "排班配置数据，方便排班处理.", action = ActionScheduleConfigGet.class)
+    @GET
+    @Path("config/group/{groupId}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void configByGroupId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("考勤组ID") @PathParam("groupId") String groupId) {
+        ActionResult<ActionScheduleConfigGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionScheduleConfigGet().execute(groupId);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "获取月份排班数据.", action = ActionScheduleList.class)
     @GET
     @Path("list/group/{groupId}/month/{month}")

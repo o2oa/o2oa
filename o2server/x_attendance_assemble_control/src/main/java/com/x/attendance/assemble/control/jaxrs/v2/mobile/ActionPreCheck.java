@@ -143,7 +143,7 @@ public class ActionPreCheck extends BaseAction {
                 }
 
                 if (shift != null) {
-                    dealShiftForRecord(shift, emc, business, person, group, nowDate, today, recordList);
+                    recordList = dealShiftForRecord(shift, emc, business, person, group, nowDate, today, recordList);
                 }
  
                 // 如果没有数据，可能是自由工时 或者 休息日没有班次信息的情况下 只需要生成一条上班一条下班的打卡记录
@@ -180,7 +180,7 @@ public class ActionPreCheck extends BaseAction {
      * @param recordList
      * @throws Exception
      */
-    private void dealShiftForRecord(AttendanceV2Shift shift, EntityManagerContainer emc, Business business,
+    private List<AttendanceV2CheckInRecord> dealShiftForRecord(AttendanceV2Shift shift, EntityManagerContainer emc, Business business,
             String person, AttendanceV2Group group, Date nowDate, String today,
             List<AttendanceV2CheckInRecord> recordList) throws Exception {
         List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
@@ -210,6 +210,7 @@ public class ActionPreCheck extends BaseAction {
         }
         // 自动处理 已经过来的打卡记录 记录为未打卡
         dealWithOvertimeRecord(emc, nowDate, today, recordList);
+        return recordList;
     }
 
     /**
