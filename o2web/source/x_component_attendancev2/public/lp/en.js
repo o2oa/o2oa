@@ -62,11 +62,11 @@ MWF.xApplication.attendancev2.LP = {
     Friday: "Fri",
     Saturday: "Sat",
   },
-  month: "month",
-  year: "year",
-  minute: "minute",
-  hour: "hour",
-  classifierDay: "date",
+  month: " ",
+  year: " ",
+  minute: "m",
+  hour: "h",
+  classifierDay: "d",
   times: "time",
   // 组件
   components: {
@@ -233,7 +233,9 @@ MWF.xApplication.attendancev2.LP = {
     cycleBtnLabel: "Schedule According to the Scheduling Cycle",
     section: "Section",
     day: "Day",
-    monthInfo: "Switching months will automatically save data for the current month!"
+    monthInfo: "Switching months will automatically save data for the current month!",
+    copyFromLastMonthBtn: "Copy last month's data",
+    copyConfirmInfo: "Are you sure you want to copy the data of {month} to the current one?",
 },
   dateCycle: {
     none: "None",

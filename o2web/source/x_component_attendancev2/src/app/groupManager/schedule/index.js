@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, isEmpty, showLoading, hideLoading } from "../../../utils/common";
+import { formatPersonName, getAllDatesInMonth, formatDate, formatMonth, isEmpty, showLoading, hideLoading, replaceCustomString, lpFormat } from "../../../utils/common";
 import { groupScheduleAction } from "../../../utils/actions";
 import selectShiftMultiple from "../../shiftManager/selectShiftMultiple";
 import style from "./style.scope.css";
@@ -239,6 +239,51 @@ export default content({
   // 提交按钮
   submit() {
     this.postMonthData(true);
+  },
+  // 从上个月复制排班数据
+  copyFromLastMonth() {
+    const year = this.bind.currentDate.getFullYear();
+    const month = this.bind.currentDate.getMonth();
+    // 计算上个月的年份和月份
+    const lastMonthYear = month === 0 ? year - 1 : year;
+    const lastMonth = month === 0 ? 11 : month - 1;
+    const lastMonthDate = new Date(lastMonthYear, lastMonth,  1);
+    const lastMonthString = formatMonth(lastMonthDate);
+    var _self = this;
+    const c = lpFormat(lp, "scheduleForm.copyConfirmInfo", { month: lastMonthString });
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      c,
+      300,
+      100,
+      function () {
+        this.close();
+        _self.loadLastMonthDataAndCopy(lastMonthString);
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  // 查询月份数据 并把数据替换成当前的月份
+  async loadLastMonthDataAndCopy(month) {
+    await showLoading(this);
+    console.log(this.bind.month, month);
+    const list = await groupScheduleAction("listMonth", this.bind.groupId, month);
+    const scheduleList = list || [];
+    if (scheduleList.length > 0) {
+      // 处理数据 把月份改成 当前月份
+      let newScheduleList = [];
+      for (let index = 0; index < scheduleList.length; index++) {
+        const element = scheduleList[index];
+        element.scheduleDateString = replaceCustomString(element.scheduleDateString, month, this.bind.month);
+        newScheduleList.push(element);
+      }
+      this.bind.scheduleList = newScheduleList;
+    }
+    await hideLoading(this);
+    console.log(this.bind.scheduleList);
   },
   // 提交排班数据
   async postMonthData(close) {

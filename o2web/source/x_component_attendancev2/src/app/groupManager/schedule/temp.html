@@ -43,15 +43,22 @@
       </div>
       
        <!-- 月份选择 -->
-       <div class="flex_wrap margin-top margin-bottom">
-        <div class="schedule-date-picker">
-          <div class="schedule-date-picker-input">
-            <span class="input" >{{$.month}}</span>
-            <div class="icon" ><i class="o2icon-icon_rili"></i></div>
+       <div>
+        <div class="flex_wrap margin-top margin-bottom" style="float: left;">
+          <div class="schedule-date-picker">
+            <div class="schedule-date-picker-input">
+              <span class="input" >{{$.month}}</span>
+              <div class="icon" ><i class="o2icon-icon_rili"></i></div>
+            </div>
           </div>
+          <div class="text_hint_info">{{$.lp.scheduleForm.monthInfo}}</div>
         </div>
-        <div class="text_hint_info">{{$.lp.scheduleForm.monthInfo}}</div>
-      </div>
+        <div style="margin: 10px 0;float: right;">
+          <button class="light-border-button mainColor_border primary_color"
+              @click="copyFromLastMonth">{{$.lp.scheduleForm.copyFromLastMonthBtn}}</button>
+        </div>
+        <div style="clear: both;"></div>
+       </div>
       <!-- table -->
       <div class="schedule_table_container" id="scheduleContainer">
         <!-- header -->
