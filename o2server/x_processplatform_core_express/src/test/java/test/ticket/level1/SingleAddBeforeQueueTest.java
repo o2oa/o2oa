@@ -35,9 +35,6 @@ class SingleAddBeforeQueueTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, true, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(tickets);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Assertions.assertEquals("E", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
@@ -47,7 +44,7 @@ class SingleAddBeforeQueueTest {
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("B", value);
+		Assertions.assertEquals("A,B,C", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);

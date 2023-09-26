@@ -55,12 +55,11 @@ class SingleAdd implements Add {
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsFellow(fellow);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		targets.stream().forEach(o -> o.appendSibling(sibling).appendNext(ticket).appendNext(next));
+		targets.stream().forEach(o -> o.appendNext(sibling).appendNext(ticket).appendNext(next));
 	}
 
 	@Override
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!SingleAdd:beforeQueue");
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -70,7 +69,7 @@ class SingleAdd implements Add {
 			first.get().appendFellow(fellow);
 			tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(first.get()));
 		}
-		list.stream().forEach(o -> o.appendNext(ticket).appendNext(next));
+		list.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
 	}
 
 	@Override

@@ -44,7 +44,7 @@ class SingleAddBeforeParallelTest {
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("B", value);
+		Assertions.assertEquals("A,B,C", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
