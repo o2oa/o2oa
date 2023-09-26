@@ -16,6 +16,7 @@ public class ActionSystem extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setValue(Config.ternaryManagement().getSystemSecurityClearance());
+		result.setData(wo);
 		return result;
 	}
 

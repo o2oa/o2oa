@@ -1,6 +1,9 @@
 package com.x.general.assemble.control.jaxrs.securityclearance;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
@@ -17,11 +20,10 @@ public class ActionObject extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		final Integer system = Config.ternaryManagement().getSystemSecurityClearance();
-		if (null == system) {
-			throw new ExceptionEmptySystemSecurityClearance();
-		}
-		Config.ternaryManagement().getObjectSecurityClearance().entrySet().stream()
-				.filter(o -> (null != o.getValue()) && o.getValue() >= system)
+		final Predicate<Map.Entry<String, Integer>> predicate = (null != system)
+				? new PredicateWithSystemSecurityClearance(system)
+				: new PredicateWithoutSystemSecurityClearance();
+		Config.ternaryManagement().getObjectSecurityClearance().entrySet().stream().filter(predicate::test)
 				.sorted((o1, o2) -> Integer.compare(o1.getValue(), o2.getValue()))
 				.forEach(o -> wo.put(o.getKey(), o.getValue()));
 		result.setData(wo);

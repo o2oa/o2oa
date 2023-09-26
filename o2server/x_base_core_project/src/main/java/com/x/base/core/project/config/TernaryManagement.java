@@ -6,7 +6,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,8 +72,8 @@ public class TernaryManagement extends ConfigObject {
 		this.securityClearanceEnable = DEFAULT_SECURITYCLEARANCEENABLE;
 		this.systemSecurityClearance = DEFAULT_SYSTEMSECURITYCLEARANCE;
 		this.defaultSubjectSecurityClearance = DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE;
-		this.subjectSecurityClearance = Map.of("重要", 400, "一般", 300, "内部", 200, "义务", 100);
-		this.objectSecurityClearance = Map.of("机密", 400, "秘密", 300, "内部", 200, "非密", 100);
+		this.subjectSecurityClearance = defualtSubjectSecurityClearance();
+		this.objectSecurityClearance = defualtObjectSecurityClearance();
 	}
 
 	public boolean isTernaryManagement(String name) {
@@ -350,20 +349,29 @@ public class TernaryManagement extends ConfigObject {
 		return BooleanUtils.isTrue(securityClearanceEnable);
 	}
 
+	public static Map<String, Integer> defualtSubjectSecurityClearance() {
+		return Map.of("重要", 400, "一般", 300, "内部", 200, "义务", 100);
+	}
+
+	public static Map<String, Integer> defualtObjectSecurityClearance() {
+		return Map.of("机密", 400, "秘密", 300, "内部", 200, "非密", 100);
+	}
+
 	public Integer getSystemSecurityClearance() {
-		return systemSecurityClearance;
+		return (null == systemSecurityClearance) ? DEFAULT_SYSTEMSECURITYCLEARANCE : systemSecurityClearance;
 	}
 
 	public Integer getDefaultSubjectSecurityClearance() {
-		return defaultSubjectSecurityClearance;
+		return (null == defaultSubjectSecurityClearance) ? DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE
+				: defaultSubjectSecurityClearance;
 	}
 
 	public Map<String, Integer> getSubjectSecurityClearance() {
-		return subjectSecurityClearance == null ? new HashMap<>() : this.subjectSecurityClearance;
+		return subjectSecurityClearance == null ? defualtSubjectSecurityClearance() : this.subjectSecurityClearance;
 	}
 
 	public Map<String, Integer> getObjectSecurityClearance() {
-		return objectSecurityClearance == null ? new HashMap<>() : this.objectSecurityClearance;
+		return objectSecurityClearance == null ? defualtObjectSecurityClearance() : this.objectSecurityClearance;
 	}
 
 	public Boolean getEnable() {
