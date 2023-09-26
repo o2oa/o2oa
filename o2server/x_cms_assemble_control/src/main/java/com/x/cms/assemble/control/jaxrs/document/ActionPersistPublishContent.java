@@ -124,18 +124,13 @@ public class ActionPersistPublishContent extends BaseAction {
 		}
 
 		if (check) {
-			wi.setDocumentType( categoryInfo.getDocumentType() );
 			wi.setAppId(categoryInfo.getAppId());
 			wi.setAppName(appInfo.getAppName());
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
-
-			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
-				wi.setDocumentType( categoryInfo.getDocumentType() );
-			}
-			if( !"信息".equals(wi.getDocumentType()) && !"数据".equals( wi.getDocumentType() )) {
-				wi.setDocumentType( "信息" );
+			if (!Document.DOCUMENT_TYPE_INFO.equals(wi.getDocumentType()) && !Document.DOCUMENT_TYPE_DATA.equals(wi.getDocumentType())) {
+				wi.setDocumentType(categoryInfo.getDocumentType());
 			}
 			if (wi.getPictureList() != null && !wi.getPictureList().isEmpty()) {
 				wi.setHasIndexPic(true);
@@ -403,8 +398,8 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe("文档标题，70字以内")
 		private String title;
 
-		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
-		private String documentType = "信息";
+		@FieldDescribe("文档类型，跟随分类类型，信息 | 数据")
+		private String documentType;
 
 		@FieldDescribe("文档状态: published | waitPublish")
 		private String docStatus = "published";
