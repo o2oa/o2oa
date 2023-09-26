@@ -2313,6 +2313,8 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             }
         ];
 
+        var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.listMode()
+
         data = this.filterData(data);
 
         if( !data || !data.length ){
