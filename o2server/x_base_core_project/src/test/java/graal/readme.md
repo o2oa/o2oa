@@ -1,0 +1,1 @@
+https://github.com/graalvm/graal-js-jdk11-maven-demo
