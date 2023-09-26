@@ -91,7 +91,6 @@ public class Tickets {
 		tickets.mode = MODE_QUEUE;
 
 		Tickets.interconnectedAsNext(targets).stream().forEach(o -> {
-			o.fellow(targets);
 			o.mode(MODE_QUEUE);
 			tickets.context.put(o.label(), o);
 		});
@@ -196,9 +195,6 @@ public class Tickets {
 	 */
 	protected List<Ticket> listSibling(Ticket ticket, boolean selfInclude) {
 		LinkedHashSet<Ticket> resultSet = new LinkedHashSet<>();
-		if (selfInclude) {
-			resultSet.add(ticket);
-		}
 		Queue<Ticket> queue = new LinkedList<>();
 		queue.add(ticket);
 		while (!queue.isEmpty()) {
@@ -218,14 +214,14 @@ public class Tickets {
 
 	protected List<Ticket> listFellow(Ticket ticket) {
 		return this.listSibling(ticket, false).stream().flatMap(o -> o.fellow().stream()).distinct().map(context::get)
-				.filter(Objects::nonNull).flatMap(o -> o.sibling().stream()).distinct().map(context::get)
-				.filter(Objects::nonNull).collect(Collectors.toList());
+				.filter(Objects::nonNull).flatMap(o -> this.listSibling(o, true).stream()).filter(Objects::nonNull)
+				.distinct().collect(Collectors.toList());
 	}
 
 	protected List<Ticket> listNext(Ticket ticket) {
 		return this.listSibling(ticket, true).stream().flatMap(o -> o.next().stream()).distinct().map(context::get)
-				.filter(Objects::nonNull).flatMap(o -> o.sibling().stream()).distinct().map(context::get)
-				.filter(Objects::nonNull).collect(Collectors.toList());
+				.filter(Objects::nonNull).flatMap(o -> this.listSibling(o, true).stream()).filter(Objects::nonNull)
+				.distinct().collect(Collectors.toList());
 	}
 
 	public static List<Ticket> interconnectedAsSibling(Collection<Ticket> col) {
