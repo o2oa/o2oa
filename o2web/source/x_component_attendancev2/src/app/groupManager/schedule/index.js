@@ -109,13 +109,19 @@ export default content({
     }.bind(this));
   },
   // 切换月份
-  changeMonthValue(date) {
+  async changeMonthValue(date) {
     date.setDate(1);
-    this.bind.month = formatMonth(date);
-    this.bind.currentDate = date;
-    this.loadDateTable()
-    // 处理刷新
-    this.loadMonthScheduleList();
+    const newMonth = formatMonth(date);
+    if (newMonth !== this.bind.month) {
+      // 先保存当前月份数据
+      await this.postMonthData(false);
+      // 然后再更新月份刷新页面
+      this.bind.month = newMonth
+      this.bind.currentDate = date;
+      this.loadDateTable()
+      // 处理刷新
+      this.loadMonthScheduleList();
+    }
   },
   // 班次和排班周期等配置数据
   async loadConfigData() {
@@ -153,7 +159,7 @@ export default content({
     const scheduleList = list || [];
     this.loadShift(scheduleList);
     this.bind.scheduleList = scheduleList;
-    hideLoading(this);
+    await hideLoading(this);
   },
   // 如果本地缓存中没有班次数据，根据返回的排班结果中获取班次数据
   loadShift(scheduleList) {
@@ -230,8 +236,18 @@ export default content({
   closeSelf() {
     this.component.destroy();
   },
+  // 提交按钮
+  submit() {
+    this.postMonthData(true);
+  },
   // 提交排班数据
-  async submit() {
+  async postMonthData(close) {
+    if (this.bind.scheduleList.length === 0) {
+      if (close) {
+        this.closeSelf(); 
+      }
+      return ;
+    }
     await showLoading(this);
     // 排班班次列表和周期列表的数据作为配置存到后台，方便后续使用
     const scheduleConfigJson = {
@@ -247,7 +263,9 @@ export default content({
     const result = await groupScheduleAction("postMonth", body);
     console.log(result);
     await hideLoading(this);
-    this.closeSelf(); 
+    if (close) {
+      this.closeSelf(); 
+    }
   },
   personName(person) {
     return formatPersonName(person);

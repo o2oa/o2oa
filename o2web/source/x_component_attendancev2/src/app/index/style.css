@@ -219,6 +219,16 @@
   cursor: pointer;
   margin-left: 10px;
 }
+.att .text_hint_info {
+  color: #999999;
+  line-height: 24px;
+  font-size: 14px;
+  margin-left: 10px;
+}
+.att .flex_wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
 /* index */
 .index_page_header_container {
   display: flex;
