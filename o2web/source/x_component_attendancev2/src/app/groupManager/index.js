@@ -189,6 +189,7 @@ export default content({
       console.log('数据异常！');
       return ;
     }
+    this.$topParent.closeFormVm(); // 关闭表单
     const result = await groupAction("get", group.id);
     if (result) {
       const data = {
