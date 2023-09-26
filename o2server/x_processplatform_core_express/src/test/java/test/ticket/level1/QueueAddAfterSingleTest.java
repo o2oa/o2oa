@@ -38,14 +38,14 @@ class QueueAddAfterSingleTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("B,E,F,G", value);
+		Assertions.assertEquals("E,F,G", value);
+		tickets.completed("LF");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("B", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("C,E,F,G", value);
+		Assertions.assertEquals("C", value);
 		tickets.completed("LC");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("E,F,G", value);
-		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}

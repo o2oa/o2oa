@@ -28,7 +28,7 @@ class SingleAddAfterSingleTest {
 	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
 			new Ticket("K", "LK"));
 
-	@DisplayName("B加签EFG,FEG任意处理")
+	@DisplayName("B后加签EFG,FEG任意处理")
 	@Test
 	@Order(1)
 	void test01() {

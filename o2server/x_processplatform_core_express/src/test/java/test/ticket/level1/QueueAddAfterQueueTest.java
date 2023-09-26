@@ -35,33 +35,20 @@ class QueueAddAfterQueueTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("B,E", value);
-		tickets.completed("LB");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("C,E", value);
-
-		// tickets.completed("LC");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		// Assertions.assertEquals("E", value);
-		// tickets.completed("LE");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		// Assertions.assertEquals("F", value);
-		// tickets.completed("LF");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		// Assertions.assertEquals("G", value);
-		// tickets.completed("LG");
-
+		Assertions.assertEquals("E", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("C,F", value);
+		Assertions.assertEquals("F", value);
 		tickets.completed("LF");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
-		Assertions.assertEquals("C,G", value);
-		tickets.completed("LC");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
-
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("B", value);
+		tickets.completed("LB");
+		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		Assertions.assertEquals("C", value);
+		tickets.completed("LC");
 		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
