@@ -4,9 +4,9 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.http.ActionResult;
@@ -16,19 +16,14 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.JobControlBuilder;
-import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.TaskProcessMode;
 import com.x.processplatform.core.entity.content.TaskProcessModeItem;
 import com.x.processplatform.core.entity.element.Process;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class ActionList extends BaseAction {
 
@@ -55,11 +50,11 @@ class ActionList extends BaseAction {
 				throw new ExceptionEntityNotExist(wi.getProcess(), Process.class.getSimpleName());
 			}
 			wi.setProcess(StringUtils.isBlank(process.getEdition()) ? wi.getProcess() : process.getEdition());
-			List<TaskProcessMode> taskProcessModeList = business.taskProcessMode().listMode(effectivePerson.getUnique(), wi);
+			List<TaskProcessMode> taskProcessModeList = new ArrayList<>(business.taskProcessMode().listMode(effectivePerson.getUnique(), wi));
 			SortTools.desc(taskProcessModeList, TaskProcessMode.hitCount_FIELDNAME, TaskProcessMode.updateTime_FIELDNAME);
 			List<Wo> wos = new ArrayList<>();
 			for(TaskProcessMode mode : taskProcessModeList){
-				List<TaskProcessModeItem> itemList = mode.getTaskProcessModeItemList();
+				List<TaskProcessModeItem> itemList = new ArrayList<>(mode.getTaskProcessModeItemList());
 				SortTools.desc(itemList, TaskProcessModeItem.hitCount_FIELDNAME, TaskProcessModeItem.updateTime_FIELDNAME);
 				if(itemList.size() > 3){
 					itemList.subList(0, 3);
@@ -70,6 +65,8 @@ class ActionList extends BaseAction {
 					wo.setKeepTask(item.getKeepTask());
 					wo.setOpinion(item.getOpinion());
 					wo.setOrganizations(item.getOrganizations());
+					wo.setItemHitCount(item.getHitCount());
+					wo.setItemUpdateTime(item.getUpdateTime());
 					wos.add(wo);
 				}
 			}
@@ -95,5 +92,26 @@ class ActionList extends BaseAction {
 		static WrapCopier<TaskProcessMode, Wo> copier = WrapCopierFactory.wo(TaskProcessMode.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisibleIncludeProperites, TaskProcessMode.taskProcessModeItemList_FIELDNAME));
 
+		@FieldDescribe("项目最后更新时间.")
+		private Date itemUpdateTime;
+
+		@FieldDescribe("项目最后更新时间.")
+		private Integer itemHitCount;
+
+		public Date getItemUpdateTime() {
+			return itemUpdateTime;
+		}
+
+		public void setItemUpdateTime(Date itemUpdateTime) {
+			this.itemUpdateTime = itemUpdateTime;
+		}
+
+		public Integer getItemHitCount() {
+			return itemHitCount;
+		}
+
+		public void setItemHitCount(Integer itemHitCount) {
+			this.itemHitCount = itemHitCount;
+		}
 	}
 }

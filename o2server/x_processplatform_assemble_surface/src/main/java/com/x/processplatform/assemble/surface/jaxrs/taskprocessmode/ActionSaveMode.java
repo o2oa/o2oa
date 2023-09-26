@@ -70,7 +70,7 @@ class ActionSaveMode extends BaseAction {
 			}
 			emc.commit();
 			Wo wo = new Wo();
-
+			wo.setId(taskProcessMode.getId());
 			result.setData(wo);
 		}
 
@@ -85,7 +85,7 @@ class ActionSaveMode extends BaseAction {
 			item.getOrganizations().values().stream().forEach(o -> orgList.addAll(o));
 		}
 		if(orgList.size() < TaskProcessMode.MAX_ORG_RECORD) {
-			List<TaskProcessModeItem> list = new ArrayList<>(taskProcessMode.getTaskProcessModeItemList());
+			List<TaskProcessModeItem> list = new ArrayList<>(taskProcessMode.getProperties().getTaskProcessModeItemList());
 			Optional<TaskProcessModeItem> optional = list.stream().filter(o -> o.getMd5Key().equals(item.getMd5Key())).findFirst();
 			if (optional.isPresent()) {
 				optional.get().addHitCount();
