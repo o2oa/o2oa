@@ -2447,7 +2447,30 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this._processWork( defaultRoute );
         }
     },
+    checkUploadAttachment: function(){
+        if (o2.runningRequestsList.length){
+            var runningRequests = [];
+            var reg = /\/jaxrs\/attachment\/upload\/work\/([\w-]*)/;
+            o2.runningRequestsList.forEach(function(r){
+                var method = (r.requestOptions[0] || "get").toLowerCase();
+                var url = r.requestOptions[1] || "";
+
+                var m = url.match(reg);
+                if (m && m[1]===this.businessData.work.id && method==="post"){
+                    runningRequests.push(r);
+                }
+            }.bind(this));
+
+            if (runningRequests.length){
+                this.app.notice(MWF.xApplication.process.Xform.LP.uploading, "info");
+                return false;
+            }
+        }
+        return true;
+    },
     _processWork: function( defaultRoute ) {
+        if (!this.checkUploadAttachment()) return false;
+
         var _self = this;
 
         if (!this.businessData.work.startTime) {
@@ -3624,6 +3647,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
         }
+        if (!this.checkUploadAttachment()) return false;
+
         o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.businessData.task.work, function(json){
             var activitys = json.data;
         // var activitys = [{
@@ -3931,6 +3956,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             return false;
         }
+        if (!this.checkUploadAttachment()) return false;
+
         if( !this.businessData.task ){
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, MWF.xApplication.process.Xform.LP.form.noTaskToReset);
             return false;
@@ -4381,6 +4408,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             return false;
         }
+        if (!this.checkUploadAttachment()) return false;
+
         MWF.require("MWF.xDesktop.Dialog", function () {
             var width = 560;
             var height = 260;
@@ -5515,6 +5544,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return true;
     },
     addTask: function(){
+        if (!this.checkUploadAttachment()) return false;
         if (this.checkControl("allowAddTask")){
             var _self = this;
             var opt = {};
