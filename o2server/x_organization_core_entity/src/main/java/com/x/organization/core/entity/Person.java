@@ -121,8 +121,8 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("性别.男:m,女:f,未知:d")
 	@Enumerated(EnumType.STRING)
 	@Column(length = GenderType.length, name = ColumnNamePrefix + genderType_FIELDNAME)
-	//Enum类型不需要进行索引
-	//@Index(name = TABLE + IndexNameMiddle + genderType_FIELDNAME)
+	// Enum类型不需要进行索引
+	// @Index(name = TABLE + IndexNameMiddle + genderType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private GenderType genderType;
 
@@ -222,8 +222,9 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("个人管理者.默认为创建者。")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + controllerList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + controllerList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + controllerList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Person.class))
@@ -363,7 +364,6 @@ public class Person extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String dingdingHash;
 
-
 	public static final String weLinkId_FIELDNAME = "weLinkId";
 	@FieldDescribe("WeLikn人员ID.")
 	@Column(length = length_255B, name = ColumnNamePrefix + weLinkId_FIELDNAME)
@@ -492,15 +492,31 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("所属顶层组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + topUnitList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + topUnitList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ topUnitList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + topUnitList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + topUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + topUnitList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> topUnitList;
 
+	public static final String SUBJECTSECURITYCLEARANCE_FIELDNAME = "subjectSecurityClearance";
+	@FieldDescribe("主体秘级标识.")
+	@Column(name = ColumnNamePrefix + SUBJECTSECURITYCLEARANCE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + SUBJECTSECURITYCLEARANCE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer subjectSecurityClearance;
+
+	public Integer getSubjectSecurityClearance() {
+		return subjectSecurityClearance;
+	}
+
+	public void setSubjectSecurityClearance(Integer subjectSecurityClearance) {
+		this.subjectSecurityClearance = subjectSecurityClearance;
+	}
+
 	public void setLastLoginAddress(String lastLoginAddress) {
-		this.lastLoginAddress = StringTools.utf8SubString(this.lastLoginAddress, Person.length_64B);
+		this.lastLoginAddress = StringTools.utf8SubString(lastLoginAddress, JpaObject.length_64B);
 	}
 
 	public List<String> getTopUnitList() {
@@ -883,13 +899,13 @@ public class Person extends SliceJpaObject {
 		this.mpwxopenId = mpwxopenId;
 	}
 
-    public String getLanguage() {
-        return language;
-    }
+	public String getLanguage() {
+		return language;
+	}
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
 	public String getNickName() {
 		return nickName;

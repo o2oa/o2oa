@@ -83,8 +83,9 @@ class ActionEdit extends BaseAction {
 				Arrays.asList(Attachment.readIdentityList_FIELDNAME, Attachment.readUnitList_FIELDNAME,
 						Attachment.editIdentityList_FIELDNAME, Attachment.editUnitList_FIELDNAME,
 						Attachment.controllerIdentityList_FIELDNAME, Attachment.controllerUnitList_FIELDNAME,
-						Attachment.divisionList_FIELDNAME, Attachment.stringValue01_FIELDNAME,
-						Attachment.stringValue02_FIELDNAME, Attachment.stringValue03_FIELDNAME),
+						Attachment.divisionList_FIELDNAME, Attachment.OBJECTSECURITYCLEARANCE_FIELDNAME,
+						Attachment.stringValue01_FIELDNAME, Attachment.stringValue02_FIELDNAME,
+						Attachment.stringValue03_FIELDNAME),
 				null);
 
 	}

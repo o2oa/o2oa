@@ -47,6 +47,8 @@ MWF.xApplication.Org.LP = {
     "ipAddressPlaceHolder" : "如果不为空，匹配的ip才能登录该账号，用“,”分隔多值",
     "ipAddressIncorrectNotice" : "IP地址格式不正确：",
 
+    "securityLabel" : "密级标识",
+
     "createSubCompany": "创建子公司",
     "createSubDepartment": "创建子部门",
     "configCompany": "设置公司管理者",
@@ -95,7 +97,9 @@ MWF.xApplication.Org.LP = {
 
     "dutyName": "职务名称",
     "dutyMembers": "成员",
-
+    "editDuty": "编辑职务",
+    "modifySuccess": "修改成功",
+    "modifyFail": "修改失败",
 
     "deleteDutyTitle": "删除职务确认",
     "deleteDuty": "您确定要删除选中的职务吗？",

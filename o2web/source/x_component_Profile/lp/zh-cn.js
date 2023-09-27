@@ -46,7 +46,9 @@ MWF.xApplication.Profile.LP = {
     "lps": {
         "zh-CN": "简体中文",
         "en": "English",
-		"es": "西班牙语"
+		"es": "español",
+        "ko": "한국인",
+        "zh-HK": "繁體中文"
     },
 
     "passwordRule" : "密码规则",

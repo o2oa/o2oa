@@ -504,12 +504,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	create: function(data, e, group){
-		debugger;
 		data.moduleGroup = group;
 		this.json = data;
 		this.json.id = this._getNewId();
-		this._createMoveNode();
-		this._setNodeMove(e, "create");
+		if (this.json.id){
+			this._createMoveNode();
+			this._setNodeMove(e, "create");
+		}
 	},
 	createImmediately: function(data, relativeNode, position, selectDisabled){
 		this.json = data;

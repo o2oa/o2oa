@@ -94,6 +94,19 @@
     "border-radius": "15px"
   },
 
+  "createConfigAction" :{
+    "margin-left": "15px",
+    "color": "#fff",
+    "cursor" : "pointer",
+    "height" : "26px",
+    "line-height" : "26px",
+    "padding": "0px 10px",
+    "min-width": "40px",
+    "background-color" : "#4A90E2",
+    "border": "1px solid #528BCC",
+    "border-radius": "15px"
+  },
+
 
   "middleNode" : {
     "overflow" : "hidden",
@@ -237,21 +250,76 @@
     "background-position": "center center",
     "background-image": "url(../x_component_ThreeMember/$Main/default/icon/open_blue.png)"
   },
+  "deleteAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$LogView/default/icon/delete.png)"
+  },
+  "deleteAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$LogView/default/icon/delete_blue.png)"
+  },
 
 
   "naviScrollNode" : {
-    "overflow": "auto"
+    "overflow": "auto",
+    "height": "inherit"
   },
   "naviAreaNode" : {
 
   },
+  "naviConfigNode": {
+    "height": "50px",
+    "font-size": "16px",
+    "color": "#333333",
+    "line-height": "50px",
+    "border-top": "1px solid #cccccc",
+    "cursor": "pointer",
+    "display": "flex",
+    "justify-content": "center"
+  },
+  "naviConfigIconNode": {
+    "height": "50px",
+    "width": "26px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$Main/default/icon/config.png)"
+  },
+  "naviViewNode": {
+    "height": "50px",
+    "font-size": "16px",
+    "color": "#333333",
+    "line-height": "50px",
+    "border-top": "1px solid #cccccc",
+    "cursor": "pointer",
+    "display": "flex",
+    "justify-content": "center"
+  },
+  "naviViewIconNode": {
+    "height": "50px",
+    "width": "26px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ThreeMember/$LogView/default/icon/layout.png)"
+  },
+
   "naviNode": {
     "width": "230px",
     "height": "100%",
     "overflow": "hidden",
     "float": "left",
     "position": "static",
-    "background-color" : "#fff"
+    "background-color" : "#fff",
+    "display": "flex",
+    "flex-direction": "column"
   },
   "naviTopNode" : {
     "line-height": "50px",
@@ -266,6 +334,18 @@
     "white-space":"nowrap",
     "background": "url(../x_component_ThreeMember/$Main/default/icon/topIcon.png) no-repeat 0px center",
     "background-size": "24px 24px"
+  },
+  "naviAllConfigNode": {
+    "display" : "block",
+    "height": "40px",
+    "margin": "0px",
+    "line-height" :"40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px",
+    "color" : "#333",
+    "padding-left" : "38px",
+    "cursor": "pointer",
+    "background": "url(../x_component_ThreeMember/$Main/default/icon/config.png) no-repeat 13px center"
   },
   "naviAllNode": {
     "display" : "block",
@@ -362,6 +442,34 @@
     "background-color" : "#F2F5F7",
     "color" : "#666666"
   },
+
+  "naviConfigItemNode" : {
+    "background-color" : "#fff",
+    "cursor" : "pointer",
+    "color" : "#666666",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
+    "font-size": "14px"
+  },
+  "naviConfigItemNode_current" : {
+    "background-color" : "#F2F5F7",
+    "cursor" : "pointer",
+    "color" : "#4A90E2",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "overflow": "hidden",
+    "font-size": "14px"
+  },
+  "naviConfigItemNode_over" : {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+
   "naviActionNode": {
     "margin": "10px auto 10px auto",
     "width": "160px",

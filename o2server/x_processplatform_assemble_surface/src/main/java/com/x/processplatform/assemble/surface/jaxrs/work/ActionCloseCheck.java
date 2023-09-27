@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Process;
@@ -41,25 +42,27 @@ class ActionCloseCheck extends BaseAction {
 			if (null != work) {
 				process = business.process().pick(work.getProcess());
 			}
-		}
-		if ((null != work) && (null != process)) {
-			wo.setDraft(this.draft(effectivePerson, work, process));
-		} else {
-			WoDraft woDraft = new WoDraft();
-			woDraft.setValue(false);
-			wo.setDraft(woDraft);
+			if ((null != work) && (null != process)) {
+				wo.setDraft(this.draft(effectivePerson, business, work, process));
+			} else {
+				WoDraft woDraft = new WoDraft();
+				woDraft.setValue(false);
+				wo.setDraft(woDraft);
+			}
 		}
 		result.setData(wo);
 		return result;
 	}
 
-	private WoDraft draft(EffectivePerson effectivePerson, Work work, Process process) throws Exception {
+	private WoDraft draft(EffectivePerson effectivePerson, Business business, Work work, Process process)
+			throws Exception {
 		WoDraft wo = new WoDraft();
 		wo.setValue(false);
 		if ((null != work) && (BooleanUtils.isFalse(work.getDataChanged()))
 				&& (Objects.equals(ActivityType.manual, work.getActivityType())) && (null != process)
-				&& (BooleanUtils.isTrue(process.getCheckDraft()))
-				&& effectivePerson.isPerson(work.getCreatorPerson())) {
+				&& (BooleanUtils.isTrue(process.getCheckDraft())) && effectivePerson.isPerson(work.getCreatorPerson())
+				&& (business.entityManagerContainer().countEqual(Attachment.class, Attachment.job_FIELDNAME,
+						work.getJob()) == 0)) {
 			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(Wo.class);
 			wo.setValue(true);

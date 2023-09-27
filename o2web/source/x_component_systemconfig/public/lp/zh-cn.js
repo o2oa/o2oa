@@ -161,7 +161,8 @@ o2.xApplication.systemconfig.LP = {
         "ok": "确定",
         "cancel": "取消",
         "enable": "启用",
-        "disable": "禁用"
+        "disable": "禁用",
+        "add": "添加"
     },
     "_component": {
         "open": "打开",
@@ -516,6 +517,9 @@ o2.xApplication.systemconfig.LP = {
 
     },
     "_ternaryManagement": {
+        "ternary": "三员管理配置",
+        "label": "系统密级标识",
+
         "enable": "启用三员管理",
         "enableInfo": "系统支持以系统管理员，安全管理员，安全审计员三员分责分权的方式进行系统安全管理，启动三员管理后会解除xadmin用户及权限同时启用系统的审计日志记录（需重启服务器）<br>" +
             "三员各自角色分工分别是： " +
@@ -529,7 +533,34 @@ o2.xApplication.systemconfig.LP = {
         "logRetainDaysInfo": "设置日志最多保留的天数",
 
         "logBodyEnable": "记录Body内容",
-        "logBodyEnableInfo": "记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销"
+        "logBodyEnableInfo": "记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销",
+
+        "securityClearanceEnable": "启用系统密级标识",
+        "securityClearanceEnableInfo": "根据《涉及国家秘密的信息系统分级保护管理规范》（BMB20-2007）的规定，涉密应用系统必须有相应的密级标识。如果您的系统涉及相关要求，请启用密级标识<br>" +
+            "O2OA系统支持设定主体密级标识和客体密级标识，并严格控制访问权限，低密级主体无法访问高密级客体。 <br>" +
+            "<b>主体密级：</b>您可在系统配置-三元管理中设置系统的主体密级。<br>" +
+            "<b>客体密级：</b>可在设计相关表单时增加“密级标识”设计元素，用于设置文档密级标识。",
+
+        "subjectSecurityClearance": "主体密级标识",
+        "subjectSecurityClearanceInfo": "配置主题密级标识，标识值为数字，值越大，密级越高。对应密级的主体，可以访问密级值小于或等于主体密级值的客体。如主体密级值为300，则此主体可访问的客体的密级值必须小于或等于300。",
+
+        "objectSecurityClearance": "客体密级标识",
+        "objectSecurityClearanceInfo": "配置客体密级标识，标识值为数字，值越大，密级越高",
+
+        "labelName": "标识名称",
+        "labelValue": "标识值",
+
+        "defaultSubjectSecurityClearance": "默认主体标识",
+        "defaultSubjectSecurityClearanceInfo": "如果主体未设置密级标识，则应用此标识。",
+
+        "systemSecurityClearance": "系统密级标识",
+        "systemSecurityClearanceInfo": "设置系统的密级标识，所有其他主体或客体的密级标识，都不会高于系统密级。",
+
+        "labelValueSame": "不能设置相同的标识值",
+        "labelNameSame": "不能设置相同的标识名称",
+        "labelValueEmpty": "必须输入标识值",
+        "labelNameEmpty": "必须输入标识名称"
+
     },
     "_databaseServer": {
         "databaseSource": "数据源配置",

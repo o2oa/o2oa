@@ -381,7 +381,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "writingBoard": "writingBoard",
         "tinymceEditor": "TinyMCE",
         "relatedLink": "Related Link",
-        "associatedDocument": "Associated Document"
+        "associatedDocument": "Associated Document",
+        "security": "Security Label"
     },
     "propertyTemplate": {
         "base": "Base",

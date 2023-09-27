@@ -44,9 +44,11 @@ MWF.xApplication.Profile.LP = {
     "language": "Language",
     "forumNickName": "Forum Nickname",
     "lps": {
-        "zh-CN": "Chinese",
-        "en": "English(US)",
-		"es": "Spanish"
+        "zh-CN": "简体中文",
+        "en": "English",
+        "es": "español",
+        "ko": "한국인",
+        "zh-HK": "繁體中文"
     },
 
     "passwordRule" : "Password rules",

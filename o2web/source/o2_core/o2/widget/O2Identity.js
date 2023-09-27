@@ -327,7 +327,26 @@ o2.widget.O2Duty = new Class({
         // }
     },
     createInforNode: function(){
-        return false;
+        if( this.options.showUnit && this.data.woUnit && this.data.woUnit.levelName ){
+            this.inforNode = new Element("div", {
+                "styles": this.style.identityInforNode
+            });
+            var nameNode = new Element("div", {
+                "text": this.data.displayName || this.data.name
+            }).inject(this.inforNode);
+
+            var nameTextNode = new Element("div", {
+                "text": this.data.woUnit.levelName
+            }).inject(this.inforNode);
+            this.tooltip = new mBox.Tooltip({
+                content: this.inforNode,
+                setStyles: {content: {padding: 15, lineHeight: 20}},
+                attach: this.node,
+                transition: 'flyin'
+            });
+        }else{
+            return false;
+        }
         // this.inforNode = new Element("div", {
         //     "styles": this.style.identityInforNode
         // });
@@ -343,7 +362,12 @@ o2.widget.O2Duty = new Class({
         // });
     },
     setText: function(){
-        this.node.set("text", this.data.displayName || this.data.name);
+        if( this.options.showUnit && this.data.woUnit ){
+            var unit = this.data.woUnit.name ? ("("+this.data.woUnit.name+")") : "";
+            this.node.set("text", (this.data.displayName || this.data.name)+unit);
+        }else{
+            this.node.set("text", this.data.displayName || this.data.name);
+        }
     }
 });
 o2.widget.O2Group = new Class({

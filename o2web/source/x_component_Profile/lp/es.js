@@ -44,9 +44,11 @@ MWF.xApplication.Profile.LP = {
 "language": "Configuración de idioma",
 "forumNickName": "Apodo del foro",
 "lps": {
-    "zh-CN": "Chino simplificado",
-    "en": "Inglés",
-    "es": "Español"
+    "zh-CN": "简体中文",
+    "en": "English",
+    "es": "español",
+    "ko": "한국인",
+    "zh-HK": "繁體中文"
 },
 
 "passwordRule" : "Reglas de contraseña",
