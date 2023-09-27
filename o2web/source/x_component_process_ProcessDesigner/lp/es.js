@@ -247,7 +247,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"instanceMode": "Modo de instancia",
 		"draftMode": "Modo de borrador",
 		"instanceModeInfo": "(Crear una instancia del flujo directamente al crear el flujo, generar una tarea pendiente para el autor del borrador)",
-		"draftModeInfo": "(No crear una instancia del flujo al crear el flujo, no generar tarea pendiente, generar un documento de borrador, crear una instancia del flujo solo cuando se realiza el procesamiento)",
+		"draftModeInfo": "(No crear una instancia del flujo al crear el flujo, no generar tarea pendiente, generar un documento de borrador, crear una instancia del flujo solo cuando se realiza el procesamiento. Los archivos adjuntos no se pueden cargar en modo borrador.)",
 
 		"checkDraft": "Verificación al crear",
 		"checkDraftInfo": "(Seleccionar \"Sí\": las instancias del flujo que no se hayan guardado no se guardarán)",

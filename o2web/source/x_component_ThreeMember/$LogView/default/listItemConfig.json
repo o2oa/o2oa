@@ -1,0 +1,94 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true,
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "module",
+      "head": {
+        "html": "<th styles='normalThNode' lable='module'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='module'></td>",
+        "items": { "module" : {} }
+      }
+    },
+    {
+      "name": "operation",
+      "head": {
+        "html": "<th styles='normalThNode' lable='operation'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='operation'></td>",
+        "items": { "operation" : {} }
+      }
+    },
+    {
+      "name": "httpType",
+      "head": {
+        "html": "<th styles='normalThNode' lable='httpType'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='httpType'></td>",
+        "items": { "httpType" : {} }
+      }
+    },
+    {
+      "name": "status",
+      "head": {
+        "html": "<th styles='normalThNode' lable='status'></th>",
+        "width": "10%"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='status'></td>",
+        "items": {
+          "status": {"value" : "function(d){ return d.status ? this.lp.enable : this.lp.disable }"}
+        }
+      }
+    },
+    {
+      "name": "matchUrl",
+      "head": {
+        "html": "<th styles='normalThNode' lable='httpUrl'></th>",
+        "width": "auto"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='matchUrl' style='word-break:break-word;'></td>",
+        "items": {
+          "matchUrl": {}
+        }
+      }
+    },
+    {
+      "name": "actionList",
+      "head": {
+        "html": "<th styles='normalThNode' lable='delete'></th>",
+        "width": "30"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'><div styles='deleteAction' item='deleteAction'></div></td>",
+        "items": {
+          "deleteAction": {
+            "title": "deleteConfig",
+            "action": "remove",
+            "styles" : "deleteAction",
+            "mouseoverStyles": "deleteAction_over"
+          }
+        }
+      }
+    }
+  ]
+}
