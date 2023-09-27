@@ -796,7 +796,94 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             if (this.closeOfficeAction) this.setActionDisabled(this.closeOfficeAction);
         }
     },
-    configAttachment: function () {
+    configAttachment: function(){
+        this.configAttachmentSecurity();
+    },
+    getSecurityLabelList: function(){
+        if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
+
+        var _self = this
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["object"]().then(function(json){
+
+            // return _self.securityLabelList = json.data;
+            _self.securityLabelList = {
+                "非密":100,
+                "内部":200,
+                "秘密":300,
+                "机密":400
+            }
+            return _self.securityLabelList;
+
+        }, function(){
+            _self.securityLabelList = {
+                "非密":100,
+                "内部":200,
+                "秘密":300,
+                "机密":400
+            }
+            return _self.securityLabelList;
+        });
+    },
+    configAttachmentSecurity: function(){
+        var lp = MWF.xApplication.process.Xform.LP;
+        var css = this.module.form.css;
+
+        var node = new Element("div", { "styles": (layout.mobile ? css.attachmentPermissionNode_mobile : css.attachmentPermissionNode) }).inject(this.node);
+        var attNames = new Element("div", { "styles": css.attachmentPermissionNamesNode }).inject(node);
+        var attNamesTitle = new Element("div", { "styles": css.attachmentPermissionNamesTitleNode, "text": lp.attachmentPermissionInfo }).inject(attNames);
+        var attNamesArea = new Element("div", { "styles": css.attachmentPermissionNamesAreaNode }).inject(attNames);
+
+        if (this.selectedAttachments.length) {
+            this.selectedAttachments.each(function (att) {
+                var attNode = new Element("div", { "styles": css.attachmentPermissionAttNode, "text": att.data.name }).inject(attNamesArea);
+            }.bind(this));
+        }
+
+        var editArea = new Element("div", { "styles": css.attachmentPermissionEditAreaNode }).inject(node);
+        editArea.setStyle("display", "flex");
+        var title = new Element("div", { "styles": css.attachmentPermissionTitleNode, "text": lp.attachmentSecurity }).inject(editArea);
+        title.setStyle("margin-right", "15px");
+        var select = new Element("select", { "styles": css.attachmentPermissionInputNode }).inject(editArea);
+        this.getSecurityLabelList().then(function(labels){
+            debugger;
+            Object.keys(labels).forEach(function(key){
+                new Element('option', {text: key, value: labels[key]}).inject(select);
+            });
+        });
+
+
+
+        var options = Object.merge({
+            "title": lp.attachmentPermission,
+            "style": this.module.form.json.dialogStyle || "user",
+            "isResize": false,
+            "content": node,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function () {
+                        this.setAttachmentConfig(readInput, editInput, controllerInput);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        }, (this.module.form.json.dialogOptions||{}));
+
+        if( layout.mobile ){
+            var size = $(document.body).getSize();
+            options.width = size.x;
+            options.height = size.y;
+        }
+
+        var dlg = o2.DL.open( options );
+    },
+    configAttachmentPower: function () {
         //this.fireEvent("delete", [attachment.data]);
 
         var lp = MWF.xApplication.process.Xform.LP;

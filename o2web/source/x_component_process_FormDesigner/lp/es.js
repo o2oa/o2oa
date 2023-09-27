@@ -379,7 +379,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "writingBoard": "P.E.",
         "tinymceEditor": "Tinymce",
         "relatedLink": "recomendación",
-        "associatedDocument": "Un documento asociado"
+        "associatedDocument": "Un documento asociado",
+        "security":"Etiqueta de seguridad"
     },
     "propertyTemplate": {
         "base": "Base",

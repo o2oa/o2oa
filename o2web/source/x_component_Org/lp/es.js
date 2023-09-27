@@ -46,6 +46,8 @@ MWF.xApplication.Org.LP = {
 	"ipAddressPlaceHolder" : "Solo las direcciones IP que coincidan podrán iniciar sesión. Separe múltiples valores con “,”.",
 	"ipAddressIncorrectNotice" : "Formato de la dirección IP no válido:",
 
+	"securityLabel" : "Etiqueta de seguridad",
+
     "createSubCompany": "Crear subcompañía",
 	"createSubDepartment": "Crear subdepartamento",
 	"configCompany": "Configurar administrador de la compañía",
