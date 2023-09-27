@@ -100,6 +100,8 @@ MWF.xApplication.Profile.Main = new Class({
                 }
                 if( node.getStyle("display") === "none" ){
                     page.tabNode.hide();
+                }else if( layout.desktop.session.user.name.toLowerCase() === "xadmin" && ["password","empower"].contains( node.get("data-o2-type") ) ){
+                    page.tabNode.hide();
                 }else if( !firstPage ){
                     firstPage = page;
                 }
@@ -157,7 +159,9 @@ MWF.xApplication.Profile.Main = new Class({
             var firstPage;
             pageConfigNodes.each(function(node){
                 var page = this.tab.addTab(node, node.get("title"));
-                if( node.getStyle("display") === "none" ){
+                if( node.getStyle("display") === "none" ) {
+                    page.tabNode.hide();
+                }else if( layout.desktop.session.user.name.toLowerCase() === "xadmin" && ["password","empower"].contains( node.get("data-o2-type") ) ){
                     page.tabNode.hide();
                 }else if( !firstPage ){
                     firstPage = page;
