@@ -49,7 +49,11 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 			if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
 
 			return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction.object().then(function(json){
-				this.securityLabelList = json.data;
+				var opts = ["|"];
+				Object.keys(json.data).forEach(function(k){
+					opts.push(k+"|"+json.data[k]);
+				}.bind(this))
+				this.securityLabelList = opts;
 				return this.securityLabelList;
 			}.bind(this));
 		},
