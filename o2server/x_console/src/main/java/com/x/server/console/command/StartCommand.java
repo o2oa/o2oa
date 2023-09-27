@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonObject;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -65,12 +64,6 @@ public class StartCommand {
 	private static boolean ifInitServerNecessaryLocalRepositoryDataH2Exists() {
 		return Files.exists(Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE));
 	}
-
-//	private static boolean ifInitServerNecessaryExternalDataSourcesConfigured() {
-//		ExternalDataSources obj = BaseTools.readConfigObject(Config.PATH_CONFIG_EXTERNALDATASOURCES,
-//				ExternalDataSources.class);
-//		return (null != obj) && BooleanUtils.isTrue(obj.enable());
-//	}
 
 	private static boolean ifInitServerNecessarySetPassword() {
 		JsonObject jsonObject = BaseTools.readConfigObject(Config.PATH_CONFIG_TOKEN, JsonObject.class);

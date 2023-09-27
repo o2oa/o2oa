@@ -180,8 +180,6 @@ public class Config {
 	public static final String RESOURCE_NODE_CENTERSPRIMARYNODE = RESOURCE_NODE_PREFIX + "centersPrimaryNode";
 	public static final String RESOURCE_NODE_CENTERSPRIMARYPORT = RESOURCE_NODE_PREFIX + "centersPrimaryPort";
 	public static final String RESOURCE_NODE_CENTERSPRIMARYSSLENABLE = RESOURCE_NODE_PREFIX + "centersPrimarySslEnable";
-	public static final String RESOURCE_NODE_PROCESSPLATFORMEXECUTORS = RESOURCE_NODE_PREFIX
-			+ "processPlatformExecutors";
 	public static final String RESOURCE_NODE_TOKENTHRESHOLDS = RESOURCE_NODE_PREFIX + "tokenThresholds";
 
 	public static final String RESOURCE_COMMANDTERMINATEDSIGNAL_PREFIX = "commandTerminatedSignal/";
@@ -1287,19 +1285,6 @@ public class Config {
 		map.put(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
 	}
 
-	public static synchronized ExecutorService[] resource_node_processPlatformExecutors() throws Exception {
-		Object o = initialContext().lookup(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS);
-		if (null != o) {
-			return (ExecutorService[]) o;
-		}
-		return null;
-	}
-
-	public static synchronized void resource_node_processPlatformExecutors(ExecutorService[] executorServices)
-			throws Exception {
-		initialContext().rebind(RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, executorServices);
-	}
-
 	@SuppressWarnings("unchecked")
 	public static synchronized Map<String, Date> resource_node_tokenThresholds() throws Exception {
 		Object o = initialContext().lookup(RESOURCE_NODE_TOKENTHRESHOLDS);
@@ -1568,7 +1553,7 @@ public class Config {
 
 	public static Path pathLocalRepositoryData(boolean force) {
 		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_DATA);
-		if ((!Files.exists(path)) && force)	 {
+		if ((!Files.exists(path)) && force) {
 			createDirectories(path);
 		}
 		return path;

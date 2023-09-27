@@ -37,7 +37,7 @@ class BaseCreateAction extends BaseAction {
 
 	protected void processingWork(String workId) throws Exception {
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null);
+				Applications.joinQueryUri("work", workId, "processing"), null);
 	}
 
 	protected String createWork(String processId, JsonElement jsonElement) throws Exception {
@@ -49,6 +49,7 @@ class BaseCreateAction extends BaseAction {
 
 	/**
 	 * 如果不是草稿那么需要进行设置
+	 * 
 	 * @param identity
 	 * @param workId
 	 * @param title
@@ -82,6 +83,7 @@ class BaseCreateAction extends BaseAction {
 
 	/**
 	 * 标志工作跳过新建检查
+	 * 
 	 * @param workId
 	 * @throws Exception
 	 */
