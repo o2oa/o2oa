@@ -1557,6 +1557,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "rollbackTitle": "回溯到指定的环节，不保留流程记录",
         "delete": "删除文档",
         "deleteTitle": "删除文件",
+        "terminate": "终止文件",
+        "terminateTitle": "结束文件流转",
         "print": "打印",
         "printTitle": "打印文档",
         "press": "催促办理",

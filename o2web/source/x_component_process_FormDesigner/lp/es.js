@@ -1549,6 +1549,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "rollbackTitle": "Volver a un paso anterior sin conservar registros de flujo de trabajo",
         "delete": "Eliminar",
         "deleteTitle": "Eliminar archivo",
+
+        "terminar": "Terminar",
+        "terminateTitle": "Finalizar transferencia de archivo",
+
         "print": "Imprimir",
         "printTitle": "Imprimir documento",
         "press": "Urgir",

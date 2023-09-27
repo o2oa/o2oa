@@ -123,6 +123,17 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "stop.png",
+    "title": "{{$.lp.terminateTitle}}",
+    "action": "terminate",
+    "text": "{{$.lp.terminate}}",
+    "id": "action_terminate",
+    "control": "allowTerminate",
+    "condition": "",
+    "read": false
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "print.png",
     "title": "{{$.lp.printTitle}}",
     "action": "printWork",

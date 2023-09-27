@@ -293,6 +293,11 @@
                 <td class="editTableValue"  colspan="2"><b>{{$.lp.allowDelete}}：</b><input class="editTableRadio" name="allowDeleteWork" text{($.allowDeleteWork)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowDeleteWork" text{(!$.allowDeleteWork)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
+
+            <tr>
+                <td class="editTableValue"  colspan="2"><b>{{$.lp.allowTerminate}}：</b><input class="editTableRadio" name="allowTerminate" text{($.allowTerminate)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="allowTerminate" text{(!$.allowTerminate)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
+            </tr>
             <!--<tr>-->
             <!--<td class="editTableValue"  colspan="2"><b>允许添加附件：</b><input class="editTableRadio" name="canAddAttachment" text{($.canAddAttachment)?'checked':''} type="radio" value="true"/>是-->
             <!--<input class="editTableRadio" name="canAddAttachment" text{(!$.canAddAttachment)?'checked':''} type="radio" value="false"/>否</td>-->

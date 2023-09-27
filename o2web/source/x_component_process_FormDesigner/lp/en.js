@@ -1553,6 +1553,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "rollbackTitle": "Rollback the work to the specified activity, without keeping process records",
         "delete": "Delete",
         "deleteTitle": "Delete Document",
+
+        "terminate": "Terminate",
+        "terminateTitle": "End file process",
+
         "print": "Print",
         "printTitle": "Open through the print form, and print the document",
         "press": "Urge",
