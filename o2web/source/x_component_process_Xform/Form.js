@@ -1997,7 +1997,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "error",
             { "x": "center", "y": "top" },
             flag,
-            (processor) ? processor.routeSelectorArea : this.app.content,
+            (processor) ? processor.routeSelectorArea : (layout.mobile ? $(document.body) : this.app.content),
             null,  //{"x": 0, "y": 30}
             { "closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000 }
         );
@@ -2016,7 +2016,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "error",
             (processor) ? { "x": "center", "y": "top" } : { "x": "right", "y": "top" },
             flag,
-            (processor) ? processor.inputTextarea : this.app.content,
+            (processor) ? processor.inputTextarea : (layout.mobile ? $(document.body) : this.app.content),
             null,  //{"x": 0, "y": 30}
             { "closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000 }
         );
