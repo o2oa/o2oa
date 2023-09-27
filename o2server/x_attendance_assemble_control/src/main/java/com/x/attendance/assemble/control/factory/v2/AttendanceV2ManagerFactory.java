@@ -225,6 +225,22 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
     }
 
     /**
+     * 查询用户是否是某个考勤组的协助管理员
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public boolean isAssistAdmin(String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
+        Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.isMember(person, root.get(AttendanceV2Group_.assistAdminList));
+        List<AttendanceV2Group> list = em.createQuery(cq.select(root).where(p)).getResultList();
+        return (list != null && list.size() > 0) ;
+    }
+
+    /**
      * 查询打卡记录
      * 
      * @param person distinguishName
