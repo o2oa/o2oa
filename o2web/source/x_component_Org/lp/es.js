@@ -93,8 +93,9 @@ MWF.xApplication.Org.LP = {
 
 	"dutyName": "Nombre del puesto",
 	"dutyMembers": "Miembros",
-
-
+	"editDuty": "Editar tarea",
+	"modifySuccess": "Modificación exitosa",
+	"modifyFail": "Error en la modificación",
 
 	"deleteDutyTitle": "Confirmación para eliminar puesto",
 	"deleteDuty": "¿Estás seguro/a de que deseas eliminar los puestos seleccionados?",

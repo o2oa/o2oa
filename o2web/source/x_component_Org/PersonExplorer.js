@@ -2,6 +2,7 @@
 // MWF.xDesktop.requireApp("Organization", "OrgExplorer", null, false);
 MWF.xDesktop.requireApp("Org", "$Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xApplication.Org.PersonExplorer = new Class({
 	Extends: MWF.xApplication.Org.$Explorer,
@@ -284,6 +285,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         //     }.bind(this), null, this.data.id);
         // }
     },
+    getDutyActionPermission: function(){
+        if( MWF.AC.isSystemManager() )return false;
+        if( MWF.AC.isOrganizationManager() )return true;
+        if( MWF.AC.isSecurityManager() )return true;
+        return false;
+    },
     _listIdentity: function(){
         var _self = this;
         this.identityList = new MWF.xApplication.Org.List(this.identityContentNode, this, {
@@ -304,17 +311,78 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                     }
                 }
             }, {
-                "get": function(){ return this.distinguishedName; },
+                "getHtml": function(){
+                    return "<div style='word-break: break-word;'>"+this.distinguishedName+"</div>";
+                },
+                //"get": function(){ return this.distinguishedName; },
                 "set": function(value){ this.distinguishedName = value; }
             }, {
                 "get": function(){ return ""; },
                 "events": {
                     "init": function(){
-                        var contentNode = this.td;
+                        var contentNode = new Element("div.duty-wrap").inject(this.td);
+                        var dutyNode = new Element("div.duty-area").inject(contentNode);
                         if (this.data.woUnitDutyList){
                             this.data.woUnitDutyList.each(function(duty){
-                                new MWF.widget.O2Duty(duty, contentNode, {"style": "xform"});
+                                new MWF.widget.O2Duty(duty, dutyNode, {"style": "xform", "showUnit": true});
                             }.bind(this));
+                        }
+                        if( _self.getDutyActionPermission() ){
+                            var editDutyIcon = new Element("i.o2icon-edit2", {
+                                "title": MWF.xApplication.Org.LP.editDuty
+                            }).inject(contentNode);
+                            editDutyIcon.addClass("edit-duty-icon");
+                            editDutyIcon.addEvent("click", function () {
+                                new MWF.O2Selector(_self.explorer.app.content, {
+                                    "type": "UnitDuty",
+                                    "values": this.data.woUnitDutyList,
+                                    "onComplete" : function( items ){
+                                        var selectedList = items.map( function(item){ debugger; return item.data; });
+                                        var oldIdList = this.data.woUnitDutyList.map(function (d) { return d.id; })
+                                        var newIdList = selectedList.map(function (d) { return d.id; });
+
+                                        var addList = selectedList.filter(function (d) {
+                                            return !oldIdList.contains( d.id );
+                                        }.bind(this));
+                                        var removeList = this.data.woUnitDutyList.filter(function (d) {
+                                            return !newIdList.contains( d.id );
+                                        });
+
+                                        var currentIdentityId = this.data.id;
+
+                                        var psRemove = removeList.map(function (d) {
+                                            var id = d.id;
+                                            return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.get(id).then(function (json) {
+                                                json.data.identityList = json.data.identityList.filter(function (identity) {
+                                                    return identity !== currentIdentityId;
+                                                })
+                                                return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.edit(id, json.data);
+                                            }.bind(this));
+                                        });
+
+                                        var psAdd = addList.map(function (d) {
+                                            var id = d.id;
+                                            return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.get(id).then(function (json) {
+                                                json.data.identityList.push(currentIdentityId);
+                                                return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.edit(id, json.data);
+                                            }.bind(this));
+                                        });
+
+                                        Promise.all( psRemove.concat(psAdd) ).then(function( list ){
+
+                                            _self.explorer.app.notice(MWF.xApplication.Org.LP.modifySuccess);
+
+                                            this.data.woUnitDutyList = selectedList;
+                                            dutyNode.empty();
+                                            this.data.woUnitDutyList.each(function(duty){
+                                                new MWF.widget.O2Duty(duty, dutyNode, {"style": "xform", "showUnit": true});
+                                            }.bind(this));
+                                        }.bind(this), function () {
+                                            _self.explorer.app.notice(MWF.xApplication.Org.LP.modifyFail, "error");
+                                        });
+                                    }.bind(this)
+                                })
+                            }.bind(this))
                         }
                     }
                 }
@@ -353,8 +421,8 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this.identityList.load([
             {"style": "width: 12%", "text": this.explorer.app.lp.IdentityName},
             {"style": "width: 12%", "text": this.explorer.app.lp.IdentityInUnit},
-            {"style": "width: 44%", "text": this.explorer.app.lp.personUnique},
-            {"style": "width: 20%", "text": this.explorer.app.lp.IdentityDuty},
+            {"style": "width: 30%", "text": this.explorer.app.lp.personUnique},
+            {"style": "width: 34%", "text": this.explorer.app.lp.IdentityDuty},
             {"style": "width: 10%", "text": this.explorer.app.lp.IdentityMain},
             {"style": "width: 30px", "text": ""}
         ]);
