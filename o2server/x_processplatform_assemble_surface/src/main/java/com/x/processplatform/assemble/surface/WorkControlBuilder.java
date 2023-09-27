@@ -387,9 +387,9 @@ public class WorkControlBuilder {
 	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(canManage()
-					|| (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork()));
+			control.setAllowDelete(
+					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& (canManage() || hasTaskWithWork())));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
