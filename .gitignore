@@ -27,6 +27,7 @@
 **/.settings/
 **/.classpath
 **/.project
+**/.VSCodeCounter
 /o2custom/
 /o2cloud/
 /.svn/

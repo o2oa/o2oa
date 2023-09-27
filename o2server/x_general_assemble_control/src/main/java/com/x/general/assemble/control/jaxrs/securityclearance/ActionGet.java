@@ -18,10 +18,11 @@ public class ActionGet extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		wo.setDefaultSubject(Config.general().getDefaultSubjectSecurityClearance());
-		wo.setEnable(Config.general().getSecurityClearanceEnable());
-		wo.setObject(Config.general().getObjectSecurityClearance());
-		wo.setSubject(Config.general().getSubjectSecurityClearance());
+		wo.setDefaultSubjectSecurityClearance(Config.ternaryManagement().getDefaultSubjectSecurityClearance());
+		wo.setSecurityClearanceEnable(Config.ternaryManagement().getSecurityClearanceEnable());
+		wo.setObjectSecurityClearance(Config.ternaryManagement().getObjectSecurityClearance());
+		wo.setSubjectSecurityClearance(Config.ternaryManagement().getSubjectSecurityClearance());
+		wo.setSystemSecurityClearance(Config.ternaryManagement().getSystemSecurityClearance());
 		result.setData(wo);
 		return result;
 	}
@@ -31,44 +32,54 @@ public class ActionGet extends BaseAction {
 		private static final long serialVersionUID = 7851469182619330809L;
 
 		@FieldDescribe("主体密级标识配置.")
-		private Map<Integer, String> subject;
+		private Map<String, Integer> subjectSecurityClearance;
 		@FieldDescribe("客体密级标识配置.")
-		private Map<Integer, String> object;
+		private Map<String, Integer> objectSecurityClearance;
 		@FieldDescribe("是否启用密级标识.")
-		private Boolean enable;
+		private Boolean securityClearanceEnable;
 		@FieldDescribe("默认主体密级标识.")
-		private Integer defaultSubject;
+		private Integer defaultSubjectSecurityClearance;
+		@FieldDescribe("系统密级标识.")
+		private Integer systemSecurityClearance;
 
-		public Map<Integer, String> getSubject() {
-			return subject;
+		public Map<String, Integer> getSubjectSecurityClearance() {
+			return subjectSecurityClearance;
 		}
 
-		public void setSubject(Map<Integer, String> subject) {
-			this.subject = subject;
+		public void setSubjectSecurityClearance(Map<String, Integer> subjectSecurityClearance) {
+			this.subjectSecurityClearance = subjectSecurityClearance;
 		}
 
-		public Map<Integer, String> getObject() {
-			return object;
+		public Map<String, Integer> getObjectSecurityClearance() {
+			return objectSecurityClearance;
 		}
 
-		public void setObject(Map<Integer, String> object) {
-			this.object = object;
+		public void setObjectSecurityClearance(Map<String, Integer> objectSecurityClearance) {
+			this.objectSecurityClearance = objectSecurityClearance;
 		}
 
-		public Boolean getEnable() {
-			return enable;
+		public Boolean getSecurityClearanceEnable() {
+			return securityClearanceEnable;
 		}
 
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
+		public void setSecurityClearanceEnable(Boolean securityClearanceEnable) {
+			this.securityClearanceEnable = securityClearanceEnable;
 		}
 
-		public Integer getDefaultSubject() {
-			return defaultSubject;
+		public Integer getDefaultSubjectSecurityClearance() {
+			return defaultSubjectSecurityClearance;
 		}
 
-		public void setDefaultSubject(Integer defaultSubject) {
-			this.defaultSubject = defaultSubject;
+		public void setDefaultSubjectSecurityClearance(Integer defaultSubjectSecurityClearance) {
+			this.defaultSubjectSecurityClearance = defaultSubjectSecurityClearance;
+		}
+
+		public Integer getSystemSecurityClearance() {
+			return systemSecurityClearance;
+		}
+
+		public void setSystemSecurityClearance(Integer systemSecurityClearance) {
+			this.systemSecurityClearance = systemSecurityClearance;
 		}
 
 	}
