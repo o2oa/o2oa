@@ -529,7 +529,33 @@ o2.xApplication.systemconfig.LP = {
         "logRetainDaysInfo": "Establece el máximo número de días que se pueden retener los registros.",
 
         "logBodyEnable": "Registre el contenido del cuerpo",
-        "logBodyEnableInfo": "Registrar el contenido del cuerpo proporcionará información de registro más detallada, pero también aumentará significativamente el uso del espacio en disco y el consumo de recursos del servidor."
+        "logBodyEnableInfo": "Registrar el contenido del cuerpo proporcionará información de registro más detallada, pero también aumentará significativamente el uso del espacio en disco y el consumo de recursos del servidor.",
+
+        "securityClearanceEnable": "Habilitar la identificación del nivel de seguridad del sistema",
+        "securityClearanceEnableInfo": "Según las \"Normas para la protección y gestión jerárquica de sistemas de información que involucran secretos de estado\" (BMB20-2007), los sistemas de aplicación relacionados con secretos deben tener los niveles de confidencialidad correspondientes. Si su sistema implica requisitos relevantes, habilite el indicador de nivel de confidencialidad<br>" +
+            "El sistema O2OA admite la configuración de la identificación del nivel de confidencialidad del sujeto y la identificación del nivel de confidencialidad del objeto, y controla estrictamente los permisos de acceso. Los sujetos con un nivel de seguridad bajo no pueden acceder a objetos con un nivel de seguridad alto. <br>" +
+            "<b>Nivel de confidencialidad del sujeto:</b>Puede establecer el nivel de confidencialidad principal del sistema en Configuración del sistema-Gestión ternaria.<br>" +
+            "<b>Nivel de confidencialidad del objeto:</b>Puede agregar el elemento de diseño \"marca de confidencialidad\" al diseñar formularios relacionados para establecer la marca de confidencialidad del documento.",
+
+        "subjectSecurityClearance": "Identificación del nivel de seguridad del sujeto",
+        "subjectSecurityClearanceInfo": "Configure el identificador del nivel de confidencialidad del sujeto. El valor del identificador es un número. Cuanto mayor sea el valor, mayor será el nivel de confidencialidad. Los sujetos correspondientes al nivel de confidencialidad pueden acceder a objetos cuyo nivel de confidencialidad sea menor o igual al del sujeto. nivel de confidencialidad. Por ejemplo, si el nivel de confidencialidad del sujeto es 300, entonces estos Objetos accesibles al sujeto deben tener un nivel de confidencialidad menor o igual a 300.",
+
+        "objectSecurityClearance": "Identificación del nivel de seguridad del objeto",
+        "objectSecurityClearanceInfo": "Configure el identificador del nivel de confidencialidad del objeto. El valor del identificador es un número. Cuanto mayor sea el valor, mayor será el nivel de confidencialidad.",
+
+        "labelName": "nombre de la etiqueta",
+        "labelValue": "valor de etiqueta",
+
+        "defaultSubjectSecurityClearance": "ID de sujeto predeterminado",
+        "defaultSubjectSecurityClearanceInfo": "Si el sujeto no establece un identificador de nivel de confidencialidad, se aplica este identificador.",
+
+        "systemSecurityClearance": "Identificación del nivel de seguridad del sistema",
+        "systemSecurityClearanceInfo": "Establezca la identificación del nivel de seguridad del sistema. La identificación del nivel de seguridad de todos los demás sujetos u objetos no será superior al nivel de seguridad del sistema.",
+
+        "labelValueSame": "No se puede establecer el mismo valor de etiqueta",
+        "labelNameSame": "No se puede establecer el mismo nombre de etiqueta",
+        "labelValueEmpty": "Debe ingresar el valor de la etiqueta",
+        "labelNameEmpty": "Debe ingresar el nombre de la etiqueta"
     },
     "_databaseServer": {
         "databaseSource": "Origen de datos",

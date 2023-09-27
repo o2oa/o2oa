@@ -182,6 +182,8 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以，不为空需同时选择设置权限)",
     "attachmentController": "谁可以设置此附件的权限：(为空表示有权限编辑此文档的人都可以)",
 
+    "attachmentSecurity": "附件密级标识",
+
     "attachmentOCRTitle": "纠正自动识别的图片中的文字",
     "attachmentOCR_saved": "图像文字识别结果已保存",
 
