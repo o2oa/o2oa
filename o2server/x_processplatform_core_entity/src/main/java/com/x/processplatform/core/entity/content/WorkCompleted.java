@@ -644,6 +644,21 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
+	public static final String OBJECTSECURITYCLEARANCE_FIELDNAME = "objectSecurityClearance";
+	@FieldDescribe("客体密级标识.")
+	@Column(name = ColumnNamePrefix + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer objectSecurityClearance;
+
+	public Integer getObjectSecurityClearance() {
+		return objectSecurityClearance;
+	}
+
+	public void setObjectSecurityClearance(Integer objectSecurityClearance) {
+		this.objectSecurityClearance = objectSecurityClearance;
+	}
+
 	public String getJob() {
 		return job;
 	}

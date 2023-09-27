@@ -11,7 +11,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -22,6 +21,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
@@ -46,7 +46,8 @@ class V2Terminate extends BaseAction {
 			}
 			executorSeed = work.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get(300,
+				TimeUnit.SECONDS);
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
