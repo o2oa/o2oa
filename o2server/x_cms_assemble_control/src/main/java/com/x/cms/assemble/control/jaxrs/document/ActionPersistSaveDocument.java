@@ -136,9 +136,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 			document.setCategoryName(categoryInfo.getCategoryName());
 			document.setCategoryAlias(categoryInfo.getCategoryAlias());
 			document.setDocumentType( categoryInfo.getDocumentType() );
-
-			if( !"信息".equals(document.getDocumentType()) && !"数据".equals( document.getDocumentType() )) {
-				document.setDocumentType( "信息" );
+			if(!Document.DOCUMENT_TYPE_DATA.equals( document.getDocumentType() )) {
+				document.setDocumentType( Document.DOCUMENT_TYPE_INFO );
 			}
 		}
 
