@@ -797,31 +797,20 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     configAttachment: function(){
-        this.configAttachmentSecurity();
+        o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["enable"]().then(function(json){
+            if (json.data.enable){
+                this.configAttachmentSecurity();
+            }else{
+                this.configAttachmentPower();
+            }
+        }.bind(this));
     },
     getSecurityLabelList: function(){
         if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
 
         var _self = this
         return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["object"]().then(function(json){
-
-            // return _self.securityLabelList = json.data;
-            _self.securityLabelList = {
-                "非密":100,
-                "内部":200,
-                "秘密":300,
-                "机密":400
-            }
-            return _self.securityLabelList;
-
-        }, function(){
-            _self.securityLabelList = {
-                "非密":100,
-                "内部":200,
-                "秘密":300,
-                "机密":400
-            }
-            return _self.securityLabelList;
+            return _self.securityLabelList = json.data;
         });
     },
     configAttachmentSecurity: function(){
@@ -839,19 +828,26 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }.bind(this));
         }
 
+        var label = "";
+        if (this.selectedAttachments.length){
+            for (var i=0; i<this.selectedAttachments.length; i++){
+                var attLabel = this.selectedAttachments[i].data.objectSecurityClearance;
+                label = (!label || label===attLabel) ? attLabel : "";
+            }
+        }
+
         var editArea = new Element("div", { "styles": css.attachmentPermissionEditAreaNode }).inject(node);
         editArea.setStyle("display", "flex");
         var title = new Element("div", { "styles": css.attachmentPermissionTitleNode, "text": lp.attachmentSecurity }).inject(editArea);
         title.setStyle("margin-right", "15px");
         var select = new Element("select", { "styles": css.attachmentPermissionInputNode }).inject(editArea);
+        new Element('option', {text: "", value: ""}).inject(select);
         this.getSecurityLabelList().then(function(labels){
-            debugger;
             Object.keys(labels).forEach(function(key){
-                new Element('option', {text: key, value: labels[key]}).inject(select);
+                var op = new Element('option', {text: key, value: labels[key]}).inject(select);
+                if (label===labels[key]) op.selected = true;
             });
         });
-
-
 
         var options = Object.merge({
             "title": lp.attachmentPermission,
@@ -863,7 +859,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     "type": "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": function () {
-                        this.setAttachmentConfig(readInput, editInput, controllerInput);
+                        this.setAttachmentSecurityConfig(select);
                         dlg.close();
                     }.bind(this)
                 },
@@ -973,6 +969,40 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }));
         }
     },
+
+    setAttachmentSecurityConfig: function(select){
+        if (this.selectedAttachments.length) {
+            var security = select.options[select.selectedIndex].value;
+
+            var loadedCount = 0;
+            this.selectedAttachments.each(function (att) {
+                att.data.objectSecurityClearance = security.toInt();
+
+                o2.Actions.get("x_processplatform_assemble_surface").configAttachment(att.data.id, this.module.form.businessData.work.id, att.data, function () {
+                    //刷新附件权限，以后要加一个刷新附件的功能
+                    o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getWithWorkOrWorkCompleted(att.data.id, this.module.form.businessData.work.id, function (json) {
+                        var attachment = this.getAttachmentById( att.data.id );
+                        if( attachment ){
+                            attachment.data = json.data;
+
+                            if( attachment.deleteAction && !this.isAttDeleteAvailable(attachment) ){
+                                attachment.deleteAction.setStyle("display","none");
+                            }
+
+                            if( attachment.configAction && !this.isAttConfigAvailable(attachment) ){
+                                attachment.configAction.setStyle("display","none");
+                            }
+                        }
+                        loadedCount++;
+                        if( loadedCount === this.selectedAttachments.length ){
+                            this.checkActions();
+                        }
+                    }.bind(this))
+                }.bind(this));
+            }.bind(this));
+        }
+    },
+
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
