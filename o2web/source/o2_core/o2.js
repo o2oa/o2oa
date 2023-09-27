@@ -177,6 +177,25 @@ if (!window.o2) {
          */
         this.o2.debug = debug;
 
+
+        this.o2.runningRequestsList = [];
+        var o2 = this.o2;
+        var requestSend = XMLHttpRequest.prototype.send;
+        var requestOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.send = function(){
+            var request = this;
+            o2.runningRequestsList.push(request);
+            request.addEventListener("loadend", function(){
+                o2.runningRequestsList.splice(o2.runningRequestsList.indexOf(request, 1));
+            });
+            requestSend.apply(this, arguments);
+        }
+        XMLHttpRequest.prototype.open = function(){
+            var request = this;
+            request.requestOptions = Array.from(arguments);
+            requestOpen.apply(this, arguments);
+        }
+
         var _attempt = function () {
             for (var i = 0, l = arguments.length; i < l; i++) {
                 try {
