@@ -387,9 +387,9 @@ public class WorkControlBuilder {
 	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(canManage()
-					|| (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork()));
+			control.setAllowDelete(
+					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& (canManage() || hasTaskWithWork())));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -547,11 +547,9 @@ public class WorkControlBuilder {
 	private void computeAllowTerminate(Control control) {
 		try {
 			control.setAllowTerminate(false);
-			if (canManage()) {
-				control.setAllowTerminate(true);
-			} else if (activity().getClass().isAssignableFrom(Manual.class)) {
+			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (hasTaskWithWork() && BooleanUtils.isTrue(manual.getAllowTerminate())) {
+				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork())) {
 					control.setAllowTerminate(true);
 				}
 			}

@@ -19,9 +19,9 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
-class V2Terminate extends BaseAction {
+class V2ManageTerminate extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(V2Terminate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2ManageTerminate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
@@ -34,8 +34,9 @@ class V2Terminate extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowTerminate().build();
-			if (BooleanUtils.isNotTrue(control.getAllowTerminate())) {
+			// 判断条件和V2Manage不同,仅判断是否有管理权限.
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}

@@ -1382,6 +1382,24 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理终止工作.", action = V2ManageTerminate.class)
+	@GET
+	@Path("v2/{id}/terminate/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ManageTerminate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<V2ManageTerminate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ManageTerminate().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "分页列示指定应用下根据过滤条件的Work.", action = ActionManageListWithApplicationPaging.class)
 	@POST
 	@Path("list/paging/{page}/size/{size}/application/{applicationFlag}/filter/manage")
