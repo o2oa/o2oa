@@ -243,7 +243,7 @@ public class Business {
 	}
 
 	/**
-	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
+	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、ROLE_AttendanceManager
 	 * @return
 	 * @throws Exception
 	 */
