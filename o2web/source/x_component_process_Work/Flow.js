@@ -331,6 +331,14 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }.bind(this));
         return list;
     },
+    getSingleOrgConfig: function( routeId, orgName ){
+        var orgList = this.getOrgConfig( routeId );
+        for (var i = 0; i < orgList.length; i++) {
+            if (orgList[i].name === orgName) {
+                return orgList[i];
+            }
+        }
+    },
     isOrgHidden: function (d) {
         if (d.hiddenScript && d.hiddenScript.code) { //如果隐藏路由，返回
             var hidden = this.form.Macro.exec(d.hiddenScript.code, this);
@@ -521,7 +529,8 @@ MWF.ProcessFlow.Reset = new Class({
     },
     getQuickData: function(){
         return {
-            opinion: this.options.getValue(),
+            routeId: "reset",
+            opinion: this.opinion.getValue(),
             keepTask: this.keepOption.getValue() === "true",
             organizations: {
                 default: this.getSelOrgData()
@@ -2360,12 +2369,14 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
         var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.listMode( d );
         Promise.resolve(p).then(function (json) {
             debugger;
-             var d = this.filterData(json.data);
-             var data = {
-                 type: d.action,
-                 text: this.getText( d ),
-                 data: d
-             };
+             var list = this.filterData(json.data);
+             var data = list.map(function (d) {
+                 return {
+                     type: d.action,
+                     text: this.getText( d ),
+                     data: d
+                 }
+             }.bind(this));
             if( !data || !data.length ){
                 new Element("div.o2flow-quick-select-item", {
                     text: this.flow.lp.noQuickSelectDataNote
@@ -2417,13 +2428,12 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             }).inject( item )
         }.bind(this))
     },
-    filterData: function( onekeyList ){
+    filterData: function( data ){
         //var onekeyList = listData();
-        debugger;
-        return onekeyList.filter(function (d) {
-            var flag = (d.data.action === "process" && this.flow.processEnable) || (d.data.action === "reset" && this.flow.resetEnable) || (d.data.action === "addTask" && this.flow.addTaskEnable);
+        return data.filter(function (d) {
+            var flag = (d.action === "process" && this.flow.processEnable) || (d.action === "reset" && this.flow.resetEnable) || (d.action === "addTask" && this.flow.addTaskEnable);
             if( !flag )return false;
-            if( d.data.action === "process" && !this.flow.getRouteConfig(d.data.routeName) )return false;
+            if( d.action === "process" && !this.flow.getRouteConfig(d.routeName) )return false;
             return true;
         }.bind(this));
     },
@@ -2431,6 +2441,31 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
         //选择[送办理]，意见：请办理，处理人：张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四
         //选择[前加签]，意见：请处理，加签人：赵六
         //保留待办，意见：请处理，重置给：王五
+        var text, orgtexts = [], lp = this.flow.lp;
+        switch (d.action) {
+            case "process":
+                Object.each( d.organizations, function (value, key) {
+                    if( value && value.length ){
+                        orgtexts.push( ( this.flow.getSingleOrgConfig( d.routeId , key ) ).title + "：" + value.map(function(v){ return v.split("@")[0]; }).join("、"));
+                    }
+                }.bind(this));
+                text = lp.submitQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion);
+                if( !orgtexts.length ){
+                    return text.replace("{org}", "");
+                }else{
+                    return text.replace("{org}", "，" + orgtexts.join("，") );
+                }
+            case "addTask":
+                if( d.organizations && d.organizations.default ){
+                    orgtexts.push( d.organizations.default.map(function(v){ return v.split("@")[0]; }).join("、") );
+                }
+                return lp.addTaskQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion).replace("{org}",  orgtexts.join("，") );
+            case "reset":
+                if( d.organizations && d.organizations.default ){
+                    orgtexts.push( d.organizations.default.map(function(v){ return v.split("@")[0]; }).join("、") );
+                }
+                return lp.resetQuickText.replace("{flag}", d.keepTask ? "" : lp.not ).replace("{opinion}", d.opinion).replace("{org}", orgtexts.join("，") );
+        }
 
     },
     saveData: function () {
@@ -2456,7 +2491,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                 quickData = this.flow.processor.getQuickData();
                 break;
             case "addTask":
-                quickData = this.addTask.getQuickData();
+                quickData = this.flow.addTask.getQuickData();
                 break;
             case "reset":
                 quickData = this.flow.reset.getQuickData();

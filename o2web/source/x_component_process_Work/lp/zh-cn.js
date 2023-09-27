@@ -94,8 +94,8 @@ MWF.xApplication.process.Work.LP = {
     "empowerTo": "授权给",
     "selectAll": "全选",
     "noQuickSelectDataNote": "系统还未记录到您在当前节点选择的数据。",
-    "submitQuickText": "选择[{route}]，意见：{opinion}，处理人：{org}",
-    "addTaskQuickText": "选择[{route}]，意见：{opinion}，加签人：{org}",
-    "resetQuickText": "{flag}保留待办，意见：{opinion}，重置给：{org}",
+    "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
+    "addTaskQuickText": "选择[{route}]，意见：{opinion}，加签人：{org}。",
+    "resetQuickText": "{flag}保留待办，意见：{opinion}，重置给：{org}。",
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;
