@@ -547,11 +547,9 @@ public class WorkControlBuilder {
 	private void computeAllowTerminate(Control control) {
 		try {
 			control.setAllowTerminate(false);
-			if (canManage()) {
-				control.setAllowTerminate(true);
-			} else if (activity().getClass().isAssignableFrom(Manual.class)) {
+			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (hasTaskWithWork() && BooleanUtils.isTrue(manual.getAllowTerminate())) {
+				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork())) {
 					control.setAllowTerminate(true);
 				}
 			}
