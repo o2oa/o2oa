@@ -40,6 +40,7 @@ class ParallelAddBeforeQueueAndBeforeQueueTest {
 		tickets.add(opt1.get(), p3, true, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,I", value);
+		
 		tickets.completed("LA");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("C,I", value);

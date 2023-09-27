@@ -42,7 +42,7 @@ class SingleAddAfterSingleAndBeforeSingleTest {
 		Assertions.assertEquals("I,J,K", value);
 		tickets.completed("LI");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("E", value);
+		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);

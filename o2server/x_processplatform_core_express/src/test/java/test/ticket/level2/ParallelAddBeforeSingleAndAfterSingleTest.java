@@ -39,10 +39,10 @@ class ParallelAddBeforeSingleAndAfterSingleTest {
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LE");
 		tickets.add(opt1.get(), p3, false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("A,B,C,I,J,K", value);
+		Assertions.assertEquals("A,C,I,J,K", value);
 		tickets.completed("LA");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,C,I,J,K", value);
+		Assertions.assertEquals("C,I,J,K", value);
 		tickets.completed("LI");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("B,C", value);

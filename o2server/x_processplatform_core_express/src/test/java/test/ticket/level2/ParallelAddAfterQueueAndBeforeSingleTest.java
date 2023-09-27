@@ -18,17 +18,14 @@ import com.x.processplatform.core.express.ticket.Tickets;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ParallelAddAfterQueueAndBeforeSingleTest {
 
-	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
-			new Ticket("C", "LC"));
-	private static final List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"),
-			new Ticket("G", "LG"));
-	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
-			new Ticket("K", "LK"));
-
-	@DisplayName("B后加签EFG,EFG串行处理，E前加签IJK，IJK单人处理,即并行-后加签串行-前加签单人")
+	@DisplayName("B后加签EFG,EFG串行处理，E前加签IJK，IJK单人处理,即并行-后加签串行-前加签单人,IJK任意处理到ACE,E处理到F,F处理到G")
 	@Test
 	@Order(1)
 	void test01() {
+		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
+		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
+		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+
 		Tickets tickets = Tickets.parallel(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
@@ -40,6 +37,7 @@ class ParallelAddAfterQueueAndBeforeSingleTest {
 		tickets.add(opt1.get(), p3, true, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,I,J,K", value);
+
 		tickets.completed("LI");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,E", value);
@@ -59,5 +57,86 @@ class ParallelAddAfterQueueAndBeforeSingleTest {
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
+
+	@DisplayName("B后加签EFG,EFG串行处理，E前加签IJK，IJK单人处理,即并行-后加签串行-前加签单人,AC先处理,IJK任意处理到E,E处理到F,F处理到G")
+	@Test
+	@Order(2)
+	void test02() {
+		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
+		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
+		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+
+		Tickets tickets = Tickets.parallel(p1);
+		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,B,C", value);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
+		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,C,E", value);
+		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LE");
+		tickets.add(opt1.get(), p3, true, Tickets.MODE_SINGLE);
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,C,I,J,K", value);
+
+		tickets.completed("LC");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,I,J,K", value);
+		tickets.completed("LA");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("I,J,K", value);
+		tickets.completed("LJ");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("E", value);
+		tickets.completed("LE");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("F", value);
+		tickets.completed("LF");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("G", value);
+		tickets.completed("LG");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("", value);
+	}
+
+	@DisplayName("B后加签EFG,EFG串行处理，E前加签IJK，IJK单人处理,即并行-后加签串行-前加签单人,混合处理,IJK任意处理到E,E处理到F,F处理到G")
+	@Test
+	@Order(3)
+	void test03() {
+		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
+		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
+		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+
+		Tickets tickets = Tickets.parallel(p1);
+		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,B,C", value);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
+		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,C,E", value);
+		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LE");
+		tickets.add(opt1.get(), p3, true, Tickets.MODE_SINGLE);
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,C,I,J,K", value);
+
+		tickets.completed("LC");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,I,J,K", value);
+		tickets.completed("LJ");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,E", value);
+		tickets.completed("LE");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,F", value);
+		tickets.completed("LF");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("A,G", value);
+		tickets.completed("LA");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("G", value);
+		tickets.completed("LG");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("", value);
+	}
+
 
 }

@@ -35,11 +35,11 @@ class QueueAddAfterSingleAndAfterSingleTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,E,F,G", value);
+		Assertions.assertEquals("E,F,G", value);
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LF");
 		tickets.add(opt1.get(), p3, false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,I,J,K", value);
+		Assertions.assertEquals("I,J,K", value);
 		tickets.completed("LJ");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("B", value);

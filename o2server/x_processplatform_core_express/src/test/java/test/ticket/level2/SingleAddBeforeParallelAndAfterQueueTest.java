@@ -51,10 +51,10 @@ class SingleAddBeforeParallelAndAfterQueueTest {
 		Assertions.assertEquals("G,K", value);
 		tickets.completed("LG");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,K", value);
+		Assertions.assertEquals("K", value);
 		tickets.completed("LK");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B", value);
+		Assertions.assertEquals("A,B,C", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);

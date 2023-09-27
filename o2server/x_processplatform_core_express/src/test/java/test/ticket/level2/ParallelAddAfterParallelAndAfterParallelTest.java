@@ -29,6 +29,7 @@ class ParallelAddAfterParallelAndAfterParallelTest {
 	@Test
 	@Order(1)
 	void test01() {
+		
 		Tickets tickets = Tickets.parallel(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);

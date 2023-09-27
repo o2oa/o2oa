@@ -18,17 +18,14 @@ import com.x.processplatform.core.express.ticket.Tickets;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ParallelAddAfterSingleAndAfterQueueTest {
 
-	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
-			new Ticket("C", "LC"));
-	private static final List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"),
-			new Ticket("G", "LG"));
-	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
-			new Ticket("K", "LK"));
-
 	@DisplayName("B后加签EFG,EFG单人处理，E后加签IJK，IJK串行处理,即并行-后加签单人-后加签串行")
 	@Test
 	@Order(1)
 	void test01() {
+		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
+		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
+		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+
 		Tickets tickets = Tickets.parallel(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);

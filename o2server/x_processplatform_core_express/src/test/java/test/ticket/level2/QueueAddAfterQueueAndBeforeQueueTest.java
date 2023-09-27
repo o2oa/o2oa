@@ -35,27 +35,21 @@ class QueueAddAfterQueueAndBeforeQueueTest {
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,E", value);
+		Assertions.assertEquals("E", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,F", value);
+		Assertions.assertEquals("F", value);
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LF");
 		tickets.add(opt1.get(), p3, true, Tickets.MODE_QUEUE);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,I", value);
+		Assertions.assertEquals("I", value);
 		tickets.completed("LI");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B,J", value);
-		tickets.completed("LB");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("C,J", value);
+		Assertions.assertEquals("J", value);
 		tickets.completed("LJ");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("C,K", value);
+		Assertions.assertEquals("K", value);
 		tickets.completed("LK");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("C,F", value);
-		tickets.completed("LC");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("F", value);
 		tickets.completed("LF");
@@ -63,17 +57,14 @@ class QueueAddAfterQueueAndBeforeQueueTest {
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("B", value);
+		tickets.completed("LB");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		Assertions.assertEquals("C", value);
+		tickets.completed("LC");
+		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 
-		// tickets.completed("LK");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		// Assertions.assertEquals("C,F", value);
-		// tickets.completed("LC");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		// Assertions.assertEquals("F", value);
-		// tickets.completed("LF");
-		// value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		// Assertions.assertEquals("", value);
 	}
 
 }

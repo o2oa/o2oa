@@ -42,7 +42,7 @@ class QueueAddBeforeSingleAndBeforeSingleTest {
 		Assertions.assertEquals("I,J,K", value);
 		tickets.completed("LJ");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("F", value);
+		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LF");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A", value);

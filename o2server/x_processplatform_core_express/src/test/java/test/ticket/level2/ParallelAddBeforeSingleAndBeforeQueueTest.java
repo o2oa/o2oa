@@ -54,7 +54,7 @@ class ParallelAddBeforeSingleAndBeforeQueueTest {
 		Assertions.assertEquals("K", value);
 		tickets.completed("LK");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("E", value);
+		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LE");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("B", value);

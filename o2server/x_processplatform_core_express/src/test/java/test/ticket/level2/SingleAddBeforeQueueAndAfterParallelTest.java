@@ -39,13 +39,13 @@ class SingleAddBeforeQueueAndAfterParallelTest {
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LE");
 		tickets.add(opt1.get(), p3, false, Tickets.MODE_PARALLEL);
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("F,I,J,K", value);
+		Assertions.assertEquals("I,J,K", value);
 		tickets.completed("LI");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("F,J,K", value);
+		Assertions.assertEquals("J,K", value);
 		tickets.completed("LJ");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("F,K", value);
+		Assertions.assertEquals("K", value);
 		tickets.completed("LK");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("F", value);
@@ -54,7 +54,7 @@ class SingleAddBeforeQueueAndAfterParallelTest {
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
-		Assertions.assertEquals("B", value);
+		Assertions.assertEquals("A,B,C", value);
 		tickets.completed("LB");
 		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
