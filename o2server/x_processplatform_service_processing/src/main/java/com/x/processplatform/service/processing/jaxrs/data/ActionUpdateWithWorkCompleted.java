@@ -65,7 +65,7 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 				JsonElement merge = XGsonBuilder.merge(wi.getJsonElement(), source);
 
 				/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-				updateTitleSerial(business, workCompleted, merge);
+				updateTitleSerialObjectSecurityClearance(business, workCompleted, merge);
 				updateData(business, workCompleted, merge);
 				/* updateTitleSerial 和 updateData 方法内进行了提交 */
 

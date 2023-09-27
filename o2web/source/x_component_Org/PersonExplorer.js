@@ -822,6 +822,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         var n = this.editContentNode.getElement(".infor_description");
         if (n) n.set("text", this.data.description || "");
 
+        n = this.editContentNode.getElement(".infor_securityLabel");
+        this.getSecurityLabelText().then(function(securityLabel){
+            if (n) n.set("text", securityLabel || "");
+        });
+
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -831,6 +837,32 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
 
         this.loadAction();
     },
+
+    getSecurityLabelText(){
+        return this.getSecurityLabelList().then(function(labelList){
+
+            var securityLabel = "";
+            var keys = Object.keys(labelList);
+            for (var i=0; i<keys.length; i++){
+                var value = this.content.securityLabelList[keys[i]];
+                if (value === this.data.subjectSecurityClearance){
+                    securityLabel = keys[i];
+                    break;
+                }
+            }
+            return securityLabel;
+
+        }.bind(this));
+    },
+    getSecurityLabelList: function(){
+        if (this.content.securityLabelList) return Promise.resolve(this.content.securityLabelList);
+
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction.subject().then(function(json){
+            this.content.securityLabelList = json.data;
+            return this.content.securityLabelList;
+        }.bind(this));
+    },
+
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
@@ -847,6 +879,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
+
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td colspan='3' class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "</tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -990,6 +1025,23 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[13]);
         this.descriptionInputNode.set("value", (this.data.description));
 
+        tdContents[14].setStyles(this.style.baseInforContentNode_edit).empty();
+        var securityLabel = this.data.subjectSecurityClearance;
+        this.securityLabelSelectNode = new Element("select", {"styles": this.style.selectNode}).inject(tdContents[14]);
+        new Element("option", {value: "", text: ""}).inject(this.securityLabelSelectNode);
+
+        this.getSecurityLabelList().then(function(securityLabelList){
+            if (securityLabelList) Object.keys(securityLabelList).forEach(function(key){
+                var value = securityLabelList[key];
+                var option = new Element("option", {value: value, text: key}).inject(this.securityLabelSelectNode);
+                if (securityLabel === value){
+                    option.selected = true;
+                }
+            }.bind(this));
+        }.bind(this));
+
+        // this.securityLabelSelectNode.set("value", (this.data.description));
+
         var _self = this;
         this.editContentNode.getElements("input").addEvents({
             "focus": function(){if (this.get("type").toLowerCase()==="text"){this.setStyles(_self.style.inputNode_focus);}},
@@ -1073,6 +1125,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         data.birthday = this.birthdayInputNode.get("value");
         data.ipAddress = this.ipAddressInputNode.get("value");
         data.description = this.descriptionInputNode.get("value");
+        data.description = this.descriptionInputNode.get("value");
+        var securityLabel = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
+        data.subjectSecurityClearance = (securityLabel) ? parseInt(securityLabel) : null;
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
         var radios = tdContents[4].getElements("input");
@@ -1125,6 +1180,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
             tdContents[12].setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
             tdContents[13].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+
+            this.getSecurityLabelText().then(function(securityLabel){
+                tdContents[14].setStyles(this.style.baseInforContentNode).set("text", securityLabel || "");
+            }.bind(this));
+
+
 
             this.mode = "read";
 

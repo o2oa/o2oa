@@ -105,6 +105,18 @@ public class XGsonBuilder {
 		return null;
 	}
 
+	public static Integer extractInteger(JsonElement jsonElement, String name) {
+		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {
+			JsonElement element = extract(jsonElement, name);
+			if (null != element && element.isJsonPrimitive()) {
+				JsonPrimitive jsonPrimitive = element.getAsJsonPrimitive();
+				if (jsonPrimitive.isNumber())
+					return jsonPrimitive.getAsInt();
+			}
+		}
+		return null;
+	}
+
 	public static List<String> extractStringList(JsonElement jsonElement, String name) {
 		List<String> list = new ArrayList<>();
 		if ((null != jsonElement) && jsonElement.isJsonObject() && StringUtils.isNotEmpty(name)) {

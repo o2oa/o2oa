@@ -205,6 +205,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.tinymceEditor,
     "className": "TinyMCEEditor"
   },
+  "security": {
+    "icon": "security.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.security,
+    "className": "Security"
+  },
   "log": {
     "icon": "log.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,

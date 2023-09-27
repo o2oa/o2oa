@@ -67,19 +67,19 @@ class ActionUpdateWithJob extends BaseAction {
 				if (!works.isEmpty()) {
 					for (Work work : works) {
 						/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-						updateTitleSerial(business, work, merge);
+						updateTitleSerialObjectSecurityClearance(business, work, merge);
 					}
 					/* updateTitleSerial 和 updateData 方法内进行了提交 */
 					updateData(business, works.get(0), merge);
 
 					wi.init(works.get(0), merge);
 					createDataRecord(business, wi);
-				}else {
+				} else {
 					List<WorkCompleted> workCompletedList = emc.listEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
 					if (!workCompletedList.isEmpty()) {
 						for (WorkCompleted work : workCompletedList) {
 							/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-							updateTitleSerial(business, work, merge);
+							updateTitleSerialObjectSecurityClearance(business, work, merge);
 						}
 						/* updateTitleSerial 和 updateData 方法内进行了提交 */
 						updateData(business, workCompletedList.get(0), merge);
@@ -88,7 +88,6 @@ class ActionUpdateWithJob extends BaseAction {
 						createDataRecord(business, wi);
 					}
 				}
-
 				wo.setId(job);
 			}
 			result.setData(wo);

@@ -486,18 +486,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean beforeExecuted;
 
-//	public static final String manualTaskIdentityList_FIELDNAME = "manualTaskIdentityList";
-//	@FieldDescribe("预期的处理人")
-//	@PersistentCollection(fetch = FetchType.EAGER)
-//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-//	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-//			+ manualTaskIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-//					+ manualTaskIdentityList_FIELDNAME + JoinIndexNameSuffix))
-//	@ElementColumn(length = length_255B, name = ColumnNamePrefix + manualTaskIdentityList_FIELDNAME)
-//	@ElementIndex(name = TABLE + IndexNameMiddle + manualTaskIdentityList_FIELDNAME + ElementIndexNameSuffix)
-//	@CheckPersist(allowEmpty = true)
-//	private List<String> manualTaskIdentityList;
-
 	public static final String MANUALTASKIDENTITYTEXT_FIELDNAME = "manualTaskIdentityText";
 	@FieldDescribe("当前处理人身份合并文本,用','分割,超长截断,此字段仅用于显示当前工作的处理人,不索引.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + MANUALTASKIDENTITYTEXT_FIELDNAME)
@@ -814,6 +802,21 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + timeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
+
+	public static final String OBJECTSECURITYCLEARANCE_FIELDNAME = "objectSecurityClearance";
+	@FieldDescribe("客体密级标识.")
+	@Column(name = ColumnNamePrefix + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + OBJECTSECURITYCLEARANCE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer objectSecurityClearance;
+
+	public Integer getObjectSecurityClearance() {
+		return objectSecurityClearance;
+	}
+
+	public void setObjectSecurityClearance(Integer objectSecurityClearance) {
+		this.objectSecurityClearance = objectSecurityClearance;
+	}
 
 	public String getProcess() {
 		return process;
