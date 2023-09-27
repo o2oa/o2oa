@@ -23,6 +23,10 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("是否允许退回.")
 	private Boolean allowGoBack;
 
+	// @since 8.2
+	@FieldDescribe("是否允许终止.")
+	private Boolean allowTerminate;
+
 	@FieldDescribe("回退配置.")
 	private GoBackConfig goBackConfig;
 
@@ -34,6 +38,14 @@ public class ManualProperties extends JsonProperties {
 
 	@FieldDescribe("流程参与者作为待办人设置.")
 	private Participant taskParticipant;
+
+	public Boolean getAllowTerminate() {
+		return allowTerminate;
+	}
+
+	public void setAllowTerminate(Boolean allowTerminate) {
+		this.allowTerminate = allowTerminate;
+	}
 
 	public Participant getTaskParticipant() {
 		return taskParticipant;

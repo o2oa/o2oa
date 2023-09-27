@@ -131,6 +131,11 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkTitle": "Delete work confirmation",
     "deleteWorkText": {"html": "<div style='color: red;'>Note: You are deleting this work, and the work cannot be retrieved after deletion. Are you sure you want to delete this work?</div>" , "text": "Note: You are deleting this work. The work cannot be retrieved after deletion. Are you sure you want to delete this work?"},
     "workDelete": "Work has been deleted",
+
+    "terminateWorkTitle": "Terminate file confirmation",
+    "terminateWorkText": "Terminating the file means that the file is abandoned and will be transferred directly. Do you confirm that you want to terminate this file?",
+    "workTerminate": "The file has been terminated",
+
     "amount": "▌Total",
     "sectionAmount": "▌Subtotal",
     "delete": "Delete",
@@ -331,6 +336,10 @@ MWF.xApplication.process.Xform.LP = {
         "rollbackTitle": "Rollback the work to the specified activity, without keeping process records",
         "delete": "Delete",
         "deleteTitle": "Delete Document",
+
+        "terminate": "Terminate",
+        "terminateTitle": "End file process",
+
         "print": "Print",
         "printTitle": "Open through the print form, and print the document",
         "press": "Urge",

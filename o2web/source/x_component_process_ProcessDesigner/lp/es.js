@@ -429,6 +429,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "Establecer horas laborales para el tiempo de espera",
 		"activityPower": "Permisos",
 		"allowDelete": "Permitir eliminación de archivos",
+		"allowTerminate": "Permitir terminación",
 		"allowReset": "Permitir reinicio",
 		"resetCount": "Número de reinicios de aprobación",
 		"resetRange": "Alcance de reinicio",

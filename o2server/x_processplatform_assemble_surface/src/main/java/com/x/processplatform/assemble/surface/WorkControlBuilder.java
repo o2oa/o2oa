@@ -74,6 +74,8 @@ public class WorkControlBuilder {
 	private boolean ifAllowResume = false;
 	// 是否可以退回
 	private boolean ifAllowGoBack = false;
+	// 是否可以终止
+	private boolean ifAllowTerminate = false;
 
 	public WorkControlBuilder enableAllowManage() {
 		this.ifAllowManage = true;
@@ -155,6 +157,11 @@ public class WorkControlBuilder {
 		return this;
 	}
 
+	public WorkControlBuilder enableAllowTerminate() {
+		this.ifAllowTerminate = true;
+		return this;
+	}
+
 	public WorkControlBuilder enableAll() {
 		enableAllowManage();
 		enableAllowVisit();
@@ -172,6 +179,7 @@ public class WorkControlBuilder {
 		enableAllowPause();
 		enableAllowResume();
 		enableAllowGoBack();
+		enableAllowTerminate();
 		return this;
 	}
 
@@ -301,7 +309,8 @@ public class WorkControlBuilder {
 				Pair.of(ifAllowRetract, this::computeAllowRetract),
 				Pair.of(ifAllowRollback, this::computeAllowRollback), Pair.of(ifAllowPress, this::computeAllowPress),
 				Pair.of(ifAllowPause, this::computeAllowPause), Pair.of(ifAllowResume, this::computeAllowResume),
-				Pair.of(ifAllowGoBack, this::computeAllowGoBack)).stream().filter(Pair::first)
+				Pair.of(ifAllowGoBack, this::computeAllowGoBack),
+				Pair.of(ifAllowTerminate, this::computeAllowTerminate)).stream().filter(Pair::first)
 				.forEach(o -> o.second().accept(control));
 		recalculate(work, control);
 		return control;
@@ -382,9 +391,9 @@ public class WorkControlBuilder {
 	 */
 	private void computeAllowDelete(Control control) {
 		try {
-			control.setAllowDelete(canManage()
-					|| (PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& hasTaskWithWork()));
+			control.setAllowDelete(
+					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
+							&& (canManage() || hasTaskWithWork())));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -532,6 +541,20 @@ public class WorkControlBuilder {
 					} else {
 						control.setAllowGoBack(true);
 					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void computeAllowTerminate(Control control) {
+		try {
+			control.setAllowTerminate(false);
+			if (activity().getClass().isAssignableFrom(Manual.class)) {
+				Manual manual = (Manual) activity;
+				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork())) {
+					control.setAllowTerminate(true);
 				}
 			}
 		} catch (Exception e) {

@@ -5682,6 +5682,126 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
+
+    terminateWork: function(e, ev){
+        var _self = this;
+        if (this.json.mode === "Mobile") {
+            var p = MWF.getCenterPosition(document.body, 300, 150);
+            var x = p.x;
+            if (p.x < 20) {
+                x = 20;
+            } else {
+                x = p.x;
+            }
+            var event = {
+                "event": {
+                    "x": x,
+                    "y": p.y - 200,
+                    "clientX": x,
+                    "clientY": p.y - 200
+                }
+            };
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.terminateWorkTitle, MWF.xApplication.process.Xform.LP.terminateWorkText, 300, 120, function () {
+                _self.app.content.mask({
+                    "style": {
+                        "background-color": "#999",
+                        "opacity": 0.6
+                    }
+                });
+                MWF.require("MWF.widget.Mask", function () {
+                    _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                    _self.mask.loadNode(_self.app.content);
+
+                    _self.fireEvent("beforeTerminat");
+                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeTerminat");
+
+                    _self.doTerminateWork(function () {
+                        _self.fireEvent("afterTerminat");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterTerminat");
+                        _self.app.notice(MWF.xApplication.process.Xform.LP.workTerminate + ": “" + _self.businessData.work.title + "”", "success");
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
+                        _self.finishOnMobile()
+                    }.bind(this), function (xhr, text, error) {
+                        var errorText = error + ":" + text;
+                        if (xhr) errorText = xhr.responseText;
+                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }, function () {
+                this.close();
+            }, null, this.app.content, this.json.confirmStyle);
+        } else {
+            var p = MWF.getCenterPosition(this.app.content, 380, 150);
+            var event = {
+                "event": {
+                    "x": p.x,
+                    "y": p.y - 200,
+                    "clientX": p.x,
+                    "clientY": p.y - 200
+                }
+            };
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.terminateWorkTitle, MWF.xApplication.process.Xform.LP.terminateWorkText, 380, 120, function () {
+                // _self.app.content.mask({
+                //    "style": {
+                //        "background-color": "#999",
+                //        "opacity": 0.6
+                //    }
+                // });
+
+
+                MWF.require("MWF.widget.Mask", function () {
+                    _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                    _self.mask.loadNode(_self.app.content);
+
+                    _self.fireEvent("beforeTerminat");
+                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeTerminat");
+
+                    _self.doTerminateWork(function () {
+                        _self.fireEvent("afterTerminat");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterTerminat");
+                        _self.app.notice(MWF.xApplication.process.Xform.LP.workTerminate + ": “" + _self.businessData.work.title + "”", "success");
+                        _self.app.close();
+                        this.close();
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
+                    }.bind(this), function (xhr, text, error) {
+                        var errorText = error + ":" + text;
+                        if (xhr) errorText = xhr.responseText;
+                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }, function () {
+                this.close();
+            }, null, this.app.content, this.json.confirmStyle);
+        }
+    },
+
+
+    doTerminateWork: function (success, failure) {
+        if (this.businessData.control["allowTerminate"]) {
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Terminate(this.businessData.work.id, function (json) {
+                if (success) success(json);
+            }.bind(this), function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            });
+        }else {
+            if (failure) failure(null, "Permission Denied", "");
+        }
+    }
+
 });
 
 

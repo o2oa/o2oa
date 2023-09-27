@@ -38,10 +38,11 @@ public class Control extends GsonPropertyObject {
 	private Boolean allowResume;
 	// 是否可以退回
 	private Boolean allowGoBack;
+	// 是否可以终止
+	private Boolean allowTerminate;
 
 	/**
-	 * 权限必须要查的，下面两个字段不用二次查询
-	 * 工作标题
+	 * 权限必须要查的，下面两个字段不用二次查询 工作标题
 	 */
 	private String workTitle;
 	// 工作的job
@@ -173,6 +174,14 @@ public class Control extends GsonPropertyObject {
 
 	public void setAllowGoBack(Boolean allowGoBack) {
 		this.allowGoBack = allowGoBack;
+	}
+
+	public Boolean getAllowTerminate() {
+		return allowTerminate;
+	}
+
+	public void setAllowTerminate(Boolean allowTerminate) {
+		this.allowTerminate = allowTerminate;
 	}
 
 	public String getWorkTitle() {

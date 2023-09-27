@@ -132,6 +132,11 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkTitle": "删除文件确认",
     "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>", "text": "注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？"},
     "workDelete": "已经删除文件",
+
+    "terminateWorkTitle": "终止文件确认",
+    "terminateWorkText": "终止文件表示此文件被废弃，直接结束流转，请您确认要终止此文件吗？",
+    "workTerminate": "已经终止文件",
+
     "amount": "▌总计",
     "sectionAmount": "▌小计",
     "delete": "删除",
@@ -331,6 +336,8 @@ MWF.xApplication.process.Xform.LP = {
         "rollbackTitle": "回溯到指定的环节，不保留流程记录",
         "delete": "删除文档",
         "deleteTitle": "删除文件",
+        "terminate": "终止文件",
+        "terminateTitle": "结束文件流转",
         "print": "打印",
         "printTitle": "打印文档",
         "press": "催促办理",

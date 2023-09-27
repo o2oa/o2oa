@@ -439,6 +439,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "设置几个工作小时后超时",
 		"activityPower": "权限",
 		"allowDelete": "允许删除文件",
+		"allowTerminate": "允许终止文件",
 		"allowReset": "是否允许重置",
 		"resetCount": "重置加签人数",
 		"resetRange": "重置加签范围",

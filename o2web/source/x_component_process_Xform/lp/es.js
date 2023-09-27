@@ -131,6 +131,12 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkTitle": "Confirmación de Eliminación de Archivo",
     "deleteWorkText": {"html": "<div style='color: red;'>Nota: Está eliminando este documento, después de eliminarlo no se puede recuperar, ¿está seguro de que desea eliminar este archivo?</div>", "text": "Nota: Está eliminando este documento, después de eliminarlo no se puede recuperar, ¿está seguro de que desea eliminar este archivo?"},
     "workDelete": "Archivo eliminado exitosamente",
+
+    "terminateWorkTitle": "Terminar la confirmación del archivo",
+    "terminateWorkText": "Terminar el archivo significa que el archivo se abandona y se transferirá directamente. ¿Confirma que desea terminar este archivo?",
+    "workTerminate": "El archivo ha sido terminado",
+
+
     "amount": "▌Total",
     "sectionAmount": "▌Subtotal",
     "delete": "Eliminar",
@@ -327,6 +333,10 @@ MWF.xApplication.process.Xform.LP = {
         "rollbackTitle": "Retroceder a una etapa específica sin conservar los registros del flujo de trabajo",
         "delete": "Borrar el documento",
         "deleteTitle": "Borrar el archivo",
+
+        "terminar": "Terminar",
+        "terminateTitle": "Finalizar transferencia de archivo",
+
         "print": "Imprimir",
         "printTitle": "Imprimir el documento",
         "press": "Apurar la tarea",

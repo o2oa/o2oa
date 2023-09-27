@@ -418,6 +418,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "Set timeout after a few work hours",
 		"activityPower": "Power",
 		"allowDelete": "Allow Delete",
+		"allowTerminate": "Allow Terminate",
 		"allowReset": "Allow Reset",
 		"resetCount": "Reset Count",
 		"resetRange": "Reset Range",

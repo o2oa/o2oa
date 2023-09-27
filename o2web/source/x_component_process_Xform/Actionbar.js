@@ -391,4 +391,8 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             this.form.goBack(e);
         },
 
+        terminate: function(e, ev){
+            this.form.terminateWork(e, ev);
+        }
+
     });
