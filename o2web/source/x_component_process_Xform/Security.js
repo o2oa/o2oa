@@ -57,6 +57,10 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 				return this.securityLabelList;
 			}.bind(this));
 		},
-
+		_setBusinessData: function(v, id){
+			var value = v.toInt();
+			this.setBusinessDataById(value, id);
+			this.form.businessData.$work.objectSecurityClearance = value;
+		},
 		addOption: function(){}
 	});
