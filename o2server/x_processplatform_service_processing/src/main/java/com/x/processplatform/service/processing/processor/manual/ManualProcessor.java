@@ -49,6 +49,8 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.log.Signal;
+import com.x.processplatform.core.entity.ticket.Ticket;
+import com.x.processplatform.core.entity.ticket.Tickets;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -59,9 +61,6 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 public class ManualProcessor extends AbstractManualProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ManualProcessor.class);
-
-	// private static final String DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST =
-	// "manualTaskIdentityList";
 
 	public ManualProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -74,13 +73,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// 根据manual计算出来的活动处理人
 		ManualTaskIdentityMatrix manualTaskIdentityMatrix = manual
 				.identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects, manual));
+		Tickets tickets = manual.identitiesToTickets(calculateTaskIdentities(aeiObjects, manual));
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual, manualTaskIdentityMatrix);
 		if (mergeWork.isPresent()) {
 			return mergeWork.get();
 		}
 		this.arrivingPassSame(aeiObjects, manualTaskIdentityMatrix);
+		this.arrivingPassSame(aeiObjects, tickets);
 		aeiObjects.getWork().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
+		aeiObjects.getWork().setTickets(tickets);
 		return aeiObjects.getWork();
 	}
 
@@ -154,6 +156,36 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	private void arrivingPassSame(AeiObjects aeiObjects, Tickets tickets) throws Exception {
+		// 查找是否有passSameTarget设置
+		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
+			return;
+		}
+		Optional<Route> route = aeiObjects.getRoutes().stream().filter(o -> BooleanUtils.isTrue(o.getPassSameTarget()))
+				.findFirst();
+		// 如果有passSameTarget,有到达ArriveWorkLog,不是调度到这个节点的
+		if (route.isPresent() && (null != aeiObjects.getArriveWorkLog(aeiObjects.getWork()))) {
+			Optional<WorkLog> optional = findPassSameTargetWorkLog(aeiObjects);
+			if (optional.isEmpty()) {
+				return;
+			}
+			LOGGER.debug("pass same target work:{}, workLog:{}.", aeiObjects::getWork, optional.get()::toString);
+			List<Ticket> ticketList = tickets.bubble();
+			List<TaskCompleted> taskCompletedList = aeiObjects
+					.getJoinInquireTaskCompletedsWithActivityToken(optional.get().getFromActivityToken());
+			for (Ticket ticket : ticketList) {
+				for (TaskCompleted taskCompleted : taskCompletedList) {
+					if (StringUtils.equalsIgnoreCase(ticket.target(), taskCompleted.getIdentity())) {
+						TaskCompleted tc = arrivingPassSameCreateTaskCompleted(aeiObjects, route.get(), taskCompleted,
+								ticket.target());
+						aeiObjects.getCreateTaskCompleteds().add(tc);
+						tickets.completed(ticket);
+					}
+				}
+			}
+		}
+	}
+
 	private TaskCompleted arrivingPassSameCreateTaskCompleted(AeiObjects aeiObjects, Route route, TaskCompleted o,
 			String identity) throws Exception {
 		TaskCompleted taskCompleted = new TaskCompleted(aeiObjects.getWork(), route, o);
@@ -199,8 +231,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
 			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, manual, taskIdentities);
 			// 处理授权
-			this.writeToEmpowerMap(aeiObjects, taskIdentities);
 		}
+		this.writeToEmpowerMap(aeiObjects, taskIdentities);
 		return taskIdentities.identities();
 	}
 
@@ -216,25 +248,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 			calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, tree, node);
 		}
 	}
-
-//    private void calculateRouteTypeBackIdentityByTaskCompleted(AeiObjects aeiObjects, Manual manual,
-//            TaskIdentities taskIdentities, List<String> identities, WorkLogTree tree, Node node) throws Exception {
-//        for (Node n : tree.up(node)) {
-//            if (StringUtils.equals(manual.getId(), n.getWorkLog().getFromActivity())) {
-//                for (TaskCompleted t : aeiObjects.getTaskCompleteds()) {
-//                    if (StringUtils.equals(n.getWorkLog().getFromActivityToken(), t.getActivityToken())
-//                            && BooleanUtils.isTrue(t.getJoinInquire())) {
-//                        identities.add(t.getIdentity());
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//        identities = aeiObjects.business().organization().identity().list(identities);
-//        if (ListTools.isNotEmpty(identities)) {
-//            taskIdentities.addIdentities(identities);
-//        }
-//    }
 
 	private void calculateRouteTypeBackIdentityByTaskCompleted(AeiObjects aeiObjects, Manual manual,
 			TaskIdentities taskIdentities, WorkLogTree tree, Node node) throws Exception {
@@ -399,8 +412,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
-		// ManualTaskIdentityMatrix matrix =
-		// executingManualTaskIdentityMatrix(aeiObjects, manual);
+		Tickets tickets = aeiObjects.getWork().getTickets();
+		aeiObjects.getTaskCompleteds().stream().forEach(o -> {
+
+		});
 		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
 //		List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
 //				aeiObjects.getWork().getActivityToken());
@@ -444,37 +459,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
 		return results;
 	}
-
-//    @SuppressWarnings("unchecked")
-//    @Deprecated(forRemoval = true, since = "8.0")
-//    private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
-//            throws Exception {
-//        ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
-//        List<String> exists = matrix.flat();
-//        matrix.remove(ListUtils.subtract(exists, aeiObjects.business().organization().identity().list(exists)));
-//        if (matrix.isEmpty()) {
-//            List<String> identities = new ArrayList<>();
-//            // 兼容7.2.0之前的版本
-//            List<String> deprecatedIdentities = new ArrayList<>();
-//            if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
-//                deprecatedIdentities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
-//                        DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
-//                identities.addAll(deprecatedIdentities);
-//                identities = aeiObjects.business().organization().identity().list(identities);
-//            }
-//            if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
-//                    aeiObjects.getWork().getActivityToken()).isEmpty()) {
-//                identities = calculateTaskIdentities(aeiObjects, manual);
-//                LOGGER.info("工作设置的处理人 {} 已经全部无效, 且没有已办, 重新计算当前环节所有处理人进行处理, 标题:{}, id:{}, 强制设置的处理人:{}.",
-//                        () -> StringUtils.join(deprecatedIdentities), aeiObjects.getWork()::getTitle,
-//                        aeiObjects.getWork()::getId, identities::toString);
-//            }
-//            matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
-//        }
-//        // 重新绑定到对象上.
-//        aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
-//        return matrix;
-//    }
 
 	/**
 	 * 将已办人员从办理身份矩阵中剔除,如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍

@@ -710,6 +710,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private TaskCompletedProperties properties;
 
+	public static final String LABEL_FIELDNAME = "label";
+	@Schema(description = "待办凭证标识.")
+	@FieldDescribe("待办凭证标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + LABEL_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LABEL_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String label;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
@@ -934,13 +942,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
-//	public String getDecision() {
-//		return decision;
-//	}
-//
-//	public void setDecision(String decision) {
-//		this.decision = decision;
-//	}
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	public String getJob() {
 		return job;

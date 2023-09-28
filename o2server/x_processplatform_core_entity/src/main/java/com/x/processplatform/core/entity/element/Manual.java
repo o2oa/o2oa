@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.element;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -39,6 +40,8 @@ import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ManualProperties.GoBackConfig;
 import com.x.processplatform.core.entity.element.ManualProperties.Participant;
+import com.x.processplatform.core.entity.ticket.Ticket;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -261,6 +264,19 @@ public class Manual extends Activity {
 		case grab:
 		default:
 			return ManualTaskIdentityMatrix.concreteSingleRow(identities);
+		}
+	}
+
+	public Tickets identitiesToTickets(List<String> identities) {
+		switch (this.getManualMode()) {
+		case parallel:
+			return Tickets.parallel(identities.stream().map(Ticket::new).collect(Collectors.toList()));
+		case queue:
+			return Tickets.queue(identities.stream().map(Ticket::new).collect(Collectors.toList()));
+		case single:
+		case grab:
+		default:
+			return Tickets.single(identities.stream().map(Ticket::new).collect(Collectors.toList()));
 		}
 	}
 

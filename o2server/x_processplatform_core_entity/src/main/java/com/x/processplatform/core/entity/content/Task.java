@@ -594,6 +594,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private String workCreateType;
 
+	public static final String LABEL_FIELDNAME = "label";
+	@Schema(description = "待办凭证标识.")
+	@FieldDescribe("待办凭证标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + LABEL_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LABEL_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String label;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@Schema(description = "业务数据String值01.")
 	@FieldDescribe("业务数据String值01.")
@@ -1439,6 +1447,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setRouteAlias(String routeAlias) {
 		this.routeAlias = routeAlias;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 }

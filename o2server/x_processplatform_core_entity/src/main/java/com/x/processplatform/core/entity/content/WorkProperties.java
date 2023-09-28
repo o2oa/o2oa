@@ -10,6 +10,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 public class WorkProperties extends JsonProperties {
 
@@ -53,6 +54,17 @@ public class WorkProperties extends JsonProperties {
 
 	@FieldDescribe("拆分值存储对象.")
 	private Map<String, String> splitTokenValueMap = new LinkedHashMap<>();
+
+	@FieldDescribe("待办凭证.")
+	private Tickets tickets;
+
+	public Tickets getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(Tickets tickets) {
+		this.tickets = tickets;
+	}
 
 	public Map<String, String> getSplitTokenValueMap() {
 		return splitTokenValueMap;
@@ -180,7 +192,6 @@ public class WorkProperties extends JsonProperties {
 
 		private static final long serialVersionUID = 2334994291846390241L;
 
-		// private String way;
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 		private String activity;
 		private ActivityType activityType;
