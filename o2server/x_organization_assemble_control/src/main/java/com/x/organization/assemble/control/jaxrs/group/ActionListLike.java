@@ -109,9 +109,10 @@ class ActionListLike extends BaseAction {
 		Root<Group> root = cq.from(Group.class);
 		Predicate p = cb.like(cb.lower(root.get(Group_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Group_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Group_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Group_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Group_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Group_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Group_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p,
+				cb.like(cb.lower(root.get(Group_.distinguishedName)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(groupIds)) {
 			p = cb.and(p, root.get(Group_.id).in(groupIds));
 		}

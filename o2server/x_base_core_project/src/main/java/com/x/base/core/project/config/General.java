@@ -61,7 +61,6 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
-	private static final Boolean DEFAULT_SECURITYCLEARANCEENABLE = false;
 
 	public static General defaultInstance() {
 		General o = new General();
