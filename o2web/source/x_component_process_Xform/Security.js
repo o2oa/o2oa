@@ -62,5 +62,21 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 			this.setBusinessDataById(value, id);
 			this.form.businessData.data.$work.objectSecurityClearance = value;
 		},
+		getInputData: function(){
+			if( this.isReadonly()){
+				return this._getBusinessData();
+			}else{
+				var ops = this.node.getElements("option");
+				var value = [];
+				ops.each(function(op){
+					if (op.selected){
+						var v = op.get("value");
+						value.push(v || "");
+					}
+				});
+				if (!value.length) return null;
+				return (value.length==1) ? value[0].toInt() : value.toInt();
+			}
+		},
 		addOption: function(){}
 	});
