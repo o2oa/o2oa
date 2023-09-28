@@ -20,8 +20,10 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
@@ -64,7 +66,8 @@ class V2Terminate extends BaseAction {
 				Work work = emc.find(workId, Work.class);
 				Business business = new Business(emc);
 				Activity activity = business.element().getActivity(work.getActivity());
-				AeiObjects aeiObjects = new AeiObjects(business, work, activity, null, null);
+				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingConfigurator(),
+						new ProcessingAttributes());
 				WorkCompleted workCompleted = createWorkCompleted(aeiObjects.getWork(), activity);
 				workCompleted.setAllowRollback(false);
 				aeiObjects.getCreateWorkCompleteds().add(workCompleted);

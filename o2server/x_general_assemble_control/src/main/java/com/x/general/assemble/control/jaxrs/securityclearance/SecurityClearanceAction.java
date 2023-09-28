@@ -28,6 +28,7 @@ public class SecurityClearanceAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "是否启用密级标识.", action = ActionEnable.class)
 	@GET
+	@Path("enable")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void enable(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
@@ -41,7 +42,7 @@ public class SecurityClearanceAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-	
+
 	@JaxrsMethodDescribe(value = "获取密级标识信息.", action = ActionGet.class)
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
