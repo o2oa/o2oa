@@ -119,7 +119,7 @@
 }
 
 .o2flow-addTask-color {
-    color: #4A90E2
+    color: #FB4747
 }
 
 .o2flow-reset-color {
@@ -159,11 +159,11 @@
     padding: 0 10px 0 10px;
 }
 .o2flow-quick-select-item-active{
-    background-color: #4A90E2;
+    background-color: #FB4747;
     color: #fff;
 }
 .o2flow-quick-select-item-contnet-active{
-    background-color: #4A90E2;
+    background-color: #FB4747;
     color: #fff;
 }
 
@@ -275,7 +275,7 @@
 /*    min-width: 100px;*/
 /*    border-radius: 15px;*/
 /*    text-align: center;*/
-/*    background-color: #4A90E2;*/
+/*    background-color: #FB4747;*/
 /*    color: #ffffff;*/
 /*    font-size: 16px;*/
 /*    cursor: pointer;*/
@@ -294,7 +294,7 @@
 /*    cursor: pointer;*/
 /*}*/
 /*.o2flow-radio-active {*/
-/*    color: #4A90E2;*/
+/*    color: #FB4747;*/
 /*}*/
 /*.o2flow-radio-icon {*/
 /*    font-size: 16px;*/
@@ -324,7 +324,7 @@
     color: #333;
 }
 .o2flow-radio2-icon {
-    color: #4A90E2;
+    color: #FB4747;
     font-size: 16px;
 }
 .o2flow-radio2-text {
@@ -390,8 +390,8 @@
     height: 26px;
     line-height: 26px;
     border-radius: 20px;
-    border: 1px solid #4A90E2;
-    color: #4A90E2;
+    border: 1px solid #FB4747;
+    color: #FB4747;
     width: 26px;
     text-align: center;
     font-size: 26px;
@@ -437,7 +437,7 @@
     margin-left:4%;
     height: 44px;
     line-height: 44px;
-    background: #4A90E2;
+    background: #FB4747;
     border-radius: 8px;
     color:#fff;
 }

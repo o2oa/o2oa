@@ -1525,11 +1525,12 @@ MWF.ProcessFlow.Processor.Org = new Class({
                         widget = new MWF.widget.O2Other(copyData, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
+                widget.load();
             }.bind(this));
         }
     },
     getOrgWidgetOption: function(){
-        return {"style": "xform", "lazy": true}
+        return {"style": "xform", "lazy": true, "delay":true}
     },
 
     hasEmpowerIdentity: function () {

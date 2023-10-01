@@ -2,6 +2,9 @@ MWF.xDesktop.requireApp("process.Work", "Flow", null, false);
 MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
     Extends: MWF.ProcessFlow,
     Implements: [Options, Events],
+    options: {
+        mainColorEnable: true
+    },
     initialize: function (container, task, options, form) {
         this.setOptions(options);
 
@@ -34,6 +37,9 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
+            if( this.options.mainColorEnable ){
+                this.okButton.addClass("mainColor_bg");
+            }
             this.node.getParent().setStyle("height", "100%");
             this.changeAction( this.navi[0].key );
             this.loadQuickSelect();
@@ -162,8 +168,14 @@ MWF.ProcessFlow.ResetMobile = new Class({
         if(this.keepOption)this.keepOption.setValue( data.keepTask ? "true" : null );
         if(this.opinion)this.opinion.setValue( data.opinion || "" );
         this.orgData = data.organizations ? (data.organizations.default || []) : [];
+        this.orgContent.empty();
+        this.loadOrgWidget(this.orgData, this.orgContent);
     },
     afterLoad: function () {
+        if( this.flow.options.mainColorEnable ){
+            this.orgIcon.addClass("mainColor_color");
+            this.orgIcon.addClass("mainColor_border");
+        }
         this.keepOption = new MWF.ProcessFlow.widget.Radio2(this.keepOptionArea, this.flow, {
             activeIcon: "o2icon-checkbox",
             optionList: [{
@@ -181,12 +193,17 @@ MWF.ProcessFlow.ResetMobile = new Class({
         if (this.node) this.node.empty();
     },
     loadOrg: function(){
+        var quickData = this.quickData.organizations ? (this.quickData.organizations.default || [] ) : [];
+        if( quickData.length ){
+            this.orgData = quickData;
+            this.orgContent.empty();
+            this.loadOrgWidget(this.orgData, this.orgContent);
+        }
+        if(this.quickData.organizations)delete this.quickData.organizations.default;
+
         this.orgNode.addEvent("click", function () {
             this.getSelOptions( function (options) {
-                var quickData = this.quickData.organizations ? (this.quickData.organizations.default || [] ) : [];
-                if( quickData.length )this.orgData = quickData;
                 options.values = this.orgData || [] ;
-                if(this.quickData.organizations)delete this.quickData.organizations.default;
                 setTimeout(function () {
                     this.selector = new MWF.O2Selector($(document.body), options);
                 }.bind(this), 100);
@@ -262,6 +279,7 @@ MWF.ProcessFlow.ResetMobile = new Class({
                         widget = new MWF.widget.O2Other(data, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
+                widget.load();
             }.bind(this));
         }
     },
@@ -273,14 +291,17 @@ MWF.ProcessFlow.ResetMobile = new Class({
             "lazy": true,
             "disableInfor" : true,
             "onRemove" : this.removeWidgetItem,
-            "onPostLoad": this.loadWidgetItem
+            "onPostLoad": this.loadWidgetItem,
+            "delay": true
         };
     },
     loadWidgetItem: function(){
         //this 是 MWF.widget.O2Identity 之类的对象
         var _self = this.field; //这个才是field
         var dn = this.data.distinguishedName;
-
+        if( _self.flow.options.mainColorEnable ){
+            this.node.addClass("mainColor_bg");
+        }
     },
     removeWidgetItem : function( widget, ev ){
         debugger;
@@ -675,8 +696,10 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
                 dom = this.domMap[cfgId].show().inject( this.node );
                 if( quickOrgData && this.orgMap[cfgId]){
                     var org = this.orgMap[cfgId];
+                    org.container.empty();
                     org.setData( quickOrgData );
-                    org.resetSelectorData();
+                    org.loadOrgWidget(quickOrgData, org.container);
+                    //org.resetSelectorData();
                 }
                 this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
@@ -693,6 +716,11 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
         var iconNode = new Element("div.o2flow-selector-icon").inject(titleNode);
         new Element("i.o2icon-choose_people").inject(iconNode);
 
+        if( this.flow.options.mainColorEnable ){
+            iconNode.addClass("mainColor_color");
+            iconNode.addClass("mainColor_border");
+        }
+
         var contentNode = new Element("div.o2flow-selector-content").inject(container);
 
         var errorNode = new Element("div.o2flow-selector-errornode").inject(container);
@@ -706,8 +734,7 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
         container.addEvent("click", function () {
             org.load( quickOrgData );
         });
-
-        var defaultValue = org.getValue();
+        var defaultValue = quickOrgData || org.getValue();
         org.loadOrgWidget(defaultValue, contentNode);
     },
     getSelectedData: function (filedName) {
@@ -821,14 +848,17 @@ MWF.ProcessFlow.Processor.OrgMobile = new Class({
             "lazy": true,
             "disableInfor" : true,
             "onRemove" : this.removeWidgetItem,
-            "onPostLoad": this.loadWidgetItem
+            "onPostLoad": this.loadWidgetItem,
+            "delay": true
         };
     },
     loadWidgetItem: function(){
         //this 是 MWF.widget.O2Identity 之类的对象
         var _self = this.field; //这个才是field
         var dn = this.data.distinguishedName;
-
+        if( _self.processor.flow.options.mainColorEnable ){
+            this.node.addClass("mainColor_bg");
+        }
     },
     removeWidgetItem : function( widget, ev ){
         debugger;

@@ -11,7 +11,8 @@ o2.widget.O2Identity = new Class({
         "lazy": false,
         "disableInfor" : false,
         "removeByClick": false,
-        "styles": ""
+        "styles": "",
+        "delay": false
 	},
 	initialize: function(data, container, options){
 
@@ -29,7 +30,7 @@ o2.widget.O2Identity = new Class({
         this.action = new o2.xDesktop.Actions.RestActions("", "x_organization_assemble_control", "x_component_Org");
         // this.explorer = explorer;
         // this.removeAction = removeAction;
-        this.load();
+        if(!this.options.delay)this.load();
 
         //o2.widget.O2Identity.iditems.push(this);
 	},

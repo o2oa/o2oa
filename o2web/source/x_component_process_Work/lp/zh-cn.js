@@ -94,6 +94,7 @@ MWF.xApplication.process.Work.LP = {
     "empowerTo": "授权给",
     "selectAll": "全选",
     "ok1": "确定",
+    "not": "不",
     "selectPerson1": "请选择人员",
     "noQuickSelectDataNote": "系统还未记录您在当前节点选择的数据。",
     "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
