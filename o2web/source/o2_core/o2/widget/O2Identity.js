@@ -10,6 +10,7 @@ o2.widget.O2Identity = new Class({
         "canRemove": false,
         "lazy": false,
         "disableInfor" : false,
+        "removeByClick": false,
         "styles": ""
 	},
 	initialize: function(data, container, options){
@@ -60,6 +61,13 @@ o2.widget.O2Identity = new Class({
             this.node.setStyles( this.options.styles );
         }
         this.setText();
+
+        if( this.options.removeByClick ){
+            this.node.addEvent("click", function(e){
+                this.fireEvent("remove", [this, e]);
+                e.stopPropagation();
+            }.bind(this));
+        }
 
         if (this.options.canRemove){
             this.removeNode = new Element("div", {"styles": this.style.identityRemoveNode}).inject(this.node);

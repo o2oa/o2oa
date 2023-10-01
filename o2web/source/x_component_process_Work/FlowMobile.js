@@ -34,6 +34,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
+            this.node.getParent().setStyle("height", "100%");
             this.changeAction( this.navi[0].key );
             this.loadQuickSelect();
         }.bind(this));
@@ -46,11 +47,6 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
     },
     checkLoadEvent: function(){
         if( this.cssLoaded && this.firstActionLoaded){
-            if( this.currentAction === "process" ){
-                if( this.processor.getMaxOrgLength() > 1 ){
-                    this.node.addClass("o2flow-node-wide").removeClass("o2flow-node");
-                }
-            }
             this.fireEvent("load");
         }
     },
@@ -85,7 +81,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
             this.resize();
             return;
         }
-        this.processor = new MWF.ProcessFlow.Processor(
+        this.processor = new MWF.ProcessFlow.ProcessorMobile(
             this.processContentNode,
             this,
             Object.merge( this.options.processOptions, {
@@ -107,7 +103,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
             this.resize();
             return;
         }
-        this.reset = new MWF.ProcessFlow.Reset(
+        this.reset = new MWF.ProcessFlow.ResetMobile(
             this.resetContentNode,
             this,
             Object.merge( this.options.resetOptions, {
@@ -129,7 +125,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
             this.resize();
             return;
         }
-        this.addTask = new MWF.ProcessFlow.AddTask(
+        this.addTask = new MWF.ProcessFlow.AddTaskMobile(
             this.addTaskContentNode,
             this,
             Object.merge( this.options.addTaskOptions, {
@@ -154,6 +150,9 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
         this.contentScrollNode.addEvent("scroll", function () {
             if(this.quickSelector.status === "display")this.quickSelector.hide();
         }.bind(this))
+    },
+    cancel: function () {
+        this.fireEvent("cancel");
     }
 });
 
@@ -162,21 +161,48 @@ MWF.ProcessFlow.ResetMobile = new Class({
     setQuickData: function( data ){
         if(this.keepOption)this.keepOption.setValue( data.keepTask ? "true" : null );
         if(this.opinion)this.opinion.setValue( data.opinion || "" );
-        if(this.selector && this.selector.selector)this.selector.selector.setValues( data.organizations ? (data.organizations.default || []) : [] );
+        this.orgData = data.organizations ? (data.organizations.default || []) : [];
+    },
+    afterLoad: function () {
+        this.keepOption = new MWF.ProcessFlow.widget.Radio2(this.keepOptionArea, this.flow, {
+            activeIcon: "o2icon-checkbox",
+            optionList: [{
+                text: this.lp.keepTask,
+                value: "true"
+            }],
+            value: (this.quickData.keepTask) ? "true" : null
+        });
+        this.keepOption.load();
+    },
+    destroy: function () {
+        // if (this.orgItem && this.orgItem.clearTooltip){
+        //     this.orgItem.clearTooltip();
+        // }
+        if (this.node) this.node.empty();
     },
     loadOrg: function(){
-        this.getSelOptions( function (options) {
-            options.values =  this.quickData.organizations ? (this.quickData.organizations.default || []) : [];
-            if(this.quickData.organizations)delete this.quickData.organizations.default;
-            this.selector = new MWF.O2Selector(this.orgsArea, options);
-        }.bind(this) );
+        this.orgNode.addEvent("click", function () {
+            this.getSelOptions( function (options) {
+                var quickData = this.quickData.organizations ? (this.quickData.organizations.default || [] ) : [];
+                if( quickData.length )this.orgData = quickData;
+                options.values = this.orgData || [] ;
+                if(this.quickData.organizations)delete this.quickData.organizations.default;
+                setTimeout(function () {
+                    this.selector = new MWF.O2Selector($(document.body), options);
+                }.bind(this), 100);
+            }.bind(this) );
+        }.bind(this));
+
     },
     getSelDefaultOptions: function(){
         var defaultOpt = {
             "type": "identity",
             "style": "default",
             "zIndex": 3000,
-            "count": this.businessData.activity.resetCount || 0
+            "count": this.businessData.activity.resetCount || 0,
+            "onComplete": function (items) {
+                this.selectOnComplete(items);
+            }.bind(this)
         };
         if (this.form.json.selectorStyle) {
             defaultOpt = Object.merge(Object.clone(this.form.json.selectorStyle), defaultOpt);
@@ -185,20 +211,92 @@ MWF.ProcessFlow.ResetMobile = new Class({
         return defaultOpt;
     },
     getSelOrgData: function () {
-        var data;
-        if (this.selector && this.selector.selector) {
-            data = this.selector.selector.selectedItems.map(function (item) {
-                return item.data.distinguishedName;
-                // return MWF.org.parseOrgData(item.data, true, simple);
-            })
-        }
-        return data || [];
+        return this.orgData ? this.orgData.map(function (item) {
+            return item.distinguishedName;
+        }) : [];
     },
-    destroy: function () {
-        if (this.orgItem && this.orgItem.clearTooltip){
-            this.orgItem.clearTooltip();
+    selectOnComplete: function (items) { //移动端才执行
+        // var array = items.map(function (item) {
+        //     return item.data;
+        // });
+
+        // this.checkEmpower(array, function (data) {
+            var values = items.map(function (item) {
+                return MWF.org.parseOrgData(item.data, true, true)
+            });
+
+            this.orgData = values;
+
+            this.orgContent.empty();
+            this.loadOrgWidget(values, this.orgContent);
+
+            this.selector = null;
+
+            this.fireEvent("select", [items, values]);
+        // }.bind(this))
+    },
+    loadOrgWidget: function (value, node) {
+        var height = node.getStyle("height").toInt();
+        if (node.getStyle("overflow") === "visible" && !height) node.setStyle("overflow", "hidden");
+        if (value && value.length) {
+            value.each(function (data) {
+                if( typeOf(data) === "string" ){
+                    data = { distinguishedName : data, name : o2.name.cn(data) };
+                }
+                var flag = data.distinguishedName.substr(data.distinguishedName.length - 1, 1);
+                var widget;
+                switch (flag.toLowerCase()) {
+                    case "i":
+                        widget = new MWF.widget.O2Identity(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "p":
+                        widget = new MWF.widget.O2Person(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "u":
+                        widget = new MWF.widget.O2Unit(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "g":
+                        widget = new MWF.widget.O2Group(data, node, this.getOrgWidgetOption());
+                        break;
+                    default:
+                        widget = new MWF.widget.O2Other(data, node, this.getOrgWidgetOption());
+                }
+                widget.field = this;
+            }.bind(this));
         }
-        if (this.node) this.node.empty();
+    },
+    getOrgWidgetOption: function(){
+        return {
+            "removeByClick": true,
+            "style": "flowmobile",
+            "canRemove": false,
+            "lazy": true,
+            "disableInfor" : true,
+            "onRemove" : this.removeWidgetItem,
+            "onPostLoad": this.loadWidgetItem
+        };
+    },
+    loadWidgetItem: function(){
+        //this 是 MWF.widget.O2Identity 之类的对象
+        var _self = this.field; //这个才是field
+        var dn = this.data.distinguishedName;
+
+    },
+    removeWidgetItem : function( widget, ev ){
+        debugger;
+        //this 是 MWF.widget.O2Identity 之类的对象
+        var _self = this.field; //这个才是field
+        var dn = this.data.distinguishedName;
+        var data = _self.orgData;
+        var index;
+        _self.orgData.each( function ( d , i){
+            if( d.distinguishedName == dn ){
+                index = i;
+            }
+        });
+        _self.orgData.splice( index, 1 );
+        this.node.destroy();
+        ev.stopPropagation();
     },
 });
 
@@ -289,7 +387,7 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
             opt.opinion = this.quickData.opinion;
             delete this.quickData.opinion;
         }
-        this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
+        this.opinion = new MWF.ProcessFlow.widget.OpinionMobile( this.opinionContent, this.flow, opt );
         this.opinion.load();
     },
     loadRouteOrGroupList: function () {
@@ -298,20 +396,18 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
             this.loadRouteGroupList();
         } else {
             this.routeGroupWraper.destroy();
-            this.routeWraper.removeClass("o2flow-route-wraper").addClass("o2flow-route-fullsize-wraper");
-            this.routeArea.removeClass("o2flow-route-area").addClass("o2flow-route-fullsize-area");
             this.loadRouteList();
         }
     },
     loadRouteGroupList: function(){
         var keys = this.routeGroupNameList;
         keys.sort(function (a, b) {
-            var aIdx = parseInt(this.splitByStartNumber(a).order || "9999999");
-            var bIdx = parseInt(this.splitByStartNumber(b).order || "9999999");
+            var aIdx = parseInt(this.flow.splitByStartNumber(a).order || "9999999");
+            var bIdx = parseInt(this.flow.splitByStartNumber(b).order || "9999999");
             return aIdx - bIdx;
         }.bind(this));
 
-        var routeGroupNames =  keys.map(function (k) { return this.splitByStartNumber(k).name; }.bind(this));
+        var routeGroupNames =  keys.map(function (k) { return this.flow.splitByStartNumber(k).name; }.bind(this));
 
         var defaultValue;
         if( keys.length === 1 ) {
@@ -384,8 +480,9 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
             }
         }.bind(this));
 
-        this.routeRadio = new MWF.ProcessFlow.widget.Radio(this.routeArea, this.flow, {
+        this.routeRadio = new MWF.ProcessFlow.widget.Radio2(this.routeArea, this.flow, {
             optionList: optionList,
+            activeIcon: "o2icon-checkbox",
             onCheck: function(el, value){
                 var routeConfig = this.getData().data;
                 var checkOpinion = function(){
@@ -432,7 +529,7 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
             if( orgList ){
                 orgList.load( notFireResize );
             }else{
-                orgList = new MWF.ProcessFlow.Processor.OrgList(this, {
+                orgList = new MWF.ProcessFlow.Processor.OrgListMobile(this, {
                     routeId: routeId
                 });
                 this.routeOrgMap[routeId] = orgList;
@@ -570,12 +667,12 @@ MWF.ProcessFlow.ProcessorMobile = new Class({
 MWF.ProcessFlow.Processor.OrgListMobile = new Class({
     Extends: MWF.ProcessFlow.Processor.OrgList,
     loadOrgs: function () {
-        var lastDom, configVisable = this.getVisableOrgConfig(), len = configVisable.length, lineNode;
+        var configVisable = this.getVisableOrgConfig(), len = configVisable.length, lineNode;
         configVisable.each(function (config, i) {
             var dom, cfgId = config.id, quickOrgData = this.getQuickOrgData( config );
-            if( i % 2 === 0 )lineNode = new Element("div.o2flow-org-line").inject( this.node );
+            //if( i % 2 === 0 )lineNode = new Element("div.o2flow-org-line").inject( this.node );
             if( this.domMap[cfgId] ){
-                dom = this.domMap[cfgId].show().inject( lineNode );
+                dom = this.domMap[cfgId].show().inject( this.node );
                 if( quickOrgData && this.orgMap[cfgId]){
                     var org = this.orgMap[cfgId];
                     org.setData( quickOrgData );
@@ -583,20 +680,9 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
                 }
                 this.orgVisableItems.push( this.orgMap[cfgId] );
             }else{
-                //dom = new Element("div" ).inject( lastDom || this.node, lastDom ? "after" : "bottom" );
-                dom = new Element("div" ).inject( lineNode );
+                dom = new Element("div.o2flow-org-node" ).inject( this.node );
                 this.domMap[cfgId] = dom;
                 this.loadOrg(dom, config, false, quickOrgData );
-            }
-
-            if( (i + 1 === len) && (len % 2 === 1) ){ //fullsize
-                dom.addClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").removeClass("o2flow-org-right-node");
-            }else{
-                if( i % 2 === 0 ){ //left
-                    dom.removeClass("o2flow-org-fullsize-node").addClass("o2flow-org-left-node").removeClass("o2flow-org-right-node");
-                }else{
-                    dom.removeClass("o2flow-org-fullsize-node").removeClass("o2flow-org-left-node").addClass("o2flow-org-right-node");
-                }
             }
             //lastDom = dom;
         }.bind(this));
@@ -604,17 +690,25 @@ MWF.ProcessFlow.Processor.OrgListMobile = new Class({
     loadOrg: function (container, json, ignoreOldData, quickOrgData) {
         var titleNode = new Element("div.o2flow-selector-title").inject(container);
         new Element("div.o2flow-selector-titletext", { "text": json.title }).inject(titleNode);
-        var errorNode = new Element("div.o2flow-selector-errornode").inject(titleNode);
+        var iconNode = new Element("div.o2flow-selector-icon").inject(titleNode);
+        new Element("i.o2icon-choose_people").inject(iconNode);
 
         var contentNode = new Element("div.o2flow-selector-content").inject(container);
-        contentNode.setStyle( "height", MWF.ProcessFlow_ORG_HEIGHT + "px" );
 
-        var org = new MWF.ProcessFlow.Processor.Org(contentNode, this.form, json, this);
+        var errorNode = new Element("div.o2flow-selector-errornode").inject(container);
+
+        var org = new MWF.ProcessFlow.Processor.OrgMobile(contentNode, this.form, json, this);
         org.ignoreOldData = ignoreOldData;
         org.errContainer = errorNode;
-        org.load( quickOrgData );
         this.orgVisableItems.push(org);
         this.orgMap[json.id] = org;
+
+        container.addEvent("click", function () {
+            org.load( quickOrgData );
+        });
+
+        var defaultValue = org.getValue();
+        org.loadOrgWidget(defaultValue, contentNode);
     },
     getSelectedData: function (filedName) {
         var data = [];
@@ -718,6 +812,101 @@ MWF.ProcessFlow.Processor.OrgMobile = new Class({
         var value = this._getBusinessData();
         if (!value) value = this._computeValue();
         return value || "";
-    }
+    },
+    getOrgWidgetOption: function(){
+        return {
+            "removeByClick": true,
+            "style": "flowmobile",
+            "canRemove": false,
+            "lazy": true,
+            "disableInfor" : true,
+            "onRemove" : this.removeWidgetItem,
+            "onPostLoad": this.loadWidgetItem
+        };
+    },
+    loadWidgetItem: function(){
+        //this 是 MWF.widget.O2Identity 之类的对象
+        var _self = this.field; //这个才是field
+        var dn = this.data.distinguishedName;
+
+    },
+    removeWidgetItem : function( widget, ev ){
+        debugger;
+        //this 是 MWF.widget.O2Identity 之类的对象
+        var _self = this.field; //这个才是field
+        var dn = this.data.distinguishedName;
+        var data = _self._getBusinessData();
+        var index;
+        data.each( function ( d , i){
+            if( d.distinguishedName == dn ){
+                index = i
+            }
+        });
+        data.splice( index, 1 );
+        _self._setBusinessData( data );
+        this.node.destroy();
+        ev.stopPropagation();
+    },
 });
 
+
+MWF.ProcessFlow.widget.OpinionMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.Opinion,
+    Implements: [Options, Events],
+    handwriting: function(){
+        window.setTimeout(function () {
+            this._handwriting();
+        }.bind(this), 100)
+    },
+    _handwriting: function () {
+        if( !this.tablet )this.createHandwriting();
+        this.handwritingMask.show();
+        this.handwritingNode.show();
+        this.handwritingNode.setStyles({
+            "top": "0px",
+            "left": "0px"
+        });
+    },
+    createHandwriting: function () {
+        this.handwritingMask.inject( $(document.body) );
+        this.handwritingNode.show().inject(this.handwritingMask, "after");
+        //兼容以前的默认高宽
+        var bodySize = $(document.body).getSize();
+        var x = bodySize.x;
+        var y = bodySize.y;
+        this.options.tabletWidth = 0;
+        this.options.tabletHeight = 0;
+
+        var zidx = this.flow.node.getStyle("z-index");
+        this.handwritingNode.setStyles({
+            "height": "" + y + "px",
+            "width": "" + x + "px",
+            "z-index": zidx + 1
+        });
+
+        this.handwritingNode.addEvent('touchmove', function (e) {
+            e.preventDefault();
+        });
+        this.handwritingNode.setStyles({
+            "top": "0px",
+            "left": "0px"
+        });
+
+        this.handwritingAreaNode.setStyle("height", "" + y + "px");
+
+        MWF.require("MWF.widget.Tablet", function () {
+            var handWritingOptions = this.getHandWritingOptions();
+
+            handWritingOptions.tools = [
+                    "undo",
+                    "redo", "|",
+                    "reset", "|",
+                    "size",
+                    "cancel"
+                ];
+
+            this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
+            this.tablet.load();
+        }.bind(this));
+    }
+});

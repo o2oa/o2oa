@@ -31,7 +31,10 @@
     "opacity": 1,
     "top":"0px",
     "left": "0px",
-    "overflow": "auto"
+    "overflow": "auto",
+    "background": "#F5F5F5",
+    "position": "absolute",
+    "z-index":300
   },
 
   "processNode_from": {

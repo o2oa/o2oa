@@ -2,7 +2,7 @@
     <div class="o2flow-navi" data-o2-element="naviNode">
         <div class="o2flow-navi-node">
             {{each $.navi}}
-            <div data-o2-element="{{$.key}}TitleNode" class="o2flow-navi-item" data-o2-events="click:changeAction:{{$.key}};">{{$.label}}</div>
+            <div data-o2-element="{{$.key}}TitleNode" class="o2flow-navi-item" data-o2-events="click:changeAction:{{$.key}}:;">{{$.label}}</div>
             {{end each}}
         </div>
     </div>

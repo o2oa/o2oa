@@ -68,6 +68,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         }
     },
     changeAction: function( action, quickData ){
+        debugger;
         if( this.currentAction ){
             this[ this.currentAction+"ContentNode" ].hide();
             this[ this.currentAction+"TitleNode" ].removeClass("o2flow-navi-item-active");
@@ -1509,23 +1510,26 @@ MWF.ProcessFlow.Processor.Org = new Class({
                 var widget;
                 switch (flag.toLowerCase()) {
                     case "i":
-                        widget = new MWF.widget.O2Identity(copyData, node, {"style": "xform", "lazy": true});
+                        widget = new MWF.widget.O2Identity(copyData, node, this.getOrgWidgetOption());
                         break;
                     case "p":
-                        widget = new MWF.widget.O2Person(copyData, node, {"style": "xform", "lazy": true});
+                        widget = new MWF.widget.O2Person(copyData, node, this.getOrgWidgetOption());
                         break;
                     case "u":
-                        widget = new MWF.widget.O2Unit(copyData, node, {"style": "xform", "lazy": true});
+                        widget = new MWF.widget.O2Unit(copyData, node, this.getOrgWidgetOption());
                         break;
                     case "g":
-                        widget = new MWF.widget.O2Group(copyData, node, {"style": "xform", "lazy": true});
+                        widget = new MWF.widget.O2Group(copyData, node, this.getOrgWidgetOption());
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(copyData, node, {"style": "xform", "lazy": true});
+                        widget = new MWF.widget.O2Other(copyData, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
             }.bind(this));
         }
+    },
+    getOrgWidgetOption: function(){
+        return {"style": "xform", "lazy": true}
     },
 
     hasEmpowerIdentity: function () {
@@ -2248,110 +2252,6 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             "max-width": width+"px",
             "min-width": width+"px"
         });
-        var data = [
-            {
-                type: "process",
-                text: "选择[送办理]，意见：请办理，处理人：张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四、张三、李四",
-                data: {
-                    "process": "",
-                    "processName": "",
-                    "activity": "",
-                    "activityName": "",
-                    "person": "",
-                    "action": "process",
-
-                    "routeGroup": "同意",
-                    "routeId": "05562c80-91f9-446c-902f-6aae911c71da",
-                    "routeName": "送办理",
-                    "keepTask": true,
-                    "opinion": "已选择请办理",
-                    "organizations": {
-                        "blPerson1": [
-                            "张三@zhb_zhangsan@I",
-                            "張世文@39d71dc8-4f60-4949-a480-137a5cd50ae1@I",
-                            "陈家雷@c48b435e-0337-44f3-a3ac-45ce236252f8@I"
-                        ],
-                        "blPerson4": [
-                            "蔡艳红@00450000000000000000_204@I"
-                        ],
-                        "blPerson5": [
-                            "蔡艳红@00450000000000000000_204@I"
-                        ],
-                        "blPerson6": [
-                            "蔡艳红@00450000000000000000_204@I"
-                        ],
-                        "group1": [
-                            "运维群组@f2637ec1-d3be-4076-8dde-df88892cb4da@G"
-                        ],
-                        "department1": [
-                            "南京基地@9b1438ec-a8f5-4ff3-9d9c-b8be36c679ec@U"
-                        ],
-                    }
-                }
-            },
-            {
-                type: "process",
-                text: "选择[送核稿]，意见：请核稿，处理人：王五",
-                data: {
-                    "process": "",
-                    "processName": "",
-                    "activity": "",
-                    "activityName": "",
-                    "person": "",
-                    "action": "process",
-                    "routeGroup": "同意",
-                    "routeId": "ae3aab39-1065-4fbc-aa7a-7a44aadfd4d7",
-                    "routeName": "送核稿",
-                    "keepTask": true,
-                    "opinion": "已选择请核稿",
-                    "organizations": {
-                        "hgPerson": [
-                            "张三@zhb_zhangsan@I"
-                        ]
-                    }
-                }
-            },
-            {
-                type: "addTask",
-                text:  "选择[前加签]，意见：请处理，加签人：赵六",
-                data: {
-                    "process": "",
-                    "processName": "",
-                    "activity": "",
-                    "activityName": "",
-                    "person": "",
-                    "action": "addTask",
-
-                    "routeId": "",
-                    "routeName": "前加签",
-                    "keepTask": true,
-                    "opinion": "已加签请处理",
-                    "organizations": {}
-                }
-            },
-            {
-                type: "reset",
-                text: "保留待办，意见：请处理，重置给：王五",
-                data: {
-                    "process": "",
-                    "processName": "",
-                    "activity": "",
-                    "activityName": "",
-                    "person": "",
-                    "action": "reset",
-
-                    "routeId": "",
-                    "routeName": "",
-                    "keepTask": true,
-                    "opinion": "已重置请处理",
-                    "organizations": {
-                        "default": [
-                            "蔡艳红@00450000000000000000_204@I"
-                        ]
-                    }
-                }
-            }
-        ];
 
         debugger;
         var work = this.flow.form.businessData.work;
@@ -2536,7 +2436,7 @@ MWF.ProcessFlow.widget.Opinion = new Class({
                 } else {
                     MWF.UD.getPublicData("idea", function (pjson) {
                         if (pjson && pjson.ideas) {
-                            this.opinionList = json.ideas;
+                            this.opinionList = pjson.ideas;
                             if(callback)callback();
                         }else{
                             this.opinionList = [];
@@ -2638,40 +2538,43 @@ MWF.ProcessFlow.widget.Opinion = new Class({
         this.handwritingAreaNode.setStyle("height", "" + ( y - h ) + "px");
 
         MWF.require("MWF.widget.Tablet", function () {
-            var handWritingOptions = {
-                "style": "default",
-                "toolHidden": this.options.tabletToolHidden || [],
-                "contentWidth": this.options.tabletWidth || 0,
-                "contentHeight": this.options.tabletHeight || 0,
-                "iconfontEnable": true,
-                "mainColorEnable": this.flow.options.mainColorEnable,
-                "onSave": function (base64code, base64Image, imageFile) {
-                    if( !this.tablet.isBlank() ){
-                        this.handwritingFile = imageFile;
-                        this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
-                            addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
-                        this.removeRequireStyle();
-                    }else{
-                        this.handwritingFile = null;
-                        this.handwritingButton.getElement("i").addClass("o2icon-edit2").
-                            removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
-                    }
-                    this.handwritingNode.hide();
-                    this.handwritingMask.hide();
-
-                }.bind(this),
-                "onCancel": function () {
-                    this.handwritingFile = null;
-                    this.handwritingButton.getElement("i").addClass("o2icon-edit2").
-                        removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
-                    this.handwritingNode.hide();
-                    this.handwritingMask.hide();
-                }.bind(this)
-            };
+            var handWritingOptions = this.getHandWritingOptions();
 
             this.tablet = new MWF.widget.Tablet(this.handwritingAreaNode, handWritingOptions, null);
             this.tablet.load();
         }.bind(this));
+    },
+    getHandWritingOptions: function(){
+        return {
+            "style": "default",
+            "toolHidden": this.options.tabletToolHidden || [],
+            "contentWidth": this.options.tabletWidth || 0,
+            "contentHeight": this.options.tabletHeight || 0,
+            "iconfontEnable": true,
+            "mainColorEnable": this.flow.options.mainColorEnable,
+            "onSave": function (base64code, base64Image, imageFile) {
+                if( !this.tablet.isBlank() ){
+                    this.handwritingFile = imageFile;
+                    this.handwritingButton.getElement("i").removeClass("o2icon-edit2").
+                    addClass("o2icon-checkbox").addClass("o2flow-handwriting-buttonok");
+                    this.removeRequireStyle();
+                }else{
+                    this.handwritingFile = null;
+                    this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                    removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                }
+                this.handwritingNode.hide();
+                this.handwritingMask.hide();
+
+            }.bind(this),
+            "onCancel": function () {
+                this.handwritingFile = null;
+                this.handwritingButton.getElement("i").addClass("o2icon-edit2").
+                removeClass("o2icon-checkbox").removeClass("o2flow-handwriting-buttonok");
+                this.handwritingNode.hide();
+                this.handwritingMask.hide();
+            }.bind(this)
+        };
     },
     saveTablet: function () {
         if (this.tablet) this.tablet.save();
@@ -2782,6 +2685,12 @@ MWF.ProcessFlow.widget.Radio = new Class({
 
 MWF.ProcessFlow.widget.Radio2 = new Class({
     Extends: MWF.ProcessFlow.widget.Radio,
+    options: {
+        optionList: [],
+        value: null,
+        cancelEnable: true,
+        activeIcon: "o2icon-radio-checked"
+    },
     getUrl: function(){
         return this.flow.path+this.flow.options.style+"/widget/radio2.html";
     },
@@ -2808,7 +2717,7 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
         }
         el.addClass("o2flow-radio2-active");
         if( this.flow.options.mainColorEnable )el.addClass("mainColor_color");
-        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass(this.options.activeIcon).addClass("o2flow-radio2-icon");
         if( this.flow.options.mainColorEnable )el.getElement("i").addClass("mainColor_color");
         el.dataset["o2Checked"] = true;
         this.checkedItems.push(el);
@@ -2818,7 +2727,7 @@ MWF.ProcessFlow.widget.Radio2 = new Class({
     uncheck: function(el, isFire){
         el.removeClass("o2flow-radio2-active");
         if( this.flow.options.mainColorEnable )el.removeClass("mainColor_color");
-        el.getElement("i").removeClass("o2icon-radio-checked").addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
+        el.getElement("i").removeClass(this.options.activeIcon).addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
         if( this.flow.options.mainColorEnable )el.getElement("i").removeClass("mainColor_color");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
