@@ -427,6 +427,7 @@ var MTooltips = new Class({
         this.arrowNode.setStyles( this.arrowStyles );
     },
     setCoondinates : function(){
+        if( !this.target && !this.targetCoordinates )return;
         if( this.options.axis == "x" ){
             this.setCoondinates_x();
         }else{

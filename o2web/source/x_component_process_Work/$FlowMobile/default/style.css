@@ -66,7 +66,7 @@
     content: "\e90c";
 }
 .o2icon-dot:before {
-  content: "\e90d";
+    content: "\e90d";
 }
 .o2icon-checkmark:before {
     content: "\ea10";
@@ -151,12 +151,50 @@
     padding-right: 10px;
 }
 
+/*.o2flow-quick-mask{*/
+/*    background-color: #666;*/
+/*    opacity: 0.4;*/
+/*    z-index:1002;*/
+/*    height: 100%;*/
+/*    width: 100%;*/
+/*    position:absolute;*/
+/*    top: 0px;*/
+/*    left: 0px*/
+/*}*/
+
+/*.o2flow-quick-wrap{*/
+/*    position: absolute;*/
+/*    bottom: 0px;*/
+/*    left: 0px;*/
+/*    width: 100%;*/
+/*    height: 80%;*/
+/*    border-radius: 15px 15px 0px 0px;*/
+/*    background: #F5F5F5;*/
+/*    z-index:1003*/
+/*}*/
+.o2flow-quick-title{
+    text-align: center;
+    font-size: 16px;
+    border-radius: 15px 15px 0px 0px;
+    height: 40px;
+    line-height: 40px
+}
+.o2flow-quick-scroll{
+    overflow: auto;
+    height: calc( 100% - 40px )
+}
+.o2flow-quick-node{
+    background: #fff
+}
+
+
 .o2flow-quick-select-item {
-    height: 30px;
     cursor: pointer;
-    line-height: 30px;
+    line-height: 24px;
     overflow: hidden;
-    padding: 0 10px 0 10px;
+    padding: 10px 0px;
+    margin: 0px 10px;
+    border-bottom: 1px solid #dddddd;
 }
 .o2flow-quick-select-item-active{
     background-color: #FB4747;
@@ -173,8 +211,8 @@
 
 .o2flow-quick-select-itemtext {
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+    /*text-overflow: ellipsis;*/
 }
 
 .o2flow-section-title {

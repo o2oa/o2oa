@@ -148,13 +148,22 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
         this.addTask.load( quickData );
     },
     loadQuickSelect: function(){
-        this.quickSelector = new MWF.ProcessFlow.widget.QuickSelect(
-            this.form.app ? this.form.app.content : $(document.body),
-            this.quickSelectNode, this.form.app, {}
+        this.quickSelector = new MWF.ProcessFlow.widget.QuickSelectMobile(
+            $(document.body), //this.form.app ? this.form.app.content :
+            null, this.form.app, {}, {
+                onPostLoad: function() {
+                    this.maskNode.setStyles({
+                        "z-index": 1001,
+                        "opacity": 0.5,
+                        "position": "absolute",
+                        "background-color": "#ccc"
+                    });
+                }
+            }
          );
         this.quickSelector.flow = this;
-        this.contentScrollNode.addEvent("scroll", function () {
-            if(this.quickSelector.status === "display")this.quickSelector.hide();
+        this.quickSelectNode.addEvent("click", function () {
+            this.quickSelector.load()
         }.bind(this))
     },
     cancel: function () {
@@ -879,6 +888,123 @@ MWF.ProcessFlow.Processor.OrgMobile = new Class({
     },
 });
 
+MWF.ProcessFlow.widget.QuickSelectMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.QuickSelect,
+    options: {
+        event : "click",
+        hasArrow : false,
+        hideByClickBody : true,
+        offset : {
+            x : 0,
+            y : 5
+        },
+        nodeStyles: {
+            "bottom": "0px",
+           "left": "0px",
+            "font-size" : "14px",
+            "position" : "absolute",
+            "max-width" : "100%",
+            "min-width" : "100%",
+            "height": "80%",
+            "z-index" : "1001",
+            "background-color" : "#fff",
+            "padding" : "0px",
+            "border-radius" : "15px 15px 0px 0px",
+            // "box-shadow": "0px 0px 8px 0px rgba(0,0,0,0.25)",
+            // "-webkit-user-select": "text",
+            // "-moz-user-select": "text"
+        }
+    },
+    _loadCustom : function( callback ){
+        this.node.loadCss( this.flow.path + this.flow.options.style + "/style.css" );
+        // var width = this.target.getSize().x ;
+        // this.node.setStyles({
+        //     "max-width": width+"px",
+        //     "min-width": width+"px"
+        // });
+
+        new Element("div.o2flow-quick-title", {
+            text: this.flow.lp.quickSelect
+        }).inject(this.contentNode);
+        var scrollNode = new Element("div.o2flow-quick-scroll").inject(this.contentNode);
+        this.quickNode = new Element("div.o2flow-quick-node").inject(scrollNode);
+
+        debugger;
+        var work = this.flow.form.businessData.work;
+        var d = {
+            process: work.process,
+            activity: work.activity,
+            activityAlias: work.activityAlias,
+            activityName: work.activityName
+        };
+        // if( work.activityAlias ){
+        //     d.activityAlias = work.activityAlias
+        // }else{
+        //     d.activityName = work.activityName;
+        // }
+        var p = o2.Actions.load("x_processplatform_assemble_surface").TaskProcessModeAction.listMode( d );
+        Promise.resolve(p).then(function (json) {
+            debugger;
+            var list = this.filterData(json.data);
+            var data = list.map(function (d) {
+                return {
+                    type: d.action,
+                    text: this.getText( d ),
+                    data: d
+                }
+            }.bind(this));
+            if( !data || !data.length ){
+                new Element("div.o2flow-quick-select-item", {
+                    text: this.flow.lp.noQuickSelectDataNote
+                }).inject( this.quickNode );
+            }else{
+                this.loadItems(data)
+            }
+
+            //setTimeout( function () {
+            if(callback)callback( data );
+            //}, 50);
+        }.bind(this));
+    },
+    loadItems: function(data){
+        var _self = this;
+        data.each( function (d) {
+            var item = new Element("div.o2flow-quick-select-item", {
+                events: {
+                    mouseover: function () {
+                        this.addClass("o2flow-quick-select-item-active");
+                        this.getFirst().addClass("o2flow-quick-select-item-contnet-active");
+                        if( _self.flow.options.mainColorEnable ){
+                            this.addClass("mainColor_bg");
+                            this.getFirst().addClass("mainColor_bg");
+                        }
+                    },
+                    mouseout: function () {
+                        this.removeClass("o2flow-quick-select-item-active");
+                        this.getFirst().removeClass("o2flow-quick-select-item-contnet-active");
+                        if( _self.flow.options.mainColorEnable ) {
+                            this.removeClass("mainColor_bg");
+                            this.getFirst().removeClass("mainColor_bg");
+                        }
+                    },
+                    click: function () {
+                        var d = Object.clone( item.retrieve("data"));
+                        _self.flow.changeAction( d.type, d.data );
+                        _self.hide();
+                    }
+                }
+            }).inject( this.quickNode );
+            item.store( "data", d );
+            var title = new Element("div.o2flow-quick-select-itemtitle", {
+                text: this.flow.lp.flowActions[d.type]
+            }).inject( item );
+            title.addClass( "o2flow-"+d.type+"-color" );
+            var content = new Element("div.o2flow-quick-select-itemtext", {
+                text: "："+ d.text
+            }).inject( item )
+        }.bind(this))
+    }
+});
 
 MWF.ProcessFlow.widget.OpinionMobile = new Class({
     Extends: MWF.ProcessFlow.widget.Opinion,
