@@ -602,6 +602,22 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private String label;
 
+	public static final String DISTINGUISHEDNAME_FIELDNAME = "distinguishedName";
+	@Schema(description = "处理对象.")
+	@FieldDescribe("处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + DISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distinguishedName;
+
+	public static final String FROMDISTINGUISHEDNAME_FIELDNAME = "fromDistinguishedName";
+	@Schema(description = "授权处理对象.")
+	@FieldDescribe("授权处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + FROMDISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMDISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String fromDistinguishedName;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@Schema(description = "业务数据String值01.")
 	@FieldDescribe("业务数据String值01.")
@@ -1455,6 +1471,22 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
+	}
+
+	public String getFromDistinguishedName() {
+		return fromDistinguishedName;
+	}
+
+	public void setFromDistinguishedName(String fromDistinguishedName) {
+		this.fromDistinguishedName = fromDistinguishedName;
 	}
 
 }

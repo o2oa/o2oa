@@ -90,7 +90,8 @@ public class Tickets implements Serializable {
 	}
 
 	public Tickets completed(String label) {
-		Optional<Ticket> opt = this.findTicketWithLabel(label);
+		Optional<Ticket> opt = this.bubble().stream().filter(o -> StringUtils.equalsIgnoreCase(label, o.label()))
+				.findFirst();
 		if (opt.isPresent()) {
 			return completed(opt.get());
 		}
@@ -255,6 +256,10 @@ public class Tickets implements Serializable {
 	public List<Ticket> listNextTo(Ticket ticket) {
 		return this.context.values().stream().filter(o -> o.next().contains(ticket.label()))
 				.collect(Collectors.toList());
+	}
+
+	public boolean isEmpty() {
+		return (this.context == null) || this.context.isEmpty();
 	}
 
 	@Override
