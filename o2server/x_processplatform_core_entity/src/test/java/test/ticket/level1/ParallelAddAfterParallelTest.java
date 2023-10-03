@@ -30,26 +30,27 @@ class ParallelAddAfterParallelTest {
 	@Order(1)
 	void test01() {
 		Tickets tickets = Tickets.parallel(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
+				.collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_PARALLEL);
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,E,F,G", value);
 		tickets.completed("LF");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,E,G", value);
 		tickets.completed("LE");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,G", value);
 		tickets.completed("LG");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C", value);
 		tickets.completed("LA");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("C", value);
 		tickets.completed("LC");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
 

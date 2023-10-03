@@ -29,33 +29,33 @@ class QueueAddBeforeParallelAndAfterSingleTest {
 	@Order(1)
 	void test01() {
 		Tickets tickets = Tickets.queue(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, true, Tickets.MODE_PARALLEL);
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("E,F,G", value);
 		Optional<Ticket> opt1 = tickets.findTicketWithLabel("LF");
 		tickets.add(opt1.get(), p3, false, Tickets.MODE_SINGLE);
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("E,G,I,J,K", value);
 		tickets.completed("LE");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("G,I,J,K", value);
 		tickets.completed("LJ");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A", value);
 		tickets.completed("LA");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("B", value);
 		tickets.completed("LB");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("C", value);
 		tickets.completed("LC");
-		value = tickets.bubble().stream().<String>map(Ticket::target).sorted().collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
 

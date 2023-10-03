@@ -28,7 +28,7 @@ public class Ticket implements Serializable {
 	// 启用
 	private boolean enable;
 	// 目标
-	private String target;
+	private String distinguishedName;
 	// 兄弟
 	private List<String> sibling;
 	// 伙伴
@@ -37,6 +37,10 @@ public class Ticket implements Serializable {
 	private List<String> next;
 	// 模式
 	private String mode;
+	// 上级
+	private String superior;
+	// 授权标识
+	private String fromDistinguishedName;
 
 	public Ticket() {
 		this.label = UUID.randomUUID().toString();
@@ -45,20 +49,21 @@ public class Ticket implements Serializable {
 		this.join = true;
 		this.valid = true;
 		this.enable = true;
-		this.target = "";
+		this.distinguishedName = "";
 		this.sibling = new ArrayList<>();
 		this.fellow = new ArrayList<>();
 		this.next = new ArrayList<>();
+		this.superior = "";
+		this.fromDistinguishedName = "";
 	}
 
-	public Ticket(String target) {
+	public Ticket(String distinguishedName) {
 		this();
-		this.target = target;
+		this.distinguishedName = distinguishedName;
 	}
 
-	public Ticket(String target, String label) {
-		this();
-		this.target = target;
+	public Ticket(String distinguishedName, String label) {
+		this(distinguishedName);
 		this.label = label;
 	}
 
@@ -219,12 +224,22 @@ public class Ticket implements Serializable {
 		return this;
 	}
 
-	public String target() {
-		return target;
+	public String fromDistinguishedName() {
+		return fromDistinguishedName;
 	}
 
-	public Ticket target(String target) {
-		this.target = target;
+	public Ticket fromDistinguishedName(String fromDistinguishedName) {
+		this.fromDistinguishedName = fromDistinguishedName;
+		return this;
+	}
+
+	
+	public String distinguishedName() {
+		return distinguishedName;
+	}
+
+	public Ticket distinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 		return this;
 	}
 
@@ -238,6 +253,15 @@ public class Ticket implements Serializable {
 
 	public List<String> fellow() {
 		return fellow;
+	}
+
+	public String superior() {
+		return this.superior;
+	}
+
+	public Ticket superior(String superior) {
+		this.superior = superior;
+		return this;
 	}
 
 	@Override

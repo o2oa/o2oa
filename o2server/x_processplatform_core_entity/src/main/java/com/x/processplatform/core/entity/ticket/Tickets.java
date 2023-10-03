@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.ticket;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -80,6 +81,14 @@ public class Tickets implements Serializable {
 		return list.stream().filter(o -> !next.contains(o.label())).collect(Collectors.toList());
 	}
 
+	public Tickets join(String label, boolean join) {
+		Optional<Ticket> opt = this.findTicketWithLabel(label);
+		if (opt.isPresent()) {
+			opt.get().join(join);
+		}
+		return this;
+	}
+
 	public Tickets completed(String label) {
 		Optional<Ticket> opt = this.findTicketWithLabel(label);
 		if (opt.isPresent()) {
@@ -109,6 +118,25 @@ public class Tickets implements Serializable {
 					addMode);
 		}
 		return this;
+	}
+
+	/**
+	 * 根据distinguishedName禁用ticket
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public Tickets disableDistinguishedName(List<String> list) {
+		this.context.entrySet().stream().forEach(o -> {
+			if (list.contains(o.getValue().distinguishedName())) {
+				o.getValue().enable(false);
+			}
+		});
+		return this;
+	}
+
+	public Tickets disableDistinguishedName(String... distinguishedNames) {
+		return disableDistinguishedName(Arrays.asList(distinguishedNames));
 	}
 
 	/**

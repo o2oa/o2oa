@@ -75,7 +75,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 				.identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects, manual));
 		Tickets tickets = manual.identitiesToTickets(calculateTaskIdentities(aeiObjects, manual));
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
-		Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual, manualTaskIdentityMatrix);
+		// Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual,
+		// manualTaskIdentityMatrix);
+		Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual, tickets);
 		if (mergeWork.isPresent()) {
 			return mergeWork.get();
 		}
@@ -101,6 +103,43 @@ public class ManualProcessor extends AbstractManualProcessor {
 			if (other.isPresent()) {
 				manualTaskIdentityMatrix.remove(exists);
 				if (manualTaskIdentityMatrix.isEmpty()) {
+					this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other.get());
+					this.mergeRead(aeiObjects, aeiObjects.getWork(), other.get());
+					this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other.get());
+					this.mergeReview(aeiObjects, aeiObjects.getWork(), other.get());
+					this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other.get());
+					this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other.get());
+					if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
+							.size(other.get().getSplitTokenList())) {
+						other.get().setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
+						other.get().setSplitToken(aeiObjects.getWork().getSplitToken());
+						other.get().setSplitValue(aeiObjects.getWork().getSplitValue());
+						other.get().setSplitting(true);
+					}
+					aeiObjects.getUpdateWorks().add(other.get());
+					aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
+					return other;
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
+	private Optional<Work> arrivingMergeSameJob(AeiObjects aeiObjects, Manual manual, Tickets tickets)
+			throws Exception {
+		if (!BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
+			return Optional.empty();
+		}
+		List<String> exists = this.arrivingSameJobActivityExistIdentities(aeiObjects, manual);
+		if (ListTools.isNotEmpty(exists)) {
+			Optional<Work> other = aeiObjects.getWorks().stream()
+					.filter(o -> StringUtils.equals(aeiObjects.getWork().getJob(), o.getJob())
+							&& StringUtils.equals(aeiObjects.getWork().getActivity(), o.getActivity())
+							&& (!Objects.equals(aeiObjects.getWork(), o)))
+					.findFirst();
+			if (other.isPresent()) {
+				tickets.disableDistinguishedName(exists);
+				if (tickets.bubble().isEmpty()) {
 					this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other.get());
 					this.mergeRead(aeiObjects, aeiObjects.getWork(), other.get());
 					this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other.get());
@@ -484,6 +523,28 @@ public class ManualProcessor extends AbstractManualProcessor {
 					}
 				});
 			}
+		}
+	}
+
+	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
+			List<TaskCompleted> taskCompleteds) throws Exception {
+		if (!tickets.bubble().isEmpty()) {
+			taskCompleteds.stream().forEach(o -> {
+				tickets.completed(o.getLabel()).join(o.getLabel(), BooleanUtils.isNotFalse(o.getJoinInquire()));
+			});
+//
+//			List<String> identities = matrix.flat();
+//			taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
+//			// 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
+//			if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson()) && (!identities.isEmpty())) {
+//				List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
+//						String.class, true, true);
+//				aeiObjects.business().organization().person().listPairIdentity(identities).stream().forEach(p -> {
+//					if (people.contains(p.getPerson())) {
+//						matrix.completed(p.getIdentity());
+//					}
+//				});
+//			}
 		}
 	}
 

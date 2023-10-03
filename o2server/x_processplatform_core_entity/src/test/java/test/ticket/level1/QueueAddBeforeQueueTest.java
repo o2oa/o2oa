@@ -29,29 +29,29 @@ class QueueAddBeforeQueueTest {
 	@Order(1)
 	void test01() {
 		Tickets tickets = Tickets.queue(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LA");
 		tickets.add(opt.get(), p2, true, Tickets.MODE_QUEUE);
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("E", value);
 		tickets.completed("LE");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("F", value);
 		tickets.completed("LF");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A", value);
 		tickets.completed("LA");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("B", value);
 		tickets.completed("LB");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("C", value);
 		tickets.completed("LC");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
 

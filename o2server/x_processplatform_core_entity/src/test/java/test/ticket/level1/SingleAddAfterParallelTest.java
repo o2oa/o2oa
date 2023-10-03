@@ -29,20 +29,20 @@ class SingleAddAfterParallelTest {
 	@Order(1)
 	void test01() {
 		Tickets tickets = Tickets.single(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_PARALLEL);
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("E,F,G", value);
 		tickets.completed("LF");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("E,G", value);
 		tickets.completed("LE");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("G", value);
 		tickets.completed("LG");
-		value = tickets.bubble().stream().<String>map(Ticket::target).collect(Collectors.joining(","));
+		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("", value);
 	}
 
