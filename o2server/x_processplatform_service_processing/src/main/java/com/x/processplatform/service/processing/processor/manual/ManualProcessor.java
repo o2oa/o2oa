@@ -29,6 +29,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Empower;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
@@ -71,9 +72,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualArrive(aeiObjects.getWork().getActivityToken(), manual));
 		// 根据manual计算出来的活动处理人
-		ManualTaskIdentityMatrix manualTaskIdentityMatrix = manual
-				.identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects, manual));
-		Tickets tickets = manual.identitiesToTickets(calculateTaskIdentities(aeiObjects, manual));
+		// ManualTaskIdentityMatrix manualTaskIdentityMatrix = manual
+		// .identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects,
+		// manual));
+		Tickets tickets = manual.identitiesToTickets(calculateTaskDistinguishedName(aeiObjects, manual));
+		empower(aeiObjects, tickets);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		// Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual,
 		// manualTaskIdentityMatrix);
@@ -81,13 +84,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 		if (mergeWork.isPresent()) {
 			return mergeWork.get();
 		}
-		this.arrivingPassSame(aeiObjects, manualTaskIdentityMatrix);
+		// this.arrivingPassSame(aeiObjects, manualTaskIdentityMatrix);
 		this.arrivingPassSame(aeiObjects, tickets);
-		aeiObjects.getWork().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
+		// aeiObjects.getWork().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
 		aeiObjects.getWork().setTickets(tickets);
 		return aeiObjects.getWork();
 	}
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	private Optional<Work> arrivingMergeSameJob(AeiObjects aeiObjects, Manual manual,
 			ManualTaskIdentityMatrix manualTaskIdentityMatrix) throws Exception {
 		if (!BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
@@ -162,6 +166,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return Optional.empty();
 	}
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	private void arrivingPassSame(AeiObjects aeiObjects, ManualTaskIdentityMatrix matrix) throws Exception {
 		// 查找是否有passSameTarget设置
 		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
@@ -245,6 +250,41 @@ public class ManualProcessor extends AbstractManualProcessor {
 		taskCompleted.setTask(null);
 		taskCompleted.setLatest(true);
 		return taskCompleted;
+	}
+
+	/**
+	 * 计算处理人
+	 * 
+	 * @TODO 后续 要去掉 TaskIdentities 对象
+	 * @param aeiObjects
+	 * @param manual
+	 * @return
+	 * @throws Exception
+	 */
+	private List<String> calculateTaskDistinguishedName(AeiObjects aeiObjects, Manual manual) throws Exception {
+		TaskIdentities taskIdentities = new TaskIdentities();
+		// 先计算强制处理人
+		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
+			List<String> identities = new ArrayList<>();
+			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
+			identities = aeiObjects.business().organization().identity().list(identities);
+			if (ListTools.isNotEmpty(identities)) {
+				taskIdentities.addIdentities(identities);
+			}
+		}
+		// 计算退回的结果
+		if (taskIdentities.isEmpty()) {
+			Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
+			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_BACK))) {
+				calculateRouteTypeBack(aeiObjects, manual, taskIdentities);
+			}
+		}
+		if (taskIdentities.isEmpty()) {
+			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
+			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, manual, taskIdentities);
+			// 处理授权
+		}
+		return taskIdentities.identities();
 	}
 
 	// 计算处理人
@@ -395,17 +435,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return (ListTools.isNotEmpty(manual.getTaskGroupList()));
 	}
 
-	// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
-
 	private void writeToEmpowerMap(AeiObjects aeiObjects, TaskIdentities taskIdentities) throws Exception {
 		// 先清空EmpowerMap
 		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<>());
+		// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
 		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
 				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
 			List<String> values = taskIdentities.identities();
-
 			values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
-
 			taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
 					aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
 					aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values));
@@ -413,6 +450,25 @@ public class ManualProcessor extends AbstractManualProcessor {
 				if (StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
 					aeiObjects.getWork().getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
 							taskIdentity.getFromIdentity());
+				}
+			}
+		}
+	}
+
+	private void empower(AeiObjects aeiObjects, Tickets tickets) throws Exception {
+		// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
+		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
+			List<Ticket> list = tickets.bubble();
+			List<String> values = list.stream().map(Ticket::distinguishedName).collect(Collectors.toList());
+			values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+			List<Empower> empowers = aeiObjects.business().organization().empower().listWithIdentityObject(
+					aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
+					aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values);
+			for (Empower empower : empowers) {
+				if (StringUtils.isNotEmpty(empower.getFromIdentity())
+						&& StringUtils.isNotEmpty(empower.getToIdentity())) {
+					list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
 				}
 			}
 		}
@@ -454,16 +510,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 			return executingMatrix(aeiObjects, manual);
 		}
 		List<Work> results = new ArrayList<>();
-		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
 		Tickets tickets = aeiObjects.getWork().getTickets();
+		checkValidTickets(aeiObjects, tickets);
 		// 由于退回存在空名称的路由
 		List<TaskCompleted> taskCompleteds = aeiObjects
 				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-		executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, matrix, taskCompleteds);
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, tickets, taskCompleteds);
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
-				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
+						Objects.toString(manual.getManualMode(), ""),
+						tickets.bubble().stream().map(Ticket::label).collect(Collectors.toList())));
 		if (tickets.bubble().isEmpty() && (!taskCompleteds.isEmpty())) {
 			results.add(aeiObjects.getWork());
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
@@ -495,6 +552,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 		aeiObjects.getWork().setTickets(tickets);
 		return results;
+	}
+
+	private void checkValidTickets(AeiObjects aeiObjects, Tickets tickets) throws Exception {
+		List<Ticket> list = tickets.bubble();
+		List<String> names = list.stream().map(Ticket::distinguishedName).collect(Collectors.toList());
+		List<String> validNames = aeiObjects.business().organization().distinguishedName().list(names);
+		list.stream().forEach(o -> {
+			if (!validNames.contains(o.distinguishedName())) {
+				o.valid(false);
+			}
+		});
 	}
 
 	private List<Work> executingMatrix(AeiObjects aeiObjects, Manual manual) throws Exception {
@@ -573,11 +641,12 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
-			List<TaskCompleted> taskCompleteds) throws Exception {
-		if (!tickets.bubble().isEmpty()) {
-			taskCompleteds.stream().forEach(o -> {
-				tickets.completed(o.getLabel()).join(o.getLabel(), BooleanUtils.isNotFalse(o.getJoinInquire()));
-			});
+			List<TaskCompleted> taskCompleteds) {
+		tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
+			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
+				tickets.completed(o.label()).join(o.label(), BooleanUtils.isNotFalse(t.getJoinInquire()));
+			}
+		}));
 //
 //			List<String> identities = matrix.flat();
 //			taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
@@ -591,7 +660,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 //					}
 //				});
 //			}
-		}
 	}
 
 	@Override
@@ -796,9 +864,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 				}).map(Entry::getKey);
 	}
 
-	// 是否有优先路由
+	@Deprecated(since = "8.2", forRemoval = true)
 	private void single(AeiObjects aeiObjects, Manual manual, ManualTaskIdentityMatrix matrix,
 			List<TaskCompleted> taskCompleteds) throws Exception {
+		// 是否有优先路由
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
@@ -811,6 +880,22 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	private void single(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
+			throws Exception {
+		// 是否有优先路由
+		if (soleDirect(aeiObjects, taskCompleteds)) {
+			tickets.bubble().stream().forEach(o -> o.enable(false));
+			List<Task> tasks = aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.collect(Collectors.toList());
+			tasks.stream().forEach(aeiObjects::deleteTask);
+			uncompletedTaskToRead(aeiObjects, manual, tasks);
+		} else {
+			task(aeiObjects, manual, tickets);
+		}
+	}
+
+	@Deprecated(since = "8.2", forRemoval = true)
 	private void parallel(AeiObjects aeiObjects, Manual manual, ManualTaskIdentityMatrix matrix,
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		// 是否有优先路由
@@ -841,6 +926,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	private void queue(AeiObjects aeiObjects, Manual manual, ManualTaskIdentityMatrix matrix,
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
@@ -852,6 +938,20 @@ public class ManualProcessor extends AbstractManualProcessor {
 			uncompletedTaskToRead(aeiObjects, manual, tasks);
 		} else {
 			task(aeiObjects, manual, matrix.read());
+		}
+	}
+
+	private void queue(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
+			throws Exception {
+		if (soleDirect(aeiObjects, taskCompleteds)) {
+			tickets.bubble().stream().forEach(o -> o.enable(false));
+			List<Task> tasks = aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.collect(Collectors.toList());
+			tasks.stream().forEach(aeiObjects::deleteTask);
+			uncompletedTaskToRead(aeiObjects, manual, tasks);
+		} else {
+			task(aeiObjects, manual, tickets);
 		}
 	}
 
@@ -947,16 +1047,19 @@ public class ManualProcessor extends AbstractManualProcessor {
 						labels.remove(t.getLabel());
 					}
 				});
-		labels.stream().forEac h(o -> {
+		labels.stream().forEach(o -> {
 			try {
-				Task task = Tasks.createTask(aeiObjects, manual, o);
-				aeiObjects.createTask(task);
-				// 将用户可能已经存在的同一环节已办全部标记为不参与流转
-				aeiObjects.getJoinInquireTaskCompletedsWithActivityToken(task.getActivityToken()).stream()
-						.filter(p -> StringUtils.equalsIgnoreCase(p.getPerson(), task.getPerson())).forEach(tc -> {
-							tc.setJoinInquire(false);
-							aeiObjects.getUpdateTaskCompleteds().add(tc);
-						});
+				Optional<Ticket> opt = tickets.findTicketWithLabel(o);
+				if (opt.isPresent()) {
+					Task task = Tasks.createTask(aeiObjects, manual, opt.get());
+					aeiObjects.createTask(task);
+					// 将用户可能已经存在的同一环节已办全部标记为不参与流转
+					aeiObjects.getJoinInquireTaskCompletedsWithActivityToken(task.getActivityToken()).stream()
+							.filter(p -> StringUtils.equalsIgnoreCase(p.getPerson(), task.getPerson())).forEach(tc -> {
+								tc.setJoinInquire(false);
+								aeiObjects.getUpdateTaskCompleteds().add(tc);
+							});
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}

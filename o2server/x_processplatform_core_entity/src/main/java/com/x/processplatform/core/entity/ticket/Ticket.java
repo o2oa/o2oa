@@ -233,7 +233,6 @@ public class Ticket implements Serializable {
 		return this;
 	}
 
-	
 	public String distinguishedName() {
 		return distinguishedName;
 	}
@@ -261,6 +260,17 @@ public class Ticket implements Serializable {
 
 	public Ticket superior(String superior) {
 		this.superior = superior;
+		return this;
+	}
+
+	public Ticket empower(String from, String to) {
+		if (StringUtils.isNotEmpty(from) && StringUtils.isNotEmpty(to)
+				&& StringUtils.isEmpty(this.fromDistinguishedName)
+				&& StringUtils.equalsIgnoreCase(from, this.distinguishedName)) {
+			this.fromDistinguishedName(from);
+			this.distinguishedName(to);
+		}
+
 		return this;
 	}
 

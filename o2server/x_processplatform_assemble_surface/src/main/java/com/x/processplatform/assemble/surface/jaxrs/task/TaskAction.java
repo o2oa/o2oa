@@ -957,6 +957,24 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "加签.", action = ActionAdd.class)
+	@POST
+	@Path("{id}/add")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionAdd.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionAdd().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@Operation(summary = "分页显示当前用户创建工作的待办.", operationId = OPERATIONID_PREFIX + "V2ListCreatePaging", responses = {
 			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2ListCreatePaging.Wo.class)))) }, requestBody = @RequestBody(content = {
 					@Content(schema = @Schema(implementation = V2ListCreatePaging.Wi.class)) }))

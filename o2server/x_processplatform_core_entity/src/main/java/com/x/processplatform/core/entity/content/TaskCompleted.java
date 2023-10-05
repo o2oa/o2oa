@@ -359,11 +359,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.latest = true;
 		this.duration = duration;
 		this.processingType = processingType;
-		/* 必须使用set方法,执行opinion的判断 */
+		// 必须使用set方法,执行opinion的判断
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
+		this.label = task.getLabel();
 	}
 
 	public TaskCompletedProperties getProperties() {

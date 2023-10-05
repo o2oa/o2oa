@@ -181,7 +181,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeName = "";
 		this.routeAlias = "";
 		this.opinion = "";
-
 		this.modified = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);

@@ -104,40 +104,21 @@ public class Tickets implements Serializable {
 		return this;
 	}
 
-	public Tickets add(String label, Collection<String> targets, String position, String addMode) {
+	public boolean add(String label, Collection<String> targets, String position, String addMode) {
 		return add(label, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
 	}
 
-	public Tickets add(Ticket ticket, Collection<Ticket> targets, String position, String addMode) {
-		return add(ticket, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
-	}
-
-	public Tickets add(String label, Collection<String> targets, boolean before, String addMode) {
+	public boolean add(String label, Collection<String> targets, boolean before, String addMode) {
 		Optional<Ticket> opt = this.findTicketWithLabel(label);
 		if (opt.isPresent()) {
 			return add(opt.get(), targets.stream().distinct().map(Ticket::new).collect(Collectors.toList()), before,
 					addMode);
 		}
-		return this;
+		return false;
 	}
 
-	/**
-	 * 根据distinguishedName禁用ticket
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public Tickets disableDistinguishedName(List<String> list) {
-		this.context.entrySet().stream().forEach(o -> {
-			if (list.contains(o.getValue().distinguishedName())) {
-				o.getValue().enable(false);
-			}
-		});
-		return this;
-	}
-
-	public Tickets disableDistinguishedName(String... distinguishedNames) {
-		return disableDistinguishedName(Arrays.asList(distinguishedNames));
+	public boolean add(Ticket ticket, Collection<Ticket> targets, String position, String addMode) {
+		return add(ticket, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
 	}
 
 	/**
@@ -146,7 +127,7 @@ public class Tickets implements Serializable {
 	 * @param targets
 	 * @return
 	 */
-	public Tickets add(Ticket ticket, Collection<Ticket> targets, boolean before, String addMode) {
+	public boolean add(Ticket ticket, Collection<Ticket> targets, boolean before, String addMode) {
 		Add add = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			add = new ParallelAdd();
@@ -182,7 +163,26 @@ public class Tickets implements Serializable {
 			break;
 		}
 		targets.stream().forEach(o -> this.context.put(o.label(), o));
+		return true;
+	}
+
+	/**
+	 * 根据distinguishedName禁用ticket
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public Tickets disableDistinguishedName(List<String> list) {
+		this.context.entrySet().stream().forEach(o -> {
+			if (list.contains(o.getValue().distinguishedName())) {
+				o.getValue().enable(false);
+			}
+		});
 		return this;
+	}
+
+	public Tickets disableDistinguishedName(String... distinguishedNames) {
+		return disableDistinguishedName(Arrays.asList(distinguishedNames));
 	}
 
 	/**
