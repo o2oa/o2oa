@@ -1,14 +1,30 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 import com.google.gson.JsonElement;
-import com.x.base.core.project.exception.ExceptionDeprecatedAction;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.ticket.Tickets;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionResetWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionResetWo;
+import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
-@Deprecated
+/**
+ * @since 8.2
+ */
 class ActionReset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReset.class);
@@ -17,111 +33,90 @@ class ActionReset extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		throw new ExceptionDeprecatedAction(V2Reset.class.getName());
+		Param param = this.init(id, jsonElement);
 
-//		ActionResult<Wo> result = new ActionResult<>();
-//		Wo wo = new Wo();
-//		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-//		String executorSeed = null;
-//
-//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
-//			if (null == task) {
-//				throw new ExceptionEntityNotExist(id, Task.class);
-//			}
-//			executorSeed = task.getJob();
-//		}
-//
-//		Callable<String> callable = new Callable<String>() {
-//			public String call() throws Exception {
-//				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//					Business business = new Business(emc);
-//					Task task = emc.find(id, Task.class);
-//					if (null == task) {
-//						throw new ExceptionEntityNotExist(id, Task.class);
-//					}
-//					Work work = emc.find(task.getWork(), Work.class);
-//					if (null == work) {
-//						throw new ExceptionEntityNotExist(task.getWork(), Work.class);
-//					}
-//
-//					// 检查reset人员
-//					List<String> identites = ListTools
-//							.trim(business.organization().identity().list(wi.getIdentityList()), true, true);
-//
-//					// 在新增待办人员中删除当前的处理人
-//					identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
-//
-//					if (identites.isEmpty()) {
-//						throw new ExceptionResetEmpty();
-//					}
-//					emc.beginTransaction(Work.class);
-//					List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
-//					if (BooleanUtils.isNotTrue(wi.getKeep())) {
-//						Date now = new Date();
-//						Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
-//						TaskCompleted taskCompleted = new TaskCompleted(task, TaskCompleted.PROCESSINGTYPE_RESET, now,
-//								duration);
-//						emc.beginTransaction(TaskCompleted.class);
-//						emc.beginTransaction(Task.class);
-//						emc.persist(taskCompleted, CheckPersistType.all);
-//						emc.remove(task, CheckRemoveType.all);
-//						os.remove(task.getIdentity());
-//						MessageFactory.taskCompleted_create(taskCompleted);
-//						MessageFactory.task_delete(task);
-//					}
-//					os = ListUtils.union(os, identites);
-//					work.setManualTaskIdentityList(ListTools.trim(os, true, true));
-//					emc.check(work, CheckPersistType.all);
-//					emc.commit();
-//					ProcessingAttributes processingAttributes = new ProcessingAttributes();
-//					processingAttributes.setDebugger(effectivePerson.getDebugger());
-//					Processing processing = new Processing(processingAttributes);
-//					processing.processing(work.getId());
-//					wo.setId(task.getId());
-//					result.setData(wo);
-//				}
-//				return "";
-//			}
-//		};
-//
-//		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-//
-//		return result;
-//	}
-//
-//	public static class CallWrap {
-//		String job;
-//	}
-//
-//	public static class Wi extends GsonPropertyObject {
-//
-//		private static final long serialVersionUID = -563586484778909479L;
-//
-//		@FieldDescribe("身份")
-//		private List<String> identityList;
-//
-//		@FieldDescribe("保留自身待办.")
-//		private Boolean keep;
-//
-//		public List<String> getIdentityList() {
-//			return identityList;
-//		}
-//
-//		public void setIdentityList(List<String> identityList) {
-//			this.identityList = identityList;
-//		}
-//
-//		public Boolean getKeep() {
-//			return keep;
-//		}
-//
-//		public void setKeep(Boolean keep) {
-//			this.keep = keep;
-//		}
+		CallableImpl callable = new CallableImpl(id, param.getDistinguishedNameList());
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
+				TimeUnit.SECONDS);
+
 	}
 
-	public static class Wo extends WoId {
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.setDistinguishedNameList(wi.getDistinguishedNameList());
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Task task = emc.find(id, Task.class);
+			Objects.requireNonNull(task);
+			param.setJob(task.getJob());
+		}
+		return param;
+	}
+
+	public static class Param {
+
+		private String job;
+
+		private List<String> distinguishedNameList;
+
+		public String getJob() {
+			return job;
+		}
+
+		public void setJob(String job) {
+			this.job = job;
+		}
+
+		public List<String> getDistinguishedNameList() {
+			return distinguishedNameList;
+		}
+
+		public void setDistinguishedNameList(List<String> distinguishedNameList) {
+			this.distinguishedNameList = distinguishedNameList;
+		}
+
+	}
+
+	public class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private CallableImpl(String id, List<String> distinguishedNameList) {
+			this.id = id;
+			this.distinguishedNameList = distinguishedNameList;
+		}
+
+		private String id;
+		private List<String> distinguishedNameList;
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			ActionResult<Wo> result = new ActionResult<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.beginTransaction(Work.class);
+				Business business = new Business(emc);
+				Task task = emc.find(id, Task.class);
+				Work work = emc.find(task.getWork(), Work.class);
+				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+				Objects.requireNonNull(manual);
+				Tickets tickets = manual.identitiesToTickets(distinguishedNameList);
+				work.setTickets(tickets);
+				emc.commit();
+				Wo wo = new Wo();
+				wo.setValue(true);
+				result.setData(wo);
+			}
+			return result;
+		}
+
+	}
+
+	public static class Wi extends ActionResetWi {
+
+		private static final long serialVersionUID = -3609474511834394555L;
+
+	}
+
+	public static class Wo extends ActionResetWo {
 
 		private static final long serialVersionUID = -3609474511834394555L;
 

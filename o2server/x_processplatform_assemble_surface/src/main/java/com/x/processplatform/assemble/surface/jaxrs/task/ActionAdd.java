@@ -47,10 +47,8 @@ public class ActionAdd extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAdd.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
-					() -> jsonElement);
-		}
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 		Param param = this.init(effectivePerson, id, jsonElement);
 		if (StringUtils.isNotEmpty(param.getOpinion()) || StringUtils.isNotEmpty(param.getRouteName())) {
 			updateTask(param.getTask(), param.getOpinion(), param.getRouteName());

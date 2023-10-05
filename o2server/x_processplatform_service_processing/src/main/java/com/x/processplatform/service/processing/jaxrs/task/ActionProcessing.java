@@ -239,9 +239,6 @@ class ActionProcessing extends BaseAction {
 			Date now = new Date();
 			Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 			TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
-			if (StringUtils.equalsIgnoreCase(wi.getProcessingType(), TaskCompleted.PROCESSINGTYPE_ADD)) {
-				taskCompleted.setJoinInquire(false);
-			}
 			taskCompleted.onPersist();
 			return taskCompleted;
 		}
