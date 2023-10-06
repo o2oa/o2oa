@@ -48,6 +48,10 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddMan
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * 旧 matrix 加签
+ */
+@Deprecated(since = "8.2", forRemoval = true)
 public class V2Add extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Add.class);

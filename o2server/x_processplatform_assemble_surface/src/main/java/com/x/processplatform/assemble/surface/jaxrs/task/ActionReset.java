@@ -43,6 +43,9 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionRese
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
+/**
+ * tickets 加签
+ */
 public class ActionReset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReset.class);
