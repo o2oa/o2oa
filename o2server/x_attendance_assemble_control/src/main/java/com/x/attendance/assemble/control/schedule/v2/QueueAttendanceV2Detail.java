@@ -374,12 +374,13 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
 
     // 未打卡保存 todo offDutyNext
     private AttendanceV2CheckInRecord saveNoCheckInRecord(EntityManagerContainer emc, String person, String dutyType,
-            AttendanceV2Group group, AttendanceV2Shift shift, String today,
+            AttendanceV2Group group, AttendanceV2Shift shift, String cDate,
             String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit, boolean offDutyNextDay)
             throws Exception {
+        String result = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
         AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
         noCheckRecord.setCheckInType(dutyType);
-        noCheckRecord.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
+        noCheckRecord.setCheckInResult(result);
         noCheckRecord.setUserId(person);
         // 打卡时间
         if (StringUtils.isEmpty(dutyTime)) {
@@ -389,14 +390,19 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 dutyTime = "18:00";
             }
         }
-        Date onDutyTime = DateTools.parse(today + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
+        Date onDutyTime = DateTools.parse(cDate + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
         if (AttendanceV2CheckInRecord.OffDuty.equals(dutyType) && offDutyNextDay) {
             Date nextDate = DateTools.addDay(onDutyTime, 1);
+            Date now = new Date();
+            if (now.before(nextDate)) { // 跨天的数据 有可能还未到打卡时间
+                result = AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn;
+                noCheckRecord.setCheckInResult(result);
+            }
             noCheckRecord.setRecordDate(nextDate);
         } else {
             noCheckRecord.setRecordDate(onDutyTime);
         }
-        noCheckRecord.setRecordDateString(today);
+        noCheckRecord.setRecordDateString(cDate);
         noCheckRecord.setPreDutyTime(dutyTime);
         noCheckRecord.setPreDutyTimeBeforeLimit(dutyTimeBeforeLimit);
         noCheckRecord.setPreDutyTimeAfterLimit(dutyTimeAfterLimit);
@@ -413,7 +419,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.persist(noCheckRecord, CheckPersistType.all);
         emc.commit();
-        logger.info("打卡记录保存：{}, {}, {} ", person, today, AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
+        logger.info("打卡记录保存：{}, {}, {} ", person, cDate, result);
         return noCheckRecord;
     }
 }

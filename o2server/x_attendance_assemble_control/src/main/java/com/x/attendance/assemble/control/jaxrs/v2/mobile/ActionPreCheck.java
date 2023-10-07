@@ -114,10 +114,15 @@ public class ActionPreCheck extends BaseAction {
                     }
                     List<AttendanceV2CheckInRecord> yesterdayRecordList = business.getAttendanceV2ManagerFactory()
                         .listRecordWithPersonAndDate(person, yesterdayString);
+                    if (yesterdayRecordList == null || yesterdayRecordList.isEmpty()) {
+                        if (shift != null) {
+                            yesterdayRecordList = dealShiftForRecord(shift, emc, business, person, group, yesterday, yesterdayString, null);
+                        }
+                    }
                     if (yesterdayRecordList != null && !yesterdayRecordList.isEmpty()) {
                         AttendanceV2CheckInRecord last = yesterdayRecordList.get(yesterdayRecordList.size()-1);
-                        // 昨天的数据 并且跨天 并且未打卡
-                        if (last.getOffDutyNextDay() && last.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
+                        // 昨天的数据 并且跨天
+                        if (last.getOffDutyNextDay()) {
                             LOGGER.info("返回昨日的数据，有跨天的还未完成的打卡");
                             Date onDutyAfterTime;
                             if (StringUtils.isEmpty(last.getPreDutyTimeAfterLimit())) {
@@ -126,12 +131,9 @@ public class ActionPreCheck extends BaseAction {
                             } else {
                                 onDutyAfterTime = DateTools.parse(today + " " + last.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
                             }
-                            // 如果没有在限制时间结束前 就是返回昨天未完成的打卡记录
+                            // 如果没有在限制时间结束前 就是返回昨天的打卡记录
                             if (!nowDate.after(onDutyAfterTime)) {
                                 return yesterdayRecordList;
-                            } else {
-                                // 超过了打卡结束限制时间，直接生成未打卡数据
-                                update2NoCheckInRecord(emc, last);
                             }
                         }
                     }

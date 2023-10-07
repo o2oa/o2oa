@@ -59,6 +59,16 @@ public class AttendanceV2DetailGenerateTask  extends AbstractJob {
                         for (String person : trueList) {
                             ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, yesterdayString));
                         }
+                        // 如果排班制，有可能跨天 多跑一天的数据
+                        if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) {
+                            Date beforeYesterday = DateTools.addDay(yesterday, -1);
+                            String beforeYesterdayString = DateTools.format(beforeYesterday, DateTools.format_yyyyMMdd);
+                            logger.info("前天的日期：{} ", beforeYesterdayString);
+                            for (String person : trueList) {
+                                ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, beforeYesterdayString));
+                            }
+                        }
+
                     } catch (Exception e) {
                         logger.error(e);
                     }
