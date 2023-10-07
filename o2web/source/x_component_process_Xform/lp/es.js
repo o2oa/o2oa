@@ -380,6 +380,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "Agregar un responsable antes de que se procese la tarea",
         "addTaskAfterTitle": "Agregar un responsable después de que se procese la tarea",
         "addTaskType": "Método de asignación",
+        "modeType": "Método de procesamiento",
+        "single": "soltero",
+        "queue": "serie",
+        "parallel": "paralelo",
 
         "addTaskRepeatedTitle": "Recordatorio de asignación repetida",
         "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> ya está en la lista de responsables y no se le puede volver a asignar."

@@ -385,6 +385,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "在您处理之前添加处理人",
         "addTaskAfterTitle": "在您处理之后添加处理人",
         "addTaskType": "加签方式",
+        "modeType": "处理方式",
+        "single": "单人",
+        "queue": "串行",
+        "parallel": "并行",
 
         "goBackActivity": "退回到活动：",
         "goBackActivityWay": "退回后处理：",

@@ -384,6 +384,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "Add a task before you process",
         "addTaskAfterTitle": "Add a task after you process",
         "addTaskType": "Add Task Type",
+        "modeType": "Processing method",
+        "single": "single",
+        "queue": "serial",
+        "parallel": "parallel",
 
         "addTaskRepeatedTitle": "Repeat Reminder",
         "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。"
