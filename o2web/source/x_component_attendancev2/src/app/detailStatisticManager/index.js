@@ -103,9 +103,18 @@ export default content({
     this._showTableHeader();
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
-    const json = await detailAction("statistic", form);
-    const list =  json || [];
-    this.bind.statisticList = list;
+    try {
+      const json = await detailAction("statistic", form);
+      const list =  json || [];
+      console.log(list);
+      if (list.length > 0) {
+        const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
+        this.bind.tableHeaderList = firstDetailList;
+      }
+      this.bind.statisticList = list;
+    } catch (e) {
+      console.error(e);
+    }
     await hideLoading(this);
   },
   _showTableHeader() {

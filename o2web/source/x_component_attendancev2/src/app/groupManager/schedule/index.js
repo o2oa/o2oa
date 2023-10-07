@@ -155,10 +155,14 @@ export default content({
   async loadMonthScheduleList() {
     await showLoading(this);
     console.log("开始获取月份数据", this.bind.month, this.bind.groupId);
-    const list = await groupScheduleAction("listMonth", this.bind.groupId, this.bind.month);
-    const scheduleList = list || [];
-    this.loadShift(scheduleList);
-    this.bind.scheduleList = scheduleList;
+    try {
+      const list = await groupScheduleAction("listMonth", this.bind.groupId, this.bind.month);
+      const scheduleList = list || [];
+      this.loadShift(scheduleList);
+      this.bind.scheduleList = scheduleList;
+    }catch(e) {
+      console.error(e);
+    }
     await hideLoading(this);
   },
   // 如果本地缓存中没有班次数据，根据返回的排班结果中获取班次数据
@@ -270,17 +274,21 @@ export default content({
   async loadLastMonthDataAndCopy(month) {
     await showLoading(this);
     console.log(this.bind.month, month);
-    const list = await groupScheduleAction("listMonth", this.bind.groupId, month);
-    const scheduleList = list || [];
-    if (scheduleList.length > 0) {
-      // 处理数据 把月份改成 当前月份
-      let newScheduleList = [];
-      for (let index = 0; index < scheduleList.length; index++) {
-        const element = scheduleList[index];
-        element.scheduleDateString = replaceCustomString(element.scheduleDateString, month, this.bind.month);
-        newScheduleList.push(element);
+    try {
+      const list = await groupScheduleAction("listMonth", this.bind.groupId, month);
+      const scheduleList = list || [];
+      if (scheduleList.length > 0) {
+        // 处理数据 把月份改成 当前月份
+        let newScheduleList = [];
+        for (let index = 0; index < scheduleList.length; index++) {
+          const element = scheduleList[index];
+          element.scheduleDateString = replaceCustomString(element.scheduleDateString, month, this.bind.month);
+          newScheduleList.push(element);
+        }
+        this.bind.scheduleList = newScheduleList;
       }
-      this.bind.scheduleList = newScheduleList;
+    }catch(e) {
+      console.error(e);
     }
     await hideLoading(this);
     console.log(this.bind.scheduleList);
@@ -294,19 +302,23 @@ export default content({
       return ;
     }
     await showLoading(this);
-    // 排班班次列表和周期列表的数据作为配置存到后台，方便后续使用
-    const scheduleConfigJson = {
-      shiftSelected: this.bind.shiftSelector.shiftSelected,
-      shiftCycleList: this.bind.shiftCycleList
-    };
-    const body = {
-      groupId: this.bind.groupId,
-      month: this.bind.month,
-      scheduleList: this.bind.scheduleList,
-      scheduleConfigJson: JSON.stringify(scheduleConfigJson)
-    };
-    const result = await groupScheduleAction("postMonth", body);
-    console.log(result);
+    try {
+      // 排班班次列表和周期列表的数据作为配置存到后台，方便后续使用
+      const scheduleConfigJson = {
+        shiftSelected: this.bind.shiftSelector.shiftSelected,
+        shiftCycleList: this.bind.shiftCycleList
+      };
+      const body = {
+        groupId: this.bind.groupId,
+        month: this.bind.month,
+        scheduleList: this.bind.scheduleList,
+        scheduleConfigJson: JSON.stringify(scheduleConfigJson)
+      };
+      const result = await groupScheduleAction("postMonth", body);
+      console.log(result);
+    }catch(e) {
+      console.error(e);
+    }
     await hideLoading(this);
     if (close) {
       this.closeSelf(); 
