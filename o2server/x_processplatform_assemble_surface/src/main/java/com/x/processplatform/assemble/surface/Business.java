@@ -29,6 +29,7 @@ import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
 import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskProcessModeFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
