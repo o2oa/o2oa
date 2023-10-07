@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -350,11 +351,21 @@ public class TernaryManagement extends ConfigObject {
 	}
 
 	public static Map<String, Integer> defualtSubjectSecurityClearance() {
-		return Map.of("重要", 400, "一般", 300, "内部", 200, "义务", 100);
+		Map<String, Integer> map = new LinkedHashMap<>();
+		map.put("重要", 400);
+		map.put("一般", 300);
+		map.put("内部", 200);
+		map.put("义务", 100);
+		return map;
 	}
 
 	public static Map<String, Integer> defualtObjectSecurityClearance() {
-		return Map.of("机密", 400, "秘密", 300, "内部", 200, "非密", 100);
+		Map<String, Integer> map = new LinkedHashMap<>();
+		map.put("机密", 400);
+		map.put("秘密", 300);
+		map.put("内部", 200);
+		map.put("非密", 100);
+		return map;
 	}
 
 	public Integer getSystemSecurityClearance() {
