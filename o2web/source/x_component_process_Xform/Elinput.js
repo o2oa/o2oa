@@ -124,5 +124,15 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
 
         html += "</el-input>";
         return html;
+    },
+    getValue: function(){
+        if (this.moduleValueAG) return this.moduleValueAG;
+        var value = this._getBusinessData();
+        if (value || value==0 || value===false){
+            return value;
+        }else{
+            value = this._computeValue();
+            return (o2.typeOf(value)!=="null") ? value : "";
+        }
     }
 }); 
