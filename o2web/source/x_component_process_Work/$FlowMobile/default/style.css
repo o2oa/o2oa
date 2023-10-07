@@ -119,7 +119,7 @@
 }
 
 .o2flow-addTask-color {
-    color: #FB4747
+    color: #4A90E2
 }
 
 .o2flow-reset-color {
@@ -215,6 +215,11 @@
     /*text-overflow: ellipsis;*/
 }
 
+.o2flow-section{
+    background: #FFFFFF;
+    border-radius: 14px;
+    margin-top: 10px;
+}
 .o2flow-section-title {
     height: 30px;
     font-size: 14px;
@@ -449,7 +454,6 @@
     overflow:hidden;
     padding-top:10px;
     position:relative;
-    border-bottom:1px solid #ddd;
     margin-left: 10px;
     margin-right: 10px;
     min-height: 10px;
@@ -489,6 +493,56 @@
     background: #F0F0F0;
     border-radius: 8px;
     color:#666;
+}
+.o2flow-identity{
+    padding: 5px;
+    float:  left;
+    margin-right: 10px;
+    margin-bottom:  10px;
+    text-align: center;
+}
+.o2flow-identity-icon{
+    border-radius: 32px;
+    height: 32px;
+    width: 32px;
+    position: relative;
+    overflow:  hidden
+}
+.o2flow-identity-text{
+    color: #666;
+    font-size:  12px;
+}
+
+.o2flow-unit{
+    overflow:  hidden;
+    padding: 5px;
+    margin-bottom:  5px;
+}
+.o2flow-unit-icon{
+    border-radius: 32px;
+    line-height: 24px;
+    height: 24px;
+    width: 24px;
+    float: left;
+    background: #FB4747;
+    overflow: hidden;
+    text-align: center;
+    padding: 5px;
+    color: #fff;
+}
+.o2flow-unit-text{
+    float: left;
+    overflow:  hidden;
+    padding-left: 10px;
+}
+.o2flow-unit-name{
+    color: #666;
+    font-size: 12px;
+}
+.o2flow-unit-levelname{
+    color: #999;
+    font-size:  12px;
+    margin-top: 3px;
 }
 
 /*.o2flow-empower-node{*/

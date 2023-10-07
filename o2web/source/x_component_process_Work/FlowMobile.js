@@ -238,7 +238,7 @@ MWF.ProcessFlow.ResetMobile = new Class({
     },
     getSelOrgData: function () {
         return this.orgData ? this.orgData.map(function (item) {
-            return item.distinguishedName;
+            return typeOf( item ) === "string" ? item : item.distinguishedName;
         }) : [];
     },
     selectOnComplete: function (items) { //移动端才执行
@@ -273,13 +273,13 @@ MWF.ProcessFlow.ResetMobile = new Class({
                 var widget;
                 switch (flag.toLowerCase()) {
                     case "i":
-                        widget = new MWF.widget.O2Identity(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2IdentityMobile(data, node, this.getOrgWidgetOption());
                         break;
                     case "p":
-                        widget = new MWF.widget.O2Person(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2PersonMobile(data, node, this.getOrgWidgetOption());
                         break;
                     case "u":
-                        widget = new MWF.widget.O2Unit(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2UnitMobile(data, node, this.getOrgWidgetOption());
                         break;
                     case "g":
                         widget = new MWF.widget.O2Group(data, node, this.getOrgWidgetOption());
@@ -294,24 +294,25 @@ MWF.ProcessFlow.ResetMobile = new Class({
     },
     getOrgWidgetOption: function(){
         return {
+            "mainColorEnable": this.flow.options.mainColorEnable,
             "removeByClick": true,
             "style": "flowmobile",
             "canRemove": false,
             "lazy": true,
             "disableInfor" : true,
             "onRemove" : this.removeWidgetItem,
-            "onPostLoad": this.loadWidgetItem,
+            // "onPostLoad": this.loadWidgetItem,
             "delay": true
         };
     },
-    loadWidgetItem: function(){
-        //this 是 MWF.widget.O2Identity 之类的对象
-        var _self = this.field; //这个才是field
-        var dn = this.data.distinguishedName;
-        if( _self.flow.options.mainColorEnable ){
-            this.node.addClass("mainColor_bg");
-        }
-    },
+    // loadWidgetItem: function(){
+    //     //this 是 MWF.widget.O2Identity 之类的对象
+    //     var _self = this.field; //这个才是field
+    //     var dn = this.data.distinguishedName;
+    //     if( _self.flow.options.mainColorEnable ){
+    //         this.node.addClass("mainColor_bg");
+    //     }
+    // },
     removeWidgetItem : function( widget, ev ){
         debugger;
         //this 是 MWF.widget.O2Identity 之类的对象
@@ -331,20 +332,189 @@ MWF.ProcessFlow.ResetMobile = new Class({
 });
 
 MWF.ProcessFlow.AddTaskMobile = new Class({
-    Extends: MWF.ProcessFlow.ResetMobile,
+    Extends: MWF.ProcessFlow.AddTask,
     getUrl: function(){
         return this.flow.path+this.flow.options.style+"/addTask.html";
     },
-    afterLoad: function () {
-        // this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this, {
-        //     optionsList: [{
-        //         text: this.lp.keepTask,
-        //         value: true
-        //     }]
-        // });
-        // this.keepOption.load();
+    setQuickData: function( data ){
+        if(this.position)this.position.setValue( data.routeId === "before" ? "true" : null ); //前后加签存在 routeId
+        if(this.mode)this.mode.setValue( data.routeGroup || null ); //单人、并行、串行存在 routeGroup
+        if(this.opinion)this.opinion.setValue( data.opinion || "" );
+        this.orgData = data.organizations ? (data.organizations.default || []) : [];
+        this.orgContent.empty();
+        this.loadOrgWidget(this.orgData, this.orgContent);
     },
-})
+    afterLoad: function () {
+        if( this.flow.options.mainColorEnable ){
+            this.orgIcon.addClass("mainColor_color");
+            this.orgIcon.addClass("mainColor_border");
+        }
+        this.mode = new MWF.ProcessFlow.widget.Radio2(this.modeArea, this.flow, {
+            activeIcon: "o2icon-checkbox",
+            optionList: [{
+                text: this.lp.single,
+                value: "single"
+            },{
+                text: this.lp.queue,
+                value: "queue"
+            },{
+                text: this.lp.parallel,
+                value: "parallel"
+            }],
+            value: this.quickData.mode || ""
+        });
+        this.mode.load();
+
+        var position = "";
+        if( this.quickData.routeId ){
+            position = (this.quickData.routeId === "before") ? "true" : "false"
+        }
+        this.position = new MWF.ProcessFlow.widget.Radio2(this.positionArea, this.flow, {
+            activeIcon: "o2icon-checkbox",
+            optionList: [{
+                text: this.lp.addTaskBefore,
+                value: "true"
+            },
+                {
+                    text: this.lp.addTaskAfter,
+                    value: "false"
+                }],
+            value: position
+        });
+        this.position.load();
+    },
+    destroy: function () {
+        if (this.node) this.node.empty();
+    },
+    loadOrg: function(){
+        var quickData = this.quickData.organizations ? (this.quickData.organizations.default || [] ) : [];
+        if( quickData.length ){
+            this.orgData = quickData;
+            this.orgContent.empty();
+            this.loadOrgWidget(this.orgData, this.orgContent);
+        }
+        if(this.quickData.organizations)delete this.quickData.organizations.default;
+
+        this.orgNode.addEvent("click", function () {
+            this.getSelOptions( function (options) {
+                options.values = this.orgData || [] ;
+                setTimeout(function () {
+                    this.selector = new MWF.O2Selector($(document.body), options);
+                }.bind(this), 100);
+            }.bind(this) );
+        }.bind(this));
+
+    },
+    getSelDefaultOptions: function(){
+        var defaultOpt = {
+            "type": "identity",
+            "style": "default",
+            "zIndex": 3000,
+            "count": this.businessData.activity.resetCount || 0,
+            "onComplete": function (items) {
+                this.selectOnComplete(items);
+            }.bind(this)
+        };
+        if (this.form.json.selectorStyle) {
+            defaultOpt = Object.merge(Object.clone(this.form.json.selectorStyle), defaultOpt);
+            if (this.form.json.selectorStyle.style) defaultOpt.style = this.form.json.selectorStyle.style;
+        }
+        return defaultOpt;
+    },
+    getSelOrgData: function () {
+        return this.orgData ? this.orgData.map(function (item) {
+            return typeOf( item ) === "string" ? item : item.distinguishedName;
+        }) : [];
+    },
+    selectOnComplete: function (items) { //移动端才执行
+        // var array = items.map(function (item) {
+        //     return item.data;
+        // });
+
+        // this.checkEmpower(array, function (data) {
+        var values = items.map(function (item) {
+            return MWF.org.parseOrgData(item.data, true, true)
+        });
+
+        this.orgData = values;
+
+        this.orgContent.empty();
+        this.loadOrgWidget(values, this.orgContent);
+
+        this.selector = null;
+
+        this.fireEvent("select", [items, values]);
+        // }.bind(this))
+    },
+    loadOrgWidget: function (value, node) {
+        var height = node.getStyle("height").toInt();
+        if (node.getStyle("overflow") === "visible" && !height) node.setStyle("overflow", "hidden");
+        if (value && value.length) {
+            value.each(function (data) {
+                if( typeOf(data) === "string" ){
+                    data = { distinguishedName : data, name : o2.name.cn(data) };
+                }
+                var flag = data.distinguishedName.substr(data.distinguishedName.length - 1, 1);
+                var widget;
+                switch (flag.toLowerCase()) {
+                    case "i":
+                        widget = new MWF.ProcessFlow.widget.O2IdentityMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "p":
+                        widget = MWF.ProcessFlow.widget.O2PersonMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "u":
+                        widget = new MWF.ProcessFlow.widget.O2UnitMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "g":
+                        widget = new MWF.widget.O2Group(data, node, this.getOrgWidgetOption());
+                        break;
+                    default:
+                        widget = new MWF.widget.O2Other(data, node, this.getOrgWidgetOption());
+                }
+                widget.field = this;
+                widget.load();
+            }.bind(this));
+        }
+    },
+    getOrgWidgetOption: function(){
+        return {
+            "mainColorEnable": this.flow.options.mainColorEnable,
+            "removeByClick": true,
+            "style": "flowmobile",
+            "canRemove": false,
+            "lazy": true,
+            "disableInfor" : true,
+            "onRemove" : this.removeWidgetItem,
+            // "onPostLoad": this.loadWidgetItem,
+            "delay": true
+        };
+    },
+    // loadWidgetItem: function(){
+    //     //this 是 MWF.widget.O2Identity 之类的对象
+    //     var _self = this.field; //这个才是field
+    //     var dn = this.data.distinguishedName;
+    //     if( _self.flow.options.mainColorEnable ){
+    //         this.node.addClass("mainColor_bg");
+    //     }
+    // },
+    removeWidgetItem : function( widget, ev ){
+        debugger;
+        //this 是 MWF.widget.O2Identity 之类的对象
+        var _self = this.field; //这个才是field
+        var dn = this.data.distinguishedName;
+        var data = _self.orgData;
+        var index;
+        _self.orgData.each( function ( d , i){
+            if( d.distinguishedName == dn ){
+                index = i;
+            }
+        });
+        _self.orgData.splice( index, 1 );
+        this.node.destroy();
+        ev.stopPropagation();
+    },
+});
 
 MWF.ProcessFlow.ProcessorMobile = new Class({
     Extends: MWF.ProcessFlow.Processor,
@@ -849,26 +1019,68 @@ MWF.ProcessFlow.Processor.OrgMobile = new Class({
         if (!value) value = this._computeValue();
         return value || "";
     },
+    loadOrgWidget: function (value, node) {
+        var height = node.getStyle("height").toInt();
+        if (node.getStyle("overflow") === "visible" && !height) node.setStyle("overflow", "hidden");
+        if (value && value.length) {
+            value.each(function (data) {
+                if( typeOf(data) === "string" ){
+                    data = { distinguishedName : data, name : o2.name.cn(data) };
+                }
+                var flag = data.distinguishedName.substr(data.distinguishedName.length - 1, 1);
+                var copyData = Object.clone(data);
+                if (this.json.displayTextScript && this.json.displayTextScript.code) {
+                    this.currentData = copyData;
+                    var displayName = this.form.Macro.exec(this.json.displayTextScript.code, this);
+                    if (displayName) {
+                        copyData.displayName = displayName;
+                    }
+                    this.currentData = null;
+                }
+
+                var widget;
+                switch (flag.toLowerCase()) {
+                    case "i":
+                        widget = new MWF.ProcessFlow.widget.O2IdentityMobile(copyData, node, this.getOrgWidgetOption());
+                        break;
+                    case "p":
+                        widget = new MWF.ProcessFlow.widget.O2PersonMobile(copyData, node, this.getOrgWidgetOption());
+                        break;
+                    case "u":
+                        widget = new MWF.ProcessFlow.widget.O2UnitMobile(copyData, node, this.getOrgWidgetOption());
+                        break;
+                    case "g":
+                        widget = new MWF.widget.O2Group(copyData, node, this.getOrgWidgetOption());
+                        break;
+                    default:
+                        widget = new MWF.widget.O2Other(copyData, node, this.getOrgWidgetOption());
+                }
+                widget.field = this;
+                widget.load();
+            }.bind(this));
+        }
+    },
     getOrgWidgetOption: function(){
         return {
+            "mainColorEnable": this.processor.flow.options.mainColorEnable,
             "removeByClick": true,
             "style": "flowmobile",
             "canRemove": false,
             "lazy": true,
             "disableInfor" : true,
             "onRemove" : this.removeWidgetItem,
-            "onPostLoad": this.loadWidgetItem,
+            //"onPostLoad": this.loadWidgetItem,
             "delay": true
         };
     },
-    loadWidgetItem: function(){
-        //this 是 MWF.widget.O2Identity 之类的对象
-        var _self = this.field; //这个才是field
-        var dn = this.data.distinguishedName;
-        if( _self.processor.flow.options.mainColorEnable ){
-            this.node.addClass("mainColor_bg");
-        }
-    },
+    // loadWidgetItem: function(){
+    //     //this 是 MWF.widget.O2Identity 之类的对象
+    //     var _self = this.field; //这个才是field
+    //     var dn = this.data.distinguishedName;
+    //     if( _self.processor.flow.options.mainColorEnable ){
+    //         this.node.addClass("mainColor_bg");
+    //     }
+    // },
     removeWidgetItem : function( widget, ev ){
         debugger;
         //this 是 MWF.widget.O2Identity 之类的对象
@@ -1066,3 +1278,122 @@ MWF.ProcessFlow.widget.OpinionMobile = new Class({
         }.bind(this));
     }
 });
+
+MWF.ProcessFlow.widget.O2IdentityMobile = new Class({
+    Extends: o2.widget.O2Identity,
+    setText: function(){
+        var disply;
+        if( this.data.displayName ){
+            disply = this.data.displayName;
+        }else{
+            disply = this.data.name || o2.name.cn(this.data.distinguishedName)
+            // var name = this.data.name || o2.name.cn(this.data.distinguishedName);
+            // var unit;
+            // if(this.data.unitName){
+            //     unit = this.data.unitName;
+            // }else if( this.data.unitLevelName ){
+            //     var list = this.data.unitLevelName.split("/");
+            //     unit = list[ list.length - 1 ];
+            // }
+            // disply = name + (unit ? "("+unit+")" : "")
+        }
+        this.textNode.set("text", disply );
+    },
+    load: function(){
+        this.fireEvent("queryLoad");
+
+        if (!this.options.lazy && !this.options.disableInfor) this.getPersonData();
+        this.node = new Element("div.o2flow-identity").inject(this.container);
+        this.iconNode = new Element("img.o2flow-identity-icon", {
+            src: o2.filterUrl(o2.Actions.get("x_organization_assemble_control").getPersonIcon(this.data.distinguishedName))
+        }).inject(this.node);
+        this.textNode = new Element("div.o2flow-identity-text").inject(this.node);
+
+        this.setText();
+
+        if( this.options.removeByClick ){
+            this.node.addEvent("click", function(e){
+                this.fireEvent("remove", [this, e]);
+                e.stopPropagation();
+            }.bind(this));
+        }
+
+        if (this.options.canRemove){
+            this.removeNode = new Element("div", {"styles": this.style.identityRemoveNode}).inject(this.node);
+            this.removeNode.addEvent("click", function(e){
+                this.fireEvent("remove", [this, e]);
+                e.stopPropagation();
+            }.bind(this));
+        }
+
+        this.setEvent();
+
+        this.fireEvent("postLoad");
+    },
+});
+
+MWF.ProcessFlow.widget.O2PersonMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.O2IdentityMobile
+})
+
+MWF.ProcessFlow.widget.O2UnitMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.O2IdentityMobile,
+    load: function(){
+        this.fireEvent("queryLoad");
+
+        this.getPersonData( function () {
+            this.node = new Element("div.o2flow-unit").inject(this.container);
+            this.iconNode = new Element("div.o2flow-unit-icon", {
+                text: this.data.name.substr(0,1)
+            }).inject(this.node);
+            if( this.options.mainColorEnable )this.iconNode.addClass("mainColor_bg");
+
+            this.textNode = new Element("div.o2flow-unit-text").inject(this.node);
+            this.nameNode = new Element("div.o2flow-unit-name").inject(this.textNode);
+            this.levelNameNode = new Element("div.o2flow-unit-levelname").inject(this.textNode);
+
+            this.setText();
+
+            if( this.options.removeByClick ){
+                this.node.addEvent("click", function(e){
+                    this.fireEvent("remove", [this, e]);
+                    e.stopPropagation();
+                }.bind(this));
+            }
+
+            if (this.options.canRemove){
+                this.removeNode = new Element("div", {"styles": this.style.identityRemoveNode}).inject(this.node);
+                this.removeNode.addEvent("click", function(e){
+                    this.fireEvent("remove", [this, e]);
+                    e.stopPropagation();
+                }.bind(this));
+            }
+
+            this.setEvent();
+
+            this.fireEvent("postLoad");
+        }.bind(this));
+
+    },
+    getPersonData: function( callback ){
+        if (!this.data.distinguishedName || !this.data.levelName){
+            this.action.actions = {"getUnit": {"uri": "/jaxrs/unit/{id}"}};
+            this.action.invoke({"name": "getUnit", "async": false, "parameter": {"id": (this.data.id || this.data.distinguishedName || this.data.name)}, "success": function(json){
+                this.data = json.data;
+                if(callback)callback();
+            }.bind(this)});
+        }else{
+            if(callback)callback();
+        }
+    },
+    setText: function(){
+        var disply;
+        if( this.data.displayName ){
+            disply = this.data.displayName;
+        }else{
+            disply = this.data.name || o2.name.cn(this.data.distinguishedName)
+        }
+        this.nameNode.set("text", disply );
+        this.levelNameNode.set("text", this.data.levelName);
+    },
+})

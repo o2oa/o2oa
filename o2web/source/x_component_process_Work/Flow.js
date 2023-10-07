@@ -72,12 +72,12 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         if( this.currentAction ){
             this[ this.currentAction+"ContentNode" ].hide();
             this[ this.currentAction+"TitleNode" ].removeClass("o2flow-navi-item-active");
-            if( this.options.mainColorEnable )this[ this.currentAction+"TitleNode" ].removeClass("mainColor_color").removeClass("mainColor_border");
+            if( this.options.mainColorEnable )this[ this.currentAction+"TitleNode" ].removeClass("mainColor_bg");
         }
 
         this[ action+"ContentNode" ].show();
         this[ action+"TitleNode" ].addClass("o2flow-navi-item-active");
-        if( this.options.mainColorEnable )this[ action+"TitleNode" ].addClass("mainColor_color").addClass("mainColor_border");
+        if( this.options.mainColorEnable )this[ action+"TitleNode" ].addClass("mainColor_bg");
 
         this.currentAction = action;
 
@@ -514,7 +514,7 @@ MWF.ProcessFlow.Reset = new Class({
     submit: function () {
         var names = this.getSelOrgData();
         if (!names.length) {
-            this.flow.noticeError(MWF.xApplication.process.Xform.LP.inputResetPeople);
+            this.flow.noticeError(MWF.xApplication.process.Xform.LP.inputResetPeople, this.orgsArea);
             return false;
         }
         var opinion = this.opinion.getValue();
@@ -552,13 +552,86 @@ MWF.ProcessFlow.AddTask = new Class({
         return this.flow.path+this.flow.options.style+"/addTask.html";
     },
     afterLoad: function () {
-        // this.keepOption = new MWF.ProcessFlow.widget.Radio(this.keepOptionArea, this, {
-        //     optionsList: [{
-        //         text: this.lp.keepTask,
-        //         value: true
-        //     }]
-        // });
-        // this.keepOption.load();
+        this.mode = new MWF.ProcessFlow.widget.Radio(this.modeArea, this.flow, {
+            optionList: [{
+                text: this.lp.single,
+                value: "single"
+            },{
+                text: this.lp.queue,
+                value: "queue"
+            },{
+                text: this.lp.parallel,
+                value: "parallel"
+            }],
+            value: this.quickData.mode || ""
+        });
+        this.mode.load();
+
+        var position = "";
+        if( this.quickData.routeId ){
+            position = (this.quickData.routeId === "before") ? "true" : "false"
+        }
+        this.position = new MWF.ProcessFlow.widget.Radio(this.positionArea, this.flow, {
+            optionList: [{
+                text: this.lp.addTaskBefore,
+                value: "true"
+            },
+            {
+                text: this.lp.addTaskAfter,
+                value: "false"
+            }],
+            value: position
+        });
+        this.position.load();
+    },
+    submit: function () {
+        var opinion = this.opinion.getValue();
+
+        var before = this.position.getValue() === "true";
+        if (!this.position.getValue()) {
+            this.flow.noticeError(MWF.xApplication.process.Work.LP.inputAddTaskType, this.positionArea);
+            return false;
+        }
+
+        var mode = this.mode.getValue();
+        if (!mode) {
+            this.flow.noticeError(MWF.xApplication.process.Work.LP.inputModeType, this.modeArea);
+            return false;
+        }
+
+        var names = this.getSelOrgData();
+        if (!names.length) {
+            this.flow.noticeError(MWF.xApplication.process.Work.LP.inputAddTaskPeople, this.orgsArea);
+            return false;
+        }
+
+        var nameText = names.map(function (n) { return MWF.name.cn(n); });
+        var routeName = o2.xApplication.process.Xform.LP.form.addTask+":"+nameText.join(", ");
+
+        this.flow.quickSelector.saveData();
+        this.fireEvent("submit", [names, opinion, mode, before, routeName]);
+    },
+    setQuickData: function( data ){
+        if(this.position)this.position.setValue( data.routeId === "before" ? "true" : null ); //前后加签存在 routeId
+        if(this.mode)this.mode.setValue( data.routeGroup || null ); //单人、并行、串行存在 routeGroup
+        if(this.opinion)this.opinion.setValue( data.opinion || "" );
+        if(this.selector && this.selector.selector)this.selector.selector.setValues( data.organizations ? (data.organizations.default || []) : [] );
+    },
+    getQuickData: function(){
+        var names = this.getSelOrgData();
+        // var nameText = names.map(function (n) { return MWF.name.cn(n); });
+        // var routeName = o2.xApplication.process.Xform.LP.form.addTask+":"+nameText.join(", ");
+
+        return {
+            routeId: this.position.getValue() === "true" ? "before" : "after",
+            routeGroup: this.mode.getValue(),
+            opinion: this.opinion.getValue(),
+            //before: this.position.getValue() === "true",
+            routeName: this.position.getValue() === "true" ? "before" : "after",
+            organizations: {
+                default: names
+            }
+        }
     },
 })
 
@@ -2347,7 +2420,7 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
             case "process":
                 Object.each( d.organizations, function (value, key) {
                     if( value && value.length ){
-                        orgtexts.push( ( this.flow.getSingleOrgConfig( d.routeId , key ) ).title + "：" + value.map(function(v){ return v.split("@")[0]; }).join("、"));
+                        orgtexts.push( ( this.flow.getSingleOrgConfig( d.routeId , key ) ).title + "：" + value.clean().map(function(v){ return v.split("@")[0]; }).join("、"));
                     }
                 }.bind(this));
                 text = lp.submitQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion);
@@ -2358,12 +2431,14 @@ MWF.ProcessFlow.widget.QuickSelect = new Class({
                 }
             case "addTask":
                 if( d.organizations && d.organizations.default ){
-                    orgtexts.push( d.organizations.default.map(function(v){ return v.split("@")[0]; }).join("、") );
+                    orgtexts.push( d.organizations.default.clean().map(function(v){ return v.split("@")[0]; }).join("、") );
                 }
-                return lp.addTaskQuickText.replace("{route}", d.routeName ).replace("{opinion}", d.opinion).replace("{org}",  orgtexts.join("，") );
+                var route = d.routeId === "before" ? lp.addTaskBefore : lp.addTaskAfter;
+                var mode = lp[ d.routeGroup ] || "";
+                return lp.addTaskQuickText.replace("{route}", route ).replace("{mode}", mode).replace("{opinion}", d.opinion).replace("{org}",  orgtexts.join("，") );
             case "reset":
                 if( d.organizations && d.organizations.default ){
-                    orgtexts.push( d.organizations.default.map(function(v){ return v.split("@")[0]; }).join("、") );
+                    orgtexts.push( d.organizations.default.clean().map(function(v){ return v.split("@")[0]; }).join("、") );
                 }
                 return lp.resetQuickText.replace("{flag}", d.keepTask ? "" : lp.not ).replace("{opinion}", d.opinion).replace("{org}", orgtexts.join("，") );
         }

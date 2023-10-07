@@ -127,25 +127,28 @@
 .o2flow-navi {
     position: absolute;
     margin-top: 32px;
-    margin-left: 10px;
+    margin-left: 6px;
 }
 .o2flow-navi-node {
-    border-left: 2px solid #DEDEDE;
+    /*border-left: 2px solid #DEDEDE;*/
 }
 .o2flow-navi-item {
     cursor: pointer;
     color: #333333;
-    font-size: 16px;
-    line-height: 16px;
-    padding-left: 10px;
-    border-left: 4px solid transparent;
-    margin-left: -3px;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    font-size: 18px;
+    line-height: 18px;
+    padding: 8px 14px;
+    /* border-left: 4px solid transparent; */
+    /* margin-left: -3px; */
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .o2flow-navi-item-active{
-    border-color:#4A90E2;
-    color: #4A90E2;
+    /*border-color:#4A90E2;*/
+    /*color: #4A90E2;*/
+    color: #fff;
+    background: #4A90E2;
+    border-radius: 32px;
 }
 
 .o2flow-content-scrollNode {
@@ -232,6 +235,19 @@
 
 .o2flow-section-content {
     overflow: hidden;
+}
+
+.o2flow-section-left {
+    overflow: hidden;
+    float: left;
+    width: calc( 50% - 10px );
+    margin-right: 10px;
+}
+.o2flow-section-right {
+    overflow: hidden;
+    float: left;
+    width: calc( 50% - 10px );
+    margin-left: 10px;
 }
 
 .o2flow-opinion-area {
