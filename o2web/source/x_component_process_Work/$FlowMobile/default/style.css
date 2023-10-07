@@ -534,6 +534,7 @@
     float: left;
     overflow:  hidden;
     padding-left: 10px;
+    width: calc(100% - 44px);
 }
 .o2flow-unit-name{
     color: #666;
@@ -543,6 +544,16 @@
     color: #999;
     font-size:  12px;
     margin-top: 3px;
+}
+
+.o2flow-group-text{
+    float: left;
+    overflow: hidden;
+    padding-left: 10px;
+    width: calc( 100% - 44px );
+    display: flex;
+    min-height: 34px;
+    align-items: center;
 }
 
 /*.o2flow-empower-node{*/

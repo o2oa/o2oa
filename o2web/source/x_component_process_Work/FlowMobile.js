@@ -282,10 +282,10 @@ MWF.ProcessFlow.ResetMobile = new Class({
                         widget = new MWF.ProcessFlow.widget.O2UnitMobile(data, node, this.getOrgWidgetOption());
                         break;
                     case "g":
-                        widget = new MWF.widget.O2Group(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2GroupMobile(data, node, this.getOrgWidgetOption());
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2OtherMobile(data, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
                 widget.load();
@@ -467,10 +467,10 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
                         widget = new MWF.ProcessFlow.widget.O2UnitMobile(data, node, this.getOrgWidgetOption());
                         break;
                     case "g":
-                        widget = new MWF.widget.O2Group(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2GroupMobile(data, node, this.getOrgWidgetOption());
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(data, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2OtherMobile(data, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
                 widget.load();
@@ -1050,10 +1050,10 @@ MWF.ProcessFlow.Processor.OrgMobile = new Class({
                         widget = new MWF.ProcessFlow.widget.O2UnitMobile(copyData, node, this.getOrgWidgetOption());
                         break;
                     case "g":
-                        widget = new MWF.widget.O2Group(copyData, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2GroupMobile(copyData, node, this.getOrgWidgetOption());
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(copyData, node, this.getOrgWidgetOption());
+                        widget = new MWF.ProcessFlow.widget.O2OtherMobile(copyData, node, this.getOrgWidgetOption());
                 }
                 widget.field = this;
                 widget.load();
@@ -1397,3 +1397,73 @@ MWF.ProcessFlow.widget.O2UnitMobile = new Class({
         this.levelNameNode.set("text", this.data.levelName);
     },
 })
+
+
+MWF.ProcessFlow.widget.O2GroupMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.O2UnitMobile,
+    load: function(){
+        this.fireEvent("queryLoad");
+
+        this.getPersonData( function () {
+            this.node = new Element("div.o2flow-unit").inject(this.container);
+            this.iconNode = new Element("div.o2flow-unit-icon", {
+                text: this.data.name.substr(0,1)
+            }).inject(this.node);
+            if( this.options.mainColorEnable )this.iconNode.addClass("mainColor_bg");
+
+            this.textNode = new Element("div.o2flow-group-text").inject(this.node);
+            this.nameNode = new Element("div.o2flow-unit-name").inject(this.textNode);
+            //this.levelNameNode = new Element("div.o2flow-unit-levelname").inject(this.textNode);
+
+            this.setText();
+
+            if( this.options.removeByClick ){
+                this.node.addEvent("click", function(e){
+                    this.fireEvent("remove", [this, e]);
+                    e.stopPropagation();
+                }.bind(this));
+            }
+
+            if (this.options.canRemove){
+                this.removeNode = new Element("div", {"styles": this.style.identityRemoveNode}).inject(this.node);
+                this.removeNode.addEvent("click", function(e){
+                    this.fireEvent("remove", [this, e]);
+                    e.stopPropagation();
+                }.bind(this));
+            }
+
+            this.setEvent();
+
+            this.fireEvent("postLoad");
+        }.bind(this));
+
+    },
+    getPersonData: function(callback){
+        if (!this.data.distinguishedName){
+            this.action.actions = {"getGroup": {"uri": "/jaxrs/group/{id}"}};
+            this.action.invoke({"name": "getGroup", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+                    this.data = json.data;
+                    if(callback)callback();
+                }.bind(this)});
+        }else{
+            if(callback)callback();
+        }
+    },
+    setText: function(){
+        var disply;
+        if( this.data.displayName ){
+            disply = this.data.displayName;
+        }else{
+            disply = this.data.name || o2.name.cn(this.data.distinguishedName)
+        }
+        this.nameNode.set("text", disply );
+        //this.levelNameNode.set("text", this.data.levelName);
+    },
+})
+
+MWF.ProcessFlow.widget.O2OtherMobile = new Class({
+    Extends: MWF.ProcessFlow.widget.O2GroupMobile,
+    getPersonData: function(){
+        return this.data;
+    }
+});
