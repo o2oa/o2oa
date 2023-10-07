@@ -58,62 +58,15 @@ public class AttendanceV2Config extends SliceJpaObject {
      */
 
 
-//    public static final String holidayList_FIELDNAME = "holidayList";
-//    @FieldDescribe("节假日")
-//    @PersistentCollection(fetch = FetchType.EAGER)
-//    @OrderColumn(name = ORDERCOLUMNCOLUMN)
-//    @ContainerTable(name = TABLE + ContainerTableNameMiddle
-//            + holidayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + holidayList_FIELDNAME + JoinIndexNameSuffix))
-//    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + holidayList_FIELDNAME)
-//    @ElementIndex(name = TABLE + holidayList_FIELDNAME + ElementIndexNameSuffix)
-//    private List<String> holidayList;
-//
-//
-//
-//    public static final String workDayList_FIELDNAME = "workDayList";
-//    @FieldDescribe("工作日")
-//    @PersistentCollection(fetch = FetchType.EAGER)
-//    @OrderColumn(name = ORDERCOLUMNCOLUMN)
-//    @ContainerTable(name = TABLE + ContainerTableNameMiddle
-//            + workDayList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + workDayList_FIELDNAME + JoinIndexNameSuffix))
-//    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + workDayList_FIELDNAME)
-//    @ElementIndex(name = TABLE + workDayList_FIELDNAME + ElementIndexNameSuffix)
-//    private List<String> workDayList;
-
-
     public static final String appealEnable_FIELDNAME = "appealEnable";
     @FieldDescribe("是否开启补卡申诉功能")
     @Column(name = ColumnNamePrefix + appealEnable_FIELDNAME)
     private Boolean appealEnable = false;
 
-
     public static final String appealMaxTimes_FIELDNAME = "appealMaxTimes";
     @FieldDescribe("每个月最多申诉次数，0不限制")
     @Column(  name = ColumnNamePrefix + appealMaxTimes_FIELDNAME)
     private Integer appealMaxTimes = 0;
-
-//    public static final String appealProcessType_Inner = "inner";
-//    public static final String appealProcessType_Process = "process";
-
-//    public static final String appealProcessType_FIELDNAME = "appealProcessType";
-//    @FieldDescribe("补卡流程类型： inner-内置固定流程 ，process-自定义流程")
-//    @Column(length = length_32B, name = ColumnNamePrefix + appealProcessType_FIELDNAME)
-//    private String appealProcessType = appealProcessType_Inner;
-//
-//    public static final String innerProcessAuditType_person = "1";
-//    public static final String innerProcessAuditType_superior = "2";
-//    public static final String innerProcessAuditType_duty = "3";
-//
-//    public static final String innerProcessAuditType_FIELDNAME = "innerProcessAuditType";
-//    @FieldDescribe("内置固定流程的审核人确定方式： 1-指定人 ，2-汇报对象，3-所属部门职务")
-//    @Column(length = length_32B, name = ColumnNamePrefix + innerProcessAuditType_FIELDNAME)
-//    private String innerProcessAuditType = innerProcessAuditType_person; // 1，3 需要在下面的innerProcessAuditContent字段填入对应的内容，2直接从个人信息中获取
-//
-//    public static final String innerProcessAuditContent_FIELDNAME = "innerProcessAuditContent";
-//    @FieldDescribe("内置固定流程的审核人确定内容")
-//    @Column(length = length_255B, name = ColumnNamePrefix + innerProcessAuditContent_FIELDNAME)
-//    private String innerProcessAuditContent;
-
 
     public static final String processId_FIELDNAME = "processId";
     @FieldDescribe("自定义流程id")
@@ -156,6 +109,41 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(length = length_32B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
     private String exceptionAlertDate;
 
+
+    // 统计定时任务表达式
+    public static final String detailStatisticCronString_FIELDNAME = "detailStatisticCronString";
+    @FieldDescribe("统计定时任务表达式 .")
+    @Column(length = length_1K, name = ColumnNamePrefix + detailStatisticCronString_FIELDNAME)
+    private String detailStatisticCronString;
+
+
+    public static final String closeOldAttendance_FIELDNAME = "closeOldAttendance";
+    @FieldDescribe("关闭旧版考勤，移动端旧版打卡界面会有提示.")
+    @Column(name = ColumnNamePrefix + closeOldAttendance_FIELDNAME)
+    private Boolean closeOldAttendance = false;
+
+
+
+
+    
+
+
+
+    public String getDetailStatisticCronString() {
+      return detailStatisticCronString;
+    }
+
+    public void setDetailStatisticCronString(String detailStatisticCronString) {
+      this.detailStatisticCronString = detailStatisticCronString;
+    }
+
+    public Boolean getCloseOldAttendance() {
+      return closeOldAttendance;
+    }
+
+    public void setCloseOldAttendance(Boolean closeOldAttendance) {
+      this.closeOldAttendance = closeOldAttendance;
+    }
 
     public String getExceptionAlertDate() {
         return exceptionAlertDate;

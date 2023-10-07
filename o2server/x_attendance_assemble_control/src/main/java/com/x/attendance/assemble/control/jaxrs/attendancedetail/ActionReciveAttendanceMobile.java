@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -13,6 +14,9 @@ import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.attendance.entity.AttendanceScheduleSetting;
+import com.x.attendance.entity.v2.AttendanceV2Config;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -39,6 +43,18 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		Date now = null;
 		String signDate = null;
 		String signTime = null;
+		
+		// 检查配置 是否禁用旧版考勤
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			AttendanceV2Config config = null; // 配置对象
+			List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+			if (configs != null && !configs.isEmpty()) {
+					config = configs.get(0);
+			}
+			if (config != null && BooleanUtils.isTrue(config.getCloseOldAttendance())) {
+				throw new ExceptionCloseOldAttendance();
+			}
+		}
 
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, Wi.class );

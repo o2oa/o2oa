@@ -10,6 +10,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 public class StatisticWi extends GsonPropertyObject {
 
 
+    private static final long serialVersionUID = -4697552136228406338L;
+
+
     @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
     private String filter;
 

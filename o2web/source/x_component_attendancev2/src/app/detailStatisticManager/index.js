@@ -68,16 +68,22 @@ export default content({
   },
   async loadDetailList() {
     await showLoading(this);
+    debugger;
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
-    const json = await detailAction("statistic", form);
-    const list =  json || [];
-    if (list.length > 0) {
-      const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
-      this.bind.tableHeaderList = firstDetailList;
+    try {
+      const json = await detailAction("statistic", form);
+      const list =  json || [];
+      console.log(list);
+      if (list.length > 0) {
+        const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
+        this.bind.tableHeaderList = firstDetailList;
+      }
+      this.bind.statisticList = list;
+    } catch (e) {
+      console.error(e);
     }
-    this.bind.statisticList = list;
-    hideLoading(this);
+    await hideLoading(this);
   },
   async openRecordList(detail) {
     this.$topParent.openRecordListVm({bind: { recordList: detail.recordList||[] }})

@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.processor.monitor.MonitorFileDataOpt;
 import com.x.attendance.assemble.control.processor.thread.DataProcessThreadFactory;
@@ -86,27 +87,38 @@ public class ThisApplication {
             context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
 
             /////////////////// V2///
-            AttendanceV2Config config = null; // 配置对象
-            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            // 处理考勤统计相关的队列
+            context.startQueue(queueV2Detail);
+            // 配置对象 考勤统计定时器可配置
+            AttendanceV2Config config = null; 
+            String cronString = null;
+            try  {
+                EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
                 List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
                 if (configs != null && !configs.isEmpty()) {
                     config = configs.get(0);
                 }
                 if (config != null) {
-                    LOGGER.info("配置文件读取 {}", config.toString());
+                    cronString = config.getDetailStatisticCronString();
                 }
+            } catch (Exception e) {
+                LOGGER.error(e);
             }
-            // 处理考勤统计相关的队列
-            context.startQueue(queueV2Detail);
+            if (StringUtils.isEmpty(cronString)) {
+                cronString = "0 0 3 * * ?";
+            }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("定时表达式 {}", cronString);
+            }
             // 每天凌晨3点，计算前一天的考勤数据
-            context.schedule(AttendanceV2DetailGenerateTask.class, "0 0 3 * * ?");
+            context.schedule(AttendanceV2DetailGenerateTask.class, cronString);
             // 每天凌晨 3 点半，重新计算当天要发送消息的数据。
             context.schedule(AttendanceV2TodayMessageDataGenerateTask.class, "0 30 3 * * ?");
             // 4点钟开始 每 5 分钟检查 发送考勤相关消息的任务
             context.schedule(AttendanceV2MessageSendTask.class, "0 0/5 4-23 * * ?");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -117,7 +129,7 @@ public class ThisApplication {
             MonitorFileDataOpt.stop();
             executor.shutdown();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 }

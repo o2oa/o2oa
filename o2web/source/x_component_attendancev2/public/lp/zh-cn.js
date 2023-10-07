@@ -311,6 +311,9 @@ MWF.xApplication.attendancev2.LP = {
     exceptionAlertEnable: "是否启用异常打卡提醒 ",
     exceptionAlertEnableTime1: " (次日 ",
     exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
+    detailStatisticCron: "统计定时器",
+    closeOldAttendance: "旧考勤",
+    closeOldAttendanceLabel: "是否关闭旧版考勤打卡功能（防止app端点错）",
   },
   // 请假外出记录
   leaveManagerTitle: "外出请假记录",

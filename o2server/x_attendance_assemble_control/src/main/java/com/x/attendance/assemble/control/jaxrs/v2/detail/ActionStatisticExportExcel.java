@@ -44,7 +44,7 @@ public class ActionStatisticExportExcel extends BaseAction {
                 EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
             if (StringUtils.isEmpty(filter)) {
-                throw new ExceptionEmptyParameter("过滤人员或组织");
+                throw new ExceptionEmptyParameter("过滤人员");
             }
             if (StringUtils.isEmpty(start)) {
                 throw new ExceptionEmptyParameter("开始日期");
@@ -69,7 +69,7 @@ public class ActionStatisticExportExcel extends BaseAction {
                 userList.add(filter);
             }
             if (userList.isEmpty()) {
-                throw new ExceptionEmptyParameter("过滤人员或组织");
+                throw new ExceptionEmptyParameter("过滤人员");
             }
             ActionResult<Wo> result = new ActionResult<>();
             // 根据人员循环查询 并统计数据
