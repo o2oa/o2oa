@@ -92,6 +92,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class DataRecord {
 			public static final String table = "PP_C_DATA_RECORD";
 		}
+
+		public static class TaskProcessMode {
+			public static final String table = "PP_C_TASK_PROCESS_MODE";
+		}
 	}
 
 	public static class Element {

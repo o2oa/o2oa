@@ -32,6 +32,7 @@ import com.x.processplatform.assemble.surface.jaxrs.sign.SignAction;
 import com.x.processplatform.assemble.surface.jaxrs.snap.SnapAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
 import com.x.processplatform.assemble.surface.jaxrs.taskcompleted.TaskCompletedAction;
+import com.x.processplatform.assemble.surface.jaxrs.taskprocessmode.TaskProcessModeAction;
 import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
 import com.x.processplatform.assemble.surface.jaxrs.workcompleted.WorkCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.worklog.WorkLogAction;
@@ -81,5 +82,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(SignAction.class);
 		classes.add(CorrelationAction.class);
 		classes.add(DataRecordAction.class);
+		classes.add(TaskProcessModeAction.class);
 	}
 }
