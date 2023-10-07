@@ -40,15 +40,12 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 /**
  * @since 8.2 tickets 加签
  */
-@Deprecated
-public class ActionAdd extends BaseAction {
+public class V3Add extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAdd.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V3Add.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
@@ -84,8 +81,8 @@ public class ActionAdd extends BaseAction {
 		V2EditWi req = new V2EditWi();
 		req.setOpinion(opinion);
 		req.setRouteName(routeName);
-		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", "v2", task.getId()), req, task.getJob()).getData(WoId.class);
+		WoId resp = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("task", "v3", task.getId()), req, task.getJob()).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionUpdateTask(task.getId());
 		}
@@ -195,7 +192,6 @@ public class ActionAdd extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Add.Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = 1416972392523085640L;

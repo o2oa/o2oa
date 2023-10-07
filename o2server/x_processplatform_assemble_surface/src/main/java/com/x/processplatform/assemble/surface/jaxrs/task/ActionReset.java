@@ -157,7 +157,7 @@ public class ActionReset extends BaseAction {
 		req.setDistinguishedNameList(param.getDistinguishedNameList());
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("task", param.getTask().getId(), "reset"), req, param.getTask().getJob())
-				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.ActionAddWo.class);
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V3ResetWo.class);
 	}
 
 	private void processingWork(Param param) throws Exception {

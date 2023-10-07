@@ -6,7 +6,7 @@ import java.util.List;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class ActionResetWi extends GsonPropertyObject {
+public class V3ResetWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -8631082471633729236L;
 

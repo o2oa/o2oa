@@ -23,10 +23,9 @@ import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecut
 /**
  * @since 8.2 tickets 加签
  */
-@Deprecated
-class ActionAdd extends BaseAction {
+class V3Add extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAdd.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V3Add.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 

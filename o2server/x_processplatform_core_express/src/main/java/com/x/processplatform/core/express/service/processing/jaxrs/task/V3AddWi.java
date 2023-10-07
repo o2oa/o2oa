@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class ActionAddWi extends GsonPropertyObject {
+public class V3AddWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -7183537361715762746L;
 
