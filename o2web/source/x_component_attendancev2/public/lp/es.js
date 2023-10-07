@@ -311,6 +311,9 @@ MWF.xApplication.attendancev2.LP = {
     exceptionAlertEnable: "Habilitar alerta de registro de excepciones",
     exceptionAlertEnableTime1: " (Recibirá el mensaje de registro de excepción a las ",
     exceptionAlertEnableTime2: " del día siguiente)",
+    detailStatisticCron: "Cronómetro estadístico",
+    closeOldAttendance: "Asistencia antigua",
+    closeOldAttendanceLabel: "¿ apagar la versión anterior de la función de punzonado de asistencia (para evitar errores en los puntos finales de la aplicación)",
   },
   // 请假外出记录
   leaveManagerTitle: "Registro de ausencias y permisos",

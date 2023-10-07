@@ -308,7 +308,10 @@ MWF.xApplication.attendancev2.LP = {
     checkInAlertEnable: "Enable Clock-In Reminders (Receive reminders 10 minutes before start and end of shift to avoid forgetting to clock in)",
     exceptionAlertEnable: "Enable Exception Clock-In Reminders",
     exceptionAlertEnableTime1: " (You will receive exception clock-in messages the next day at ",
-    exceptionAlertEnableTime2: ")"
+    exceptionAlertEnableTime2: ")",
+    detailStatisticCron: "Statistical Timer",
+    closeOldAttendance: "Old attendance",
+    closeOldAttendanceLabel: "Do you want to disable the old version of attendance clock in function (to prevent app endpoint errors)",
 },
   // 请假外出记录
   leaveManagerTitle: "Record of out and leave",
