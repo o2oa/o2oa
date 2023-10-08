@@ -60,7 +60,7 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 		_setBusinessData: function(v, id){
 			var value = v.toInt();
 			this.setBusinessDataById(value, id);
-			this.form.businessData.data.$work.objectSecurityClearance = value;
+			// this.form.businessData.data.$work.objectSecurityClearance = value;
 		},
 		getInputData: function(){
 			if( this.isReadonly()){
