@@ -232,7 +232,7 @@ public class QueueImportData extends AbstractQueue<String> {
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
 					.loadClass(dynamicEntity.className());
-			List<Object> os = new ArrayList<>();
+			List<JpaObject> os = new ArrayList<>();
 			List<ImportRecordItem> itemList = new ArrayList<>();
 			jsonElement.getAsJsonArray().forEach(o -> {
 				JpaObject jpaObject = gson.fromJson(o, cls);
@@ -250,8 +250,13 @@ public class QueueImportData extends AbstractQueue<String> {
 			emc.beginTransaction(ImportRecord.class);
 			emc.beginTransaction(cls);
 			emc.beginTransaction(ImportRecordItem.class);
-			for (Object o : os) {
-				emc.persist((JpaObject) o, CheckPersistType.all);
+			for (JpaObject o : os) {
+				JpaObject jpaObject = emc.find(o.getId(), cls);
+				if(jpaObject != null) {
+					o.copyTo(jpaObject, JpaObject.FieldsUnmodify);
+				}else{
+					emc.persist(o, CheckPersistType.all);
+				}
 			}
 			for (ImportRecordItem item : itemList) {
 				emc.persist(item, CheckPersistType.all);
