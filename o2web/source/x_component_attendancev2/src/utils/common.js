@@ -138,7 +138,7 @@ const formatMonth = (date) => {
 // 格式化分钟数为 xx小时xx分钟
 const convertMinutesToHoursAndMinutes = (minutes) => {
   var hours = Math.floor(minutes / 60); // 取得小时数
-  var remainingMinutes = minutes % 60; // 取得剩余的分钟数
+  var remainingMinutes = Math.floor(minutes % 60); // 取得剩余的分钟数
   var result = "";
 
   if (hours > 0) {

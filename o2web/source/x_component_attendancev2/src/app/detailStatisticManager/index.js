@@ -230,7 +230,7 @@ export default content({
     }
   },
   async exportExcel() {
-    showLoading(this, lp.detailExportConfirmMsg);
+    await showLoading(this, lp.detailExportConfirmMsg);
     detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
       if (data ) {
         this.downloadExcelConfirm(data);

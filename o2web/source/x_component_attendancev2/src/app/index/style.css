@@ -495,7 +495,7 @@
   flex-direction: row;
 }
 .form-item-line-label {
-  height: 36px;
+  /* height: 36px; */
   line-height: 36px;
   font-size: 15px;
   color: #333333;
@@ -514,7 +514,7 @@
   color: #666666;
 }
 .form-item-label {
-  height: 32px;
+  /* height: 32px; */
   line-height: 32px;
   font-size: 16px;
   font-weight: bold;

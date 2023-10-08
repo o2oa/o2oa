@@ -123,7 +123,6 @@ public class ActionPreCheck extends BaseAction {
                         AttendanceV2CheckInRecord last = yesterdayRecordList.get(yesterdayRecordList.size()-1);
                         // 昨天的数据 并且跨天
                         if (last.getOffDutyNextDay()) {
-                            LOGGER.info("返回昨日的数据，有跨天的还未完成的打卡");
                             Date onDutyAfterTime;
                             if (StringUtils.isEmpty(last.getPreDutyTimeAfterLimit())) {
                                 onDutyAfterTime = DateTools.parse(today + " " + last.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
@@ -133,6 +132,7 @@ public class ActionPreCheck extends BaseAction {
                             }
                             // 如果没有在限制时间结束前 就是返回昨天的打卡记录
                             if (!nowDate.after(onDutyAfterTime)) {
+                                LOGGER.info("返回昨日的数据，有跨天的还未完成的打卡");
                                 return yesterdayRecordList;
                             }
                         }
