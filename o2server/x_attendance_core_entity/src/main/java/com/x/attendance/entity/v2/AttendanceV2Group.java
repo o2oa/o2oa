@@ -96,6 +96,24 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String operator;
 
+	public static final int status_auto = 2; //数据状态 自动存储
+	public static final int status_manual = 1; //数据状态 手动存储
+	public static final String status_FIELDNAME = "status";
+	@FieldDescribe("考勤组数据状态.")
+  @Column(  name = ColumnNamePrefix + status_FIELDNAME)
+	private Integer status;
+
+
+	public static final String assistAdminList_FIELDNAME = "assistAdminList";
+	@FieldDescribe("协助管理员.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ assistAdminList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + assistAdminList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + assistAdminList_FIELDNAME)
+	@ElementIndex(name = TABLE + assistAdminList_FIELDNAME + ElementIndexNameSuffix)
+	private List<String> assistAdminList;
+
 	public static final String participateList_FIELDNAME = "participateList";
 	@FieldDescribe("考勤打卡人员、组织.")
 	@PersistentCollection(fetch = FetchType.EAGER)
@@ -124,7 +142,7 @@ public class AttendanceV2Group extends SliceJpaObject {
 			+ trueParticipantList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + trueParticipantList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + trueParticipantList_FIELDNAME)
 	@ElementIndex(name = TABLE + trueParticipantList_FIELDNAME + ElementIndexNameSuffix)
-	private List<String> trueParticipantList; // 无需考勤打卡的人员 只有人员
+	private List<String> trueParticipantList; // 必须考勤打卡的人员 只有人员
 
 	public static final String workDateList_FIELDNAME = "workDateList";
 	@FieldDescribe("考勤工作日设置.打卡类型为 自由打卡 的时候需要配置，如 1,2,3,4,5 。 0-6代表周日到周六.")
@@ -307,4 +325,23 @@ public class AttendanceV2Group extends SliceJpaObject {
 	public void setFieldWorkMarkError(Boolean fieldWorkMarkError) {
 		this.fieldWorkMarkError = fieldWorkMarkError;
 	}
+
+	public List<String> getAssistAdminList() {
+		return assistAdminList;
+	}
+
+	public void setAssistAdminList(List<String> assistAdminList) {
+		this.assistAdminList = assistAdminList;
+	}
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+	
+	
 }

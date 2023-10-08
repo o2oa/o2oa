@@ -12,6 +12,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -78,6 +79,7 @@ public class ActionUpdate extends BaseAction {
             shift.setOperator(effectivePerson.getDistinguishedName());
             emc.check(shift, CheckPersistType.all);
             emc.commit();
+            CacheManager.notify(AttendanceV2Shift.class);// 清除缓存
             Wo wo = new Wo();
             wo.setId(shift.getId());
             result.setData(wo);

@@ -99,14 +99,23 @@ export default content({
     if (this.validateForm()) {this.loadDetailList();}
   },
   async loadDetailList() {
-    showLoading(this);
+    await showLoading(this);
     this._showTableHeader();
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
-    const json = await detailAction("statistic", form);
-    const list =  json || [];
-    this.bind.statisticList = list;
-    hideLoading(this);
+    try {
+      const json = await detailAction("statistic", form);
+      const list =  json || [];
+      console.log(list);
+      if (list.length > 0) {
+        const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
+        this.bind.tableHeaderList = firstDetailList;
+      }
+      this.bind.statisticList = list;
+    } catch (e) {
+      console.error(e);
+    }
+    await hideLoading(this);
   },
   _showTableHeader() {
     const start = this._toDate(this.bind.form.startDate);
@@ -221,7 +230,7 @@ export default content({
     }
   },
   async exportExcel() {
-    showLoading(this, lp.detailExportConfirmMsg);
+    await showLoading(this, lp.detailExportConfirmMsg);
     detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
       if (data ) {
         this.downloadExcelConfirm(data);
