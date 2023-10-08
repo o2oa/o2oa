@@ -39,6 +39,9 @@ MWF.xApplication.IMV2.LP = {
 	"open": "打开",
 	"noTitle": "无标题",
 
+	"openGroupInfo": "群信息",
+	"groupMember": "群成员",
+	"groupMemberAdmin": "群管理员",
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
 	"deleteConversation": "删除会话",
