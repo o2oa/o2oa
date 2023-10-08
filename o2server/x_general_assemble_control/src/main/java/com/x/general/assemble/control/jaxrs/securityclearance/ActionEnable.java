@@ -15,7 +15,7 @@ public class ActionEnable extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		wo.setEnable(Config.ternaryManagement().getEnable());
+		wo.setEnable(Config.ternaryManagement().getSecurityClearanceEnable());
 		result.setData(wo);
 		return result;
 	}
