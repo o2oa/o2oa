@@ -369,7 +369,7 @@ public class WorkControlBuilder {
 		try {
 			control.setAllowAddTask(
 					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
-							&& (canManage() || hasTaskWithWork()));
+							&& hasTaskWithWork());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

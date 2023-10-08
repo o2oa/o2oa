@@ -33,10 +33,10 @@ class ActionList extends BaseAction {
 
 		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if(StringUtils.isBlank(wi.getProcess())){
+		if (StringUtils.isBlank(wi.getProcess())) {
 			throw new ExceptionFieldEmpty(TaskProcessMode.process_FIELDNAME);
 		}
-		if(StringUtils.isBlank(wi.getActivity())){
+		if (StringUtils.isBlank(wi.getActivity())) {
 			throw new ExceptionFieldEmpty(TaskProcessMode.activity_FIELDNAME);
 		}
 
@@ -50,16 +50,19 @@ class ActionList extends BaseAction {
 				throw new ExceptionEntityNotExist(wi.getProcess(), Process.class.getSimpleName());
 			}
 			wi.setProcess(StringUtils.isBlank(process.getEdition()) ? wi.getProcess() : process.getEdition());
-			List<TaskProcessMode> taskProcessModeList = new ArrayList<>(business.taskProcessMode().listMode(effectivePerson.getUnique(), wi));
-			SortTools.desc(taskProcessModeList, TaskProcessMode.hitCount_FIELDNAME, TaskProcessMode.updateTime_FIELDNAME);
+			List<TaskProcessMode> taskProcessModeList = new ArrayList<>(
+					business.taskProcessMode().listMode(effectivePerson.getUnique(), wi));
+			SortTools.desc(taskProcessModeList, TaskProcessMode.hitCount_FIELDNAME,
+					TaskProcessMode.updateTime_FIELDNAME);
 			List<Wo> wos = new ArrayList<>();
-			for(TaskProcessMode mode : taskProcessModeList){
+			for (TaskProcessMode mode : taskProcessModeList) {
 				List<TaskProcessModeItem> itemList = new ArrayList<>(mode.getTaskProcessModeItemList());
-				SortTools.desc(itemList, TaskProcessModeItem.hitCount_FIELDNAME, TaskProcessModeItem.updateTime_FIELDNAME);
-				if(itemList.size() > 3){
-					itemList.subList(0, 3);
+				SortTools.desc(itemList, TaskProcessModeItem.hitCount_FIELDNAME,
+						TaskProcessModeItem.updateTime_FIELDNAME);
+				if (itemList.size() > 3) {
+					itemList = itemList.subList(0, 3);
 				}
-				for(TaskProcessModeItem item : itemList){
+				for (TaskProcessModeItem item : itemList) {
 					Wo wo = Wo.copier.copy(mode);
 					wo.setRouteGroup(item.getRouteGroup());
 					wo.setKeepTask(item.getKeepTask());
@@ -82,7 +85,8 @@ class ActionList extends BaseAction {
 
 		static WrapCopier<Wi, TaskProcessMode> copier = WrapCopierFactory.wi(Wi.class, TaskProcessMode.class,
 				ListTools.toList(TaskProcessMode.process_FIELDNAME, TaskProcessMode.activity_FIELDNAME,
-						TaskProcessMode.activityAlias_FIELDNAME, TaskProcessMode.activityName_FIELDNAME), null);
+						TaskProcessMode.activityAlias_FIELDNAME, TaskProcessMode.activityName_FIELDNAME),
+				null);
 
 	}
 
@@ -90,7 +94,8 @@ class ActionList extends BaseAction {
 
 		private static final long serialVersionUID = 1398834553299330481L;
 		static WrapCopier<TaskProcessMode, Wo> copier = WrapCopierFactory.wo(TaskProcessMode.class, Wo.class, null,
-				ListTools.toList(JpaObject.FieldsInvisibleIncludeProperites, TaskProcessMode.taskProcessModeItemList_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsInvisibleIncludeProperites,
+						TaskProcessMode.taskProcessModeItemList_FIELDNAME));
 
 		@FieldDescribe("项目最后更新时间.")
 		private Date itemUpdateTime;

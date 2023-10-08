@@ -493,6 +493,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	@JaxrsMethodDescribe(value = "重置处理人.", action = ActionReset.class)
 	@POST
 	@Path("{id}/reset")

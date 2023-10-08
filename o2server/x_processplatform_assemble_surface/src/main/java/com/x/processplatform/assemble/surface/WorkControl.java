@@ -3,6 +3,8 @@ package com.x.processplatform.assemble.surface;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public abstract class WorkControl extends GsonPropertyObject {
+
+	private static final long serialVersionUID = -3251746953649257039L;
 	/* 是否可以看到 */
 	private Boolean allowVisit;
 	/* 是否可以直接流转 */

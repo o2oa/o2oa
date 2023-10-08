@@ -81,8 +81,8 @@ public class V3Add extends BaseAction {
 		V2EditWi req = new V2EditWi();
 		req.setOpinion(opinion);
 		req.setRouteName(routeName);
-		WoId resp = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", "v3", task.getId()), req, task.getJob()).getData(WoId.class);
+		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("task", "v2", task.getId()), req, task.getJob()).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionUpdateTask(task.getId());
 		}
@@ -148,7 +148,7 @@ public class V3Add extends BaseAction {
 		req.setMode(mode);
 		return ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", task.getId(), "add"), req, task.getJob())
+						Applications.joinQueryUri("task", "v3", task.getId(), "add"), req, task.getJob())
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V3AddWo.class).getValue();
 	}
 

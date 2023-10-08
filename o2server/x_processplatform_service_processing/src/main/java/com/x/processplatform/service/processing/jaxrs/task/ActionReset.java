@@ -17,8 +17,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.ticket.Tickets;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.V3ResetWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.V3ResetWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
@@ -110,13 +110,13 @@ class ActionReset extends BaseAction {
 
 	}
 
-	public static class Wi extends V3ResetWi {
+	public static class Wi extends V2ResetWi {
 
 		private static final long serialVersionUID = -3609474511834394555L;
 
 	}
 
-	public static class Wo extends V3ResetWo {
+	public static class Wo extends V2ResetWo {
 
 		private static final long serialVersionUID = -3609474511834394555L;
 

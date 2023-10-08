@@ -322,7 +322,7 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "加签.", action = V3Add.class)
 	@POST
-	@Path("{id}/add")
+	@Path("v3/{id}/add")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void v3Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

@@ -85,13 +85,15 @@ class V3Add extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(workId, Work.class);
 				}
+				emc.beginTransaction(Work.class);
 				Tickets tickets = work.getTickets();
 				wo.setValue(tickets.add(label, distinguishedNameList, before, mode));
+				work.setTickets(tickets);
+				emc.commit();
 			}
 			result.setData(wo);
 			return result;
 		}
-
 	}
 
 	public static class Param {

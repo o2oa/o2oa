@@ -39,13 +39,15 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionResetWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
 /**
  * tickets 加签
  */
+@Deprecated(since = "8.2", forRemoval = true)
 public class ActionReset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReset.class);
@@ -153,11 +155,13 @@ public class ActionReset extends BaseAction {
 	}
 
 	private void reset(Param param) throws Exception {
-		ActionResetWi req = new ActionResetWi();
+		V2ResetWi req = new V2ResetWi();
 		req.setDistinguishedNameList(param.getDistinguishedNameList());
-		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", param.getTask().getId(), "reset"), req, param.getTask().getJob())
-				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V3ResetWo.class);
+		ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", "v2", param.getTask().getId(), "reset"), req,
+						param.getTask().getJob())
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo.class);
 	}
 
 	private void processingWork(Param param) throws Exception {
@@ -258,13 +262,13 @@ public class ActionReset extends BaseAction {
 
 	}
 
-	public static class Wi extends ActionResetWi {
+	public static class Wi extends V2ResetWi {
 
 		private static final long serialVersionUID = 5747688678118966913L;
 
 	}
 
-	public static class Wo extends Record {
+	public static class Wo extends V2ResetWo {
 
 		private static final long serialVersionUID = -4700549313374917582L;
 
