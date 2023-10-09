@@ -452,7 +452,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的编辑者 文档不存在判断是否是分类或应用的发布者
-	 * 
+	 *
 	 * @param person
 	 * @param appInfo
 	 * @return
@@ -551,7 +551,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的读者
-	 * 
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -589,13 +589,16 @@ public class Business {
 
 	/**
 	 * 用户是否有足够的密级标识等级.
-	 * 
+	 *
 	 * @param person
 	 * @param objectSecurityClearance
 	 * @return
 	 */
 	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
 		try {
+			if(!Config.ternaryManagement().getSecurityClearanceEnable()){
+				return true;
+			}
 			Person p = this.organization().person().getObject(person);
 			Integer subjectSecurityClearance = p.getSubjectSecurityClearance();
 			if (null == subjectSecurityClearance) {
