@@ -1421,7 +1421,8 @@ o2.xApplication.systemconfig.LP = {
 				"cifs": "CIFS",
 				"ali": "Almacenamiento en la nube de Alibaba",
 				"s3":"Almacenamiento en la nube de Amazon",
-				"min":"Almacenamiento MinIO"
+				"min":"Almacenamiento MinIO",
+                "cos": "Almacenamiento en la nube Tencent"
 			},
             "protocoloDataInfo": {
                 "ali": "Si no ha instalado el complemento de integración Aliyun OSS en el mercado de aplicaciones, instálelo primero",

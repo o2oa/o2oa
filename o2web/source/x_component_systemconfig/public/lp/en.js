@@ -1428,7 +1428,8 @@ o2.xApplication.systemconfig.LP = {
                 "cifs": "cifs",
                 "ali": "Alibaba Cloud Storage",
                 "s3":"Amazon Cloud Storage",
-                "min":"MinIO Storage"
+                "min":"MinIO Storage",
+                "cos": "Tencent Cloud Storage"
             },
             "protocolDataInfo": {
                 "ali": "If you have not installed the Aliyun OSS integration plug-in in the application market, please install it first.",

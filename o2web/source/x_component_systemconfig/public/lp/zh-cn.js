@@ -1440,7 +1440,8 @@ o2.xApplication.systemconfig.LP = {
                 "cifs": "cifs",
                 "ali": "阿里云存储",
                 "s3":"亚马逊云存储",
-                "min":"MinIO存储"
+                "min":"MinIO存储",
+                "cos": "腾讯云存储"
             },
             "protocolDataInfo": {
                 "ali": "如果您没有在应用市场安装阿里云OSS集成插件，请先安装。",
