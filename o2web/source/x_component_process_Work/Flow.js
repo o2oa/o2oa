@@ -606,7 +606,7 @@ MWF.ProcessFlow.AddTask = new Class({
         }
 
         var nameText = names.map(function (n) { return MWF.name.cn(n); });
-        var routeName = o2.xApplication.process.Xform.LP.form.addTask+":"+nameText.join(", ");
+        var routeName = this.lp[mode] + (before ? this.lp.addTaskBefore : this.lp.addTaskAfter)+":"+nameText.join(", ");
 
         this.flow.quickSelector.saveData();
         this.fireEvent("submit", [names, opinion, mode, before, routeName]);

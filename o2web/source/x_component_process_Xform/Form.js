@@ -6068,7 +6068,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 });
 
                 var opinion = dlg.content.getElement(".addTask_opinion").get("value");
-                if (!opinion) opinion = o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+                var lp = o2.xApplication.process.Xform.LP.form;
+                var routeName = lp[mode] + (position === "before" ? lp.addTaskBefore : lp.addTaskAfter)+":"+nameArr.join(", ");
+                if (!opinion) opinion = routeName; //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
                 var taskId = this.businessData.task.id;
 
                 var addTaskOptions = {
@@ -6076,7 +6078,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     mode: mode,
                     opinion: opinion,
                     distinguishedNameList: dlg.identityList,
-                    routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
+                    routeName: routeName //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
                 }
                 this.fireEvent("beforeAddTask");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
