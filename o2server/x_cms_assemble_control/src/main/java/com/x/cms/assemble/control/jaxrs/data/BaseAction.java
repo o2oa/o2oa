@@ -55,20 +55,12 @@ public class BaseAction extends StandardJaxrsAction {
 			title = XGsonBuilder.extractString(jsonElement, subject_path);
 		}
 		Integer objectSecurityClearance = XGsonBuilder.extractInteger(jsonElement, objectSecurityClearance_path);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!1");
-		System.out.println(objectSecurityClearance);
-		System.out.println(document.getObjectSecurityClearance());
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!1");
 		if ((!Objects.equals(title, document.getTitle()))
 				|| (!Objects.equals(objectSecurityClearance, document.getObjectSecurityClearance()))) {
 			business.entityManagerContainer().beginTransaction(Document.class);
 			business.entityManagerContainer().beginTransaction(Item.class);
 			document.setTitle(title);
 			document.setObjectSecurityClearance(objectSecurityClearance);
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!2");
-			System.out.println(objectSecurityClearance);
-			System.out.println(document.getObjectSecurityClearance());
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!2");
 			business.entityManagerContainer().commit();
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
 			if (!jsonObject.has(Data.DOCUMENT_PROPERTY)) {
