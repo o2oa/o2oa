@@ -81,14 +81,6 @@ public class Tickets implements Serializable {
 		return list.stream().filter(o -> !next.contains(o.label())).collect(Collectors.toList());
 	}
 
-	public Tickets join(String label, boolean join) {
-		Optional<Ticket> opt = this.findTicketWithLabel(label);
-		if (opt.isPresent()) {
-			opt.get().join(join);
-		}
-		return this;
-	}
-
 	public Tickets completed(String label) {
 		Optional<Ticket> opt = this.bubble().stream().filter(o -> StringUtils.equalsIgnoreCase(label, o.label()))
 				.findFirst();

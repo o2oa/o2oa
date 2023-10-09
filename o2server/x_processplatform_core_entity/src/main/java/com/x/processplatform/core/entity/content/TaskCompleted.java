@@ -365,6 +365,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
 		this.label = task.getLabel();
+		this.distinguishedName = task.getDistinguishedName();
 	}
 
 	public TaskCompletedProperties getProperties() {
@@ -702,6 +703,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(name = ColumnNamePrefix + VIEWTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date viewTime;
+
+	public static final String DISTINGUISHEDNAME_FIELDNAME = "distinguishedName";
+	@Schema(description = "处理对象.")
+	@FieldDescribe("处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + DISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distinguishedName;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -1557,6 +1566,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setRouteAlias(String routeAlias) {
 		this.routeAlias = routeAlias;
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 	}
 
 }

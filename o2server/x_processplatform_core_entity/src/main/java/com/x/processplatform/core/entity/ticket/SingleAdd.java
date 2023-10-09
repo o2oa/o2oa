@@ -45,7 +45,7 @@ class SingleAdd implements Add {
 	}
 
 	private void completedThenNotJoin(Tickets tickets, Ticket ticket) {
-		tickets.listSibling(ticket, true).stream().forEach(o -> o.join(false).completed(true));
+		tickets.listSibling(ticket, true).stream().forEach(o -> o.completed(true));
 	}
 
 	@Override

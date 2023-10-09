@@ -38,6 +38,7 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
+@Deprecated(since = "8.2", forRemoval = true)
 class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddManualTaskIdentityMatrix.class);

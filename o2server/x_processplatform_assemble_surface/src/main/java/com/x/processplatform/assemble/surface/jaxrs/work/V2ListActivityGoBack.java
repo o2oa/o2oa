@@ -26,7 +26,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -71,28 +70,23 @@ class V2ListActivityGoBack extends BaseAction {
 				throw new ExceptionEntityExist(work.getActivity());
 			}
 
-			// 1.允许goBack,2.多待办允许goBack或待办只有一条
-			if (BooleanUtils.isNotFalse(manual.getAllowGoBack())
-					&& (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-							|| emc.countEqualAndEqual(Task.class, Task.activityToken_FIELDNAME, work.getActivityToken(),
-									Task.job_FIELDNAME, work.getJob()) <= 1)) {
-				WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
-				Node node = workLogTree.location(work);
-				if (null != node) {
-					Nodes nodes = workLogTree.up(node);
-					List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
-					// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
-					workLogs = workLogs.stream()
-							.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
-									&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
-									&& BooleanUtils.isTrue(o.getConnected())
-									&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
-							.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
-									Collectors.toList()))
-							.entrySet().stream().map(o -> o.getValue().get(0)).collect(Collectors.toList());
-					wos = this.list(manual, workLogs);
-					wos = this.supplement(business, wos);
-				}
+			// 条件判断在前面的control中已经判断
+			WorkLogTree workLogTree = this.workLogTree(business, work.getJob());
+			Node node = workLogTree.location(work);
+			if (null != node) {
+				Nodes nodes = workLogTree.up(node);
+				List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
+				// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
+				workLogs = workLogs.stream()
+						.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
+								&& (!StringUtils.equalsIgnoreCase(o.getType(), ProcessingAttributes.TYPE_GOBACK))
+								&& BooleanUtils.isTrue(o.getConnected())
+								&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
+						.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
+								Collectors.toList()))
+						.entrySet().stream().map(o -> o.getValue().get(0)).collect(Collectors.toList());
+				wos = this.list(manual, workLogs);
+				wos = this.supplement(business, wos);
 			}
 		}
 		result.setData(wos);

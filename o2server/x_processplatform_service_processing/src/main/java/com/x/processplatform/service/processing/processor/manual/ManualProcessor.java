@@ -643,11 +643,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
 			List<TaskCompleted> taskCompleteds) {
 		tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
-			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
-				tickets.completed(o.label()).join(o.label(), BooleanUtils.isNotFalse(t.getJoinInquire()));
+			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel()) || StringUtils
+					.equalsAnyIgnoreCase(o.distinguishedName(), t.getIdentity(), t.getDistinguishedName())) {
+				tickets.completed(o.label());
 			}
 		}));
-//
 //			List<String> identities = matrix.flat();
 //			taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
 //			// 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍

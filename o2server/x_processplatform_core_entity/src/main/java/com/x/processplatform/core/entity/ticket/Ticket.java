@@ -19,8 +19,6 @@ public class Ticket implements Serializable {
 	private String label;
 	// 操作
 	private String act;
-	// 是否参与待办
-	private boolean join;
 	// 是否完成
 	private boolean completed;
 	// 验证有效性
@@ -46,7 +44,6 @@ public class Ticket implements Serializable {
 		this.label = UUID.randomUUID().toString();
 		this.act = "";
 		this.completed = false;
-		this.join = true;
 		this.valid = true;
 		this.enable = true;
 		this.distinguishedName = "";
@@ -167,15 +164,6 @@ public class Ticket implements Serializable {
 
 	public Ticket mode(String mode) {
 		this.mode = mode;
-		return this;
-	}
-
-	public boolean join() {
-		return join;
-	}
-
-	public Ticket join(boolean join) {
-		this.join = join;
 		return this;
 	}
 
