@@ -414,6 +414,9 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		@FieldDescribe("文档标题，70字以内")
 		private String title;
+		
+		@FieldDescribe("客体密级标识")
+		private Integer objectSecurityClearance;
 
 		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
 		private String documentType = "信息";
@@ -983,6 +986,15 @@ public class ActionPersistPublishContent extends BaseAction {
 		public void setDocumentNotify(DocumentNotify documentNotify) {
 			this.documentNotify = documentNotify;
 		}
+
+		public Integer getObjectSecurityClearance() {
+			return objectSecurityClearance;
+		}
+
+		public void setObjectSecurityClearance(Integer objectSecurityClearance) {
+			this.objectSecurityClearance = objectSecurityClearance;
+		}
+		
 	}
 
 	public static class Wo extends WoId {
