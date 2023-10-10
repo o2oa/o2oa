@@ -128,7 +128,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-        if (value || value==0 || value===false){
+        if (value || value===0 || value===false){
             return value;
         }else{
             value = this._computeValue();
