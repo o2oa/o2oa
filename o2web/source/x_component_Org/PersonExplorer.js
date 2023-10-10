@@ -58,7 +58,8 @@ MWF.xApplication.Org.PersonExplorer = new Class({
             "control": {
                 "allowEdit": true,
                 "allowDelete": true
-            }
+            },
+            "subjectSecurityClearance": null
         };
     }
 
@@ -824,8 +825,8 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
 
         n = this.editContentNode.getElement(".infor_securityLabel");
         this.getSecurityLabelText().then(function(securityLabel){
-            if (n) n.set("text", securityLabel || "");
-        });
+            if (this.mode !== "edit") if (n) n.set("text", securityLabel || "");
+        }.bind(this));
 
 
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
@@ -912,6 +913,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         }
     },
     edit: function(){
+        debugger;
         var tdContents = this.editContentNode.getElements("td.inforContent");
         tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
         this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
@@ -1064,6 +1066,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                 break;
             }
         }
+
+
+
         //if (!this.nameInputNode.get("value") || !this.employeeInputNode.get("value") || !this.mobileInputNode.get("value") || !gender){
         if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
             this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
@@ -1162,6 +1167,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         // }.bind(this));
     },
     cancel: function(){
+        debugger;
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
             tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");

@@ -12,7 +12,7 @@
         :config="systemSecurityClearance"
         :allowEditor="true"
         type="select"
-        :options="subjectSecurityClearance.reduce((acc, obj) => { acc[obj.value] = obj.label; return acc; }, {})"
+        :options="objectSecurityClearance.reduce((acc, obj) => { acc[obj.value] = obj.label; return acc; }, {})"
         @changeConfig="(value)=>{systemSecurityClearance = value.toInt(); saveConfig('ternaryManagement', 'systemSecurityClearance', value.toInt()); }"
     ></BaseItem>
 
