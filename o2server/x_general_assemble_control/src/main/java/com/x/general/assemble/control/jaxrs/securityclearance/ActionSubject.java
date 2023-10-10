@@ -18,16 +18,18 @@ public class ActionSubject extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		final Integer system = Config.ternaryManagement().getSystemSecurityClearance();
-		final Predicate<Map.Entry<String, Integer>> predicate = (null != system)
-				? new PredicateWithSystemSecurityClearance(system)
-				: new PredicateWithoutSystemSecurityClearance();
+		final Integer limit = Config.ternaryManagement().getSystemSecurityClearance();
+		final Predicate<Map.Entry<String, Integer>> predicate = (null != limit)
+				? new PredicateWithLimitSecurityClearance(limit)
+				: new PredicateWithoutLimitSecurityClearance();
 		Config.ternaryManagement().getSubjectSecurityClearance().entrySet().stream().filter(predicate::test)
 				.sorted((o1, o2) -> Integer.compare(o1.getValue(), o2.getValue()))
 				.forEach(o -> wo.put(o.getKey(), o.getValue()));
 		result.setData(wo);
 		return result;
 	}
+	
+
 
 	public class Wo extends LinkedHashMap<String, Integer> {
 
