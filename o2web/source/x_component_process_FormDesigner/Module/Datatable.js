@@ -351,7 +351,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			try{
 				this.setCustomProperties();
 			}catch(e){}
-			this.node.getFirst().setProperties(this.json.properties);
+			var table = this.node.getElement("table");
+			if(table)table.setProperties(this.json.properties);
 		}
 	},
 	_setEditStyle_custom: function(name, obj, oldValue){
