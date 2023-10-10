@@ -44,6 +44,28 @@ MWF.xApplication.process.Xform.Security = MWF.APPSecurity =  new Class(
 			this.fieldModuleLoaded = false;
 			this.nodeHtml = this.node.get("html");
 		},
+		__showValue: function(node, value, optionItems){
+			if (value){
+				value = value.toString();
+				if (typeOf(value)!=="array") value = [value];
+				var texts = [];
+				optionItems.each(function(item){
+					var tmps = item.split("|");
+					var t = tmps[0];
+					var v = tmps[1] || t;
+
+					if (v){
+
+						if (value.indexOf(v)!=-1){
+							texts.push(t);
+						}
+					}
+
+				});
+				node.set("text", texts.join(", "));
+			}
+		},
+
 
 		_getOptions: function(async, refresh){
 			if (this.securityLabelList) return Promise.resolve(this.securityLabelList);

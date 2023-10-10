@@ -1387,6 +1387,24 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
 
+    addAttachment: function(data, messageId, isCheckPosition){
+
+        if (data.objectSecurityClearance){
+            data.objectSecurityPromise = this.getSecurityDefaultLabelList().then((list)=>{
+                return Object.keys(list).find((key)=>{
+                    return list[key]===data.objectSecurityClearance;
+                });
+            });
+        }
+
+        if (this.options.size=="min"){
+            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId, isCheckPosition));
+        }else{
+            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
+        }
+        this.checkActions();
+    }
+
 });
 
 
@@ -1633,6 +1651,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         //}.bind(this));
     },
+
     setAttachmentBusinessData: function () {
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {

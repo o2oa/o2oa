@@ -23,7 +23,7 @@ MWF.xApplication.cms.Document.LP = {
     "phone": "手机",
     "mail": "邮箱",
 
-    "documentGettedError" : "文档获取错误",
+    "documentGettedError" : "您没有权限查看该文档或该文档已删除。",
     "controllerGettedError" : "管理员获取错误",
     "formGettedError" : "表单获取错误",
     "attachmentGettedError" : "附件获取错误",
