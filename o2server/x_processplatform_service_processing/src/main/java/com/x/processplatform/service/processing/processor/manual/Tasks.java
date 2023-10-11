@@ -61,6 +61,7 @@ public class Tasks {
 			empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
 			empowerTaskCompleted.setJoinInquire(false);
 			empowerTaskCompleted.setIdentity(ticket.fromDistinguishedName());
+			empowerTaskCompleted.setDistinguishedName(ticket.fromDistinguishedName());
 			empowerTaskCompleted.setUnit(fromUnit);
 			empowerTaskCompleted.setPerson(fromPerson);
 			empowerTaskCompleted.setEmpowerToIdentity(ticket.distinguishedName());
@@ -77,7 +78,7 @@ public class Tasks {
 
 	@Deprecated(since = "8.2", forRemoval = true)
 	public static Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-		String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
+		String fromIdentity = aeiObjects.getWork().getManualEmpowerMap().get(identity);
 		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
 		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,

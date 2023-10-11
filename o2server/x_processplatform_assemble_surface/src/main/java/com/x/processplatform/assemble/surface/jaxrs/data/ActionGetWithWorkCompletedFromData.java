@@ -37,7 +37,7 @@ class ActionGetWithWorkCompletedFromData extends BaseAction {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
-			result.setData(XGsonBuilder.convert(workCompleted.getProperties().getData(), JsonElement.class));
+			result.setData(XGsonBuilder.convert(workCompleted.getData(), JsonElement.class));
 			return result;
 		}
 	}

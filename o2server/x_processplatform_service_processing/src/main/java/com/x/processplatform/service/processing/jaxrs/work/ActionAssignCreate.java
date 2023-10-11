@@ -158,8 +158,8 @@ class ActionAssignCreate extends BaseAction {
 		work.setCreatorIdentity(identityDn);
 		work.setCreatorPerson(business.organization().person().getWithIdentity(identityDn));
 		work.setCreatorUnit(business.organization().unit().getWithIdentity(identityDn));
-		work.getProperties().setParentWork(wi.getParentWork());
-		work.getProperties().setParentJob(wi.getParentJob());
+		work.setParentWork(wi.getParentWork());
+		work.setParentJob(wi.getParentJob());
 		if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
 			Unit unit = business.organization().unit().getObject(work.getCreatorUnit());
 			work.setCreatorUnitLevelName(unit.getLevelName());

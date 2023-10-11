@@ -57,7 +57,7 @@ class V2Projection extends BaseAction {
 				WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
 				if (null != workCompleted) {
 					job = workCompleted.getJob();
-					data = BooleanUtils.isTrue(workCompleted.getMerged()) ? workCompleted.getProperties().getData()
+					data = BooleanUtils.isTrue(workCompleted.getMerged()) ? workCompleted.getData()
 							: new WorkDataHelper(emc, workCompleted).get();
 					process = emc.find(workCompleted.getProcess(), Process.class);
 				}

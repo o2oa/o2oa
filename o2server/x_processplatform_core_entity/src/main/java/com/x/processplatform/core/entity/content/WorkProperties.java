@@ -16,9 +16,11 @@ public class WorkProperties extends JsonProperties {
 
 	private static final long serialVersionUID = -62236689373222398L;
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	@FieldDescribe("强制待办处理人")
 	private List<String> manualForceTaskIdentityList = new ArrayList<>();
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	@FieldDescribe("授权对象")
 	private Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
 
@@ -43,6 +45,7 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("拆分值列表")
 	private List<String> splitValueList = new ArrayList<>();
 
+	@Deprecated(since = "8.2", forRemoval = true)
 	@FieldDescribe("待办身份矩阵")
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
 
@@ -192,10 +195,20 @@ public class WorkProperties extends JsonProperties {
 
 		private static final long serialVersionUID = 2334994291846390241L;
 
-		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+		@Deprecated(since = "8.2", forRemoval = true)
+		private ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
+		private Tickets tickets;
 		private String activity;
 		private ActivityType activityType;
 		private String activityToken;
+
+		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+			return manualTaskIdentityMatrix;
+		}
+
+		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		}
 
 		public String getActivityToken() {
 			return activityToken;
@@ -205,12 +218,12 @@ public class WorkProperties extends JsonProperties {
 			this.activityToken = activityToken;
 		}
 
-		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
-			return manualTaskIdentityMatrix;
+		public Tickets getTickets() {
+			return tickets;
 		}
 
-		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
-			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		public void setTickets(Tickets tickets) {
+			this.tickets = tickets;
 		}
 
 		public String getActivity() {

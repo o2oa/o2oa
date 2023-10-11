@@ -225,6 +225,8 @@ class V2Retract extends BaseAction {
 
     public static class Req extends V2RetractWi {
 
+		private static final long serialVersionUID = 1105855318231921508L;
+
     }
 
     public static class Wo extends Record {

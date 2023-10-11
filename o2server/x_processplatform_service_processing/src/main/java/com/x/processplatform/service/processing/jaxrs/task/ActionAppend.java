@@ -167,14 +167,14 @@ class ActionAppend extends BaseAction {
 		for (TaskIdentity taskIdentity : taskIdentities) {
 			if (BooleanUtils.isNotTrue(taskIdentity.getIgnoreEmpower())
 					&& StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
-				work.getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
+				work.getManualEmpowerMap().put(taskIdentity.getIdentity(),
 						taskIdentity.getFromIdentity());
 			}
 		}
 		// properties中的集合对象需要重新new对象set进去，这样jpa才会更新数据
 		Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
-		manualEmpowerMap.putAll(work.getProperties().getManualEmpowerMap());
-		work.getProperties().setManualEmpowerMap(manualEmpowerMap);
+		manualEmpowerMap.putAll(work.getManualEmpowerMap());
+		work.setManualEmpowerMap(manualEmpowerMap);
 		emc.commit();
 	}
 

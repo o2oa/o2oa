@@ -92,7 +92,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private ProcessingAttributes processingAttributes;
 
-	private List<Route> selectRoutes = new ArrayList<>();
+//	private List<Route> selectRoutes = new ArrayList<>();
 
 	private Work work;
 
@@ -490,9 +490,9 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getCreateReviews().add(review);
 	}
 
-	public void addSelectRoutes(List<Route> selectRoutes) {
-		this.selectRoutes.addAll(selectRoutes);
-	}
+//	public void addSelectRoutes(List<Route> selectRoutes) {
+//		this.selectRoutes.addAll(selectRoutes);
+//	}
 
 	public void deleteReview(Review review) {
 		this.getDeleteReviews().add(review);
@@ -523,9 +523,9 @@ public class AeiObjects extends GsonPropertyObject {
 		return processingAttributes;
 	}
 
-	public List<Route> getSelectRoutes() {
-		return selectRoutes;
-	}
+//	public List<Route> getSelectRoutes() {
+//		return selectRoutes;
+//	}
 
 	public Work getWork() {
 		return work;

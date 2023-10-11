@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.content;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -124,6 +125,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
 			this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
 			this.tickets = this.getProperties().getTickets();
+			this.serviceValue = this.getProperties().getServiceValue();
+			this.manualEmpowerMap = this.getProperties().getManualEmpowerMap();
 		}
 	}
 
@@ -272,21 +275,56 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		return tickets;
 	}
 
+	public Map<String, Object> getServiceValue() {
+		return this.serviceValue;
+	}
+
+	public void setServiceValue(Map<String, Object> serviceValue) {
+		this.getProperties().setServiceValue(serviceValue);
+		this.serviceValue = serviceValue;
+	}
+
+	public Map<String, String> getManualEmpowerMap() {
+		return manualEmpowerMap;
+	}
+
+	public void setManualEmpowerMap(Map<String, String> manualEmpowerMap) {
+		this.getProperties().setManualEmpowerMap(manualEmpowerMap);
+		this.manualEmpowerMap = manualEmpowerMap;
+	}
+
+	public static final String MANUALEMPOWERMAP_FIELDNAME = "manualEmpowerMap";
+	@Transient
+	@Deprecated(since = "8.2", forRemoval = true)
+	@FieldDescribe("授权对象")
+	private Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
+
+	public static final String SERVICEVALUE_FIELDNAME = "serviceValue";
+	@Transient
+	@FieldDescribe("服务回调值")
+	private Map<String, Object> serviceValue = new LinkedHashMap<>();
+
+	public static final String GOBACKACTIVITYTOKEN_FIELDNAME = "goBackActivityToken";
+	@Transient
 	@FieldDescribe("goBack进行跳转退回时使用的.")
 	private String goBackActivityToken;
 
+	public static final String GOBACKSTORE_FIELDNAME = "goBackStore";
 	@Transient
 	@FieldDescribe("回退临时存储数据.")
 	private GoBackStore goBackStore;
 
+	public static final String SPLITVALUELIST_FIELDNAME = "splitValueList";
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
 
+	public static final String EMBEDTARGETJOB_FIELDNAME = "embedTargetJob";
 	@Transient
 	@FieldDescribe("Embed活动生成的Work的Job.")
 	private String embedTargetJob;
 
+	public static final String EMBEDCOMPLETED_FIELDNAME = "embedCompleted";
 	@Transient
 	@FieldDescribe("子流程返回标识.")
 	private String embedCompleted;

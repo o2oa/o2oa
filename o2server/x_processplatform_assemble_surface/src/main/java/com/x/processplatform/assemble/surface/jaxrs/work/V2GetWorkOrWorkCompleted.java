@@ -324,8 +324,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			WorkCompleted workCompleted, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-					wo.setRecordList(WoRecord.copier.copy(workCompleted.getProperties().getRecordList()).stream()
+				if (ListTools.isNotEmpty(workCompleted.getRecordList())) {
+					wo.setRecordList(WoRecord.copier.copy(workCompleted.getRecordList()).stream()
 							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
 				} else {
 					wo.setRecordList(emc
@@ -341,7 +341,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> workCompletedDataFuture(WorkCompleted workCompleted, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-				wo.setData(workCompleted.getProperties().getData());
+				wo.setData(workCompleted.getData());
 			} else {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					List<Item> list = emc.listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,

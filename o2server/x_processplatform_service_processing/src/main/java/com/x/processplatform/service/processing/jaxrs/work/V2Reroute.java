@@ -25,7 +25,8 @@ import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
@@ -89,8 +90,8 @@ class V2Reroute extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				Activity activity = business.element().getActivity(wi.getActivity());
-				if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
+				Manual manual = (Manual) business.element().get(wi.getActivity(), ActivityType.manual);
+				if (!StringUtils.equals(work.getProcess(), manual.getProcess())) {
 					throw new ExceptionProcessNotMatch();
 				}
 				emc.beginTransaction(Work.class);
@@ -98,19 +99,18 @@ class V2Reroute extends BaseAction {
 				emc.beginTransaction(Read.class);
 				emc.beginTransaction(WorkLog.class);
 				// 重新设置表单
-				String formId =business.element().lookupSuitableForm(work.getProcess(), activity.getId()); 
+				String formId = business.element().lookupSuitableForm(work.getProcess(), manual.getId());
 				if (StringUtils.isNotBlank(formId)) {
-				    work.setForm(formId);				    
+					work.setForm(formId);
 				}
 				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
 				work.setWorkThroughManual(true);
-				work.setDestinationActivity(activity.getId());
-				work.setDestinationActivityType(activity.getActivityType());
+				work.setDestinationActivity(manual.getId());
+				work.setDestinationActivityType(manual.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
-				work.getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 				if (ListTools.isNotEmpty(wi.getManualForceTaskIdentityList())) {
-					work.getProperties().setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
+					work.setTickets(manual.identitiesToTickets(wi.getManualForceTaskIdentityList()));
 				}
 				if (BooleanUtils.isTrue(wi.getMergeWork())) {
 					// 合并工作

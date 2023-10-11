@@ -61,7 +61,7 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Agent agent = (Agent) aeiObjects.getActivity();
 		return inquiring(aeiObjects, agent);
 	}

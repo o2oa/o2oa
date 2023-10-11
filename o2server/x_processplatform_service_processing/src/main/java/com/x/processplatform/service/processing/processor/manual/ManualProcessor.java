@@ -75,7 +75,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// ManualTaskIdentityMatrix manualTaskIdentityMatrix = manual
 		// .identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects,
 		// manual));
-		Tickets tickets = manual.identitiesToTickets(calculateTaskDistinguishedName(aeiObjects, manual));
+		Tickets tickets = aeiObjects.getWork().getTickets();
+		if ((null == tickets) || tickets.isEmpty()) {
+			tickets = manual.identitiesToTickets(calculateTaskDistinguishedName(aeiObjects, manual));
+		}
 		empower(aeiObjects, tickets);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		// Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual,
@@ -263,15 +266,15 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 */
 	private List<String> calculateTaskDistinguishedName(AeiObjects aeiObjects, Manual manual) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();
-		// 先计算强制处理人
-		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
-			List<String> identities = new ArrayList<>();
-			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
-			identities = aeiObjects.business().organization().identity().list(identities);
-			if (ListTools.isNotEmpty(identities)) {
-				taskIdentities.addIdentities(identities);
-			}
-		}
+//		// 先计算强制处理人
+//		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
+//			List<String> identities = new ArrayList<>();
+//			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
+//			identities = aeiObjects.business().organization().identity().list(identities);
+//			if (ListTools.isNotEmpty(identities)) {
+//				taskIdentities.addIdentities(identities);
+//			}
+//		}
 		// 计算退回的结果
 		if (taskIdentities.isEmpty()) {
 			Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
@@ -291,14 +294,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private List<String> calculateTaskIdentities(AeiObjects aeiObjects, Manual manual) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();
 		// 先计算强制处理人
-		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
-			List<String> identities = new ArrayList<>();
-			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
-			identities = aeiObjects.business().organization().identity().list(identities);
-			if (ListTools.isNotEmpty(identities)) {
-				taskIdentities.addIdentities(identities);
-			}
-		}
+//		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
+//			List<String> identities = new ArrayList<>();
+//			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
+//			identities = aeiObjects.business().organization().identity().list(identities);
+//			if (ListTools.isNotEmpty(identities)) {
+//				taskIdentities.addIdentities(identities);
+//			}
+//		}
 		// 计算退回的结果
 		if (taskIdentities.isEmpty()) {
 			Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
@@ -437,7 +440,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private void writeToEmpowerMap(AeiObjects aeiObjects, TaskIdentities taskIdentities) throws Exception {
 		// 先清空EmpowerMap
-		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<>());
+		aeiObjects.getWork().setManualEmpowerMap(new LinkedHashMap<>());
 		// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
 		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
 				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
@@ -448,7 +451,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 					aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values));
 			for (TaskIdentity taskIdentity : taskIdentities) {
 				if (StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
-					aeiObjects.getWork().getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
+					aeiObjects.getWork().getManualEmpowerMap().put(taskIdentity.getIdentity(),
 							taskIdentity.getFromIdentity());
 				}
 			}
@@ -506,11 +509,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
-		if (aeiObjects.getWork().getTickets().isEmpty()) {
+		Tickets tickets = aeiObjects.getWork().getTickets();
+		if ((null == tickets) || tickets.isEmpty()) {
 			return executingMatrix(aeiObjects, manual);
 		}
 		List<Work> results = new ArrayList<>();
-		Tickets tickets = aeiObjects.getWork().getTickets();
 		checkValidTickets(aeiObjects, tickets);
 		// 由于退回存在空名称的路由
 		List<TaskCompleted> taskCompleteds = aeiObjects
@@ -698,12 +701,12 @@ public class ManualProcessor extends AbstractManualProcessor {
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.manualInquire(aeiObjects.getWork().getActivityToken(), manual));
 		List<Route> results = new ArrayList<>();
+		// 执行回退路由
 		Optional<Route> optional = inquiringFromGoBackStore(aeiObjects);
 		if (optional.isPresent()) {
 			markJumpAtWorkLog(aeiObjects, aeiObjects.getWork().getGoBackStore());
 			// 设置处理人
-			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(
-					aeiObjects.getWork().getGoBackStore().getManualTaskIdentityMatrix().flat());
+			aeiObjects.getWork().setTickets(aeiObjects.getWork().getGoBackStore().getTickets());
 			// 清理掉goBackStore
 			aeiObjects.getWork().setGoBackStore(null);
 			// 清理掉退回到的activityToken标志
@@ -711,8 +714,26 @@ public class ManualProcessor extends AbstractManualProcessor {
 			results.add(optional.get());
 			return results;
 		}
-		// 仅有单条路由
+		// 执行强制路由
+		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())) {
+			Activity activity = aeiObjects.business().element()
+					.getActivity(aeiObjects.getWork().getDestinationActivity());
+			if (null != activity) {
+				Route route = new Route();
+				route.setActivity(activity.getId());
+				route.setActivityType(activity.getActivityType());
+				// 清理掉goBackStore
+				aeiObjects.getWork().setGoBackStore(null);
+				// 清理掉退回到的activityToken标志
+				aeiObjects.getWork().setGoBackActivityToken(null);
+				results.add(route);
+				return results;
+			}
+		}
+		// 执行正常路由
 		if (aeiObjects.getRoutes().size() == 1) {
+			// 仅有单条路由
 			results.add(aeiObjects.getRoutes().get(0));
 		} else if (aeiObjects.getRoutes().size() > 1) {
 			// 存在多条路由
@@ -723,11 +744,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 		} else {
 			// 无法找到合适的路由那么默认选择走第一条
 			results.add(aeiObjects.getRoutes().get(0));
-			// throw new ExceptionManualNotRoute(manual.getId());
 		}
 		if (!results.isEmpty()) {
-			// 清理掉强制的指定的处理人
-			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(new ArrayList<>());
+			// 清理掉指定的处理人
+			aeiObjects.getWork().setTickets(new Tickets());
 			// 清理掉goBackStore
 			aeiObjects.getWork().setGoBackStore(null);
 			// 清理掉退回到的activityToken标志

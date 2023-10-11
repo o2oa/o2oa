@@ -58,7 +58,8 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			}
 		}
 
-		CompletableFuture<Boolean> checkControlFuture = this.checkControlVisitFuture(effectivePerson, workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlVisitFuture(effectivePerson,
+				workOrWorkCompleted);
 
 		if (null != work) {
 			CompletableFuture<Data> dataFuture = this.dataFuture(work);
@@ -120,7 +121,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Data> dataFuture(WorkCompleted workCompleted) {
 		return CompletableFuture.supplyAsync(() -> {
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-				return workCompleted.getProperties().getData();
+				return workCompleted.getData();
 			} else {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);

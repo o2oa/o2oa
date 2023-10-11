@@ -35,7 +35,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.serviceArrive(aeiObjects.getWork().getActivityToken(), service));
 		// 清空上一次调用值
-		aeiObjects.getWork().getProperties().setServiceValue(new LinkedHashMap<>());
+		aeiObjects.getWork().setServiceValue(new LinkedHashMap<>());
 		return aeiObjects.getWork();
 	}
 
@@ -52,13 +52,13 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
 		// 判断是否已经在getServiceValue中有值了,否则会在到达后直接运行.
-		if (!aeiObjects.getWork().getProperties().getServiceValue().isEmpty()) {
+		if (!aeiObjects.getWork().getServiceValue().isEmpty()) {
 			LOGGER.debug("work:{}, serviceValue:{}.", () -> aeiObjects.getWork().getId(),
-					() -> this.gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
+					() -> this.gson.toJson(aeiObjects.getWork().getServiceValue()));
 			if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
 				ScriptContext scriptContext = aeiObjects.scriptContext();
 				scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_REQUESTTEXT,
-						gson.toJson(aeiObjects.getWork().getProperties().getServiceValue()));
+						gson.toJson(aeiObjects.getWork().getServiceValue()));
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
 						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_SERVICE);
 				passThrough = JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.TRUE);

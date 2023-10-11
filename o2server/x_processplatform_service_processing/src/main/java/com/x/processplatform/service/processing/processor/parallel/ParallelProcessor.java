@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.parallel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -111,24 +112,19 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), parallel));
-		List<Route> results = new ArrayList<>();
-		aeiObjects.getRoutes().stream().forEach(o -> {
-			if (StringUtils.equals(o.getId(), aeiObjects.getWork().getDestinationRoute())) {
-				results.add(o);
-			}
-		});
-		if (results.isEmpty()) {
-			aeiObjects.getRoutes().stream().forEach(o -> {
-				if (StringUtils.equals(o.getName(), aeiObjects.getWork().getDestinationRouteName())) {
-					results.add(o);
-				}
-			});
+		Optional<Route> opt = aeiObjects.getRoutes().stream()
+				.filter(o -> StringUtils.equals(o.getId(), aeiObjects.getWork().getDestinationRoute())).findFirst();
+		if (opt.isPresent()) {
+			return opt;
+		} else {
+			return aeiObjects.getRoutes().stream()
+					.filter(o -> StringUtils.equals(o.getName(), aeiObjects.getWork().getDestinationRouteName()))
+					.findFirst();
 		}
-		return results;
 	}
 
 	@Override

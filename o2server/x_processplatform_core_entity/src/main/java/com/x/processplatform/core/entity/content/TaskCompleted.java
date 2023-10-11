@@ -301,6 +301,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.serial = task.getSerial();
 		this.person = task.getPerson();
 		this.identity = task.getIdentity();
+		this.distinguishedName = task.getDistinguishedName();
 		this.unit = task.getUnit();
 		this.activity = task.getActivity();
 		this.activityName = task.getActivityName();
@@ -365,7 +366,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
 		this.label = task.getLabel();
-		this.distinguishedName = task.getDistinguishedName();
 	}
 
 	public TaskCompletedProperties getProperties() {

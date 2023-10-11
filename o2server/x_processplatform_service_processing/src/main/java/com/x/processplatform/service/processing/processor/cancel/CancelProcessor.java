@@ -95,10 +95,10 @@ public class CancelProcessor extends AbstractCancelProcessor {
     }
 
     private void tryUpdateParentWork(AeiObjects aeiObjects) {
-        if (StringUtils.isNotBlank(aeiObjects.getWork().getProperties().getParentWork())) {
+        if (StringUtils.isNotBlank(aeiObjects.getWork().getParentWork())) {
             try {
                 Work parent = aeiObjects.entityManagerContainer()
-                        .find(aeiObjects.getWork().getProperties().getParentWork(), Work.class);
+                        .find(aeiObjects.getWork().getParentWork(), Work.class);
                 if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
                     Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(),
                             parent.getActivityType());
@@ -108,7 +108,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
                 }
             } catch (Exception e) {
                 LOGGER.error(new ExceptionUpdateParentWork(e, aeiObjects.getWork().getId(),
-                        aeiObjects.getWork().getProperties().getParentWork()));
+                        aeiObjects.getWork().getParentWork()));
             }
         }
     }

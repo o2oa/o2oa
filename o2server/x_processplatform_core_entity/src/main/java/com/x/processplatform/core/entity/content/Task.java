@@ -148,8 +148,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
 	private Boolean routeNameDisable;
 
-	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
-			Date expireTime, List<Route> routes, Boolean allowRapid) {
+	public Task(Work work, String distinguishedName, String person, String unit, String empowerFromIdentity,
+			Date startTime, Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -163,7 +163,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.processAlias = work.getProcessAlias();
 		this.serial = work.getSerial();
 		this.person = person;
-		this.identity = identity;
+		this.identity = distinguishedName;
+		this.distinguishedName = distinguishedName;
 		this.unit = unit;
 		this.empowerFromIdentity = empowerFromIdentity;
 		this.activity = work.getActivity();

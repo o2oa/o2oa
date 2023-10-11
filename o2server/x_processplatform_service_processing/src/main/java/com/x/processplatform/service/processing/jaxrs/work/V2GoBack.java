@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +23,8 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
-import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualProperties;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 import com.x.processplatform.service.processing.Business;
@@ -87,9 +87,9 @@ class V2GoBack extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				Activity activity = business.element().getActivity(wi.getActivity());
+				Manual manual = (Manual) business.element().get(wi.getActivity(), ActivityType.manual);
 
-				if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
+				if (!StringUtils.equals(work.getProcess(), manual.getProcess())) {
 					throw new ExceptionProcessNotMatch();
 				}
 				emc.beginTransaction(Work.class);
@@ -97,25 +97,24 @@ class V2GoBack extends BaseAction {
 				emc.beginTransaction(Read.class);
 				emc.beginTransaction(WorkLog.class);
 				// 重新设置表单
-				String formId = business.element().lookupSuitableForm(work.getProcess(), activity.getId());
+				String formId = business.element().lookupSuitableForm(work.getProcess(), manual.getId());
 				if (StringUtils.isNotBlank(formId)) {
 					work.setForm(formId);
 				}
 				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
 				work.setWorkThroughManual(true);
-				work.setDestinationActivity(activity.getId());
-				work.setDestinationActivityType(activity.getActivityType());
+				work.setDestinationActivity(manual.getId());
+				work.setDestinationActivityType(manual.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
 				work.setGoBackActivityToken(wi.getActivityToken());
-				work.getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 				if (ListTools.isNotEmpty(wi.getIdentityList())) {
-					work.getProperties().setManualForceTaskIdentityList(wi.getIdentityList());
+					work.setTickets(manual.identitiesToTickets(wi.getIdentityList()));
 				}
 				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_JUMP)) {
 					// way = jump
 					GoBackStore goBackStore = new GoBackStore();
-					goBackStore.setManualTaskIdentityMatrix(work.getManualTaskIdentityMatrix());
+					goBackStore.setTickets(work.getTickets());
 					goBackStore.setActivity(work.getActivity());
 					goBackStore.setActivityType(work.getActivityType());
 					goBackStore.setActivityToken(work.getActivityToken());
@@ -143,56 +142,6 @@ class V2GoBack extends BaseAction {
 				}
 			});
 		}
-
-//		private void redirectOtherRead(Business business, Work work) throws Exception {
-//			business.entityManagerContainer().listEqualAndNotEqual(Read.class, Read.job_FIELDNAME, work.getJob(),
-//					Read.work_FIELDNAME, work.getId()).stream().forEach(o -> {
-//						try {
-//							o.setWork(work.getId());
-//						} catch (Exception e) {
-//							LOGGER.error(e);
-//						}
-//					});
-//		}
-//
-//		private void removeAllTask(Business business, Work work) throws Exception {
-//			business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob()).stream()
-//					.forEach(o -> {
-//						try {
-//							business.entityManagerContainer().remove(o, CheckRemoveType.all);
-//							MessageFactory.task_delete(o);
-//						} catch (Exception e) {
-//							LOGGER.error(e);
-//						}
-//					});
-//		}
-//
-//		private void removeOtherWork(Business business, Work work) throws Exception {
-//			List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-//					work.getJob(), JpaObject.id_FIELDNAME, work.getId());
-//			os.stream().forEach(o -> {
-//				try {
-//					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-//					MessageFactory.work_delete(o);
-//				} catch (Exception e) {
-//					LOGGER.error(e);
-//				}
-//			});
-//		}
-//
-//		private void removeOtherWorkLog(Business business, Work work) throws Exception {
-//			List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
-//					WorkLog.JOB_FIELDNAME, work.getJob(), WorkLog.CONNECTED_FIELDNAME, false,
-//					WorkLog.FROMACTIVITY_FIELDNAME, work.getActivity());
-//			os.stream().forEach(o -> {
-//				try {
-//					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-//				} catch (Exception e) {
-//					LOGGER.error(e);
-//				}
-//			});
-//		}
-
 	}
 
 }
