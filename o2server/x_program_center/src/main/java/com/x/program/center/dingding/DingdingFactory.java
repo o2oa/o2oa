@@ -185,27 +185,27 @@ public class DingdingFactory {
 		// return resp.getUserlist();
 	}
 
-	private User detailUser(UserSimple simple) throws Exception {
-		this.count = this.count + 1;
-		if (this.count > 1000) {
-			this.syncSleep(2000);
-			this.count = 0;
-		}
-		String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
-				+ simple.getUserid();
-		UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
-		logger.debug("detailUser response:{}.", resp);
+	// private User detailUser(UserSimple simple) throws Exception {
+	// 	this.count = this.count + 1;
+	// 	if (this.count > 1000) {
+	// 		this.syncSleep(2000);
+	// 		this.count = 0;
+	// 	}
+	// 	String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
+	// 			+ simple.getUserid();
+	// 	UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
+	// 	logger.debug("detailUser response:{}.", resp);
 
-		if (resp.getErrcode() != 0) {
-			if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-				resp = HttpConnection.getAsObject(address, null, UserResp.class);
-			} else {
-				throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
-			}
-		}
-		return resp;
+	// 	if (resp.getErrcode() != 0) {
+	// 		if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
+	// 			resp = HttpConnection.getAsObject(address, null, UserResp.class);
+	// 		} else {
+	// 			throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
+	// 		}
+	// 	}
+	// 	return resp;
 
-	}
+	// }
 
 	public List<User> listUser(Department org) throws Exception {
 		return users.stream().filter(o ->  ListTools.contains(o.getDept_id_list(), org.getDept_id()))
@@ -218,114 +218,7 @@ public class DingdingFactory {
 		}).sorted(Comparator.comparing(Department::getOrder, Comparator.nullsLast(Long::compareTo)))
 				.collect(Collectors.toList());
 	}
-
-	public static class OrgListResp extends GsonPropertyObject {
-
-		private Integer errcode;
-		private String errmsg;
-		private List<Department> department;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-
-		public List<Department> getDepartment() {
-			return department;
-		}
-
-		public void setDepartment(List<Department> department) {
-			this.department = department;
-		}
-
-	}
-
-	public static class OrgResp extends Department {
-
-		private Integer errcode;
-		private String errmsg;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-	}
-
-	public static class UserListResp extends GsonPropertyObject {
-
-		private Integer errcode;
-		private String errmsg;
-		private List<UserSimple> userlist;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-
-		public List<UserSimple> getUserlist() {
-			return userlist;
-		}
-
-		public void setUserlist(List<UserSimple> userlist) {
-			this.userlist = userlist;
-		}
-
-	}
-
-	public static class UserResp extends User {
-
-		private Integer errcode;
-		private String errmsg;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-	}
+ 
 
 
 	/**
@@ -346,6 +239,9 @@ public class DingdingFactory {
 	
 	}
 
+	/**
+	 * 根据组织 id  进行人员查询  post  对象
+	 */
 	public static class DingdingUserListPost extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -8815089632657236893L;
