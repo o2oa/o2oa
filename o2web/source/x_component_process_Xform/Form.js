@@ -2714,7 +2714,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                 hanlderNode.destroy();
                                 if (_self.flowDlg) _self.flowDlg.close();
 
-                                _self.finishOnFlow("addTask", workJson.data, !before);
+                                _self.finishOnFlow("addTask", workJson.data);
 
                             }.bind(this), function (xhr, text, error) {
                                 var errorText = error + ":" + text;
@@ -6092,7 +6092,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         dlg.close();
                         if (this.mask) this.mask.hide();
 
-                        var notCloseWindow = position!=="before";
+                        var notCloseWindow = false; //position!=="before";
                         this.addAddTaskMessage(json.data, notCloseWindow);
                         if (!this.app.inBrowser){
                             this.app[(notCloseWindow ? "refresh" : "close")]();
