@@ -172,6 +172,15 @@ public class Business {
 		return group;
 	}
 
+	private RoleFactory role;
+
+	public RoleFactory role() throws Exception {
+		if (null == this.role) {
+			this.role = new RoleFactory(this);
+		}
+		return role;
+	}
+
 	private ScriptFactory script;
 
 	public ScriptFactory script() throws Exception {
