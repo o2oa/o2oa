@@ -26,5 +26,12 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
         "numberKey": "El nombre del proyecto no puede ser un número. Por favor, ingrese uno nuevo.",
 
         "inputName": "Ingrese el nombre del script"
-	}
+	},
+    "formToolbar":{
+        "save": "Guardar secuencia de comandos",
+        "autoSave": "AutoGuardar",
+        "fontSize": "Tamaño de fuente",
+        "style": "estilo",
+        "scriptEditor": "Editor de guiones"
+    }
 };

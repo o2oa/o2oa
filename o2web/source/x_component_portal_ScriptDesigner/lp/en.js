@@ -25,5 +25,12 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
             "numberKey": "The item name cannot be a number, please re-enter",
 
             "inputName": "Please enter the script name"
-		}
+		},
+        "formToolbar":{
+            "save": "Save script",
+            "autoSave": "AutoSave",
+            "fontSize": "Font size",
+            "style": "style",
+            "scriptEditor": "Script Editor"
+        }
 };

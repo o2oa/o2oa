@@ -51,6 +51,14 @@ MWF.xApplication.service.AgentDesigner.LP = {
         "org" : "Métodos rápidos de acceso a la organización",
         "service" : "Cliente de servicios web"
 
+    },
+    "formToolbar":{
+        "save": "Guardar secuencia de comandos",
+        "autoSave": "AutoGuardar",
+        "fontSize": "Tamaño de fuente",
+        "style": "estilo",
+        "scriptEditor": "Editor de guiones",
+        "viewAllVersions": "Ver todas las versiones de script"
     }
 
 };

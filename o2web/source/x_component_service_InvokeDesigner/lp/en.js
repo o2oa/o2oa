@@ -66,5 +66,13 @@ MWF.xApplication.service.InvokeDesigner.LP = {
         "org" : "Organization quick access method",
         "service" : "webSerivces client"
 
+    },
+    "formToolbar":{
+        "save": "Save",
+        "autoSave": "AutoSave",
+        "fontSize": "Font size",
+        "style": "style",
+        "scriptEditor": "Script Editor",
+        "viewAllVersions": "View all script versions"
     }
 };

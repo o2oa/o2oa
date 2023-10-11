@@ -133,5 +133,12 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "isNumber": "数字类型",
         "viewEnable": "启用视图"
 
+    },
+    "formToolbar":{
+        "save": "保存",
+        "autoSave": "自动保存",
+        "preview": "预览",
+        "help": "帮助"
     }
+
 });

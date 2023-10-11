@@ -153,5 +153,12 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "valueScriptDataNote": "系统根据配置生成的业务数据",
         "valueScriptDocumentNote": "如果导入CMS文档，系统生成的文档数据",
         "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据"
+    },
+    "formToolbar":{
+        "save": "保存",
+        "saveAs": "另存为",
+        "autoSave": "自动保存",
+        "preview": "预览",
+        "help": "帮助"
     }
 };
