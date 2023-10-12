@@ -306,6 +306,19 @@ MWF.APPPOD.LP = {
         "help": "ayuda",
         "clearNoDomModule": "Borrar configuraciones de componentes que no están en el árbol HTML",
         "autoSave": "AutoGuardar",
-        "brush": "cepillar"
-    }
+        "brush": "cepillar",
+        "viewAllVersion": "Ver todas las versiones del formulario"
+    },
+    "version" : {
+        "title" : "Ver registro de versiones del formulario",
+        "close" : "Cerrar",
+        "no":"No.",
+        "updateTime":"Fecha de actualización",
+        "op":"Acciones",
+        "person":"Operador",
+        "resume" : "Restaurar",
+        "resumeConfirm" : "Confirmación",
+        "resumeInfo" : "¿Está seguro de que desea restaurar el formulario? Después de confirmar la restauración, se actualizará el formulario actual y deberá guardarlo manualmente para que surta efecto.",
+        "resumeSuccess" :"Restauración exitosa",
+    },
 };

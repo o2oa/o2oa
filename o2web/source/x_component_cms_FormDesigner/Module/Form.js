@@ -301,14 +301,13 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	loadVersionList : function(){
 		var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
 			"<th>"+MWF.CMSFD.LP.version["no"]+"</th>" +
-			"<th>"+MWF.APPFD.LP.version["person"]+"</th>" +
-			"<th>"+MWF.APPFD.LP.version["updateTime"]+"</th>" +
-			"<th>"+MWF.APPFD.LP.version["op"]+"</th>" +
+			"<th>"+MWF.CMSFD.LP.version["person"]+"</th>" +
+			"<th>"+MWF.CMSFD.LP.version["updateTime"]+"</th>" +
+			"<th>"+MWF.CMSFD.LP.version["op"]+"</th>" +
 			"</tr></table>";
 		this.versionNode.set("html", tableHtml);
 		this.versionTable = this.versionNode.getElement("table");
-		this.action = o2.Actions.load("x_processplatform_assemble_designer");
-		this.action.FormVersionAction.listWithForm(this.form.json.id, function(json){
+		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.listWithForm(this.form.json.id, function(json){
 			this.versionList = json.data;
 			this.versionList.each(function (version,index) {
 				var node = new Element("tr").inject(this.versionTable);
@@ -329,10 +328,10 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 						"text-align": "center",
 						"font-weight": "100"
 					}}).inject(node.getLast("td"));
-				actionNode.set("text", MWF.APPFD.LP.version["resume"]);
+				actionNode.set("text", MWF.CMSFD.LP.version["resume"]);
 				actionNode.addEvent("click",function (e) {
 					var _self = this;
-					this.designer.confirm("warn", e,  MWF.APPFD.LP.version["resumeConfirm"], MWF.APPFD.LP.version["resumeInfo"], 460, 120, function(){
+					this.designer.confirm("warn", e,  MWF.CMSFD.LP.version["resumeConfirm"], MWF.CMSFD.LP.version["resumeInfo"], 460, 120, function(){
 						_self.resumeForm(version);
 						this.close();
 					}, function(){
@@ -343,10 +342,10 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		}.bind(this));
 	},
 	resumeForm : function(version){
-		this.action.FormVersionAction.get(version.id, function( json ){
+		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.get(version.id, function( json ){
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
-			this.designer.notice(MWF.APPFD.LP.version["resumeSuccess"]);
+			this.designer.notice(MWF.CMSFD.LP.version["resumeSuccess"]);
 			var data = JSON.decode(MWF.decodeJsonString(formData.data));
 			data.isNewForm = false;
 			this.reload(data);
