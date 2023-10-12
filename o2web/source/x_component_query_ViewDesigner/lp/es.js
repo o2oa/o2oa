@@ -329,7 +329,14 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "blueSimple":"Azul simple",  
         "official":"Estilo oficial",  
         "deepBlue":"Estilo de grupo",  
-        "blueFlat":"Azul y blanco plano",  
+        "blueFlat":"Azul y blanco plano",
         "greenFlat": "Verde plano"
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "saveAs": "Guardar como",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda"
     }
 };

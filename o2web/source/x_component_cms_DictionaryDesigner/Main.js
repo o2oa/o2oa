@@ -392,18 +392,24 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
 	},
 	getFormToolbarHTML: function(callback){
 		var toolbarUrl = this.path+this.options.style+"/toolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request cmsToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
+        MWF.getRequestText(toolbarUrl, function(responseText, responseXML){
+            var htmlString = responseText;
+            htmlString = o2.bindJson(htmlString, {"lp": this.lp.formToolbar});
+            var temp = new Element('div').set('html', htmlString);
+            if (callback) callback( temp.childNodes[0] );
+        }.bind(this));
+		// var r = new Request.HTML({
+		// 	url: toolbarUrl,
+		// 	method: "get",
+		// 	onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+		// 		var toolbarNode = responseTree[0];
+		// 		if (callback) callback(toolbarNode);
+		// 	}.bind(this),
+		// 	onFailure: function(xhr){
+		// 		this.notice("request cmsToolbars error: "+xhr.responseText, "error");
+		// 	}.bind(this)
+		// });
+		// r.send();
 	},
     maxOrReturnEditor: function(){
         if (!this.isMax){

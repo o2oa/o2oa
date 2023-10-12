@@ -114,5 +114,20 @@ MWF.xApplication.query.TableDesigner.LP = {
         "readUnitList":"Readable Organization",
         "editPersonList":"Editable people",
         "editUnitList":"Editable organization"
+    },
+    "formToolbar":{
+        "save": "Save",
+        "saveAs": "save as",
+        "autoSave": "Auto Save",
+        "preview": "preview",
+        "help": "help",
+        "build": "Publish the data table and enter the compilable state",
+        "statusDraft": "Cancel database compilation, and the compiled data table will be deleted when recompiling",
+        "bulidCurrentApp":"Compile all data tables of the current application",
+        "tableExplode":"Data Export",
+        "tableImplode":"Data Import",
+        "tableExcelExplode":"Excel export",
+        "tableExcelImplode":"Excel import",
+        "tableClear":"Clear table data"
     }
 };

@@ -45,5 +45,12 @@ MWF.xApplication.cms.DictionaryDesigner.LP = {
 		"jsonParseError" : "Error en el formato JSON. Por favor, corrijalo primero."
 	},
 	"isSave": "Guardando, por favor espere...",
-	"selectOrganizationByDblclick" : "Haga doble clic para seleccionar una organización."
+	"selectOrganizationByDblclick" : "Haga doble clic para seleccionar una organización.",
+    "formToolbar":{
+        "save": "Guardar diccionario de datos",
+        "saveas": "Guardar diccionario de datos como",
+        "help": "ayuda",
+        "search": "Buscar",
+        "autoSave": "AutoGuardar"
+    }
 };

@@ -1,7 +1,7 @@
 <div id="MWFFormToolbar">
 	<span MWFnodetype="MWFToolBarSeparator"></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="保存数据字典" MWFButtonAction="saveDictionary" MWFButtonText=""></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="saveNew.gif" title="数据字典另存为" MWFButtonAction="saveDictionaryAs" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="{{$.lp.save}}" MWFButtonAction="saveDictionary" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="saveNew.gif" title="{{$.lp.autoSave}}" MWFButtonAction="saveDictionaryAs" MWFButtonText=""></span>
 	
 	<span MWFnodetype="MWFToolBarSeparator"></span>
 	
@@ -10,12 +10,12 @@
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
 	
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="dictionaryHelp" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="{{$.lp.help}}" MWFButtonAction="dictionaryHelp" MWFButtonText=""></span>
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
 
-    <span MWFnodetype="MWFToolBarButton" MWFButtonImage="search.png" title="搜索" MWFButtonAction="dictionarySearch" MWFButtonText=""></span>
+    <span MWFnodetype="MWFToolBarButton" MWFButtonImage="search.png" title="{{$.lp.search}}" MWFButtonAction="dictionarySearch" MWFButtonText=""></span>
 
-    <span style="float: right; margin-right: 20px"><input type="checkbox" value="autoSave" id="MWFDictionaryAutoSaveCheck">自动保存</span>
+    <span style="float: right; margin-right: 20px"><input type="checkbox" value="autoSave" id="MWFDictionaryAutoSaveCheck">{{$.lp.autoSave}}</span>
 	
 </div>

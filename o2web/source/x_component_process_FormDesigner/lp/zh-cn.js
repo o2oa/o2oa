@@ -1590,5 +1590,22 @@ MWF.xApplication.process.FormDesigner.LP = {
         "deleteRow": "删除行",
         "insertRow": "插入行",
         "importFromForm": "从界面上中导入字段配置"
+    },
+    "formToolbar":{
+        "save": "保存表单",
+        "saveNew": "保存为模板",
+        "preview": "预览",
+        "print": "打印",
+        "formExplode": "表单导出",
+        "formImplode": "表单导入",
+        "formImplodeO2": "从O2数据导入",
+        "formImplodeO2Title": "导入O2格式表单",
+        "htmlImplode": "从HTML导入",
+        "officeImplode": "从WORD或EXCEL导入",
+        "help": "帮助",
+        "clearNoDomModule": "清除未在HTML树中的组件配置",
+        "autoSave": "自动保存",
+        "brush": "格式刷",
+        "viewAllVersion": "查看所有表单版本"
     }
 };

@@ -38,5 +38,13 @@ MWF.xApplication.process.ScriptDesigner.LP = {
         "resumeInfo" : "¿Está seguro de que desea restaurar el script? Después de la confirmación, el script actual se actualizará y deberá guardarlo manualmente para que surta efecto.",
         "resumeSuccess" :"¡Restaurado con éxito!"
     },
-    "isSave": "Guardando, por favor espere..."
+    "isSave": "Guardando, por favor espere...",
+    "formToolbar":{
+        "save": "Guardar secuencia de comandos",
+        "autoSave": "AutoGuardar",
+        "fontSize": "Tamaño de fuente",
+        "style": "estilo",
+        "scriptEditor": "Editor de guiones",
+        "viewAllVersions": "Ver todas las versiones de script"
+    }
 };

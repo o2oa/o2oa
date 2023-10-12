@@ -38,5 +38,13 @@ MWF.xApplication.process.ScriptDesigner.LP = {
         "resumeInfo" : "您确认是否需要执行脚本恢复操作？确认恢复后当前脚本会更新，需要手动保存当前脚本才会生效。",
         "resumeSuccess" :"恢复成功"
     },
-    "isSave": "正在保存，请稍候..."
+    "isSave": "正在保存，请稍候...",
+    "formToolbar":{
+        "save": "保存脚本",
+        "autoSave": "自动保存",
+        "fontSize": "字体大小",
+        "style": "样式",
+        "scriptEditor": "脚本编辑器",
+        "viewAllVersions": "查看所有脚本版本"
+    }
 };

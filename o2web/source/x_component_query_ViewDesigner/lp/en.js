@@ -330,5 +330,12 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "deepBlue":"Deep Blue",
         "blueFlat":"Blue and white flat",
         "greenFlat": "Green Flat"
+    },
+    "formToolbar":{
+        "save": "Save",
+        "saveAs": "save as",
+        "autoSave": "Auto Save",
+        "preview": "preview",
+        "help": "help"
     }
 };
