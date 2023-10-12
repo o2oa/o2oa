@@ -21,6 +21,7 @@ var apps = [
     { "folder": "x_component_cms_ViewDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_Xform", "tasks": ["move", "min"] },
     { "folder": "x_component_Collect", "tasks": ["move", "min"] },
+    { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Common", "tasks": ["move", "min"] },
     { "folder": "x_component_Console", "tasks": ["move", "min"] },
     { "folder": "x_component_ControlPanel", "tasks": ["move", "min"] },

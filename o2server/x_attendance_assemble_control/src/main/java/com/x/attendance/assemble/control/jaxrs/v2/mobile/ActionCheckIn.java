@@ -152,7 +152,8 @@ public class ActionCheckIn extends BaseAction {
                     }
                     // 工作时长检查
                     if (checkInResult.equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(shift.getNeedLimitWorkTime())  && shift.getWorkTime() > 0) {
-                        List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), today);
+                        // 当前打卡的  recordString  查询对应的打卡记录，因为有可能跨天 需要查同一组打卡记录
+                        List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), record.getRecordDateString());
                         if (recordList == null || recordList.isEmpty()) {
                             throw new ExceptionNoTodayRecordList();
                         }
@@ -178,7 +179,7 @@ public class ActionCheckIn extends BaseAction {
                             }
                             if (realWorkTime < shift.getWorkTime()) { // 工作时长不足 标记未早退
                                 checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
-                                LOGGER.info("时长不足，标记为早退， "+ effectivePerson.getDistinguishedName());
+                                LOGGER.info("时长不足，标记为早退，person {} , realWorkTime {} , needWorkTime {}", effectivePerson.getDistinguishedName(), ""+realWorkTime, ""+shift.getWorkTime());
                             }
                         }
                     }

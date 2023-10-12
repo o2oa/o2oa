@@ -114,5 +114,20 @@ MWF.xApplication.query.TableDesigner.LP = {
         "readUnitList":"可读组织",
         "editPersonList":"可编辑人",
         "editUnitList":"可编辑组织"
+    },
+    "formToolbar":{
+        "save": "保存",
+        "saveAs": "另存为",
+        "autoSave": "自动保存",
+        "preview": "预览",
+        "help": "帮助",
+        "build": "发布数据表，进入可编译状态",
+        "statusDraft": "取消数据库编译，重新编译时会删除已编译的数据表",
+        "bulidCurrentApp":"编译当前应用所有数据表",
+        "tableExplode":"数据导出",
+        "tableImplode":"数据导入",
+        "tableExcelExplode":"Excel导出",
+        "tableExcelImplode":"Excel导入",
+        "tableClear":"清空表数据"
     }
 };

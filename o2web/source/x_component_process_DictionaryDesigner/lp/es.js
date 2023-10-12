@@ -43,5 +43,12 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
         "noModifyName": "No se puede modificar el nombre o el alias",
         "jsonParseError" : "Error de formato json, corrija primero",
     },
-    "isSave": "Guardando, por favor espere..."
+    "isSave": "Guardando, por favor espere...",
+    "formToolbar":{
+        "save": "Guardar diccionario de datos",
+        "saveas": "Guardar diccionario de datos como",
+        "help": "ayuda",
+        "search": "Buscar",
+        "autoSave": "AutoGuardar"
+    }
 };

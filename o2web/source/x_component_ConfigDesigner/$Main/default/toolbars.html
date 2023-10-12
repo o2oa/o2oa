@@ -1,6 +1,6 @@
 <div id="MWFFormToolbar">
 	<span MWFnodetype="MWFToolBarSeparator"></span>
-	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="保存脚本" MWFButtonAction="saveScript" MWFButtonText=""></span>
+	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="save.gif" title="{{$.lp.saveScript}}" MWFButtonAction="saveScript" MWFButtonText=""></span>
 <!--	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="saveNew.gif" title="数据字典另存为" MWFButtonAction="saveScriptAs" MWFButtonText=""></span>-->
 <!--	-->
 <!--	<span MWFnodetype="MWFToolBarSeparator"></span>-->
@@ -13,11 +13,11 @@
 <!--	<span MWFnodetype="MWFToolBarButton" MWFButtonImage="help.png" title="帮助" MWFButtonAction="scriptHelp" MWFButtonText="" id="MWFScriptAutoCode"></span>-->
 
     <span MWFnodetype="MWFToolBarSeparator"></span>
-    <input type="checkbox" value="autoSave" id="MWFScriptAutoSaveCheck">自动保存
+    <input type="checkbox" value="autoSave" id="MWFScriptAutoSaveCheck">{{$.lp.autoSave}}
 
 
 
-    <div style="float: right; margin-right: 20px">字体大小：<select MWFnodetype="fontSize">
+    <div style="float: right; margin-right: 20px">{{$.lp.fontSize}}：<select MWFnodetype="fontSize">
         <option value="12px">12px</option>
         <option value="13px">13px</option>
         <option value="14px">14px</option>
@@ -36,7 +36,7 @@
         <option value="36px">36px</option>
     </select></div>
 
-    <div style="float: right; margin-right: 20px">样式：<select MWFnodetype="theme">
+    <div style="float: right; margin-right: 20px">{{$.lp.style}}：<select MWFnodetype="theme">
         <option value="ambiance">ambiance</option>
         <option value="chaos">chaos</option>
         <option value="chrome">chrome</option>
@@ -72,13 +72,13 @@
         <option value="vibrant_ink">vibrant_ink</option>
         <option value="xcode">xcode</option>
     </select></div>
-    <div style="float: right; margin-right: 20px">样式：<select MWFnodetype="monaco-theme">
+    <div style="float: right; margin-right: 20px">{{$.lp.style}}：<select MWFnodetype="monaco-theme">
         <option value="vs">Visual Studio</option>
         <option value="vs-dark">Visual Studio Dark</option>
         <option value="hc-black">High Contrast Dark</option>
     </select></div>
 
-    <div style="float: right; margin-right: 20px">脚本编辑器：<select MWFnodetype="editor">
+    <div style="float: right; margin-right: 20px">{{$.lp.scriptEditor}}：<select MWFnodetype="editor">
         <option selected value="ace">ace</option>
         <option value="monaco">monaco</option>
     </select></div>

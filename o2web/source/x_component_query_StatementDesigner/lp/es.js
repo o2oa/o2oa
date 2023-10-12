@@ -127,5 +127,11 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "isNumber": "Tipo de número",  
         "viewEnable": "Habilitar vista"
 
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda"
     }
 });
