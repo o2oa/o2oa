@@ -24,6 +24,11 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 视图设计已经获取，容器也已经准备好。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
+         * @event MWF.xApplication.process.Xform.View#loadViewLayout
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 异步加载视图后执行。
          * @event MWF.xApplication.process.Xform.View#loadView
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
