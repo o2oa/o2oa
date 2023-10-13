@@ -1067,52 +1067,44 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             }
         }
 
-
-
-        //if (!this.nameInputNode.get("value") || !this.employeeInputNode.get("value") || !this.mobileInputNode.get("value") || !gender){
-        if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
-            this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
-            return false;
-        }
-
-        // var array = [];
-        // var ipAddress = this.ipAddressInputNode.get("value") || "";
-        // var ipV4Format = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        // var ipV6Format = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
-        // if( ipAddress.trim() ){
-        //     ipAddress.split(",").each( function(ip){
-        //         if(!ip.match(ipV4Format) && !ip.match(ipV6Format))array.push( ip );
-        //     })
-        // }
-        // if( array.length > 0 ){
-        //     this.explorer.app.notice( this.explorer.app.lp.ipAddressIncorrectNotice + array.join(","), "error", this.explorer.propertyContentNode);
-        //     return false;
-        // }
-
-        //this.data.genderType = gender;
-        if (!this.uniqueInputNode.get("value")) this.data.unique = this.employeeInputNode.get("value");
-        this.content.propertyContentScrollNode.mask({
-            "style": {
-                "opacity": 0.7,
-                "background-color": "#999"
-            }
-        });
-
-        this.savePerson(function(){
-            this.cancel();
-            this.content.propertyContentScrollNode.unmask();
-        }.bind(this), function(xhr, text, error){
-            var errorText = error;
-            if (xhr){
-                var json = JSON.decode(xhr.responseText);
-                if (json){
-                    errorText = json.message.trim() || "request json error";
-                }else{
-                    errorText = "request json error: "+xhr.responseText;
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction.enable().then(function(json){
+            if (json.data.enable===true){
+                var label = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
+                if (!label || !this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
+                    this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor2, "error", this.explorer.propertyContentNode);
+                    return false;
+                }
+            }else{
+                if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
+                    this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
+                    return false;
                 }
             }
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
-            this.content.propertyContentScrollNode.unmask();
+
+            if (!this.uniqueInputNode.get("value")) this.data.unique = this.employeeInputNode.get("value");
+            this.content.propertyContentScrollNode.mask({
+                "style": {
+                    "opacity": 0.7,
+                    "background-color": "#999"
+                }
+            });
+
+            this.savePerson(function(){
+                this.cancel();
+                this.content.propertyContentScrollNode.unmask();
+            }.bind(this), function(xhr, text, error){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                this.content.propertyContentScrollNode.unmask();
+            }.bind(this));
         }.bind(this));
     },
     savePerson: function(callback, cancel){

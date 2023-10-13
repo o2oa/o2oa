@@ -1446,7 +1446,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         // this.textTitleNode.set("text", this.data.name);
         if (this.data.objectSecurityPromise){
             this.data.objectSecurityPromise.then(function(label){
-                this.textTitleNode.set("text", this.data.name+"("+label+")");
+                this.textTitleNode.set("text", "("+label+") " + this.data.name);
             }.bind(this));
         }else{
             this.textTitleNode.set("text", this.data.name);
@@ -1495,7 +1495,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         // this.textTitleNode.set("text", this.data.name);
         if (this.data.objectSecurityPromise){
             this.data.objectSecurityPromise.then(function(label){
-                this.textTitleNode.set("text", this.data.name+"("+label+")");
+                this.textTitleNode.set("text", "("+label+") " + this.data.name);
             }.bind(this));
         }else{
             this.textTitleNode.set("text", this.data.name);
@@ -1541,7 +1541,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textNode = new Element("div", {"styles": this.css.attachmentTextNode}).inject(this.node);
         if (this.data.objectSecurityPromise){
             this.data.objectSecurityPromise.then(function(label){
-                this.textNode.set("text", this.data.name+"("+label+")");
+                this.textNode.set("text", "("+label+") " + this.data.name);
             }.bind(this));
         }else{
             this.textNode.set("text", this.data.name);
@@ -1571,7 +1571,7 @@ o2.widget.AttachmentController.Attachment = new Class({
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
             if (this.data.objectSecurityPromise){
                 this.data.objectSecurityPromise.then(function(label){
-                    this.textNode.set("text", this.data.name+"("+label+")");
+                    this.textNode.set("text", "("+label+") " + this.data.name);
                 }.bind(this));
             }else{
                 this.textNode.set("text", this.data.name);
@@ -1582,7 +1582,7 @@ o2.widget.AttachmentController.Attachment = new Class({
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
             if (this.data.objectSecurityPromise){
                 this.data.objectSecurityPromise.then(function(label){
-                    this.textNode.set("text", this.data.name+"("+label+")");
+                    this.textNode.set("text", "("+label+") " + this.data.name);
                 }.bind(this));
             }else{
                 this.textNode.set("text", this.data.name);
@@ -1611,7 +1611,7 @@ o2.widget.AttachmentController.Attachment = new Class({
                 this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
                 if (this.data.objectSecurityPromise){
                     this.data.objectSecurityPromise.then(function(label){
-                        this.textNode.set("text", this.data.name+"("+label+")");
+                        this.textNode.set("text", "("+label+") " + this.data.name);
                     }.bind(this));
                 }else{
                     this.textNode.set("text", this.data.name);
@@ -1623,7 +1623,7 @@ o2.widget.AttachmentController.Attachment = new Class({
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
             if (this.data.objectSecurityPromise){
                 this.data.objectSecurityPromise.then(function(label){
-                    this.textNode.set("text", this.data.name+"("+label+")");
+                    this.textNode.set("text", "("+label+") " + this.data.name);
                 }.bind(this));
             }else{
                 this.textNode.set("text", this.data.name);
@@ -1979,7 +1979,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         if (this.data.objectSecurityPromise){
             this.data.objectSecurityPromise.then(function(label){
-                this.textNode.set("text", this.data.name+"("+label+")");
+                this.textNode.set("text", "("+label+") " + this.data.name);
             }.bind(this));
         }else{
             this.textNode.set("text", this.data.name);
@@ -2049,7 +2049,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         if (this.data.objectSecurityPromise){
             this.data.objectSecurityPromise.then(function(label){
-                this.textNode.set("text", this.data.name+"("+label+")");
+                this.textNode.set("text", "("+label+") " + this.data.name);
             }.bind(this));
         }else{
             this.textNode.set("text", this.data.name);

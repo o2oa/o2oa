@@ -238,6 +238,7 @@ MWF.xApplication.Org.LP = {
 
     //"inputPersonInfor": "请输入完整人员信息（人员名称、人员工号、手机号码、性别必填）",
     "inputPersonInfor": "请输入完整人员信息（人员名称、唯一编码、手机号码、性别必填）",
+    "inputPersonInfor2": "请输入完整人员信息（人员名称、唯一编码、手机号码、性别、密级标识必填）",
     "personAttributeText": "个人属性",
     "personIdentityText": "个人身份",
     "controllerListText": "管理者",
