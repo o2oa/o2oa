@@ -203,7 +203,6 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                                 }.bind(this),
                                 "onLoadView": function(){
                                     this.fireEvent("loadView");
-                                    if(callback)callback();
                                 }.bind(this),
                                 "onSelect": function(item){
                                     this.fireEvent("select", [item]);
