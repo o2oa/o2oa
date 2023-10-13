@@ -174,6 +174,15 @@ public class Business {
 		return dataRecord;
 	}
 
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
+	}
+
 	private Organization organization;
 
 	public Organization organization() throws Exception {
