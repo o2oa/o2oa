@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
@@ -222,8 +223,8 @@ public class EndProcessor extends AbstractEndProcessor {
 	private void tryUpdateParentWork(AeiObjects aeiObjects) {
 		if (StringUtils.isNotBlank(aeiObjects.getWork().getParentWork())) {
 			try {
-				Work parent = aeiObjects.entityManagerContainer()
-						.find(aeiObjects.getWork().getParentWork(), Work.class);
+				Work parent = aeiObjects.entityManagerContainer().find(aeiObjects.getWork().getParentWork(),
+						Work.class);
 				if ((null != parent) && Objects.equals(parent.getActivityType(), ActivityType.embed)) {
 					Embed embed = (Embed) aeiObjects.business().element().get(parent.getActivity(), ActivityType.embed);
 
@@ -282,10 +283,10 @@ public class EndProcessor extends AbstractEndProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.endInquire(aeiObjects.getWork().getActivityToken(), end));
-		return new ArrayList<>();
+		return Optional.empty();
 	}
 
 	@Override

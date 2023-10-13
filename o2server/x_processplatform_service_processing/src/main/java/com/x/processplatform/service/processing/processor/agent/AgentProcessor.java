@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.agent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 
@@ -23,7 +24,7 @@ public class AgentProcessor extends AbstractAgentProcessor {
 	}
 
 	@Override
-	protected Work arriving(AeiObjects aeiObjects, Agent agent) throws Exception {
+	protected Work arriving(AeiObjects aeiObjects, Agent agent) {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.agentArrive(aeiObjects.getWork().getActivityToken(), agent));
 		return aeiObjects.getWork();
@@ -53,13 +54,10 @@ public class AgentProcessor extends AbstractAgentProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.agentInquire(aeiObjects.getWork().getActivityToken(), agent));
-		List<Route> results = new ArrayList<>();
-		Route o = aeiObjects.getRoutes().get(0);
-		results.add(o);
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

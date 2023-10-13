@@ -696,7 +696,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.manualInquire(aeiObjects.getWork().getActivityToken(), manual));
@@ -711,8 +711,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getWork().setGoBackStore(null);
 			// 清理掉退回到的activityToken标志
 			aeiObjects.getWork().setGoBackActivityToken(null);
-			results.add(optional.get());
-			return results;
+			return optional;
 		}
 		// 执行强制路由
 		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
@@ -728,7 +727,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 				// 清理掉退回到的activityToken标志
 				aeiObjects.getWork().setGoBackActivityToken(null);
 				results.add(route);
-				return results;
+				return Optional.of(route);
 			}
 		}
 		// 执行正常路由
@@ -740,10 +739,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 			optional = inquiringFromTaskCompleted(aeiObjects, manual, results);
 			if (optional.isPresent()) {
 				results.add(optional.get());
+			} else {
+				// 无法找到合适的路由那么默认选择走第一条
+				results.add(aeiObjects.getRoutes().get(0));
 			}
-		} else {
-			// 无法找到合适的路由那么默认选择走第一条
-			results.add(aeiObjects.getRoutes().get(0));
 		}
 		if (!results.isEmpty()) {
 			// 清理掉指定的处理人
@@ -753,7 +752,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			// 清理掉退回到的activityToken标志
 			aeiObjects.getWork().setGoBackActivityToken(null);
 		}
-		return results;
+		return results.stream().findFirst();
 	}
 
 	private void markJumpAtWorkLog(AeiObjects aeiObjects, GoBackStore goBackStore) throws Exception {

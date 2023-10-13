@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.embed;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,16 +29,16 @@ abstract class AbstractEmbedProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Embed embed = (Embed) aeiObjects.getActivity();
-		return inquiring(aeiObjects, embed);
+		return inquiring(aeiObjects, embed).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Embed embed) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Embed embed) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

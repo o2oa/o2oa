@@ -493,25 +493,6 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@Deprecated(since = "8.2", forRemoval = true)
-	@JaxrsMethodDescribe(value = "重置处理人.", action = ActionReset.class)
-	@POST
-	@Path("{id}/reset")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionReset.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionReset().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-	}
-
 	@Deprecated(forRemoval = true)
 	@JaxrsMethodDescribe(value = "预计下一活动处理状态及处理人.", action = ActionWill.class)
 	@GET

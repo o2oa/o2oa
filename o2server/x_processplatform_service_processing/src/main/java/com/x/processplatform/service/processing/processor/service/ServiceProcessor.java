@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor.service;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -78,13 +79,11 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), service));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

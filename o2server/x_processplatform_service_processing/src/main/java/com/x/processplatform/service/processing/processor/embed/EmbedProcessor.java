@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.embed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -171,13 +172,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken(), embed));
-		// 驱动上个环节新产生的work
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	private String targetIdentity(AeiObjects aeiObjects, Embed embed) throws Exception {

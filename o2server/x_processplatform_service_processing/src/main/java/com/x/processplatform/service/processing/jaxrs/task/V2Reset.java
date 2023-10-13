@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -23,11 +24,11 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 /**
- * @since 8.2 tickets 重置处理人
+ * @since 8.2 tickets 重置处理人 实际是以当前活动的类型进行后加签实现.
  */
 class V2Reset extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReset.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
@@ -95,10 +96,19 @@ class V2Reset extends BaseAction {
 				emc.beginTransaction(Work.class);
 				Business business = new Business(emc);
 				Task task = emc.find(id, Task.class);
+				if (null == task) {
+					throw new ExceptionEntityExist(id, Task.class);
+				}
 				Work work = emc.find(task.getWork(), Work.class);
+				if (null == work) {
+					throw new ExceptionEntityExist(id, Work.class);
+				}
 				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
-				Objects.requireNonNull(manual);
-				Tickets tickets = manual.identitiesToTickets(distinguishedNameList);
+				if (null == manual) {
+					throw new ExceptionEntityExist(id, Manual.class);
+				}
+				Tickets tickets = work.getTickets();
+				tickets.add(task.getLabel(), distinguishedNameList, false, getMode(manual));
 				work.setTickets(tickets);
 				emc.commit();
 				Wo wo = new Wo();
@@ -108,6 +118,17 @@ class V2Reset extends BaseAction {
 			return result;
 		}
 
+		private String getMode(Manual manual) {
+			switch (manual.getManualMode()) {
+			case parallel:
+				return Tickets.MODE_PARALLEL;
+			case queue:
+				return Tickets.MODE_QUEUE;
+			default:
+				return Tickets.MODE_SINGLE;
+			}
+
+		}
 	}
 
 	public static class Wi extends V2ResetWi {

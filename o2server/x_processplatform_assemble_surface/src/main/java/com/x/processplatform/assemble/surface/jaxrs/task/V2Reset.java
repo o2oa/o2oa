@@ -143,6 +143,16 @@ public class V2Reset extends BaseAction {
 		}
 	}
 
+	private void reset(Param param) throws Exception {
+		V2ResetWi req = new V2ResetWi();
+		req.setDistinguishedNameList(param.getDistinguishedNameList());
+		ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", "v2", param.getTask().getId(), "reset"), req,
+						param.getTask().getJob())
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo.class);
+	}
+
 	private String processingTask(Param param) throws Exception {
 		ProcessingWi req = new ProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_RESET);
@@ -154,16 +164,6 @@ public class V2Reset extends BaseAction {
 		} else {
 			return resp.getId();
 		}
-	}
-
-	private void reset(Param param) throws Exception {
-		V2ResetWi req = new V2ResetWi();
-		req.setDistinguishedNameList(param.getDistinguishedNameList());
-		ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", "v2", param.getTask().getId(), "reset"), req,
-						param.getTask().getJob())
-				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo.class);
 	}
 
 	private void processingWork(Param param) throws Exception {

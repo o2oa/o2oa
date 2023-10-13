@@ -120,12 +120,10 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Split split) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Split split) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.splitInquire(aeiObjects.getWork().getActivityToken(), split));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
