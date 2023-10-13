@@ -18,6 +18,7 @@ public class V2ResetWi extends GsonPropertyObject {
 	@FieldDescribe("重置身份.")
 	private List<String> identityList;
 
+	@Deprecated
 	@FieldDescribe("保留待办.")
 	private Boolean keep;
 

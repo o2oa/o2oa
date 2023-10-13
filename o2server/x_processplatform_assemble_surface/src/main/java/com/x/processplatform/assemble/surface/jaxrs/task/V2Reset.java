@@ -46,7 +46,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.Processi
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
 /**
- * @since 8.2 加签
+ * @since 8.2 重置处理人
  */
 
 public class V2Reset extends BaseAction {
@@ -74,6 +74,7 @@ public class V2Reset extends BaseAction {
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.getWorkLog(), effectivePerson,
 				param.getManual(), newTaskIds);
 		rec.getProperties().setOpinion(wi.getOpinion());
+		rec.getProperties().setRouteName(wi.getRouteName());
 		RecordBuilder.processing(rec);
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
 			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,

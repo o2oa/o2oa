@@ -158,6 +158,21 @@ public class Tickets implements Serializable {
 		return true;
 	}
 
+	public List<Ticket> reset(Ticket ticket, Collection<String> targets) {
+		Reset reset = null;
+		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
+			reset = new ParallelReset();
+		} else if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_QUEUE)) {
+			reset = new QueueReset();
+		} else {
+			reset = new SingleReset();
+		}
+		List<Ticket> list = reset.reset(this, ticket, targets);
+		list.stream().forEach(o -> this.context.put(o.label(), o));
+		ticket.enable(false);
+		return list;
+	}
+
 	/**
 	 * 根据distinguishedName禁用ticket
 	 * 

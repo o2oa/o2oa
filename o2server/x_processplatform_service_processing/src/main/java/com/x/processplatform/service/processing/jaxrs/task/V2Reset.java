@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.entity.ticket.Tickets;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo;
@@ -92,6 +94,8 @@ class V2Reset extends BaseAction {
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			wo.setValue(false);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.beginTransaction(Work.class);
 				Business business = new Business(emc);
@@ -108,26 +112,16 @@ class V2Reset extends BaseAction {
 					throw new ExceptionEntityExist(id, Manual.class);
 				}
 				Tickets tickets = work.getTickets();
-				tickets.add(task.getLabel(), distinguishedNameList, false, getMode(manual));
+				Optional<Ticket> opt = tickets.findTicketWithLabel(task.getLabel());
+				if (opt.isPresent()) {
+					tickets.reset(opt.get(), distinguishedNameList);
+					wo.setValue(true);
+				}
 				work.setTickets(tickets);
 				emc.commit();
-				Wo wo = new Wo();
-				wo.setValue(true);
 				result.setData(wo);
 			}
 			return result;
-		}
-
-		private String getMode(Manual manual) {
-			switch (manual.getManualMode()) {
-			case parallel:
-				return Tickets.MODE_PARALLEL;
-			case queue:
-				return Tickets.MODE_QUEUE;
-			default:
-				return Tickets.MODE_SINGLE;
-			}
-
 		}
 	}
 
