@@ -49,6 +49,12 @@
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_message_core_entity</artifactId>
 		</dependency>
+		<!-- 钉钉同步回调 -->
+		<dependency>
+			<groupId>com.dingtalk.open</groupId>
+			<artifactId>app-stream-client</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -147,6 +153,18 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>ext</directory>
+							<targetPath>WEB-INF/ext</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

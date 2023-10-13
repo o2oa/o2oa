@@ -132,7 +132,13 @@ public class CenterServerTools extends JettySeverTools {
 		webApp.setContextPath("/" + x_program_center.class.getSimpleName());
 		webApp.setResourceBase(dir.toAbsolutePath().toString());
 		webApp.setDescriptor(dir.resolve(Paths.get(PathTools.WEB_INF_WEB_XML)).toString());
-		webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
+		// 加载 ext 目录中的 jar包
+		Path ext = dir.resolve("WEB-INF").resolve("ext");
+		if (Files.exists(ext)) {
+			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class, ext));
+		} else {
+			webApp.setExtraClasspath(calculateExtraClassPath(x_program_center.class));
+		}
 		webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 				BooleanUtils.toStringTrueFalse(false));
 		webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", BooleanUtils.toStringTrueFalse(true));

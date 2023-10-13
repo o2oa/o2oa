@@ -379,7 +379,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "企业微信oauth登录", action = ActionOauthQiyeweixinLogin.class)
+	@JaxrsMethodDescribe(value = "企业微信oauth登录, 扫码登录", action = ActionOauthQiyeweixinLogin.class)
 	@GET
 	@Path("oauth/login/qywx/code/{code}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -397,7 +397,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "钉钉oauth登录", action = ActionOauthDingdingLogin.class)
+	@JaxrsMethodDescribe(value = "钉钉oauth登录, 扫码登录", action = ActionOauthDingdingLogin.class)
 	@GET
 	@Path("oauth/login/dingding/code/{code}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
