@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -27,6 +28,8 @@ import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.entity.ticket.Ticket;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 public class WorkControlBuilder {
 
@@ -207,9 +210,9 @@ public class WorkControlBuilder {
 		return this.readable;
 	}
 
-	private Boolean hasTaskWithWork = null;
+	private Optional<Task> hasTaskWithWork = Optional.empty();
 
-	private boolean hasTaskWithWork() throws Exception {
+	private Optional<Task> hasTaskWithWork() throws Exception {
 		if (null == hasTaskWithWork) {
 			this.hasTaskWithWork = business.ifPersonHasTaskWithWork(effectivePerson.getDistinguishedName(),
 					work.getId());
@@ -334,7 +337,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowProcessing(Control control) {
 		try {
-			control.setAllowProcessing(hasTaskWithWork());
+			control.setAllowProcessing(hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -350,7 +353,7 @@ public class WorkControlBuilder {
 
 	private void computeAllowSave(Control control) {
 		try {
-			control.setAllowSave(canManage() || hasTaskWithWork());
+			control.setAllowSave(canManage() || hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -359,7 +362,7 @@ public class WorkControlBuilder {
 	private void computeAllowReset(Control control) {
 		try {
 			control.setAllowReset(PropertyTools.getOrElse(activity(), Manual.allowReset_FIELDNAME, Boolean.class, false)
-					&& hasTaskWithWork());
+					&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -369,7 +372,7 @@ public class WorkControlBuilder {
 		try {
 			control.setAllowAddTask(
 					PropertyTools.getOrElse(activity(), Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, true)
-							&& hasTaskWithWork());
+							&& hasTaskWithWork().isPresent());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -393,7 +396,7 @@ public class WorkControlBuilder {
 		try {
 			control.setAllowDelete(
 					(PropertyTools.getOrElse(activity(), Manual.allowDeleteWork_FIELDNAME, Boolean.class, false)
-							&& (canManage() || hasTaskWithWork())));
+							&& (canManage() || hasTaskWithWork().isPresent())));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -494,7 +497,7 @@ public class WorkControlBuilder {
 	private void computeAllowPress(Control control) {
 		try {
 			boolean tag = PropertyTools.getOrElse(activity(), Manual.allowPress_FIELDNAME, Boolean.class, false)
-					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork()));
+					&& hasTaskCompletedWithJob() && (!((taskCountWithWork() == 1) && hasTaskWithWork().isPresent()));
 			control.setAllowPress(tag);
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -532,8 +535,9 @@ public class WorkControlBuilder {
 			control.setAllowGoBack(false);
 			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (hasTaskWithWork() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
-					if (Objects.equals(ManualMode.parallel, manual.getManualMode())) {
+				if (hasTaskWithWork().isPresent() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
+					Optional<Ticket> opt = work.getTickets().findTicketWithLabel(hasTaskWithWork.get().getLabel());
+					if (opt.isPresent() && Objects.equals(opt.get().mode(), Tickets.MODE_PARALLEL)) {
 						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
 								|| taskCountWithWork() <= 1) {
 							control.setAllowGoBack(true);
@@ -553,7 +557,7 @@ public class WorkControlBuilder {
 			control.setAllowTerminate(false);
 			if (activity().getClass().isAssignableFrom(Manual.class)) {
 				Manual manual = (Manual) activity;
-				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork())) {
+				if (BooleanUtils.isTrue(manual.getAllowTerminate()) && (canManage() || hasTaskWithWork().isPresent())) {
 					control.setAllowTerminate(true);
 				}
 			}

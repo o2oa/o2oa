@@ -600,8 +600,9 @@ public class Business {
 		return emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, person, Read.job_FIELDNAME, job) > 0;
 	}
 
-	public boolean ifPersonHasTaskWithWork(String person, String workId) throws Exception {
-		return emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId) > 0;
+	public Optional<Task> ifPersonHasTaskWithWork(String person, String workId) throws Exception {
+		Task task = emc.firstEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId);
+		return (null != task) ? Optional.of(task) : Optional.empty();
 	}
 
 	public boolean ifPersonHasPauseTaskWithWork(String person, String work) throws Exception {

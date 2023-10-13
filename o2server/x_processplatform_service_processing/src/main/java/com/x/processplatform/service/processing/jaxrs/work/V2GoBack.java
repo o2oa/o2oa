@@ -108,9 +108,6 @@ class V2GoBack extends BaseAction {
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
 				work.setGoBackActivityToken(wi.getActivityToken());
-				if (ListTools.isNotEmpty(wi.getIdentityList())) {
-					work.setTickets(manual.identitiesToTickets(wi.getIdentityList()));
-				}
 				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_JUMP)) {
 					// way = jump
 					GoBackStore goBackStore = new GoBackStore();
@@ -119,6 +116,9 @@ class V2GoBack extends BaseAction {
 					goBackStore.setActivityType(work.getActivityType());
 					goBackStore.setActivityToken(work.getActivityToken());
 					work.setGoBackStore(goBackStore);
+				}
+				if (ListTools.isNotEmpty(wi.getIdentityList())) {
+					work.setTickets(manual.identitiesToTickets(wi.getIdentityList()));
 				}
 				removeTask(business, work);
 				emc.check(work, CheckPersistType.all);
