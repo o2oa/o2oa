@@ -2850,7 +2850,7 @@ MWF.xScript.Environment = function(ev){
             if (!option){
                 if (_form.businessData.control["allowReset"]) _form.resetWork();
             }else{
-                _form.resetWorkToPeson(option.names, option.opinion, option.keep, option.success, option.failure);
+                _form.resetWorkToPeson(option.names, option.opinion, option.routeName || "", option.success, option.failure);
             }
         },
 
@@ -3147,8 +3147,11 @@ MWF.xScript.Environment = function(ev){
                     // }
                     // var workId = _form.businessData.work.id;
                     // o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
-                    var taskId = _form.businessData.task.id;
-                    o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(taskId, option, option.success, option.failure);
+
+                    // var taskId = _form.businessData.task.id;
+                    // o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(taskId, option, option.success, option.failure);
+
+                    _form.doAddTaskToPeople(option.distinguishedNameList, option.opinion, option.mode, option.before, option.routeName || "", option.success, option.failure)
                 });
             }else{
                 if (_form.businessData.control["allowAddTask"]) _form.addTask();

@@ -174,7 +174,7 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
 MWF.ProcessFlow.ResetMobile = new Class({
     Extends: MWF.ProcessFlow.Reset,
     setQuickData: function( data ){
-        if(this.keepOption)this.keepOption.setValue( data.keepTask ? "true" : null );
+        // if(this.keepOption)this.keepOption.setValue( data.keepTask ? "true" : null );
         if(this.opinion)this.opinion.setValue( data.opinion || "" );
         this.orgData = data.organizations ? (data.organizations.default || []) : [];
         this.orgContent.empty();
@@ -185,15 +185,15 @@ MWF.ProcessFlow.ResetMobile = new Class({
             this.orgIcon.addClass("mainColor_color");
             this.orgIcon.addClass("mainColor_border");
         }
-        this.keepOption = new MWF.ProcessFlow.widget.Radio2(this.keepOptionArea, this.flow, {
-            activeIcon: "o2icon-checkbox",
-            optionList: [{
-                text: this.lp.keepTask,
-                value: "true"
-            }],
-            value: (this.quickData.keepTask) ? "true" : null
-        });
-        this.keepOption.load();
+        // this.keepOption = new MWF.ProcessFlow.widget.Radio2(this.keepOptionArea, this.flow, {
+        //     activeIcon: "o2icon-checkbox",
+        //     optionList: [{
+        //         text: this.lp.keepTask,
+        //         value: "true"
+        //     }],
+        //     value: (this.quickData.keepTask) ? "true" : null
+        // });
+        // this.keepOption.load();
     },
     destroy: function () {
         // if (this.orgItem && this.orgItem.clearTooltip){
@@ -361,13 +361,15 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
                 text: this.lp.parallel,
                 value: "parallel"
             }],
-            value: this.quickData.mode || ""
+            value: this.quickData.mode || "single" //默认单人
         });
         this.mode.load();
 
         var position = "";
         if( this.quickData.routeId ){
             position = (this.quickData.routeId === "before") ? "true" : "false"
+        }else{
+            position = "false"; //默认为后加签
         }
         this.position = new MWF.ProcessFlow.widget.Radio2(this.positionArea, this.flow, {
             activeIcon: "o2icon-checkbox",

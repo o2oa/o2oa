@@ -2728,7 +2728,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             "resetOptions":{
                 "isHandwriting": false,
-                "onSubmit": function (names, opinion, keep) {
+                "onSubmit": function (names, opinion, routeName) {
                     MWF.require("MWF.widget.Mask", function () {
                         _self.fireEvent("beforeReset");
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
@@ -2747,7 +2747,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             _self.fireEvent("afterSave");
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
-                            _self.resetToPeson(names, opinion, keep, function (workJson) {
+                            _self.resetToPeson(names, opinion, routeName, function (workJson) {
                                 _self.fireEvent("afterReset");
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterReset");
                                 // _self.addResetMessage(workJson.data);
@@ -2778,12 +2778,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
 
-    resetToPeson: function (identityList, opinion, keep, success, failure) {
+    resetToPeson: function (identityList, opinion, routeName, success, failure) {
         var data = {
             "opinion": opinion,
-            "routeName": MWF.xApplication.process.Xform.LP.reset,
-            "identityList": identityList,
-            "keep": !!keep
+            "routeName": routeName || MWF.xApplication.process.Xform.LP.reset,
+            "identityList": identityList
+            // "keep": !!keep
         };
         o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Reset(
             //this.workAction.resetWork(
@@ -4471,14 +4471,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
         var opinion = $("resetWork_opinion").get("value");
-        var checkbox = dlg.content.getElement(".resetWork_keepOption");
-        var keep = (checkbox.checked);
-
-        var nameText = [];
-        names.each(function (n) { nameText.push(MWF.name.cn(n)); });
-        if (!opinion) {
-            opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
-        }
+        // var checkbox = dlg.content.getElement(".resetWork_keepOption");
+        // var keep = (checkbox.checked);
 
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -4487,7 +4481,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.fireEvent("beforeReset");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
 
-            this.resetWorkToPeson(names, opinion, keep, function (workJson) {
+            this.resetWorkToPeson(names, opinion, "", function (workJson) {
                 //this.workAction.loadWork(function (workJson) {
                 this.fireEvent("afterReset");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
@@ -4515,12 +4509,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //
         //}.bind(this), null, this.businessData.task.id, data);
     },
-    resetWorkToPeson: function (identityList, opinion, keep, success, failure) {
+    resetWorkToPeson: function (identityList, opinion, routeName, success, failure) {
+
+        var nameText = [];
+        (identityList || []).each(function (n) { nameText.push(MWF.name.cn(n)); });
+        if (!opinion) {
+            opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
+        }
+
+        var n = nameText.length > 3 ? (nameText[0]+"、"+nameText[1]+"、"+nameText[2]+"...") : nameText.join(", ");
+        if(!routeName)routeName = MWF.xApplication.process.Xform.LP.resetTo+":"+n;
+
         var data = {
             "opinion": opinion,
-            "routeName": MWF.xApplication.process.Xform.LP.reset,
+            "routeName": routeName,
             "identityList": identityList,
-            "keep": !!keep
+            //"keep": !!keep
         };
         this.saveFormData(
             function (json) {
@@ -6062,29 +6066,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.mask.loadNode(this.app.content);
                 }
 
-                debugger;
                 var nameArr = dlg.identityList.map(function(id){
                     return o2.name.cn(id);
                 });
 
                 var opinion = dlg.content.getElement(".addTask_opinion").get("value");
-                var lp = o2.xApplication.process.Xform.LP.form;
-                var routeName = lp[mode] + (position === "before" ? lp.addTaskBefore : lp.addTaskAfter)+":"+nameArr.join(", ");
-                if (!opinion) opinion = routeName; //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
-                var taskId = this.businessData.task.id;
 
-                var addTaskOptions = {
-                    before: position === "before",
-                    mode: mode,
-                    opinion: opinion,
-                    distinguishedNameList: dlg.identityList,
-                    routeName: routeName //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
-                }
                 this.fireEvent("beforeAddTask");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
 
-                this.saveFormData(function(){
-                    o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(taskId, addTaskOptions, function (json) {
+                this.doAddTaskToPeople(dlg.identityList, opinion, mode, position === "before", "", function (json) {
                         this.fireEvent("afterAddTask");
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
                         this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
@@ -6100,17 +6091,55 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
-                        if (xhr) errorText = xhr.responseText
+                        if (xhr) errorText = xhr.responseText;
                         this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
 
                         if (this.mask) this.mask.hide();
-                    }.bind(this)).catch(function(){});
-                }.bind(this));
+                    }.bind(this))
+
             }else{
                 if (this.mask)  this.mask.hide();
             }
 
         }.bind(this));
+    },
+    doAddTaskToPeople: function (names, opinion, mode, before, routeName, success, failure) {
+
+        var lp = o2.xApplication.process.Xform.LP.form;
+
+        var leftText = lp[mode] + (!!before ? lp.addTaskBefore : lp.addTaskAfter);
+
+        var nameArr = names.map(function(id){
+            return o2.name.cn(id);
+        });
+        var n = nameArr.length > 3 ? (nameArr[0]+"、"+nameArr[1]+"、"+nameArr[2]+"...") : nameArr.join(", ");
+        var routeName = leftText+":"+n;
+
+        if (!opinion) opinion = leftText+":"+nameArr.join(", "); //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+
+        var data = {
+            "mode": mode,
+            "before": !!before,
+            "opinion": opinion,
+            "routeName": routeName,
+            "distinguishedNameList": names
+        };
+        this.saveFormData(
+            function(json){
+                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(
+                    //this.workAction.resetWork(
+                    function (json) {
+                        if (success) success(json);
+                    }.bind(this),
+                    function (xhr, text, error) {
+                        if (failure) failure(xhr, text, error);
+                    },
+                    this.businessData.task.id, data
+                );
+            }.bind(this),
+            function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            });
     },
 
     addAddTaskMessage: function (data, notCloseWindow) {
