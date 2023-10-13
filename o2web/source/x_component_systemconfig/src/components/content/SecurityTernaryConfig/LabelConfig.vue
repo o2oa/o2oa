@@ -26,7 +26,7 @@
         @changeConfig="(value)=>{defaultSubjectSecurityClearance = value.toInt(); saveConfig('ternaryManagement', 'defaultSubjectSecurityClearance', value.toInt()); }"
     ></BaseItem>
 
-
+    <div style="display: none">
       <div class="systemconfig_item_title">{{lp._ternaryManagement.subjectSecurityClearance}}</div>
       <div class="systemconfig_item_info" v-html="lp._ternaryManagement.subjectSecurityClearanceInfo"></div>
       <div class="item_info">
@@ -114,9 +114,8 @@
             </div>
           </div>
         </div>
-
       </div>
-<!--    </div>-->
+    </div>
   </div>
 </template>
 
