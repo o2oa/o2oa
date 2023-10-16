@@ -24,7 +24,6 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
@@ -210,7 +209,8 @@ public class WorkControlBuilder {
 		return this.readable;
 	}
 
-	private Optional<Task> hasTaskWithWork = Optional.empty();
+	// 初始值必须是null,用于判断hasTaskWithWork是否已经经过计算
+	private Optional<Task> hasTaskWithWork = null;
 
 	private Optional<Task> hasTaskWithWork() throws Exception {
 		if (null == hasTaskWithWork) {
