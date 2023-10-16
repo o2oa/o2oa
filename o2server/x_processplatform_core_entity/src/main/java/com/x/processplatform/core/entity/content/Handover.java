@@ -10,10 +10,12 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.*;
 import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import javax.persistence.*;
+import javax.persistence.OrderColumn;
 import java.util.List;
 
 /**
@@ -130,6 +132,18 @@ public class Handover extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String status;
 
+	public static final String handoverJobList_FIELDNAME = "handoverJobList";
+	@FieldDescribe("已交接的文档列表.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ handoverJobList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + handoverJobList_FIELDNAME
+			+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + handoverJobList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + handoverJobList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> handoverJobList;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
@@ -239,5 +253,13 @@ public class Handover extends SliceJpaObject {
 
 	public void setCreator(String creator) {
 		this.creator = creator;
+	}
+
+	public List<String> getHandoverJobList() {
+		return handoverJobList;
+	}
+
+	public void setHandoverJobList(List<String> handoverJobList) {
+		this.handoverJobList = handoverJobList;
 	}
 }

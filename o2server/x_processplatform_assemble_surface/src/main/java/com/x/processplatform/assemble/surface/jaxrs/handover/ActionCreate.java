@@ -79,7 +79,7 @@ class ActionCreate extends BaseAction {
 
         static WrapCopier<Wi, Handover> copier = WrapCopierFactory.wi(Wi.class, Handover.class, null,
                 ListTools.toList(JpaObject.FieldsUnmodifyIncludePorperties, Handover.creator_FIELDNAME,
-                        Handover.targetPerson_FIELDNAME, Handover.status_FIELDNAME));
+                        Handover.targetPerson_FIELDNAME, Handover.status_FIELDNAME, Handover.handoverJobList_FIELDNAME));
 
     }
 }
