@@ -43,7 +43,7 @@ MWF.xApplication.Selector.Unit = new Class({
                 if( typeOf( unit ) === "string" ){
                     unitList.push(unit);
                 }else if( typeOf(unit)==="object"){
-                    unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
+                    unitList.push(unit.distinguishedName || unit.unique || unit.levelName || unit.id);
                 }
             }
 
@@ -239,7 +239,7 @@ MWF.xApplication.Selector.Unit = new Class({
         var list = [];
         unitList.each( function (d) {
             if( typeOf( d ) === "object"){
-                if( !d.levelName || !d.distinguishedName )list.push( d.distinguishedName || d.id || d.unique )
+                if( !d.levelName || !d.distinguishedName )list.push( d.distinguishedName || d.unique || d.id )
             }else{
                 list.push( d )
             }
@@ -250,7 +250,7 @@ MWF.xApplication.Selector.Unit = new Class({
                 json.data.each( function (d) { map[ d.matchKey ] =  d; });
                 var unitObjectList = [];
                 unitList.each( function (d) {
-                    var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.id || d.unique ) : d;
+                    var key = typeOf( d ) === "object" ? ( d.distinguishedName || d.unique || d.id ) : d;
                     unitObjectList.push( map[key] ? map[key] : d );
                 });
                 if( callback )callback( unitList );
