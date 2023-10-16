@@ -42,6 +42,11 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         /**
+         * 选择完成后，并且整理了关联文档数据后事件。可以通过this.event获取记录列表。
+         * @event MWF.xApplication.process.Xform.AssociatedDocument#afterSelectResult
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
          * 删除关联文档前执行的事件。可以通过this.event获取删除的记录。
          * @event MWF.xApplication.process.Xform.AssociatedDocument#deleteDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -51,7 +56,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         //  * @event MWF.xApplication.process.Xform.AssociatedDocument#openDocument
         //  * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
         //  */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult","deleteDocument","openDocument"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "beforeLoadView", "loadView", "select", "unselect", "selectResult", "afterSelectResult", "deleteDocument","openDocument"]
     },
 
 	_loadUserInterface: function(){
@@ -120,11 +125,15 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
                         this.showCreateResult(json.data.failureList, json.data.successList);
                     }
-                    this.loadAssociatedDocument();
+                    this.loadAssociatedDocument(function () {
+                        this.fireEvent("afterSelectResult", [this.documentList]);
+                    }.bind(this));
                 }.bind(this));
             }else{
                 this.status = "showResult";
-                this.loadAssociatedDocument();
+                this.loadAssociatedDocument(function () {
+                    this.fireEvent("afterSelectResult", [this.documentList]);
+                }.bind(this));
                 if( this.dlg )this.dlg.close();
             }
         }.bind(this));
@@ -158,16 +167,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 	        if(callback)callback();
         }
     },
-    loadAssociatedDocument: function(){
+    loadAssociatedDocument: function( callback ){
         this.documentListNode.empty();
 	    o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.listWithJobWithSite(this.form.businessData.work.job, (this.json.site || this.json.id), function (json) {
             this.documentList = json.data;
             this.showDocumentList();
+            if(callback)callback();
         }.bind(this));
     },
     showCreateResult: function(failureList, successList){
 	    this.viewList.each(function (view) {
-	        debugger;
             view.showAssociatedDocumentResult(failureList, successList);
         })
     },
@@ -497,6 +506,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                                 var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
 
                                 pageViewNode.setStyle("height", viewHeight);
+
+                                debugger;
 
                                 var view = new MWF.xApplication.query.Query.Viewer(pageViewNode, viewJson, {
                                     "isloadContent": this.status !== "showResult",
