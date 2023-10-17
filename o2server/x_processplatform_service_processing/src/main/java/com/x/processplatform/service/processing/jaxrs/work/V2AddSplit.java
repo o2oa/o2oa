@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,7 +20,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
@@ -30,8 +30,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSpl
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 class V2AddSplit extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
@@ -40,154 +38,231 @@ class V2AddSplit extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final String job;
+		Param param = this.init(id, jsonElement);
+
+		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param.getSplitValueList(), param.getTrimExist(),
+				param.getWorkLog());
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
+				TimeUnit.SECONDS);
+
+	}
+
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.setSplitValueList(wi.getSplitValueList());
+		param.setTrimExist(wi.getTrimExist());
+		param.setWorkLog(wi.getWorkLog());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			job = work.getJob();
+			param.setJob(work.getJob());
+		}
+		return param;
+	}
+
+	private class Param {
+
+		private String job;
+		private List<String> splitValueList;
+		private Boolean trimExist;
+		private String workLog;
+
+		public List<String> getSplitValueList() {
+			return splitValueList;
 		}
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+		public void setSplitValueList(List<String> splitValueList) {
+			this.splitValueList = splitValueList;
+		}
 
-			public ActionResult<Wo> call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		public Boolean getTrimExist() {
+			return trimExist;
+		}
 
-					ActionResult<Wo> result = new ActionResult<>();
-					Wo wo = new Wo();
+		public void setTrimExist(Boolean trimExist) {
+			this.trimExist = trimExist;
+		}
 
-					Business business = new Business(emc);
+		public String getWorkLog() {
+			return workLog;
+		}
 
-					/* 校验work是否存在 */
-					Work work = emc.find(id, Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(id, Work.class);
-					}
+		public void setWorkLog(String workLog) {
+			this.workLog = workLog;
+		}
 
-					if (BooleanUtils.isNotTrue(work.getSplitting())) {
-						throw new ExceptionNotSplit(work.getId());
-					}
-					if (ListTools.isEmpty(wi.getSplitValueList())) {
-						throw new ExceptionEmptySplitValue(work.getId());
-					}
+		public String getJob() {
+			return job;
+		}
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
+		public void setJob(String job) {
+			this.job = job;
+		}
 
-					WorkLogTree tree = new WorkLogTree(workLogs);
+	}
 
-					WorkLog arrived = workLogs.stream().filter(o -> StringUtils.equals(o.getId(), wi.getWorkLog()))
-							.findFirst().orElse(null);
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-					WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
+		private String id;
+		private List<String> splitValueList;
+		private Boolean trimExist;
+		private String workLog;
 
-					if (null == arrived) {
-						throw new ExceptionInvalidArrivedWorkLog(wi.getWorkLog());
-					}
+		private CallableImpl(String id, List<String> splitValueList, Boolean trimExist, String workLog) {
 
-					if (null == from) {
-						throw new ExceptionInvalidFromWorkLog(wi.getWorkLog());
-					}
+			this.id = id;
+			this.splitValueList = splitValueList;
+			this.trimExist = trimExist;
+			this.workLog = workLog;
 
-					Activity activity = business.element().getActivity(from.getFromActivity());
+		}
 
-					for (String splitValue : wi.getSplitValueList()) {
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-						emc.beginTransaction(Work.class);
-						emc.beginTransaction(WorkLog.class);
+				ActionResult<Wo> result = new ActionResult<>();
+				Wo wo = new Wo();
 
-						Work workCopy = new Work(work);
-						workCopy.setActivity(activity.getId());
-						workCopy.setActivityAlias(activity.getAlias());
-						workCopy.setActivityArrivedTime(new Date());
-						workCopy.setActivityDescription(activity.getDescription());
-						workCopy.setActivityName(activity.getName());
-						workCopy.setActivityToken(StringTools.uniqueToken());
-						workCopy.setActivityType(activity.getActivityType());
+				Business business = new Business(emc);
 
-						workCopy.setSplitValueList(
-								adjustSplitValueList(arrived.getProperties().getSplitValueList(), splitValue));
-						workCopy.setSplitToken(arrived.getSplitToken());
-						workCopy.setSplitTokenList(arrived.getSplitTokenList());
-						workCopy.setSplitValue(splitValue);
-						workCopy.setSplitting(arrived.getSplitting());
-						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
-						workCopy.setBeforeExecuted(false);
-						workCopy.setDestinationActivity(null);
-						workCopy.setDestinationActivityType(null);
-						workCopy.setDestinationRoute(null);
-						workCopy.setDestinationRouteName(null);
-
-						WorkLog arrivedCopy = new WorkLog(arrived);
-						arrivedCopy.setArrivedActivity(activity.getId());
-						arrivedCopy.setArrivedActivityAlias(activity.getAlias());
-						arrivedCopy.setArrivedActivityName(activity.getName());
-						arrivedCopy.setArrivedActivityToken(workCopy.getActivityToken());
-						arrivedCopy.setArrivedActivityType(activity.getActivityType());
-						arrivedCopy.setWork(workCopy.getId());
-						arrivedCopy.setArrivedTime(workCopy.getActivityArrivedTime());
-						arrivedCopy.setSplitValueList(workCopy.getSplitValueList());
-						arrivedCopy.setSplitTokenList(workCopy.getSplitTokenList());
-						arrivedCopy.setSplitToken(workCopy.getSplitToken());
-						arrivedCopy.setSplitValue(workCopy.getSplitValue());
-						arrivedCopy.setSplitting(workCopy.getSplitting());
-
-						WorkLog fromCopy = new WorkLog(from);
-						fromCopy.setConnected(false);
-						fromCopy.setFromActivity(activity.getId());
-						fromCopy.setFromActivityAlias(activity.getAlias());
-						fromCopy.setFromActivityName(activity.getName());
-						fromCopy.setFromActivityType(activity.getActivityType());
-						fromCopy.setFromActivityToken(workCopy.getActivityToken());
-						fromCopy.setFromTime(workCopy.getActivityArrivedTime());
-						fromCopy.setWork(workCopy.getId());
-						fromCopy.setSplitValueList(workCopy.getSplitValueList());
-						fromCopy.setSplitTokenList(workCopy.getSplitTokenList());
-						fromCopy.setSplitToken(workCopy.getSplitToken());
-						fromCopy.setSplitValue(workCopy.getSplitValue());
-						fromCopy.setSplitting(workCopy.getSplitting());
-						fromCopy.setArrivedActivity("");
-						fromCopy.setArrivedActivityAlias("");
-						fromCopy.setArrivedActivityName("");
-						fromCopy.setArrivedActivityToken("");
-						fromCopy.setArrivedActivityType(null);
-						fromCopy.setArrivedTime(null);
-
-						emc.persist(workCopy, CheckPersistType.all);
-						emc.persist(arrivedCopy, CheckPersistType.all);
-						emc.persist(fromCopy, CheckPersistType.all);
-
-						emc.commit();
-						wo.addValue(workCopy.getId(), true);
-					}
-					result.setData(wo);
-					return result;
+				/* 校验work是否存在 */
+				Work work = emc.find(id, Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(id, Work.class);
 				}
+
+				if (BooleanUtils.isNotTrue(work.getSplitting())) {
+					throw new ExceptionNotSplit(work.getId());
+				}
+
+				if (BooleanUtils.isTrue(trimExist)) {
+					splitValueList = ListUtils.subtract(splitValueList, work.getSplitTokenList());
+				}
+
+				if (ListTools.isEmpty(splitValueList)) {
+					throw new ExceptionEmptySplitValue(work.getId());
+				}
+
+				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
+
+				WorkLogTree tree = new WorkLogTree(workLogs);
+
+				WorkLog arrived = workLogs.stream().filter(o -> StringUtils.equals(o.getId(), workLog)).findFirst()
+						.orElse(null);
+
+				WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
+
+				if (null == arrived) {
+					throw new ExceptionInvalidArrivedWorkLog(workLog);
+				}
+
+				if (null == from) {
+					throw new ExceptionInvalidFromWorkLog(workLog);
+				}
+
+				Activity activity = business.element().getActivity(from.getFromActivity());
+
+				for (String splitValue : splitValueList) {
+
+					emc.beginTransaction(Work.class);
+					emc.beginTransaction(WorkLog.class);
+
+					Work workCopy = new Work(work);
+					workCopy.setActivity(activity.getId());
+					workCopy.setActivityAlias(activity.getAlias());
+					workCopy.setActivityArrivedTime(new Date());
+					workCopy.setActivityDescription(activity.getDescription());
+					workCopy.setActivityName(activity.getName());
+					workCopy.setActivityToken(StringTools.uniqueToken());
+					workCopy.setActivityType(activity.getActivityType());
+
+					workCopy.setSplitValueList(adjustSplitValueList(arrived.getSplitValueList(), splitValue));
+					workCopy.setSplitToken(arrived.getSplitToken());
+					workCopy.setSplitTokenList(arrived.getSplitTokenList());
+					workCopy.setSplitValue(splitValue);
+					workCopy.setSplitting(arrived.getSplitting());
+					workCopy.setTickets(null);
+					workCopy.setBeforeExecuted(false);
+					workCopy.setDestinationActivity(null);
+					workCopy.setDestinationActivityType(null);
+					workCopy.setDestinationRoute(null);
+					workCopy.setDestinationRouteName(null);
+
+					WorkLog arrivedCopy = new WorkLog(arrived);
+					arrivedCopy.setArrivedActivity(activity.getId());
+					arrivedCopy.setArrivedActivityAlias(activity.getAlias());
+					arrivedCopy.setArrivedActivityName(activity.getName());
+					arrivedCopy.setArrivedActivityToken(workCopy.getActivityToken());
+					arrivedCopy.setArrivedActivityType(activity.getActivityType());
+					arrivedCopy.setWork(workCopy.getId());
+					arrivedCopy.setArrivedTime(workCopy.getActivityArrivedTime());
+					arrivedCopy.setSplitValueList(workCopy.getSplitValueList());
+					arrivedCopy.setSplitTokenList(workCopy.getSplitTokenList());
+					arrivedCopy.setSplitToken(workCopy.getSplitToken());
+					arrivedCopy.setSplitValue(workCopy.getSplitValue());
+					arrivedCopy.setSplitting(workCopy.getSplitting());
+
+					WorkLog fromCopy = new WorkLog(from);
+					fromCopy.setConnected(false);
+					fromCopy.setFromActivity(activity.getId());
+					fromCopy.setFromActivityAlias(activity.getAlias());
+					fromCopy.setFromActivityName(activity.getName());
+					fromCopy.setFromActivityType(activity.getActivityType());
+					fromCopy.setFromActivityToken(workCopy.getActivityToken());
+					fromCopy.setFromTime(workCopy.getActivityArrivedTime());
+					fromCopy.setWork(workCopy.getId());
+					fromCopy.setSplitValueList(workCopy.getSplitValueList());
+					fromCopy.setSplitTokenList(workCopy.getSplitTokenList());
+					fromCopy.setSplitToken(workCopy.getSplitToken());
+					fromCopy.setSplitValue(workCopy.getSplitValue());
+					fromCopy.setSplitting(workCopy.getSplitting());
+					fromCopy.setArrivedActivity("");
+					fromCopy.setArrivedActivityAlias("");
+					fromCopy.setArrivedActivityName("");
+					fromCopy.setArrivedActivityToken("");
+					fromCopy.setArrivedActivityType(null);
+					fromCopy.setArrivedTime(null);
+
+					emc.persist(workCopy, CheckPersistType.all);
+					emc.persist(arrivedCopy, CheckPersistType.all);
+					emc.persist(fromCopy, CheckPersistType.all);
+
+					emc.commit();
+					wo.addValue(workCopy.getId(), true);
+				}
+				result.setData(wo);
+				return result;
 			}
-		};
-
-		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
-
-	}
-
-	private List<String> adjustSplitValueList(List<String> list, String value) {
-		List<String> values = new ArrayList<>();
-		if (ListTools.isNotEmpty(list)) {
-			list.stream().limit(list.size() - 1L).forEach(values::add);
 		}
-		values.add(value);
-		return values;
+
+		/**
+		 * 替换掉最后一个值
+		 * 
+		 * @param list
+		 * @param value
+		 * @return
+		 */
+		private List<String> adjustSplitValueList(List<String> list, String value) {
+			List<String> values = new ArrayList<>();
+			if (ListTools.isNotEmpty(list)) {
+				list.stream().limit(list.size() - 1L).forEach(values::add);
+			}
+			values.add(value);
+			return values;
+		}
 	}
 
-	@Schema(name = "com.x.processplatform.service.processing.jaxrs.work.V2AddSplit$Wi")
 	public static class Wi extends V2AddSplitWi {
 
 		private static final long serialVersionUID = 6460190818209523936L;
 
 	}
 
-	@Schema(name = "com.x.processplatform.service.processing.jaxrs.work.V2AddSplit$Wo")
 	public static class Wo extends WrapStringList {
 
 		private static final long serialVersionUID = -5717489826043523199L;

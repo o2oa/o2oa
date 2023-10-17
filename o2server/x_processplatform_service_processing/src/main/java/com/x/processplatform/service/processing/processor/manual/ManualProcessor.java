@@ -488,11 +488,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
-		aeiObjects.empower();
 		Tickets tickets = aeiObjects.getWork().getTickets();
 		if ((null == tickets) || tickets.isEmpty()) {
 			return executingMatrix(aeiObjects, manual);
 		}
+		aeiObjects.empower();
 		List<Work> results = new ArrayList<>();
 		checkValidTickets(aeiObjects, tickets);
 		// 由于退回存在空名称的路由
