@@ -34,6 +34,7 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.Processing;
 
+@Deprecated(since = "8.2", forRemoval = true)
 class ActionAddSplit extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAddSplit.class);
