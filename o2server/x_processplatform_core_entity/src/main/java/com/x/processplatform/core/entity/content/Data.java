@@ -197,11 +197,20 @@ public class Data extends ListOrderedMap<String, Object> {
 		private String activityName;
 		private Date activityArrivedTime;
 		private String manualTaskIdentityText;
+		private String completedType;
 		/** 来自workCompleted的结束时间 */
 		private Date completedTime;
 		/** 来自workCompleted的结束时间月份 */
 		private String completedTimeMonth;
 		private Date updateTime;
+
+		public String getCompletedType() {
+			return completedType;
+		}
+
+		public void setCompletedType(String completedType) {
+			this.completedType = completedType;
+		}
 
 		public String getTitle() {
 			return title;
