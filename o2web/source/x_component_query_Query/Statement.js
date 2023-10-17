@@ -386,6 +386,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         this.contentAreaNode.scrollTo(0, 0);
 
         //this.createLoadding();
+        this.fireEvent("beforeLoadPageData", [d])
 
         this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
             this.options.statementId || this.options.statementName || this.options.statementAlias ||
