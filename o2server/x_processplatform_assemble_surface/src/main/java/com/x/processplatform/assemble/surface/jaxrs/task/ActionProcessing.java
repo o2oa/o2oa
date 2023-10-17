@@ -57,7 +57,7 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
@@ -283,12 +283,13 @@ class ActionProcessing extends BaseAction {
 		this.processingUpdateTask();
 	}
 
+	// 8.2以后版本使用reset替代append
 	private void processingAppendTaskAppend() throws Exception {
-		WrapAppend req = new WrapAppend();
-		req.setIdentityList(this.wi.getAppendTaskIdentityList());
+		V2ResetWi req = new V2ResetWi();
+		req.setDistinguishedNameList(this.wi.getAppendTaskIdentityList());
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", this.task.getId(), "append"), req, this.task.getJob())
+						Applications.joinQueryUri("task", "v2", this.task.getId(), "reset"), req, this.task.getJob())
 				.getData(WrapStringList.class);
 	}
 

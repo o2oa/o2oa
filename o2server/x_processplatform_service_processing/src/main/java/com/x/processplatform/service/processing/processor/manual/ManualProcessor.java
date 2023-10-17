@@ -29,7 +29,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.Empower;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
@@ -79,7 +78,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		if ((null == tickets) || tickets.isEmpty()) {
 			tickets = manual.identitiesToTickets(calculateTaskDistinguishedName(aeiObjects, manual));
 		}
-		empower(aeiObjects, tickets);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		// Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual,
 		// manualTaskIdentityMatrix);
@@ -458,25 +456,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
-	private void empower(AeiObjects aeiObjects, Tickets tickets) throws Exception {
-		// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
-		if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
-				&& BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
-			List<Ticket> list = tickets.bubble();
-			List<String> values = list.stream().map(Ticket::distinguishedName).collect(Collectors.toList());
-			values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
-			List<Empower> empowers = aeiObjects.business().organization().empower().listWithIdentityObject(
-					aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
-					aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values);
-			for (Empower empower : empowers) {
-				if (StringUtils.isNotEmpty(empower.getFromIdentity())
-						&& StringUtils.isNotEmpty(empower.getToIdentity())) {
-					list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
-				}
-			}
-		}
-	}
-
 	private Optional<WorkLog> findPassSameTargetWorkLog(AeiObjects aeiObjects) throws Exception {
 		WorkLog workLog = aeiObjects.getArriveWorkLog(aeiObjects.getWork());
 		if (null == workLog) {
@@ -509,6 +488,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
+		aeiObjects.empower();
 		Tickets tickets = aeiObjects.getWork().getTickets();
 		if ((null == tickets) || tickets.isEmpty()) {
 			return executingMatrix(aeiObjects, manual);

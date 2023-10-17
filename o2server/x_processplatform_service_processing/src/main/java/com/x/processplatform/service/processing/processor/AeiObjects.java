@@ -26,6 +26,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Empower;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -57,6 +58,7 @@ import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
 import com.x.processplatform.core.entity.message.WorkEvent;
+import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
@@ -1862,6 +1864,32 @@ public class AeiObjects extends GsonPropertyObject {
 		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
 		bindings.put(ScriptingFactory.BINDING_NAME_DATA, this.getData());
 		return this.scriptContext;
+	}
+
+	/**
+	 * 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
+	 * 
+	 * @param aeiObjects
+	 * @throws Exception
+	 */
+	public void empower() throws Exception {
+		if ((StringUtils.equals(this.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+				&& BooleanUtils.isNotFalse(this.getWork().getWorkThroughManual()))) {
+			return;
+		}
+		List<Ticket> list = this.getWork().getTickets().bubble().stream()
+				.filter(o -> StringUtils.isBlank(o.fromDistinguishedName())).collect(Collectors.toList());
+		List<String> values = ListUtils.subtract(
+				list.stream().map(Ticket::distinguishedName).collect(Collectors.toList()),
+				this.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+		List<Empower> empowers = this.business().organization().empower().listWithIdentityObject(
+				this.getWork().getApplication(), this.getProcess().getEdition(), this.getWork().getProcess(),
+				this.getWork().getId(), values);
+		for (Empower empower : empowers) {
+			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
+				list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
+			}
+		}
 	}
 
 }
