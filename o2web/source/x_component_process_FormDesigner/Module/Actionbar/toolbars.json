@@ -53,7 +53,8 @@
     "id": "action_goBack",
     "control": "allowGoBack",
     "condition": "",
-    "read": false
+    "read": false,
+    "hidden": true
   },
 
   {

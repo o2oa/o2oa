@@ -84,6 +84,7 @@ MWF.xApplication.process.Work.LP = {
         "addTask": "加签",
         "reset": "重置",
         "process": "提交",
+        "goBack": "退回"
     },
     "modeType": "处理方式",
     "single": "单人",
@@ -110,6 +111,14 @@ MWF.xApplication.process.Work.LP = {
     "noQuickSelectDataNote": "系统还未记录您在当前节点选择的数据。",
     "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
     "addTaskQuickText": "选择[{mode}{route}]，意见：{opinion}，加签人：{org}。",
-    "resetQuickText": "意见：{opinion}，重置给：{org}。"
+    "resetQuickText": "意见：{opinion}，重置给：{org}。",
+
+    "users": "处理人",
+    "goBackActivity": "退回到活动",
+    "goBackActivityWay": "退回后处理：",
+    "goBackActivityWayStep": "按流程正常流转",
+    "goBackActivityWayJump": "直接回到退回人",
+    "goBackTo": "退回到：",
+    "selectGoBackActivity": "请选择要退回的活动"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;

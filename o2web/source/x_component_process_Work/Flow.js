@@ -10,6 +10,7 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         processEnable: true,
         addTaskEnable: true,
         resetEnable: true,
+        goBackEnable: true,
         processOptions: {},
         mainColorEnable: true
     },
@@ -39,11 +40,13 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.processEnable = this.options.processEnable && this.businessData.control["allowProcessing"];
         this.addTaskEnable = this.options.addTaskEnable && this.businessData.control["allowAddTask"];
         this.resetEnable = this.options.resetEnable && this.businessData.control["allowReset"];
+        this.goBackEnable = this.options.goBackEnable && this.businessData.control["allowGoBack"];
 
         this.navi = [];
         if( this.processEnable )this.navi.push({ key: "process", label: this.lp.flowActions.process });
         if( this.addTaskEnable )this.navi.push({ key: "addTask", label: this.lp.flowActions.addTask });
         if( this.resetEnable )this.navi.push({ key: "reset", label: this.lp.flowActions.reset });
+        if( this.goBackEnable )this.navi.push({ key: "goBack", label: this.lp.flowActions.goBack });
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
@@ -90,6 +93,9 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
                 break;
             case "reset":
                 this.loadReset( quickData );
+                break;
+            case "goBack":
+                this.loadGoBack();
                 break;
         }
     },
@@ -159,7 +165,33 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         );
         this.addTask.load( quickData );
     },
+    loadGoBack: function(){
+        if( this.goBack ){
+            //if( quickData )this.goBack.setQuickData( quickData );
+            this.resize();
+            return;
+        }
+        this.goBack = new MWF.ProcessFlow.GoBack(
+            this.goBackContentNode,
+            this,
+            Object.merge( this.options.goBackOptions, {
+                onLoad: function () {
+                    if( this.firstActionLoaded ){
+                        this.resize();
+                    }else{
+                        this.firstActionLoaded = true;
+                        this.checkLoadEvent();
+                    }
+                }.bind(this)
+            })
+        );
+        this.goBack.load();
+    },
     loadQuickSelect: function(){
+        if( !this.options.addTaskEnable && !this.options.resetEnable && !this.options.processEnable ){
+            this.quickSelector.hide();
+            return;
+        }
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelect(
             this.form.app ? this.form.app.content : $(document.body),
             this.quickSelectNode, this.form.app, {}
@@ -180,12 +212,16 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
             case "reset":
                 this.reset.submit();
                 break;
+            case "goBack":
+                this.goBack.submit();
+                break;
         }
     },
     destroy: function () {
         if( this.processor )this.processor.destroy();
         if( this.reset )this.reset.destroy();
         if( this.addTask )this.addTask.destroy();
+        if( this.goBack )this.goBack.destroy();
         if(this.quickSelector)this.quickSelector.destroy();
     },
     getMarginY : function(node){
@@ -649,7 +685,167 @@ MWF.ProcessFlow.AddTask = new Class({
             }
         }
     },
-})
+});
+
+MWF.ProcessFlow.GoBack = new Class({
+    Extends: MWF.widget.Common,
+    Implements: [Options, Events],
+    options:{
+        data: null,
+        style: "default"
+    },
+    initialize: function (container, flow, options) {
+        this.setOptions(options);
+        this.container = $(container);
+        this.flow = flow;
+        this.task = flow.task;
+        this.form = flow.form;
+        this.lp = flow.lp;
+        this.businessData = this.form.businessData;
+        this.checkedItems = [];
+    },
+    load: function(){
+        this.container.loadHtml(this.getUrl(), {"bind": {"lp": this.lp}, "module": this}, function(){
+            this.loadOpinion();
+            this.loadActivitys();
+        }.bind(this));
+    },
+    getUrl: function(){
+        return this.flow.path+this.flow.options.style+"/goBack.html";
+    },
+    loadActivitys: function(){
+        o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.task.work, function(json) {
+            this.activitys = json.data.map(function (d) {
+                var ids = o2.name.cns(d.lastIdentityList);
+                d.identityNameString = (ids.length>8) ? ids.slice(0,8).join(', ')+' ...' : ids.join(', ');
+                d.identityNameTitle = ids.join(',');
+                return d;
+            })
+
+            // var act2 = Array.clone(this.activitys);
+            // act2[0].way = "custom";
+            // var act3 = Array.clone(this.activitys);
+            // act3[0].way = "custom";
+            // var act4 = Array.clone(this.activitys);
+            // this.activitys = this.activitys.concat(act2, act3, act4);
+            debugger;
+            this.activitysArea.loadHtml(this.flow.path+this.flow.options.style+"/widget/gobackActivity.html",
+                {"bind": {"lp": this.lp, "activityList":this.activitys}, "module": this},
+                function(){
+                    if( this.activitys.length === 1 ){
+                        var el = this.activitysArea.getElement(".o2flow-radio2");
+                        this.check( el );
+                    }
+                    this.afterLoad();
+                    this.fireEvent("load");
+                }.bind(this));
+        }.bind(this));
+    },
+    loadWayRadio: function(ev, activityData){
+        var wayRadio = new MWF.ProcessFlow.widget.Radio(ev.target, this.flow, {
+            optionList: [{
+                text: this.lp.goBackActivityWayStep,
+                value: "step"
+            },{
+                text: this.lp.goBackActivityWayJump,
+                value: "jump"
+            }],
+            value: "step" //默认为单人
+        });
+        wayRadio.load();
+        var parentNode = ev.target.getParent(".o2flow-radio2");
+        parentNode.store("wayRadio", wayRadio);
+    },
+    toggle: function( ev ){
+        var el = this.flow.getEl(ev, "o2flow-radio2");
+        if( this.checkedItems.contains( el ) ){
+            //if( this.options.cancelEnable )this.uncheck( el, true )
+        }else{
+            this.check( el );
+        }
+    },
+    check: function(el){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        el.addClass("o2flow-radio2-active");
+        if( this.flow.options.mainColorEnable )el.addClass("mainColor_color");
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").addClass("mainColor_color");
+        el.dataset["o2Checked"] = true;
+        this.activitysArea.removeClass("o2flow-invalid-bg");
+        this.checkedItems.push(el);
+        this.fireEvent("check", [el, el.dataset["o2Value"]])
+    },
+    uncheck: function(el, isFire){
+        el.removeClass("o2flow-radio2-active");
+        if( this.flow.options.mainColorEnable )el.removeClass("mainColor_color");
+        el.getElement("i").removeClass("o2icon-radio-checked").addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").removeClass("mainColor_color");
+        el.dataset["o2Checked"] = false;
+        this.checkedItems.erase(el);
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
+    },
+    show: function(){
+
+    },
+    afterLoad: function () {
+
+    },
+    loadOpinion: function(){
+        var opt = Object.clone(this.flow.options.opinionOptions);
+        opt.isHandwriting = this.options.isHandwriting;
+        this.opinion = new MWF.ProcessFlow.widget.Opinion( this.opinionContent, this.flow, opt );
+        this.opinion.load();
+    },
+
+    submit: function () {
+        if (!this.checkedItems.length) {
+            this.activitysArea.addClass("o2flow-invalid-bg");
+            this.flow.noticeError(
+                MWF.xApplication.process.Work.LP.selectGoBackActivity,
+                this.activitysArea,
+                null,
+                {"x": "center", "y": "top"}
+            );
+            return false;
+        }
+
+        var itemNode = this.checkedItems[0];
+        var activity = itemNode.dataset["o2Value"];
+        var activityName = itemNode.dataset["o2Text"];
+        var way;
+        var wayRadio = itemNode.retrieve("wayRadio");
+        if( wayRadio ){
+            way = wayRadio.getValue();
+        }else{
+            way = itemNode.dataset["o2Way"];
+        }
+
+        var opinion = this.opinion.getValue();
+        if(!opinion)opinion = this.lp.goBackTo+activityName;
+
+        var routeName = this.lp.goBackTo+activityName;
+        debugger;
+        this.fireEvent("submit", [opinion, routeName, activity, way]);
+    },
+    // getQuickData: function(){
+    //     return {
+    //         routeId: "goBack",
+    //         opinion: this.opinion.getValue(),
+    //         //keepTask: this.keepOption.getValue() === "true",
+    //         organizations: {
+    //             default: this.getSelOrgData()
+    //         }
+    //     }
+    // },
+    destroy: function () {
+        if (this.orgItem && this.orgItem.clearTooltip){
+            this.orgItem.clearTooltip();
+        }
+        if (this.node) this.node.empty();
+    },
+});
 
 MWF.ProcessFlow.Processor = new Class({
     Extends: MWF.widget.Common,

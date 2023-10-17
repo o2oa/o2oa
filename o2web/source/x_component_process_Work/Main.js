@@ -454,7 +454,7 @@ MWF.xApplication.process.Work.Main = new Class({
         this.attachmentList = attData;
 
         this.control = controlData || {};
-        if( this.control.allowProcessing || this.control.allowReset || this.control.allowAddTask ){
+        if( this.control.allowProcessing || this.control.allowReset || this.control.allowAddTask || this.control.allowGoBack ){
             this.control.allowFlow = true;
         }
 

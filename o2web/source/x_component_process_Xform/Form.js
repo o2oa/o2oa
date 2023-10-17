@@ -2212,6 +2212,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (this.json.isPrompt !== false) {
                     switch (type) {
                         case "process":
+                        case "goBack":
                             this.showSubmitedDialog(data);
                             break;
                         case "reset":
@@ -2242,6 +2243,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         break;
                     case "addTask":
                         this.addAddTaskMessage(data, notCloseWindow);
+                        break;
+                    case "goBack":
+                        this.showSubmitedDialog(data, notCloseWindow);
                         break;
                 }
                 if( notCloseWindow ){
@@ -2479,6 +2483,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     _flowWork: function( defaultRoute ){
+        if (!this.checkUploadAttachment()) return false;
+
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else {
@@ -2772,6 +2778,41 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         }.bind(this))
                     }.bind(this));
                 }
+            },
+            "goBackOptions":{
+                "isHandwriting": false,
+                "onSubmit": function (opinion, routeName, activity, way) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.fireEvent("beforeGoBack");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeGoBack");
+
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        if (layout.mobile) {
+                            _self.mask.load();
+                        } else {
+                            _self.mask.loadNode(_self.app.content);
+                        }
+
+                        _self.fireEvent("beforeSave");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeSave");
+                        _self.saveFormData(function (json) {
+
+                            _self.fireEvent("afterSave");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
+
+                            _self.goBackToPerson(routeName, opinion, activity, way, function (workJson) {
+                                _self.fireEvent("afterGoBack");
+                                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterGoBack");
+                                this.destroy();
+                                hanlderNode.destroy();
+                                if (_self.flowDlg) _self.flowDlg.close();
+                                _self.addMessage(workJson.data, true);
+                                if (_self.app.taskObject) _self.app.taskObject.destroy();
+                                _self.finishOnFlow("goBack", workJson.data);
+                            }.bind(this));
+                        }.bind(this))
+                    }.bind(this));
+                }
             }
         };
 
@@ -2819,6 +2860,24 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             this.businessData.task.id, data
         );
+    },
+
+    goBackToPerson: function(routeName, opinion, activity, way, callback){
+        this.businessData.task.decision = routeName;
+        this.businessData.task.opinion = opinion;
+        this.businessData.task.action = "goBack";
+        this.businessData.task.option = {
+            "activity": activity,
+            "way": way
+        };
+
+        // this.submitWork(routeName, opinion, null, function () {
+        //     if(callback)callback();
+        // }.bind(this));
+
+        this.workAction.processTask(function (json) {
+            if (callback) callback(json);
+        }.bind(this), null, this.businessData.task.id, this.businessData.task);
     },
 
 
