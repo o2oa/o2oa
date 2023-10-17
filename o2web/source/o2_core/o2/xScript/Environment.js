@@ -2832,7 +2832,7 @@ MWF.xScript.Environment = function(ev){
          * @example
          //带参数，直接调用后台服务重置
          this.form.reset({
-            "names": ["张三(综合部)"],
+            "names": ["张三@zhangsan@I"],
             "opinion": "授权处理",
             "success": function(json){
                 this.form.notice("reset success", "success");
