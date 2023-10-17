@@ -85,6 +85,7 @@ public class Manual extends Activity {
 			this.manualAfterProcessingScript = this.getProperties().getManualAfterProcessingScript();
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
 			this.taskParticipant = this.getProperties().getTaskParticipant();
+			this.allowTerminate = this.getProperties().getAllowTerminate();
 		}
 	}
 
@@ -261,6 +262,25 @@ public class Manual extends Activity {
 		default:
 			return ManualTaskIdentityMatrix.concreteSingleRow(identities);
 		}
+	}
+
+	public static final String ALLOWTERMINATE_FIELDNAME = "allowTerminate";
+	@Transient
+	@FieldDescribe("是否允许终止.")
+	// @since 8.2.0
+	private Boolean allowTerminate;
+
+	public Boolean getAllowTerminate() {
+		if (null != this.allowTerminate) {
+			return this.allowTerminate;
+		} else {
+			return this.getProperties().getAllowTerminate();
+		}
+	}
+
+	public void setAllowTerminate(Boolean allowTerminate) {
+		this.allowTerminate = allowTerminate;
+		this.properties.setAllowTerminate(allowTerminate);
 	}
 
 	@FieldDescribe("分组.")

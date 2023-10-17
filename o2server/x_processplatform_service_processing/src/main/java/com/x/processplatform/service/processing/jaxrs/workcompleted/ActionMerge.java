@@ -19,7 +19,6 @@ import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -42,6 +41,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
 
@@ -64,7 +64,7 @@ class ActionMerge extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get(300,
+		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(new CallableAction(id)).get(300,
 				TimeUnit.SECONDS);
 	}
 

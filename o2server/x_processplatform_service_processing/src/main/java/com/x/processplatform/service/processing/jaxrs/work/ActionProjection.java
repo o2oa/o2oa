@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,6 +26,7 @@ import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class ActionProjection extends BaseAction {
 
@@ -72,7 +72,7 @@ class ActionProjection extends BaseAction {
 			return result;
 		};
 
-		return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 

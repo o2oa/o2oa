@@ -137,7 +137,7 @@ class ActionListLike extends BaseAction {
 			return wos;
 		}
 		List<String> unitIds = new ArrayList<>();
-		if(ListTools.isNotEmpty(wi.getUnitList())) {
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			unitIds = business.expendUnitToUnit(ListTools.trim(wi.getUnitList(), true, true));
 			/** 去掉指定范围本身,仅包含下级 */
 			unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
@@ -153,9 +153,10 @@ class ActionListLike extends BaseAction {
 		Root<Unit> root = cq.from(Unit.class);
 		Predicate p = cb.like(cb.lower(root.get(Unit_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR));
-		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p, cb.like(cb.lower(root.get(Unit_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
+		p = cb.or(p,
+				cb.like(cb.lower(root.get(Unit_.distinguishedName)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 
 		if (ListTools.isNotEmpty(unitIds)) {
 			p = cb.and(p, root.get(Unit_.id).in(unitIds));

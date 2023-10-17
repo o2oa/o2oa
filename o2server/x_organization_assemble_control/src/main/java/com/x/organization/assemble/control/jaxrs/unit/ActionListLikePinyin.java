@@ -137,12 +137,12 @@ class ActionListLikePinyin extends BaseAction {
 			return wos;
 		}
 		List<String> unitIds = new ArrayList<>();
-		if(ListTools.isNotEmpty(wi.getUnitList())) {
+		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			unitIds = business.expendUnitToUnit(ListTools.trim(wi.getUnitList(), true, true));
 			/** 去掉指定范围本身,仅包含下级 */
 			unitIds.removeAll(ListTools.extractProperty(business.unit().pick(wi.getUnitList()), JpaObject.id_FIELDNAME,
 					String.class, true, true));
-			if(unitIds.isEmpty()){
+			if (unitIds.isEmpty()) {
 				return wos;
 			}
 		}
@@ -151,8 +151,8 @@ class ActionListLikePinyin extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.like(root.get(Unit_.pinyin), str + "%");
-		p = cb.or(p, cb.like(root.get(Unit_.pinyinInitial), str + "%"));
+		Predicate p = cb.like(root.get(Unit_.pinyin), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
+		p = cb.or(p, cb.like(root.get(Unit_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(unitIds)) {
 			p = cb.and(p, root.get(Unit_.id).in(unitIds));
 		}

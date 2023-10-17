@@ -9,6 +9,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 public class QueueAttendanceV2DetailModel extends GsonPropertyObject {
 
 
+    private static final long serialVersionUID = -961721648296688272L;
+
+
     public QueueAttendanceV2DetailModel(String person, String date) {
         this.person = person;
         this.date = date;

@@ -1,14 +1,5 @@
 package com.x.processplatform.service.processing.processor.embed;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
@@ -29,6 +20,13 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAs
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmbedProcessor extends AbstractEmbedProcessor {
 
@@ -120,8 +118,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			assignData.setData(aeiObjects.getData());
 		}
 		if (BooleanUtils.isTrue(embed.getInheritAttachment())) {
-			List<Attachment> os = this.business().entityManagerContainer().list(Attachment.class,
-					this.business().attachment().listWithJob(aeiObjects.getWork().getJob()));
+			List<Attachment> os = aeiObjects.getAttachments();
 			for (Attachment attachment : os) {
 				WiAttachment wiAttachment = new WiAttachment();
 				attachment.copyTo(wiAttachment, true);

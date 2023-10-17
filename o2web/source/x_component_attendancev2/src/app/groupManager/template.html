@@ -9,14 +9,19 @@
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
             <thead>
                 <th>{{$.lp.groupForm.title}}</th>
+                <th>{{$.lp.groupForm.status}}</th>
                 <th>{{$.lp.groupForm.num}}</th>
                 <th>{{$.lp.groupForm.time}}</th>
                 <th style="width: 150px;">{{$.lp.operate}}</th>
             </thead>
             <tr oo-each="$.groupList" oo-item="g">
                 <td>{{g.value.groupName}}</td>
+                <td>{{g.value.status == 2 ? $.lp.groupForm.status_unpublish : $.lp.groupForm.status_normal}}</td>
                 <td>{{g.value.trueParticipantSize}}</td>
-                <td>{{ $m.formatAttendanceTime(g.value) }}</td>
+                <td>
+                    {{ $m.formatAttendanceTime(g.value) }}
+                    <span class="operator_link primary_color" oo-if=" g.value.checkType === '3' " @click="this.clickEditSchedule(g.value)">[{{$.lp.scheduleForm.title}}]</span>
+                </td>
                 <td>
                     <div class="o2-icon-16" @click="this.clickEditGroup(g.value.id)" ><i class="o2icon-icon_bianji"></i></div>
                     <span class="operator_link"
@@ -31,4 +36,5 @@
     <!-- 分页组件 -->
     <o-pager oo-prop="$.pagerData" @refresh-data="loadData"></o-pager>
     <div class="form"></div>
+    <div id="scheduleFom"></div>
 </div>

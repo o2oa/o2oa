@@ -247,7 +247,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"instanceMode": "实例模式",
 		"draftMode": "草稿模式",
 		"instanceModeInfo": "(新建流程时直接创建流程实例，给拟稿人生成待办)",
-		"draftModeInfo": "(新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例)",
+		"draftModeInfo": "(新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例。在草稿模式中不能上传附件。)",
 
 		"checkDraft": "新建检查",
 		"checkDraftInfo": "(选择“是”：未保存过的流程实例不会保留)",
@@ -439,6 +439,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"setTimeoutAfterWorkHours": "设置几个工作小时后超时",
 		"activityPower": "权限",
 		"allowDelete": "允许删除文件",
+		"allowTerminate": "允许终止文件",
 		"allowReset": "是否允许重置",
 		"resetCount": "重置加签人数",
 		"resetRange": "重置加签范围",

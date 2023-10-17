@@ -17,7 +17,6 @@ import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -39,6 +38,7 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.query.core.entity.Item;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +55,7 @@ class ActionCreate extends BaseAction {
         String executorSeed = processId;
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-        return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(wi, processId)).get(300,
+        return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(new CallableImpl(wi, processId)).get(300,
                 TimeUnit.SECONDS);
     }
 

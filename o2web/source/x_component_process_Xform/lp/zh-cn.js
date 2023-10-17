@@ -132,6 +132,11 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkTitle": "删除文件确认",
     "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>", "text": "注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？"},
     "workDelete": "已经删除文件",
+
+    "terminateWorkTitle": "终止文件确认",
+    "terminateWorkText": "终止文件表示此文件被废弃，直接结束流转，请您确认要终止此文件吗？",
+    "workTerminate": "已经终止文件",
+
     "amount": "▌总计",
     "sectionAmount": "▌小计",
     "delete": "删除",
@@ -181,6 +186,8 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentRead": "谁可以查看和下载此附件：(为空表示有权限阅读此文档的人都可以，不为空需同时选择编辑和设置权限)",
     "attachmentEdit": "谁可以编辑此附件：(为空表示有权限编辑此文档的人都可以，不为空需同时选择设置权限)",
     "attachmentController": "谁可以设置此附件的权限：(为空表示有权限编辑此文档的人都可以)",
+
+    "attachmentSecurity": "附件密级标识",
 
     "attachmentOCRTitle": "纠正自动识别的图片中的文字",
     "attachmentOCR_saved": "图像文字识别结果已保存",
@@ -333,6 +340,8 @@ MWF.xApplication.process.Xform.LP = {
         "rollbackTitle": "回溯到指定的环节，不保留流程记录",
         "delete": "删除文档",
         "deleteTitle": "删除文件",
+        "terminate": "终止文件",
+        "terminateTitle": "结束文件流转",
         "print": "打印",
         "printTitle": "打印文档",
         "press": "催促办理",
@@ -458,7 +467,9 @@ MWF.xApplication.process.Xform.LP = {
     "associatedResult": "关联结果",
     "selectDocNote": "请先选择文档",
     "associatedDocument": "关联文档",
-    "docDeleted": "文档已经被删除。"
+    "docDeleted": "文档已经被删除。",
+
+    "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

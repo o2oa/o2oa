@@ -2,6 +2,7 @@ package com.x.base.core.project.organization;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
@@ -136,6 +137,17 @@ public class OrganizationDefinition {
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, NAME_JOIN_CHAR)) {
 			return StringUtils.substringBefore(distinguishedName, NAME_JOIN_CHAR);
+		}
+		return distinguishedName;
+	}
+
+	public static String unique(String distinguishedName) {
+		if (StringUtils.isEmpty(distinguishedName)) {
+			return distinguishedName;
+		}
+		Matcher matcher = distinguishedName_pattern.matcher(distinguishedName);
+		if (matcher.find()) {
+			return matcher.group(2);
 		}
 		return distinguishedName;
 	}

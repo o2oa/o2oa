@@ -96,7 +96,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "columnValue" : "Valor de columna",  
         "contain" : "Contiene",  
         "from" : "Desde",  
-        "in": "En"
+        "in": "En",
+        "script": "Guion",
+        "input": "Entrada"
     },
     "delete_filterItem_title": "Confirmación de eliminación de filtro",  
     "delete_filterItem": "¿Está seguro de que desea eliminar la condición de filtro actual?",
@@ -327,7 +329,14 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "blueSimple":"Azul simple",  
         "official":"Estilo oficial",  
         "deepBlue":"Estilo de grupo",  
-        "blueFlat":"Azul y blanco plano",  
+        "blueFlat":"Azul y blanco plano",
         "greenFlat": "Verde plano"
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "saveAs": "Guardar como",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda"
     }
 };

@@ -88,6 +88,8 @@ if (!window.o2) {
         var _debug = (_href.indexOf("debugger") !== -1);
         var _par = _href.substr(_href.lastIndexOf("?") + 1, _href.length);
 
+        var supportedLanguages = ["zh-cn", "en", "es", "ko", "zh-tw", "zh-hk", "ja"];
+
         var _lp = _language || navigator.language || "zh-cn";
         //if (!_lp) _lp = "zh-cn";
 
@@ -146,7 +148,10 @@ if (!window.o2) {
          */
         this.o2.languageName = _lp;
         _lp = _lp.toLocaleLowerCase();
-        var supportedLanguages = ["zh-CN", "en", "es"];
+
+        if (supportedLanguages.indexOf(_lp) == -1){
+            _lp = _lp.substring(0, _lp.indexOf('-'));
+        }
         if (supportedLanguages.indexOf(_lp) == -1) _lp = "zh-cn";
         this.o2.language = _lp;
         this.o2.splitStr = /\s*(?:,|;)\s*/;
@@ -171,6 +176,25 @@ if (!window.o2) {
          * o2.debug();
          */
         this.o2.debug = debug;
+
+
+        this.o2.runningRequestsList = [];
+        var o2 = this.o2;
+        var requestSend = XMLHttpRequest.prototype.send;
+        var requestOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.send = function(){
+            var request = this;
+            o2.runningRequestsList.push(request);
+            request.addEventListener("loadend", function(){
+                o2.runningRequestsList.splice(o2.runningRequestsList.indexOf(request, 1));
+            });
+            requestSend.apply(this, arguments);
+        }
+        XMLHttpRequest.prototype.open = function(){
+            var request = this;
+            request.requestOptions = Array.from(arguments);
+            requestOpen.apply(this, arguments);
+        }
 
         var _attempt = function () {
             for (var i = 0, l = arguments.length; i < l; i++) {

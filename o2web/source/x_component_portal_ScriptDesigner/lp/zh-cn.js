@@ -26,5 +26,12 @@ MWF.xApplication.portal.ScriptDesigner.LP = {
             "numberKey": "项目名称不能为数字，请重新输入",
 
             "inputName": "请输入脚本名称"
-		}
+		},
+        "formToolbar":{
+            "save": "保存脚本",
+            "autoSave": "自动保存",
+            "fontSize": "字体大小",
+            "style": "样式",
+            "scriptEditor": "脚本编辑器"
+        }
 };

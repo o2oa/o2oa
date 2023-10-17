@@ -77,9 +77,9 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
-        var numberStr = (this.json.inputType === "number" && this.json.resultType === "number" ) ? ".number" : "";
+        //var numberStr = (this.json.inputType === "number" && this.json.resultType === "number" ) ? ".number" : "";
         var html = "<el-input";
-        html += " v-model"+ numberStr +"=\""+this.json.$id+"\"";
+        html += " v-model"+"=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";
         html += " :minlength=\"minlength\"";
         html += " :show-word-limit=\"showWordLimit\"";
@@ -95,6 +95,7 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
         html += " :clearable=\"clearable\"";
         html += " :type=\"inputType\"";
         html += " :placeholder=\"description\"";
+
 
         // this.options.elEvents.forEach(function(k){
         //     html += " @"+k+"=\"$loadElEvent('"+k+"')\"";
@@ -124,5 +125,34 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
 
         html += "</el-input>";
         return html;
+    },
+        _createEventFunction: function(methods, k){
+            methods["$loadElEvent_"+k.camelCase()] = function(){
+                var flag = true;
+                if (k==="change"){
+                    if(this.json.inputType === "number" && this.json.resultType === "number" ){
+                        if( parseFloat(arguments[0]).toString() !== "NaN" ){
+                            this.json[this.json.$id] = parseFloat(arguments[0]);
+                        }
+                    }
+                    this.validationMode();
+                    this._setBusinessData(this.getInputData());
+                    if( !this.validation() )flag = false;
+                }
+                if (this.json.events && this.json.events[k] && this.json.events[k].code){
+                    this.form.Macro.fire(this.json.events[k].code, this, arguments);
+                }
+                if( flag )this.fireEvent(k, arguments);
+            }.bind(this);
+        },
+    getValue: function(){
+        if (this.moduleValueAG) return this.moduleValueAG;
+        var value = this._getBusinessData();
+        if (value || value===0 || value===false){
+            return value;
+        }else{
+            value = this._computeValue();
+            return (o2.typeOf(value)!=="null") ? value : "";
+        }
     }
 }); 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>PDF View</title>
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        div {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        object {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="../../o2_core/o2.min.js"></script>
+    <script>
+        o2.addReady(function(){
+            const uri = new URI(window.location.href);
+            const file = uri.getData("file");
+            const obj = document.querySelector("object");
+            obj.setAttribute("data", file);
+        });
+    </script>
+</head>
+<body>
+<div>
+    <object data="" type="application/pdf">
+        <p>It appears you don't have a PDF plugin for this browser. </p>
+    </object>
+</div>
+</body>
+</html>

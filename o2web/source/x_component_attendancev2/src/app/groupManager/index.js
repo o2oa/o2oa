@@ -26,17 +26,18 @@ export default content({
     this.listenEventBus();
   },
   listenEventBus() {
-    this.$topParent.listenEventBus('group', (data) => {
-      console.log('接收到了group消息', data);
+    this.$topParent.listenEventBus("group", (data) => {
+      console.log("接收到了group消息", data);
       this.loadGroupList();
     });
   },
-  // 班次信息展现 
+  // 班次信息展现
   formatAttendanceTime(group) {
     if (!group) {
       return "";
     }
-    if (group.checkType === "1" && group.workDateProperties) { // 如果是固定班制 展现周一或周二的班次信息
+    if (group.checkType === "1" && group.workDateProperties) {
+      // 如果是固定班制 展现周一或周二的班次信息
       let map = {};
       let restList = [];
       for (let key in group.workDateProperties) {
@@ -51,8 +52,8 @@ export default content({
           } else {
             map[day.shiftId] = {
               dayList: [dayLp],
-              shift: day.shift
-            }
+              shift: day.shift,
+            };
           }
         } else {
           restList.push(dayLp);
@@ -60,7 +61,17 @@ export default content({
       }
       let retStr = "";
       for (let id in map) {
-        retStr += map[id].dayList.join("、") + " " + map[id].shift.shiftName + " ("+ map[id].shift.properties.timeList[0].onDutyTime + " - " + map[id].shift.properties.timeList[map[id].shift.properties.timeList.length-1].offDutyTime+") | ";
+        retStr +=
+          map[id].dayList.join("、") +
+          " " +
+          map[id].shift.shiftName +
+          " (" +
+          map[id].shift.properties.timeList[0].onDutyTime +
+          " - " +
+          map[id].shift.properties.timeList[
+            map[id].shift.properties.timeList.length - 1
+          ].offDutyTime +
+          ") | ";
       }
       if (restList.length > 0) {
         retStr += restList.join("、") + " " + lp.groupForm.shiftEmpty;
@@ -68,38 +79,41 @@ export default content({
         retStr = retStr.substring(0, retStr.length - 2);
       }
       return retStr;
-    } else if (group.checkType === "2") {// 如果是自由工时 直接展现
-        const dayList = group.workDateList.split(",").map((d) => {
-          switch(d) {
-            case "1":
-              return lp.day.Monday;
-            case "2":
-              return lp.day.Tuesday;
-            case "3":
-                return lp.day.Wednesday;
-            case "4":
-              return lp.day.Thursday;
-            case "5":
-              return lp.day.Friday;
-            case "6":
-              return lp.day.Saturday;
-            case "0":
-              return lp.day.Sunday;
-          }
-          return "";
-        });
-        return dayList.join("、") + " " + lp.groupForm.checkTypeFree;
+    } else if (group.checkType === "2") {
+      // 如果是自由工时 直接展现
+      const dayList = group.workDateList.split(",").map((d) => {
+        switch (d) {
+          case "1":
+            return lp.day.Monday;
+          case "2":
+            return lp.day.Tuesday;
+          case "3":
+            return lp.day.Wednesday;
+          case "4":
+            return lp.day.Thursday;
+          case "5":
+            return lp.day.Friday;
+          case "6":
+            return lp.day.Saturday;
+          case "0":
+            return lp.day.Sunday;
+        }
+        return "";
+      });
+      return dayList.join("、") + " " + lp.groupForm.checkTypeFree;
+    } else if (group.checkType === "3") {
+      return lp.groupForm.checkTypeArrangement;
     }
     return "";
   },
   day2Lang(day) {
-    switch(day) {
+    switch (day) {
       case "monday":
         return lp.day.Monday;
       case "tuesday":
         return lp.day.Tuesday;
       case "wednesday":
-          return lp.day.Wednesday;
+        return lp.day.Wednesday;
       case "thursday":
         return lp.day.Thursday;
       case "friday":
@@ -112,13 +126,8 @@ export default content({
     return "";
   },
   loadData(e) {
-    if (
-      e &&
-      e.detail &&
-      e.detail.module &&
-      e.detail.module.bind
-    ) {
-      this.bind.pagerData.page =  e.detail.module.bind.page || 1;
+    if (e && e.detail && e.detail.module && e.detail.module.bind) {
+      this.bind.pagerData.page = e.detail.module.bind.page || 1;
       this.loadGroupList();
     }
   },
@@ -142,13 +151,12 @@ export default content({
   },
   // 修改
   async clickEditGroup(id) {
-    const group = this.bind.groupList.find((g)=> g.id === id);
+    const group = this.bind.groupList.find((g) => g.id === id);
     if (group) {
       // const content = (await import(`./editGroup/index.js`)).default;
       // this.addGroupVm = await content.generate(".form", {bind: {updateId: group.id}}, this);
-      this.$parent.openGroupForm({bind: {updateId: group.id}});
+      this.$parent.openGroupForm({ bind: { updateId: group.id } });
     }
-    
   },
   // 删除
   async clickDeleteGroup(id, name) {
@@ -170,11 +178,39 @@ export default content({
     );
   },
   async deleteGroup(id) {
-    this.$topParent.closeFormVm();// 关闭表单
+    this.$topParent.closeFormVm(); // 关闭表单
     const json = await groupAction("delete", id);
     console.debug(json);
     this.loadGroupList();
   },
+  // 点击事件 打开排班编辑
+  async clickEditSchedule(group) {
+    if (!group || !group.id) {
+      console.log('数据异常！');
+      return ;
+    }
+    this.$topParent.closeFormVm(); // 关闭表单
+    const result = await groupAction("get", group.id);
+    if (result) {
+      const data = {
+        bind: {
+          trueParticipantList: result.trueParticipantList || [],
+          groupId: result.id,
+        },
+      };
+      this.openScheduleWindow(data);
+    }
+  },
+  // 打开排班界面
+  async openScheduleWindow(bind) {
+    if (!bind || !bind.bind || !bind.bind.trueParticipantList || !bind.bind.groupId) {
+      console.log('数据异常！');
+      return ;
+    }
+    const c = (await import("./schedule/index.js")).default;
+    this.scheduleVm = await c.generate("#scheduleFom", bind, this);
+  },
+
   // 关闭表单页面
   closeGroup() {
     if (this.addGroupVm) {

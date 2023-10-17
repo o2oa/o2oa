@@ -68,15 +68,9 @@ public class ActionListByPage extends BaseAction {
 
 
     public static class Wo extends AttendanceV2Shift {
+ 
 
-        public static WrapCopier<AttendanceV2Shift, Wo> getCopier() {
-            return copier;
-        }
-
-        public static void setCopier(WrapCopier<AttendanceV2Shift, Wo> copier) {
-            Wo.copier = copier;
-        }
-
+        private static final long serialVersionUID = -4698953176142071598L;
         static WrapCopier<AttendanceV2Shift, Wo> copier = WrapCopierFactory.wo(AttendanceV2Shift.class, Wo.class, null,
                 JpaObject.FieldsInvisible);
     }

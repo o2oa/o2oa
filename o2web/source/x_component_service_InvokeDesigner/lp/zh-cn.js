@@ -62,5 +62,13 @@ MWF.xApplication.service.InvokeDesigner.LP = {
         "org" : "组织快速访问方法",
         "service" : "webSerivces客户端"
 
+    },
+    "formToolbar":{
+        "save": "保存",
+        "autoSave": "自动保存",
+        "fontSize": "字体大小",
+        "style": "样式",
+        "scriptEditor": "脚本编辑器",
+        "viewAllVersions": "查看所有脚本版本"
     }
 };

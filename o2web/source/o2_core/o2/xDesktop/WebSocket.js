@@ -249,8 +249,8 @@ MWF.xDesktop.WebSocket = new Class({
         var content = "<font style='color: #ea621f'>"+(data.body.creatorPerson||"").split("@")[0]+"</font>"+MWF.LP.desktop.messsage.publishDocument+data.body.title;
 
         var msg = {
-            "subject": data.body.categoryName,
-            "content": content
+            "subject": data.body.msgTitle?data.body.msgTitle:data.body.categoryName,
+            "content": data.body.msgContent?data.body.msgContent:content
         };
         var messageItem = layout.desktop.message.addMessage(msg);
         var tooltipItem = layout.desktop.message.addTooltip(msg);
@@ -414,7 +414,7 @@ MWF.xDesktop.WebSocket = new Class({
             }
             return;
         }
-       
+
     },
 
 

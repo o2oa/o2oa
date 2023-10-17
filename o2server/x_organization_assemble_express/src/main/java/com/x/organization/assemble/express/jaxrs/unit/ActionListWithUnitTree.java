@@ -70,6 +70,9 @@ class ActionListWithUnitTree extends BaseAction {
 		@FieldDescribe("直接下级组织数量")
 		private Long subDirectIdentityCount = 0L;
 
+		@FieldDescribe("直接下级职务数量")
+		private Long subDirectDutyCount = 0L;
+
 		@FieldDescribe("直接下级组织")
 		private List<Wo> subUnits = new ArrayList<>();
 
@@ -96,6 +99,14 @@ class ActionListWithUnitTree extends BaseAction {
 		public void setSubUnits(List<Wo> subUnits) {
 			this.subUnits = subUnits;
 		}
+
+		public Long getSubDirectDutyCount() {
+			return subDirectDutyCount;
+		}
+
+		public void setSubDirectDutyCount(Long subDirectDutyCount) {
+			this.subDirectDutyCount = subDirectDutyCount;
+		}
 	}
 
 	private List<Wo> list(Business business, Wi wi) throws Exception {
@@ -118,6 +129,7 @@ class ActionListWithUnitTree extends BaseAction {
 				wo.setSubDirectUnitCount((long)wos.size());
 			}
 			wo.setSubDirectIdentityCount(business.identity().countByUnit(unit.getId()));
+			wo.setSubDirectDutyCount(business.unitDuty().countByUnit(unit.getId()));
 		}
 	}
 

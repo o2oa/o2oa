@@ -16,7 +16,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -40,6 +39,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class V2Rollback extends BaseAction {
 
@@ -134,7 +134,7 @@ class V2Rollback extends BaseAction {
             }
         };
 
-        return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+        return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
 
     }
 

@@ -165,7 +165,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 将导入的流进行保存
-	 * 
+	 *
 	 * @param mapping
 	 * @param input
 	 * @param name
@@ -216,7 +216,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 更新内容
-	 * 
+	 *
 	 * @param mapping
 	 * @param input
 	 * @param name
@@ -311,6 +311,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		if (null == mapping.getProtocol()) {
 			throw new IllegalStateException("storage protocol is null.");
 		}
+		String split = "//";
 		switch (mapping.getProtocol()) {
 		case ftp:
 			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
@@ -352,13 +353,21 @@ public abstract class StorageObject extends SliceJpaObject {
 		case min:
 			prefix = "min://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@";
-			String split = "//";
 			if (mapping.getHost().indexOf(split) > -1) {
 				prefix = prefix + StringUtils.substringAfter(mapping.getHost(), split);
 			} else {
 				prefix = prefix + mapping.getHost();
 			}
 			prefix = prefix.equals("/") ? prefix + mapping.getName() : prefix + "/" + mapping.getName();
+			break;
+		case cos:
+			prefix = "cos://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@";
+			if (mapping.getHost().indexOf(split) > -1) {
+				prefix = prefix + StringUtils.substringAfter(mapping.getHost(), split);
+			} else {
+				prefix = prefix + mapping.getHost();
+			}
 			break;
 		case file:
 			prefix = "file://";

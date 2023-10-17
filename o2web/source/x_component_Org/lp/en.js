@@ -47,6 +47,8 @@ MWF.xApplication.Org.LP = {
     "ipAddressPlaceHolder" : "Only the matching ip can login to the account. Separate multiple values with \",\"",
     "ipAddressIncorrectNotice" : "IP address format is incorrect:",
 
+    "securityLabel" : "Security Label",
+
     "createSubCompany": "Create sub company",
     "createSubDepartment": "Create sub department",
     "configCompany": "Setup company manager",
@@ -95,7 +97,9 @@ MWF.xApplication.Org.LP = {
 
 	"dutyName": "Duty name",
 	"dutyMembers": "Members",
-
+    "editDuty": "Edit Duty",
+    "modifySuccess": "Modify successful",
+    "modifyFail": "Modify failed",
 	
 	"deleteDutyTitle": "Delete Duty confirmation",
     "deleteDuty": "Are you sure you want to delete the selected Duty?",
@@ -235,6 +239,7 @@ MWF.xApplication.Org.LP = {
 
 	//"inputPersonInfor": "请输入完整人员信息（人员名称、人员工号、手机号码、性别必填）",
     "inputPersonInfor": "Please enter complete Person information (Person name, unique, cellphone number, gender are required)",
+    "inputPersonInfor2": "Please enter complete Person information (Person name, unique, cellphone number, gender are required)",
 	"personAttributeText": "Attribute",
 	"personIdentityText": "Identity",
     "controllerListText": "Manager",

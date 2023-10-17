@@ -1443,7 +1443,14 @@ o2.widget.AttachmentController.Attachment = new Class({
 
         this.textNode = new Element("div", {"styles": this.css.attachmentTextNode_list}).inject(this.node);
         this.textTitleNode = new Element("div", {"styles": this.css.attachmentTextTitleNode_list}).inject(this.textNode);
-        this.textTitleNode.set("text", this.data.name);
+        // this.textTitleNode.set("text", this.data.name);
+        if (this.data.objectSecurityPromise){
+            this.data.objectSecurityPromise.then(function(label){
+                this.textTitleNode.set("text", "("+label+") " + this.data.name);
+            }.bind(this));
+        }else{
+            this.textTitleNode.set("text", this.data.name);
+        }
 
         var size = "";
         var k = this.data.length/1024;
@@ -1485,7 +1492,14 @@ o2.widget.AttachmentController.Attachment = new Class({
 
         this.textNode = new Element("div", {"styles": this.css.attachmentTextNode_sequence}).inject(this.node);
         this.textTitleNode = new Element("div", {"styles": this.css.attachmentTextTitleNode_list}).inject(this.textNode);
-        this.textTitleNode.set("text", this.data.name);
+        // this.textTitleNode.set("text", this.data.name);
+        if (this.data.objectSecurityPromise){
+            this.data.objectSecurityPromise.then(function(label){
+                this.textTitleNode.set("text", "("+label+") " + this.data.name);
+            }.bind(this));
+        }else{
+            this.textTitleNode.set("text", this.data.name);
+        }
 
         var size = "";
         var k = this.data.length/1024;
@@ -1525,7 +1539,14 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.iconImgNode.set({"src": this.getIcon(), "border": 0});
 
         this.textNode = new Element("div", {"styles": this.css.attachmentTextNode}).inject(this.node);
-        this.textNode.set("text", this.data.name);
+        if (this.data.objectSecurityPromise){
+            this.data.objectSecurityPromise.then(function(label){
+                this.textNode.set("text", "("+label+") " + this.data.name);
+            }.bind(this));
+        }else{
+            this.textNode.set("text", this.data.name);
+        }
+
         this.custom_Icon();
     },
     custom_Icon: function(){},
@@ -1548,10 +1569,25 @@ o2.widget.AttachmentController.Attachment = new Class({
                 });
             }.bind(this));
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
-            this.textNode.set("text", this.data.name);
+            if (this.data.objectSecurityPromise){
+                this.data.objectSecurityPromise.then(function(label){
+                    this.textNode.set("text", "("+label+") " + this.data.name);
+                }.bind(this));
+            }else{
+                this.textNode.set("text", this.data.name);
+            }
+
+            // this.textNode.set("text", this.data.name);
         }else if (this.controller.options.audios.indexOf(this.data.extension.toLowerCase())!==-1){
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
-            this.textNode.set("text", this.data.name);
+            if (this.data.objectSecurityPromise){
+                this.data.objectSecurityPromise.then(function(label){
+                    this.textNode.set("text", "("+label+") " + this.data.name);
+                }.bind(this));
+            }else{
+                this.textNode.set("text", this.data.name);
+            }
+            // this.textNode.set("text", this.data.name);
 
             this.controller.module.getAttachmentUrl(this, function(url){
                 this.iconImgNode.set({"src": icon, "border": 0});
@@ -1573,12 +1609,26 @@ o2.widget.AttachmentController.Attachment = new Class({
                 this.iconVideoNode.addEvent("dblclick", function(e){e.stopPropagation();});
 
                 this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
-                this.textNode.set("text", this.data.name);
+                if (this.data.objectSecurityPromise){
+                    this.data.objectSecurityPromise.then(function(label){
+                        this.textNode.set("text", "("+label+") " + this.data.name);
+                    }.bind(this));
+                }else{
+                    this.textNode.set("text", this.data.name);
+                }
+                // this.textNode.set("text", this.data.name);
             }.bind(this));
         }else{
             this.iconImgNode.set({"src": icon, "border": 0});
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
-            this.textNode.set("text", this.data.name);
+            if (this.data.objectSecurityPromise){
+                this.data.objectSecurityPromise.then(function(label){
+                    this.textNode.set("text", "("+label+") " + this.data.name);
+                }.bind(this));
+            }else{
+                this.textNode.set("text", this.data.name);
+            }
+            // this.textNode.set("text", this.data.name);
         }
         this.custom_Preview();
     },
@@ -1881,7 +1931,6 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         }
     },
     loadList: function() {
-        debugger;
         this.node.setStyles( layout.mobile ? this.css.minAttachmentNode_list_mobile : this.css.minAttachmentNode_list);
 
         if( !layout.mobile ){
@@ -1928,7 +1977,14 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.iconImgNode.set({"src": this.getIcon(), "border": 0});
 
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
-        this.textNode.set("text", this.data.name);
+        if (this.data.objectSecurityPromise){
+            this.data.objectSecurityPromise.then(function(label){
+                this.textNode.set("text", "("+label+") " + this.data.name);
+            }.bind(this));
+        }else{
+            this.textNode.set("text", this.data.name);
+        }
+        // this.textNode.set("text", this.data.name);
 
         var size = "";
         var k = this.data.length/1024;
@@ -1991,7 +2047,14 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.iconImgNode.set({"src": this.getIcon(), "border": 0});
 
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
-        this.textNode.set("text", this.data.name);
+        if (this.data.objectSecurityPromise){
+            this.data.objectSecurityPromise.then(function(label){
+                this.textNode.set("text", "("+label+") " + this.data.name);
+            }.bind(this));
+        }else{
+            this.textNode.set("text", this.data.name);
+        }
+        // this.textNode.set("text", this.data.name);
         var size = "";
         var k = this.data.length/1024;
         if (k>1024){

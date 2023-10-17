@@ -16,7 +16,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -36,6 +35,7 @@ import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -63,7 +63,8 @@ class ActionProcessing extends BaseAction {
 			job = task.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(id, wi)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(new CallableExecute(id, wi)).get(300,
+				TimeUnit.SECONDS);
 
 	}
 

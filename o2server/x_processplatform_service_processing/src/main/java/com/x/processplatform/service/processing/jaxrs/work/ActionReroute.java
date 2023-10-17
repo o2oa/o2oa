@@ -15,7 +15,6 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,6 +28,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionReroute extends BaseAction {
@@ -86,7 +86,7 @@ class ActionReroute extends BaseAction {
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+		ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
 
 		wo = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,

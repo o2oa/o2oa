@@ -46,6 +46,8 @@ MWF.xApplication.Org.LP = {
 	"ipAddressPlaceHolder" : "Solo las direcciones IP que coincidan podrán iniciar sesión. Separe múltiples valores con “,”.",
 	"ipAddressIncorrectNotice" : "Formato de la dirección IP no válido:",
 
+	"securityLabel" : "Etiqueta de seguridad",
+
     "createSubCompany": "Crear subcompañía",
 	"createSubDepartment": "Crear subdepartamento",
 	"configCompany": "Configurar administrador de la compañía",
@@ -93,8 +95,9 @@ MWF.xApplication.Org.LP = {
 
 	"dutyName": "Nombre del puesto",
 	"dutyMembers": "Miembros",
-
-
+	"editDuty": "Editar tarea",
+	"modifySuccess": "Modificación exitosa",
+	"modifyFail": "Error en la modificación",
 
 	"deleteDutyTitle": "Confirmación para eliminar puesto",
 	"deleteDuty": "¿Estás seguro/a de que deseas eliminar los puestos seleccionados?",
@@ -231,6 +234,7 @@ MWF.xApplication.Org.LP = {
 
     //"inputPersonInfor": "请输入完整人员信息（人员名称、人员工号、手机号码、性别必填）",
 	"inputPersonInfor": "Introduce la información completa de la persona (el nombre de la persona, el código único, el número de teléfono móvil y el género son obligatorios).",
+	"inputPersonInfor2": "Introduce la información completa de la persona (el nombre de la persona, el código único, el número de teléfono móvil y el género son obligatorios).",
 	"personAttributeText": "Atributos personales",
 	"personIdentityText": "Identidad",
 	"controllerListText": "Controladores",

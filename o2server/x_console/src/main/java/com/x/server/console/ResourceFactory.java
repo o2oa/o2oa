@@ -13,10 +13,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.naming.NamingException;
 
@@ -26,7 +23,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
@@ -61,11 +57,6 @@ public class ResourceFactory {
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
-//	public static final ThreadPoolExecutor THREADPOOLEXECUTOR = new ThreadPoolExecutor(
-//			Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors(), 120,
-//			TimeUnit.SECONDS, new ArrayBlockingQueue<>(1000), new ThreadFactoryBuilder()
-//					.setNameFormat(ResourceFactory.class.getPackageName() + "-threadpool-%d").build());
-
 	/**
 	 * 用于销毁时的对象
 	 */
@@ -86,7 +77,6 @@ public class ResourceFactory {
 			disableDruidMysqlUsePingMethod();
 		}
 		initDataSources();
-		processPlatformExecutors();
 		tokenThresholds();
 	}
 
@@ -287,18 +277,6 @@ public class ResourceFactory {
 			list.add(dataSource);
 		}
 		return list;
-	}
-
-	private static void processPlatformExecutors() throws Exception {
-		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
-		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			// 等价于 Executors.newFixedThreadPool
-			services[i] = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
-					new BasicThreadFactory.Builder().namingPattern("ProcessPlatformExecutor-" + i).daemon(true)
-							.build());
-		}
-
-		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
 	}
 
 	private static void tokenThresholds() throws NamingException {

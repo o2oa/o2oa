@@ -381,7 +381,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "writingBoard": "writingBoard",
         "tinymceEditor": "TinyMCE",
         "relatedLink": "Related Link",
-        "associatedDocument": "Associated Document"
+        "associatedDocument": "Associated Document",
+        "security": "Security Label"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -1555,6 +1556,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "rollbackTitle": "Rollback the work to the specified activity, without keeping process records",
         "delete": "Delete",
         "deleteTitle": "Delete Document",
+
+        "terminate": "Terminate",
+        "terminateTitle": "End file process",
+
         "print": "Print",
         "printTitle": "Open through the print form, and print the document",
         "press": "Urge",
@@ -1584,5 +1589,22 @@ MWF.xApplication.process.FormDesigner.LP = {
         "deleteRow": "Delete Row",
         "insertRow": "Insert Row",
         "importFromForm": "Import field configuration from the interface"
+    },
+    "formToolbar":{
+        "save": "Save form",
+        "saveNew": "Save as template",
+        "preview": "preview",
+        "print": "print",
+        "formExplode": "Form Export",
+        "formImplode": "Form import",
+        "formImplodeO2": "Import from O2 data",
+        "formImplodeO2Title": "Import O2 format form",
+        "htmlImplode": "Import from HTML",
+        "officeImplode": "Import from WORD or EXCEL",
+        "help": "help",
+        "clearNoDomModule": "Clear component configurations that are not in the HTML tree",
+        "autoSave": "AutoSave",
+        "brush": "brush",
+        "viewAllVersion": "View all form versions"
     }
 };

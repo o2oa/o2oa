@@ -119,5 +119,12 @@ MWF.xApplication.query.StatDesigner.LP = {
         "sum1":"列视图计算与指定分类值的合集",
         "groupSpecifiedList":"指定分类值",
         "conversion": "行列转换"
+    },
+    "formToolbar":{
+        "save": "保存",
+        "saveAs": "另存为",
+        "autoSave": "自动保存",
+        "preview": "预览",
+        "help": "帮助"
     }
 };

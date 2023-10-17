@@ -379,7 +379,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "writingBoard": "P.E.",
         "tinymceEditor": "Tinymce",
         "relatedLink": "recomendación",
-        "associatedDocument": "Un documento asociado"
+        "associatedDocument": "Un documento asociado",
+        "security":"Etiqueta de seguridad"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -1551,6 +1552,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "rollbackTitle": "Volver a un paso anterior sin conservar registros de flujo de trabajo",
         "delete": "Eliminar",
         "deleteTitle": "Eliminar archivo",
+
+        "terminar": "Terminar",
+        "terminateTitle": "Finalizar transferencia de archivo",
+
         "print": "Imprimir",
         "printTitle": "Imprimir documento",
         "press": "Urgir",
@@ -1577,5 +1582,22 @@ MWF.xApplication.process.FormDesigner.LP = {
         "deleteRow": "Eliminar fila",
         "insertRow": "Insertar fila",
         "importFromForm": "Importar configuración de campos desde la interfaz"
+    },
+    "formToolbar":{
+        "save": "Guardar formulario",
+        "saveNew": "Guardar como plantilla",
+        "preview": "vista previa",
+        "print": "imprimir",
+        "formExplode": "Exportar formulario",
+        "formImplode": "Importación de formulario",
+        "formImplodeO2": "Importar desde datos de O2",
+        "formImplodeO2Title": "Importar formulario en formato O2",
+        "htmlImplode": "Importar desde HTML",
+        "officeImplode": "Importar desde WORD o EXCEL",
+        "help": "ayuda",
+        "clearNoDomModule": "Borrar configuraciones de componentes que no están en el árbol HTML",
+        "autoSave": "AutoGuardar",
+        "brush": "cepillar",
+        "viewAllVersion": "Ver todas las versiones del formulario"
     }
 };

@@ -21,6 +21,7 @@ var apps = [
     { "folder": "x_component_cms_ViewDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_Xform", "tasks": ["move", "min"] },
     { "folder": "x_component_Collect", "tasks": ["move", "min"] },
+    { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Common", "tasks": ["move", "min"] },
     { "folder": "x_component_Console", "tasks": ["move", "min"] },
     { "folder": "x_component_ControlPanel", "tasks": ["move", "min"] },
@@ -95,7 +96,9 @@ var apps = [
     { "folder": "x_component_appstore_application", "tasks": [] },
     { "folder": "x_component_systemconfig", "tasks": [] },
     { "folder": "x_component_attendancev2", "tasks": [] },
-    { "folder": "x_init", "tasks": [] }
+    { "folder": "x_init", "tasks": [] },
+    { "folder": "x_test", "tasks": ["move", "min"] },
+    { "folder": "x_component_test_vue3", "tasks": [] }
 ];
 
 module.exports = apps;

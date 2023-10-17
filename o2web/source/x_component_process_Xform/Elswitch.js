@@ -158,6 +158,9 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
             if (this.json.elStyles){
                 this.node.setStyles( this._parseStyles(this.json.elStyles) );
             }
+
+            this.fireEvent("load");
+            this.isLoaded = true;
         }
     },
 

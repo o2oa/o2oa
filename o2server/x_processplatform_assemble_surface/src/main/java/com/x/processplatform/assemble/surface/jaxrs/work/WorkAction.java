@@ -233,26 +233,26 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "创建工作（强制创建存在的流程）.", action = ActionCreateWithApplicationProcessForce.class)
-	@POST
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("application/{applicationFlag}/process/{processFlag}/force")
-	public void createWithApplicationProcessForce(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
-		ActionResult<List<ActionCreateWithApplicationProcessForce.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCreateWithApplicationProcessForce().execute(effectivePerson, applicationFlag,
-					processFlag, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-	}
+//	@JaxrsMethodDescribe(value = "创建工作（强制创建存在的流程）.", action = ActionCreateWithApplicationProcessForce.class)
+//	@POST
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Path("application/{applicationFlag}/process/{processFlag}/force")
+//	public void createWithApplicationProcessForce(@Suspended final AsyncResponse asyncResponse,
+//			@Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+//			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
+//		ActionResult<List<ActionCreateWithApplicationProcessForce.Wo>> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new ActionCreateWithApplicationProcessForce().execute(effectivePerson, applicationFlag,
+//					processFlag, jsonElement);
+//		} catch (Exception e) {
+//			LOGGER.error(e, effectivePerson, request, jsonElement);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+//	}
 
 	@JaxrsMethodDescribe(value = "删除工作，需要应用管理权限或者是工作的创建者。", action = ActionDelete.class)
 	@DELETE
@@ -1357,6 +1357,42 @@ public class WorkAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new V2ListActivityGoBack().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "终止工作.", action = V2Terminate.class)
+	@GET
+	@Path("v2/{id}/terminate")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Terminate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<V2Terminate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Terminate().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理终止工作.", action = V2ManageTerminate.class)
+	@GET
+	@Path("v2/{id}/terminate/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ManageTerminate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<V2ManageTerminate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ManageTerminate().execute(effectivePerson, id);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -528,7 +528,33 @@ o2.xApplication.systemconfig.LP = {
         "logRetainDaysInfo": "Set the maximum number of days to keep logs",
 
         "logBodyEnable": "Record Body Content",
-        "logBodyEnableInfo": "Recording the body content will get more detailed log information, but it will also greatly increase disk space usage and server overhead."
+        "logBodyEnableInfo": "Recording the body content will get more detailed log information, but it will also greatly increase disk space usage and server overhead.",
+
+        "securityClearanceEnable": "Enable system security level identification",
+        "securityClearanceEnableInfo": "According to the \"Standards for the Hierarchical Protection and Management of Information Systems Involving State Secrets\" (BMB20-2007), secret-related application systems must have corresponding confidentiality levels. If your system involves relevant requirements, please enable the confidentiality level flag<br>" +
+            "The O2OA system supports the setting of subject confidentiality level identification and object confidentiality level identification, and strictly controls access permissions. Low-security-level subjects cannot access high-security-level objects. <br>" +
+            "<b>Subject confidentiality level:</b>You can set the main confidentiality level of the system in System Configuration-Ternary Management.<br>" +
+            "<b>Object confidentiality level:</b>You can add the \"confidentiality mark\" design element when designing related forms to set the document confidentiality mark.",
+
+        "subjectSecurityClearance": "Subject Security Level Identification",
+        "subjectSecurityClearanceInfo": "Configure the subject confidentiality level identifier. The identifier value is a number. The larger the value, the higher the confidentiality level. Subjects corresponding to the confidentiality level can access objects whose confidentiality level is less than or equal to the subject's confidentiality level. For example, if the subject's confidentiality level is 300, then this Objects accessible to the subject must have a confidentiality level less than or equal to 300.",
+
+        "objectSecurityClearance": "Object security level identification",
+        "objectSecurityClearanceInfo": "Configure the object confidentiality level identifier. The identifier value is a number. The larger the value, the higher the confidentiality level.",
+
+        "labelName": "label name",
+        "labelValue": "label value",
+
+        "defaultSubjectSecurityClearance": "Default Subject ID",
+        "defaultSubjectSecurityClearanceInfo": "If the subject does not set a confidentiality level identifier, this identifier is applied.",
+
+        "systemSecurityClearance": "System security level identification",
+        "systemSecurityClearanceInfo": "Set the security level identification of the system. The security level identification of all other subjects or objects will not be higher than the system security level.",
+
+        "labelValueSame": "Cannot set the same label value",
+        "labelNameSame": "Cannot set the same label name",
+        "labelValueEmpty": "Must enter label value",
+        "labelNameEmpty": "Must enter label name"
     },
     "_databaseServer": {
         "databaseSource": "Data source configuration",
@@ -1402,7 +1428,8 @@ o2.xApplication.systemconfig.LP = {
                 "cifs": "cifs",
                 "ali": "Alibaba Cloud Storage",
                 "s3":"Amazon Cloud Storage",
-                "min":"MinIO Storage"
+                "min":"MinIO Storage",
+                "cos": "Tencent Cloud Storage"
             },
             "protocolDataInfo": {
                 "ali": "If you have not installed the Aliyun OSS integration plug-in in the application market, please install it first.",

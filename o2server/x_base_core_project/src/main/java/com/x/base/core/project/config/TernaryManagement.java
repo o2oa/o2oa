@@ -6,13 +6,16 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -31,6 +34,8 @@ import com.x.base.core.project.tools.DefaultCharset;
  */
 public class TernaryManagement extends ConfigObject {
 
+	private static final long serialVersionUID = -4506350734689617177L;
+
 	public static final String initPassword = "o2oa@2022";
 
 	public static final String INIT_SYSTEM_MANAGER = "systemManager";
@@ -44,6 +49,10 @@ public class TernaryManagement extends ConfigObject {
 	public static final String INIT_AUDIT_MANAGER = "auditManager";
 	public static final String INIT_AUDIT_MANAGER_DISTINGUISHED_NAME = "安全审计员@auditManager@P";
 	public static final String INIT_AUDIT_MANAGER_NAME = "安全审计员";
+
+	public static final Boolean DEFAULT_SECURITYCLEARANCEENABLE = false;
+	public static final Integer DEFAULT_SYSTEMSECURITYCLEARANCE = 400;
+	public static final Integer DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE = 200;
 
 	private transient String _systemManagerPassword;
 
@@ -61,6 +70,11 @@ public class TernaryManagement extends ConfigObject {
 		this.systemManagerPassword = "";
 		this.securityManagerPassword = "";
 		this.auditManagerPassword = "";
+		this.securityClearanceEnable = DEFAULT_SECURITYCLEARANCEENABLE;
+		this.systemSecurityClearance = DEFAULT_SYSTEMSECURITYCLEARANCE;
+		this.defaultSubjectSecurityClearance = DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE;
+		this.subjectSecurityClearance = defualtSubjectSecurityClearance();
+		this.objectSecurityClearance = defualtObjectSecurityClearance();
 	}
 
 	public boolean isTernaryManagement(String name) {
@@ -317,6 +331,60 @@ public class TernaryManagement extends ConfigObject {
 	@FieldDescribe("安全审计员账号密码.")
 	private String auditManagerPassword;
 
+	@FieldDescribe("启用密级标识.")
+	private Boolean securityClearanceEnable;
+
+	@FieldDescribe("系统密级标识.")
+	private Integer systemSecurityClearance;
+
+	@FieldDescribe("默认主体密级标识.")
+	private Integer defaultSubjectSecurityClearance;
+
+	@FieldDescribe("主体密级标识配置.")
+	private Map<String, Integer> subjectSecurityClearance;
+
+	@FieldDescribe("客体密级标识配置.")
+	private Map<String, Integer> objectSecurityClearance;
+
+	public Boolean getSecurityClearanceEnable() {
+		return BooleanUtils.isTrue(securityClearanceEnable);
+	}
+
+	public static Map<String, Integer> defualtSubjectSecurityClearance() {
+		Map<String, Integer> map = new LinkedHashMap<>();
+		map.put("重要", 400);
+		map.put("一般", 300);
+		map.put("内部", 200);
+		map.put("义务", 100);
+		return map;
+	}
+
+	public static Map<String, Integer> defualtObjectSecurityClearance() {
+		Map<String, Integer> map = new LinkedHashMap<>();
+		map.put("机密", 400);
+		map.put("秘密", 300);
+		map.put("内部", 200);
+		map.put("非密", 100);
+		return map;
+	}
+
+	public Integer getSystemSecurityClearance() {
+		return (null == systemSecurityClearance) ? DEFAULT_SYSTEMSECURITYCLEARANCE : systemSecurityClearance;
+	}
+
+	public Integer getDefaultSubjectSecurityClearance() {
+		return (null == defaultSubjectSecurityClearance) ? DEFAULT_DEFAULTSUBJECTSECURITYCLEARANCE
+				: defaultSubjectSecurityClearance;
+	}
+
+	public Map<String, Integer> getSubjectSecurityClearance() {
+		return subjectSecurityClearance == null ? defualtSubjectSecurityClearance() : this.subjectSecurityClearance;
+	}
+
+	public Map<String, Integer> getObjectSecurityClearance() {
+		return objectSecurityClearance == null ? defualtObjectSecurityClearance() : this.objectSecurityClearance;
+	}
+
 	public Boolean getEnable() {
 		return enable;
 	}
@@ -368,4 +436,5 @@ public class TernaryManagement extends ConfigObject {
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		this.auditManagerPassword = Crypto.formattedDefaultEncrypt(auditManagerPassword);
 	}
+
 }

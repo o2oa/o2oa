@@ -9,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -24,6 +23,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 class V2Reset extends BaseAction {
 
@@ -45,7 +45,7 @@ class V2Reset extends BaseAction {
             }
         }
 
-        return ProcessPlatformExecutorFactory.get(task.getJob())
+        return ProcessPlatformKeyClassifyExecutorFactory.get(task.getJob())
                 .submit(new CallableImpl(task.getId(), wi.getIdentityList(), wi.getKeep())).get(300, TimeUnit.SECONDS);
 
     }

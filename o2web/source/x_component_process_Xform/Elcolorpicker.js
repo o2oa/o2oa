@@ -65,6 +65,18 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
             if( data[id] )delete data[id];
         })
     },
+    __setReadonly: function(data){
+        if (this.isReadonly()) {
+            this.node.set("text", data);
+            if( this.json.elProperties ){
+                this.node.set(this.json.elProperties );
+            }
+            if (this.json.elStyles){
+                this.node.setStyles( this._parseStyles(this.json.elStyles) );
+            }
+
+        }
+    },
     _loadNode: function(){
         if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();

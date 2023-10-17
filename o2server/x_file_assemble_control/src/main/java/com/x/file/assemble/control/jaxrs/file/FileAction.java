@@ -276,7 +276,8 @@ public class FileAction extends StandardJaxrsAction {
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
+			@JaxrsParameterDescribe("文件类型：processPlatformJob|processPlatformForm|mindInfo|portalPage|" +
+					"cmsDocument|forumDocument|forumReply|component|teamworkProject") @PathParam("referenceType") String referenceType,
 			@JaxrsParameterDescribe("关联id") @PathParam("reference") String reference,
 			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,

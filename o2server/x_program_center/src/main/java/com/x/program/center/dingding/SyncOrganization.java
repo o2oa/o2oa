@@ -3,9 +3,7 @@ package com.x.program.center.dingding;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -133,7 +131,7 @@ public class SyncOrganization {
     }
 
     private Unit checkUnit(Business business, PullResult result, Unit sup, Department org) throws Exception {
-        Unit unit = business.unit().getWithDingdingIdObject(Objects.toString(org.getId()));
+        Unit unit = business.unit().getWithDingdingIdObject(Objects.toString(org.getDept_id()));
         if (null != unit) {
             if ((null == sup) && (StringUtils.isNotEmpty(unit.getSuperior()))) {
                 /* 不是一个顶层组织所以只能删除重建 */
@@ -161,8 +159,8 @@ public class SyncOrganization {
         Unit unit = new Unit();
         emc.beginTransaction(Unit.class);
         unit.setName(org.getName());
-        unit.setUnique(org.getId().toString());
-        unit.setDingdingId(org.getId().toString());
+        unit.setUnique(org.getDept_id().toString());
+        unit.setDingdingId(org.getDept_id().toString());
         unit.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(org)));
         if (null != sup) {
             unit.setSuperior(sup.getId());
@@ -263,7 +261,7 @@ public class SyncOrganization {
             person.setName(user.getName());
             person.setMobile(user.getMobile());
             person.setUnique(user.getUserid());
-            String employee = user.getJobnumber();
+            String employee = user.getJob_number();
             if (StringUtils.isNotEmpty(employee)) {
                 if (business.person().employeeExists(employee, person.getUnique())) {
                     employee = "";
@@ -282,7 +280,7 @@ public class SyncOrganization {
             person.setName(user.getName());
             person.setMobile(user.getMobile());
             person.setUnique(user.getUserid());
-            String employee = user.getJobnumber();
+            String employee = user.getJob_number();
             if (StringUtils.isNotEmpty(employee)) {
                 if (business.person().employeeExists(employee, person.getUnique())) {
                     employee = "";
@@ -321,7 +319,7 @@ public class SyncOrganization {
         EntityManagerContainer emc = business.entityManagerContainer();
         emc.beginTransaction(Person.class);
         person.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
-        String employee = user.getJobnumber();
+        String employee = user.getJob_number();
         if (StringUtils.isNotEmpty(employee)) {
             if (business.person().employeeExists(employee, person.getUnique())) {
                 employee = "";
@@ -399,13 +397,19 @@ public class SyncOrganization {
         }
         emc.commit();
 
+        emc.beginTransaction(Role.class);
+        for (Role role: business.role().listRoleByPersonId(person.getId())) {
+            role.getPersonList().remove(person.getId());
+            role.setPersonList(role.getPersonList());
+        }
+        emc.commit();
+
         emc.beginTransaction(Person.class);
         emc.remove(person, CheckRemoveType.all);
         emc.commit();
         result.getRemovePersonList().add(person.getDistinguishedName());
     }
 
-    @SuppressWarnings("unchecked")
     private Identity checkIdentity(Business business, PullResult result, Person person, Unit unit, User user)
             throws Exception {
         EntityManagerContainer emc = business.entityManagerContainer();
@@ -418,14 +422,15 @@ public class SyncOrganization {
         List<Identity> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
         Identity identity = null;
         Long order = null;
-        if (StringUtils.isNotEmpty(user.getOrderInDepts())) {
-            Map<Long, Long> map = new HashMap<Long, Long>();
-            map = XGsonBuilder.instance().fromJson(user.getOrderInDepts(), map.getClass());
-            for (Entry<Long, Long> en : map.entrySet()) {
-                if (Objects.equals(Long.parseLong(unit.getDingdingId()), en.getKey())) {
-                    order = en.getValue();
-                }
-            }
+        if (StringUtils.isNotEmpty(user.getDept_order())) {
+             order = Long.parseLong(user.getDept_order());
+            // Map<Long, Long> map = new HashMap<Long, Long>();
+            // map = XGsonBuilder.instance().fromJson(user.getDept_order(), map.getClass());
+            // for (Entry<Long, Long> en : map.entrySet()) {
+            //     if (Objects.equals(Long.parseLong(unit.getDingdingId()), en.getKey())) {
+            //         order = en.getValue();
+            //     }
+            // }
         }
         if (os.size() == 0) {
             identity = this.createIdentity(business, result, person, unit, user, order);
@@ -574,6 +579,8 @@ public class SyncOrganization {
     }
 
     public static class PullResult extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 7271153699131617786L;
 
         private Date start = new Date();
 

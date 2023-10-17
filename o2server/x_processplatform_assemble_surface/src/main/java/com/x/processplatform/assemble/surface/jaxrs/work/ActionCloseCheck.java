@@ -17,6 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Process;
@@ -31,44 +32,45 @@ class ActionCloseCheck extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-
+		WoDraft woDraft = new WoDraft();
+		woDraft.setValue(false);
+		wo.setDraft(woDraft);
 		Work work = null;
 		Process process = null;
-
+		boolean check = false;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			work = emc.find(id, Work.class);
 			if (null != work) {
 				process = business.process().pick(work.getProcess());
+				check = this.checkDraft(effectivePerson, business, work, process);
 			}
 		}
-		if ((null != work) && (null != process)) {
-			wo.setDraft(this.draft(effectivePerson, work, process));
+		if ((null != work) && (null != process) && check) {
+			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(Wo.class);
+			wo.getDraft().setValue(true);
 		} else {
-			WoDraft woDraft = new WoDraft();
-			woDraft.setValue(false);
-			wo.setDraft(woDraft);
+			wo.getDraft().setValue(false);
 		}
 		result.setData(wo);
 		return result;
 	}
 
-	private WoDraft draft(EffectivePerson effectivePerson, Work work, Process process) throws Exception {
-		WoDraft wo = new WoDraft();
-		wo.setValue(false);
-		if ((null != work) && (BooleanUtils.isFalse(work.getDataChanged()))
+	private boolean checkDraft(EffectivePerson effectivePerson, Business business, Work work, Process process)
+			throws Exception {
+		return ((null != work) && (BooleanUtils.isFalse(work.getDataChanged()))
 				&& (Objects.equals(ActivityType.manual, work.getActivityType())) && (null != process)
-				&& (BooleanUtils.isTrue(process.getCheckDraft()))
-				&& effectivePerson.isPerson(work.getCreatorPerson())) {
-			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(Wo.class);
-			wo.setValue(true);
-		}
-		return wo;
+				&& (BooleanUtils.isTrue(process.getCheckDraft())) && effectivePerson.isPerson(work.getCreatorPerson())
+				&& (business.entityManagerContainer().countEqual(Attachment.class, Attachment.job_FIELDNAME,
+						work.getJob()) == 0));
+
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCloseCheck$Wo")
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 837722785808492603L;
 
 		@FieldDescribe("检查删除草稿结果.")
 		@Schema(description = "检查删除草稿结果.")
@@ -86,6 +88,8 @@ class ActionCloseCheck extends BaseAction {
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCloseCheck$WoDraft")
 	public static class WoDraft extends WrapBoolean {
+
+		private static final long serialVersionUID = 376594708278621837L;
 
 	}
 

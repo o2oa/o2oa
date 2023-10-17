@@ -972,6 +972,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.businessData.document.title = formData.subject;
                 this.businessData.document.subject = formData.subject;
             }
+            if (formData.objectSecurityClearance) {
+                data.objectSecurityClearance = formData.objectSecurityClearance;
+                this.businessData.document.objectSecurityClearance = formData.objectSecurityClearance;
+            }
             data.isNewDocument = false;
             return data;
         },

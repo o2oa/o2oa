@@ -1,13 +1,54 @@
 package com.x.cms.assemble.control;
 
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_correlation_service_processing;
-import com.x.cms.assemble.control.factory.*;
+import com.x.cms.assemble.control.factory.AppDictFactory;
+import com.x.cms.assemble.control.factory.AppDictItemFactory;
+import com.x.cms.assemble.control.factory.AppInfoConfigFactory;
+import com.x.cms.assemble.control.factory.AppInfoFactory;
+import com.x.cms.assemble.control.factory.CategoryExtFactory;
+import com.x.cms.assemble.control.factory.CategoryInfoFactory;
+import com.x.cms.assemble.control.factory.CmsBatchOperationFactory;
+import com.x.cms.assemble.control.factory.DocumentCommendFactory;
+import com.x.cms.assemble.control.factory.DocumentCommentCommendFactory;
+import com.x.cms.assemble.control.factory.DocumentCommentInfoFactory;
+import com.x.cms.assemble.control.factory.DocumentFactory;
+import com.x.cms.assemble.control.factory.DocumentViewRecordFactory;
+import com.x.cms.assemble.control.factory.FileFactory;
+import com.x.cms.assemble.control.factory.FileInfoFactory;
+import com.x.cms.assemble.control.factory.FormFactory;
+import com.x.cms.assemble.control.factory.FormFieldFactory;
+import com.x.cms.assemble.control.factory.ItemFactory;
+import com.x.cms.assemble.control.factory.LogFactory;
+import com.x.cms.assemble.control.factory.ReviewFactory;
+import com.x.cms.assemble.control.factory.ScriptFactory;
+import com.x.cms.assemble.control.factory.SearchFactory;
+import com.x.cms.assemble.control.factory.TemplateFormFactory;
+import com.x.cms.assemble.control.factory.ViewCategoryFactory;
+import com.x.cms.assemble.control.factory.ViewFactory;
+import com.x.cms.assemble.control.factory.ViewFieldConfigFactory;
 import com.x.cms.assemble.control.factory.portal.PortalFactory;
 import com.x.cms.assemble.control.factory.process.ProcessFactory;
 import com.x.cms.assemble.control.factory.service.CenterServiceFactory;
@@ -16,16 +57,8 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeCmsWi;
-import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWi;
 import com.x.correlation.core.express.service.processing.jaxrs.correlation.ActionReadableTypeProcessPlatformWo;
 import com.x.organization.core.express.Organization;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.OutputStream;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 通用业务类
@@ -34,7 +67,10 @@ import java.util.zip.ZipOutputStream;
  */
 public class Business {
 
-	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" };
+	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
+
+	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">",
+			"\\" };
 	public static final String[] FILENAME_SENSITIVES_EMPTY = new String[] { "", "", "", "", "", "", "", "", "", "" };
 
 	private EntityManagerContainer emc;
@@ -415,44 +451,49 @@ public class Business {
 	}
 
 	/**
-	 * 是否是文档的编辑者
-	 * 文档不存在判断是否是分类或应用的发布者
+	 * 是否是文档的编辑者 文档不存在判断是否是分类或应用的发布者
+	 *
 	 * @param person
 	 * @param appInfo
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isDocumentEditor(EffectivePerson person, AppInfo appInfo, CategoryInfo categoryInfo, Document document) throws Exception {
+	public boolean isDocumentEditor(EffectivePerson person, AppInfo appInfo, CategoryInfo categoryInfo,
+			Document document) throws Exception {
 		if (isManager(person)) {
 			return true;
 		}
 		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
 		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
-		if(document!=null){
-			if( ListTools.isNotEmpty( document.getManagerList() )) {
-				if( document.getManagerList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
+		if (document != null) {
+			if (!this.ifPersonHasSufficientSecurityClearance(person.getDistinguishedName(),
+					document.getObjectSecurityClearance())) {
+				return false;
+			}
+			if (ListTools.isNotEmpty(document.getManagerList())) {
+				if (document.getManagerList().contains(getShortTargetFlag(person.getDistinguishedName()))) {
 					return true;
 				}
 			}
-			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-				if( document.getAuthorPersonList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
+			if (ListTools.isNotEmpty(document.getAuthorPersonList())) {
+				if (document.getAuthorPersonList().contains(getShortTargetFlag(person.getDistinguishedName()))) {
 					return true;
 				}
 			}
-			if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-				if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
+			if (ListTools.isNotEmpty(document.getAuthorUnitList())) {
+				if (ListTools.containsAny(getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
 					return true;
 				}
 			}
-			if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-				if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
+			if (ListTools.isNotEmpty(document.getAuthorGroupList())) {
+				if (ListTools.containsAny(getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
 					return true;
 				}
 			}
-			if(appInfo == null){
+			if (appInfo == null) {
 				appInfo = this.emc.find(document.getAppId(), AppInfo.class);
 			}
-			if(categoryInfo == null){
+			if (categoryInfo == null) {
 				categoryInfo = this.emc.find(document.getCategoryId(), CategoryInfo.class);
 			}
 		}
@@ -462,12 +503,13 @@ public class Business {
 			Set<String> catePersonList = new HashSet<>(categoryInfo.getManageablePersonList());
 			Set<String> cateUnitList = new HashSet<>(categoryInfo.getManageableUnitList());
 			Set<String> cateGroupList = new HashSet<>(categoryInfo.getManageableGroupList());
-			if(document == null){
+			if (document == null) {
 				catePersonList.addAll(categoryInfo.getPublishablePersonList());
 				cateUnitList.addAll(categoryInfo.getPublishableUnitList());
 				cateGroupList.addAll(categoryInfo.getPublishableGroupList());
-				if(!categoryInfo.getPublishablePersonList().isEmpty() || !categoryInfo.getPublishableUnitList().isEmpty()
-						|| !categoryInfo.getPublishableGroupList().isEmpty()){
+				if (!categoryInfo.getPublishablePersonList().isEmpty()
+						|| !categoryInfo.getPublishableUnitList().isEmpty()
+						|| !categoryInfo.getPublishableGroupList().isEmpty()) {
 					publishFlag = false;
 				}
 			}
@@ -485,12 +527,12 @@ public class Business {
 			Set<String> appPersonList = new HashSet<>(appInfo.getManageablePersonList());
 			Set<String> appUnitList = new HashSet<>(appInfo.getManageableUnitList());
 			Set<String> appGroupList = new HashSet<>(appInfo.getManageableGroupList());
-			if(document == null){
+			if (document == null) {
 				appPersonList.addAll(appInfo.getPublishablePersonList());
 				appUnitList.addAll(appInfo.getPublishableUnitList());
 				appGroupList.addAll(appInfo.getPublishableGroupList());
-				if(!appInfo.getPublishablePersonList().isEmpty() || !appInfo.getPublishableUnitList().isEmpty()
-						|| !appInfo.getPublishableGroupList().isEmpty()){
+				if (!appInfo.getPublishablePersonList().isEmpty() || !appInfo.getPublishableUnitList().isEmpty()
+						|| !appInfo.getPublishableGroupList().isEmpty()) {
 					publishFlag = false;
 				}
 			}
@@ -509,6 +551,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的读者
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -517,27 +560,57 @@ public class Business {
 		if (isManager(person)) {
 			return true;
 		}
+		if (!this.ifPersonHasSufficientSecurityClearance(person.getDistinguishedName(),
+				document.getObjectSecurityClearance())) {
+			return false;
+		}
 		String documentType = "数据";
-		if(documentType.equals(document.getDocumentType())){
+		if (documentType.equals(document.getDocumentType())) {
 			return true;
 		}
-		if(BooleanUtils.isTrue(document.getIsAllRead())){
+		if (BooleanUtils.isTrue(document.getIsAllRead())) {
 			return true;
 		}
 		String allPerson = "所有人";
-		if( document.getReadPersonList().contains(getShortTargetFlag(person.getDistinguishedName())) ||
-				document.getReadPersonList().contains(allPerson)) {
+		if (document.getReadPersonList().contains(getShortTargetFlag(person.getDistinguishedName()))
+				|| document.getReadPersonList().contains(allPerson)) {
 			return true;
 		}
 		Long count = this.reviewFactory().countByDocumentAndPerson(document.getId(), person.getDistinguishedName());
-		if(count > 0){
+		if (count > 0) {
 			return true;
 		}
 		count = this.reviewFactory().countByDocumentAndPerson(document.getId(), "*");
-		if(count > 0){
+		if (count > 0) {
 			return true;
 		}
 		return ifDocumentHasBeenCorrelation(person.getDistinguishedName(), document.getId());
+	}
+
+	/**
+	 * 用户是否有足够的密级标识等级.
+	 *
+	 * @param person
+	 * @param objectSecurityClearance
+	 * @return
+	 */
+	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
+		try {
+			if(!Config.ternaryManagement().getSecurityClearanceEnable()){
+				return true;
+			}
+			Person p = this.organization().person().getObject(person);
+			Integer subjectSecurityClearance = p.getSubjectSecurityClearance();
+			if (null == subjectSecurityClearance) {
+				subjectSecurityClearance = Config.ternaryManagement().getDefaultSubjectSecurityClearance();
+			}
+			if ((null != subjectSecurityClearance) && (null != objectSecurityClearance)) {
+				return subjectSecurityClearance >= objectSecurityClearance;
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return true;
 	}
 
 	public boolean ifDocumentHasBeenCorrelation(String person, String docId) throws Exception {
@@ -621,15 +694,15 @@ public class Business {
 
 	public static String getShortTargetFlag(String distinguishedName) {
 		String target = distinguishedName;
-		if( StringUtils.isNotEmpty( distinguishedName ) ){
+		if (StringUtils.isNotEmpty(distinguishedName)) {
 			String[] array = distinguishedName.split("@");
 			StringBuffer sb = new StringBuffer();
-			if( array.length == 3 ){
+			if (array.length == 3) {
 				target = sb.append(array[1]).append("@").append(array[2]).toString();
-			}else if( array.length == 2 ){
-				//2段
+			} else if (array.length == 2) {
+				// 2段
 				target = sb.append(array[0]).append("@").append(array[1]).toString();
-			}else{
+			} else {
 				target = array[0];
 			}
 		}
@@ -638,8 +711,8 @@ public class Business {
 
 	public static List<String> getShortTargetFlag(List<String> nameList) {
 		List<String> targetList = new ArrayList<>();
-		if( ListTools.isNotEmpty( nameList ) ){
-			for(String distinguishedName : nameList) {
+		if (ListTools.isNotEmpty(nameList)) {
+			for (String distinguishedName : nameList) {
 				String target = distinguishedName;
 				String[] array = target.split("@");
 				StringBuffer sb = new StringBuffer();
@@ -679,9 +752,8 @@ public class Business {
 		}
 		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, FileInfo> entry : filePathMap.entrySet()) {
-				zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-						FILENAME_SENSITIVES_KEY,
-						FILENAME_SENSITIVES_EMPTY)));
+				zos.putNextEntry(new ZipEntry(
+						StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY, FILENAME_SENSITIVES_EMPTY)));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class,
 						entry.getValue().getStorage());
 				entry.getValue().readContent(mapping, zos);
@@ -689,8 +761,7 @@ public class Business {
 
 			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
-					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
-							FILENAME_SENSITIVES_KEY,
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(), FILENAME_SENSITIVES_KEY,
 							FILENAME_SENSITIVES_EMPTY)));
 					zos.write(entry.getValue());
 				}

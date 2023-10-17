@@ -197,6 +197,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.tinymceEditor,
     "className": "TinyMCEEditor"
   },
+  "security": {
+    "icon": "security.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.security,
+    "className": "Security"
+  },
   "office": {
     "icon": "office.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.office,

@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.x.organization.core.entity.Identity;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,9 +22,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
-class ActionGetIconWithPerson extends BaseAction {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetIconWithPerson.class);
+class ActionGetIcon extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetIcon.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -50,7 +51,12 @@ class ActionGetIconWithPerson extends BaseAction {
 		} else {
 			Person person = business.person().pick(flag);
 			if (null == person) {
-				throw new ExceptionPersonNotExist(flag);
+				Identity identity = business.identity().pick(flag);
+				if(identity != null){
+					person = business.person().pick(identity.getPerson());
+				}else {
+					throw new ExceptionPersonNotExist(flag);
+				}
 			}
 			base64 = person.getIcon();
 			if (StringUtils.isEmpty(base64)) {

@@ -1,10 +1,11 @@
 package com.x.program.center.dingding;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -33,7 +34,6 @@ public class DingdingFactory {
 			}
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -51,37 +51,53 @@ public class DingdingFactory {
 	public DingdingFactory(String accessToken) throws Exception {
 		this.accessToken = accessToken;
 		orgs.add(this.detailOrg(1L));
-		for (Department o : this.orgs()) {
-			Department sub = this.detailOrg(o.getId());
-			if (null != sub) {
-				if(BooleanUtils.isTrue(sub.getIsFromUnionOrg()) && BooleanUtils.isFalse(Config.dingding().getSyncUnionOrgEnable())){
-					continue;
-				}
-				orgs.add(sub);
-				for (UserSimple u : this.users(o)) {
-					users.add(this.detailUser(u));
-				}
-			}
-		}
+		recursionOrg(1L);
 		orgs = ListTools.trim(orgs, true, true);
 		users = ListTools.trim(users, true, true);
 		logger.info("ding ding sync org num:{}, user num:{}", orgs.size(), users.size());
 	}
 
-	public List<Department> roots() {
-		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
+	/**
+	 * 递归查询
+	 * @param parentId 上级组织 id
+	 * @throws Exception
+	 */
+	private void recursionOrg(Long parentId) throws Exception {
+		for (Department o : this.orgs(parentId)) {
+			Department sub = this.detailOrg(o.getDept_id());
+			if (null != sub) {
+				if(BooleanUtils.isTrue(sub.getFrom_union_org()) && BooleanUtils.isFalse(Config.dingding().getSyncUnionOrgEnable())){
+					continue;
+				}
+				orgs.add(sub);
+				for (User u : this.users(o)) {
+					users.add(u);
+				}
+				recursionOrg(o.getDept_id());
+			}
+		}
 	}
 
-	private List<Department> orgs() throws Exception {
-		String address = Config.dingding().getOapiAddress() + "/department/list?access_token=" + this.accessToken
-				+ "&id=";
-		OrgListResp resp = HttpConnection.getAsObject(address, null, OrgListResp.class);
-		logger.debug("orgs response:{}.", resp);
-		if (resp.getErrcode() != 0) {
-			throw new ExceptionListOrg(resp.getErrcode(), resp.getErrmsg());
+	public List<Department> roots() {
+		return orgs.stream().filter(o -> 1L == o.getDept_id()).collect(Collectors.toList());
+	}
+
+	private List<Department> orgs(Long parentId) throws Exception {
+		// String address = Config.dingding().getOapiAddress() + "/department/list?access_token=" + this.accessToken
+		// 		+ "&id=";
+		String address = Config.dingding().getOapiAddress() + "/topapi/v2/department/listsub?access_token=" + this.accessToken;
+		DingdingDepartmentPost body = new DingdingDepartmentPost();
+		body.setDept_id(parentId);
+		String reString = HttpConnection.postAsString(address, null, body.toString());
+		if (logger.isDebugEnabled()) {
+			logger.debug("orgs response:{}.", reString);
 		}
-		logger.info("ding ding all org num:{}", resp.getDepartment().size());
-		return resp.getDepartment();
+		Type type = new TypeToken<DingdingResponse<List<Department>>> () {}.getType();
+		DingdingResponse<List<Department>> response = XGsonBuilder.instance().fromJson(reString, type);
+		if (response.getErrcode() != 0) {
+			throw new ExceptionListOrg(response.getErrcode(), response.getErrmsg());
+		}
+		return response.getResult();
 	}
 
 	private Department detailOrg(Long id) throws Exception {
@@ -90,183 +106,174 @@ public class DingdingFactory {
 			this.syncSleep(2000);
 			this.count = 0;
 		}
-		String address = Config.dingding().getOapiAddress() + "/department/get?access_token=" + this.accessToken;
-		if (!Objects.isNull(id)) {
-			address += "&id=" + id;
-		}
-		OrgResp resp = HttpConnection.getAsObject(address, null, OrgResp.class);
-		logger.debug("detailOrg response:{}.", resp);
-		if (resp.getErrcode() != 0) {
-			if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-				resp = HttpConnection.getAsObject(address, null, OrgResp.class);
+		// String address = Config.dingding().getOapiAddress() + "/department/get?access_token=" + this.accessToken;
+		// if (!Objects.isNull(id)) {
+		// 	address += "&id=" + id;
+		// }
+		DingdingResponse<Department> response = postDetailOrg(id);
+		Department resp = response.getResult();
+		if (response.getErrcode() != 0) {
+			if (this.syncExceptionDeal(response.getErrcode(), response.getErrmsg())) {
+				 DingdingResponse<Department> response2 = postDetailOrg(id);
+				 resp = response2.getResult();
 			} else {
-				logger.error(new ExceptionDetailOrg(resp.getErrcode(), resp.getErrmsg()));
+				logger.error(new ExceptionDetailOrg(response.getErrcode(), response.getErrmsg()));
 				resp = null;
 			}
 		}
 		return resp;
 	}
 
-	private List<UserSimple> users(Department department) throws Exception {
+	private DingdingResponse<Department> postDetailOrg(Long id) throws Exception {
+		String address = Config.dingding().getOapiAddress() + "/topapi/v2/department/get?access_token=" + this.accessToken;
+		DingdingDepartmentPost body = new DingdingDepartmentPost();
+		body.setDept_id(id);
+		String reString = HttpConnection.postAsString(address, null, body.toString());
+		if (logger.isDebugEnabled()) {
+			logger.debug("detailOrg response:{}.", reString);
+		}
+		Type type = new TypeToken<DingdingResponse<Department>> () {}.getType();
+		DingdingResponse<Department> response = XGsonBuilder.instance().fromJson(reString, type);
+		return response;
+	}
+
+	private List<User> users(Department department) throws Exception {
 		this.count = this.count + 1;
 		if (this.count > 1000) {
 			this.syncSleep(2000);
 			this.count = 0;
 		}
-		String address = Config.dingding().getOapiAddress() + "/user/list?access_token=" + this.accessToken
-				+ "&department_id=" + department.getId();
-		UserListResp resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-		logger.debug("users response:{}.", resp);
-		if (resp.getErrcode() != 0) {
-			if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-				resp = HttpConnection.getAsObject(address, null, UserListResp.class);
-			} else {
-				throw new ExceptionListUser(resp.getErrcode(), resp.getErrmsg());
+		// String address = Config.dingding().getOapiAddress() + "/user/list?access_token=" + this.accessToken
+		// 		+ "&department_id=" + department.getId();
+		String address = Config.dingding().getOapiAddress() + "/topapi/v2/user/list?access_token=" + this.accessToken;
+		Type type = new TypeToken<DingdingResponse<DingdingUserPageResult>> () {}.getType();
+		List<User> list = new ArrayList<>();
+		boolean hasMore = true; 
+		int cursor = 0;
+		while(hasMore) {
+			DingdingUserListPost body = new DingdingUserListPost();
+			body.setDept_id(department.getDept_id());
+			body.setCursor(cursor);
+			body.setSize(100);
+			String resString = HttpConnection.postAsString(address, null, body.toString());
+			if (logger.isDebugEnabled()) {
+				logger.debug("分页查询部门用户  response {}", resString);
 			}
+			DingdingResponse<DingdingUserPageResult> response = XGsonBuilder.instance().fromJson(resString, type);
+			if (response.getErrcode() != 0) {
+				throw new ExceptionListUser(response.getErrcode(), response.getErrmsg());
+			}
+			DingdingUserPageResult pageResult = response.getResult();
+			if (pageResult != null && BooleanUtils.isTrue( pageResult.getHas_more() )) {
+				cursor = pageResult.getNext_cursor();
+			} else {
+				hasMore = false;
+			}
+			list.addAll(pageResult.getList());
 		}
-		return resp.getUserlist();
+		return list;
+
+		// UserListResp resp = HttpConnection.getAsObject(address, null, UserListResp.class);
+		// logger.debug("users response:{}.", resp);
+		// if (resp.getErrcode() != 0) {
+		// 	if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
+		// 		resp = HttpConnection.getAsObject(address, null, UserListResp.class);
+		// 	} else {
+		// 		throw new ExceptionListUser(resp.getErrcode(), resp.getErrmsg());
+		// 	}
+		// }
+		// return resp.getUserlist();
 	}
 
-	private User detailUser(UserSimple simple) throws Exception {
-		this.count = this.count + 1;
-		if (this.count > 1000) {
-			this.syncSleep(2000);
-			this.count = 0;
-		}
-		String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
-				+ simple.getUserid();
-		UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
-		logger.debug("detailUser response:{}.", resp);
+	// private User detailUser(UserSimple simple) throws Exception {
+	// 	this.count = this.count + 1;
+	// 	if (this.count > 1000) {
+	// 		this.syncSleep(2000);
+	// 		this.count = 0;
+	// 	}
+	// 	String address = Config.dingding().getOapiAddress() + "/user/get?access_token=" + this.accessToken + "&userid="
+	// 			+ simple.getUserid();
+	// 	UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
+	// 	logger.debug("detailUser response:{}.", resp);
 
-		if (resp.getErrcode() != 0) {
-			if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
-				resp = HttpConnection.getAsObject(address, null, UserResp.class);
-			} else {
-				throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
-			}
-		}
-		return resp;
+	// 	if (resp.getErrcode() != 0) {
+	// 		if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
+	// 			resp = HttpConnection.getAsObject(address, null, UserResp.class);
+	// 		} else {
+	// 			throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
+	// 		}
+	// 	}
+	// 	return resp;
 
-	}
+	// }
 
 	public List<User> listUser(Department org) throws Exception {
-		return users.stream().filter(o -> ListTools.contains(o.getDepartment(), org.getId()))
+		return users.stream().filter(o ->  ListTools.contains(o.getDept_id_list(), org.getDept_id()))
 				.collect(Collectors.toList());
 	}
 
 	public List<Department> listSub(Department org) throws Exception {
 		return orgs.stream().filter(o -> {
-			return Objects.equals(o.getParentid(), org.getId()) ? true : false;
+			return Objects.equals(o.getParent_id(), org.getDept_id()) ? true : false;
 		}).sorted(Comparator.comparing(Department::getOrder, Comparator.nullsLast(Long::compareTo)))
 				.collect(Collectors.toList());
 	}
+ 
 
-	public static class OrgListResp extends GsonPropertyObject {
 
-		private Integer errcode;
-		private String errmsg;
-		private List<Department> department;
-
-		public Integer getErrcode() {
-			return errcode;
+	/**
+	 * 查询钉钉组织的 post 对象
+	 */
+	public static class DingdingDepartmentPost extends GsonPropertyObject {
+  
+		private static final long serialVersionUID = 2344247634146398572L;
+		private Long dept_id;
+	
+		public Long getDept_id() {
+			return dept_id;
 		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
+	
+		public void setDept_id(Long dept_id) {
+			this.dept_id = dept_id;
 		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-
-		public List<Department> getDepartment() {
-			return department;
-		}
-
-		public void setDepartment(List<Department> department) {
-			this.department = department;
-		}
-
+	
 	}
 
-	public static class OrgResp extends Department {
+	/**
+	 * 根据组织 id  进行人员查询  post  对象
+	 */
+	public static class DingdingUserListPost extends GsonPropertyObject {
 
-		private Integer errcode;
-		private String errmsg;
+		private static final long serialVersionUID = -8815089632657236893L;
 
-		public Integer getErrcode() {
-			return errcode;
-		}
+		private Long dept_id;
 
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
+		private Integer cursor; // 分页游标 分页查询的游标，最开始传0，后续传返回参数中的next_cursor值。
+		private Integer size; // 分页大小 如  100
 
-		public String getErrmsg() {
-			return errmsg;
-		}
+    public Long getDept_id() {
+      return dept_id;
+    }
+    public void setDept_id(Long dept_id) {
+      this.dept_id = dept_id;
+    }
+    public Integer getCursor() {
+      return cursor;
+    }
+    public void setCursor(Integer cursor) {
+      this.cursor = cursor;
+    }
+    public Integer getSize() {
+      return size;
+    }
+    public void setSize(Integer size) {
+      this.size = size;
+    }
+	
+		
+		
 
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-	}
 
-	public static class UserListResp extends GsonPropertyObject {
-
-		private Integer errcode;
-		private String errmsg;
-		private List<UserSimple> userlist;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
-
-		public List<UserSimple> getUserlist() {
-			return userlist;
-		}
-
-		public void setUserlist(List<UserSimple> userlist) {
-			this.userlist = userlist;
-		}
-
-	}
-
-	public static class UserResp extends User {
-
-		private Integer errcode;
-		private String errmsg;
-
-		public Integer getErrcode() {
-			return errcode;
-		}
-
-		public void setErrcode(Integer errcode) {
-			this.errcode = errcode;
-		}
-
-		public String getErrmsg() {
-			return errmsg;
-		}
-
-		public void setErrmsg(String errmsg) {
-			this.errmsg = errmsg;
-		}
 	}
 
 }

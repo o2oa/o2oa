@@ -2,6 +2,7 @@
 // MWF.xDesktop.requireApp("Organization", "OrgExplorer", null, false);
 MWF.xDesktop.requireApp("Org", "$Explorer", null, false);
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xApplication.Org.PersonExplorer = new Class({
 	Extends: MWF.xApplication.Org.$Explorer,
@@ -57,7 +58,8 @@ MWF.xApplication.Org.PersonExplorer = new Class({
             "control": {
                 "allowEdit": true,
                 "allowDelete": true
-            }
+            },
+            "subjectSecurityClearance": null
         };
     }
 
@@ -284,6 +286,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         //     }.bind(this), null, this.data.id);
         // }
     },
+    getDutyActionPermission: function(){
+        if( MWF.AC.isSystemManager() )return false;
+        if( MWF.AC.isOrganizationManager() )return true;
+        if( MWF.AC.isSecurityManager() )return true;
+        return false;
+    },
     _listIdentity: function(){
         var _self = this;
         this.identityList = new MWF.xApplication.Org.List(this.identityContentNode, this, {
@@ -304,17 +312,78 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                     }
                 }
             }, {
-                "get": function(){ return this.distinguishedName; },
+                "getHtml": function(){
+                    return "<div style='word-break: break-word;'>"+this.distinguishedName+"</div>";
+                },
+                //"get": function(){ return this.distinguishedName; },
                 "set": function(value){ this.distinguishedName = value; }
             }, {
                 "get": function(){ return ""; },
                 "events": {
                     "init": function(){
-                        var contentNode = this.td;
+                        var contentNode = new Element("div.duty-wrap").inject(this.td);
+                        var dutyNode = new Element("div.duty-area").inject(contentNode);
                         if (this.data.woUnitDutyList){
                             this.data.woUnitDutyList.each(function(duty){
-                                new MWF.widget.O2Duty(duty, contentNode, {"style": "xform"});
+                                new MWF.widget.O2Duty(duty, dutyNode, {"style": "xform", "showUnit": true});
                             }.bind(this));
+                        }
+                        if( _self.getDutyActionPermission() ){
+                            var editDutyIcon = new Element("i.o2icon-edit2", {
+                                "title": MWF.xApplication.Org.LP.editDuty
+                            }).inject(contentNode);
+                            editDutyIcon.addClass("edit-duty-icon");
+                            editDutyIcon.addEvent("click", function () {
+                                new MWF.O2Selector(_self.explorer.app.content, {
+                                    "type": "UnitDuty",
+                                    "values": this.data.woUnitDutyList,
+                                    "onComplete" : function( items ){
+                                        var selectedList = items.map( function(item){ debugger; return item.data; });
+                                        var oldIdList = this.data.woUnitDutyList.map(function (d) { return d.id; })
+                                        var newIdList = selectedList.map(function (d) { return d.id; });
+
+                                        var addList = selectedList.filter(function (d) {
+                                            return !oldIdList.contains( d.id );
+                                        }.bind(this));
+                                        var removeList = this.data.woUnitDutyList.filter(function (d) {
+                                            return !newIdList.contains( d.id );
+                                        });
+
+                                        var currentIdentityId = this.data.id;
+
+                                        var psRemove = removeList.map(function (d) {
+                                            var id = d.id;
+                                            return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.get(id).then(function (json) {
+                                                json.data.identityList = json.data.identityList.filter(function (identity) {
+                                                    return identity !== currentIdentityId;
+                                                })
+                                                return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.edit(id, json.data);
+                                            }.bind(this));
+                                        });
+
+                                        var psAdd = addList.map(function (d) {
+                                            var id = d.id;
+                                            return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.get(id).then(function (json) {
+                                                json.data.identityList.push(currentIdentityId);
+                                                return o2.Actions.load("x_organization_assemble_control").UnitDutyAction.edit(id, json.data);
+                                            }.bind(this));
+                                        });
+
+                                        Promise.all( psRemove.concat(psAdd) ).then(function( list ){
+
+                                            _self.explorer.app.notice(MWF.xApplication.Org.LP.modifySuccess);
+
+                                            this.data.woUnitDutyList = selectedList;
+                                            dutyNode.empty();
+                                            this.data.woUnitDutyList.each(function(duty){
+                                                new MWF.widget.O2Duty(duty, dutyNode, {"style": "xform", "showUnit": true});
+                                            }.bind(this));
+                                        }.bind(this), function () {
+                                            _self.explorer.app.notice(MWF.xApplication.Org.LP.modifyFail, "error");
+                                        });
+                                    }.bind(this)
+                                })
+                            }.bind(this))
                         }
                     }
                 }
@@ -353,8 +422,8 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this.identityList.load([
             {"style": "width: 12%", "text": this.explorer.app.lp.IdentityName},
             {"style": "width: 12%", "text": this.explorer.app.lp.IdentityInUnit},
-            {"style": "width: 44%", "text": this.explorer.app.lp.personUnique},
-            {"style": "width: 20%", "text": this.explorer.app.lp.IdentityDuty},
+            {"style": "width: 30%", "text": this.explorer.app.lp.personUnique},
+            {"style": "width: 34%", "text": this.explorer.app.lp.IdentityDuty},
             {"style": "width: 10%", "text": this.explorer.app.lp.IdentityMain},
             {"style": "width: 30px", "text": ""}
         ]);
@@ -754,6 +823,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         var n = this.editContentNode.getElement(".infor_description");
         if (n) n.set("text", this.data.description || "");
 
+        n = this.editContentNode.getElement(".infor_securityLabel");
+        this.getSecurityLabelText().then(function(securityLabel){
+            if (this.mode !== "edit") if (n) n.set("text", securityLabel || "");
+        }.bind(this));
+
+
         this.editContentNode.getElements("td.inforTitle").setStyles(this.style.baseInforTitleNode);
         this.editContentNode.getElements("td.inforContent").setStyles(this.style.baseInforContentNode);
         this.editContentNode.getElements("td.inforAction").setStyles(this.style.baseInforActionNode);
@@ -763,6 +838,32 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
 
         this.loadAction();
     },
+
+    getSecurityLabelText(){
+        return this.getSecurityLabelList().then(function(labelList){
+
+            var securityLabel = "";
+            var keys = Object.keys(labelList);
+            for (var i=0; i<keys.length; i++){
+                var value = this.content.securityLabelList[keys[i]];
+                if (value === this.data.subjectSecurityClearance){
+                    securityLabel = keys[i];
+                    break;
+                }
+            }
+            return securityLabel;
+
+        }.bind(this));
+    },
+    getSecurityLabelList: function(){
+        if (this.content.securityLabelList) return Promise.resolve(this.content.securityLabelList);
+
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction.subject().then(function(json){
+            this.content.securityLabelList = json.data;
+            return this.content.securityLabelList;
+        }.bind(this));
+    },
+
     getContentHtml: function(){
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
@@ -779,6 +880,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             "<td class='inforTitle'>"+this.explorer.app.lp.personBirthday+":</td><td class='inforContent infor_birthday'>"+(this.data.birthday || "")+"</td></tr>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
+
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td colspan='3' class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "</tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -809,6 +913,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         }
     },
     edit: function(){
+        debugger;
         var tdContents = this.editContentNode.getElements("td.inforContent");
         tdContents[0].setStyles(this.style.baseInforContentNode_edit).empty();
         this.nameInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[0]);
@@ -922,6 +1027,23 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         this.descriptionInputNode = new Element("input", {"styles": this.style.inputNode}).inject(tdContents[13]);
         this.descriptionInputNode.set("value", (this.data.description));
 
+        tdContents[14].setStyles(this.style.baseInforContentNode_edit).empty();
+        var securityLabel = this.data.subjectSecurityClearance;
+        this.securityLabelSelectNode = new Element("select", {"styles": this.style.selectNode}).inject(tdContents[14]);
+        new Element("option", {value: "", text: ""}).inject(this.securityLabelSelectNode);
+
+        this.getSecurityLabelList().then(function(securityLabelList){
+            if (securityLabelList) Object.keys(securityLabelList).forEach(function(key){
+                var value = securityLabelList[key];
+                var option = new Element("option", {value: value, text: key}).inject(this.securityLabelSelectNode);
+                if (securityLabel === value){
+                    option.selected = true;
+                }
+            }.bind(this));
+        }.bind(this));
+
+        // this.securityLabelSelectNode.set("value", (this.data.description));
+
         var _self = this;
         this.editContentNode.getElements("input").addEvents({
             "focus": function(){if (this.get("type").toLowerCase()==="text"){this.setStyles(_self.style.inputNode_focus);}},
@@ -944,50 +1066,45 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                 break;
             }
         }
-        //if (!this.nameInputNode.get("value") || !this.employeeInputNode.get("value") || !this.mobileInputNode.get("value") || !gender){
-        if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
-            this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
-            return false;
-        }
 
-        // var array = [];
-        // var ipAddress = this.ipAddressInputNode.get("value") || "";
-        // var ipV4Format = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        // var ipV6Format = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
-        // if( ipAddress.trim() ){
-        //     ipAddress.split(",").each( function(ip){
-        //         if(!ip.match(ipV4Format) && !ip.match(ipV6Format))array.push( ip );
-        //     })
-        // }
-        // if( array.length > 0 ){
-        //     this.explorer.app.notice( this.explorer.app.lp.ipAddressIncorrectNotice + array.join(","), "error", this.explorer.propertyContentNode);
-        //     return false;
-        // }
-
-        //this.data.genderType = gender;
-        if (!this.uniqueInputNode.get("value")) this.data.unique = this.employeeInputNode.get("value");
-        this.content.propertyContentScrollNode.mask({
-            "style": {
-                "opacity": 0.7,
-                "background-color": "#999"
-            }
-        });
-
-        this.savePerson(function(){
-            this.cancel();
-            this.content.propertyContentScrollNode.unmask();
-        }.bind(this), function(xhr, text, error){
-            var errorText = error;
-            if (xhr){
-                var json = JSON.decode(xhr.responseText);
-                if (json){
-                    errorText = json.message.trim() || "request json error";
-                }else{
-                    errorText = "request json error: "+xhr.responseText;
+        return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction.enable().then(function(json){
+            if (json.data.enable===true){
+                var label = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
+                if (!label || !this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
+                    this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor2, "error", this.explorer.propertyContentNode);
+                    return false;
+                }
+            }else{
+                if (!this.nameInputNode.get("value") || !this.mobileInputNode.get("value") || !this.uniqueInputNode.get("value") || !gender){
+                    this.explorer.app.notice(this.explorer.app.lp.inputPersonInfor, "error", this.explorer.propertyContentNode);
+                    return false;
                 }
             }
-            MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
-            this.content.propertyContentScrollNode.unmask();
+
+            if (!this.uniqueInputNode.get("value")) this.data.unique = this.employeeInputNode.get("value");
+            this.content.propertyContentScrollNode.mask({
+                "style": {
+                    "opacity": 0.7,
+                    "background-color": "#999"
+                }
+            });
+
+            this.savePerson(function(){
+                this.cancel();
+                this.content.propertyContentScrollNode.unmask();
+            }.bind(this), function(xhr, text, error){
+                var errorText = error;
+                if (xhr){
+                    var json = JSON.decode(xhr.responseText);
+                    if (json){
+                        errorText = json.message.trim() || "request json error";
+                    }else{
+                        errorText = "request json error: "+xhr.responseText;
+                    }
+                }
+                MWF.xDesktop.notice("error", {x: "right", y:"top"}, errorText);
+                this.content.propertyContentScrollNode.unmask();
+            }.bind(this));
         }.bind(this));
     },
     savePerson: function(callback, cancel){
@@ -1005,6 +1122,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         data.birthday = this.birthdayInputNode.get("value");
         data.ipAddress = this.ipAddressInputNode.get("value");
         data.description = this.descriptionInputNode.get("value");
+        data.description = this.descriptionInputNode.get("value");
+        var securityLabel = this.securityLabelSelectNode.options[this.securityLabelSelectNode.selectedIndex].value;
+        data.subjectSecurityClearance = (securityLabel) ? parseInt(securityLabel) : null;
 
         var tdContents = this.editContentNode.getElements("td.inforContent");
         var radios = tdContents[4].getElements("input");
@@ -1039,6 +1159,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         // }.bind(this));
     },
     cancel: function(){
+        debugger;
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
             tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
@@ -1057,6 +1178,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             tdContents[11].setStyles(this.style.baseInforContentNode).set("text", this.data.birthday || "");
             tdContents[12].setStyles(this.style.baseInforContentNode).set("text", this.data.ipAddress || "");
             tdContents[13].setStyles(this.style.baseInforContentNode).set("text", this.data.description || "");
+
+            this.getSecurityLabelText().then(function(securityLabel){
+                tdContents[14].setStyles(this.style.baseInforContentNode).set("text", securityLabel || "");
+            }.bind(this));
+
+
 
             this.mode = "read";
 

@@ -23,7 +23,7 @@ MWF.xApplication.cms.Document.LP = {
     "phone": "Mobile",
     "mail": "Mailbox",
 
-    "documentGettedError": "Document GettedError",
+    "documentGettedError": "You do not have permission to view the document or it has been deleted.",
     "controllerGettedError": "Administrator GettedError",
     "formGettedError": "Form GettedError",
     "attachmentGettedError": "Attachment GettedError",

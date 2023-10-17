@@ -37,7 +37,7 @@ import com.x.organization.core.entity.Unit_;
 /**
  * levelName在数据库中是使用clob存储的,在oracle中无法使用where levelName =
  * 'abc',所以先将levelName中的name取出做判断,然后再根据levelName做filter
- * 
+ *
  * @author ray
  *
  */
@@ -95,6 +95,9 @@ class ActionListWithLevelNameObject extends BaseAction {
 		@FieldDescribe("直接下级身份数量")
 		private Long subDirectIdentityCount = 0L;
 
+		@FieldDescribe("直接下级职务数量")
+		private Long subDirectDutyCount;
+
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible, Unit.controllerList_FIELDNAME));
 
@@ -122,11 +125,18 @@ class ActionListWithLevelNameObject extends BaseAction {
 			this.subDirectIdentityCount = subDirectIdentityCount;
 		}
 
+		public Long getSubDirectDutyCount() {
+			return subDirectDutyCount;
+		}
+
+		public void setSubDirectDutyCount(Long subDirectDutyCount) {
+			this.subDirectDutyCount = subDirectDutyCount;
+		}
 	}
 
 	/**
 	 * 取得unitList的层次名,取最后的层次名作为名称进行查询,获取的unit再次进行过滤
-	 * 
+	 *
 	 * @param wi
 	 * @return
 	 * @throws Exception
@@ -147,31 +157,14 @@ class ActionListWithLevelNameObject extends BaseAction {
 				for (Unit unit : unitList) {
 					Wo wo = Wo.copier.copy(unit);
 					wo.setMatchKey(wo.getLevelName());
-					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
-					wo.setSubDirectUnitCount(this.countSubDirectUnit(business, wo));
+					wo.setSubDirectIdentityCount(business.identity().countByUnit(wo.getId()));
+					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
+					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));
 					wos.add(wo);
 				}
 			}
 			return wos;
 		}
-	}
-
-	private Long countSubDirectUnit(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Unit.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Unit> root = cq.from(Unit.class);
-		Predicate p = cb.equal(root.get(Unit_.superior), wo.getId());
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
-	}
-
-	private Long countSubDirectIdentity(Business business, Wo wo) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.equal(root.get(Identity_.unit), wo.getId());
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
 }
