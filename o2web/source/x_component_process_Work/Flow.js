@@ -51,7 +51,11 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
             this.changeAction( this.navi[0].key );
-            this.loadQuickSelect();
+            if( this.processEnable || this.resetEnable || this.addTaskEnable ){
+                this.loadQuickSelect();
+            }else{
+                this.quickSelectNode.hide();
+            }
         }.bind(this));
     },
     getSize: function(){
@@ -188,8 +192,8 @@ MWF.xApplication.process.Work.Flow  = MWF.ProcessFlow = new Class({
         this.goBack.load();
     },
     loadQuickSelect: function(){
-        if( !this.options.addTaskEnable && !this.options.resetEnable && !this.options.processEnable ){
-            this.quickSelector.hide();
+        if( !this.addTaskEnable && !this.resetEnable && !this.processEnable ){
+            if(this.quickSelector)this.quickSelector.hide();
             return;
         }
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelect(

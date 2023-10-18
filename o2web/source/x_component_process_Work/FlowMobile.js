@@ -39,12 +39,17 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
+            if( this.navi.length < 2 )this.naviNode.hide();
             if( this.options.mainColorEnable ){
                 this.okButton.addClass("mainColor_bg");
             }
             this.node.getParent().setStyle("height", "100%");
             this.changeAction( this.navi[0].key );
-            this.loadQuickSelect();
+            if( this.processEnable || this.resetEnable || this.addTaskEnable ){
+                this.loadQuickSelect();
+            }else{
+                this.quickSelectNode.hide();
+            }
         }.bind(this));
     },
     getSize: function(){

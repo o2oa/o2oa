@@ -90,7 +90,7 @@
 }
 
 .o2flow-navi {
-
+    margin-top: 10px;
 }
 .o2flow-navi-node {
     background: #FFFFFF;
@@ -131,8 +131,6 @@
     line-height: 36px;
     padding-left: 10px;
     overflow: hidden;
-    margin-bottom: 10px;
-
     background: #FFFFFF;
     border-radius: 14px;
     margin-top: 10px;
