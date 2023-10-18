@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.StringTools;
 
 public class Tickets implements Serializable {
 
@@ -29,7 +30,7 @@ public class Tickets implements Serializable {
 	public static final String POSITION_BEFORE = "before";
 	public static final String POSITION_AFTER = "after";
 
-	protected Map<String, Ticket> context = new LinkedHashMap<>();
+	private Map<String, Ticket> context = new LinkedHashMap<>();
 
 	private String mode;
 
@@ -39,10 +40,11 @@ public class Tickets implements Serializable {
 
 	public static Tickets single(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
+		String layer = StringTools.uniqueToken();
 		tickets.mode = MODE_SINGLE;
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> {
 			o.sibling(targets);
-			o.mode(MODE_SINGLE);
+			o.mode(MODE_SINGLE).layer(layer);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -50,10 +52,11 @@ public class Tickets implements Serializable {
 
 	public static Tickets parallel(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
+		String layer = StringTools.uniqueToken();
 		tickets.mode = MODE_PARALLEL;
 		Tickets.interconnectedAsFellow(targets).stream().forEach(o -> {
 			o.fellow(targets);
-			o.mode(MODE_PARALLEL);
+			o.mode(MODE_PARALLEL).layer(layer);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -61,9 +64,10 @@ public class Tickets implements Serializable {
 
 	public static Tickets queue(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
+		String layer = StringTools.uniqueToken();
 		tickets.mode = MODE_QUEUE;
 		Tickets.interconnectedAsNext(targets).stream().forEach(o -> {
-			o.mode(MODE_QUEUE);
+			o.mode(MODE_QUEUE).layer(layer);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -73,9 +77,13 @@ public class Tickets implements Serializable {
 		return Optional.ofNullable(this.context.get(label));
 	}
 
+	public List<Ticket> list(boolean ifCompleted, boolean ifEnable, boolean ifValid) {
+		return this.context.values().stream().filter(o -> o.completed() == ifCompleted)
+				.filter(o -> o.enable() == ifEnable).filter(o -> o.valid() == ifValid).collect(Collectors.toList());
+	}
+
 	public List<Ticket> bubble() {
-		List<Ticket> list = this.context.values().stream().filter(o -> (!o.completed()) && o.enable() && o.valid())
-				.collect(Collectors.toList());
+		List<Ticket> list = list(false, true, true);
 		List<String> next = list.stream().flatMap(o -> o.next().stream()).filter(StringUtils::isNotEmpty)
 				.collect(Collectors.toList());
 		return list.stream().filter(o -> !next.contains(o.label())).collect(Collectors.toList());

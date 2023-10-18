@@ -9,17 +9,16 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
+		setLayer(targets);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsFellow(targets);
 		targets.stream().forEach(o -> o.appendNext(next));
 		completedThenNotJoin(tickets, ticket);
 	}
 
-
 	@Override
 	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		setLayer(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -34,6 +33,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		setLayer(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -44,12 +44,9 @@ class SingleAdd implements Add {
 		completedThenNotJoin(tickets, ticket);
 	}
 
-	private void completedThenNotJoin(Tickets tickets, Ticket ticket) {
-		tickets.listSibling(ticket, true).stream().forEach(o -> o.completed(true));
-	}
-
 	@Override
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		setLayer(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -60,6 +57,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		setLayer(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -74,8 +72,8 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		setLayer(targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));

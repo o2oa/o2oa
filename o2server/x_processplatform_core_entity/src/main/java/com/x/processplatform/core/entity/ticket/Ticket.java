@@ -35,8 +35,8 @@ public class Ticket implements Serializable {
 	private List<String> next;
 	// 模式
 	private String mode;
-	// 上级
-	private String superior;
+	// 层级
+	private String layer;
 	// 授权标识
 	private String fromDistinguishedName;
 
@@ -50,7 +50,7 @@ public class Ticket implements Serializable {
 		this.sibling = new ArrayList<>();
 		this.fellow = new ArrayList<>();
 		this.next = new ArrayList<>();
-		this.superior = "";
+		this.layer = "";
 		this.fromDistinguishedName = "";
 	}
 
@@ -242,12 +242,12 @@ public class Ticket implements Serializable {
 		return fellow;
 	}
 
-	public String superior() {
-		return this.superior;
+	public String layer() {
+		return this.layer;
 	}
 
-	public Ticket superior(String superior) {
-		this.superior = superior;
+	public Ticket layer(String layer) {
+		this.layer = layer;
 		return this;
 	}
 
@@ -291,7 +291,7 @@ public class Ticket implements Serializable {
 		o.fellow = new ArrayList<>(fellow);
 		o.next = new ArrayList<>(next);
 		o.mode = this.mode;
-		o.superior = this.superior;
+		o.layer = this.layer;
 		o.fromDistinguishedName = this.fromDistinguishedName;
 		return o;
 	}
