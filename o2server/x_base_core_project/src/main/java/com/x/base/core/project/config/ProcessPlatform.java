@@ -80,6 +80,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
 		this.updateTable = new UpdateTable();
+		this.handoverConfig = new HandoverConfig();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 		this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
 	}
@@ -179,6 +180,9 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("归档到Hadoop.")
 	private ArchiveHadoop archiveHadoop;
 
+	@FieldDescribe("权限交接定时配置.")
+	private HandoverConfig handoverConfig;
+
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
@@ -223,6 +227,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public UpdateTable getUpdateTable() {
 		return this.updateTable == null ? new UpdateTable() : this.updateTable;
+	}
+
+	public HandoverConfig getHandoverConfig() {
+		return this.handoverConfig == null ? new HandoverConfig() : this.handoverConfig;
 	}
 
 	public PassExpired getPassExpired() {
@@ -771,7 +779,7 @@ public class ProcessPlatform extends ConfigObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * 查找优先级 流程-> 应用 -> 默认设置(流程和应用为空)
 	 *
 	 */
@@ -905,6 +913,38 @@ public class ProcessPlatform extends ConfigObject {
 		public static final Boolean DEFAULT_ENABLE = true;
 
 		public static final String DEFAULT_CRON = "20 20 * * * ?";
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式.")
+		private String cron = DEFAULT_CRON;
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+	}
+
+	public static class HandoverConfig extends ConfigObject {
+
+		private static final long serialVersionUID = -5710800319348361625L;
+
+		public static HandoverConfig defaultInstance() {
+			return new HandoverConfig();
+		}
+
+		public static final Boolean DEFAULT_ENABLE = true;
+
+		public static final String DEFAULT_CRON = "0 0/5 * * * ?";
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
