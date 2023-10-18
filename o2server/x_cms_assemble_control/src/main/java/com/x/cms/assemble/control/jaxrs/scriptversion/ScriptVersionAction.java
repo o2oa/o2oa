@@ -1,4 +1,4 @@
-package com.x.portal.assemble.designer.jaxrs.scriptversion;
+package com.x.cms.assemble.control.jaxrs.scriptversion;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -19,9 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-/**
- * @author sword
- */
 @Path("scriptversion")
 @JaxrsDescribe("脚本版本")
 public class ScriptVersionAction extends StandardJaxrsAction {

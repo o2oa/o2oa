@@ -30,15 +30,15 @@ public class PageVersionAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "根据页面id获取历史版本列表.", action = ActionListWithScript.class)
 	@GET
-	@Path("list/script/{scriptId}")
+	@Path("list/page/{pageId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithForm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("process标识") @PathParam("scriptId") String scriptId) {
+	public void listWithPage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("page标识") @PathParam("pageId") String pageId) {
 		ActionResult<List<ActionListWithScript.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithScript().execute(effectivePerson, scriptId);
+			result = new ActionListWithScript().execute(effectivePerson, pageId);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
