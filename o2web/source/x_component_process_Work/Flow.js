@@ -728,7 +728,6 @@ MWF.ProcessFlow.GoBack = new Class({
             // act3[0].way = "custom";
             // var act4 = Array.clone(this.activitys);
             // this.activitys = this.activitys.concat(act2, act3, act4);
-            debugger;
             this.activitysArea.loadHtml(this.flow.path+this.flow.options.style+"/widget/gobackActivity.html",
                 {"bind": {"lp": this.lp, "activityList":this.activitys}, "module": this},
                 function(){
@@ -750,11 +749,15 @@ MWF.ProcessFlow.GoBack = new Class({
                 text: this.lp.goBackActivityWayJump,
                 value: "jump"
             }],
-            value: "step" //默认为单人
+            value: "step", //默认为单人
+            onLoad: function () {
+                this.container.getElement(".o2flow-radio-area").setStyle("display","flex");
+            }
         });
         wayRadio.load();
         var parentNode = ev.target.getParent(".o2flow-radio2");
         parentNode.store("wayRadio", wayRadio);
+        ev.target.hide();
     },
     toggle: function( ev ){
         var el = this.flow.getEl(ev, "o2flow-radio2");
@@ -763,6 +766,16 @@ MWF.ProcessFlow.GoBack = new Class({
         }else{
             this.check( el );
         }
+    },
+    showWayRadio: function(el){
+        var parentNode = this.flow.getEl({target: el}, "o2flow-radio2");
+        var wayRadio = parentNode.retrieve("wayRadio");
+        if(wayRadio)wayRadio.container.show();
+    },
+    hideWayRadio: function(el){
+        var parentNode = this.flow.getEl({target: el}, "o2flow-radio2");
+        var wayRadio = parentNode.retrieve("wayRadio");
+        if(wayRadio)wayRadio.container.hide();
     },
     check: function(el){
         while( this.checkedItems.length ){
@@ -775,6 +788,7 @@ MWF.ProcessFlow.GoBack = new Class({
         el.dataset["o2Checked"] = true;
         this.activitysArea.removeClass("o2flow-invalid-bg");
         this.checkedItems.push(el);
+        this.showWayRadio(el);
         this.fireEvent("check", [el, el.dataset["o2Value"]])
     },
     uncheck: function(el, isFire){
@@ -784,6 +798,7 @@ MWF.ProcessFlow.GoBack = new Class({
         if( this.flow.options.mainColorEnable )el.getElement("i").removeClass("mainColor_color");
         el.dataset["o2Checked"] = false;
         this.checkedItems.erase(el);
+        this.hideWayRadio(el);
         if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
     },
     show: function(){
@@ -840,9 +855,6 @@ MWF.ProcessFlow.GoBack = new Class({
     //     }
     // },
     destroy: function () {
-        if (this.orgItem && this.orgItem.clearTooltip){
-            this.orgItem.clearTooltip();
-        }
         if (this.node) this.node.empty();
     },
 });

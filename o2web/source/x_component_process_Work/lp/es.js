@@ -110,6 +110,14 @@ MWF.xApplication.process.Work.LP = {
      "noQuickSelectDataNote": "El sistema no ha registrado los datos que usted seleccionó en el nodo actual.",
      "submitQuickText": "Seleccione [{route}], opinión: {opinión}{org}.",
      "addTaskQuickText": "Seleccione [{mode}{route}], opinión: {opinion}, firmante: {org}.",
-     "resetQuickText": "Opinión: {opinion}, restablecer a: {org}."
+     "resetQuickText": "Opinión: {opinion}, restablecer a: {org}.",
+
+    "users": "controlador",
+    "goBackActivity": "Regresar a la actividad",
+    "goBackActivityWay": "Procesando después de la devolución:",
+    "goBackActivityWayStep": "Fluye según el proceso",
+    "goBackActivityWayJump": "Regresar al regresador",
+    "goBackTo": "Volver a:",
+    "selectGoBackActivity": "Por favor seleccione la actividad a regresar"
 };
 MWF.xApplication.process.Work["lp."+o2.language] = MWF.xApplication.process.Work.LP;
