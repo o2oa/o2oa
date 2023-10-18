@@ -1398,7 +1398,7 @@ o2.xApplication.systemconfig.LP = {
         "enableExternal": "Enable extended file storage",
         "disableExternal": "Disable extended file storage",
         "enableExternalInfo": "If you want to enable extended file storage, please ensure that the extended file storage configuration has been completed, otherwise the server may run abnormally. " +
-            "Enabling or disabling the extended storage service will affect the existing file storage of the system. It is strongly recommended to back up the system data first.",
+            "Enabling or disabling the extended storage service will affect the existing file storage of the system. It is strongly recommended to back up the system data first.<span style='color:red'>After enabling, please allocate storage nodes for each type of file below. </span>",
 
         "enableExternalTitle": "Enable extended file storage confirmation",
         "enableExternalConfirm": "You are about to enable extended file storage and disable the built-in file storage service. <br><span style='color:red'>This will affect existing stored files on the system. </span><br><br>Are you sure you want to enable extended file storage?",
