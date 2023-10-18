@@ -1150,8 +1150,11 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 			"</tr></table>";
 		this.versionNode.set("html", tableHtml);
 		this.versionTable = this.versionNode.getElement("table");
-		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.listWithForm(this.form.json.id, function(json){
+		o2.Actions.load("x_portal_assemble_designer").PageVersionAction.listWithPage(this.form.json.id, function(json){
 			this.versionList = json.data;
+			this.versionList.sort(function (a, b) {
+				return new Date(b.updateTime) - new Date(a.updateTime)
+			});
 			this.versionList.each(function (version,index) {
 				var node = new Element("tr").inject(this.versionTable);
 				var html = "<td>"+(index+1)+"</td>" +
@@ -1185,7 +1188,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		}.bind(this));
 	},
 	resumeForm : function(version){
-		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.get(version.id, function( json ){
+		o2.Actions.load("x_portal_assemble_designer").PageVersionAction.get(version.id, function( json ){
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 			this.designer.notice(MWF.APPPOD.LP.version["resumeSuccess"]);
