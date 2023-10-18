@@ -1,12 +1,5 @@
 package com.x.portal.assemble.designer.jaxrs.page;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,8 +13,16 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.portal.assemble.designer.Business;
+import com.x.portal.assemble.designer.ThisApplication;
 import com.x.portal.core.entity.Page;
+import com.x.portal.core.entity.PageVersion;
 import com.x.portal.core.entity.Portal;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 class ActionCreate extends BaseAction {
 
@@ -59,6 +60,8 @@ class ActionCreate extends BaseAction {
 			emc.commit();
 			CacheManager.notify(Page.class);
 			CacheManager.notify(Portal.class);
+			// 保存历史版本
+			ThisApplication.pageVersionQueue.send(new PageVersion(page.getId(), jsonElement, effectivePerson.getDistinguishedName()));
 			Wo wo = new Wo();
 			wo.setId(page.getId());
 			result.setData(wo);
