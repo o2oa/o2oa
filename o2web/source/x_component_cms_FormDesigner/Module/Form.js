@@ -277,7 +277,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	showFormVersion: function(){
 		this.versionNode = new Element("div");
 		this.dlg = o2.DL.open({
-			"title": MWF.APPFD.LP.version["title"],
+			"title": MWF.CMSFD.LP.version["title"],
 			"content": this.versionNode,
 			"offset": {"y": -100},
 			"isMax": false,
@@ -286,7 +286,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			"buttonList": [
 				{
 					"type": "cancel",
-					"text": MWF.APPFD.LP.version["close"],
+					"text": MWF.CMSFD.LP.version["close"],
 					"action": function(){ this.close(); }
 				}
 			],
@@ -307,7 +307,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			"</tr></table>";
 		this.versionNode.set("html", tableHtml);
 		this.versionTable = this.versionNode.getElement("table");
-		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.listWithForm(this.form.json.id, function(json){
+		o2.Actions.load("x_cms_assemble_control").FormVersionAction.listWithForm(this.form.json.id, function(json){
 			this.versionList = json.data;
 			this.versionList.each(function (version,index) {
 				var node = new Element("tr").inject(this.versionTable);
@@ -342,7 +342,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		}.bind(this));
 	},
 	resumeForm : function(version){
-		o2.Actions.load("x_processplatform_assemble_designer").FormVersionAction.get(version.id, function( json ){
+		o2.Actions.load("x_cms_assemble_control").FormVersionAction.get(version.id, function( json ){
 			var formData = JSON.parse(json.data.data);
 			//this.action.FormAction.update(version.form, formData,function( json ){
 			this.designer.notice(MWF.CMSFD.LP.version["resumeSuccess"]);
