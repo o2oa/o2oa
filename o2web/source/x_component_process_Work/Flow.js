@@ -752,6 +752,10 @@ MWF.ProcessFlow.GoBack = new Class({
             value: "step", //默认为单人
             onLoad: function () {
                 this.container.getElement(".o2flow-radio-area").setStyle("display","flex");
+                this.container.getElements(".o2flow-radio").setStyles({
+                    "padding-top":"0px",
+                    "padding-bottom":"0px"
+                })
             }
         });
         wayRadio.load();

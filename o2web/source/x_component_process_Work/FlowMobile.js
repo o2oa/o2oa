@@ -29,11 +29,13 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
         this.processEnable = this.options.processEnable && this.businessData.control["allowProcessing"];
         this.addTaskEnable = this.options.addTaskEnable && this.businessData.control["allowAddTask"];
         this.resetEnable = this.options.resetEnable && this.businessData.control["allowReset"];
+        this.goBackEnable = this.options.goBackEnable && this.businessData.control["allowGoBack"];
 
         this.navi = [];
         if( this.processEnable )this.navi.push({ key: "process", label: this.lp.flowActions.process });
         if( this.addTaskEnable )this.navi.push({ key: "addTask", label: this.lp.flowActions.addTask });
         if( this.resetEnable )this.navi.push({ key: "reset", label: this.lp.flowActions.reset });
+        if( this.goBackEnable )this.navi.push({ key: "goBack", label: this.lp.flowActions.goBack });
 
         var url = this.path+this.options.style+"/main.html";
         this.container.loadHtml(url, {"bind": {"lp": this.lp, "navi": this.navi}, "module": this}, function(){
@@ -78,6 +80,9 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
                 break;
             case "reset":
                 this.loadReset( quickData );
+                break;
+            case "goBack":
+                this.loadGoBack();
                 break;
         }
     },
@@ -146,6 +151,27 @@ MWF.xApplication.process.Work.FlowMobile  = MWF.ProcessFlowMobile = new Class({
             })
         );
         this.addTask.load( quickData );
+    },
+    loadGoBack: function(){
+        if( this.goBack ){
+            this.resize();
+            return;
+        }
+        this.goBack = new MWF.ProcessFlow.GoBackMobile(
+            this.goBackContentNode,
+            this,
+            Object.merge( this.options.goBackOptions, {
+                onLoad: function () {
+                    if( this.firstActionLoaded ){
+                        this.resize();
+                    }else{
+                        this.firstActionLoaded = true;
+                        this.checkLoadEvent();
+                    }
+                }.bind(this)
+            })
+        );
+        this.goBack.load();
     },
     loadQuickSelect: function(){
         this.quickSelector = new MWF.ProcessFlow.widget.QuickSelectMobile(
@@ -515,6 +541,155 @@ MWF.ProcessFlow.AddTaskMobile = new Class({
         _self.orgData.splice( index, 1 );
         this.node.destroy();
         ev.stopPropagation();
+    },
+});
+
+MWF.ProcessFlow.GoBackMobile = new Class({
+    Extends: MWF.ProcessFlow.GoBack,
+    Implements: [Options, Events],
+    options:{
+        data: null,
+        style: "default"
+    },
+    loadActivitys: function(){
+        o2.Actions.load('x_processplatform_assemble_surface').WorkAction.V2ListActivityGoBack(this.task.work, function(json) {
+            this.activitys = json.data;
+            // this.activitys[0].lastIdentityList = this.activitys[0].lastIdentityList.concat(this.activitys[0].lastIdentityList);
+            // this.activitys[0].lastIdentityList = this.activitys[0].lastIdentityList.concat(this.activitys[0].lastIdentityList);
+            // this.activitys[0].lastIdentityList = this.activitys[0].lastIdentityList.concat(this.activitys[0].lastIdentityList);
+            // this.activitys[0].lastIdentityList = this.activitys[0].lastIdentityList.concat(this.activitys[0].lastIdentityList);
+            //
+            // var act2 = Array.clone(this.activitys);
+            // act2[0].way = "custom";
+            // var act3 = Array.clone(this.activitys);
+            // act3[0].way = "custom";
+            // var act4 = Array.clone(this.activitys);
+            // this.activitys = this.activitys.concat(act2, act3, act4);
+            this.activitysArea.loadHtml(this.flow.path+this.flow.options.style+"/widget/gobackActivity.html",
+                {"bind": {"lp": this.lp, "activityList":this.activitys}, "module": this},
+                function(){
+                    if( this.activitys.length === 1 ){
+                        var el = this.activitysArea.getElement(".o2flow-section");
+                        this.check( el );
+                    }
+                    this.afterLoad();
+                    this.fireEvent("load");
+                }.bind(this));
+        }.bind(this));
+    },
+    loadWayRadio: function(ev, activityData){
+        var wayRadio = new MWF.ProcessFlow.widget.Radio2(ev.target, this.flow, {
+            activeIcon: "o2icon-checkbox",
+            optionList: [{
+                text: this.lp.goBackActivityWayStep,
+                value: "step"
+            },{
+                text: this.lp.goBackActivityWayJump,
+                value: "jump"
+            }],
+            value: "step", //默认为单人
+            onLoad: function () {}
+        });
+        wayRadio.load();
+        var parentNode = ev.target.getParent(".o2flow-section");
+        parentNode.store("wayRadio", wayRadio);
+        ev.target.hide();
+    },
+    loadIdentity: function(ev, activityData){
+        var ids = activityData.lastIdentityList;
+        if(ids.length>8){
+            this.loadOrgWidget(ids.slice(0,8), ev.target);
+            new Element("div.o2flow-identity-more", {
+                text: "..."
+            }).inject(ev.target);
+        }else{
+            this.loadOrgWidget(ids, ev.target);
+        }
+    },
+    loadOrgWidget: function (value, node) {
+        var height = node.getStyle("height").toInt();
+        if (node.getStyle("overflow") === "visible" && !height) node.setStyle("overflow", "hidden");
+        if (value && value.length) {
+            value.each(function (data) {
+                if( typeOf(data) === "string" ){
+                    data = { distinguishedName : data, name : o2.name.cn(data) };
+                }
+                var flag = data.distinguishedName.substr(data.distinguishedName.length - 1, 1);
+                var widget;
+                switch (flag.toLowerCase()) {
+                    case "i":
+                        widget = new MWF.ProcessFlow.widget.O2IdentityMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "p":
+                        widget = MWF.ProcessFlow.widget.O2PersonMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "u":
+                        widget = new MWF.ProcessFlow.widget.O2UnitMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    case "g":
+                        widget = new MWF.ProcessFlow.widget.O2GroupMobile(data, node, this.getOrgWidgetOption());
+                        break;
+                    default:
+                        widget = new MWF.ProcessFlow.widget.O2OtherMobile(data, node, this.getOrgWidgetOption());
+                }
+                widget.field = this;
+                widget.load();
+            }.bind(this));
+        }
+    },
+    getOrgWidgetOption: function(){
+        return {
+            "mainColorEnable": this.flow.options.mainColorEnable,
+            "removeByClick": false,
+            "style": "flowmobile",
+            "canRemove": false,
+            "lazy": true,
+            "disableInfor" : true,
+            // "onPostLoad": this.loadWidgetItem,
+            "delay": true
+        };
+    },
+    showWayRadio: function(el){
+        var parentNode = this.flow.getEl({target: el}, "o2flow-section");
+        var wayRadio = parentNode.retrieve("wayRadio");
+        if(wayRadio)wayRadio.container.show();
+    },
+    hideWayRadio: function(el){
+        var parentNode = this.flow.getEl({target: el}, "o2flow-section");
+        var wayRadio = parentNode.retrieve("wayRadio");
+        if(wayRadio)wayRadio.container.hide();
+    },
+    toggle: function( ev ){
+        var el = this.flow.getEl(ev, "o2flow-section");
+        if( this.checkedItems.contains( el ) ){
+            //if( this.options.cancelEnable )this.uncheck( el, true )
+        }else{
+            this.check( el );
+        }
+    },
+    check: function(el){
+        while( this.checkedItems.length ){
+            this.uncheck( this.checkedItems[0] );
+        }
+        el.addClass("o2flow-section-active");
+        if( this.flow.options.mainColorEnable )el.addClass("mainColor_color");
+        el.getElement("i").removeClass("o2icon-icon_circle").addClass("o2icon-radio-checked").addClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").addClass("mainColor_color");
+        el.dataset["o2Checked"] = true;
+        this.activitysArea.removeClass("o2flow-invalid-bg");
+        this.checkedItems.push(el);
+        this.showWayRadio(el);
+        this.fireEvent("check", [el, el.dataset["o2Value"]])
+    },
+    uncheck: function(el, isFire){
+        el.removeClass("o2flow-section-active");
+        if( this.flow.options.mainColorEnable )el.removeClass("mainColor_color");
+        el.getElement("i").removeClass("o2icon-radio-checked").addClass("o2icon-icon_circle").removeClass("o2flow-radio2-icon");
+        if( this.flow.options.mainColorEnable )el.getElement("i").removeClass("mainColor_color");
+        el.dataset["o2Checked"] = false;
+        this.checkedItems.erase(el);
+        this.hideWayRadio(el);
+        if(isFire)this.fireEvent("uncheck", [el, el.dataset["o2Value"]])
     },
 });
 

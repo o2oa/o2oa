@@ -220,6 +220,9 @@
     border-radius: 14px;
     margin-top: 10px;
 }
+.o2flow-section-active {
+    color: #FB4747;
+}
 .o2flow-section-title {
     height: 30px;
     font-size: 14px;
@@ -511,6 +514,18 @@
 .o2flow-identity-text{
     color: #666;
     font-size:  12px;
+}
+.o2flow-identity-more{
+    float: left;
+    border-radius: 32px;
+    width: 32px;
+    height: 32px;
+    background: #ccc;
+    text-align: center;
+    margin-top: 8px;
+    color: #fff;
+    font-size: 24px;
+    line-height: 18px;
 }
 
 .o2flow-unit{
