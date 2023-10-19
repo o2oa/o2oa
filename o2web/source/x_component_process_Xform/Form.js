@@ -4479,7 +4479,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var count = this.businessData.activity.resetCount || 0;
         switch (range) {
             case "unit":
-                this.selectPeopleUnit(dlg, this.businessData.task.unit, count, null,  exclude);
+                this.selectPeopleUnit(dlg, this.businessData.task.unitDn, count, null,  exclude);
                 // this.personActions.getDepartmentByIdentity(function(json){
                 //     this.selectPeopleDepartment(dlg, json.data, count);
                 // }.bind(this), null, this.businessData.task.identity);
@@ -4487,7 +4487,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             case "topUnit":
                 MWF.require("MWF.xScript.Actions.UnitActions", function () {
                     orgActions = new MWF.xScript.Actions.UnitActions();
-                    var data = { "unitList": [this.businessData.task.unit] };
+                    var data = { "unitList": [this.businessData.task.unitDn] };
                     orgActions.listUnitSupNested(data, function (json) {
                         v = json.data[0];
                         this.selectPeopleUnit(dlg, v, count, null, exclude);
