@@ -469,9 +469,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "Ninguno",
         "default": "Predeterminado",
         "byScript": "Por script",
+        "scriptLib": "Script",
         "byFormat": "Por formato",
         "table": "Tabla",
-        "languageDefaultInfo": "El sistema automáticamente cargará un diccionario de datos (o un script) con el nombre \"lp-\"+o2.language como paquete de idioma.",
+        "languageDefaultInfoScript": "El sistema cargará automáticamente un script llamado (\"lp-\"+o2.language) como paquete de idioma.",
+        "languageDefaultInfoDict": "El sistema automáticamente cargará un diccionario de datos (o un script) con el nombre \"lp-\"+o2.language como paquete de idioma.",
 
         "prefix": "Prefijo",
         "suffix": "Sufijo",

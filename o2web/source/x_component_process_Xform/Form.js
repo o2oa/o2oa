@@ -461,26 +461,29 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     loadLanguage: function(callback){
-        if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+        if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
             if (callback) callback();
             return true;
         }
 
         var language = MWF.xApplication.process.Xform.LP.form;
         var languageJson = null;
+        var name = "lp-"+o2.language;
+        var app;
+        if (this.options.macro==="PageContext") {
+            app = (this.app.portal && this.app.portal.id) ? this.app.portal.id : this.json.application;
+        }else{
+            app = (this.businessData.work || this.businessData.workCompleted).application;
+        }
 
         if (this.json.languageType=="script"){
             if (this.json.languageScript && this.json.languageScript.code){
                 languageJson = this.Macro.exec(this.json.languageScript.code, this);
             }
         }else if (this.json.languageType=="default") {
-            var name = "lp-"+o2.language;
             var p1, p2;
             if (this.options.macro==="PageContext"){
                 var portal = (this.app.portal && this.app.portal.id) ? this.app.portal.id : this.json.application;
-                // languageJson = this.workAction.getScriptByNameV2(portal, name, function(d){
-                //     return this.Macro.exec(d.data.text, this);
-                // }.bind(this), function(){});
 
                 p1 = this.workAction.getDictRoot(name, portal, function(d){
                     return d.data;
@@ -512,6 +515,23 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }.bind(this));
                 languageJson = Promise.any([p1, p2]);
             }
+        }else if (this.json.languageType=="lib") {
+            var par1 = (this.options.macro==="PageContext") ? app : name;
+            var par2 = (this.options.macro==="PageContext") ? name : app;
+            languageJson = new Promise(function(resolve, reject){
+                this.workAction.getScriptByNameV2(par1, par2, function(d){
+                    if (d.data.text) {
+                        resolve(this.Macro.exec(d.data.text, this));
+                    }
+                }.bind(this), function(){reject("");});
+            }.bind(this));
+
+        }else if (this.json.languageType=="dict") {
+            languageJson = this.workAction.getDictRoot(name, app, function(d){
+                return d.data;
+            }, function(){
+                return true;
+            });
         }
 
         if (languageJson){

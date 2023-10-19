@@ -107,19 +107,25 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.language}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageScriptArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultArea').setStyle('display', 'none'); }" name="languageType" text{($.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultDictArea').setStyle('display', 'none'); $('text{$.pid}languageDefaultScriptArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType!=='default' && $.languageType!=='script' && $.languageType!=='lib' && $.languageType!=='dict')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
+<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}-->
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultDictArea').setStyle('display', 'none'); $('text{$.pid}languageDefaultScriptArea').setStyle('display', 'block'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='lib')?'checked':''} type="radio" value="lib"/>{{$.lp.scriptLib}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultDictArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultScriptArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'none');}" name="languageType" text{($.languageType==='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}languageDefaultDictArea').setStyle('display', 'none'); $('text{$.pid}languageScriptArea').setStyle('display', 'block'); $('text{$.pid}languageDefaultScriptArea').setStyle('display', 'none'); }" name="languageType" text{($.languageType==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
                 </td>
             </tr>
         </table>
-        <div id="text{$.pid}languageDefaultArea" style="display: text{($.languageType!=='script')?'block':'none'}">
-            <div style="padding: 5px;">{{$.lp.languageDefaultInfo}}</div>
+        <div id="text{$.pid}languageDefaultScriptArea" style="display: text{($.languageType==='lib')?'block':'none'}">
+            <div style="padding: 5px;">{{$.lp.languageDefaultInfoScript}}</div>
+        </div>
+        <div id="text{$.pid}languageDefaultDictArea" style="display: text{($.languageType==='dict')?'block':'none'}">
+            <div style="padding: 5px;">{{$.lp.languageDefaultInfoDict}}</div>
         </div>
         <div id="text{$.pid}languageScriptArea" style="display: text{($.languageType=='script')?'block':'none'}">
             <div class="MWFScriptArea" name="languageScript" title="{{$.lp.languageScript}}"></div>
             <div style="padding: 5px;">{{$.lp.languageInfo}}</div>
         </div>
+        <div style="height: 30px"></div>
 	</div>
 	<div title="{{$.lp.submit}}" class="MWFTab">
 
