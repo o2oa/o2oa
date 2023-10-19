@@ -3744,8 +3744,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var itemNode = new Element("div", {
                                 style: "float:left;overflow:hidden;"
                             }).inject(taskBodyNode);
+                            var vfor = Math.random().toString();
                             var text = o2.name.cn(o.person) + "(" + o.completedTime + ")";
                             var check = new Element("input", {
+                                "id": vfor,
                                 "value": o.identity,
                                 "type": "checkbox",
                                 "disabled": true,
@@ -3754,7 +3756,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             check.addEvent("click", function (e) {
                                 e.stopPropagation();
                             });
-                            var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(itemNode);
+                            var taskNode = new Element("label", { "styles": this.css.rollbackItemTaskNode, "text": text, "for": vfor }).inject(itemNode);
+                            taskNode.addEvent("click", function (e) {
+                                e.stopPropagation();
+                            });
                         }.bind(this));
                     } else {
                         var text = this.app.lp.systemFlow;
@@ -3900,7 +3905,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     doRollbackActionInvoke: function (id, flowOption, idList, success, failure) {
         if (this.businessData.work.completedTime) {
             var method = "rollbackWorkcompleted";
-            o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
+            o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, {
+                "workLog": id,
+                "distinguishedNameList": idList,
+                "processing": !!flowOption
+            }, function (json) {
                 if (success) success(json);
             }.bind(this), function (xhr, text, error) {
                 if (failure) failure(xhr, text, error)
@@ -3908,7 +3917,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             var body = {
                 "workLog": id,
-                "taskCompletedIdentityList": idList,
+                "distinguishedNameList": idList,
                 "processing": !!flowOption
             }
             o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Rollback(this.businessData.work.id, body, function (json) {
