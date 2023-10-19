@@ -3,56 +3,44 @@ package com.x.program.center.dingding;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Department extends GsonPropertyObject {
-	//
-	// "id": 2,
-	// "name": "广州研发中心",
-	// "parentid": 1,
-	// "order": 10
-	// "isFromUnionOrg": false
 
-	private Long id;
+	private static final long serialVersionUID = 2443231508595734358L;
+	private Long dept_id;
 	private String name;
-	private Long parentid;
+	private Long parent_id;
 	private Long order;
-	private Boolean isFromUnionOrg;
-
-	public Long getId() {
-		return id;
+	private Boolean from_union_org; // 部门是否来自关联组织
+	public Long getDept_id() {
+		return dept_id;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public void setDept_id(Long dept_id) {
+		this.dept_id = dept_id;
 	}
-
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Long getParentid() {
-		return parentid;
+	public Long getParent_id() {
+		return parent_id;
 	}
-
-	public void setParentid(Long parentid) {
-		this.parentid = parentid;
+	public void setParent_id(Long parent_id) {
+		this.parent_id = parent_id;
 	}
-
 	public Long getOrder() {
 		return order;
 	}
-
 	public void setOrder(Long order) {
 		this.order = order;
 	}
-
-	public Boolean getIsFromUnionOrg() {
-		return isFromUnionOrg;
+	public Boolean getFrom_union_org() {
+		return from_union_org;
 	}
-
-	public void setIsFromUnionOrg(Boolean isFromUnionOrg) {
-		this.isFromUnionOrg = isFromUnionOrg;
+	public void setFrom_union_org(Boolean from_union_org) {
+		this.from_union_org = from_union_org;
 	}
+ 
+	
+	
 }

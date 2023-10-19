@@ -2118,6 +2118,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         if (!this.validation(routeName, opinion, processor, medias)) {
             if (processor && processor.node) processor.node.unmask();
+            if (callback) callback();
             return false;
         }
         if (!opinion) {

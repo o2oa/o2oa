@@ -202,9 +202,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     _loadUserInterface: function( callback ){
-
         this.viewJson = this.bindLP( this.viewJson );
+
+        var defaultSelectedScript, selectedAbleScript;
+        if( typeOf(this.json.defaultSelectedScript) === "function" )defaultSelectedScript = this.json.defaultSelectedScript;
+        if( typeOf(this.json.selectedAbleScript) === "function" )selectedAbleScript = this.json.selectedAbleScript;
         this.json = this.bindLP( this.json );
+        if(defaultSelectedScript)this.json.defaultSelectedScript = defaultSelectedScript;
+        if(selectedAbleScript)this.json.selectedAbleScript = selectedAbleScript;
 
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
@@ -392,7 +397,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
                             return false;
                         }
-                        debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
                         this._exportView(start, end, filename);
@@ -873,8 +877,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if( d.bundleList.length ){
             this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
                 var resultJson, viewData = json.data;
-
-                debugger;
 
                 if (this.viewJson.group.column){
                     resultJson = [];
@@ -2355,6 +2357,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
 
         //默认选中
+        debugger;
         var selectedFlag;
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         if( !this.isSelected && defaultSelectedScript ){
@@ -2607,7 +2610,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
     },
 
     select: function(  force ){
-        debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
         if (this.isSelected){
@@ -3688,9 +3690,7 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
             this.sequenceTd.set("text", sequence);
         }
 
-        debugger;
         Object.each(this.view.entries, function(c, k){
-            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
@@ -3742,7 +3742,6 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
         }
 
         //默认选中
-
         //判断是不是在selectedItems中，用户手工选择
 
         this.setEvent();

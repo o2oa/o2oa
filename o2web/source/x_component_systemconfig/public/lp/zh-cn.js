@@ -1409,7 +1409,7 @@ o2.xApplication.systemconfig.LP = {
 
         "enableExternal": "启用扩展文件存储",
         "disableExternal": "禁用扩展文件存储",
-        "enableExternalInfo": "如果要启用扩展文件存储，请确保扩展文件存储配置已经完成，否则可能造成服务器运行异常。启用或禁用扩展存储服务都会影响到系统现有的文件存储，强烈建议先备份系统数据。",
+        "enableExternalInfo": "如果要启用扩展文件存储，请确保扩展文件存储配置已经完成，否则可能造成服务器运行异常。启用或禁用扩展存储服务都会影响到系统现有的文件存储，强烈建议先备份系统数据。<span style='color:red'>启用后，请为下方的每种类型的文件分别分配存储节点。</span>",
 
         "enableExternalTitle": "启用扩展文件存储确认",
         "enableExternalConfirm": "您即将启用扩展文件存储，同时会禁用内置文件存储服务。<br><span style='color:red'>这会影响到系统现有已存储的文件</span><br><br>您是否确定要启用扩展文件存？",

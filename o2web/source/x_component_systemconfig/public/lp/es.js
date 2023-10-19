@@ -1390,7 +1390,7 @@ o2.xApplication.systemconfig.LP = {
 
         "enableExternal": "Habilitar almacenamiento de archivos externo",
 		"disableExternal": "Deshabilitar almacenamiento de archivos externo",
-		"enableExternalInfo": "Si desea habilitar el almacenamiento de archivos externo, asegúrese de haber completado la configuración correspondiente. De lo contrario, el servidor puede sufrir problemas. Tanto habilitar como deshabilitar el servicio de almacenamiento externo afectará al almacenamiento de archivos existente en el sistema, por lo que se recomienda hacer una copia de seguridad de los datos del sistema antes de tomar cualquier acción.",
+		"enableExternalInfo": "Si desea habilitar el almacenamiento de archivos externo, asegúrese de haber completado la configuración correspondiente. De lo contrario, el servidor puede sufrir problemas. Tanto habilitar como deshabilitar el servicio de almacenamiento externo afectará al almacenamiento de archivos existente en el sistema, por lo que se recomienda hacer una copia de seguridad de los datos del sistema antes de tomar cualquier acción.<span style='color:red'>Después de habilitarlo, asigne nodos de almacenamiento para cada tipo de archivo a continuación. </span>",
 
 		"enableExternalTitle": "Confirmar la habilitación del almacenamiento de archivos externo",
 		"enableExternalConfirm": "Está a punto de habilitar el almacenamiento de archivos externo y deshabilitar el servicio de almacenamiento de archivos integrado.<br><span style='color:red'> Esto podría afectar al almacenamiento de archivos existente en el sistema.</span><br><br> ¿Está seguro de querer habilitar el almacenamiento de archivos externo?",
