@@ -162,6 +162,7 @@ public class Manual extends Activity {
 	}
 
 	public static final String PROCESSINGTASKONCEUNDERSAMEPERSON_FIELDNAME = "processingTaskOnceUnderSamePerson";
+	@Deprecated(since = "如果使用tickets的distingushedName,那么这个设置将要废弃.")
 	@Transient
 	@FieldDescribe("同一处理人不同身份待办合并处理一次.")
 	private Boolean processingTaskOnceUnderSamePerson;

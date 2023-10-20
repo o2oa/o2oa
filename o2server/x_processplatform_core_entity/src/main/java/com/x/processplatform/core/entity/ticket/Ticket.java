@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 public class Ticket implements Serializable {
 
 	private static final long serialVersionUID = -9138959874056364353L;
+
+	private static final Pattern DISTINGUISHEDNAME_LABEL_PATTERN = Pattern.compile("([^$]*)\\$\\{([^}]*)}$");
 
 	// 标识
 	private String label;
@@ -58,11 +62,19 @@ public class Ticket implements Serializable {
 
 	public Ticket(String distinguishedName) {
 		this();
-		this.distinguishedName = distinguishedName;
+		Matcher matcher = DISTINGUISHEDNAME_LABEL_PATTERN.matcher(distinguishedName);
+		if (matcher.find()) {
+			this.distinguishedName = matcher.group(1);
+			this.label = matcher.group(2);
+		} else {
+			this.distinguishedName = distinguishedName;
+		}
+
 	}
 
 	public Ticket(String distinguishedName, String label) {
-		this(distinguishedName);
+		this();
+		this.distinguishedName = distinguishedName;
 		this.label = label;
 	}
 

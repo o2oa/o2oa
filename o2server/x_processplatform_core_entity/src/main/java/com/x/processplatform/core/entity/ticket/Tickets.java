@@ -40,6 +40,10 @@ public class Tickets implements Serializable {
 		return this.mode;
 	}
 
+	public static Tickets single(Ticket... targets) {
+		return single(Arrays.asList(targets));
+	}
+
 	public static Tickets single(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
 		long level = (new Date()).getTime();
@@ -52,6 +56,10 @@ public class Tickets implements Serializable {
 		return tickets;
 	}
 
+	public static Tickets parallel(Ticket... targets) {
+		return parallel(Arrays.asList(targets));
+	}
+
 	public static Tickets parallel(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
 		long level = (new Date()).getTime();
@@ -62,6 +70,10 @@ public class Tickets implements Serializable {
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
+	}
+
+	public static Tickets queue(Ticket... targets) {
+		return queue(Arrays.asList(targets));
 	}
 
 	public static Tickets queue(Collection<Ticket> targets) {
@@ -143,6 +155,7 @@ public class Tickets implements Serializable {
 		if (targets.isEmpty()) {
 			return false;
 		}
+		targets.stream().forEach(o -> o.act(Tickets.ACT_ADD));
 		Add add = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			add = new ParallelAdd();
@@ -188,8 +201,19 @@ public class Tickets implements Serializable {
 	 * @param targets
 	 * @return
 	 */
-	public List<Ticket> reset(Ticket ticket, Collection<String> targets) {
+	public boolean reset(String label, Collection<String> targets) {
+		Optional<Ticket> opt = this.findTicketWithLabel(label);
+		if (opt.isPresent()) {
+			return reset(opt.get(), targets);
+		}
+		return false;
+	}
+
+	public boolean reset(Ticket ticket, Collection<String> targets) {
 		targets = trimLevelDistinguishedName(ticket, targets);
+		if (targets.isEmpty()) {
+			return false;
+		}
 		Reset reset = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			reset = new ParallelReset();
@@ -200,8 +224,8 @@ public class Tickets implements Serializable {
 		}
 		List<Ticket> list = reset.reset(this, ticket, targets);
 		list.stream().forEach(o -> this.context.put(o.label(), o));
-		ticket.completed(true);
-		return list;
+		ticket.completed(true).enable(false);
+		return true;
 	}
 
 	/**

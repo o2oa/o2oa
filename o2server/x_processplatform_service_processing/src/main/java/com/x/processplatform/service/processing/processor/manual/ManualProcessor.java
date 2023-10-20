@@ -493,8 +493,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 			return executingMatrix(aeiObjects, manual);
 		}
 		aeiObjects.empower();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+		System.out.println(gson.toJson(tickets.bubble()));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
 		List<Work> results = new ArrayList<>();
 		checkValidTickets(aeiObjects, tickets);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2");
+		System.out.println(gson.toJson(tickets.bubble()));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2");
 		// 由于退回存在空名称的路由
 		List<TaskCompleted> taskCompleteds = aeiObjects
 				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
@@ -512,6 +518,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			tasks.stream().forEach(aeiObjects::deleteTask);
 			uncompletedTaskToRead(aeiObjects, manual, tasks);
 		} else {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!3");
+			System.out.println(gson.toJson(tickets.bubble()));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!3");
 			if (tickets.isEmpty()) {
 				// 在添加分支的情况下需要在这里重新计算matrix
 				tickets = manual.identitiesToTickets(calculateTaskIdentities(aeiObjects, manual));
@@ -528,6 +537,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			default:
 				this.single(aeiObjects, manual, tickets, taskCompleteds);
 			}
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!4");
+			System.out.println(gson.toJson(tickets.bubble()));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!4");
 			// 可能在处理过程中删除了所有的待办,比如有优先路由
 			if (tickets.bubble().isEmpty()) {
 				results.add(aeiObjects.getWork());
@@ -626,9 +638,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
 			List<TaskCompleted> taskCompleteds) {
 		tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
-			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel()) || StringUtils
-					.equalsAnyIgnoreCase(o.distinguishedName(), t.getIdentity(), t.getDistinguishedName())) {
-				tickets.completed(o.label());
+			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
+				if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
+						&& BooleanUtils.isTrue(t.getJoinInquire())) {
+					tickets.completed(o);
+				} else {
+					o.completed(true);
+				}
 			}
 		}));
 //			List<String> identities = matrix.flat();
@@ -882,6 +898,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void single(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
 			throws Exception {
 		// 是否有优先路由
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!55");
+		System.out.println(gson.toJson(tickets.bubble()));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!55");
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			tickets.bubble().stream().forEach(o -> o.enable(false));
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
@@ -890,7 +909,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 			tasks.stream().forEach(aeiObjects::deleteTask);
 			uncompletedTaskToRead(aeiObjects, manual, tasks);
 		} else {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!66");
+			System.out.println(gson.toJson(tickets.bubble()));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!66");
 			task(aeiObjects, manual, tickets);
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!77");
+			System.out.println(gson.toJson(tickets.bubble()));
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!77");
 		}
 	}
 
