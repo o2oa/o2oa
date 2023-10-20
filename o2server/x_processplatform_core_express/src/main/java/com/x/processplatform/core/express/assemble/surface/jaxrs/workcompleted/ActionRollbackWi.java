@@ -1,20 +1,18 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.work;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.workcompleted;
 
 import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class V2RollbackWi extends GsonPropertyObject {
+public class ActionRollbackWi extends GsonPropertyObject {
 
-	private static final long serialVersionUID = 4148950553127792266L;
+	private static final long serialVersionUID = 2040132891703254119L;
 
-	@FieldDescribe("工作日志")
+	@FieldDescribe("工作日志.")
 	private String workLog;
 
-	@FieldDescribe("组织对象专有标识.")
+	@FieldDescribe("回溯组织专用标识.")
 	private List<String> distinguishedNameList;
 
 	public String getWorkLog() {

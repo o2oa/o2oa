@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -13,12 +14,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.StringTools;
 
 public class Tickets implements Serializable {
 
@@ -27,8 +28,9 @@ public class Tickets implements Serializable {
 	public static final String MODE_PARALLEL = "parallel";
 	public static final String MODE_QUEUE = "queue";
 	public static final String MODE_SINGLE = "single";
-	public static final String POSITION_BEFORE = "before";
-	public static final String POSITION_AFTER = "after";
+	public static final String ACT_RESET = "reset";
+	public static final String ACT_ADD = "add";
+	public static final String ACT_CREATE = "create";
 
 	private Map<String, Ticket> context = new LinkedHashMap<>();
 
@@ -40,11 +42,11 @@ public class Tickets implements Serializable {
 
 	public static Tickets single(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		String layer = StringTools.uniqueToken();
+		long level = (new Date()).getTime();
 		tickets.mode = MODE_SINGLE;
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> {
 			o.sibling(targets);
-			o.mode(MODE_SINGLE).layer(layer);
+			o.mode(MODE_SINGLE).level(level).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -52,11 +54,11 @@ public class Tickets implements Serializable {
 
 	public static Tickets parallel(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		String layer = StringTools.uniqueToken();
+		long level = (new Date()).getTime();
 		tickets.mode = MODE_PARALLEL;
 		Tickets.interconnectedAsFellow(targets).stream().forEach(o -> {
 			o.fellow(targets);
-			o.mode(MODE_PARALLEL).layer(layer);
+			o.mode(MODE_PARALLEL).level(level).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -64,10 +66,10 @@ public class Tickets implements Serializable {
 
 	public static Tickets queue(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		String layer = StringTools.uniqueToken();
+		long level = (new Date()).getTime();
 		tickets.mode = MODE_QUEUE;
 		Tickets.interconnectedAsNext(targets).stream().forEach(o -> {
-			o.mode(MODE_QUEUE).layer(layer);
+			o.mode(MODE_QUEUE).level(level).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -77,9 +79,18 @@ public class Tickets implements Serializable {
 		return Optional.ofNullable(this.context.get(label));
 	}
 
-	public List<Ticket> list(boolean ifCompleted, boolean ifEnable, boolean ifValid) {
-		return this.context.values().stream().filter(o -> o.completed() == ifCompleted)
-				.filter(o -> o.enable() == ifEnable).filter(o -> o.valid() == ifValid).collect(Collectors.toList());
+	public List<Ticket> list(Boolean ifCompleted, Boolean ifEnable, Boolean ifValid) {
+		Predicate<Ticket> predicate = Objects::nonNull;
+		if (null != ifCompleted) {
+			predicate = predicate.and(o -> o.completed() == ifCompleted);
+		}
+		if (null != ifEnable) {
+			predicate = predicate.and(o -> o.enable() == ifEnable);
+		}
+		if (null != ifValid) {
+			predicate = predicate.and(o -> o.valid() == ifValid);
+		}
+		return this.context.values().stream().filter(predicate).collect(Collectors.toList());
 	}
 
 	public List<Ticket> bubble() {
@@ -104,21 +115,22 @@ public class Tickets implements Serializable {
 		return this;
 	}
 
-	public boolean add(String label, Collection<String> targets, String position, String addMode) {
-		return add(label, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
-	}
-
+	/**
+	 * 加签,对targets进行在相同level已有的进行去重.
+	 * 
+	 * @param label
+	 * @param targets
+	 * @param before
+	 * @param addMode
+	 * @return
+	 */
 	public boolean add(String label, Collection<String> targets, boolean before, String addMode) {
 		Optional<Ticket> opt = this.findTicketWithLabel(label);
 		if (opt.isPresent()) {
-			return add(opt.get(), targets.stream().distinct().map(Ticket::new).collect(Collectors.toList()), before,
-					addMode);
+			return add(opt.get(), trimLevelDistinguishedName(opt.get(), targets).stream().map(Ticket::new)
+					.collect(Collectors.toList()), before, addMode);
 		}
 		return false;
-	}
-
-	public boolean add(Ticket ticket, Collection<Ticket> targets, String position, String addMode) {
-		return add(ticket, targets, StringUtils.equalsIgnoreCase(position, POSITION_BEFORE), addMode);
 	}
 
 	/**
@@ -128,6 +140,9 @@ public class Tickets implements Serializable {
 	 * @return
 	 */
 	public boolean add(Ticket ticket, Collection<Ticket> targets, boolean before, String addMode) {
+		if (targets.isEmpty()) {
+			return false;
+		}
 		Add add = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			add = new ParallelAdd();
@@ -166,7 +181,15 @@ public class Tickets implements Serializable {
 		return true;
 	}
 
+	/**
+	 * 重置处理人,,对targets进行在相同level已有的进行去重.
+	 * 
+	 * @param ticket
+	 * @param targets
+	 * @return
+	 */
 	public List<Ticket> reset(Ticket ticket, Collection<String> targets) {
+		targets = trimLevelDistinguishedName(ticket, targets);
 		Reset reset = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			reset = new ParallelReset();
@@ -177,8 +200,23 @@ public class Tickets implements Serializable {
 		}
 		List<Ticket> list = reset.reset(this, ticket, targets);
 		list.stream().forEach(o -> this.context.put(o.label(), o));
-		ticket.enable(false);
+		ticket.completed(true);
 		return list;
+	}
+
+	/**
+	 * 去掉在同层中已经有的组织专有标识
+	 * 
+	 * @param tickets
+	 * @param ticket
+	 * @param targets
+	 * @return
+	 */
+	private List<String> trimLevelDistinguishedName(Ticket ticket, Collection<String> targets) {
+		List<String> exists = this.list(false, true, true).stream()
+				.filter(o -> Objects.equals(o.level(), ticket.level())).map(Ticket::distinguishedName)
+				.collect(Collectors.toList());
+		return targets.stream().filter(o -> (!exists.contains(o))).collect(Collectors.toList());
 	}
 
 	/**

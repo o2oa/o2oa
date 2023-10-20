@@ -1,8 +1,7 @@
 package com.x.processplatform.core.entity.ticket;
 
 import java.util.Collection;
-
-import com.x.base.core.project.tools.StringTools;
+import java.util.Date;
 
 interface Add {
 
@@ -18,13 +17,13 @@ interface Add {
 
 	void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	default void setLayer(Collection<Ticket> targets) {
-		String layer = StringTools.uniqueToken();
-		targets.stream().forEach(o -> o.layer(layer));
+	default void setLevel(Ticket ticket, Collection<Ticket> targets) {
+		targets.stream().forEach(o -> o.level(ticket.level()).parent(ticket.parent()));
 	}
 
-	default void setLayer(Ticket ticket, Collection<Ticket> targets) {
-		targets.stream().forEach(o -> o.layer(ticket.layer()));
+	default void setParentLevel(Ticket ticket, Collection<Ticket> targets) {
+		long level = (new Date()).getTime();
+		targets.stream().forEach(o -> o.level(level).parent(ticket.label()));
 	}
 
 	default void completedThenNotJoin(Tickets tickets, Ticket ticket) {

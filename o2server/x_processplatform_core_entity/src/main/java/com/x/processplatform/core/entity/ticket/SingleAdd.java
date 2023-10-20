@@ -9,7 +9,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsFellow(targets);
 		targets.stream().forEach(o -> o.appendNext(next));
@@ -18,7 +18,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -33,7 +33,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -46,7 +46,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -57,7 +57,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -72,7 +72,7 @@ class SingleAdd implements Add {
 
 	@Override
 	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLayer(targets);
+		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets);
