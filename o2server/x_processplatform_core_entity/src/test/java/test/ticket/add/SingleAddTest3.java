@@ -1,7 +1,6 @@
-package test.ticket.add.level1;
+package test.ticket.add;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,33 +15,30 @@ import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.entity.ticket.Tickets;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SingleAddAfterParallelTest {
+class SingleAddTest3 {
 
-	@DisplayName("B后加签EFG,EFG并行处理")
+	@DisplayName("single3层加签中含办理.")
 	@Test
 	@Order(1)
 	void test01() {
-		List<Ticket> p1 = Arrays.asList("A${LA}", "B${LB}", "C${LC}").stream().map(Ticket::new)
-				.collect(Collectors.toList());
-		List<String> p2 = Arrays.asList("E${LE}", "F${LF}", "G${LG}");
-		List<String> p3 = Arrays.asList("I${LI}", "J${LJ}", "K${LK}");
-		Tickets tickets = Tickets.single(p1);
+		Ticket a = new Ticket("a", "a1");
+		Tickets tickets = Tickets.single(a);
 		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
 				.collect(Collectors.joining(","));
-		Assertions.assertEquals("A,B,C", value);
-		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
-		tickets.add(opt.get(), p2, false, Tickets.MODE_PARALLEL);
+		Assertions.assertEquals("a", value);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("a1");
+		tickets.add(opt.get(), Arrays.asList("b${b1}", "c${c1}"), true, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
-		Assertions.assertEquals("E,F,G", value);
-		tickets.completed("LF");
+		Assertions.assertEquals("b,c", value);
+		opt = tickets.findTicketWithLabel("c1");
+		tickets.add(opt.get(), Arrays.asList("a${a2}"), false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
-		Assertions.assertEquals("E,G", value);
-		tickets.completed("LE");
+		Assertions.assertEquals("a", value);
+		opt = tickets.findTicketWithLabel("a2");
+		tickets.completed(opt.get());
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
-		Assertions.assertEquals("G", value);
-		tickets.completed("LG");
-		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
-		Assertions.assertEquals("", value);
+		Assertions.assertEquals("a", value);
+
 	}
 
 }

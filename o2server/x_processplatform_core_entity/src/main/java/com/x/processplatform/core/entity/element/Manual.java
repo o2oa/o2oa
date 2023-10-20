@@ -334,7 +334,7 @@ public class Manual extends Activity {
 	private String process;
 
 	@FieldDescribe("节点位置.")
-	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + position_FIELDNAME)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + position_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String position;
 

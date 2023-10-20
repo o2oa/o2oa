@@ -1,7 +1,7 @@
 package test.ticket.add;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
@@ -26,25 +26,22 @@ class SingleAddTest {
 		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
 				.collect(Collectors.joining(","));
 		Assertions.assertEquals("a", value);
-		Ticket b = new Ticket("b", "b1");
-		Ticket c = new Ticket("c", "c1");
-		tickets.add(a, Arrays.asList(b, c), false, Tickets.MODE_SINGLE);
+		Optional<Ticket> opt = tickets.findTicketWithLabel("a1");
+		tickets.add(opt.get(), Arrays.asList("b${b1}", "c${c1}"), false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("b,c", value);
-		Ticket d = new Ticket("d", "d1");
-		Ticket e = new Ticket("e", "e1");
-		tickets.add(c, Arrays.asList(d, e), true, Tickets.MODE_SINGLE);
+		opt = tickets.findTicketWithLabel("c1");
+		tickets.add(opt.get(), Arrays.asList("d${d1}", "e${e1}"), true, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("d,e", value);
-		tickets.completed(d);
+		opt = tickets.findTicketWithLabel("d1");
+		tickets.completed(opt.get());
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("b,c", value);
-		Ticket c2 = new Ticket("c", "c2");
-		Ticket d2 = new Ticket("d", "d2");
-		Ticket f = new Ticket("f", "f1");
-		tickets.add(b, Arrays.asList(c2, d2, f), false, Tickets.MODE_SINGLE);
+		opt = tickets.findTicketWithLabel("b1");
+		tickets.add(opt.get(), Arrays.asList("c${c2}", "d${d2}", "f${f1}"), false, Tickets.MODE_SINGLE);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
-		Assertions.assertEquals("d,e", value);
+		Assertions.assertEquals("c,d,f", value);
 	}
 
 }

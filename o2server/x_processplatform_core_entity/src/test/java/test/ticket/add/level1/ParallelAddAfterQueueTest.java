@@ -22,11 +22,13 @@ class ParallelAddAfterQueueTest {
 	@Test
 	@Order(1)
 	void test01() {
-		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
-		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
-		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+		List<Ticket> p1 = Arrays.asList("A${LA}", "B${LB}", "C${LC}").stream().map(Ticket::new)
+				.collect(Collectors.toList());
+		List<String> p2 = Arrays.asList("E${LE}", "F${LF}", "G${LG}");
+		List<String> p3 = Arrays.asList("I${LI}", "J${LJ}", "K${LK}");
 		Tickets tickets = Tickets.parallel(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
+				.collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);
@@ -53,11 +55,13 @@ class ParallelAddAfterQueueTest {
 	@Test
 	@Order(2)
 	void test02() {
-		List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"), new Ticket("C", "LC"));
-		List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"), new Ticket("G", "LG"));
-		List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"), new Ticket("K", "LK"));
+		List<Ticket> p1 = Arrays.asList("A${LA}", "B${LB}", "C${LC}").stream().map(Ticket::new)
+				.collect(Collectors.toList());
+		List<String> p2 = Arrays.asList("E${LE}", "F${LF}", "G${LG}");
+		List<String> p3 = Arrays.asList("I${LI}", "J${LJ}", "K${LK}");
 		Tickets tickets = Tickets.parallel(p1);
-		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
+		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
+				.collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
 		tickets.add(opt.get(), p2, false, Tickets.MODE_QUEUE);

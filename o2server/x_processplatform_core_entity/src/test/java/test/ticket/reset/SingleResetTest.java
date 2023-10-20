@@ -18,23 +18,20 @@ import com.x.processplatform.core.entity.ticket.Tickets;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SingleResetTest {
 
-	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
-			new Ticket("C", "LC"));
-	private static final List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"),
-			new Ticket("G", "LG"));
-	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
-			new Ticket("K", "LK"));
-
 	@DisplayName("B后加签EFG,EFG并行处理")
 	@Test
 	@Order(1)
 	void test01() {
+		List<Ticket> p1 = Arrays.asList("A${LA}", "B${LB}", "C${LC}").stream().map(Ticket::new)
+				.collect(Collectors.toList());
+		List<String> p2 = Arrays.asList("E${LE}", "F${LF}", "G${LG}");
+		List<String> p3 = Arrays.asList("I${LI}", "J${LJ}", "K${LK}");
 		Tickets tickets = Tickets.single(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName)
 				.collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
 		Optional<Ticket> opt = tickets.findTicketWithLabel("LB");
-		tickets.reset(opt.get(), p2.stream().map(Ticket::distinguishedName).collect(Collectors.toList()));
+		tickets.reset(opt.get(), p2);
 		value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).collect(Collectors.joining(","));
 		Assertions.assertEquals("A,C,E,F,G", value);
 	}

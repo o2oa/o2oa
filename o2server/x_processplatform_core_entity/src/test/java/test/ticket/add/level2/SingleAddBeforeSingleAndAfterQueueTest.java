@@ -17,17 +17,15 @@ import com.x.processplatform.core.entity.ticket.Tickets;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SingleAddBeforeSingleAndAfterQueueTest {
 
-	private static final List<Ticket> p1 = Arrays.asList(new Ticket("A", "LA"), new Ticket("B", "LB"),
-			new Ticket("C", "LC"));
-	private static final List<Ticket> p2 = Arrays.asList(new Ticket("E", "LE"), new Ticket("F", "LF"),
-			new Ticket("G", "LG"));
-	private static final List<Ticket> p3 = Arrays.asList(new Ticket("I", "LI"), new Ticket("J", "LJ"),
-			new Ticket("K", "LK"));
+ 
 
 	@DisplayName("B前加签EFG,EFG单人处理,E后加签IJK,IJK串行处理,即单人-前加签单人-后加签串行")
 	@Test
 	@Order(1)
 	void test01() {
+		List<Ticket> p1 = Arrays.asList("A${LA}", "B${LB}", "C${LC}").stream().map(Ticket::new).collect(Collectors.toList());
+		List<String> p2 = Arrays.asList("E${LE}", "F${LF}", "G${LG}");
+		List<String> p3 = Arrays.asList("I${LI}", "J${LJ}", "K${LK}");
 		Tickets tickets = Tickets.single(p1);
 		String value = tickets.bubble().stream().<String>map(Ticket::distinguishedName).sorted().collect(Collectors.joining(","));
 		Assertions.assertEquals("A,B,C", value);
