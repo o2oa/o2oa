@@ -654,7 +654,7 @@ MWF.ProcessFlow.AddTask = new Class({
             return false;
         }
 
-        var leftText = this.lp[mode] + (before ? this.lp.addTaskBefore : this.lp.addTaskAfter);
+        var leftText = (before ? this.lp.addTaskBefore : this.lp.addTaskAfter) + this.lp[mode];
 
         var nameText = names.map(function (n) { return MWF.name.cn(n); });
         if (!opinion) {

@@ -110,7 +110,7 @@ MWF.xApplication.process.Work.LP = {
     "selectPerson1": "请选择人员",
     "noQuickSelectDataNote": "系统还未记录您在当前节点选择的数据。",
     "submitQuickText": "选择[{route}]，意见：{opinion}{org}。",
-    "addTaskQuickText": "选择[{mode}{route}]，意见：{opinion}，加签人：{org}。",
+    "addTaskQuickText": "选择[{route}{mode}]，意见：{opinion}，加签人：{org}。",
     "resetQuickText": "意见：{opinion}，重置给：{org}。",
 
     "users": "处理人",

@@ -109,7 +109,7 @@ MWF.xApplication.process.Work.LP = {
      "selectPerson1": "Please select a person",
      "noQuickSelectDataNote": "The system has not recorded the data you selected at the current node.",
      "submitQuickText": "Select [{route}], opinion: {opinion}{org}.",
-     "addTaskQuickText": "Select [{mode}{route}], opinion: {opinion}, signer: {org}.",
+     "addTaskQuickText": "Select [{route}{mode}], opinion: {opinion}, signer: {org}.",
      "resetQuickText": "Opinion: {opinion}, reset to: {org}.",
 
     "users": "handler",

@@ -6209,7 +6209,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var lp = o2.xApplication.process.Xform.LP.form;
 
-        var leftText = lp[mode] + (!!before ? lp.addTaskBefore : lp.addTaskAfter);
+        var leftText = (!!before ? lp.addTaskBefore : lp.addTaskAfter)+lp[mode];
 
         var nameArr = names.map(function(id){
             return o2.name.cn(id);
