@@ -3931,6 +3931,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.toWordServiceService(body, callback, cb);
         }else{
             if (n==-1) fileName = fileName+".docx";
+            var extName = fileName.split('.').pop();
+            if (extName.toLowerCase()!=='docx') fileName = fileName+".docx";
+
             var content = this.getDocumentHtml();
             o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
                 (new o2.OOXML.WML({

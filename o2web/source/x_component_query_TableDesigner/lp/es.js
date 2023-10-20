@@ -114,5 +114,20 @@ MWF.xApplication.query.TableDesigner.LP = {
         "readUnitList":"Organizaciones que pueden leer",  
         "editPersonList":"Personas que pueden editar",  
         "editUnitList":"Organizaciones que pueden editar"
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "saveAs": "Guardar como",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda",
+        "build": "Publica la tabla de datos e ingresa el estado compilable",
+        "statusDraft": "Cancele la compilación de la base de datos y la tabla de datos compilada se eliminará al volver a compilar",
+        "bulidCurrentApp":"Compile todas las tablas de datos de la aplicación actual",
+        "tableExplode": "Exportación de datos",
+        "tableImplode":"Importación de datos",
+        "tableExcelExplode":"Exportar a Excel",
+        "tableExcelImplode":"Importación de Excel",
+        "tableClear":"Borrar datos de la tabla"
     }
 };

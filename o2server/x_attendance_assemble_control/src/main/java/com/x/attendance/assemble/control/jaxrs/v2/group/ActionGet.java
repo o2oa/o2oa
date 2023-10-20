@@ -1,14 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2.group;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2GroupWorkDayProperties;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -35,7 +34,7 @@ public class ActionGet extends BaseAction {
             // 班次对象返回
             if (group.getWorkDateProperties() != null && AttendanceV2Group.CHECKTYPE_Fixed.equals( group.getCheckType())) {
                 AttendanceV2GroupWorkDayProperties properties = group.getWorkDateProperties();
-                setPropertiesShiftData(emc, properties);
+                setPropertiesShiftData(new Business(emc), properties);
             }
             result.setData(wo);
         }

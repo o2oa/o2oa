@@ -53,6 +53,12 @@
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time1.offDutyTimeAfterLimit, 'key': 'time1.offDutyTimeAfterLimit'}" ></o-time-picker>
                         </div>
+                        <div class="margin-top margin-bottom form-item-content" @click="this.clickChangeOffDutyNextDay(1)"  oo-if="$.timeType == 1">
+                            <span style="margin-right: 10px;">{{$.lp.shiftForm.offDutyNextDayLabel}}</span>
+                            <div class="o2-icon-14">
+                                <i class="{{ $.time1.offDutyNextDay ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="a-card margin-bottom" oo-if="$.timeType > 1">
@@ -88,6 +94,12 @@
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time2.offDutyTimeAfterLimit,'key': 'time2.offDutyTimeAfterLimit'}"  ></o-time-picker>
                         </div>
+                        <div class="margin-top margin-bottom form-item-content" @click="this.clickChangeOffDutyNextDay(2)"  oo-if="$.timeType == 2">
+                            <span style="margin-right: 10px;">{{$.lp.shiftForm.offDutyNextDayLabel}}</span>
+                            <div class="o2-icon-14">
+                                <i class="{{ $.time2.offDutyNextDay ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="a-card margin-bottom" oo-if="$.timeType > 2">
@@ -122,6 +134,12 @@
                                 <span style="margin:0 10px;">{{$.lp.until}}</span>
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time3.offDutyTimeAfterLimit, 'key': 'time3.offDutyTimeAfterLimit'}"  ></o-time-picker>
+                        </div>
+                        <div class="margin-top margin-bottom form-item-content" @click="this.clickChangeOffDutyNextDay(3)"  oo-if="$.timeType == 3">
+                            <span style="margin-right: 10px;">{{$.lp.shiftForm.offDutyNextDayLabel}}</span>
+                            <div class="o2-icon-14">
+                                <i class="{{ $.time3.offDutyNextDay ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                            </div>
                         </div>
                     </div>
                 </div>

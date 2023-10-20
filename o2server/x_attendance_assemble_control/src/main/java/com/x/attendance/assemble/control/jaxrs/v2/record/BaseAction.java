@@ -8,7 +8,11 @@ import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import java.util.List;
 abstract class BaseAction extends StandardJaxrsAction {
 
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
     /**
      * 先删除老的记录
@@ -48,6 +53,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.delete(AttendanceV2CheckInRecord.class, deleteIds);
         emc.commit();
+        LOGGER.info("打卡记录删除：{}, {}, {} ", personDn, date, ListTools.toStringJoin(deleteIds));
     }
 
 
@@ -78,8 +84,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                 preDutyTime = "18:00";
             }
         }
+        String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
         if (recordDate != null) {
-            String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
             // 根据班次判断打卡结果
             if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed) && shift != null) {
                 // 上班打卡
@@ -135,11 +141,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 
                 }
             }
-            noCheckRecord.setCheckInResult(checkInResult);
+            
         } else { // 没有打卡
             recordDate = DateTools.parse(date+" "+preDutyTime, DateTools.format_yyyyMMddHHmm);
-            noCheckRecord.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
+            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
         }
+        noCheckRecord.setCheckInResult(checkInResult);
         noCheckRecord.setRecordDate(recordDate);
         noCheckRecord.setRecordDateString(date);
         noCheckRecord.setPreDutyTime(preDutyTime);
@@ -158,6 +165,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         emc.persist(noCheckRecord, CheckPersistType.all);
         emc.commit();
+        LOGGER.info("打卡记录保存：{}, {}, {} ", person, date, checkInResult);
     }
 
 }

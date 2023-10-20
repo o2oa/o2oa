@@ -2,7 +2,16 @@ package com.x.attendance.assemble.control.factory.v2;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.entity.v2.*;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.x_attendance_assemble_control;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -12,6 +21,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by fancyLou on 2023/1/31.
@@ -19,8 +29,52 @@ import java.util.List;
  */
 public class AttendanceV2ManagerFactory extends AbstractFactory {
 
+    protected Cache.CacheCategory cacheCategory;
+
     public AttendanceV2ManagerFactory(Business business) throws Exception {
         super(business);
+    }
+
+    /**
+     * 内部请求 获取用户某一天的考勤组班次情况
+     * 
+     * @param person 人员 dn
+     * @param date   yyyy-MM-dd
+     * @return
+     * @throws Exception
+     */
+    public WoGroupShift getGroupShiftByPersonDate(String person, String date) throws Exception {
+        return ThisApplication.context().applications()
+                .getQuery(x_attendance_assemble_control.class, "v2/group/person/" + person + "/date/" + date)
+                .getData(WoGroupShift.class);
+    }
+
+    /**
+     * 缓存对象
+     * 
+     * @param <T>
+     * @param flag
+     * @param clz
+     * @return
+     * @throws Exception
+     */
+    public <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
+        Cache.CacheCategory cacheCategory = new Cache.CacheCategory(clz);
+        T t = null;
+        Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), flag);
+        Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+        if (optional.isPresent()) {
+            if (null != optional.get()) {
+                t = (T) optional.get();
+            }
+        } else {
+            t = this.entityManagerContainer().flag(flag, clz);
+            if (t != null) {
+                this.entityManagerContainer().get(clz).detach(t);
+                CacheManager.put(cacheCategory, cacheKey, t);
+            }
+        }
+        return t;
     }
 
     /**
@@ -29,22 +83,25 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
+     * @param assistAdmin    协助管理员
      * @param name           可以为空
      * @return
      * @throws Exception
      */
     public List<AttendanceV2Group> listGroupWithNameByPage(Integer adjustPage,
-            Integer adjustPageSize, String name) throws Exception {
+            Integer adjustPageSize, String assistAdmin, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
         Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%");
-            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
-        } else {
-            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
+            p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
+        if (StringUtils.isNotEmpty(assistAdmin)) {
+            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();
     }
@@ -53,20 +110,24 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 查询考勤组总数
      * 分页查询需要
      * 
-     * @param name 可以为空
+     * @param name        可以为空
+     * @param assistAdmin 协助管理员
      * @return
      * @throws Exception
      */
-    public Long groupCountWithName(String name) throws Exception {
+    public Long groupCountWithName(String assistAdmin, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%");
-            return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+            p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
-        return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+        if (StringUtils.isNotEmpty(assistAdmin)) {
+            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        }
+        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
     }
 
     /**
@@ -164,6 +225,22 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
     }
 
     /**
+     * 查询用户是否是某个考勤组的协助管理员
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public boolean isAssistAdmin(String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
+        Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.isMember(person, root.get(AttendanceV2Group_.assistAdminList));
+        List<AttendanceV2Group> list = em.createQuery(cq.select(root).where(p)).getResultList();
+        return (list != null && list.size() > 0) ;
+    }
+
+    /**
      * 查询打卡记录
      * 
      * @param person distinguishName
@@ -179,7 +256,7 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), person);
         p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), date));
         return em
-                .createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.preDutyTime))))
+                .createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.recordDate))))
                 .getResultList();
     }
 
@@ -476,9 +553,10 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = cb.between(root.get(AttendanceV2AppealInfo_.recordDate), startDate, endDate);
         p = cb.and(p, cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId));
-        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
-        p = cb.and(p,cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN));
-          
+        p = cb.and(p, cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_INIT));
+        p = cb.and(p,
+                cb.notEqual(root.get(AttendanceV2AppealInfo_.status), AttendanceV2AppealInfo.status_TYPE_END_BY_ADMIN));
+
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
         return em.createQuery(cq).getResultList();
     }
@@ -581,5 +659,57 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         } else {
             return em.createQuery(cq.select(cb.count(root))).getSingleResult();
         }
+    }
+
+    /**
+     * 查询 排班数据
+     * 
+     * @param groupId 必填 考勤组 id
+     * @param month   月份字段 yyyy-MM
+     * @param day     时间字段 yyyy-MM-dd
+     * @param person  人员 dn
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2GroupSchedule> listGroupSchedule(String groupId, String month, String day, String person)
+            throws Exception {
+        if (StringUtils.isEmpty(groupId)) {
+            return null;
+        }
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2GroupSchedule.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2GroupSchedule> cq = cb.createQuery(AttendanceV2GroupSchedule.class);
+        Root<AttendanceV2GroupSchedule> root = cq.from(AttendanceV2GroupSchedule.class);
+        Predicate p = cb.equal(root.get(AttendanceV2GroupSchedule_.groupId), groupId);
+        if (StringUtils.isNotEmpty(month)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.scheduleMonthString), month));
+        }
+        if (StringUtils.isNotEmpty(day)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.scheduleDateString), day));
+        }
+        if (StringUtils.isNotEmpty(person)) {
+            p = cb.and(p, cb.equal(root.get(AttendanceV2GroupSchedule_.userId), person));
+        }
+        cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2GroupSchedule_.scheduleDateString)));
+
+        return em.createQuery(cq).getResultList();
+    }
+
+    /**
+     * 查询排班配置数据
+     * @param groupId
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2GroupScheduleConfig> listGroupScheduleConfig(String groupId) throws Exception {
+        if (StringUtils.isEmpty(groupId)) {
+            return null;
+        }
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2GroupScheduleConfig.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2GroupScheduleConfig> cq = cb.createQuery(AttendanceV2GroupScheduleConfig.class);
+        Root<AttendanceV2GroupScheduleConfig> root = cq.from(AttendanceV2GroupScheduleConfig.class);
+        Predicate p = cb.equal(root.get(AttendanceV2GroupScheduleConfig_.groupId), groupId);
+        return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 }

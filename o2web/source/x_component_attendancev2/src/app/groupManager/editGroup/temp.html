@@ -14,6 +14,9 @@
             <o-org-person-selector
                 oo-prop="{'selectorTitle': $.lp.groupForm.unParticipates, 'label':$.lp.groupForm.unParticipates, 'placeholder': $.lp.groupForm.unParticipatesPlaceholder, 'value': $.form.unParticipateList}"
                 oo-model="form.unParticipateList"></o-org-person-selector>
+            <o-org-person-selector
+                oo-prop="{'selectorTitle': $.lp.groupForm.assistAdminList, 'label':$.lp.groupForm.assistAdminList, 'placeholder': $.lp.groupForm.assistAdminListPlaceholder, 'value': $.form.assistAdminList, 'types': ['identity']}"
+                oo-model="form.assistAdminList"></o-org-person-selector>
             
            <!-- 类型选择 -->
            <div class="margin-top">
@@ -29,6 +32,10 @@
                     <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeType('2')">
                         <div class="o2-icon-14" id="checkTypeFree"><i class="{{ ($.form.checkType == '2' ) ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
                         <label style="margin: 5px;" for="checkTypeFree"> {{$.lp.groupForm.checkTypeFree}}</label>
+                    </div>
+                    <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeType('3')">
+                        <div class="o2-icon-14" id="checkTypeArrangement"><i class="{{ ($.form.checkType == '3' ) ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                        <label style="margin: 5px;" for="checkTypeArrangement"> {{$.lp.groupForm.checkTypeArrangement}}</label>
                     </div>
                 </div>
             </div>
@@ -166,13 +173,23 @@
                     
                 </div>
             </div>
+            <!-- 考勤时间 排班制的时候进行排班管理 -->
+            <div class="margin-top" oo-if=" $.form.checkType == '3' ">
+                <div class="form-item-line-label" >
+                    <span class="required">*</span>
+                    {{$.lp.groupForm.arrangementSettings}}
+                    <div style="cursor: pointer; float: right;" @click="startSchedule">
+                        <span class="operator_link primary_color margin-right" >{{$.lp.groupForm.arrangementEditTitle}}</span>
+                    </div>
+                </div>
+            </div>
             <!-- 工作场所 -->
             <div class="margin-top">
                 <div class="form-item-line-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.workPlace}}
                     <div style="cursor: pointer;float: right;" @click="openWorkPlaceSelector">
-                        <span class="operator_link primary_color margin-right" >选择</span>
+                        <span class="operator_link primary_color margin-right" >{{$.lp.choose}}</span>
                         <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
                     </div>
                 </div>
@@ -318,4 +335,5 @@
     <select-shift oo-prop="$.shiftSelector" oo-if="$.shiftSelectorOpen" ></select-shift>
     <!-- 工作场所选择器 -->
     <address-selector oo-prop="$.workPlaceSelector" oo-if="$.workPlaceSelectorOpen"></address-selector>
+    <div id="scheduleFom"></div>
 </div>

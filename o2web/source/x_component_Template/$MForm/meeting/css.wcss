@@ -165,13 +165,13 @@
     "text-align": "right"
   },
   "formTableTitle2" : {
-  "color" : "#333",
-  "font-size": "16px",
-  "padding": "0px 10px 0px 20px",
-  "height" : "35px",
-  "line-height" : "35px",
-  "text-align": "left"
-},
+    "color" : "#333",
+    "font-size": "16px",
+    "padding": "0px 10px 0px 20px",
+    "height" : "35px",
+    "line-height" : "35px",
+    "text-align": "left"
+  },
   "formTableValue" : {
     "text-align": "left",
     "font-size" : "16px"

@@ -116,5 +116,11 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "isTime": "Time Type",
         "isNumber": "Number Type",
         "viewEnable": "Enable View"
+    },
+    "formToolbar":{
+        "save": "Save",
+        "autoSave": "Auto Save",
+        "preview": "preview",
+        "help": "help"
     }
 });

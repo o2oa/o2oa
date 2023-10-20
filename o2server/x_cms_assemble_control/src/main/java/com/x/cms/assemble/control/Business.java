@@ -16,11 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_correlation_service_processing;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.factory.AppDictFactory;
 import com.x.cms.assemble.control.factory.AppDictItemFactory;
@@ -450,7 +452,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的编辑者 文档不存在判断是否是分类或应用的发布者
-	 * 
+	 *
 	 * @param person
 	 * @param appInfo
 	 * @return
@@ -461,13 +463,13 @@ public class Business {
 		if (isManager(person)) {
 			return true;
 		}
-		if (!this.ifPersonHasSufficientSecurityClearance(person.getDistinguishedName(),
-				document.getObjectSecurityClearance())) {
-			return false;
-		}
 		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
 		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
 		if (document != null) {
+			if (!this.ifPersonHasSufficientSecurityClearance(person.getDistinguishedName(),
+					document.getObjectSecurityClearance())) {
+				return false;
+			}
 			if (ListTools.isNotEmpty(document.getManagerList())) {
 				if (document.getManagerList().contains(getShortTargetFlag(person.getDistinguishedName()))) {
 					return true;
@@ -549,7 +551,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的读者
-	 * 
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -587,22 +589,28 @@ public class Business {
 
 	/**
 	 * 用户是否有足够的密级标识等级.
-	 * 
+	 *
 	 * @param person
 	 * @param objectSecurityClearance
 	 * @return
 	 */
 	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
 		try {
-			com.x.base.core.project.organization.Person p = this.organization().person().getObject(person);
-			Integer value = p.getSubjectSecurityClearance();
-			if (null != value) {
-				return value >= objectSecurityClearance;
+			if(!Config.ternaryManagement().getSecurityClearanceEnable()){
+				return true;
+			}
+			Person p = this.organization().person().getObject(person);
+			Integer subjectSecurityClearance = p.getSubjectSecurityClearance();
+			if (null == subjectSecurityClearance) {
+				subjectSecurityClearance = Config.ternaryManagement().getDefaultSubjectSecurityClearance();
+			}
+			if ((null != subjectSecurityClearance) && (null != objectSecurityClearance)) {
+				return subjectSecurityClearance >= objectSecurityClearance;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		return false;
+		return true;
 	}
 
 	public boolean ifDocumentHasBeenCorrelation(String person, String docId) throws Exception {

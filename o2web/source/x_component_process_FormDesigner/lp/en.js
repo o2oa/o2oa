@@ -1542,6 +1542,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "saveTitle": "Save Document",
         "flow": "Flow",
         "flowTitle": "Flow Document",
+        "submit": "Submit",
+        "submitTitle": "Submit document",
         "reroute": "Reroute",
         "rerouteTitle": "Reroute to other Activity",
         "reset": "Reset",
@@ -1587,5 +1589,22 @@ MWF.xApplication.process.FormDesigner.LP = {
         "deleteRow": "Delete Row",
         "insertRow": "Insert Row",
         "importFromForm": "Import field configuration from the interface"
+    },
+    "formToolbar":{
+        "save": "Save form",
+        "saveNew": "Save as template",
+        "preview": "preview",
+        "print": "print",
+        "formExplode": "Form Export",
+        "formImplode": "Form import",
+        "formImplodeO2": "Import from O2 data",
+        "formImplodeO2Title": "Import O2 format form",
+        "htmlImplode": "Import from HTML",
+        "officeImplode": "Import from WORD or EXCEL",
+        "help": "help",
+        "clearNoDomModule": "Clear component configurations that are not in the HTML tree",
+        "autoSave": "AutoSave",
+        "brush": "brush",
+        "viewAllVersion": "View all form versions"
     }
 };

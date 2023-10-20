@@ -11,6 +11,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_correlation_service_processing;
 import com.x.base.core.project.bean.tuple.Triple;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -625,14 +626,17 @@ public class Business {
 	public boolean ifPersonHasSufficientSecurityClearance(String person, Integer objectSecurityClearance) {
 		try {
 			Person p = this.organization().person().getObject(person);
-			Integer value = p.getSubjectSecurityClearance();
-			if (null != value) {
-				return value >= objectSecurityClearance;
+			Integer subjectSecurityClearance = p.getSubjectSecurityClearance();
+			if (null == subjectSecurityClearance) {
+				subjectSecurityClearance = Config.ternaryManagement().getDefaultSubjectSecurityClearance();
+			}
+			if ((null != subjectSecurityClearance) && (null != objectSecurityClearance)) {
+				return subjectSecurityClearance >= objectSecurityClearance;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		return false;
+		return true;
 	}
 
 }

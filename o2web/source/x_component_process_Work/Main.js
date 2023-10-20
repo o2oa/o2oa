@@ -336,6 +336,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 };
                 var control = {
                     "allowVisit": true,
+                    "allowFlow": true,
                     "allowProcessing": true,
                     "allowSave": true,
                     "allowDelete": true
@@ -452,7 +453,10 @@ MWF.xApplication.process.Work.Main = new Class({
         this.recordList = recordData;
         this.attachmentList = attData;
 
-        this.control = controlData;
+        this.control = controlData || {};
+        if( this.control.allowProcessing || this.control.allowReset || this.control.allowAddTask || this.control.allowGoBack ){
+            this.control.allowFlow = true;
+        }
 
         if (formData){
             if (formData.form){
@@ -708,6 +712,9 @@ MWF.xApplication.process.Work.Main = new Class({
                     }
                     if (this.options.action=="processTask"){
                         this.appForm.processWork();
+                        this.options.action = "";
+                    }else if( this.options.action=="flowTask" ){
+                        this.appForm.flowWork();
                         this.options.action = "";
                     }
 

@@ -373,6 +373,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (lockData.success) {
                 this.keyLock(true);
             } else {
+                this.businessData.control.allowFlow = false;
                 this.businessData.control.allowProcessing = false;
                 this.businessData.control.allowSave = false;
                 this.businessData.control.allowReset = false;
@@ -2084,7 +2085,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     //saveDocumentEditor
     submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
-        if (!this.businessData.control["allowProcessing"]) {
+        if (!this.businessData.control["allowProcessing"] && !this.businessData.control["allowFlow"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             this.app.content.unmask();
             if (processor && processor.node) processor.node.unmask();
@@ -2110,6 +2111,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
 
         //处理忽略授权
+        debugger;
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
 
         var _self = this;
@@ -2186,33 +2188,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                         if (this.app.taskObject) this.app.taskObject.destroy();
 
-                        if (this.closeImmediatelyOnProcess) {
-                            this.app.close();
-                        } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
-                            this.showCustomSubmitedDialog(json.data);
-                        } else if (layout.mobile) {
-                            //移动端页面关闭
-                            _self.finishOnMobile();
-                        } else {
-                            if (this.app.inBrowser) {
-                                if (this.mask) this.mask.hide();
-                                if (this.json.isPrompt !== false) {
-                                    this.showSubmitedDialog(json.data);
-                                } else {
-                                    if (this.json.afterProcessAction == "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
-                                        var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
-                                        (new URI(url)).go();
-                                    } else {
-                                        // this.app.close();
-                                        this.dingTalkPcCloseOrAppClose();
-                                    }
-                                }
-                                //}
+                        this.finishOnFlow("process", json.data);
 
-                            } else {
-                                this.app.close();
-                            }
-                        }
                         //window.setTimeout(function(){this.app.close();}.bind(this), 2000);
                     }.bind(this), null, this.businessData.task.id, this.businessData.task);
                 // }.bind(this), function(){});
@@ -2220,6 +2197,64 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }.bind(this), null, true, data, true);
 
         }.bind(this));
+    },
+    finishOnFlow: function(type, data, notCloseWindow){
+        if (this.closeImmediatelyOnProcess && !notCloseWindow) {
+            this.app.close();
+        } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+            this.showCustomSubmitedDialog(data);
+        } else if (layout.mobile) {
+            //移动端页面关闭
+            this.finishOnMobile();
+        } else {
+            if (this.app.inBrowser) {
+                if (this.mask) this.mask.hide();
+                if (this.json.isPrompt !== false) {
+                    switch (type) {
+                        case "process":
+                        case "goBack":
+                            this.showSubmitedDialog(data);
+                            break;
+                        case "reset":
+                            this.addResetMessage(data, notCloseWindow);
+                            break;
+                        case "addTask":
+                            this.addAddTaskMessage(data, notCloseWindow);
+                            break;
+                    }
+                } else {
+                    if (this.json.afterProcessAction == "redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code) {
+                        var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+                        (new URI(url)).go();
+                    } else {
+                        // this.app.close();
+                        this.dingTalkPcCloseOrAppClose();
+                    }
+                }
+                //}
+
+            } else {
+                switch (type) {
+                    // case "process":
+                    //     this.showSubmitedDialog(data);
+                    //     break;
+                    case "reset":
+                        this.addResetMessage(data, notCloseWindow);
+                        break;
+                    case "addTask":
+                        this.addAddTaskMessage(data, notCloseWindow);
+                        break;
+                    case "goBack":
+                        this.showSubmitedDialog(data, notCloseWindow);
+                        break;
+                }
+                if( notCloseWindow ){
+                    this.app.refresh();
+                }else{
+                    this.app.close();
+                }
+            }
+        }
     },
     showSubmitedDialog: function (data) {
         var content = this.getMessageContent(data, this.json.submitedDlgStyle ? this.json.submitedDlgStyle.maxTitleLength : 60);
@@ -2353,7 +2388,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var dlg = o2.DL.open(options);
 
     },
-    startDraftProcess: function () {
+    startDraftProcess: function ( action ) {
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
             //    if (callback) callback();
@@ -2387,7 +2422,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 //     if (layout.app) layout.app.$openWithSelf = true;
                 //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
                 // }
-                this.app.options.action = "processTask";
+                this.app.options.action = action || "processTask";
                 this.app.reload();
 
                 //this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
@@ -2435,6 +2470,416 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return null;
     },
+
+    flowWork: function ( defaultRoute ) {
+        if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
+            var flowWorkFun = function () {
+                this.removeEvent( "afterLoad", flowWorkFun );
+                this._flowWork( defaultRoute )
+            }.bind(this);
+            this.addEvent("afterLoad", flowWorkFun)
+        }else{
+            this._flowWork( defaultRoute );
+        }
+    },
+    _flowWork: function( defaultRoute ){
+        if (!this.checkUploadAttachment()) return false;
+
+        if (!this.businessData.work.startTime) {
+            this.startDraftProcess();
+        } else {
+            if (this.json.mode == "Mobile") {
+                setTimeout(function () {
+                    this.flowWork_mobile( defaultRoute );
+                }.bind(this), 100);
+            } else {
+                this.flowWork_pc( defaultRoute );
+            }
+        }
+    },
+    flowWork_pc: function ( defaultRoute ) {
+        var _self = this;
+        //? 添加事件
+        this.fireEvent("beforeFlowWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+
+        if (!this.formCustomValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        if (!this.formValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
+        flowNode.setStyle("opacity", 0);
+
+        var setSize = function (notRecenter) {
+
+            var dlg = this;
+            if (!dlg || !dlg.node) return;
+            dlg.node.setStyle("display", "block");
+            //var size = flowNode.getSize();
+
+            //希望滚动条在flow里面
+            var maxHeight = dlg.getContentMaxHeight();
+            var s = _self.flow.getSize();
+
+            dlg.content.setStyles({
+                "height": Math.min(s.y, maxHeight),
+                "width": s.x,
+                "padding-right": "0px"
+            });
+
+            s = dlg.setContentSize();
+            if (!notRecenter) dlg.reCenter();
+        };
+
+        this.loadFlow(flowNode, "default", function (flow) {
+            this.flowDlg = o2.DL.open({
+                "title": this.app.lp.flowWork,
+                "style": this.json.dialogStyle || "user",
+                "isResize": false,
+                "content": flowNode,
+                "maskNode": this.app.content,
+                "positionHeight": 900,
+                "maxHeight": 900,
+                "maxHeightPercent": "98%",
+                "minTop": 5,
+                "width": "auto",
+                "height": "auto",
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": MWF.LP.process.button.ok,
+                        "action": function (d, e) {
+                            //避免双击
+                            if (this.flowTimer) {
+                                clearTimeout(this.flowTimer);
+                                this.flowTimer = null;
+                            }
+                            this.flowTimer = setTimeout(function(){
+                                if (this.flow) this.flow.submit();
+                                this.flowTimer = null;
+                            }.bind(this), 200)
+                        }.bind(this)
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.flowDlg.close();
+                        }.bind(this)
+                    }
+                ],
+                "onQueryClose": function(){
+                    if (this.flow) this.flow.destroy();
+                }.bind(this),
+                "onPostLoad": function () {
+                    flowNode.setStyle("opacity", 1);
+                    setSize.call(this)
+                }
+            })
+        }.bind(this), function () {
+            if (this.flowDlg) setSize.call(this.flowDlg, true)
+        }.bind(this), defaultRoute);
+    },
+    flowWork_mobile: function ( defaultRoute ) {
+        if (this.app.inBrowser) {
+            this.app.content.setStyle("height", document.body.getSize().y);
+        }
+
+        this.fireEvent("beforeFlowWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeFlowWork");
+
+        // if (this.json.mode != "Mobile") {
+        //     this.app.content.mask({
+        //         "destroyOnHide": true,
+        //         "style": this.app.css.maskNode,
+        //         "useIframeShim": true,
+        //         "iframeShimOptions": { "browsers": true },
+        //         "onShow": function () {
+        //             this.shim.shim.setStyles({
+        //                 "opacity": 0,
+        //                 "top": "" + position.y + "px",
+        //                 "left": "" + position.x + "px"
+        //             });
+        //         }
+        //     });
+        // }
+
+        if (!this.formCustomValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+
+        if (!this.formValidation("", "")) {
+            this.app.content.unmask();
+            return false;
+        }
+
+        var processNode = new Element("div.flowNode_mobile", { "styles": this.app.css.flowNode_mobile }).inject(document.body);
+        // processNode.position({
+        //     relativeTo: this.app.content,
+        //     position: "topcenter",
+        //     edge: "topcenter"
+        // });
+        this.loadFlow(processNode, null, null, null, defaultRoute);
+    },
+    loadFlow: function (hanlderNode, style, postLoadFun, resizeFun, defaultRoute) {
+        var _self = this;
+        MWF.xDesktop.requireApp("process.Work", layout.mobile ? "FlowMobile" : "Flow", null, false);
+        var op = this.getOpinion();
+        var mds = op.medias;
+        var innerNode;
+        if (layout.mobile) {
+            innerNode = new Element("div").inject(hanlderNode);
+        }
+
+        var options = {
+            "style": style || "default",
+            "onResize": function () {
+                if (resizeFun) resizeFun();
+            },
+            "onLoad": function () {
+                if (postLoadFun) postLoadFun(this);
+            },
+            "onCancel": function () {
+                this.destroy();
+                hanlderNode.destroy();
+                _self.app.content.unmask();
+                delete this;
+            },
+            "opinionOptions": {
+                "opinion": op.opinion,
+                "tabletToolHidden": this.json.tabletToolHidden || [],
+                "tabletWidth": this.json.tabletWidth || 0,
+                "tabletHeight": this.json.tabletHeight || 0,
+            },
+            "processOptions": {
+                "defaultRoute": defaultRoute,
+                "isHandwriting": this.json.isHandwriting === "no" ? false : true,
+                "onSubmit": function (routeName, opinion, medias, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
+                    if (!medias || !medias.length) {
+                        medias = mds;
+                    } else {
+                        medias = medias.concat(mds)
+                    }
+
+                    var promise;
+                    if (_self.toWordSubmitList && _self.toWordSubmitList.length){
+                        var p = [];
+                        _self.toWordSubmitList.each(function(editor){
+                            if (editor.docToWord) p.push(new Promise(function(resolve){ editor.docToWord(resolve) }));
+                        });
+                        Promise.all(p).then(function(){
+                            _self.submitWork(routeName, opinion, medias, function () {
+                                this.destroy();
+                                hanlderNode.destroy();
+                                if (_self.flowDlg) _self.flowDlg.close();
+                                delete this;
+                            }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                        }.bind(this));
+                    }else{
+                        _self.submitWork(routeName, opinion, medias, function () {
+                            this.destroy();
+                            hanlderNode.destroy();
+                            if (_self.flowDlg) _self.flowDlg.close();
+                            delete this;
+                        }.bind(this), this, null, appendTaskIdentityList, processorOrgList, callbackBeforeSave);
+                    }
+                }
+            },
+            "addTaskOptions":{
+                "isHandwriting": false,
+                "onSubmit": function (names, opinion, mode, before, routeName) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.fireEvent("beforeAddTask");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeAddTask");
+
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        if (layout.mobile) {
+                            _self.mask.load();
+                        } else {
+                            _self.mask.loadNode(_self.app.content);
+                        }
+
+                        _self.fireEvent("beforeSave");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeSave");
+                        _self.saveFormData(function (json) {
+
+                            _self.fireEvent("afterSave");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
+
+                            _self.AddTaskToPeson(names, opinion, mode, before, routeName, function (workJson) {
+                                _self.fireEvent("afterAddTask");
+                                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterAddTask");
+                                // _self.addResetMessage(workJson.data);
+                                this.destroy();
+                                hanlderNode.destroy();
+                                if (_self.flowDlg) _self.flowDlg.close();
+
+                                _self.finishOnFlow("addTask", workJson.data);
+
+                            }.bind(this), function (xhr, text, error) {
+                                var errorText = error + ":" + text;
+                                if (xhr) errorText = xhr.responseText;
+                                _self.app.notice("request json error: " + errorText, "error", _self.flowDlg.node);
+                                if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                            }.bind(this));
+                        }.bind(this))
+                    }.bind(this));
+                }
+            },
+            "resetOptions":{
+                "isHandwriting": false,
+                "onSubmit": function (names, opinion, routeName) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.fireEvent("beforeReset");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
+
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        if (layout.mobile) {
+                            _self.mask.load();
+                        } else {
+                            _self.mask.loadNode(_self.app.content);
+                        }
+
+                        _self.fireEvent("beforeSave");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeSave");
+                        _self.saveFormData(function (json) {
+
+                            _self.fireEvent("afterSave");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
+
+                            _self.resetToPeson(names, opinion, routeName, function (workJson) {
+                                _self.fireEvent("afterReset");
+                                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterReset");
+                                // _self.addResetMessage(workJson.data);
+                                this.destroy();
+                                hanlderNode.destroy();
+                                // if (!_self.app.inBrowser) _self.app.close();
+                                if (_self.flowDlg) _self.flowDlg.close();
+                                // if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+
+                                _self.finishOnFlow("reset", workJson.data);
+
+                            }.bind(this), function (xhr, text, error) {
+                                var errorText = error + ":" + text;
+                                if (xhr) errorText = xhr.responseText;
+                                _self.app.notice("request json error: " + errorText, "error", _self.flowDlg.node);
+                                if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                            }.bind(this));
+                        }.bind(this))
+                    }.bind(this));
+                }
+            },
+            "goBackOptions":{
+                "isHandwriting": false,
+                "onSubmit": function (opinion, routeName, activity, way) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.fireEvent("beforeGoBack");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeGoBack");
+
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        if (layout.mobile) {
+                            _self.mask.load();
+                        } else {
+                            _self.mask.loadNode(_self.app.content);
+                        }
+
+                        _self.fireEvent("beforeSave");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeSave");
+                        _self.saveFormData(function (json) {
+
+                            _self.fireEvent("afterSave");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
+
+                            _self.goBackToPerson(routeName, opinion, activity, way, function (workJson) {
+                                _self.fireEvent("afterGoBack");
+                                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterGoBack");
+                                this.destroy();
+                                hanlderNode.destroy();
+                                if (_self.flowDlg) _self.flowDlg.close();
+                                _self.addMessage(workJson.data, true);
+                                if (_self.app.taskObject) _self.app.taskObject.destroy();
+                                _self.finishOnFlow("goBack", workJson.data);
+                            }.bind(this));
+                        }.bind(this))
+                    }.bind(this));
+                }
+            }
+        };
+
+        if( this.json.mode == "Mobile" ){
+            this.flow = new MWF.xApplication.process.Work.FlowMobile(innerNode || hanlderNode, this.businessData.task, options, this);
+        }else{
+            this.flow = new MWF.xApplication.process.Work.Flow(innerNode || hanlderNode, this.businessData.task, options, this);
+        }
+    },
+
+    resetToPeson: function (identityList, opinion, routeName, success, failure) {
+        var data = {
+            "opinion": opinion,
+            "routeName": routeName || MWF.xApplication.process.Xform.LP.reset,
+            "identityList": identityList
+            // "keep": !!keep
+        };
+        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Reset(
+            //this.workAction.resetWork(
+            function (json) {
+                if (success) success(json);
+            }.bind(this),
+            function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            },
+            this.businessData.task.id, data
+        );
+    },
+
+    AddTaskToPeson: function (names, opinion, mode, before, routeName, success, failure) {
+        var data = {
+            "mode": mode,
+            "before": !!before,
+            "opinion": opinion,
+            "routeName": routeName || MWF.xApplication.process.Xform.LP.addTask,
+            "distinguishedNameList": names
+        };
+        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(
+            //this.workAction.resetWork(
+            function (json) {
+                if (success) success(json);
+            }.bind(this),
+            function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            },
+            this.businessData.task.id, data
+        );
+    },
+
+    goBackToPerson: function(routeName, opinion, activity, way, callback){
+        this.businessData.task.decision = routeName;
+        this.businessData.task.opinion = opinion;
+        this.businessData.task.action = "goBack";
+        this.businessData.task.option = {
+            "activity": activity,
+            "way": way
+        };
+
+        // this.submitWork(routeName, opinion, null, function () {
+        //     if(callback)callback();
+        // }.bind(this));
+
+        this.workAction.processTask(function (json) {
+            if (callback) callback(json);
+        }.bind(this), null, this.businessData.task.id, this.businessData.task);
+    },
+
 
     processWork: function ( defaultRoute ) {
         if( !this.isLoaded ){ //未加载完成需要等待加载完成再执行
@@ -3299,8 +3744,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var itemNode = new Element("div", {
                                 style: "float:left;overflow:hidden;"
                             }).inject(taskBodyNode);
+                            var vfor = Math.random().toString();
                             var text = o2.name.cn(o.person) + "(" + o.completedTime + ")";
                             var check = new Element("input", {
+                                "id": vfor,
                                 "value": o.identity,
                                 "type": "checkbox",
                                 "disabled": true,
@@ -3309,7 +3756,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             check.addEvent("click", function (e) {
                                 e.stopPropagation();
                             });
-                            var taskNode = new Element("div", { "styles": this.css.rollbackItemTaskNode, "text": text }).inject(itemNode);
+                            var taskNode = new Element("label", { "styles": this.css.rollbackItemTaskNode, "text": text, "for": vfor }).inject(itemNode);
+                            taskNode.addEvent("click", function (e) {
+                                e.stopPropagation();
+                            });
                         }.bind(this));
                     } else {
                         var text = this.app.lp.systemFlow;
@@ -3455,7 +3905,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     doRollbackActionInvoke: function (id, flowOption, idList, success, failure) {
         if (this.businessData.work.completedTime) {
             var method = "rollbackWorkcompleted";
-            o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
+            o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, {
+                "workLog": id,
+                "distinguishedNameList": idList,
+                "processing": !!flowOption
+            }, function (json) {
                 if (success) success(json);
             }.bind(this), function (xhr, text, error) {
                 if (failure) failure(xhr, text, error)
@@ -3463,7 +3917,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             var body = {
                 "workLog": id,
-                "taskCompletedIdentityList": idList,
+                "distinguishedNameList": idList,
                 "processing": !!flowOption
             }
             o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Rollback(this.businessData.work.id, body, function (json) {
@@ -4116,14 +4570,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
         var opinion = $("resetWork_opinion").get("value");
-        var checkbox = dlg.content.getElement(".resetWork_keepOption");
-        var keep = (checkbox.checked);
-
-        var nameText = [];
-        names.each(function (n) { nameText.push(MWF.name.cn(n)); });
-        if (!opinion) {
-            opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
-        }
+        // var checkbox = dlg.content.getElement(".resetWork_keepOption");
+        // var keep = (checkbox.checked);
 
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -4132,7 +4580,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.fireEvent("beforeReset");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
 
-            this.resetWorkToPeson(names, opinion, keep, function (workJson) {
+            this.resetWorkToPeson(names, opinion, "", function (workJson) {
                 //this.workAction.loadWork(function (workJson) {
                 this.fireEvent("afterReset");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
@@ -4160,12 +4608,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //
         //}.bind(this), null, this.businessData.task.id, data);
     },
-    resetWorkToPeson: function (identityList, opinion, keep, success, failure) {
+    resetWorkToPeson: function (identityList, opinion, routeName, success, failure) {
+
+        var nameText = [];
+        (identityList || []).each(function (n) { nameText.push(MWF.name.cn(n)); });
+        if (!opinion) {
+            opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
+        }
+
+        var n = nameText.length > 3 ? (nameText[0]+"、"+nameText[1]+"、"+nameText[2]+"...") : nameText.join(", ");
+        if(!routeName)routeName = MWF.xApplication.process.Xform.LP.resetTo+":"+n;
+
         var data = {
             "opinion": opinion,
-            "routeName": MWF.xApplication.process.Xform.LP.reset,
+            "routeName": routeName,
             "identityList": identityList,
-            "keep": !!keep
+            //"keep": !!keep
         };
         this.saveFormData(
             function (json) {
@@ -5600,101 +6058,190 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         return "";
     },
-    checkAddTaskIdentity: function(identityList, position, node, callback){
-        var manualTaskIdentityMatrix = this.businessData.work.manualTaskIdentityMatrix.matrix;
-        manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
-            return acc.concat(val);
-        }, []);
-        var repeated = [];
-
-        var optionList = identityList.reduce(function(pv, cv){
-            if (manualTaskIdentityMatrix.indexOf(cv)===-1){
-                return pv.concat({
-                    position: position,
-                    identityList: [cv]
-                });
-            }else{
-                repeated.push(o2.name.cn(cv));
-                return pv;
-            }
-        }, []);
-
-        if (repeated.length){
-            var content = o2.xApplication.process.Xform.LP.form.addTaskRepeatedInfo;
-            content = content.replace("{repeated}", repeated.join(", "));
-            o2.DL.open({
-                isClose: false,
-                title: o2.xApplication.process.Xform.LP.form.addTaskRepeatedTitle,
-                html: content,
-                container: node,
-                buttonList: [{
-                    "text": MWF.xApplication.process.Xform.LP.ok,
-                    "action": function(){
-                        this.close();
-                        if (callback) callback(optionList);
-                    }
-                }]
-            })
-        }else{
-            if (callback) callback(optionList);
-        }
-    },
+    // checkAddTaskIdentity: function(identityList, position, node, callback){
+    //     var manualTaskIdentityMatrix = this.businessData.work.manualTaskIdentityMatrix.matrix;
+    //     manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
+    //         return acc.concat(val);
+    //     }, []);
+    //     var repeated = [];
+    //
+    //     var optionList = identityList.reduce(function(pv, cv){
+    //         if (manualTaskIdentityMatrix.indexOf(cv)===-1){
+    //             return pv.concat({
+    //                 position: position,
+    //                 identityList: [cv]
+    //             });
+    //         }else{
+    //             repeated.push(o2.name.cn(cv));
+    //             return pv;
+    //         }
+    //     }, []);
+    //
+    //     if (repeated.length){
+    //         var content = o2.xApplication.process.Xform.LP.form.addTaskRepeatedInfo;
+    //         content = content.replace("{repeated}", repeated.join(", "));
+    //         o2.DL.open({
+    //             isClose: false,
+    //             title: o2.xApplication.process.Xform.LP.form.addTaskRepeatedTitle,
+    //             html: content,
+    //             container: node,
+    //             buttonList: [{
+    //                 "text": MWF.xApplication.process.Xform.LP.ok,
+    //                 "action": function(){
+    //                     this.close();
+    //                     if (callback) callback(optionList);
+    //                 }
+    //             }]
+    //         })
+    //     }else{
+    //         if (callback) callback(optionList);
+    //     }
+    // },
+    // doAddTask: function(dlg){
+    //     MWF.require("MWF.widget.Mask", function () {
+    //
+    //         var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
+    //
+    //         this.checkAddTaskIdentity(dlg.identityList, position, dlg.node, function(optionList){
+    //             if (optionList && optionList.length){
+    //                 this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+    //                 this.mask.loadNode(this.app.content);
+    //
+    //                 var nameArr = optionList.map(function(op){
+    //                     return o2.name.cn(op.identityList[0]);
+    //                 });
+    //
+    //                 var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+    //                 if (!opinion) opinion = o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+    //                 var taskId = this.businessData.task.id;
+    //
+    //                 var addTaskOptions = {
+    //                     optionList: optionList,
+    //                     remove: false,
+    //                     opinion: opinion,
+    //                     routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
+    //                 }
+    //                 this.fireEvent("beforeAddTask");
+    //                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
+    //
+    //                 this.saveFormData(function(){
+    //                     o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
+    //                         this.fireEvent("afterAddTask");
+    //                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+    //                         this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+    //
+    //                         dlg.close();
+    //                         if (this.mask) this.mask.hide();
+    //
+    //                         var notCloseWindow = position!=="before";
+    //                         this.addAddTaskMessage(json.data, notCloseWindow);
+    //                         if (!this.app.inBrowser){
+    //                             this.app[(notCloseWindow ? "refresh" : "close")]();
+    //                         }
+    //
+    //                     }.bind(this), function (xhr, text, error) {
+    //                         var errorText = error + ":" + text;
+    //                         if (xhr) errorText = xhr.responseText
+    //                         this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
+    //
+    //                         if (this.mask) this.mask.hide();
+    //                     }.bind(this)).catch(function(){});
+    //                 }.bind(this));
+    //             }else{
+    //                 if (this.mask)  this.mask.hide();
+    //             }
+    //         }.bind(this));
+    //
+    //     }.bind(this));
+    // },
     doAddTask: function(dlg){
         MWF.require("MWF.widget.Mask", function () {
 
             var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
+            var mode = this.getRadioValue(dlg.content, ".mode_type") || "single";
 
-            this.checkAddTaskIdentity(dlg.identityList, position, dlg.node, function(optionList){
-                if (optionList && optionList.length){
-                    this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-                    this.mask.loadNode(this.app.content);
-
-                    var nameArr = optionList.map(function(op){
-                        return o2.name.cn(op.identityList[0]);
-                    });
-
-                    var opinion = dlg.content.getElement(".addTask_opinion").get("value");
-                    if (!opinion) opinion = o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
-                    var taskId = this.businessData.task.id;
-
-                    var addTaskOptions = {
-                        optionList: optionList,
-                        remove: false,
-                        opinion: opinion,
-                        routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
-                    }
-                    this.fireEvent("beforeAddTask");
-                    if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
-
-                    this.saveFormData(function(){
-                        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
-                            this.fireEvent("afterAddTask");
-                            if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
-                            this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
-
-                            dlg.close();
-                            if (this.mask) this.mask.hide();
-
-                            var notCloseWindow = position!=="before";
-                            this.addAddTaskMessage(json.data, notCloseWindow);
-                            if (!this.app.inBrowser){
-                                this.app[(notCloseWindow ? "refresh" : "close")]();
-                            }
-
-                        }.bind(this), function (xhr, text, error) {
-                            var errorText = error + ":" + text;
-                            if (xhr) errorText = xhr.responseText
-                            this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
-
-                            if (this.mask) this.mask.hide();
-                        }.bind(this)).catch(function(){});
-                    }.bind(this));
+            if (dlg.identityList && dlg.identityList.length){
+                this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                if( layout.mobile ){
+                    this.mask.load();
                 }else{
-                    if (this.mask)  this.mask.hide();
+                    this.mask.loadNode(this.app.content);
                 }
-            }.bind(this));
+
+                var nameArr = dlg.identityList.map(function(id){
+                    return o2.name.cn(id);
+                });
+
+                var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+
+                this.fireEvent("beforeAddTask");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
+
+                this.doAddTaskToPeople(dlg.identityList, opinion, mode, position === "before", "", function (json) {
+                        this.fireEvent("afterAddTask");
+                        if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+                        this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+
+                        dlg.close();
+                        if (this.mask) this.mask.hide();
+
+                        var notCloseWindow = false; //position!=="before";
+                        this.addAddTaskMessage(json.data, notCloseWindow);
+                        if (!this.app.inBrowser){
+                            this.app[(notCloseWindow ? "refresh" : "close")]();
+                        }
+
+                    }.bind(this), function (xhr, text, error) {
+                        var errorText = error + ":" + text;
+                        if (xhr) errorText = xhr.responseText;
+                        this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
+
+                        if (this.mask) this.mask.hide();
+                    }.bind(this))
+
+            }else{
+                if (this.mask)  this.mask.hide();
+            }
 
         }.bind(this));
+    },
+    doAddTaskToPeople: function (names, opinion, mode, before, routeName, success, failure) {
+
+        var lp = o2.xApplication.process.Xform.LP.form;
+
+        var leftText = lp[mode] + (!!before ? lp.addTaskBefore : lp.addTaskAfter);
+
+        var nameArr = names.map(function(id){
+            return o2.name.cn(id);
+        });
+        var n = nameArr.length > 3 ? (nameArr[0]+"、"+nameArr[1]+"、"+nameArr[2]+"...") : nameArr.join(", ");
+        var routeName = leftText+":"+n;
+
+        if (!opinion) opinion = leftText+":"+nameArr.join(", "); //o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+
+        var data = {
+            "mode": mode,
+            "before": !!before,
+            "opinion": opinion,
+            "routeName": routeName,
+            "distinguishedNameList": names
+        };
+        this.saveFormData(
+            function(json){
+                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v3Add(
+                    //this.workAction.resetWork(
+                    function (json) {
+                        if (success) success(json);
+                    }.bind(this),
+                    function (xhr, text, error) {
+                        if (failure) failure(xhr, text, error);
+                    },
+                    this.businessData.task.id, data
+                );
+            }.bind(this),
+            function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            });
     },
 
     addAddTaskMessage: function (data, notCloseWindow) {

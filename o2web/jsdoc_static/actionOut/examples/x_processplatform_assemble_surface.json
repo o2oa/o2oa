@@ -225,6 +225,7 @@
   },
   "Control" : {
     "allowVisit": true,
+    "allowFlow": true,
     "allowProcessing": true,
     "allowReadProcessing": false,
     "allowSave": true,

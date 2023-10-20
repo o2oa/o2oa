@@ -11,11 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -50,10 +51,14 @@ public class ActionDateIsRestDay extends BaseAction {
         result.setData(wo);
         return result;
       }
-      AttendanceV2Group group = groups.get(0);
 
       for (String date : wi.getDateList()) {
-        String shiftId = null;
+        WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(person.getDistinguishedName(), date);
+        AttendanceV2Group group = woGroupShift.getGroup();
+        if (group == null) {
+          continue;
+        }
+        AttendanceV2Shift shift = woGroupShift.getShift();
         // 日期
         Date d = null;
         try {
@@ -71,63 +76,7 @@ public class ActionDateIsRestDay extends BaseAction {
         }
         // 是否工作日
         boolean isWorkDay = false;
-        // 工作日
-        if (Config.workTime() != null && Config.workTime().inDefinedWorkday(d)) {
-          shiftId = group.getShiftId();
-          isWorkDay = true;
-          if (logger.isDebugEnabled()) {
-            logger.debug(" Config.workTime isWorkDay: " + isWorkDay);
-          }
-        }
-        // 考勤组的必须打卡日
-        if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
-          for (String required : group.getRequiredCheckInDateList()) { // 包含日期 ｜ 班次id ｜ 是否循环
-            String[] dArray = required.split("\\|");
-            if (dArray.length < 3) {
-              // 格式不正确
-              continue;
-            }
-            if (dArray[0].equals(date)) {
-              isWorkDay = true;
-              shiftId = dArray[1];
-              break;
-            }
-            if (dArray[2].equals("week")
-                && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), d)) { // 每周
-              isWorkDay = true;
-              shiftId = dArray[1];
-              break;
-            }
-            if (dArray[2].equals("twoWeek")
-                && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), d)) { // 每周
-              isWorkDay = true;
-              shiftId = dArray[1];
-              break;
-            }
-            if (dArray[2].equals("month")
-                && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), d)) { // 每周
-              isWorkDay = true;
-              shiftId = dArray[1];
-              break;
-            }
-          }
-        }
-        // 固定班制
-        if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
-          // 查询是否有对应的班次
-          if (StringUtils.isEmpty(shiftId)) {
-            shiftId = group.getWorkDateProperties().shiftIdWithDate(d);
-          }
-          if (StringUtils.isNotEmpty(shiftId) && AttendanceV2Helper.isSpecialRestDay(date, group)) {
-            shiftId = null; // 特殊节假日 清空
-          }
-          if (StringUtils.isNotEmpty(shiftId)) {
-            isWorkDay = true;
-            if (logger.isDebugEnabled()) {
-              logger.debug(" shiftId isWorkDay  " + shiftId);
-            }
-          }
-        } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) { // 自由工时
+        if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) { // 自由工时
           if (!isWorkDay) { // 如果已经是工作日 下面不需要判断了
             // 判断休息日还是工作日
             if (StringUtils.isEmpty(group.getWorkDateList())) {
@@ -142,7 +91,12 @@ public class ActionDateIsRestDay extends BaseAction {
           if (isWorkDay && AttendanceV2Helper.isSpecialRestDay(date, group)) {
             isWorkDay = false;
           }
+        } else {
+          if (shift != null) {
+            isWorkDay = true;
+          }
         }
+
         if (!isWorkDay) {
           restDateList.add(date);
         }
@@ -186,6 +140,8 @@ public class ActionDateIsRestDay extends BaseAction {
 
   public static class Wi extends GsonPropertyObject {
 
+    private static final long serialVersionUID = 7874429260551956123L;
+    
     @FieldDescribe("查询是否休息日的日期列表，yyyy-MM-dd")
     private List<String> dateList;
 
@@ -200,6 +156,8 @@ public class ActionDateIsRestDay extends BaseAction {
   }
 
   public static class Wo extends GsonPropertyObject {
+    private static final long serialVersionUID = -6596581682844590658L;
+    
     @FieldDescribe("休息日的日期列表，yyyy-MM-dd")
     private List<String> restDateList;
 

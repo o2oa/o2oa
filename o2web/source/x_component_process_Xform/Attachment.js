@@ -805,13 +805,28 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             }
         }.bind(this));
     },
-    getSecurityLabelList: function(){
-        if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
 
+    getSecurityDefaultLabelList: function(){
+        if (this.securityLabelList) return Promise.resolve(this.securityLabelList);
         var _self = this
         return o2.Actions.load("x_general_assemble_control").SecurityClearanceAction["object"]().then(function(json){
             return _self.securityLabelList = json.data;
         });
+    },
+
+    getSecurityLabelList: function(){
+        var _self = this;
+        return this.getSecurityDefaultLabelList().then(function(list){
+            var label = _self.module.form.businessData.data.objectSecurityClearance;
+            label = (!label && label!==0) ? Infinity : label;
+            var o = {};
+            Object.keys(list).forEach(function(k){
+                if (list[k]<=label){
+                    o[k] = list[k];
+                }
+            });
+            return o;
+        })
     },
     configAttachmentSecurity: function(){
         var lp = MWF.xApplication.process.Xform.LP;
@@ -1372,6 +1387,24 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
 
+    addAttachment: function(data, messageId, isCheckPosition){
+
+        if (data.objectSecurityClearance){
+            data.objectSecurityPromise = this.getSecurityDefaultLabelList().then((list)=>{
+                return Object.keys(list).find((key)=>{
+                    return list[key]===data.objectSecurityClearance;
+                });
+            });
+        }
+
+        if (this.options.size=="min"){
+            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId, isCheckPosition));
+        }else{
+            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
+        }
+        this.checkActions();
+    }
+
 });
 
 
@@ -1618,6 +1651,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
 
         //}.bind(this));
     },
+
     setAttachmentBusinessData: function () {
         if (this.attachmentController) {
             if (this.attachmentController.attachments.length) {

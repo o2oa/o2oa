@@ -8,22 +8,22 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	public static class PredicateWithSystemSecurityClearance implements Predicate<Map.Entry<String, Integer>> {
+	public static class PredicateWithLimitSecurityClearance implements Predicate<Map.Entry<String, Integer>> {
 
-		private Integer systemSecurityClearance;
+		private Integer limitSecurityClearance;
 
-		public PredicateWithSystemSecurityClearance(Integer systemSecurityClearance) {
-			this.systemSecurityClearance = systemSecurityClearance;
+		public PredicateWithLimitSecurityClearance(Integer limitSecurityClearance) {
+			this.limitSecurityClearance = limitSecurityClearance;
 		}
 
 		@Override
 		public boolean test(Entry<String, Integer> o) {
-			return (null != o.getValue()) && o.getValue() <= systemSecurityClearance;
+			return (null != o.getValue()) && o.getValue() <= limitSecurityClearance;
 		}
 
 	}
 
-	public static class PredicateWithoutSystemSecurityClearance implements Predicate<Map.Entry<String, Integer>> {
+	public static class PredicateWithoutLimitSecurityClearance implements Predicate<Map.Entry<String, Integer>> {
 
 		@Override
 		public boolean test(Entry<String, Integer> o) {

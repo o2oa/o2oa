@@ -39,7 +39,9 @@ class ActionInfo extends BaseAction {
 			String url) throws Exception {
 		String plain = "jsapi_ticket=" + ticket + "&noncestr=" + nonceStr + "&timestamp=" + String.valueOf(timeStamp)
 				+ "&url=" + url;
-		logger.debug(effectivePerson, "signature stirng:{}", plain);
+		if (logger.isDebugEnabled()) {
+			logger.debug("person {} , signature stirng:{}", effectivePerson, plain);
+		}
 		MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 		sha1.reset();
 		sha1.update(plain.getBytes("UTF-8"));
@@ -58,6 +60,7 @@ class ActionInfo extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -5190514898231735375L;
 		@FieldDescribe("签名地址")
 		private String url;
 

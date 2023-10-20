@@ -51,6 +51,14 @@ MWF.xApplication.service.AgentDesigner.LP = {
         "organization": "Organization Visit",
         "org": "Organize quick access method",
         "service": "webSerivces client"
+    },
+    "formToolbar":{
+        "save": "Save agent",
+        "autoSave": "AutoSave",
+        "fontSize": "Font size",
+        "style": "style",
+        "scriptEditor": "Script Editor",
+        "viewAllVersions": "View all script versions"
     }
 
 };

@@ -331,6 +331,9 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		@FieldDescribe("文档标题，<font style='color:red'>必填</font>")
 		private String title;
+		
+		@FieldDescribe("客体密级标识")
+		private Integer objectSecurityClearance;
 
 		@FieldDescribe("分类ID，<font style='color:red'>必填</font>")
 		private String categoryId;
@@ -571,6 +574,14 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		public void setImportBatchName(String importBatchName) {
 			this.importBatchName = importBatchName;
+		}
+
+		public Integer getObjectSecurityClearance() {
+			return objectSecurityClearance;
+		}
+
+		public void setObjectSecurityClearance(Integer objectSecurityClearance) {
+			this.objectSecurityClearance = objectSecurityClearance;
 		}
 	}
 

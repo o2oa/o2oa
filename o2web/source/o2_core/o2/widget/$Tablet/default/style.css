@@ -1,0 +1,101 @@
+@font-face {
+  font-family: 'o2tablet';
+  src:  url('../o2_core/o2/widget/$Tablet/default/fonts/o2tablet.eot?eugci7');
+  src:  url('../o2_core/o2/widget/$Tablet/default/fonts/o2tablet.eot?eugci7#iefix') format('embedded-opentype'),
+  url('../o2_core/o2/widget/$Tablet/default/fonts/o2tablet.ttf?eugci7') format('truetype'),
+  url('../o2_core/o2/widget/$Tablet/default/fonts/o2tablet.woff?eugci7') format('woff'),
+  url('../o2_core/o2/widget/$Tablet/default/fonts/o2tablet.svg?eugci7#o2tablet') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'o2tablet' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-imageClipper:before {
+  /*content: "\e900";*/
+  content: "\ea57";
+}
+.o2icon-cutpic:before {
+  content: "\e901";
+}
+.o2icon-size:before {
+  content: "\e902";
+}
+.o2icon-reset:before {
+  /*content: "\e903";*/
+  content: "\e984"; 
+}
+.o2icon-color:before {
+  content: "\e904";
+}
+.o2icon-eraserRadius:before {
+  content: "\ea56";
+}
+.o2icon-pencil:before {
+  content: "\e905";
+}
+.o2icon-paint-format:before {
+  content: "\e90c";
+}
+.o2icon-image:before {
+  content: "\e90d";
+}
+.o2icon-images:before {
+  content: "\e90e";
+}
+.o2icon-spinner11:before {
+  /*content: "\e984";*/
+}
+.o2icon-crop:before {
+  content: "\ea57";
+}
+.o2icon-input:before {
+  content: "\ea61";
+}
+.o2icon-picture:before {
+  content: "\e970";
+}
+.o2icon-color-palette:before {
+  content: "\e998";
+}
+.o2icon-eraser:before {
+  content: "\e9a2";
+}
+.o2icon-redo:before {
+  content: "\e9c5";
+}
+.o2icon-undo:before {
+  content: "\e9c6";
+}
+.o2icon-cancel:before {
+  content: "\e9dc";
+}
+.o2icon-save:before {
+  content: "\e9e4";
+}
+.o2icon-pen:before {
+  content: "\e99d";
+}
+.o2icon-icon:before {
+  content: "\e926";
+}
+.o2icon-close1:before {
+  content: "\e929";
+}
+.o2icon-disable:before {
+  content: "\e92a";
+}

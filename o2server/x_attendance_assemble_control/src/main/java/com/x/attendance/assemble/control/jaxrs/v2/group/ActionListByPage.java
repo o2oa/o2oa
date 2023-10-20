@@ -16,7 +16,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -41,10 +40,15 @@ public class ActionListByPage extends BaseAction {
             if (wi == null) {
                 wi = new Wi();
             }
+            String assistAdmin = null;
+            // 不是管理员 只查询协助管理员的数据
+            if(!business.isManager(effectivePerson)){
+                assistAdmin = effectivePerson.getDistinguishedName();
+            }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             List<AttendanceV2Group> list = business.getAttendanceV2ManagerFactory().listGroupWithNameByPage(adjustPage,
-                    adjustPageSize, wi.getName());
+                    adjustPageSize, assistAdmin, wi.getName());
             List<Wo> wos = Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for (Wo group : wos) {
@@ -54,12 +58,12 @@ public class ActionListByPage extends BaseAction {
                     // 班次对象返回
                     if (group.getWorkDateProperties() != null && AttendanceV2Group.CHECKTYPE_Fixed.equals( group.getCheckType())) {
                         AttendanceV2GroupWorkDayProperties properties = group.getWorkDateProperties();
-                        setPropertiesShiftData(emc, properties);
+                        setPropertiesShiftData(business, properties);
                     }
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(wi.getName()));
+            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(assistAdmin, wi.getName()));
             return result;
         }
     }
@@ -82,6 +86,8 @@ public class ActionListByPage extends BaseAction {
 
 
     public static class Wo extends AttendanceV2Group {
+
+        private static final long serialVersionUID = -7147244243285527997L;
 
         @FieldDescribe("考勤成员数量")
         private int trueParticipantSize;

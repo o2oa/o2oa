@@ -151,5 +151,12 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "valueScriptDataNote": "Datos empresariales generados por el sistema según la configuración",  
         "valueScriptDocumentNote": "Si importa documentos CMS, se generarán los datos del documento por el sistema",  
         "valueScriptWorkNote": "Si importa trabajos de proceso, se generarán los datos de trabajo por el sistema"
+    },
+    "formToolbar":{
+        "save": "Guardar",
+        "saveAs": "Guardar como",
+        "autoSave": "Guardar automáticamente",
+        "preview": "vista previa",
+        "help": "ayuda"
     }
 };

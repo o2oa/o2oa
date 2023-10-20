@@ -93,18 +93,18 @@ class ActionListLike extends BaseAction {
 		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
 		Root<UnitDuty> root = cq.from(UnitDuty.class);
 		Predicate p = cb.conjunction();
-		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(UnitDuty_.name)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(UnitDuty_.unique)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(UnitDuty_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR),
-				cb.like(cb.lower(root.get(UnitDuty_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR)));
+		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(UnitDuty_.name)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+				cb.like(cb.lower(root.get(UnitDuty_.unique)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+				cb.like(cb.lower(root.get(UnitDuty_.pinyin)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR),
+				cb.like(cb.lower(root.get(UnitDuty_.pinyinInitial)), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR)));
 		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			List<String> units = business.expendUnitToUnit(wi.getUnitList());
 			if (!units.isEmpty()) {
 				p = cb.and(p, root.get(UnitDuty_.unit).in(units));
 			}
 		}
-		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream()
-				.distinct().collect(Collectors.toList());
+		List<UnitDuty> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+				.collect(Collectors.toList());
 		wos = Wo.copier.copy(os);
 		wos = business.unitDuty().sort(wos);
 		return wos;

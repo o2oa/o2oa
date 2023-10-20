@@ -40,10 +40,11 @@ o2.addReady(function () {
                                     timeStamp: _config.timeStamp,
                                     nonceStr: _config.nonceStr,
                                     signature: _config.signature,
+                                    type:0, //0表示H5微应用的jsapi。
                                     jsApiList: ['runtime.info']
                                 });
                                 dd.error(function (err) {
-                                    console.error('dd error: ' + JSON.stringify(err));
+                                    console.error('钉钉脚本错误 error: ' + JSON.stringify(err));
                                 });
                                 dd.ready(function() {
                                     dd.runtime.permission.requestAuthCode({

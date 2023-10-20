@@ -31,7 +31,7 @@ public class ActionStatisticWithFilter extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             StatisticWi wi = this.convertToWrapIn(jsonElement, StatisticWi.class);
             if (StringUtils.isEmpty(wi.getFilter())) {
-                throw new ExceptionEmptyParameter("过滤人员或组织");
+                throw new ExceptionEmptyParameter("过滤人员");
             }
             if (StringUtils.isEmpty(wi.getStartDate())) {
                 throw new ExceptionEmptyParameter("开始日期");
@@ -62,7 +62,7 @@ public class ActionStatisticWithFilter extends BaseAction {
                 userList.add(wi.getFilter());
             }
             if (userList.isEmpty()) {
-                throw new ExceptionEmptyParameter("过滤人员或组织");
+                throw new ExceptionEmptyParameter("过滤人员");
             }
             // 根据人员循环查询 并统计数据
             List<StatisticWo> wos = new ArrayList<>();

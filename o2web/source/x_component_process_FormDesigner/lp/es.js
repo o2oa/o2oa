@@ -1538,6 +1538,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "saveTitle": "Guardar documento",
         "flow": "Enviar",
         "flowTitle": "Continuar el flujo de trabajo del documento",
+        "submit": "Enviar",
+        "submitTitle": "Enviar documento",
         "reroute": "Redirigir",
         "rerouteTitle": "Redirigir documento",
         "reset": "Restablecer",
@@ -1580,5 +1582,22 @@ MWF.xApplication.process.FormDesigner.LP = {
         "deleteRow": "Eliminar fila",
         "insertRow": "Insertar fila",
         "importFromForm": "Importar configuración de campos desde la interfaz"
+    },
+    "formToolbar":{
+        "save": "Guardar formulario",
+        "saveNew": "Guardar como plantilla",
+        "preview": "vista previa",
+        "print": "imprimir",
+        "formExplode": "Exportar formulario",
+        "formImplode": "Importación de formulario",
+        "formImplodeO2": "Importar desde datos de O2",
+        "formImplodeO2Title": "Importar formulario en formato O2",
+        "htmlImplode": "Importar desde HTML",
+        "officeImplode": "Importar desde WORD o EXCEL",
+        "help": "ayuda",
+        "clearNoDomModule": "Borrar configuraciones de componentes que no están en el árbol HTML",
+        "autoSave": "AutoGuardar",
+        "brush": "cepillar",
+        "viewAllVersion": "Ver todas las versiones del formulario"
     }
 };

@@ -37,8 +37,8 @@ class ActionListPinyinInitial extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getKey(), StringUtils.join(wi.getGroupList(), ","),
+					StringUtils.join(wi.getRoleList(), ","));
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -107,7 +107,7 @@ class ActionListPinyinInitial extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
 		Root<Group> root = cq.from(Group.class);
-		Predicate p = cb.like(root.get(Group_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
+		Predicate p = cb.like(root.get(Group_.pinyinInitial), "%" + str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(groupIds)) {
 			p = cb.and(p, root.get(Group_.id).in(groupIds));
 		}

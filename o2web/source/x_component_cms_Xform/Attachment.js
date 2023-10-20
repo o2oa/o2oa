@@ -16,6 +16,19 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
             }
         }
     },
+    setAttachmentSecurityConfig: function(select){
+        if (this.selectedAttachments.length) {
+            var security = select.options[select.selectedIndex].value;
+
+            var loadedCount = 0;
+            this.selectedAttachments.each(function (att) {
+                att.data.objectSecurityClearance = security.toInt();
+
+                o2.Actions.get("x_cms_assemble_control").configAttachment(att.data.id, this.module.form.businessData.document.id, att.data);
+            }.bind(this));
+        }
+    },
+
     setAttachmentConfig: function (readInput, editInput, controllerInput) {
         if (this.selectedAttachments.length) {
             var readList = readInput.retrieve("data-value");
