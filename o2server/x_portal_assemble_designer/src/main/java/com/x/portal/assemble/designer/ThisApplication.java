@@ -5,6 +5,8 @@ import java.util.concurrent.ForkJoinPool;
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.portal.assemble.designer.queue.PageVersionQueue;
+import com.x.portal.assemble.designer.queue.ScriptVersionQueue;
 
 public class ThisApplication {
 
@@ -19,6 +21,9 @@ public class ThisApplication {
 		return FORKJOINPOOL;
 	}
 
+	public static final PageVersionQueue pageVersionQueue = new PageVersionQueue();
+	public static final ScriptVersionQueue scriptVersionQueue = new ScriptVersionQueue();
+
 	protected static Context context;
 
 	public static Context context() {
@@ -28,6 +33,8 @@ public class ThisApplication {
 	public static void init() {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
+			context().startQueue(pageVersionQueue);
+			context().startQueue(scriptVersionQueue);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

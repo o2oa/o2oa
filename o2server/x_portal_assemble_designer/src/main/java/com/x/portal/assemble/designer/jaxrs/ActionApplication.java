@@ -12,9 +12,11 @@ import com.x.portal.assemble.designer.jaxrs.id.IdAction;
 import com.x.portal.assemble.designer.jaxrs.input.InputAction;
 import com.x.portal.assemble.designer.jaxrs.output.OutputAction;
 import com.x.portal.assemble.designer.jaxrs.page.PageAction;
+import com.x.portal.assemble.designer.jaxrs.pageversion.PageVersionAction;
 import com.x.portal.assemble.designer.jaxrs.portal.PortalAction;
 import com.x.portal.assemble.designer.jaxrs.portalcategory.PortalCategoryAction;
 import com.x.portal.assemble.designer.jaxrs.script.ScriptAction;
+import com.x.portal.assemble.designer.jaxrs.scriptversion.ScriptVersionAction;
 import com.x.portal.assemble.designer.jaxrs.templatepage.TemplatePageAction;
 import com.x.portal.assemble.designer.jaxrs.widget.WidgetAction;
 
@@ -34,6 +36,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(InputAction.class);
 		classes.add(DesignerAction.class);
 		classes.add(DictAction.class);
+		classes.add(PageVersionAction.class);
+		classes.add(ScriptVersionAction.class);
 		return classes;
 	}
 

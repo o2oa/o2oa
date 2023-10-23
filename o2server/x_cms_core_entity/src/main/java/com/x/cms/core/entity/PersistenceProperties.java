@@ -21,6 +21,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
             public static final String table = "CMS_FORM";
         }
 
+        public static class FormVersion {
+            public static final String table = "CMS_FORM_VERSION";
+        }
+
         public static class File {
             public static final String table = "CMS_FILE";
         }
@@ -44,6 +48,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
         public static class Script {
             public static final String table = "CMS_SCRIPT";
         }
+        public static class ScriptVersion {
+            public static final String table = "CMS_SCRIPT_VERSION";
+        }
+
     }
 
     public static class AppInfo {
