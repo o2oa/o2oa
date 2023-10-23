@@ -81,7 +81,8 @@ MWF.xDesktop.MessageV2 = new Class({
 			var size = this.node.getSize();
 
             var scale = layout.userLayout.scale || 1;
-			var left = position.x*scale-size.x;
+            // var left = position.x*scale-size.x;
+            var left = position.x-size.x;
 
 			this.maskMorph.start({"left": ""+left+"px", "z-index":index});
 			this.morph.start({"left": ""+left+"px", "z-index":index}).chain(function(){
