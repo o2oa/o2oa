@@ -1602,6 +1602,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     recordStatus: function(){
         return {"id": this.options.id};
     },
+    showFormVersion: function(){
+        this.form.showFormVersion();
+    },
     clearNoDomModule: function(){
 	    var _self = this;
         this.confirm("warn", new Event(),  MWF.APPFD.LP.clearNoDomModuleTitle, MWF.APPFD.LP.clearNoDomModuleContent, 460, 120, function(){

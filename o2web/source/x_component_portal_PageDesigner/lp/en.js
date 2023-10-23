@@ -343,6 +343,19 @@ MWF.APPPOD.LP = {
         "help": "help",
         "clearNoDomModule": "Clear component configurations that are not in the HTML tree",
         "autoSave": "AutoSave",
-        "brush": "brush"
-    }
+        "brush": "brush",
+        "viewAllVersion": "View all page versions"
+    },
+    "version" : {
+        "title" : "View page version history",
+        "close" : "Close",
+        "no":"SerialNumber",
+        "updateTime":"UpdateTime",
+        "op":"action",
+        "person":"person",
+        "resume" : "Resume",
+        "resumeConfirm" : "Resume Confirmation",
+        "resumeInfo" : "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current page needs to be manually saved to take effect.",
+        "resumeSuccess" :"Resume Successfully"
+    },
 };
