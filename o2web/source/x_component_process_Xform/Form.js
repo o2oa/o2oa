@@ -798,7 +798,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _loadMobileActions: function (node, callback) {
         var tools = [];
         this._loadMobileDefaultTools(function () {
-            
             var jsonStr;
             if( this.json.multiTools ){
                 jsonStr = JSON.stringify(this.json.multiTools);
@@ -835,14 +834,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
             }
             this.mobileTools = tools;
-            //app上用原来的按钮样式
-            if (window.o2android) {
-                if (tools.length) if (node) this._createMobileActions(node, tools);
-            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog) {
-                if (tools.length) if (node) this._createMobileActions(node, tools);
+            if (tools.length <= 0) {
+                node.hide();
             } else {
-                //钉钉 企业微信用新的样式
-                if (tools.length) if (node) this._createMobileActionsDingdingStyle(node, tools);
+                //app上用原来的按钮样式
+                if (window.o2android) {
+                    if (node) this._createMobileActions(node, tools);
+                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog) {
+                    if (node) this._createMobileActions(node, tools);
+                } else {
+                    //钉钉 企业微信用新的样式
+                    if (node) this._createMobileActionsDingdingStyle(node, tools);
+                }
             }
             if (callback) callback();
         }.bind(this));
@@ -862,12 +865,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var classBg = "";
                 if (tool.action === "processWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                    classBg = "mainColor_bg";
+                    classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork" || tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 actionStyle.width = buttonWidth + "px";
                 var action = new Element("div", { "styles": actionStyle, "class": classBg, "text": tool.text }).inject(node);
+                if (tool.id && tool.id !== "") {
+                    action.set("id", tool.id);
+                }
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -901,19 +907,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 var classBg = "";
                 if (tool.action === "processWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
-                    classBg = "mainColor_bg";
+                    classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
                 }
                 if (i == 2) {
                     this.css.html5ActionButtonDingdingMore.width = buttonWidth + "px";
-                    var action = new Element("div", { "styles": this.css.html5ActionButtonDingdingMore, "text": "…" }).inject(node);
+                    var action = new Element("div", { "styles": this.css.html5ActionButtonDingdingMore, "text": "…"}).inject(node);
                     action.addEvent("click", function (e) {
                         this._loadMoreMobileActionsDingdingStyle(tools, 2, node);
                     }.bind(this));
                 } else {
                     actionStyle.width = (buttonWidth * 2) + "px";
                     var action = new Element("div", { "styles": actionStyle, "class": classBg, "text": tool.text }).inject(node);
+                    if (tool.id && tool.id !== "") {
+                        action.set("id", tool.id);
+                    }
                     if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                     action.store("tool", tool);
                     action.addEvent("click", function (e) {
@@ -960,6 +969,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 actionStyle.width = "100%";
                 var action = new Element("div", { "styles": actionStyle, "text": tool.text }).inject(this.actionMoreArea);
+                if (tool.id && tool.id !== "") {
+                    action.set("id", tool.id);
+                }
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -987,8 +999,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.css.html5ActionButton.width = "100%";
             if (count == 2) this.css.html5ActionButton.width = "49%";
             tools.each(function (tool) {
-
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": tool.text }).inject(node);
+                if (tool.id && tool.id !== "") {
+                    action.set("id", tool.id);
+                }
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -1008,6 +1022,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = 0; i < 2; i++) {
                 tool = tools[i];
                 var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": tool.text }).inject(node);
+                if (tool.id && tool.id !== "") {
+                    action.set("id", tool.id);
+                }
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
@@ -1024,7 +1041,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node.getLast(), "before");
             new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node);
             this.css.html5ActionButton.width = "23%"
-            var action = new Element("div", { "styles": this.css.html5ActionButton, "text": "…" }).inject(node);
+            var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": "…" }).inject(node);
             action.addEvent("click", function (e) {
                 this._loadMoreMobileActions(tools, 2, node);
             }.bind(this));
@@ -1055,6 +1072,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var action = new Element("div", { "styles": this.css.html5ActionOtherButton, "class": "mainColor_color", "text": tool.text }).inject(this.actionMoreArea);
+                if (tool.id && tool.id !== "") {
+                    action.set("id", tool.id);
+                }
                 if( o2.typeOf(tool.properties) === "object" && Object.keys(tool.properties).length )action.set(tool.properties);
                 action.store("tool", tool);
                 action.addEvent("click", function (e) {
