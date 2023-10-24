@@ -2051,8 +2051,28 @@ MWF.xScript.CMSEnvironment = function(ev){
         "openDocument": function(id, title, options){
             var op = options || {};
             op.documentId = id;
-            op.docTitle = title;
+            op.docTitle = title || "";
             op.appId = (op.appId) || ("cms.Document"+id);
+            if( op.onPostPublish ){
+                op.postPublish = op.onPostPublish;
+                delete op.onPostPublish;
+            }
+            if( op.onAfterPublish ){
+                op.afterPublish = op.onAfterPublish;
+                delete op.onAfterPublish;
+            }
+            if( op.onAfterSave ){
+                op.afterSave = op.onAfterSave;
+                delete op.onAfterSave;
+            }
+            if( op.onBeforeClose ){
+                op.beforeClose = op.onBeforeClose;
+                delete op.onBeforeClose;
+            }
+            if( op.onPostDelete ){
+                op.postDelete = op.onPostDelete;
+                delete op.onPostDelete;
+            }
             return layout.desktop.openApplication(this.event, "cms.Document", op);
         },
         "openPortal": function (name, page, par) {
