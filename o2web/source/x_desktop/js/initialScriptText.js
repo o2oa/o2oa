@@ -4298,8 +4298,7 @@ var o= {
     // "service": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
     "currentPerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
     "effectivePerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
-    "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
-    "embedData": { "configurable": true, "get": function(){return (bind.java_embedData || null)} }
+    "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} }
 }
 Object.defineProperties(bind, o);
 /* 清除 engine */
