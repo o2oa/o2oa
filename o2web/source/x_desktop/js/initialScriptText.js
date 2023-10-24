@@ -4270,6 +4270,7 @@ bind.expire = {
 /**
  * 在流程调用活动中。当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件脚本中，可以访问到embedData对象<br/>
  * embedData对象就是被调用的子流程的业务数据，它是一个类似JSON的对象，您可以用访问JSON对象的方法访问embedData对象的所有数据。<br/>
+ * 如果您需要获取embedData的json文本，请使用embedData.toString()f方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
  * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end
  * <pre><code class='language-js'>
  *  var embedStatus = this.workContext.getWork().embedCompleted;
@@ -4298,6 +4299,7 @@ var o= {
     "currentPerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
     "effectivePerson": { "configurable": true, "get": function(){return (bind.java_effectivePerson || null)} },
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
+    "embedData": { "configurable": true, "get": function(){return (bind.java_embedData || null)} }
 }
 Object.defineProperties(bind, o);
 /* 清除 engine */
