@@ -3798,6 +3798,12 @@ MWF.xScript.Environment = function(ev){
          *    "onAfterPublish" : function( form, documentData ){ //发布后执行的方法，该事件在桌面模式打开有效
          *       //form为内容管理Form对象，documentData 为文档数据
          *    },
+         *    "onAfterSave": function( form, documentData ){ //保存后执行的方法，该事件在桌面模式打开有效
+         *       //form为内容管理Form对象，documentData 为文档数据
+         *    },
+         *    "onBeforeClose": function(){ //关闭前执行的方法，该事件在桌面模式打开有效
+         *
+         *    },
          *    "onPostDelete" : function(){ //删除文档后执行的方法，该事件在桌面模式打开有效
          *    }
          * }</code></pre>

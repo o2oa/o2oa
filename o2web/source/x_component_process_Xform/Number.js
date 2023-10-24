@@ -343,6 +343,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     },
 
     _loadNodeEdit: function(){
+        debugger;
+
         if (!this.json.preprocessing) this._resetNodeEdit();
         var input = this.node.getFirst();
         if( !input && this.nodeHtml ){
