@@ -69,6 +69,11 @@
     "text": MWF.APPPOD.LP.modules.view,
     "className": "View"
   },
+  "ViewSelector": {
+    "icon": "viewSelector.png",
+    "text": MWF.APPPOD.LP.modules.ViewSelector,
+    "className": "ViewSelector"
+  },
   "stat": {
     "icon": "stat.png",
     "text": MWF.APPPOD.LP.modules.stat,
@@ -148,6 +153,11 @@
     "icon": "statement.png",
     "text": MWF.APPPOD.LP.modules.statement,
     "className": "Statement"
+  },
+  "statementSelector": {
+    "icon": "statementSelector.png",
+    "text": MWF.APPPOD.LP.modules.statementSelector,
+    "className": "StatementSelector"
   },
 //  "datagrid": {
 //    "icon": "datagrid.png",

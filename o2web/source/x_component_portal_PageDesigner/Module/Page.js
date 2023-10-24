@@ -1116,6 +1116,88 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		}else{
 			return this.scriptJsEditors[propertyName];
 		}
+	},
+	showFormVersion: function(){
+		this.versionNode = new Element("div");
+		this.dlg = o2.DL.open({
+			"title": MWF.APPFD.LP.version["title"],
+			"content": this.versionNode,
+			"offset": {"y": -100},
+			"isMax": false,
+			"width": 500,
+			"height": 300,
+			"buttonList": [
+				{
+					"type": "cancel",
+					"text": MWF.APPFD.LP.version["close"],
+					"action": function(){ this.close(); }
+				}
+			],
+			"onPostShow": function(){
+				this.loadVersionList();
+			}.bind(this),
+			"onPostClose": function(){
+				this.dlg = null;
+			}.bind(this)
+		});
+	},
+	loadVersionList : function(){
+		var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
+			"<th>"+MWF.APPPOD.LP.version["no"]+"</th>" +
+			"<th>"+MWF.APPPOD.LP.version["person"]+"</th>" +
+			"<th>"+MWF.APPPOD.LP.version["updateTime"]+"</th>" +
+			"<th>"+MWF.APPPOD.LP.version["op"]+"</th>" +
+			"</tr></table>";
+		this.versionNode.set("html", tableHtml);
+		this.versionTable = this.versionNode.getElement("table");
+		o2.Actions.load("x_portal_assemble_designer").PageVersionAction.listWithPage(this.form.json.id, function(json){
+			this.versionList = json.data;
+			this.versionList.sort(function (a, b) {
+				return new Date(b.updateTime) - new Date(a.updateTime)
+			});
+			this.versionList.each(function (version,index) {
+				var node = new Element("tr").inject(this.versionTable);
+				var html = "<td>"+(index+1)+"</td>" +
+					"<td>"+version.person+"</td>" +
+					"<td>"+version.updateTime+"</td>" +
+					"<td></td>";
+				node.set("html", html);
+				var actionNode = new Element("div",{"styles":{
+						"width": "60px",
+						"padding": "0px 3px",
+						"border-radius": "20px",
+						"cursor" : "pointer",
+						"color": "#ffffff",
+						"background-color": "#4A90E2",
+						"float": "left",
+						"margin-right": "2px",
+						"text-align": "center",
+						"font-weight": "100"
+					}}).inject(node.getLast("td"));
+				actionNode.set("text", MWF.APPPOD.LP.version["resume"]);
+				actionNode.addEvent("click",function (e) {
+					var _self = this;
+					this.designer.confirm("warn", e,  MWF.APPPOD.LP.version["resumeConfirm"], MWF.APPPOD.LP.version["resumeInfo"], 460, 120, function(){
+						_self.resumeForm(version);
+						this.close();
+					}, function(){
+						this.close();
+					});
+				}.bind(this));
+			}.bind(this))
+		}.bind(this));
+	},
+	resumeForm : function(version){
+		o2.Actions.load("x_portal_assemble_designer").PageVersionAction.get(version.id, function( json ){
+			var formData = JSON.parse(json.data.data);
+			//this.action.FormAction.update(version.form, formData,function( json ){
+			this.designer.notice(MWF.APPPOD.LP.version["resumeSuccess"]);
+			var data = JSON.decode(MWF.decodeJsonString(formData.data));
+			data.isNewForm = false;
+			this.reload(data);
+			this.dlg.close();
+			//}.bind(this), null, false);
+		}.bind(this), null, false);
 	}
 	
 });

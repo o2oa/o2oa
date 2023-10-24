@@ -39,7 +39,8 @@ public class Collect extends ConfigObject {
 	public static String ADDRESS_COLLECT_APPLICATION_DOWN = "/o2_collect_assemble/jaxrs/application2/download";
 	public static String COLLECT_TOKEN = "c-token";
 	public static String ADDRESS_APPPACK_AUTH = "/auth/collect";
-	public static String ADDRESS_APPPACK_SAVE = "/pack/info/save";
+	// public static String ADDRESS_APPPACK_SAVE = "/pack/info/save";
+	public static String ADDRESS_APPPACK_SAVE = "/pack/info/flutter/save";
 	public static String ADDRESS_APPPACK_INFO = "/pack/info/collect/%s";
 	public static String ADDRESS_APPPACK_INFO_RESTART = "/pack/info/restart/collect/%s";
 	public static String ADDRESS_APPPACK_DOWNLOAD_APK = "/pack/download/apk/%s";
