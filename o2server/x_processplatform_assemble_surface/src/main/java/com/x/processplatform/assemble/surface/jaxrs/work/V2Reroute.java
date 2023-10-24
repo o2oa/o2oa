@@ -48,11 +48,11 @@ class V2Reroute extends BaseAction {
 
 		Param param = this.init(effectivePerson, id, jsonElement);
 
-		reroute(param.getWork().getId(), param.getDestinationActivity().getId(), param.getMergeWork(),
-				param.getDistinguishedNameList(), param.getWork().getJob());
-		processing(param.getWork().getId(), param.getWork().getJob(), param.getSeries());
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.getWorkLog(), effectivePerson,
-				param.getDestinationActivity(), param.getExistTaskIds());
+		reroute(param.work.getId(), param.destinationActivity.getId(), param.mergeWork, param.distinguishedNameList,
+				param.work.getJob());
+		processing(param.work.getId(), param.work.getJob(), param.series);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson,
+				param.destinationActivity, param.existTaskIds);
 		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
@@ -61,16 +61,15 @@ class V2Reroute extends BaseAction {
 
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
-		param.setSeries(StringTools.uniqueToken());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		param.setMergeWork(BooleanUtils.isTrue(wi.getMergeWork()));
+		param.mergeWork = BooleanUtils.isTrue(wi.getMergeWork());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			param.setWork(work);
+			param.work = work;
 			Activity destinationActivity = business.getActivity(wi.getActivity(), wi.getActivityType());
 			if (null == destinationActivity) {
 				throw new ExceptionEntityNotExist(wi.getActivity());
@@ -78,7 +77,7 @@ class V2Reroute extends BaseAction {
 			if (!StringUtils.equals(work.getProcess(), destinationActivity.getProcess())) {
 				throw new ExceptionProcessNotMatch();
 			}
-			param.setDestinationActivity(destinationActivity);
+			param.destinationActivity = destinationActivity;
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
 					.enableAllowReroute().build();
 			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowReroute())) {
@@ -90,10 +89,10 @@ class V2Reroute extends BaseAction {
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
-			param.setWorkLog(workLog);
-			param.setExistTaskIds(emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob()));
-			param.setDistinguishedNameList(
-					business.organization().distinguishedName().list(wi.getDistinguishedNameList()));
+			param.workLog = workLog;
+			param.existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+			param.distinguishedNameList = business.organization().distinguishedName()
+					.list(wi.getDistinguishedNameList());
 		}
 		return param;
 	}
@@ -104,65 +103,9 @@ class V2Reroute extends BaseAction {
 		private Boolean mergeWork;
 		private WorkLog workLog;
 		private Activity destinationActivity;
-		private String series;
+		private final String series = StringTools.uniqueToken();
 		private List<String> distinguishedNameList = new ArrayList<>();
 		private List<String> existTaskIds = new ArrayList<>();
-
-		public List<String> getDistinguishedNameList() {
-			return distinguishedNameList;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
-
-		public Boolean getMergeWork() {
-			return mergeWork;
-		}
-
-		public void setMergeWork(Boolean mergeWork) {
-			this.mergeWork = mergeWork;
-		}
-
-		public Work getWork() {
-			return work;
-		}
-
-		public void setWork(Work work) {
-			this.work = work;
-		}
-
-		public WorkLog getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(WorkLog workLog) {
-			this.workLog = workLog;
-		}
-
-		public Activity getDestinationActivity() {
-			return destinationActivity;
-		}
-
-		public void setDestinationActivity(Activity destinationActivity) {
-			this.destinationActivity = destinationActivity;
-		}
-
-		public String getSeries() {
-			return series;
-		}
-
-		public void setSeries(String series) {
-			this.series = series;
-		}
-
-		public List<String> getExistTaskIds() {
-			return existTaskIds;
-		}
-
-		public void setExistTaskIds(List<String> existTaskIds) {
-			this.existTaskIds = existTaskIds;
-		}
 
 	}
 

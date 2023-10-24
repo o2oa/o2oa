@@ -45,196 +45,190 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWi;
 
 /**
- * 是否可以召回有三个判断点
- * 1.活动环节设置允许召回
- * 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
- * 3.回溯活动如果经过一些非人工环节那么也可以召回.
- * 在control中同样进行了这3个点的判断
+ * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
+ * 3.回溯活动如果经过一些非人工环节那么也可以召回. 在control中同样进行了这3个点的判断
  * 
  * @author ray
  */
 class V2Retract extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(V2Retract.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Retract.class);
 
-    private WorkLog workLog;
-    private TaskCompleted taskCompleted;
-    private Work work;
-    private String series = StringTools.uniqueToken();
-    private Record rec;
-    private List<String> existTaskIds = new ArrayList<>();
-    private EffectivePerson effectivePerson;
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-        LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		ActionResult<Wo> result = new ActionResult<>();
 
-        ActionResult<Wo> result = new ActionResult<>();
+		this.retract();
 
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Business business = new Business(emc);
-            this.effectivePerson = effectivePerson;
+		this.processing();
 
-            work = emc.find(id, Work.class);
-            if (null == work) {
-                throw new ExceptionEntityNotExist(id, Work.class);
-            }
+		this.record();
 
-            Activity activity = business.getActivity(work);
+		result.setData(Wo.copier.copy(rec));
 
-            if (null == activity) {
-                throw new ExceptionEntityNotExist(work.getActivity());
-            }
+		return result;
 
-            WorkLogTree workLogTree = new WorkLogTree(
-                    emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
-            // 是否可以召回
-            if (BooleanUtils
-                    .isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
-                Node node = workLogTree.location(work);
-                if (null != node) {
-                    Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
-                            ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
-                            ActivityType.split, ActivityType.publish);
-                    for (Node o : ups) {
-                        if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-                                TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-                                TaskCompleted.activityToken_FIELDNAME, o.getWorkLog().getFromActivityToken()) > 0) {
-                            workLog = o.getWorkLog();
-                            break;
-                        }
-                    }
-                }
-            }
+	}
 
-            existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+	private Param init(EffectivePerson effectivePerson, String id) throws Exception {
+		Param param = new Param();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new ExceptionEntityNotExist(id, Work.class);
+			}
+			param.work = work;
+			Activity activity = business.getActivity(work);
+			if (null == activity) {
+				throw new ExceptionEntityNotExist(work.getActivity());
+			}
+			WorkLogTree workLogTree = new WorkLogTree(
+					emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
+			// 是否可以召回
+			if (BooleanUtils
+					.isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
+				Node node = workLogTree.location(work);
+				if (null != node) {
+					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
+							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
+							ActivityType.split, ActivityType.publish);
+					for (Node o : ups) {
+						if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+								TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
+								TaskCompleted.activityToken_FIELDNAME, o.getWorkLog().getFromActivityToken()) > 0) {
+							param.workLog = o.getWorkLog();
+							break;
+						}
+					}
+				}
+			}
+			if (null == param.workLog) {
+				throw new ExceptionRetractNoWorkLog(work.getId());
+			}
+			param.existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+			if (emc.countEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
+					TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
+					false) > 0) {
+				throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
+			}
 
-            if (null == workLog) {
-                throw new ExceptionRetractNoWorkLog(work.getId());
-            }
+			param.taskCompleted = findLastTaskCompleted(business);
+			if (null == param.taskCompleted) {
+				throw new ExceptionNoTaskCompletedToRetract(param.workLog.getId(),
+						effectivePerson.getDistinguishedName());
+			}
+		}
+		return param;
+	}
 
-            if (emc.countEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
-                    TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
-                    false) > 0) {
-                throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
-            }
+	private class Param {
+		private WorkLog workLog;
+		private TaskCompleted taskCompleted;
+		private Work work;
+		private String series = StringTools.uniqueToken();
+		private List<String> existTaskIds = new ArrayList<>();
+	}
 
-            taskCompleted = findLastTaskCompleted(business);
-            if (null == taskCompleted) {
-                throw new ExceptionNoTaskCompletedToRetract(workLog.getId(), effectivePerson.getDistinguishedName());
-            }
+	private TaskCompleted findLastTaskCompleted(Business business) throws Exception {
+		List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
+				TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
+				workLog.getFromActivityToken(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
+		return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
+				.orElse(null);
+	}
 
-        }
+	private void retract() throws Exception {
+		Req req = new Req();
+		req.setTaskCompleted(taskCompleted.getId());
+		req.setWorkLog(workLog.getId());
+		WrapBoolean resp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", this.work.getId(), "retract"), req, work.getJob())
+				.getData(WrapBoolean.class);
+		if (BooleanUtils.isNotTrue(resp.getValue())) {
+			throw new ExceptionRetract(this.work.getId());
+		}
+	}
 
-        this.retract();
+	private void processing() throws Exception {
+		ProcessingAttributes req = new ProcessingAttributes();
+		req.setType(ProcessingAttributes.TYPE_RETRACT);
+		req.setSeries(series);
+		WoId resp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", this.work.getId(), "processing"), req, work.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionRetract(this.work.getId());
+		}
+	}
 
-        this.processing();
+	private void record() throws Exception {
+		rec = new Record(workLog);
+		rec.setType(Record.TYPE_RETRACT);
+		rec.getProperties()
+				.setElapsed(Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			work = emc.find(work.getId(), Work.class);
+			if (null != work) {
+				rec.setArrivedActivity(work.getActivity());
+				rec.setArrivedActivityType(work.getActivityType());
+				rec.setArrivedActivityToken(work.getActivityToken());
+				rec.setArrivedActivityName(work.getActivityName());
+				rec.setArrivedActivityAlias(work.getActivityAlias());
+				rec.setIdentity(taskCompleted.getIdentity());
+				rec.setPerson(taskCompleted.getPerson());
+				rec.setUnit(taskCompleted.getUnit());
+				final List<String> nextTaskIdentities = new ArrayList<>();
+				List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+				ids = ListUtils.subtract(ids, existTaskIds);
+				List<Task> list = emc.fetch(ids, Task.class,
+						ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
+								Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
+								Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
+				list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+						.forEach(o -> {
+							Task task = o.getValue().get(0);
+							NextManual nextManual = new NextManual();
+							nextManual.setActivity(task.getActivity());
+							nextManual.setActivityAlias(task.getActivityAlias());
+							nextManual.setActivityName(task.getActivityName());
+							nextManual.setActivityToken(task.getActivityToken());
+							nextManual.setActivityType(task.getActivityType());
+							for (Task t : o.getValue()) {
+								nextManual.getTaskIdentityList().add(t.getIdentity());
+								nextTaskIdentities.add(t.getIdentity());
+							}
+							rec.getProperties().getNextManualList().add(nextManual);
+						});
+				/* 去重 */
+				rec.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+			}
+		}
+		WoId resp = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "job", work.getJob()), rec, this.work.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionRetract(this.work.getId());
+		}
+	}
 
-        this.record();
-
-        result.setData(Wo.copier.copy(rec));
-
-        return result;
-
-    }
-
-    private TaskCompleted findLastTaskCompleted(Business business) throws Exception {
-        List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
-                TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
-                workLog.getFromActivityToken(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-        return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
-                .orElse(null);
-    }
-
-    private void retract() throws Exception {
-        Req req = new Req();
-        req.setTaskCompleted(taskCompleted.getId());
-        req.setWorkLog(workLog.getId());
-        WrapBoolean resp = ThisApplication.context().applications()
-                .putQuery(x_processplatform_service_processing.class,
-                        Applications.joinQueryUri("work", "v2", this.work.getId(), "retract"), req, work.getJob())
-                .getData(WrapBoolean.class);
-        if (BooleanUtils.isNotTrue(resp.getValue())) {
-            throw new ExceptionRetract(this.work.getId());
-        }
-    }
-
-    private void processing() throws Exception {
-        ProcessingAttributes req = new ProcessingAttributes();
-        req.setType(ProcessingAttributes.TYPE_RETRACT);
-        req.setSeries(series);
-        WoId resp = ThisApplication.context().applications()
-                .putQuery(x_processplatform_service_processing.class,
-                        Applications.joinQueryUri("work", this.work.getId(), "processing"), req, work.getJob())
-                .getData(WoId.class);
-        if (StringUtils.isBlank(resp.getId())) {
-            throw new ExceptionRetract(this.work.getId());
-        }
-    }
-
-    private void record() throws Exception {
-        rec = new Record(workLog);
-        rec.setType(Record.TYPE_RETRACT);
-        rec.getProperties().setElapsed(
-                Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            work = emc.find(work.getId(), Work.class);
-            if (null != work) {
-                rec.setArrivedActivity(work.getActivity());
-                rec.setArrivedActivityType(work.getActivityType());
-                rec.setArrivedActivityToken(work.getActivityToken());
-                rec.setArrivedActivityName(work.getActivityName());
-                rec.setArrivedActivityAlias(work.getActivityAlias());
-                rec.setIdentity(taskCompleted.getIdentity());
-                rec.setPerson(taskCompleted.getPerson());
-                rec.setUnit(taskCompleted.getUnit());
-                final List<String> nextTaskIdentities = new ArrayList<>();
-                List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-                ids = ListUtils.subtract(ids, existTaskIds);
-                List<Task> list = emc.fetch(ids, Task.class,
-                        ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
-                                Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
-                                Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-                list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
-                        .forEach(o -> {
-                            Task task = o.getValue().get(0);
-                            NextManual nextManual = new NextManual();
-                            nextManual.setActivity(task.getActivity());
-                            nextManual.setActivityAlias(task.getActivityAlias());
-                            nextManual.setActivityName(task.getActivityName());
-                            nextManual.setActivityToken(task.getActivityToken());
-                            nextManual.setActivityType(task.getActivityType());
-                            for (Task t : o.getValue()) {
-                                nextManual.getTaskIdentityList().add(t.getIdentity());
-                                nextTaskIdentities.add(t.getIdentity());
-                            }
-                            rec.getProperties().getNextManualList().add(nextManual);
-                        });
-                /* 去重 */
-                rec.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
-            }
-        }
-        WoId resp = ThisApplication.context().applications()
-                .postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-                        Applications.joinQueryUri("record", "job", work.getJob()), rec, this.work.getJob())
-                .getData(WoId.class);
-        if (StringUtils.isBlank(resp.getId())) {
-            throw new ExceptionRetract(this.work.getId());
-        }
-    }
-
-    public static class Req extends V2RetractWi {
+	public static class Req extends V2RetractWi {
 
 		private static final long serialVersionUID = 1105855318231921508L;
 
-    }
+	}
 
-    public static class Wo extends Record {
+	public static class Wo extends Record {
 
-        private static final long serialVersionUID = -5007785846454720742L;
+		private static final long serialVersionUID = -5007785846454720742L;
 
-        static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
-                JpaObject.FieldsInvisible);
-    }
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
+	}
 
 }
