@@ -81,7 +81,7 @@ public class ScriptingFactory {
 
 	public static final String BINDING_NAME_DATA = "java_data";
 	// embedData
-	public static final String BINDING_NAME_EMBEDDATA = "embedData";
+	public static final String BINDING_NAME_EMBEDDATA = "java_embedData";
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
 
