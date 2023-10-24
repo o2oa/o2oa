@@ -17,7 +17,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -27,6 +26,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
@@ -40,26 +40,23 @@ class V2AddSplit extends BaseAction {
 
 		Param param = this.init(id, jsonElement);
 
-		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param.getSplitValueList(), param.getTrimExist(),
-				param.getWorkLog());
+		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param.splitValueList, param.workLog);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
-				TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
 	private Param init(String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		param.setSplitValueList(wi.getSplitValueList());
-		param.setTrimExist(wi.getTrimExist());
-		param.setWorkLog(wi.getWorkLog());
+		param.splitValueList = wi.getSplitValueList();
+		param.workLog = wi.getWorkLog();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			param.setJob(work.getJob());
+			param.job = work.getJob();
 		}
 		return param;
 	}
@@ -68,40 +65,7 @@ class V2AddSplit extends BaseAction {
 
 		private String job;
 		private List<String> splitValueList;
-		private Boolean trimExist;
 		private String workLog;
-
-		public List<String> getSplitValueList() {
-			return splitValueList;
-		}
-
-		public void setSplitValueList(List<String> splitValueList) {
-			this.splitValueList = splitValueList;
-		}
-
-		public Boolean getTrimExist() {
-			return trimExist;
-		}
-
-		public void setTrimExist(Boolean trimExist) {
-			this.trimExist = trimExist;
-		}
-
-		public String getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(String workLog) {
-			this.workLog = workLog;
-		}
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
 
 	}
 
@@ -112,11 +76,10 @@ class V2AddSplit extends BaseAction {
 		private Boolean trimExist;
 		private String workLog;
 
-		private CallableImpl(String id, List<String> splitValueList, Boolean trimExist, String workLog) {
+		private CallableImpl(String id, List<String> splitValueList, String workLog) {
 
 			this.id = id;
 			this.splitValueList = splitValueList;
-			this.trimExist = trimExist;
 			this.workLog = workLog;
 
 		}
@@ -263,7 +226,7 @@ class V2AddSplit extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapStringList {
+	public static class Wo extends V2AddSplitWo {
 
 		private static final long serialVersionUID = -5717489826043523199L;
 

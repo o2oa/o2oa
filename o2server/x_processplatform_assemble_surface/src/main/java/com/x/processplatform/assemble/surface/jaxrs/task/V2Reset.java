@@ -56,32 +56,32 @@ public class V2Reset extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
 		Param param = this.init(effectivePerson, id, jsonElement);
-		updateTask(param);
-		reset(param);
-		String taskCompletedId = this.processingTask(param);
-		this.processingWork(param);
+		updateTask(param.task.getId(), param.routeName, param.opinion, param.task.getJob());
+		reset(param.task.getId(), param.distinguishedNameList, param.task.getJob());
+		String taskCompletedId = this.processingTask(param.task.getId(), param.task.getJob());
+		this.processingWork(param.work.getId(), param.series, param.work.getJob());
 		List<String> newTaskIds = new ArrayList<>();
 		List<TaskCompleted> taskCompleteds = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.getTask().getJob(),
-					Task.work_FIELDNAME, param.getWork().getId()));
+			newTaskIds.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
+					Task.work_FIELDNAME, param.work.getId()));
 			// 为办理的前的所有已办,用于在record中记录当前待办转为已办时的上一处理人
 			taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-					param.getTask().getActivityToken());
+					param.task.getActivityToken());
 		}
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.getWorkLog(), effectivePerson,
-				param.getManual(), newTaskIds);
-		rec.getProperties().setOpinion(wi.getOpinion());
-		rec.getProperties().setRouteName(wi.getRouteName());
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.workLog, effectivePerson, param.manual,
+				newTaskIds);
+		rec.setOpinion(param.opinion);
+		rec.setRouteName(param.routeName);
 		RecordBuilder.processing(rec);
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
 			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,
-					rec.getProperties().getNextManualTaskIdentityList(), param.getTask().getJob());
+					rec.getProperties().getNextManualTaskIdentityList(), param.task.getJob());
 		}
 		if (!taskCompleteds.isEmpty()) {
-			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, param.getTask());
+			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, param.task);
 		}
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = Wo.copier.copy(rec);
@@ -92,92 +92,83 @@ public class V2Reset extends BaseAction {
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		param.setOpinion(wi.getOpinion());
-		param.setRouteName(wi.getRouteName());
+		param.opinion = wi.getOpinion();
+		param.routeName = wi.getRouteName();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Task task = business.entityManagerContainer().find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			param.setTask(task);
+			param.task = task;
 			Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowReset().build();
-			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowReset().build();
+			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			param.setWork(work);
+			param.work = work;
 			WorkLog workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
 					task.getJob(), WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
-			param.setWorkLog(workLog);
+			param.workLog = workLog;
 			Manual manual = (Manual) business.getActivity(work.getActivity(), ActivityType.manual);
-			param.setManual(manual);
-			// 将getDistinguishedNameList和getIdentityList进行合并,兼容前端接口
-			param.setDistinguishedNameList(business.organization().distinguishedName()
-					.list(ListUtils.sum(wi.getDistinguishedNameList(), wi.getIdentityList())));
-			if (BooleanUtils.isTrue(wi.getKeep())) {
-				param.getDistinguishedNameList().add(task.getDistinguishedName());
+			if (null == manual) {
+				throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
 			}
-			param.setDistinguishedNameList(
-					param.getDistinguishedNameList().stream().distinct().collect(Collectors.toList()));
+			param.manual = manual;
+			// 将getDistinguishedNameList和getIdentityList进行合并,兼容前端接口
+			param.distinguishedNameList = business.organization().distinguishedName()
+					.list(ListUtils.sum(wi.getDistinguishedNameList(), wi.getIdentityList())).stream().distinct()
+					.collect(Collectors.toList());
 		}
 		return param;
 	}
 
-	private void updateTask(Param param) throws Exception {
-		if (StringUtils.isNotEmpty(param.getOpinion()) || StringUtils.isNotEmpty(param.getRouteName())) {
+	private void updateTask(String taskId, String routeName, String opinion, String job) throws Exception {
+		if (StringUtils.isNotEmpty(opinion) || StringUtils.isNotEmpty(routeName)) {
 			V2EditWi req = new V2EditWi();
-			req.setOpinion(param.getOpinion());
-			req.setRouteName(param.getRouteName());
-			WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("task", "v2", param.getTask().getId()), req, param.getTask().getJob())
-					.getData(WoId.class);
-			if (StringUtils.isEmpty(resp.getId())) {
-				throw new ExceptionUpdateTask(param.getTask().getId());
-			}
+			req.setOpinion(opinion);
+			req.setRouteName(routeName);
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("task", "v2", taskId), req, job).getData(WoId.class);
 		}
 	}
 
-	private void reset(Param param) throws Exception {
-		V2ResetWi req = new V2ResetWi();
-		req.setDistinguishedNameList(param.getDistinguishedNameList());
+	private void reset(String taskId, List<String> distinguishedNameList, String job) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi req = new com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi();
+		req.setDistinguishedNameList(distinguishedNameList);
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", "v2", param.getTask().getId(), "reset"), req,
-						param.getTask().getJob())
+						Applications.joinQueryUri("task", "v2", taskId, "reset"), req, job)
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWo.class);
 	}
 
-	private String processingTask(Param param) throws Exception {
+	private String processingTask(String taskId, String job) throws Exception {
 		ProcessingWi req = new ProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_RESET);
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", param.getTask().getId(), "processing"), req, param.getTask().getJob())
-				.getData(WoId.class);
+				Applications.joinQueryUri("task", taskId, "processing"), req, job).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
-			throw new ExceptionProcessingTask(param.getTask().getId());
+			throw new ExceptionProcessingTask(taskId);
 		} else {
 			return resp.getId();
 		}
 	}
 
-	private void processingWork(Param param) throws Exception {
+	private void processingWork(String workId, String series, String job) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_RESET);
-		req.setSeries(param.getSeries());
-		WoId resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", param.getTask().getWork(), "processing"), req,
-						param.getTask().getJob())
-				.getData(WoId.class);
+		req.setSeries(series);
+		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
-			throw new ExceptionWorkProcessing(param.getWork().getId());
+			throw new ExceptionWorkProcessing(workId);
 		}
 	}
 
@@ -199,70 +190,6 @@ public class V2Reset extends BaseAction {
 
 		private Manual manual;
 
-		public List<String> getDistinguishedNameList() {
-			return null == distinguishedNameList ? new ArrayList<>() : this.distinguishedNameList;
-		}
-
-		public Manual getManual() {
-			return manual;
-		}
-
-		public void setManual(Manual manual) {
-			this.manual = manual;
-		}
-
-		public String getSeries() {
-			return series;
-		}
-
-		public void setSeries(String series) {
-			this.series = series;
-		}
-
-		public String getOpinion() {
-			return opinion;
-		}
-
-		public void setOpinion(String opinion) {
-			this.opinion = opinion;
-		}
-
-		public String getRouteName() {
-			return routeName;
-		}
-
-		public void setRouteName(String routeName) {
-			this.routeName = routeName;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
-
-		public Task getTask() {
-			return task;
-		}
-
-		public void setTask(Task task) {
-			this.task = task;
-		}
-
-		public Work getWork() {
-			return work;
-		}
-
-		public void setWork(Work work) {
-			this.work = work;
-		}
-
-		public WorkLog getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(WorkLog workLog) {
-			this.workLog = workLog;
-		}
-
 	}
 
 	public static class Wi extends V2ResetWi {
@@ -278,15 +205,6 @@ public class V2Reset extends BaseAction {
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
-		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
-
-		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
-			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
-		}
-
-		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
-			return manualTaskIdentityMatrix;
-		}
 	}
 
 }

@@ -2,9 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,177 +14,176 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RerouteWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RerouteWo;
 
 class V2Reroute extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reroute.class);
-
-	private EffectivePerson effectivePerson;
-	private Work work;
-	private WorkLog workLog;
-	private Record record;
-	private Activity destinationActivity;
-	private String series = StringTools.uniqueToken();
-	private List<String> existTaskIds = new ArrayList<>();
-	private Wi wi;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
 
-		this.effectivePerson = effectivePerson;
-		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionWorkNotExist(id);
-			}
-			workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob(),
-					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, work.getActivityToken());
-			if (null == workLog) {
-				throw new ExceptionEntityNotExist(WorkLog.class);
-			}
-			// activity = business.getActivity(work);
-			destinationActivity = business.getActivity(wi.getActivity(), ActivityType.valueOf(wi.getActivityType()));
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowReroute().build();
-			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
-				throw new ExceptionRerouteDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						destinationActivity.getName());
-			}
-			if (!StringUtils.equals(work.getProcess(), destinationActivity.getProcess())) {
-				throw new ExceptionProcessNotMatch();
-			}
-			existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-		}
 
-		reroute();
-		processing();
-		record();
-		Wo wo = Wo.copier.copy(record);
+		Param param = this.init(effectivePerson, id, jsonElement);
+
+		reroute(param.getWork().getId(), param.getDestinationActivity().getId(), param.getMergeWork(),
+				param.getDistinguishedNameList(), param.getWork().getJob());
+		processing(param.getWork().getId(), param.getWork().getJob(), param.getSeries());
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.getWorkLog(), effectivePerson,
+				param.getDestinationActivity(), param.getExistTaskIds());
+		RecordBuilder.processing(rec);
+		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
 	}
 
-	private void reroute() throws Exception {
-		V2RerouteWi req = new V2RerouteWi();
-		req.setActivity(wi.getActivity());
-		req.setActivityType(wi.getActivityType());
-		req.setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
-		req.setMergeWork(wi.getMergeWork());
-		WrapBoolean resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "v2", work.getId(), "reroute"), req, work.getJob())
-				.getData(WrapBoolean.class);
-		if (!resp.getValue()) {
-			throw new ExceptionReroute(this.work.getId());
+	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		param.setSeries(StringTools.uniqueToken());
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.setMergeWork(BooleanUtils.isTrue(wi.getMergeWork()));
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Work work = emc.find(id, Work.class);
+			if (null == work) {
+				throw new ExceptionWorkNotExist(id);
+			}
+			param.setWork(work);
+			Activity destinationActivity = business.getActivity(wi.getActivity(), wi.getActivityType());
+			if (null == destinationActivity) {
+				throw new ExceptionEntityNotExist(wi.getActivity());
+			}
+			if (!StringUtils.equals(work.getProcess(), destinationActivity.getProcess())) {
+				throw new ExceptionProcessNotMatch();
+			}
+			param.setDestinationActivity(destinationActivity);
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowReroute().build();
+			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowReroute())) {
+				throw new ExceptionRerouteDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
+						destinationActivity.getName());
+			}
+			WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob(),
+					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, work.getActivityToken());
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(WorkLog.class);
+			}
+			param.setWorkLog(workLog);
+			param.setExistTaskIds(emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob()));
+			param.setDistinguishedNameList(
+					business.organization().distinguishedName().list(wi.getDistinguishedNameList()));
 		}
+		return param;
 	}
 
-	private void processing() throws Exception {
+	private class Param {
+
+		private Work work;
+		private Boolean mergeWork;
+		private WorkLog workLog;
+		private Activity destinationActivity;
+		private String series;
+		private List<String> distinguishedNameList = new ArrayList<>();
+		private List<String> existTaskIds = new ArrayList<>();
+
+		public List<String> getDistinguishedNameList() {
+			return distinguishedNameList;
+		}
+
+		public void setDistinguishedNameList(List<String> distinguishedNameList) {
+			this.distinguishedNameList = distinguishedNameList;
+		}
+
+		public Boolean getMergeWork() {
+			return mergeWork;
+		}
+
+		public void setMergeWork(Boolean mergeWork) {
+			this.mergeWork = mergeWork;
+		}
+
+		public Work getWork() {
+			return work;
+		}
+
+		public void setWork(Work work) {
+			this.work = work;
+		}
+
+		public WorkLog getWorkLog() {
+			return workLog;
+		}
+
+		public void setWorkLog(WorkLog workLog) {
+			this.workLog = workLog;
+		}
+
+		public Activity getDestinationActivity() {
+			return destinationActivity;
+		}
+
+		public void setDestinationActivity(Activity destinationActivity) {
+			this.destinationActivity = destinationActivity;
+		}
+
+		public String getSeries() {
+			return series;
+		}
+
+		public void setSeries(String series) {
+			this.series = series;
+		}
+
+		public List<String> getExistTaskIds() {
+			return existTaskIds;
+		}
+
+		public void setExistTaskIds(List<String> existTaskIds) {
+			this.existTaskIds = existTaskIds;
+		}
+
+	}
+
+	private void reroute(String workId, String activityId, boolean mergeWork, List<String> distinguishedNameList,
+			String job) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi();
+		req.setActivity(activityId);
+		req.setDistinguishedNameList(distinguishedNameList);
+		req.setMergeWork(mergeWork);
+		ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", workId, "reroute"), req, job)
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWo.class);
+	}
+
+	private void processing(String workId, String job, String series) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_REROUTE);
 		req.setSeries(series);
-		req.setForceJoinAtArrive(true);
-		WoId resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", this.work.getId(), "processing"), req, work.getJob())
-				.getData(WoId.class);
-		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionReroute(this.work.getId());
-		}
-	}
-
-	private void record() throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			final List<String> nextTaskIdentities = new ArrayList<>();
-			record = new Record(workLog);
-			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
-			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
-					workLog.getJob());
-			if (null != workCompleted) {
-				record.setCompleted(true);
-				record.setWorkCompleted(workCompleted.getId());
-			}
-			record.setPerson(effectivePerson.getDistinguishedName());
-			record.setType(Record.TYPE_REROUTE);
-			record.setArrivedActivity(destinationActivity.getId());
-			record.setArrivedActivityAlias(destinationActivity.getAlias());
-			record.setArrivedActivityName(destinationActivity.getName());
-			record.setArrivedActivityType(destinationActivity.getActivityType());
-			record.getProperties().setElapsed(
-					Config.workTime().betweenMinutes(record.getProperties().getStartTime(), record.getRecordTime()));
-			/* 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份 */
-			TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-					work.getJob(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-			record.setPerson(effectivePerson.getDistinguishedName());
-			if (null != existTaskCompleted) {
-				record.setIdentity(existTaskCompleted.getIdentity());
-				record.setUnit(existTaskCompleted.getUnit());
-			} else {
-				record.setIdentity(
-						business.organization().identity().getMajorWithPerson(effectivePerson.getDistinguishedName()));
-				record.setUnit(business.organization().unit().getWithIdentity(record.getIdentity()));
-			}
-			List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-			ids = ListUtils.subtract(ids, existTaskIds);
-			List<Task> list = emc.fetch(ids, Task.class,
-					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
-							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
-							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
-					.forEach(o -> {
-						Task task = o.getValue().get(0);
-						NextManual nextManual = new NextManual();
-						nextManual.setActivity(task.getActivity());
-						nextManual.setActivityAlias(task.getActivityAlias());
-						nextManual.setActivityName(task.getActivityName());
-						nextManual.setActivityToken(task.getActivityToken());
-						nextManual.setActivityType(task.getActivityType());
-						for (Task t : o.getValue()) {
-							nextManual.getTaskIdentityList().add(t.getIdentity());
-							nextTaskIdentities.add(t.getIdentity());
-						}
-						record.getProperties().getNextManualList().add(nextManual);
-					});
-			/* 去重 */
-			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
-		}
-		WoId resp = ThisApplication.context().applications()
-				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("record", "job", work.getJob()), record, this.work.getJob())
-				.getData(WoId.class);
-		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionRecord(this.work.getId());
-		}
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
 	}
 
 	public static class Wi extends V2RerouteWi {
@@ -195,7 +192,7 @@ class V2Reroute extends BaseAction {
 
 	}
 
-	public static class Wo extends Record {
+	public static class Wo extends V2RerouteWo {
 
 		private static final long serialVersionUID = -8410749558739884101L;
 

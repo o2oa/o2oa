@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -11,51 +10,95 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.ticket.Tickets;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWo;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import com.x.processplatform.service.processing.processor.AeiObjects;
 
 class V2Reroute extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reroute.class);
 
-	/**
-	 * @param effectivePerson current person
-	 */
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final String job;
-		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Param param = this.init(id, jsonElement);
+
+		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param.getActivity(), param.getMergeWork(),
+				param.getDistinguishedNameList());
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
+				TimeUnit.SECONDS);
+
+	}
+
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.setActivity(wi.getActivity());
+		param.setDistinguishedNameList(wi.getDistinguishedNameList());
+		param.setMergeWork(BooleanUtils.isTrue(wi.getMergeWork()));
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			job = work.getJob();
+			param.setJob(work.getJob());
+		}
+		return param;
+	}
+
+	private class Param {
+
+		private String job;
+		private String activity;
+		private Boolean mergeWork;
+		private List<String> distinguishedNameList;
+
+		public Boolean getMergeWork() {
+			return mergeWork;
 		}
 
-		Callable<ActionResult<Wo>> callable = new CallableImpl(id, wi);
+		public void setMergeWork(Boolean mergeWork) {
+			this.mergeWork = mergeWork;
+		}
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+		public String getJob() {
+			return job;
+		}
+
+		public void setJob(String job) {
+			this.job = job;
+		}
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
+
+		public List<String> getDistinguishedNameList() {
+			return distinguishedNameList;
+		}
+
+		public void setDistinguishedNameList(List<String> distinguishedNameList) {
+			this.distinguishedNameList = distinguishedNameList;
+		}
 
 	}
 
@@ -65,7 +108,7 @@ class V2Reroute extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends V2RerouteWo {
 
 		private static final long serialVersionUID = 6797942626499506636L;
 	}
@@ -73,11 +116,15 @@ class V2Reroute extends BaseAction {
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
 		private String id;
-		private Wi wi;
+		private String activityId;
+		private boolean mergeWork;
+		private List<String> distinguishedNameList;
 
-		private CallableImpl(String id, Wi wi) {
+		private CallableImpl(String id, String activityId, boolean mergeWork, List<String> distinguishedNameList) {
 			this.id = id;
-			this.wi = wi;
+			this.activityId = activityId;
+			this.mergeWork = mergeWork;
+			this.distinguishedNameList = distinguishedNameList;
 		}
 
 		@Override
@@ -90,112 +137,60 @@ class V2Reroute extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				Manual manual = (Manual) business.element().get(wi.getActivity(), ActivityType.manual);
-				if (!StringUtils.equals(work.getProcess(), manual.getProcess())) {
+				Activity activity = business.element().getActivity(activityId);
+				if (null == activity) {
+					throw new ExceptionEntityNotExist(id);
+				}
+				if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
 					throw new ExceptionProcessNotMatch();
 				}
-				emc.beginTransaction(Work.class);
-				emc.beginTransaction(Task.class);
-				emc.beginTransaction(Read.class);
-				emc.beginTransaction(WorkLog.class);
-				// 重新设置表单
-				String formId = business.element().lookupSuitableForm(work.getProcess(), manual.getId());
-				if (StringUtils.isNotBlank(formId)) {
-					work.setForm(formId);
+				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingAttributes());
+				if (BooleanUtils.isTrue(mergeWork)) {
+					// 删除所有待办
+					aeiObjects.getTasks().stream().forEach(aeiObjects.getDeleteTasks()::add);
+					// 删除其他工作
+					aeiObjects.getWorks().stream().filter(o -> (!StringUtils.equalsIgnoreCase(o.getId(), work.getId())))
+							.forEach(aeiObjects.getDeleteWorks()::add);
+					// 删除其他工作的未连接workLog
+					aeiObjects.getWorkLogs().stream().filter(o -> BooleanUtils.isNotTrue(o.getConnected()))
+							.filter(o -> (!StringUtils.equalsIgnoreCase(o.getFromActivity(), work.getActivity())))
+							.forEach(aeiObjects.getDeleteWorkLogs()::add);
+					// 重新定向read关联的work
+					aeiObjects.getReads().stream()
+							.filter(o -> (!StringUtils.equalsIgnoreCase(o.getWork(), work.getId()))).forEach(o -> {
+								o.setWork(work.getId());
+								aeiObjects.getUpdateReads().add(o);
+							});
+				} else {
+					// 删除可能的待办
+					aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(work.getId(), o.getId()))
+							.forEach(aeiObjects.getDeleteTasks()::add);
+				}
+				if (Manual.class.isAssignableFrom(activity.getClass())) {
+					// 重新设置表单
+					String formId = business.element().lookupSuitableForm(work.getProcess(), activity.getId());
+					if (StringUtils.isNotBlank(formId)) {
+						work.setForm(formId);
+					}
+					// 重新设置处理人
+					if (ListTools.isNotEmpty(distinguishedNameList)) {
+						work.setTickets(((Manual) activity).identitiesToTickets(distinguishedNameList));
+					} else {
+						work.setTickets(new Tickets());
+					}
 				}
 				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
 				work.setWorkThroughManual(true);
-				work.setDestinationActivity(manual.getId());
-				work.setDestinationActivityType(manual.getActivityType());
+				work.setDestinationActivity(activity.getId());
+				work.setDestinationActivityType(activity.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
-				if (ListTools.isNotEmpty(wi.getManualForceTaskIdentityList())) {
-					work.setTickets(manual.identitiesToTickets(wi.getManualForceTaskIdentityList()));
-				}
-				if (BooleanUtils.isTrue(wi.getMergeWork())) {
-					// 合并工作
-					work.setSplitting(false);
-					work.setSplitToken("");
-					work.getSplitTokenList().clear();
-					work.setSplitValue("");
-					removeAllTask(business, work);
-					redirectOtherRead(business, work);
-					removeOtherWork(business, work);
-					removeOtherWorkLog(business, work);
-				} else {
-					removeTask(business, work);
-				}
-				emc.check(work, CheckPersistType.all);
-				emc.commit();
+				aeiObjects.commit();
 			}
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
 			return result;
 		}
-
-		private void removeTask(Business business, Work work) throws Exception {
-			// 删除可能的待办
-			List<Task> os = business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, work.getId());
-			os.stream().forEach(o -> {
-				try {
-					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-					MessageFactory.task_delete(o);
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-			});
-		}
-
-		private void redirectOtherRead(Business business, Work work) throws Exception {
-			business.entityManagerContainer().listEqualAndNotEqual(Read.class, Read.job_FIELDNAME, work.getJob(),
-					Read.work_FIELDNAME, work.getId()).stream().forEach(o -> {
-						try {
-							o.setWork(work.getId());
-						} catch (Exception e) {
-							LOGGER.error(e);
-						}
-					});
-		}
-
-		private void removeAllTask(Business business, Work work) throws Exception {
-			business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob()).stream()
-					.forEach(o -> {
-						try {
-							business.entityManagerContainer().remove(o, CheckRemoveType.all);
-							MessageFactory.task_delete(o);
-						} catch (Exception e) {
-							LOGGER.error(e);
-						}
-					});
-		}
-
-		private void removeOtherWork(Business business, Work work) throws Exception {
-			List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-					work.getJob(), JpaObject.id_FIELDNAME, work.getId());
-			os.stream().forEach(o -> {
-				try {
-					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-					MessageFactory.work_delete(o);
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-			});
-		}
-
-		private void removeOtherWorkLog(Business business, Work work) throws Exception {
-			List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
-					WorkLog.JOB_FIELDNAME, work.getJob(), WorkLog.CONNECTED_FIELDNAME, false,
-					WorkLog.FROMACTIVITY_FIELDNAME, work.getActivity());
-			os.stream().forEach(o -> {
-				try {
-					business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-			});
-		}
-
 	}
-
 }

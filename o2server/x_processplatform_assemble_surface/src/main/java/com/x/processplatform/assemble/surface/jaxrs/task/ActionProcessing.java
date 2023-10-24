@@ -61,6 +61,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetW
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -428,12 +429,12 @@ class ActionProcessing extends BaseAction {
 		req.setActivity(param.first().getFromActivity());
 		req.setActivityToken(param.first().getFromActivityToken());
 		req.setWay(param.second());
-		req.setIdentityList(param.third());
+		req.setDistinguishedNameList(param.third());
 		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_GOBACK);
-		WrapBoolean resp = ThisApplication.context().applications()
+		V2GoBackWo resp = ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", "v2", task.getWork(), "goback"), req, this.task.getJob())
-				.getData(WrapBoolean.class);
+				.getData(V2GoBackWo.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionGoBack(req.getActivity(), req.getActivity());
 		}

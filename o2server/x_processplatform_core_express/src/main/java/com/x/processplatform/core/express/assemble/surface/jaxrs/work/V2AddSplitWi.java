@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.work;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.work;
 
 import java.util.List;
 
@@ -15,6 +15,10 @@ public class V2AddSplitWi extends GsonPropertyObject {
 	@Schema(description = "添加的拆分值.")
 	private List<String> splitValueList;
 
+	@FieldDescribe("是否排除已经存在的拆分值.")
+	@Schema(description = "是否排除已经存在的拆分值.")
+	private Boolean trimExist;
+
 	@FieldDescribe("添加分支的工作日志标识.")
 	@Schema(description = "添加分支的工作日志标识.")
 	private String workLog;
@@ -25,6 +29,14 @@ public class V2AddSplitWi extends GsonPropertyObject {
 
 	public void setSplitValueList(List<String> splitValueList) {
 		this.splitValueList = splitValueList;
+	}
+
+	public Boolean getTrimExist() {
+		return trimExist;
+	}
+
+	public void setTrimExist(Boolean trimExist) {
+		this.trimExist = trimExist;
 	}
 
 	public String getWorkLog() {

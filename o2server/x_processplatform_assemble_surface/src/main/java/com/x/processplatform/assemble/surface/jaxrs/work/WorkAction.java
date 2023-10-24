@@ -1237,25 +1237,6 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "对指定的工作添加待办身份.", action = V2AddManualTaskIdentityMatrix.class)
-	@POST
-	@Path("{id}/add/manual/task/identity/matrix")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2AddManualTaskIdentityMatrix(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-			JsonElement jsonElement) {
-		ActionResult<V2AddManualTaskIdentityMatrix.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2AddManualTaskIdentityMatrix().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@Operation(summary = "分页显示按条件过滤的当前用户创建的工作.", operationId = OPERATIONID_PREFIX + "V2ListPaging", responses = {
 			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
 					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))

@@ -74,6 +74,11 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AeiObjects.class);
 
+	public AeiObjects(Business business, Work work, Activity activity, ProcessingAttributes processingAttributes)
+			throws Exception {
+		this(business, work, activity, new ProcessingConfigurator(), processingAttributes);
+	}
+
 	public AeiObjects(Business business, Work work, Activity activity, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes processingAttributes) throws Exception {
 		this.business = business;
@@ -81,9 +86,9 @@ public class AeiObjects extends GsonPropertyObject {
 		this.oldWork = new Work();
 		this.work.copyTo(this.oldWork);
 		this.activity = activity;
+		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 		this.processingAttributes = processingAttributes;
 		this.processingConfigurator = processingConfigurator;
-		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 	}
 
 	private transient Business business;
@@ -93,8 +98,6 @@ public class AeiObjects extends GsonPropertyObject {
 	private transient ActivityProcessingConfigurator activityProcessingConfigurator;
 
 	private ProcessingAttributes processingAttributes;
-
-//	private List<Route> selectRoutes = new ArrayList<>();
 
 	private Work work;
 
@@ -524,10 +527,6 @@ public class AeiObjects extends GsonPropertyObject {
 	public ProcessingAttributes getProcessingAttributes() {
 		return processingAttributes;
 	}
-
-//	public List<Route> getSelectRoutes() {
-//		return selectRoutes;
-//	}
 
 	public Work getWork() {
 		return work;

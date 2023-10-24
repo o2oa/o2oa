@@ -1,6 +1,8 @@
 package com.x.processplatform.core.entity.content;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,9 +13,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.Persistent;
@@ -87,7 +91,7 @@ public class Record extends SliceJpaObject {
 
 	/* 外部调用流转 */
 	public static final String TYPE_SERVICE = "service";
-	
+
 	/* 添加待办 */
 	public static final String TYPE_TASKADD = "taskAdd";
 
@@ -121,13 +125,22 @@ public class Record extends SliceJpaObject {
 			this.display = true;
 		}
 	}
-	/* 更新运行方法 */
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.routeName = this.getProperties().getRouteName();
+			this.opinion = this.getProperties().getOpinion();
+			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
+		}
+	}
 
 	public Record() {
 		this.display = true;
 		this.recordTime = new Date();
 		this.order = recordTime.getTime();
 		this.properties = new RecordProperties();
+
 	}
 
 	public Record(WorkLog workLog, Task task) {
@@ -159,6 +172,47 @@ public class Record extends SliceJpaObject {
 		this.getProperties().setStartTime(workLog.getFromTime());
 		this.getProperties().setFromGroup(workLog.getFromGroup());
 		this.getProperties().setFromOpinionGroup(workLog.getFromOpinionGroup());
+	}
+
+	@Transient
+	@FieldDescribe("路由名称.")
+	public static final String ROUTENAME_FIELDNAME = "routeName";
+	private String routeName;
+
+	public String getRouteName() {
+		return routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.getProperties().setRouteName(routeName);
+		this.routeName = routeName;
+	}
+
+	@Transient
+	@FieldDescribe("意见.")
+	public static final String OPINION_FIELDNAME = "opinion";
+	private String opinion;
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.getProperties().setOpinion(opinion);
+		this.opinion = opinion;
+	}
+
+	@Transient
+	@FieldDescribe("后续人工环节处理人")
+	private List<String> nextManualTaskIdentityList = new ArrayList<>();
+
+	public List<String> getNextManualTaskIdentityList() {
+		return nextManualTaskIdentityList;
+	}
+
+	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
+		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
 	}
 
 	public RecordProperties getProperties() {

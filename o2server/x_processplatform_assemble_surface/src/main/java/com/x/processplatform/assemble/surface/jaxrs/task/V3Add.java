@@ -37,6 +37,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
@@ -48,32 +49,36 @@ public class V3Add extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V3Add.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
+
 		Param param = this.init(effectivePerson, id, jsonElement);
-		if (StringUtils.isNotEmpty(param.getOpinion()) || StringUtils.isNotEmpty(param.getRouteName())) {
-			updateTask(param.getTask(), param.getOpinion(), param.getRouteName());
+
+		if (StringUtils.isNotEmpty(param.opinion) || StringUtils.isNotEmpty(param.routeName)) {
+			updateTask(param.task, param.opinion, param.routeName);
 		}
-		this.add(param.getTask(), param.getDistinguishedNameList(), param.getBefore(), param.getMode());
-		String taskCompletedId = this.processingTask(param.getTask());
-		this.processingWork(param.getTask(), param.getSeries());
+
+		this.add(param.task, param.distinguishedNameList, param.before, param.mode);
+		String taskCompletedId = this.processingTask(param.task);
+		this.processingWork(param.task, param.series);
 		List<String> newTaskIds = new ArrayList<>();
 		// 加签计算所有处理人即可,不需要去重计算现在已有的task
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.getTask().getJob(),
-					Task.work_FIELDNAME, param.getTask().getWork());
+			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(), Task.work_FIELDNAME,
+					param.task.getWork());
 		}
-		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.getWorkLog(), param.getTask(),
-				taskCompletedId, newTaskIds);
+		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, taskCompletedId,
+				newTaskIds);
 		// 加签也记录流程意见和路由决策
-		rec.getProperties().setOpinion(param.getOpinion());
-		rec.getProperties().setRouteName(param.getRouteName());
+		rec.setOpinion(param.opinion);
+		rec.setRouteName(param.routeName);
 		RecordBuilder.processing(rec);
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
-			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,
-					rec.getProperties().getNextManualTaskIdentityList(), param.getTask().getJob());
+			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, rec.getNextManualTaskIdentityList(),
+					param.task.getJob());
 		}
-		TaskBuilder.updatePrevTaskIdentity(newTaskIds, param.getTaskCompleteds(), param.getTask());
+		TaskBuilder.updatePrevTaskIdentity(newTaskIds, param.existsTaskCompleteds, param.task);
 		return result(rec);
 	}
 
@@ -97,31 +102,30 @@ public class V3Add extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			param.setTask(task);
+			param.task = task;
 			Work work = emc.find(task.getWork(), Work.class);
 			if (null == work) {
 				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 			}
-			param.setWork(work);
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowAddTask().build();
 			if (BooleanUtils.isNotTrue(control.getAllowAddTask())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			param.setOpinion(wi.getOpinion());
-			param.setRouteName(wi.getRouteName());
-			param.setBefore(BooleanUtils.isNotFalse(wi.getBefore()));
-			param.setMode(wi.getMode());
-			param.setDistinguishedNameList(
-					business.organization().distinguishedName().list(wi.getDistinguishedNameList()));
-			checkDistinguishedNameList(wi.getDistinguishedNameList(), param.getDistinguishedNameList());
+			param.opinion = wi.getOpinion();
+			param.routeName = wi.getRouteName();
+			param.before = BooleanUtils.isNotFalse(wi.getBefore());
+			param.mode = wi.getMode();
+			param.distinguishedNameList = business.organization().distinguishedName()
+					.list(wi.getDistinguishedNameList());
+			checkDistinguishedNameList(wi.getDistinguishedNameList(), param.distinguishedNameList);
 			WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
 					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
-			param.setWorkLog(workLog);
-			param.setTaskCompleteds(business.entityManagerContainer().listEqual(TaskCompleted.class,
-					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken()));
+			param.workLog = workLog;
+			param.existsTaskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
+					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 		}
 		return param;
 	}
@@ -192,7 +196,7 @@ public class V3Add extends BaseAction {
 
 	}
 
-	public static class Wo extends Record {
+	public static class Wo extends V3AddWo {
 
 		private static final long serialVersionUID = 1416972392523085640L;
 
@@ -208,91 +212,10 @@ public class V3Add extends BaseAction {
 		private Boolean before;
 		private String mode;
 		private Task task;
-		private Work work;
 		private WorkLog workLog;
-		private List<TaskCompleted> taskCompleteds;
+		private List<TaskCompleted> existsTaskCompleteds;
 		private String opinion;
 		private String routeName;
-
-		public String getSeries() {
-			return series;
-		}
-
-		public void setSeries(String series) {
-			this.series = series;
-		}
-
-		public String getOpinion() {
-			return opinion;
-		}
-
-		public void setOpinion(String opinion) {
-			this.opinion = opinion;
-		}
-
-		public String getRouteName() {
-			return routeName;
-		}
-
-		public void setRouteName(String routeName) {
-			this.routeName = routeName;
-		}
-
-		public List<TaskCompleted> getTaskCompleteds() {
-			return taskCompleteds;
-		}
-
-		public void setTaskCompleteds(List<TaskCompleted> taskCompleteds) {
-			this.taskCompleteds = taskCompleteds;
-		}
-
-		public WorkLog getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(WorkLog workLog) {
-			this.workLog = workLog;
-		}
-
-		public List<String> getDistinguishedNameList() {
-			return distinguishedNameList;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
-
-		public Boolean getBefore() {
-			return before;
-		}
-
-		public void setBefore(Boolean before) {
-			this.before = before;
-		}
-
-		public String getMode() {
-			return mode;
-		}
-
-		public void setMode(String mode) {
-			this.mode = mode;
-		}
-
-		public Task getTask() {
-			return task;
-		}
-
-		public void setTask(Task task) {
-			this.task = task;
-		}
-
-		public Work getWork() {
-			return work;
-		}
-
-		public void setWork(Work work) {
-			this.work = work;
-		}
 
 	}
 }

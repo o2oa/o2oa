@@ -49,7 +49,8 @@ class V2Rollback extends BaseAction {
 		this.processing(param.getWork(), param.getSeries());
 		List<String> newTaskIds = newTaskIds(param.getWork().getJob(), param.getWork().getId());
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.getWorkLog(), effectivePerson,
-				param.getManual(), newTaskIds);
+				param.getDestinationManual(), newTaskIds);
+		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
@@ -59,6 +60,7 @@ class V2Rollback extends BaseAction {
 
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
+		param.setSeries(StringTools.uniqueToken());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -88,9 +90,7 @@ class V2Rollback extends BaseAction {
 				throw new ExceptionEntityNotExist(workLog.getFromActivity(), Manual.class);
 			}
 
-			param.setManual(manual);
-
-			param.setExistTaskIds(emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob()));
+			param.setDestinationManual(manual);
 
 			param.setDistinguishedNameList(
 					business.organization().distinguishedName().list(wi.getDistinguishedNameList()));
@@ -103,16 +103,15 @@ class V2Rollback extends BaseAction {
 		private Work work;
 		private WorkLog workLog;
 		private List<String> distinguishedNameList;
-		private List<String> existTaskIds = new ArrayList<>();
-		private String series = StringTools.uniqueToken();
-		private Manual manual;
+		private String series;
+		private Manual destinationManual;
 
-		public Manual getManual() {
-			return manual;
+		public Manual getDestinationManual() {
+			return destinationManual;
 		}
 
-		public void setManual(Manual manual) {
-			this.manual = manual;
+		public void setDestinationManual(Manual destinationManual) {
+			this.destinationManual = destinationManual;
 		}
 
 		public List<String> getDistinguishedNameList() {
@@ -137,14 +136,6 @@ class V2Rollback extends BaseAction {
 
 		public void setWorkLog(WorkLog workLog) {
 			this.workLog = workLog;
-		}
-
-		public List<String> getExistTaskIds() {
-			return existTaskIds;
-		}
-
-		public void setExistTaskIds(List<String> existTaskIds) {
-			this.existTaskIds = existTaskIds;
 		}
 
 		public String getSeries() {

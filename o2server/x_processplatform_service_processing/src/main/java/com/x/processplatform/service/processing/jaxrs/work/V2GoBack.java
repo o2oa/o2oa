@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -27,6 +27,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualProperties;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
@@ -40,19 +41,39 @@ class V2GoBack extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
 
-		final String job;
+		Param param = this.init(id, jsonElement);
+
+		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param);
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
+
+	}
+
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.activity = wi.getActivity();
+		param.activityToken = wi.getActivityToken();
+		param.way = wi.getWay();
+		param.distinguishedNameList = ListTools.isEmpty(wi.getDistinguishedNameList()) ? new ArrayList<>()
+				: wi.getDistinguishedNameList();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			job = work.getJob();
+			param.job = work.getJob();
 		}
+		return param;
+	}
 
-		Callable<ActionResult<Wo>> callable = new CallableImpl(id, wi);
+	private class Param {
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+		String job;
+		private String activity;
+		private String activityToken;
+		private String way;
+		private List<String> distinguishedNameList = new ArrayList<>();
 
 	}
 
@@ -62,7 +83,7 @@ class V2GoBack extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends V2GoBackWo {
 
 		private static final long serialVersionUID = 6797942626499506636L;
 	}
@@ -70,11 +91,11 @@ class V2GoBack extends BaseAction {
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
 		private String id;
-		private Wi wi;
+		private Param param;
 
-		private CallableImpl(String id, Wi wi) {
+		private CallableImpl(String id, Param param) {
 			this.id = id;
-			this.wi = wi;
+			this.param = param;
 		}
 
 		@Override
@@ -87,7 +108,7 @@ class V2GoBack extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				Manual manual = (Manual) business.element().get(wi.getActivity(), ActivityType.manual);
+				Manual manual = (Manual) business.element().get(param.activity, ActivityType.manual);
 
 				if (!StringUtils.equals(work.getProcess(), manual.getProcess())) {
 					throw new ExceptionProcessNotMatch();
@@ -107,8 +128,8 @@ class V2GoBack extends BaseAction {
 				work.setDestinationActivityType(manual.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
-				work.setGoBackActivityToken(wi.getActivityToken());
-				if (StringUtils.equalsIgnoreCase(wi.getWay(), ManualProperties.GoBackConfig.WAY_JUMP)) {
+				work.setGoBackActivityToken(param.activityToken);
+				if (StringUtils.equalsIgnoreCase(param.way, ManualProperties.GoBackConfig.WAY_JUMP)) {
 					// way = jump
 					GoBackStore goBackStore = new GoBackStore();
 					goBackStore.setTickets(work.getTickets());
@@ -117,8 +138,8 @@ class V2GoBack extends BaseAction {
 					goBackStore.setActivityToken(work.getActivityToken());
 					work.setGoBackStore(goBackStore);
 				}
-				if (ListTools.isNotEmpty(wi.getIdentityList())) {
-					work.setTickets(manual.identitiesToTickets(wi.getIdentityList()));
+				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
+					work.setTickets(manual.identitiesToTickets(param.distinguishedNameList));
 				}
 				removeTask(business, work);
 				emc.check(work, CheckPersistType.all);
