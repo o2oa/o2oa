@@ -40,6 +40,7 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
 /**
  * @since 8.2 tickets 加签
@@ -174,10 +175,10 @@ public class V3Add extends BaseAction {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_TASKADD);
 		req.setSeries(series);
-		WoId resp = ThisApplication.context().applications()
+		ActionProcessingWo resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", task.getWork(), "processing"), req, task.getJob())
-				.getData(WoId.class);
+				.getData(ActionProcessingWo.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionWorkProcessing(task.getWork());
 		}

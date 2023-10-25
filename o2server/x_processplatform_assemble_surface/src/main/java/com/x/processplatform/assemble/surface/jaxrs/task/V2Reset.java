@@ -23,7 +23,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
@@ -44,6 +43,7 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
 /**
  * @since 8.2 重置处理人
@@ -165,8 +165,10 @@ public class V2Reset extends BaseAction {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_RESET);
 		req.setSeries(series);
-		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
+		ActionProcessingWo resp = ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", workId, "processing"), req, job)
+				.getData(ActionProcessingWo.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionWorkProcessing(workId);
 		}

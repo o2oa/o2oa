@@ -17,7 +17,6 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -37,6 +36,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
@@ -52,7 +52,7 @@ class V2Retract extends BaseAction {
 
 		Param param = this.init(id, jsonElement);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(new CallableImpl(param)).get(300,
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(new CallableImpl(param)).get(300,
 				TimeUnit.SECONDS);
 
 	}
@@ -65,10 +65,10 @@ class V2Retract extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			param.setId(id);
-			param.setJob(work.getJob());
-			param.setTaskCompleted(wi.getTaskCompleted());
-			param.setWorkLog(wi.getWorkLog());
+			param.id = work.getId();
+			param.job = work.getJob();
+			param.taskCompleted = wi.getTaskCompleted();
+			param.workLog = wi.getWorkLog();
 		}
 		return param;
 	}
@@ -89,11 +89,11 @@ class V2Retract extends BaseAction {
 			TaskCompleted taskCompleted;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				work = getWork(business, param.getId());
+				work = getWork(business, param.id);
 				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 				tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
-				workLog = getTargetWorkLog(workLogs, param.getWorkLog());
-				taskCompleted = getTaskCompleted(business, param.getTaskCompleted());
+				workLog = getTargetWorkLog(workLogs, param.workLog);
+				taskCompleted = getTaskCompleted(business, param.taskCompleted);
 				Node workLogNode = tree.find(workLog);
 				Nodes nodes = tree.down(workLogNode);
 				List<String> activityTokens = activityTokenOfNodes(nodes);
@@ -132,8 +132,6 @@ class V2Retract extends BaseAction {
 						work.setForm(manual.getForm());
 					}
 				}
-
-				// update(work, workLog, activity);
 
 				// 必然不为null
 				taskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_RETRACT);
@@ -289,51 +287,7 @@ class V2Retract extends BaseAction {
 		private String workLog;
 		private String taskCompleted;
 
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
-
-		public String getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(String workLog) {
-			this.workLog = workLog;
-		}
-
-		public String getTaskCompleted() {
-			return taskCompleted;
-		}
-
-		public void setTaskCompleted(String taskCompleted) {
-			this.taskCompleted = taskCompleted;
-		}
-
 	}
-
-//	private void update(Work work, WorkLog workLog, Activity activity) {
-//		work.setActivity(activity.getId());
-//		work.setActivityAlias(activity.getAlias());
-//		work.setActivityName(activity.getName());
-//		work.setActivityDescription(activity.getDescription());
-//		work.setActivityToken(workLog.getFromActivityToken());
-//		work.setSplitting(workLog.getSplitting());
-//		work.setSplitToken(workLog.getSplitToken());
-//		work.setSplitValue(workLog.getSplitValue());
-//		workLog.setConnected(false);
-//	}
 
 	public static class Wi extends V2RetractWi {
 
@@ -341,7 +295,7 @@ class V2Retract extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends V2RetractWo {
 
 		private static final long serialVersionUID = -1571428251733726998L;
 

@@ -49,7 +49,7 @@ class V2Rollback extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		Param param = this.init(effectivePerson, id, jsonElement);
+		Param param = this.init(id, jsonElement);
 
 		CallableImpl callable = new CallableImpl(param.getWorkId(), param.getWorkLogId(),
 				param.getDistinguishedNameList());
@@ -59,7 +59,7 @@ class V2Rollback extends BaseAction {
 
 	}
 
-	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+	private Param init(String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
