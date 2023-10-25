@@ -6,11 +6,11 @@ import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionProcessingWo;
 
 class ActionProcessing extends BaseAction {
 
@@ -41,7 +41,9 @@ class ActionProcessing extends BaseAction {
         return result;
     }
 
-    public static class Wo extends WoId {
+    public static class Wo extends ActionProcessingWo {
+
+		private static final long serialVersionUID = -2704637716301253584L;
 
     }
 

@@ -56,7 +56,6 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-
 		Wo wo = new Wo();
 		Work work = null;
 		WorkCompleted workCompleted = null;
@@ -312,8 +311,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 	private CompletableFuture<Void> recordFuture(EffectivePerson effectivePerson, String job, Wo wo) {
 		return CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				wo.setRecordList(emc.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
-						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+				wo.setRecordList(emc.listEqual(Record.class, Record.job_FIELDNAME, job).stream()
+						.sorted(Comparator.comparing(Record::getOrder)).map(WoRecord.copier::copy)
+						.collect(Collectors.toList()));
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
@@ -328,9 +328,9 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					wo.setRecordList(WoRecord.copier.copy(workCompleted.getRecordList()).stream()
 							.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
 				} else {
-					wo.setRecordList(emc
-							.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, workCompleted.getJob())
-							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
+					wo.setRecordList(emc.listEqual(Record.class, Record.job_FIELDNAME, workCompleted.getJob()).stream()
+							.sorted(Comparator.comparing(Record::getOrder)).map(WoRecord.copier::copy)
+							.collect(Collectors.toList()));
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);
@@ -778,8 +778,8 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
-		static WrapCopier<Record, WoRecord> copier = WrapCopierFactory.wo(Record.class, WoRecord.class,
-				JpaObject.singularAttributeField(Record.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<Record, WoRecord> copier = WrapCopierFactory.wo(Record.class, WoRecord.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 

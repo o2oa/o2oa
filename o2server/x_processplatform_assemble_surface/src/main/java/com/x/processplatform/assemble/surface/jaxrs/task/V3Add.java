@@ -38,7 +38,7 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWo;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
@@ -108,8 +108,9 @@ public class V3Add extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowAddTask().build();
-			if (BooleanUtils.isNotTrue(control.getAllowAddTask())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowAddTask().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage()) && BooleanUtils.isNotTrue(control.getAllowAddTask())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			param.opinion = wi.getOpinion();
@@ -158,7 +159,7 @@ public class V3Add extends BaseAction {
 	}
 
 	private String processingTask(Task task) throws Exception {
-		ProcessingWi req = new ProcessingWi();
+		ActionProcessingWi req = new ActionProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_ADD);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,

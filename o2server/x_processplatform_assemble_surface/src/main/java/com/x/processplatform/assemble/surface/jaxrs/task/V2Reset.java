@@ -41,7 +41,7 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V2ResetWo;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
@@ -150,7 +150,7 @@ public class V2Reset extends BaseAction {
 	}
 
 	private String processingTask(String taskId, String job) throws Exception {
-		ProcessingWi req = new ProcessingWi();
+		ActionProcessingWi req = new ActionProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_RESET);
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("task", taskId, "processing"), req, job).getData(WoId.class);

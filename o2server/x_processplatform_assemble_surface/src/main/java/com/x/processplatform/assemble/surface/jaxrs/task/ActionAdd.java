@@ -37,7 +37,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.V3AddWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -156,7 +156,7 @@ public class ActionAdd extends BaseAction {
 	}
 
 	private String processingTask(Task task) throws Exception {
-		ProcessingWi req = new ProcessingWi();
+		ActionProcessingWi req = new ActionProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_ADD);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,

@@ -3,7 +3,7 @@ package com.x.processplatform.core.express.service.processing.jaxrs.task;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class ProcessingWi extends GsonPropertyObject {
+public class ActionProcessingWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -2272062779655632688L;
 

@@ -3,7 +3,7 @@ package com.x.processplatform.core.express.service.processing.jaxrs.task;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.log.SignalStack;
 
-public class ProcessingWo extends Record {
+public class ActionProcessingWo extends Record {
 
 	private static final long serialVersionUID = -8450939016187545724L;
 

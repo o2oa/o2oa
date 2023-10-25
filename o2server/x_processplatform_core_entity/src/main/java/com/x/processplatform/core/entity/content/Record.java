@@ -174,12 +174,15 @@ public class Record extends SliceJpaObject {
 		this.getProperties().setFromOpinionGroup(workLog.getFromOpinionGroup());
 	}
 
-	@Transient
-	@FieldDescribe("路由名称.")
 	public static final String ROUTENAME_FIELDNAME = "routeName";
+	@FieldDescribe("路由名称.")
+	@Transient
 	private String routeName;
 
 	public String getRouteName() {
+		if ((null == this.routeName) && (null != this.properties)) {
+			this.routeName = this.properties.getRouteName();
+		}
 		return routeName;
 	}
 
@@ -188,12 +191,15 @@ public class Record extends SliceJpaObject {
 		this.routeName = routeName;
 	}
 
+	public static final String OPINION_FIELDNAME = "opinion";
 	@Transient
 	@FieldDescribe("意见.")
-	public static final String OPINION_FIELDNAME = "opinion";
 	private String opinion;
 
 	public String getOpinion() {
+		if ((null != this.properties) && (null == this.opinion)) {
+			this.opinion = this.properties.getOpinion();
+		}
 		return opinion;
 	}
 

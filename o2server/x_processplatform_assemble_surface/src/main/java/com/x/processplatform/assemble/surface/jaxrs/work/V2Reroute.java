@@ -17,7 +17,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
@@ -34,6 +33,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RerouteWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2RerouteWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
 class V2Reroute extends BaseAction {
 
@@ -48,9 +48,8 @@ class V2Reroute extends BaseAction {
 
 		Param param = this.init(effectivePerson, id, jsonElement);
 
-		reroute(param.work.getId(), param.destinationActivity.getId(), param.mergeWork, param.distinguishedNameList,
-				param.work.getJob());
-		processing(param.work.getId(), param.work.getJob(), param.series);
+		reroute(param);
+		processing(param);
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson,
 				param.destinationActivity, param.existTaskIds);
 		RecordBuilder.processing(rec);
@@ -109,24 +108,24 @@ class V2Reroute extends BaseAction {
 
 	}
 
-	private void reroute(String workId, String activityId, boolean mergeWork, List<String> distinguishedNameList,
-			String job) throws Exception {
+	private void reroute(Param param) throws Exception {
 		com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi();
-		req.setActivity(activityId);
-		req.setDistinguishedNameList(distinguishedNameList);
-		req.setMergeWork(mergeWork);
-		ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "v2", workId, "reroute"), req, job)
+		req.setActivity(param.destinationActivity.getId());
+		req.setDistinguishedNameList(param.distinguishedNameList);
+		req.setMergeWork(param.mergeWork);
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("work", "v2", param.work.getId(), "reroute"), req, param.work.getJob())
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWo.class);
 	}
 
-	private void processing(String workId, String job, String series) throws Exception {
+	private void processing(Param param) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_REROUTE);
-		req.setSeries(series);
-		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
+		req.setSeries(param.series);
+		ThisApplication.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", param.work.getId(), "processing"), req, param.work.getJob())
+				.getData(ActionProcessingWo.class);
 	}
 
 	public static class Wi extends V2RerouteWi {

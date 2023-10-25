@@ -39,7 +39,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
@@ -192,7 +192,7 @@ public class V2Add extends BaseAction {
 	}
 
 	private String processingTask(Task task) throws Exception {
-		ProcessingWi req = new ProcessingWi();
+		ActionProcessingWi req = new ActionProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_ADD);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
