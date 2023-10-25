@@ -14,7 +14,7 @@ MWF.xDesktop.requireApp("process.Xform", "Textfield", null, false);
  */
 MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     /** @lends MWF.xApplication.process.Xform.Number# */
-    {
+{
     Implements: [Events],
     Extends: MWF.APPTextfield,
     iconStyle: "numberIcon",
@@ -412,11 +412,11 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
     getValue: function(){
         if (this.moduleValueAG) return this.moduleValueAG;
         var value = this._getBusinessData();
-            if( this.json.emptyValue === "string" ){
-                if( value === "" || typeOf(value)==="null" )value = this._computeValue();
-            }else{
-                if( value === 0 || typeOf(value)==="null" )value = this._computeValue();
-            }
+        if( this.json.emptyValue === "string" ){
+            if( value === "" || typeOf(value)==="null" )value = this._computeValue();
+        }else{
+            if( value === "" || value === 0 || typeOf(value)==="null" )value = this._computeValue();
+        }
         if( ( value === "" || typeOf(value)==="null" ) && this.json.emptyValue === "string"){
             return "";
         }else{
