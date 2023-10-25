@@ -542,6 +542,7 @@ public abstract class StorageObject extends SliceJpaObject {
 						fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				/* webdav关闭会试图去关闭commons.httpClient */
@@ -600,6 +601,7 @@ public abstract class StorageObject extends SliceJpaObject {
 				}
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
 					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				// webdav关闭会试图去关闭commons.httpClient
