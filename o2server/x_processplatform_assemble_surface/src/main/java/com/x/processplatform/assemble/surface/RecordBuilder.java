@@ -49,9 +49,9 @@ public class RecordBuilder {
 //				rec.getProperties().setRouteName(taskCompleted.getRouteName());
 //				rec.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
 //			}
-			emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME, task.getJob(),
-					Task.series_FIELDNAME, series).stream()
-					.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+			List<Task> tasks = emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME, task.getJob(),
+					Task.series_FIELDNAME, series);
+			tasks.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 					.forEach(o -> {
 						Task newTask = o.getValue().get(0);
 						NextManual nextManual = new NextManual();
@@ -61,8 +61,9 @@ public class RecordBuilder {
 						nextManual.setActivityToken(newTask.getActivityToken());
 						nextManual.setActivityType(newTask.getActivityType());
 						o.getValue().stream().forEach(t -> nextManual.getTaskIdentityList().add(t.getIdentity()));
-						rec.getProperties().getNextManualList().add(nextManual);
+						rec.getNextManualList().add(nextManual);
 					});
+			rec.setNextManualTaskIdentityList(tasks.stream().map(Task::getIdentity).collect(Collectors.toList()));
 			return rec;
 		}
 	}
@@ -75,22 +76,25 @@ public class RecordBuilder {
 			rec.setType(recordType);
 			checkIfWorkAlreadyCompleted(business, rec, workLog.getJob());
 			// 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份
-			TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-					workLog.getJob(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-			if (null != existTaskCompleted) {
-				rec.setIdentity(existTaskCompleted.getIdentity());
-				rec.setUnit(existTaskCompleted.getUnit());
-			} else {
-				rec.setIdentity(
-						business.organization().identity().getMajorWithPerson(effectivePerson.getDistinguishedName()));
-				rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
+			if (null != effectivePerson) {
+				TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class,
+						TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName());
+				if (null != existTaskCompleted) {
+					rec.setIdentity(existTaskCompleted.getIdentity());
+					rec.setUnit(existTaskCompleted.getUnit());
+				} else {
+					rec.setIdentity(business.organization().identity()
+							.getMajorWithPerson(effectivePerson.getDistinguishedName()));
+					rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
+				}
+				rec.setPerson(effectivePerson.getDistinguishedName());
 			}
-			rec.setPerson(effectivePerson.getDistinguishedName());
 			fillIdentityAndUnit(business, rec);
 			elapsed(rec);
-			emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME, workLog.getJob(),
-					Task.series_FIELDNAME, series).stream()
-					.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+			List<Task> tasks = emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME,
+					workLog.getJob(), Task.series_FIELDNAME, series);
+			tasks.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 					.forEach(o -> {
 						Task newTask = o.getValue().get(0);
 						NextManual nextManual = new NextManual();
@@ -100,8 +104,9 @@ public class RecordBuilder {
 						nextManual.setActivityToken(newTask.getActivityToken());
 						nextManual.setActivityType(newTask.getActivityType());
 						o.getValue().stream().forEach(t -> nextManual.getTaskIdentityList().add(t.getIdentity()));
-						rec.getProperties().getNextManualList().add(nextManual);
+						rec.getNextManualList().add(nextManual);
 					});
+			rec.setNextManualTaskIdentityList(tasks.stream().map(Task::getIdentity).collect(Collectors.toList()));
 			return rec;
 		}
 	}

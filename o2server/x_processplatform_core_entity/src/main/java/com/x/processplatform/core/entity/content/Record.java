@@ -215,19 +215,6 @@ public class Record extends SliceJpaObject {
 	@FieldDescribe("后续人工环节")
 	private List<NextManual> nextManualList = new ArrayList<>();
 
-//	@Transient
-//	@FieldDescribe("后续人工环节处理人")
-//	private List<String> nextManualTaskIdentityList = new ArrayList<>();
-//
-//	public List<String> getNextManualTaskIdentityList() {
-//		return nextManualTaskIdentityList;
-//	}
-//
-//	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
-//		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
-//		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
-//	}
-
 	public List<NextManual> getNextManualList() {
 		if ((null == nextManualList) && (null != this.properties)) {
 			this.nextManualList = this.properties.getNextManualList();
@@ -238,6 +225,22 @@ public class Record extends SliceJpaObject {
 	public void setNextManualList(List<NextManual> nextManualList) {
 		this.getProperties().setNextManualList(nextManualList);
 		this.nextManualList = nextManualList;
+	}
+
+	@Transient
+	@FieldDescribe("后续人工环节处理人")
+	private List<String> nextManualTaskIdentityList = new ArrayList<>();
+
+	public List<String> getNextManualTaskIdentityList() {
+		if ((null == nextManualTaskIdentityList) && (null != this.properties)) {
+			this.nextManualTaskIdentityList = this.properties.getNextManualTaskIdentityList();
+		}
+		return nextManualTaskIdentityList;
+	}
+
+	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
+		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
 	}
 
 	public RecordProperties getProperties() {

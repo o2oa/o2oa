@@ -30,8 +30,8 @@ public class RecordProperties extends JsonProperties {
 	@FieldDescribe("后续人工环节")
 	private List<NextManual> nextManualList = new ArrayList<>();
 
-//	@FieldDescribe("后续人工环节处理人")
-//	private List<String> nextManualTaskIdentityList = new ArrayList<>();
+	@FieldDescribe("后续人工环节处理人")
+	private List<String> nextManualTaskIdentityList = new ArrayList<>();
 
 	@FieldDescribe("授权给处理人")
 	private String empowerToPerson;
@@ -66,12 +66,17 @@ public class RecordProperties extends JsonProperties {
 	@FieldDescribe("意见组")
 	private String fromOpinionGroup;
 
-//	public List<String> getNextManualTaskIdentityList() {
-//		if (null == this.nextManualTaskIdentityList) {
-//			this.nextManualTaskIdentityList = new ArrayList<>();
-//		}
-//		return this.nextManualTaskIdentityList;
-//	}
+	public List<String> getNextManualTaskIdentityList() {
+		if (null == this.nextManualTaskIdentityList) {
+			this.nextManualTaskIdentityList = new ArrayList<>();
+		}
+		return this.nextManualTaskIdentityList;
+	}
+	
+
+	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
+	}
 
 	public List<NextManual> getNextManualList() {
 		if (null == this.nextManualList) {
@@ -180,9 +185,6 @@ public class RecordProperties extends JsonProperties {
 		this.nextManualList = nextManualList;
 	}
 
-//	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
-//		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
-//	}
 
 	public Date getStartTime() {
 		return startTime;
