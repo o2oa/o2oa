@@ -396,7 +396,9 @@ MWF.xApplication.process.Xform.LP = {
         "parallel": "paralelo",
 
         "addTaskRepeatedTitle": "Recordatorio de asignación repetida",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> ya está en la lista de responsables y no se le puede volver a asignar."
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> ya está en la lista de responsables y no se le puede volver a asignar.",
+
+        "mergeWork": "Fusionar trabajo"
     },
 
     "sendRead": "Enviar lectura pendiente",

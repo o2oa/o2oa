@@ -87,9 +87,6 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.FormDesigner.LP.actionBar});
                 this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
-
-                console.log(this.multiToolsJson)
-
                 this.setToolbars(this.multiToolsJson, this.toolbarNode);
                 this.toolbarWidget.load();
             }.bind(this), null,null,true);
@@ -268,9 +265,6 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
         }
     },
     setToolbars: function(tools, node){
-
-        console.log(tools)
-
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,

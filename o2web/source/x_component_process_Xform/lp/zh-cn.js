@@ -410,8 +410,9 @@ MWF.xApplication.process.Xform.LP = {
 
 
         "addTaskRepeatedTitle": "重复加签提醒",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。",
 
+        "mergeWork": "合并工作"
     },
 
     "sendRead": "发送待阅",

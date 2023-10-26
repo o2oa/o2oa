@@ -4479,7 +4479,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var count = this.businessData.activity.resetCount || 0;
         switch (range) {
             case "unit":
-                this.selectPeopleUnit(dlg, this.businessData.task.unit, count, null,  exclude);
+                this.selectPeopleUnit(dlg, this.businessData.task.unitDn, count, null,  exclude);
                 // this.personActions.getDepartmentByIdentity(function(json){
                 //     this.selectPeopleDepartment(dlg, json.data, count);
                 // }.bind(this), null, this.businessData.task.identity);
@@ -4487,7 +4487,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             case "topUnit":
                 MWF.require("MWF.xScript.Actions.UnitActions", function () {
                     orgActions = new MWF.xScript.Actions.UnitActions();
-                    var data = { "unitList": [this.businessData.task.unit] };
+                    var data = { "unitList": [this.businessData.task.unitDn] };
                     orgActions.listUnitSupNested(data, function (json) {
                         v = json.data[0];
                         this.selectPeopleUnit(dlg, v, count, null, exclude);
@@ -4869,8 +4869,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (!this.checkUploadAttachment()) return false;
 
         MWF.require("MWF.xDesktop.Dialog", function () {
-            var width = 560;
-            var height = 260;
+            var width = 660;
+            var height = 350;
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
@@ -4902,6 +4902,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostShow": function () {
+                    o2.Actions.load("x_processplatform_assemble_surface").JobAction.findWorkWorkCompleted( _self.businessData.work.job, function(json){
+                        if( json.data.workList && json.data.workList.length > 1 ){
+                            var checkbox = this.node.getElement(".rerouteWork_mergeWork");
+                            if(checkbox)checkbox.getParent().getParent().show();
+                        }
+                    }.bind(this));
+
                     var select = $("rerouteWork_selectActivity");
                     var createActivityOption = function(list, name){
                         list.each(function (activity) {
@@ -4966,15 +4973,33 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     doRerouteWork: function (dlg) {
         var opinion = $("rerouteWork_opinion").get("value");
         var select = $("rerouteWork_selectActivity");
+
+        debugger;
+        var checkbox = dlg.node.getElement(".rerouteWork_mergeWork");
+        var mergeWork = !!(checkbox && checkbox.checked);
+
         var activity = select.options[select.selectedIndex].get("value");
         var activityName = select.options[select.selectedIndex].get("text");
         var tmp = activity.split("#");
         activity = tmp[0];
         var type = tmp[1];
 
+
         var nameArr = [];
         var names = dlg.identityList || [];
         names.each(function (n) { nameArr.push(n); });
+
+        var nameCNs = names.map(function(id){
+            return o2.name.cn(id);
+        });
+
+        var routeName = MWF.xApplication.process.Xform.LP.rerouteTo + activityName;
+        if( nameArr.length ){
+            routeName += ":" + nameCNs.join(", ");
+        }
+
+        if( !opinion )opinion = routeName;
+
         //var nameText = nameArr.join(", ");
         // if (!opinion) {
         //     opinion = MWF.xApplication.process.Xform.LP.resetTo + ": " + nameText.join(", ");
@@ -5002,15 +5027,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (xhr) errorText = xhr.responseText;
                 this.app.notice("request json error: " + errorText, "error", dlg.node);
                 if (this.mask) { this.mask.hide(); this.mask = null; }
-            }.bind(this));
+            }.bind(this), mergeWork, routeName);
         }.bind(this));
     },
-    rerouteWorkToActivity: function (activity, type, opinion, nameArr, success, failure) {
+    rerouteWorkToActivity: function (activity, type, opinion, nameArr, success, failure, mergeWork, routeName) {
         var body = {
             "activity": activity,
             "activityType": type,
-            "mergeWork": false,
-            "manualForceTaskIdentityList": nameArr
+            "mergeWork": mergeWork || false,
+            "distinguishedNameList": nameArr,
+            "routeName": routeName,
+            "opinion": opinion
         };
         if (this.businessData.task) {
             this.saveFormData(function (json) {
@@ -6209,7 +6236,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var lp = o2.xApplication.process.Xform.LP.form;
 
-        var leftText = lp[mode] + (!!before ? lp.addTaskBefore : lp.addTaskAfter);
+        var leftText = (!!before ? lp.addTaskBefore : lp.addTaskAfter)+lp[mode];
 
         var nameArr = names.map(function(id){
             return o2.name.cn(id);

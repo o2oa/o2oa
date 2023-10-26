@@ -399,7 +399,9 @@ MWF.xApplication.process.Xform.LP = {
         "parallel": "parallel",
 
         "addTaskRepeatedTitle": "Repeat Reminder",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。"
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。",
+
+        "mergeWork": "Merge work"
     },
     "sendRead": "Send Read",
     "sendReadOk": "Sent Read:",
