@@ -56,7 +56,6 @@ import com.x.processplatform.core.entity.log.SignalStack;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProcessingWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProcessingWo;
-import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWo;
@@ -108,13 +107,10 @@ class ActionProcessing extends BaseAction {
 			}
 		}, String.format("%s:processing:%s", ActionProcessing.class.getName(), id)).start();
 
-		Optional<Exception> opt = startSignalThreadIfAsyncSupported(effectivePerson, param, id, responeQueue);
+		startSignalThreadIfAsyncSupported(effectivePerson, param, id, responeQueue);
 
 		Wo wo = responeQueue.poll(300, TimeUnit.SECONDS);
 
-		if (opt.isPresent()) {
-			throw opt.get();
-		}
 		result.setData(wo);
 		return result;
 	}
@@ -158,30 +154,58 @@ class ActionProcessing extends BaseAction {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
 			param.workLog = workLog;
+			Pair<Manual, Route> pair = initGetManualAndRoute(business, task);
+			param.manual = pair.first();
+			param.route = pair.second();
+			if (null != param.route) {
+				param.asyncSupported = BooleanUtils.isTrue(param.route.getAsyncSupported());
+				if (StringUtils.equals(param.route.getType(), Route.TYPE_APPENDTASK)
+						&& StringUtils.equals(param.manual.getId(), param.route.getActivity())) {
+					param.type = TYPE_APPENDTASK;
+				}
+			}
 			updateTask(business, param);
 		}
+		return param;
+	}
+
+	private Pair<Manual, Route> initGetManualAndRoute(Business business, Task task) throws Exception {
+		Manual manual = business.manual().pick(task.getActivity());
+		if (null == manual) {
+			throw new ExceptionEntityNotExist(task.getActivity(), Manual.class);
+		}
+		Route route = null;
+		List<Route> routes = business.route().pick(manual.getRouteList());
+		if (routes.size() == 1) {
+			route = routes.get(0);
+		} else {
+			for (Route o : routes) {
+				if (StringUtils.equals(o.getName(), task.getRouteName())) {
+					route = o;
+					break;
+				}
+			}
+		}
+		return Pair.of(manual, route);
 	}
 
 	private class Param {
 		private JsonElement option;
 		private String action;
+		private boolean asyncSupported = false;
 		private String routeName;
 		private String opinion;
 		private String mediaOpinion;
 		private Work work;
 		private Task task;
 		private WorkLog workLog;
-		private String taskCompletedId;
 		private String type = TYPE_TASK;
-		private Boolean asyncSupported = false;
 		private List<TaskCompleted> existsTaskCompleteds = new ArrayList<>();
-		private List<String> newTaskIds = new ArrayList<>();
 		private List<String> distinguishedNameList = new ArrayList<>();
 		private List<String> ignoreEmpowerIdentityList = new ArrayList<>();
-		private Exception exception = null;
-		private Record rec;
 		private String series = StringTools.uniqueToken();
 		private Route route;
+		private Manual manual;
 	}
 
 	/**
@@ -201,7 +225,6 @@ class ActionProcessing extends BaseAction {
 
 	private void startSignalThreadIfAsyncSupported(EffectivePerson effectivePerson, Param param, String id,
 			LinkedBlockingQueue<Wo> responeQueue) {
-		Optional<Exception> opt = Optional.empty();
 		if (BooleanUtils.isNotFalse(param.asyncSupported)) {
 			new Thread(() -> {
 				RespProcessingSignal resp = null;
@@ -231,35 +254,6 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-//	private void init(EffectivePerson effectivePerson, Business business, String id, JsonElement jsonElement)
-//			throws Exception {
-//		EntityManagerContainer emc = business.entityManagerContainer();
-//		this.effectivePerson = effectivePerson;
-//		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
-//		this.task = emc.find(id, Task.class);
-//		if (null == this.task) {
-//			throw new ExceptionEntityNotExist(id, Task.class);
-//		}
-//		// 获取当前环节已经完成的待办
-//		this.taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-//				task.getActivityToken());
-//		this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
-//				WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
-//
-//		if (null == workLog) {
-//			throw new ExceptionEntityNotExist(WorkLog.class);
-//		}
-//		Work work = emc.find(this.task.getWork(), Work.class);
-//		if (null == work) {
-//			throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
-//		}
-//		Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
-//				.enableAllowProcessing().build();
-//		if (BooleanUtils.isNotTrue(control.getAllowManage()) && BooleanUtils.isNotTrue(control.getAllowProcessing())) {
-//			throw new ExceptionAccessDenied(effectivePerson, work);
-//		}
-//	}
-
 	private void updateTask(Business business, Param param) throws Exception {
 		business.entityManagerContainer().beginTransaction(Task.class);
 		// 如果有输入新的路由决策覆盖原有决策
@@ -279,49 +273,12 @@ class ActionProcessing extends BaseAction {
 				param.task.setOpinion(param.task.getRouteName());
 			}
 		}
-		Manual manual = business.manual().pick(param.task.getActivity());
-		Route route = null;
-		if (null != manual) {
-			for (Route o : business.route().pick(manual.getRouteList())) {
-				if (StringUtils.equals(o.getName(), param.task.getRouteName())) {
-					route = o;
-					break;
-				}
-			}
-			if (null != route) {
-				param.route = route;
-				param.asyncSupported = BooleanUtils.isNotFalse(this.route.getAsyncSupported());
-				if (StringUtils.equals(this.route.getType(), Route.TYPE_APPENDTASK)
-						&& StringUtils.equals(manual.getId(), this.route.getActivity())) {
-					param.type = TYPE_APPENDTASK;
-				}
-				// 更新routeAlias
-				if (!StringUtils.equals(route.getAlias(), param.task.getRouteAlias())) {
-					param.task.setRouteAlias(this.route.getAlias());
-				}
-			}
+		// 更新routeAlias
+		if ((null != param.route) && (!StringUtils.equals(param.route.getAlias(), param.task.getRouteAlias()))) {
+			param.task.setRouteAlias(param.route.getAlias());
 		}
 		business.entityManagerContainer().commit();
 	}
-
-//	private void seeManualRoute(Business business) throws Exception {
-//		Manual manual = business.manual().pick(this.task.getActivity());
-//		if (null != manual) {
-//			for (Route o : business.route().pick(manual.getRouteList())) {
-//				if (StringUtils.equals(o.getName(), this.task.getRouteName())) {
-//					this.route = o;
-//					break;
-//				}
-//			}
-//			if (null != this.route) {
-//				this.asyncSupported = BooleanUtils.isNotFalse(this.route.getAsyncSupported());
-//				if (StringUtils.equals(this.route.getType(), Route.TYPE_APPENDTASK)
-//						&& StringUtils.equals(manual.getId(), this.route.getActivity())) {
-//					this.type = TYPE_APPENDTASK;
-//				}
-//			}
-//		}
-//	}
 
 	private Record processingAppendTask(Param param) throws Exception {
 		this.processingAppendTaskAppend(param);
@@ -331,6 +288,8 @@ class ActionProcessing extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
 					Task.series_FIELDNAME, param.series);
+			taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
+					param.task.getActivityToken());
 		}
 		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_APPENDTASK, param.workLog, param.task, taskCompletedId,
 				newTaskIds);
@@ -421,8 +380,7 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private void processingUpdateTaskCompleted(Record rec, String taskCompletedId, String job) throws Exception {
-		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,
-				rec.getProperties().getNextManualTaskIdentityList(), job);
+		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, job);
 	}
 
 	private void processingUpdateTask(List<String> newTaskIds, List<TaskCompleted> taskCompleteds, Task task)
@@ -466,28 +424,23 @@ class ActionProcessing extends BaseAction {
 	 * 
 	 * @throws Exception
 	 */
-	private Record processingGoBack(Param param, OptionGoBack option) throws Exception {
-		WorkLogTree workLogTree = null;
-		V2GoBackWi req = new V2GoBackWi();
-		Manual manual = null;
-		Work work = null;
+	private Record processingGoBack(Param param, OptionGoBack optionGoBack) throws Exception {
 		Triple<WorkLog, String, List<String>> triple = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			manual = (Manual) business.getActivity(param.task.getActivity(), ActivityType.manual);
-			if (null == manual) {
+			if (null == param.manual) {
 				throw new ExceptionEntityNotExist(param.task.getActivity(), Manual.class);
 			}
-			work = emc.find(param.task.getWork(), Work.class);
-			if (null == work) {
+			if (null == param.work) {
 				throw new ExceptionEntityNotExist(param.task.getWork(), Work.class);
 			}
-			workLogTree = workLogTree(business, param.task.getJob());
+			WorkLogTree workLogTree = workLogTree(business, param.task.getJob());
 			Node node = workLogTree.find(param.workLog);
 			Nodes nodes = workLogTree.up(node);
-			List<WorkLog> workLogs = goBackTruncateWorkLog(nodes, work.getGoBackActivityToken());
-			triple = goBackParam(business, param, manual, option, workLogs);
+			List<WorkLog> workLogs = goBackTruncateWorkLog(nodes, param.work.getGoBackActivityToken());
+			triple = goBackParam(business, param, optionGoBack, workLogs);
 		}
+		V2GoBackWi req = new V2GoBackWi();
 		req.setActivity(triple.first().getFromActivity());
 		req.setActivityToken(triple.first().getFromActivityToken());
 		req.setWay(triple.second());
@@ -565,24 +518,27 @@ class ActionProcessing extends BaseAction {
 		req.setType(ProcessingAttributes.TYPE_GOBACK);
 		req.setSeries(series);
 		req.setForceJoinAtArrive(true);
-		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing"), req, job).getData(WoId.class);
+		com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo resp = ThisApplication
+				.context().applications()
+				.putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", workId, STRING_PROCESSING), req, job)
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo.class);
 		if (StringUtils.isBlank(resp.getId())) {
 			throw new ExceptionGoBackCallServiceProcessing(workId);
 		}
 	}
 
-	private Triple<WorkLog, String, List<String>> goBackParam(Business business, Param param, Manual manual,
-			OptionGoBack option, List<WorkLog> workLogs) throws Exception {
+	private Triple<WorkLog, String, List<String>> goBackParam(Business business, Param param, OptionGoBack option,
+			List<WorkLog> workLogs) throws Exception {
 		Pair<WorkLog, String> pair = null;
-		if ((null != manual.getGoBackConfig())
-				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
-			pair = this.goBackParamPrev(manual, option, workLogs);
-		} else if ((null != manual.getGoBackConfig())
-				&& StringUtils.equalsIgnoreCase(manual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
-			pair = this.goBackParamDefine(manual, option, workLogs);
+		if ((null != param.manual.getGoBackConfig())
+				&& StringUtils.equalsIgnoreCase(param.manual.getGoBackConfig().getType(), GoBackConfig.TYPE_PREV)) {
+			pair = this.goBackParamPrev(param.manual, option, workLogs);
+		} else if ((null != param.manual.getGoBackConfig())
+				&& StringUtils.equalsIgnoreCase(param.manual.getGoBackConfig().getType(), GoBackConfig.TYPE_DEFINE)) {
+			pair = this.goBackParamDefine(param.manual, option, workLogs);
 		} else {
-			pair = this.goBackParamAny(manual, option, workLogs);
+			pair = this.goBackParamAny(param.manual, option, workLogs);
 		}
 		if (null == pair.first()) {
 			throw new ExceptionGoBackWorkLog(option.getActivity());

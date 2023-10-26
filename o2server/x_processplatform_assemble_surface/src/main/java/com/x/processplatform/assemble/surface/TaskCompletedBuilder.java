@@ -24,13 +24,13 @@ public class TaskCompletedBuilder {
 	public static void updateNextTaskIdentity(String taskCompletedId, List<String> identities, String job)
 			throws Exception {
 		// 记录下一处理人信息
-		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
-		req.getTaskCompletedList().add(taskCompletedId);
-		req.setNextTaskIdentityList(identities);
-		ThisApplication.context().applications()
-				.putQuery(false, x_processplatform_service_processing.class,
-						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, job)
-				.getData(WrapBoolean.class);
+//		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
+//		req.getTaskCompletedList().add(taskCompletedId);
+//		req.setNextTaskIdentityList(identities);
+//		ThisApplication.context().applications()
+//				.putQuery(false, x_processplatform_service_processing.class,
+//						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, job)
+//				.getData(WrapBoolean.class);
 	}
 
 }

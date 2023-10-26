@@ -17,9 +17,9 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "待办选择路由名称.")
 	private String routeName;
 
-	@FieldDescribe("决策.")
-	@Schema(description = "决策.")
-	private String decision;
+//	@FieldDescribe("决策.")
+//	@Schema(description = "决策.")
+//	private String decision;
 
 	@FieldDescribe("待办办理意见.")
 	@Schema(description = "待办办理意见.")
@@ -49,13 +49,13 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "action的参数对象.")
 	private JsonElement option;
 
-	public String getDecision() {
-		return decision;
-	}
-
-	public void setDecision(String decision) {
-		this.decision = decision;
-	}
+//	public String getDecision() {
+//		return decision;
+//	}
+//
+//	public void setDecision(String decision) {
+//		this.decision = decision;
+//	}
 
 	public String getAction() {
 		return action;

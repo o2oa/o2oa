@@ -48,6 +48,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 
+@Deprecated(since = "产生的Record是有问题的.")
 public class PassExpired extends AbstractJob {
 
 	private static Logger logger = LoggerFactory.getLogger(PassExpired.class);
@@ -181,7 +182,7 @@ public class PassExpired extends AbstractJob {
 						record.getProperties().getNextManualList().add(nextManual);
 					});
 			/* 去重 */
-			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+			//record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
 			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
 			if (null != taskCompleted) {
 				/* 处理完成后在重新写入待办信息 */
@@ -204,7 +205,7 @@ public class PassExpired extends AbstractJob {
 		/* 记录下一处理人信息 */
 		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
 		req.getTaskCompletedList().add(taskCompletedId);
-		req.setNextTaskIdentityList(record.getProperties().getNextManualTaskIdentityList());
+		//req.setNextTaskIdentityList(record.getProperties().getNextManualTaskIdentityList());
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, record.getJob())
@@ -259,11 +260,11 @@ public class PassExpired extends AbstractJob {
 		o.setFromActivityName(task.getActivityName());
 		o.setFromActivityToken(task.getActivityToken());
 		o.setFromActivityType(task.getActivityType());
-		o.setArrivedActivity(task.getActivity());
-		o.setArrivedActivityAlias(task.getActivityAlias());
-		o.setArrivedActivityName(task.getActivityName());
-		o.setArrivedActivityToken(task.getActivityToken());
-		o.setArrivedActivityType(task.getActivityType());
+//		o.setArrivedActivity(task.getActivity());
+//		o.setArrivedActivityAlias(task.getActivityAlias());
+//		o.setArrivedActivityName(task.getActivityName());
+//		o.setArrivedActivityToken(task.getActivityToken());
+//		o.setArrivedActivityType(task.getActivityType());
 		o.getProperties().setEmpowerToPerson(task.getPerson());
 		o.getProperties().setEmpowerToIdentity(task.getIdentity());
 		o.getProperties().setEmpowerToUnit(task.getUnit());
@@ -278,7 +279,7 @@ public class PassExpired extends AbstractJob {
 		nextManual.setActivityToken(task.getActivityToken());
 		nextManual.setActivityType(task.getActivityType());
 		o.getProperties().getNextManualList().add(nextManual);
-		o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
+		//o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
 		return o;
 	}
 

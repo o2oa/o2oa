@@ -1,13 +1,10 @@
 package com.x.processplatform.assemble.surface;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
-import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -64,10 +61,10 @@ public class RecordBuilder {
 			Business business = new Business(emc);
 			Record rec = new Record(workLog);
 			rec.setType(recordType);
-			rec.setArrivedActivity(destinationActivity.getId());
-			rec.setArrivedActivityAlias(destinationActivity.getAlias());
-			rec.setArrivedActivityName(destinationActivity.getName());
-			rec.setArrivedActivityType(destinationActivity.getActivityType());
+//			rec.setArrivedActivity(destinationActivity.getId());
+//			rec.setArrivedActivityAlias(destinationActivity.getAlias());
+//			rec.setArrivedActivityName(destinationActivity.getName());
+//			rec.setArrivedActivityType(destinationActivity.getActivityType());
 			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 			checkIfWorkAlreadyCompleted(business, rec, workLog.getJob());
 			// 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份
@@ -124,7 +121,7 @@ public class RecordBuilder {
 
 	private static void setNextManualListAndNextManualTaskIdentityList(Business business, List<String> newlyTaskIds,
 			Record rec) throws Exception {
-		Set<String> identities = new ListOrderedSet<>();
+	//	Set<String> identities = new ListOrderedSet<>();
 		business.entityManagerContainer().fetch(newlyTaskIds, Task.class, TASK_FETCH_FIELDS).stream()
 				.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 				.forEach(o -> {
@@ -136,12 +133,12 @@ public class RecordBuilder {
 					nextManual.setActivityToken(task.getActivityToken());
 					nextManual.setActivityType(task.getActivityType());
 					o.getValue().stream().forEach(t -> {
-						identities.add(t.getIdentity());
+						//identities.add(t.getIdentity());
 						nextManual.getTaskIdentityList().add(t.getIdentity());
 					});
 					rec.getProperties().getNextManualList().add(nextManual);
 				});
-		rec.getProperties().setNextManualTaskIdentityList(new ArrayList<>(identities));
+		//rec.getProperties().setNextManualTaskIdentityList(new ArrayList<>(identities));
 	}
 
 	public static Record ofTaskEmpower(Task task, String empowerFromPerson, String empowerFromUnit) {
@@ -157,11 +154,11 @@ public class RecordBuilder {
 		o.setFromActivityName(task.getActivityName());
 		o.setFromActivityToken(task.getActivityToken());
 		o.setFromActivityType(task.getActivityType());
-		o.setArrivedActivity(task.getActivity());
-		o.setArrivedActivityAlias(task.getActivityAlias());
-		o.setArrivedActivityName(task.getActivityName());
-		o.setArrivedActivityToken(task.getActivityToken());
-		o.setArrivedActivityType(task.getActivityType());
+//		o.setArrivedActivity(task.getActivity());
+//		o.setArrivedActivityAlias(task.getActivityAlias());
+//		o.setArrivedActivityName(task.getActivityName());
+//		o.setArrivedActivityToken(task.getActivityToken());
+//		o.setArrivedActivityType(task.getActivityType());
 		o.getProperties().setEmpowerToPerson(task.getPerson());
 		o.getProperties().setEmpowerToIdentity(task.getIdentity());
 		o.getProperties().setEmpowerToUnit(task.getUnit());
@@ -176,7 +173,7 @@ public class RecordBuilder {
 		nextManual.setActivityToken(task.getActivityToken());
 		nextManual.setActivityType(task.getActivityType());
 		o.getProperties().getNextManualList().add(nextManual);
-		o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
+	//	o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
 		return o;
 	}
 

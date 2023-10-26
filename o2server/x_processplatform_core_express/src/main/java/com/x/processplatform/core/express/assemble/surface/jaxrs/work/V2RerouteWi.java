@@ -9,6 +9,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class V2RerouteWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -6729193803512068864L;
@@ -24,6 +26,28 @@ public class V2RerouteWi extends GsonPropertyObject {
 
 	@FieldDescribe("人工活动强制处理人")
 	private List<String> distinguishedNameList = new ArrayList<>();
+
+	@FieldDescribe("待办选择路由名称.")
+	private String routeName;
+
+	@FieldDescribe("待办办理意见.")
+	private String opinion;
+
+	public String getRouteName() {
+		return routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
 
 	public Boolean getMergeWork() {
 		return BooleanUtils.isTrue(mergeWork);
@@ -59,7 +83,5 @@ public class V2RerouteWi extends GsonPropertyObject {
 	public void setActivityType(ActivityType activityType) {
 		this.activityType = activityType;
 	}
-	
-	
 
 }

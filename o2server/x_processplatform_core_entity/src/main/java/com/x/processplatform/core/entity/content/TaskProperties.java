@@ -4,22 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.OrderColumn;
-
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.JsonProperties;
-import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TaskProperties extends JsonProperties {
 

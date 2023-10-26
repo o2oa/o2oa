@@ -77,8 +77,8 @@ public class V2Reset extends BaseAction {
 		rec.setRouteName(param.routeName);
 		RecordBuilder.processing(rec);
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
-			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,
-					rec.getProperties().getNextManualTaskIdentityList(), param.task.getJob());
+			// @todo
+			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, param.task.getJob());
 		}
 		if (!taskCompleteds.isEmpty()) {
 			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, param.task);

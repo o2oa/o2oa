@@ -52,6 +52,8 @@ class V2Reroute extends BaseAction {
 		processing(param);
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson,
 				param.destinationActivity, param.existTaskIds);
+		rec.setRouteName(param.routeName);
+		rec.setOpinion(param.opinion);
 		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
@@ -61,6 +63,8 @@ class V2Reroute extends BaseAction {
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.routeName = wi.getRouteName();
+		param.opinion = wi.getOpinion();
 		param.mergeWork = BooleanUtils.isTrue(wi.getMergeWork());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -97,7 +101,8 @@ class V2Reroute extends BaseAction {
 	}
 
 	private class Param {
-
+		private String routeName;
+		private String opinion;
 		private Work work;
 		private Boolean mergeWork;
 		private WorkLog workLog;
@@ -105,7 +110,6 @@ class V2Reroute extends BaseAction {
 		private final String series = StringTools.uniqueToken();
 		private List<String> distinguishedNameList = new ArrayList<>();
 		private List<String> existTaskIds = new ArrayList<>();
-
 	}
 
 	private void reroute(Param param) throws Exception {
