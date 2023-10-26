@@ -133,7 +133,7 @@ public class Record extends SliceJpaObject {
 			this.routeName = this.properties.getRouteName();
 			this.opinion = this.properties.getOpinion();
 			this.nextManualList = this.properties.getNextManualList();
-//			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
+			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
 		}
 	}
 
@@ -227,6 +227,7 @@ public class Record extends SliceJpaObject {
 		this.nextManualList = nextManualList;
 	}
 
+	public static final String NEXTMANUALTASKIDENTITYLIST_FIELDNAME = "nextManualTaskIdentityList";
 	@Transient
 	@FieldDescribe("后续人工环节处理人")
 	private List<String> nextManualTaskIdentityList = new ArrayList<>();

@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
@@ -49,20 +51,26 @@ public class RecordBuilder {
 //				rec.getProperties().setRouteName(taskCompleted.getRouteName());
 //				rec.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
 //			}
-			List<Task> tasks = emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME, task.getJob(),
-					Task.series_FIELDNAME, series);
-			tasks.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
-					.forEach(o -> {
-						Task newTask = o.getValue().get(0);
-						NextManual nextManual = new NextManual();
-						nextManual.setActivity(newTask.getActivity());
-						nextManual.setActivityAlias(newTask.getActivityAlias());
-						nextManual.setActivityName(newTask.getActivityName());
-						nextManual.setActivityToken(newTask.getActivityToken());
-						nextManual.setActivityType(newTask.getActivityType());
-						o.getValue().stream().forEach(t -> nextManual.getTaskIdentityList().add(t.getIdentity()));
-						rec.getNextManualList().add(nextManual);
-					});
+			List<Task> tasks = emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME,
+					workLog.getJob(), Task.series_FIELDNAME, series);
+			List<NextManual> nextManuals = tasks.stream()
+					.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+					.map(en -> {
+						Optional<Task> opt = en.getValue().stream().findFirst();
+						if (opt.isPresent()) {
+							NextManual nextManual = new NextManual();
+							nextManual.setActivity(opt.get().getActivity());
+							nextManual.setActivityAlias(opt.get().getActivityAlias());
+							nextManual.setActivityName(opt.get().getActivityName());
+							nextManual.setActivityToken(opt.get().getActivityToken());
+							nextManual.setActivityType(opt.get().getActivityType());
+							nextManual.setTaskIdentityList(
+									en.getValue().stream().map(Task::getIdentity).collect(Collectors.toList()));
+							return nextManual;
+						}
+						return null;
+					}).filter(Objects::nonNull).collect(Collectors.toList());
+			rec.setNextManualList(nextManuals);
 			rec.setNextManualTaskIdentityList(tasks.stream().map(Task::getIdentity).collect(Collectors.toList()));
 			return rec;
 		}
@@ -94,18 +102,24 @@ public class RecordBuilder {
 			elapsed(rec);
 			List<Task> tasks = emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME,
 					workLog.getJob(), Task.series_FIELDNAME, series);
-			tasks.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
-					.forEach(o -> {
-						Task newTask = o.getValue().get(0);
-						NextManual nextManual = new NextManual();
-						nextManual.setActivity(newTask.getActivity());
-						nextManual.setActivityAlias(newTask.getActivityAlias());
-						nextManual.setActivityName(newTask.getActivityName());
-						nextManual.setActivityToken(newTask.getActivityToken());
-						nextManual.setActivityType(newTask.getActivityType());
-						o.getValue().stream().forEach(t -> nextManual.getTaskIdentityList().add(t.getIdentity()));
-						rec.getNextManualList().add(nextManual);
-					});
+			List<NextManual> nextManuals = tasks.stream()
+					.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+					.map(en -> {
+						Optional<Task> opt = en.getValue().stream().findFirst();
+						if (opt.isPresent()) {
+							NextManual nextManual = new NextManual();
+							nextManual.setActivity(opt.get().getActivity());
+							nextManual.setActivityAlias(opt.get().getActivityAlias());
+							nextManual.setActivityName(opt.get().getActivityName());
+							nextManual.setActivityToken(opt.get().getActivityToken());
+							nextManual.setActivityType(opt.get().getActivityType());
+							nextManual.setTaskIdentityList(
+									en.getValue().stream().map(Task::getIdentity).collect(Collectors.toList()));
+							return nextManual;
+						}
+						return null;
+					}).filter(Objects::nonNull).collect(Collectors.toList());
+			rec.setNextManualList(nextManuals);
 			rec.setNextManualTaskIdentityList(tasks.stream().map(Task::getIdentity).collect(Collectors.toList()));
 			return rec;
 		}
