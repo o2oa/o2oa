@@ -23,10 +23,10 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
+import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
@@ -50,11 +50,11 @@ class V2Reroute extends BaseAction {
 
 		reroute(param);
 		processing(param);
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson,
-				param.destinationActivity, param.existTaskIds);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson, param.series);
 		rec.setRouteName(param.routeName);
 		rec.setOpinion(param.opinion);
 		RecordBuilder.processing(rec);
+		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
@@ -93,7 +93,6 @@ class V2Reroute extends BaseAction {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
 			param.workLog = workLog;
-			param.existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
 			param.distinguishedNameList = business.organization().distinguishedName()
 					.list(wi.getDistinguishedNameList());
 		}
@@ -109,7 +108,6 @@ class V2Reroute extends BaseAction {
 		private Activity destinationActivity;
 		private final String series = StringTools.uniqueToken();
 		private List<String> distinguishedNameList = new ArrayList<>();
-		private List<String> existTaskIds = new ArrayList<>();
 	}
 
 	private void reroute(Param param) throws Exception {

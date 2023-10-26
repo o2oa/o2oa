@@ -34,7 +34,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
-import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -144,10 +143,6 @@ class ActionProcessing extends BaseAction {
 					&& BooleanUtils.isNotTrue(control.getAllowProcessing())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			// 获取当前环节已经完成的待办
-			List<TaskCompleted> existsTaskCompleteds = emc.listEqual(TaskCompleted.class,
-					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
-			param.existsTaskCompleteds = existsTaskCompleteds;
 			WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
 					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
@@ -200,7 +195,6 @@ class ActionProcessing extends BaseAction {
 		private Task task;
 		private WorkLog workLog;
 		private String type = TYPE_TASK;
-		private List<TaskCompleted> existsTaskCompleteds = new ArrayList<>();
 		private List<String> distinguishedNameList = new ArrayList<>();
 		private List<String> ignoreEmpowerIdentityList = new ArrayList<>();
 		private String series = StringTools.uniqueToken();
@@ -282,23 +276,15 @@ class ActionProcessing extends BaseAction {
 
 	private Record processingAppendTask(Param param) throws Exception {
 		this.processingAppendTaskAppend(param);
-		String taskCompletedId = this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_APPENDTASK);
+		this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_APPENDTASK);
 		this.processingProcessingWork(param, ProcessingAttributes.TYPE_APPENDTASK);
-		List<String> newTaskIds = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
-					Task.series_FIELDNAME, param.series);
-			taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-					param.task.getActivityToken());
-		}
-		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_APPENDTASK, param.workLog, param.task, taskCompletedId,
-				newTaskIds);
+		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_APPENDTASK, param.workLog, param.task, param.series);
 		// 加签也记录流程意见和路由决策
 		rec.setOpinion(param.task.getOpinion());
 		rec.setRouteName(param.task.getRouteName());
 		rec.setId(RecordBuilder.processing(rec));
-		this.processingUpdateTaskCompleted(rec, taskCompletedId, param.task.getId());
-		this.processingUpdateTask(newTaskIds, param.existsTaskCompleteds, param.task);
+		// this.processingUpdateTaskCompleted(rec, taskCompletedId, param.task.getId());
+		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		return rec;
 	}
 
@@ -313,13 +299,10 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private Record processingTask(Param param) throws Exception {
-		String taskCompletedId = this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_TASK);
+		this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_TASK);
 		this.processingProcessingWork(param, ProcessingAttributes.TYPE_TASK);
 		boolean flag = true;
-		List<String> newTaskIds = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
-					Task.series_FIELDNAME, param.series);
 			// 流程流转到取消环节，此时工作已被删除.flag =true 代表存在,false 已经被删除
 			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, param.task.getJob()) == 0)
 					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, param.task.getJob()) == 0)) {
@@ -328,17 +311,16 @@ class ActionProcessing extends BaseAction {
 		}
 		Record rec = null;
 		if (flag) {
-			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, taskCompletedId,
-					newTaskIds);
+			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
 			// 加签也记录流程意见和路由决策
 			rec.setRouteName(param.task.getRouteName());
 			rec.setOpinion(param.task.getOpinion());
 			rec.setId(RecordBuilder.processing(rec));
-			this.processingUpdateTaskCompleted(rec, taskCompletedId, param.task.getJob());
-			this.processingUpdateTask(newTaskIds, param.existsTaskCompleteds, param.task);
+			// this.processingUpdateTaskCompleted(rec, taskCompletedId,
+			// param.task.getJob());
+			TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		} else {
-			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, taskCompletedId,
-					newTaskIds);
+			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
 			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
 			rec.setRouteName(param.task.getRouteName());
 			rec.setOpinion(param.task.getOpinion());
@@ -379,13 +361,13 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private void processingUpdateTaskCompleted(Record rec, String taskCompletedId, String job) throws Exception {
-		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, job);
-	}
+//	private void processingUpdateTaskCompleted(Record rec, String taskCompletedId, String job) throws Exception {
+//		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, job);
+//	}
 
-	private void processingUpdateTask(List<String> newTaskIds, List<TaskCompleted> taskCompleteds, Task task)
-			throws Exception {
-		TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, task);
+//	private void processingUpdateTask(List<String> newTaskIds, List<TaskCompleted> taskCompleteds, Task task)
+//			throws Exception {
+//		TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, task);
 
 //		List<Task> empowerTasks = new ArrayList<>();
 //		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -417,7 +399,7 @@ class ActionProcessing extends BaseAction {
 //				}
 //			});
 //		}
-	}
+//	}
 
 	/**
 	 * 处理退回操作
@@ -445,7 +427,7 @@ class ActionProcessing extends BaseAction {
 		req.setActivityToken(triple.first().getFromActivityToken());
 		req.setWay(triple.second());
 		req.setDistinguishedNameList(triple.third());
-		String taskCompletedId = this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_GOBACK);
+		this.processingProcessingTask(param, TaskCompleted.PROCESSINGTYPE_GOBACK);
 		V2GoBackWo resp = ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", "v2", param.work.getId(), "goback"), req, param.work.getJob())
@@ -454,11 +436,8 @@ class ActionProcessing extends BaseAction {
 			throw new ExceptionGoBack(req.getActivity(), req.getActivity());
 		}
 		this.processingWorkGoBack(param.work.getId(), param.series, param.work.getJob());
-		List<String> newTaskIds = new ArrayList<>();
 		boolean flag = true;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
-					Task.series_FIELDNAME, param.series);
 			// 流程流转到取消环节，此时工作已被删除.flag =true 代表存在,false 已经被删除
 			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, param.work.getJob()) == 0)
 					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, param.work.getJob()) == 0)) {
@@ -467,17 +446,16 @@ class ActionProcessing extends BaseAction {
 		}
 		Record rec = null;
 		if (flag) {
-			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, taskCompletedId,
-					newTaskIds);
+			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
 			// 加签也记录流程意见和路由选择
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());
 			rec.setId(RecordBuilder.processing(rec));
-			this.processingUpdateTaskCompleted(rec, taskCompletedId, param.task.getJob());
-			this.processingUpdateTask(newTaskIds, param.existsTaskCompleteds, param.task);
+			// this.processingUpdateTaskCompleted(rec, taskCompletedId,
+			// param.task.getJob());
+			TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		} else {
-			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, taskCompletedId,
-					newTaskIds);
+			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
 			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());

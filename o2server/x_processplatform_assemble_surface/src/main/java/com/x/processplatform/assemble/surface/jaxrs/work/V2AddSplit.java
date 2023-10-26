@@ -29,10 +29,8 @@ import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -56,7 +54,8 @@ class V2AddSplit extends BaseAction {
 		List<String> ids = addSplit(param.work.getId(), param.addSplitWorkLog.getId(), param.splitValueList,
 				param.work.getJob());
 		processing(ids, param.work.getId(), param.series, param.work.getJob());
-		Record rec = concreteRecord(effectivePerson, param.addSplitWorkLog, param.existTaskIds);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, param.addSplitWorkLog, effectivePerson,
+				param.series);
 		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
@@ -108,7 +107,6 @@ class V2AddSplit extends BaseAction {
 				}
 				param.splitValueList = wi.getSplitValueList();
 			}
-			param.existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
 		}
 		return param;
 	}
@@ -119,7 +117,6 @@ class V2AddSplit extends BaseAction {
 		private WorkLog addSplitWorkLog;
 		private String series = StringTools.uniqueToken();
 		private List<String> splitValueList = new ArrayList<>();
-		private List<String> existTaskIds = new ArrayList<>();
 
 	}
 
@@ -180,20 +177,6 @@ class V2AddSplit extends BaseAction {
 				throw new ExceptionReroute(workId);
 			}
 		}
-	}
-
-	private Record concreteRecord(EffectivePerson effectivePerson, WorkLog workLog, List<String> existTaskIds)
-			throws Exception {
-		List<String> newlyTaskIds = new ArrayList<>();
-		Activity activity = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			newlyTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, workLog.getJob());
-			newlyTaskIds = ListUtils.subtract(newlyTaskIds, existTaskIds);
-			activity = business.getActivity(workLog.getArrivedActivity(), workLog.getArrivedActivityType());
-		}
-		return RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, workLog, effectivePerson, activity, newlyTaskIds);
-
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.V2AddSplit$Wi")

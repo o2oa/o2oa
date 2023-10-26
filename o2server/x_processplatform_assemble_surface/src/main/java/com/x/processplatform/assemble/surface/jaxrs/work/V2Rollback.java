@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -23,10 +22,10 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
+import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -47,10 +46,9 @@ class V2Rollback extends BaseAction {
 		Param param = this.init(effectivePerson, id, jsonElement);
 		this.rollback(param.work, param.workLog, param.distinguishedNameList);
 		this.processing(param.work, param.series);
-		List<String> newTaskIds = newTaskIds(param.work.getJob(), param.work.getId());
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.workLog, effectivePerson,
-				param.destinationManual, newTaskIds);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.workLog, effectivePerson, param.series);
 		RecordBuilder.processing(rec);
+		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
@@ -89,8 +87,6 @@ class V2Rollback extends BaseAction {
 				throw new ExceptionEntityNotExist(workLog.getFromActivity(), Manual.class);
 			}
 
-			param.destinationManual = manual;
-
 			param.distinguishedNameList = business.organization().distinguishedName()
 					.list(wi.getDistinguishedNameList());
 		}
@@ -103,18 +99,7 @@ class V2Rollback extends BaseAction {
 		private WorkLog workLog;
 		private List<String> distinguishedNameList;
 		private String series = StringTools.uniqueToken();
-		private Manual destinationManual;
-	}
 
-	private List<String> newTaskIds(String job, String work) throws Exception {
-		List<String> list = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			list.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, job, Task.work_FIELDNAME, work));
-//			// 为办理的前的所有已办,用于在record中记录当前待办转为已办时的上一处理人
-//			taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-//					param.getTask().getActivityToken());
-		}
-		return list;
 	}
 
 	private void rollback(Work work, WorkLog workLog, List<String> distinguishedNameList) throws Exception {

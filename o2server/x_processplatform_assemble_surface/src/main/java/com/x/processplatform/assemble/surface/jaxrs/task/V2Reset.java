@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
-import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -60,29 +58,13 @@ public class V2Reset extends BaseAction {
 		Param param = this.init(effectivePerson, id, jsonElement);
 		updateTask(param.task.getId(), param.routeName, param.opinion, param.task.getJob());
 		reset(param.task.getId(), param.distinguishedNameList, param.task.getJob());
-		String taskCompletedId = this.processingTask(param.task.getId(), param.task.getJob());
+		this.processingTask(param.task.getId(), param.task.getJob());
 		this.processingWork(param.work.getId(), param.series, param.work.getJob());
-		List<String> newTaskIds = new ArrayList<>();
-		List<TaskCompleted> taskCompleteds = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(),
-					Task.work_FIELDNAME, param.work.getId()));
-			// 为办理的前的所有已办,用于在record中记录当前待办转为已办时的上一处理人
-			taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-					param.task.getActivityToken());
-		}
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.workLog, effectivePerson, param.manual,
-				newTaskIds);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.workLog, effectivePerson, param.series);
 		rec.setOpinion(param.opinion);
 		rec.setRouteName(param.routeName);
 		RecordBuilder.processing(rec);
-		if (StringUtils.isNotEmpty(taskCompletedId)) {
-			// @todo
-			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, param.task.getJob());
-		}
-		if (!taskCompleteds.isEmpty()) {
-			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, param.task);
-		}
+		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
@@ -121,7 +103,6 @@ public class V2Reset extends BaseAction {
 			if (null == manual) {
 				throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
 			}
-			param.manual = manual;
 			// 将getDistinguishedNameList和getIdentityList进行合并,兼容前端接口
 			param.distinguishedNameList = business.organization().distinguishedName()
 					.list(ListUtils.sum(wi.getDistinguishedNameList(), wi.getIdentityList())).stream().distinct()
@@ -189,8 +170,6 @@ public class V2Reset extends BaseAction {
 		private Work work;
 
 		private WorkLog workLog;
-
-		private Manual manual;
 
 	}
 

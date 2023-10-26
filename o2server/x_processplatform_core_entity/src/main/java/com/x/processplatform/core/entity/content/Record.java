@@ -31,6 +31,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -129,8 +130,9 @@ public class Record extends SliceJpaObject {
 	@PostLoad
 	public void postLoad() {
 		if (null != this.properties) {
-			this.routeName = this.getProperties().getRouteName();
-			this.opinion = this.getProperties().getOpinion();
+			this.routeName = this.properties.getRouteName();
+			this.opinion = this.properties.getOpinion();
+			this.nextManualList = this.properties.getNextManualList();
 //			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
 		}
 	}
@@ -208,6 +210,11 @@ public class Record extends SliceJpaObject {
 		this.opinion = opinion;
 	}
 
+	public static final String NEXTMANUALLIST_FIELDNAME = "nextManualList";
+	@Transient
+	@FieldDescribe("后续人工环节")
+	private List<NextManual> nextManualList = new ArrayList<>();
+
 //	@Transient
 //	@FieldDescribe("后续人工环节处理人")
 //	private List<String> nextManualTaskIdentityList = new ArrayList<>();
@@ -220,6 +227,18 @@ public class Record extends SliceJpaObject {
 //		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
 //		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
 //	}
+
+	public List<NextManual> getNextManualList() {
+		if ((null == nextManualList) && (null != this.properties)) {
+			this.nextManualList = this.properties.getNextManualList();
+		}
+		return nextManualList;
+	}
+
+	public void setNextManualList(List<NextManual> nextManualList) {
+		this.getProperties().setNextManualList(nextManualList);
+		this.nextManualList = nextManualList;
+	}
 
 	public RecordProperties getProperties() {
 		if (null == this.properties) {

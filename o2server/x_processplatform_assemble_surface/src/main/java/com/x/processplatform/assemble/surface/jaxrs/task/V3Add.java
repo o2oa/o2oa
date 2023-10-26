@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
@@ -27,7 +26,6 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
-import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -61,25 +59,14 @@ public class V3Add extends BaseAction {
 		}
 
 		this.add(param.task, param.distinguishedNameList, param.before, param.mode);
-		String taskCompletedId = this.processingTask(param.task);
+		this.processingTask(param.task);
 		this.processingWork(param.task, param.series);
-		List<String> newTaskIds = new ArrayList<>();
-		// 加签计算所有处理人即可,不需要去重计算现在已有的task
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, param.task.getJob(), Task.work_FIELDNAME,
-					param.task.getWork());
-		}
-		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, taskCompletedId,
-				newTaskIds);
+		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, param.series);
 		// 加签也记录流程意见和路由决策
 		rec.setOpinion(param.opinion);
 		rec.setRouteName(param.routeName);
 		RecordBuilder.processing(rec);
-		if (StringUtils.isNotEmpty(taskCompletedId)) {
-			TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, rec.getNextManualTaskIdentityList(),
-					param.task.getJob());
-		}
-		TaskBuilder.updatePrevTaskIdentity(newTaskIds, param.existsTaskCompleteds, param.task);
+		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		return result(rec);
 	}
 
@@ -126,8 +113,6 @@ public class V3Add extends BaseAction {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
 			param.workLog = workLog;
-			param.existsTaskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
-					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 		}
 		return param;
 	}
@@ -215,7 +200,6 @@ public class V3Add extends BaseAction {
 		private String mode;
 		private Task task;
 		private WorkLog workLog;
-		private List<TaskCompleted> existsTaskCompleteds;
 		private String opinion;
 		private String routeName;
 

@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,10 +23,10 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.RecordBuilder;
+import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -55,10 +54,11 @@ class V2Retract extends BaseAction {
 
 		this.processing(param);
 
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RETRACT, param.workLog, effectivePerson,
-				param.destinationActivity, param.existTaskIds);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RETRACT, param.workLog, effectivePerson, param.series);
 
 		RecordBuilder.processing(rec);
+
+		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 
 		result.setData(Wo.copier.copy(rec));
 
@@ -84,12 +84,11 @@ class V2Retract extends BaseAction {
 			if (null == activity) {
 				throw new ExceptionEntityNotExist(work.getActivity());
 			}
-			WorkLog workLog = findWorkLog(effectivePerson, business, work, activity);
+			WorkLog workLog = findWorkLog(effectivePerson, business, work);
 			if (null == workLog) {
 				throw new ExceptionRetractNoWorkLog(work.getId());
 			}
 			param.workLog = workLog;
-			param.existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
 			if (emc.countEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
 					TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME,
 					false) > 0) {
@@ -106,7 +105,6 @@ class V2Retract extends BaseAction {
 			if (null == destinationActivity) {
 				throw new ExceptionEntityNotExist(taskCompleted.getActivity());
 			}
-			param.destinationActivity = destinationActivity;
 		}
 		return param;
 	}
@@ -114,14 +112,11 @@ class V2Retract extends BaseAction {
 	private class Param {
 		private WorkLog workLog;
 		private TaskCompleted taskCompleted;
-		private Activity destinationActivity;
 		private Work work;
 		private String series = StringTools.uniqueToken();
-		private List<String> existTaskIds = new ArrayList<>();
 	}
 
-	private WorkLog findWorkLog(EffectivePerson effectivePerson, Business business, Work work, Activity activity)
-			throws Exception {
+	private WorkLog findWorkLog(EffectivePerson effectivePerson, Business business, Work work) throws Exception {
 		WorkLogTree workLogTree = new WorkLogTree(
 				business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
 		// 是否可以召回

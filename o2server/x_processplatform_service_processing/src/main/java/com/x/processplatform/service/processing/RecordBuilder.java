@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface;
+package com.x.processplatform.service.processing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,17 +75,20 @@ public class RecordBuilder {
 			rec.setType(recordType);
 			checkIfWorkAlreadyCompleted(business, rec, workLog.getJob());
 			// 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份
-			TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-					workLog.getJob(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-			if (null != existTaskCompleted) {
-				rec.setIdentity(existTaskCompleted.getIdentity());
-				rec.setUnit(existTaskCompleted.getUnit());
-			} else {
-				rec.setIdentity(
-						business.organization().identity().getMajorWithPerson(effectivePerson.getDistinguishedName()));
-				rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
+			if (null != effectivePerson) {
+				TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class,
+						TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.person_FIELDNAME,
+						effectivePerson.getDistinguishedName());
+				if (null != existTaskCompleted) {
+					rec.setIdentity(existTaskCompleted.getIdentity());
+					rec.setUnit(existTaskCompleted.getUnit());
+				} else {
+					rec.setIdentity(business.organization().identity()
+							.getMajorWithPerson(effectivePerson.getDistinguishedName()));
+					rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
+				}
+				rec.setPerson(effectivePerson.getDistinguishedName());
 			}
-			rec.setPerson(effectivePerson.getDistinguishedName());
 			fillIdentityAndUnit(business, rec);
 			elapsed(rec);
 			emc.fetchEqualAndEqual(Task.class, TASK_FETCH_FIELDS, Task.job_FIELDNAME, workLog.getJob(),

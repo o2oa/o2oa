@@ -9,8 +9,8 @@ public class V2UpdatePrevTaskWi extends GsonPropertyObject {
 
 	@FieldDescribe("任务标识.")
 	private String job;
-	@FieldDescribe("上一环节串号.")
-	private String prevSeries;
+	@FieldDescribe("上一环节活动令牌.")
+	private String activityToken;
 	@FieldDescribe("当前环节串号.")
 	private String series;
 
@@ -22,12 +22,12 @@ public class V2UpdatePrevTaskWi extends GsonPropertyObject {
 		this.job = job;
 	}
 
-	public String getPrevSeries() {
-		return prevSeries;
+	public String getActivityToken() {
+		return activityToken;
 	}
 
-	public void setPrevSeries(String prevSeries) {
-		this.prevSeries = prevSeries;
+	public void setActivityToken(String activityToken) {
+		this.activityToken = activityToken;
 	}
 
 	public String getSeries() {
