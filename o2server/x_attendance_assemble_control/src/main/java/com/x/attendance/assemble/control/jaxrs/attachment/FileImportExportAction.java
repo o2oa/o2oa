@@ -28,7 +28,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("file")
-@JaxrsDescribe("附件操作")
+@JaxrsDescribe("附件操作（已弃用）")
 public class FileImportExportAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(FileImportExportAction.class);
 

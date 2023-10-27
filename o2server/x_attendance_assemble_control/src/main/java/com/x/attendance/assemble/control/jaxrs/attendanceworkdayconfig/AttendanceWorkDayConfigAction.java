@@ -30,7 +30,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("attendanceworkdayconfig")
-@JaxrsDescribe("节假日工作日配置信息管理服务")
+@JaxrsDescribe("节假日工作日配置信息管理服务（已弃用）")
 public class AttendanceWorkDayConfigAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceWorkDayConfigAction.class);
