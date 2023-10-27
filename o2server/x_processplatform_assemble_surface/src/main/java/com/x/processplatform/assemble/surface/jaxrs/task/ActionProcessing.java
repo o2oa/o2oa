@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -125,8 +126,12 @@ class ActionProcessing extends BaseAction {
 			param.opinion = wi.getOpinion();
 			param.mediaOpinion = wi.getMediaOpinion();
 			param.ignoreEmpowerIdentityList = wi.getIgnoreEmpowerIdentityList();
-			param.distinguishedNameList = business.organization().distinguishedName()
-					.list(wi.getDistinguishedNameList());
+			// 兼容合并distinguishedNameList和appendTaskIdentityList
+			param.distinguishedNameList = business.organization().distinguishedName().list(Stream
+					.concat(Stream.<List<String>>of(wi.getDistinguishedNameList()),
+							Stream.<List<String>>of(wi.getAppendTaskIdentityList()))
+					.filter(Objects::nonNull).flatMap(o -> o.stream()).distinct().filter(StringUtils::isNotBlank)
+					.collect(Collectors.toList()));
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
@@ -149,6 +154,8 @@ class ActionProcessing extends BaseAction {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
 			param.workLog = workLog;
+			// 后续要用到routeName要先进行updateTask
+			updateTask(business, param);
 			Pair<Manual, Route> pair = initGetManualAndRoute(business, task);
 			param.manual = pair.first();
 			param.route = pair.second();
@@ -159,7 +166,6 @@ class ActionProcessing extends BaseAction {
 					param.type = TYPE_APPENDTASK;
 				}
 			}
-			updateTask(business, param);
 		}
 		return param;
 	}
@@ -291,6 +297,9 @@ class ActionProcessing extends BaseAction {
 	// 8.2以后版本使用reset替代append
 	private void processingAppendTaskAppend(Param param) throws Exception {
 		com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi req = new com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@");
+		System.out.println(gson.toJson(param.distinguishedNameList));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@");
 		req.setDistinguishedNameList(param.distinguishedNameList);
 		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,

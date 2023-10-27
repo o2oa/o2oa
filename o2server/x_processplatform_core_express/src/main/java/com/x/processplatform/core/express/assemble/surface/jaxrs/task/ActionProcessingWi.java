@@ -37,6 +37,10 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	@Schema(description = "新添加的待办处理人组织专用标识.")
 	private List<String> distinguishedNameList;
 
+	@FieldDescribe("新添加的待办处理人身份.")
+	@Schema(description = "新添加的待办处理人身份.")
+	private List<String> appendTaskIdentityList;
+
 	@FieldDescribe("忽略授权身份.")
 	@Schema(description = "忽略授权身份.")
 	private List<String> ignoreEmpowerIdentityList;
@@ -56,6 +60,14 @@ public class ActionProcessingWi extends GsonPropertyObject {
 //	public void setDecision(String decision) {
 //		this.decision = decision;
 //	}
+
+	public List<String> getAppendTaskIdentityList() {
+		return appendTaskIdentityList;
+	}
+
+	public void setAppendTaskIdentityList(List<String> appendTaskIdentityList) {
+		this.appendTaskIdentityList = appendTaskIdentityList;
+	}
 
 	public String getAction() {
 		return action;
