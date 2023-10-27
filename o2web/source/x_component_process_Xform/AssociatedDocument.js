@@ -297,6 +297,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         var lp = MWF.xApplication.process.Xform.LP;
         var _self = this;
         this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
+            _self.fireEvent("deleteDocument", [d]);
             o2.Actions.load("x_processplatform_assemble_surface").CorrelationAction.deleteWithJob(_self.form.businessData.work.job, {
                 idList: [d.id]
             },function (json) {
@@ -500,7 +501,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                                 var viewPage = this.tab.addTab(tabViewNode, viewJson.viewName);
 
-                                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ];
+                                var selectedBundles = this.selectedBundleMap[ viewJson.viewId ] || [];
 
                                 //this.viewPage.showTabIm();
                                 var viewHeight = dlg.content.getSize().y - this.tab.tabNodeContainer.getSize().y;
