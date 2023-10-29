@@ -36,9 +36,9 @@ class V2Pause extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			Control control = new JobControlBuilder(effectivePerson, business, task.getJob()).enableAllowVisit()
-					.build();
-			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+			Control control = new JobControlBuilder(effectivePerson, business, task.getJob()).enableAllowManage()
+					.enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit()) && BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			if (BooleanUtils.isTrue(task.getPause())) {
