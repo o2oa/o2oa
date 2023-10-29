@@ -37,68 +37,44 @@ class V2Reroute extends BaseAction {
 
 		Param param = this.init(id, jsonElement);
 
-		Callable<ActionResult<Wo>> callable = new CallableImpl(id, param.getActivity(), param.getMergeWork(),
-				param.getDistinguishedNameList());
+		Callable<ActionResult<Wo>> callable = new CallableImpl(param);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
-				TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
 	private Param init(String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		param.setActivity(wi.getActivity());
-		param.setDistinguishedNameList(wi.getDistinguishedNameList());
-		param.setMergeWork(BooleanUtils.isTrue(wi.getMergeWork()));
+		param.distinguishedNameList = wi.getDistinguishedNameList();
+		param.mergeWork = BooleanUtils.isTrue(wi.getMergeWork());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
+			Business business = new Business(emc);
+			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME, Work.process_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			param.setJob(work.getJob());
+			param.job = work.getJob();
+			param.id = work.getId();
+			Activity activity = business.element().getActivity(wi.getActivity());
+			if (null == activity) {
+				throw new ExceptionEntityNotExist(wi.getActivity());
+			}
+			if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
+				throw new ExceptionProcessNotMatch();
+			}
+			param.activity = activity;
 		}
 		return param;
 	}
 
 	private class Param {
 
+		private String id;
 		private String job;
-		private String activity;
+		private Activity activity;
 		private Boolean mergeWork;
 		private List<String> distinguishedNameList;
-
-		public Boolean getMergeWork() {
-			return mergeWork;
-		}
-
-		public void setMergeWork(Boolean mergeWork) {
-			this.mergeWork = mergeWork;
-		}
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
-
-		public String getActivity() {
-			return activity;
-		}
-
-		public void setActivity(String activity) {
-			this.activity = activity;
-		}
-
-		public List<String> getDistinguishedNameList() {
-			return distinguishedNameList;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
 
 	}
 
@@ -115,16 +91,10 @@ class V2Reroute extends BaseAction {
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-		private String id;
-		private String activityId;
-		private boolean mergeWork;
-		private List<String> distinguishedNameList;
+		private Param param;
 
-		private CallableImpl(String id, String activityId, boolean mergeWork, List<String> distinguishedNameList) {
-			this.id = id;
-			this.activityId = activityId;
-			this.mergeWork = mergeWork;
-			this.distinguishedNameList = distinguishedNameList;
+		private CallableImpl(Param param) {
+			this.param = param;
 		}
 
 		@Override
@@ -133,19 +103,12 @@ class V2Reroute extends BaseAction {
 			Work work;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				work = emc.find(id, Work.class);
+				work = emc.find(param.id, Work.class);
 				if (null == work) {
-					throw new ExceptionEntityNotExist(id, Work.class);
+					throw new ExceptionEntityNotExist(param.id, Work.class);
 				}
-				Activity activity = business.element().getActivity(activityId);
-				if (null == activity) {
-					throw new ExceptionEntityNotExist(id);
-				}
-				if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
-					throw new ExceptionProcessNotMatch();
-				}
-				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingAttributes());
-				if (BooleanUtils.isTrue(mergeWork)) {
+				AeiObjects aeiObjects = new AeiObjects(business, work, param.activity, new ProcessingAttributes());
+				if (BooleanUtils.isTrue(param.mergeWork)) {
 					// 删除所有待办
 					aeiObjects.getTasks().stream().forEach(aeiObjects.getDeleteTasks()::add);
 					// 删除其他工作
@@ -163,28 +126,29 @@ class V2Reroute extends BaseAction {
 							});
 				} else {
 					// 删除可能的待办
-					aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(work.getId(), o.getId()))
+					aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(work.getId(), o.getWork()))
 							.forEach(aeiObjects.getDeleteTasks()::add);
 				}
-				if (Manual.class.isAssignableFrom(activity.getClass())) {
+				if (Manual.class.isAssignableFrom(param.activity.getClass())) {
 					// 重新设置表单
-					String formId = business.element().lookupSuitableForm(work.getProcess(), activity.getId());
+					String formId = business.element().lookupSuitableForm(work.getProcess(), param.activity.getId());
 					if (StringUtils.isNotBlank(formId)) {
 						work.setForm(formId);
 					}
 					// 重新设置处理人
-					if (ListTools.isNotEmpty(distinguishedNameList)) {
-						work.setTickets(((Manual) activity).identitiesToTickets(distinguishedNameList));
+					if (ListTools.isNotEmpty(param.distinguishedNameList)) {
+						work.setTickets(((Manual) param.activity).identitiesToTickets(param.distinguishedNameList));
 					} else {
 						work.setTickets(new Tickets());
 					}
 				}
 				// 调度强制把这个标志设置为true,这样可以避免在拟稿状态就调度,系统认为是拟稿状态,默认不创建待办.
 				work.setWorkThroughManual(true);
-				work.setDestinationActivity(activity.getId());
-				work.setDestinationActivityType(activity.getActivityType());
+				work.setDestinationActivity(param.activity.getId());
+				work.setDestinationActivityType(param.activity.getActivityType());
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
+				aeiObjects.getUpdateWorks().add(work);
 				aeiObjects.commit();
 			}
 			Wo wo = new Wo();

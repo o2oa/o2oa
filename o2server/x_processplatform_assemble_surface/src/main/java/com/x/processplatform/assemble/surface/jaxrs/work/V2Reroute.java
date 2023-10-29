@@ -2,6 +2,9 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +53,8 @@ class V2Reroute extends BaseAction {
 		processing(param);
 		// Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE,
 		// param.workLog, effectivePerson, param.series);
-		Record rec = this.recordWorkProcessing(Record.TYPE_REROUTE, param.routeName, param.opinion,
-				param.work.getJob(), param.workLog.getId(), param.identity, param.series);
+		Record rec = this.recordWorkProcessing(Record.TYPE_REROUTE, param.routeName, param.opinion, param.work.getJob(),
+				param.workLog.getId(), param.identity, param.series);
 //		rec.setRouteName(param.routeName);
 //		rec.setOpinion(param.opinion);
 //		RecordBuilder.processing(rec);
@@ -94,8 +97,12 @@ class V2Reroute extends BaseAction {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
 			param.workLog = workLog;
-			param.distinguishedNameList = business.organization().distinguishedName()
-					.list(wi.getDistinguishedNameList());
+			// 兼容合并distinguishedNameList和manualForceTaskIdentityList
+			param.distinguishedNameList = business.organization().distinguishedName().list(Stream
+					.concat(Stream.<List<String>>of(wi.getDistinguishedNameList()),
+							Stream.<List<String>>of(wi.getManualForceTaskIdentityList()))
+					.filter(Objects::nonNull).flatMap(o -> o.stream()).distinct().filter(StringUtils::isNotBlank)
+					.collect(Collectors.toList()));
 			param.identity = business.organization().identity()
 					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}

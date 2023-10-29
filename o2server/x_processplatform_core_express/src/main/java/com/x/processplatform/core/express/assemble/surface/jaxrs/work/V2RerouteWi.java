@@ -9,8 +9,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 public class V2RerouteWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -6729193803512068864L;
@@ -27,11 +25,22 @@ public class V2RerouteWi extends GsonPropertyObject {
 	@FieldDescribe("人工活动强制处理人")
 	private List<String> distinguishedNameList = new ArrayList<>();
 
+	@FieldDescribe("人工活动强制处理人,兼容旧版.")
+	private List<String> manualForceTaskIdentityList = new ArrayList<>();
+
 	@FieldDescribe("待办选择路由名称.")
 	private String routeName;
 
 	@FieldDescribe("待办办理意见.")
 	private String opinion;
+
+	public List<String> getManualForceTaskIdentityList() {
+		return manualForceTaskIdentityList;
+	}
+
+	public void setManualForceTaskIdentityList(List<String> manualForceTaskIdentityList) {
+		this.manualForceTaskIdentityList = manualForceTaskIdentityList;
+	}
 
 	public String getRouteName() {
 		return routeName;
