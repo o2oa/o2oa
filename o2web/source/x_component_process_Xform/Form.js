@@ -3523,7 +3523,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         MWF.require("MWF.xDesktop.Dialog", function () {
             var width = 600;
-            var height = 230;
+            var height = 330;
             var p = MWF.getCenterPosition(this.app.content, width, height);
 
             var _self = this;
@@ -3552,7 +3552,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             var value = input.get("value");
                             var trimExist = true;
                             if (checks[1].checked) trimExist = false;
-                            _self.doAddSplit(dlg, value, trimExist);
+
+                            var opinion="";
+                            var textarea = dlg.content.getElement(".addSplit_opinion");
+                            if(textarea)opinion = textarea.get("value");
+
+                            _self.doAddSplit(dlg, value, trimExist, opinion);
                         }.bind(this)
                     },
                     {
@@ -3601,13 +3606,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             dlg.show();
         }.bind(this));
     },
-    doAddSplit: function (dlg, splitValues, trimExist) {
+    doAddSplit: function (dlg, splitValues, trimExist, opinion) {
         if (!splitValues) {
             this.app.notice(MWF.xApplication.process.Xform.LP.inputSplitValue, "error", dlg.node);
             return false;
         }
         MWF.require("MWF.widget.Mask", function () {
             var splitValue = splitValues.split(o2.splitStr);
+
+            var splitText = splitValue.map(function (sValue) {
+                return sValue.split("@")[0];
+            })
+            var routeName = MWF.xApplication.process.Xform.LP.form.split+":"+splitText.join(", ");
+            if(!opinion)opinion = routeName;
+
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
@@ -3630,11 +3642,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 if (xhr) errorText = xhr.responseText;
                 this.app.notice("request json error: " + errorText, "error", dlg.node);
                 if (this.mask) { this.mask.hide(); this.mask = null; }
-            }.bind(this));
+            }.bind(this), routeName, opinion);
         }.bind(this));
     },
-    addSplitWork: function (splitValue, trimExist, success, failure) {
-        var data = { "splitValueList": splitValue, "trimExist": trimExist };
+    addSplitWork: function (splitValue, trimExist, success, failure, routeName, opinion) {
+        var data = {
+            "splitValueList": splitValue,
+            "trimExist": trimExist,
+            "routeName": routeName,
+            "opinion": opinion
+        };
         if (this.options.readonly) {
             o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddSplit(this.businessData.work.id, data, function (json) {
                 if (success) success(json);
