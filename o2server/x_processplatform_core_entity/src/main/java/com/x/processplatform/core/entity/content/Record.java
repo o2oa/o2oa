@@ -57,8 +57,8 @@ public class Record extends SliceJpaObject {
 	/* 转交流转 */
 	public static final String TYPE_APPENDTASK = "appendTask";
 
-	/* 回退流转 */
-	public static final String TYPE_BACK = "back";
+//	/* 回退流转 */
+//	public static final String TYPE_BACK = "back";
 
 	/* 调度 */
 	public static final String TYPE_REROUTE = "reroute";
@@ -96,6 +96,9 @@ public class Record extends SliceJpaObject {
 	/* 添加待办 */
 	public static final String TYPE_TASKADD = "taskAdd";
 
+	/* 退回 */
+	public static final String TYPE_GOBACK = "goBack";
+
 	/* 定制意见 */
 	public static final String TYPE_CUSTOM = "custom";
 
@@ -132,8 +135,11 @@ public class Record extends SliceJpaObject {
 		if (null != this.properties) {
 			this.routeName = this.properties.getRouteName();
 			this.opinion = this.properties.getOpinion();
+			this.mediaOpinion = this.properties.getMediaOpinion();
+			this.empowerFromIdentity = this.properties.getEmpowerFromIdentity();
 			this.nextManualList = this.properties.getNextManualList();
 			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
+			this.startTime = this.getProperties().getStartTime();
 		}
 	}
 
@@ -210,6 +216,40 @@ public class Record extends SliceJpaObject {
 		this.opinion = opinion;
 	}
 
+	public static final String MEDIAOPINION_FIELDNAME = "mediaOpinion";
+	@Transient
+	@FieldDescribe("多媒体意见")
+	private String mediaOpinion;
+
+	public String getMediaOpinion() {
+		if ((null != this.properties) && (null == this.mediaOpinion)) {
+			this.mediaOpinion = this.properties.getMediaOpinion();
+		}
+		return mediaOpinion;
+	}
+
+	public void setMediaOpinion(String mediaOpinion) {
+		this.getProperties().setMediaOpinion(mediaOpinion);
+		this.mediaOpinion = mediaOpinion;
+	}
+
+	public static final String EMPOWERFROMIDENTITY_FIELDNAME = "empowerFromIdentity";
+	@Transient
+	@FieldDescribe("授权自身份")
+	private String empowerFromIdentity;
+
+	public String getEmpowerFromIdentity() {
+		if ((null != this.properties) && (null == this.empowerFromIdentity)) {
+			this.empowerFromIdentity = this.properties.getEmpowerFromIdentity();
+		}
+		return empowerFromIdentity;
+	}
+
+	public void setEmpowerFromIdentity(String empowerFromIdentity) {
+		this.getProperties().setEmpowerFromIdentity(empowerFromIdentity);
+		this.empowerFromIdentity = empowerFromIdentity;
+	}
+
 	public static final String NEXTMANUALLIST_FIELDNAME = "nextManualList";
 	@Transient
 	@FieldDescribe("后续人工环节")
@@ -242,6 +282,23 @@ public class Record extends SliceJpaObject {
 	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
 		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
 		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
+	}
+
+	public static final String STARTTIME_FIELDNAME = "startTime";
+	@Transient
+	@FieldDescribe("开始时间.")
+	private Date startTime;
+
+	public Date getStartTime() {
+		if ((null == startTime) && (null != this.properties)) {
+			this.startTime = this.properties.getStartTime();
+		}
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.getProperties().setStartTime(startTime);
+		this.startTime = startTime;
 	}
 
 	public RecordProperties getProperties() {

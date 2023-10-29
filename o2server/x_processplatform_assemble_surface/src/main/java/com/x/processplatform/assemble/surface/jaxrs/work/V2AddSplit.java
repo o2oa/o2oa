@@ -25,7 +25,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -54,9 +53,10 @@ class V2AddSplit extends BaseAction {
 		List<String> ids = addSplit(param.work.getId(), param.addSplitWorkLog.getId(), param.splitValueList,
 				param.work.getJob());
 		processing(ids, param.work.getId(), param.series, param.work.getJob());
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, param.addSplitWorkLog, effectivePerson,
-				param.series);
-		RecordBuilder.processing(rec);
+		Record rec = this.recordWorkProcessing(Record.TYPE_ADDSPLIT, param.routeName, param.opinion,
+				param.work.getJob(), param.addSplitWorkLog.getId(), param.identity, param.series);
+//		RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, param.addSplitWorkLog, effectivePerson, param.series);
+//		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
@@ -65,6 +65,8 @@ class V2AddSplit extends BaseAction {
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.routeName = wi.getRouteName();
+		param.opinion = wi.getOpinion();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(id, Work.class);
@@ -107,12 +109,17 @@ class V2AddSplit extends BaseAction {
 				}
 				param.splitValueList = wi.getSplitValueList();
 			}
+			param.identity = business.organization().identity()
+					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}
 		return param;
 	}
 
 	private class Param {
 
+		private String identity;
+		private String routeName;
+		private String opinion;
 		private Work work;
 		private WorkLog addSplitWorkLog;
 		private String series = StringTools.uniqueToken();

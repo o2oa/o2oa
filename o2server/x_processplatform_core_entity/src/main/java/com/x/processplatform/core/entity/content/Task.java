@@ -94,12 +94,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public void postLoad() {
 		if (null != this.properties) {
 			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
-				this.title = this.getProperties().getTitle();
+				this.title = this.properties.getTitle();
 			}
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
-				this.opinion = this.getProperties().getOpinion();
+				this.opinion = this.properties.getOpinion();
 			}
-			this.routeNameDisable = this.getProperties().getRouteNameDisable();
+			this.routeNameDisable = this.properties.getRouteNameDisable();
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
 		}
 	}
 
@@ -134,19 +136,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public Task() {
 		this.properties = new TaskProperties();
 	}
-
-	public Boolean getRouteNameDisable() {
-		return routeNameDisable;
-	}
-
-	public void setRouteNameDisable(Boolean routeNameDisable) {
-		this.routeNameDisable = routeNameDisable;
-		this.getProperties().setRouteNameDisable(routeNameDisable);
-	}
-
-	@Transient
-	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
-	private Boolean routeNameDisable;
 
 	public Task(Work work, String distinguishedName, String person, String unit, String empowerFromIdentity,
 			Date startTime, Date expireTime, List<Route> routes, Boolean allowRapid) {
@@ -203,6 +192,57 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 					});
 		}
 		return this;
+	}
+
+	public static final String ROUTENAMEDISABLE_FIELDNAME = "routeNameDisable";
+	@Transient
+	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
+	private Boolean routeNameDisable;
+
+	public Boolean getRouteNameDisable() {
+		if ((null == this.routeNameDisable) && (null != this.properties)) {
+			this.routeNameDisable = this.properties.getRouteNameDisable();
+		}
+		return this.routeNameDisable;
+	}
+
+	public void setRouteNameDisable(Boolean routeNameDisable) {
+		this.routeNameDisable = routeNameDisable;
+		this.getProperties().setRouteNameDisable(routeNameDisable);
+	}
+
+	public static final String PREVTASKIDENTITYLIST_FIELDNAME = "prevTaskIdentityList";
+	@Transient
+	@FieldDescribe("上一人工环节处理人列表.")
+	private List<String> prevTaskIdentityList;
+
+	public List<String> getPrevTaskIdentityList() {
+		if ((null != this.properties) && (null == this.prevTaskIdentityList)) {
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+		}
+		return this.prevTaskIdentityList;
+	}
+
+	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
+		this.getProperties().setPrevTaskIdentityList(prevTaskIdentityList);
+		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public static final String PREVTASKIDENTITY_FIELDNAME = "prevTaskIdentity";
+	@Transient
+	@FieldDescribe("上一人工环节处理人.")
+	private String prevTaskIdentity;
+
+	public String getPrevTaskIdentity() {
+		if ((null != this.properties) && (null == this.prevTaskIdentity)) {
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
+		}
+		return this.prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.getProperties().setPrevTaskIdentity(prevTaskIdentity);
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public TaskProperties getProperties() {

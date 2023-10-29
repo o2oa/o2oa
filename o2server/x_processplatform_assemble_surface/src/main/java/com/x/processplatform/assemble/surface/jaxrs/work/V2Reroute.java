@@ -22,8 +22,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
-import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -50,11 +48,14 @@ class V2Reroute extends BaseAction {
 
 		reroute(param);
 		processing(param);
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE, param.workLog, effectivePerson, param.series);
-		rec.setRouteName(param.routeName);
-		rec.setOpinion(param.opinion);
-		RecordBuilder.processing(rec);
-		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
+		// Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE,
+		// param.workLog, effectivePerson, param.series);
+		Record rec = this.recordWorkProcessing(Record.TYPE_REROUTE, param.routeName, param.opinion,
+				param.work.getJob(), param.workLog.getId(), param.identity, param.series);
+//		rec.setRouteName(param.routeName);
+//		rec.setOpinion(param.opinion);
+//		RecordBuilder.processing(rec);
+//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
@@ -95,11 +96,14 @@ class V2Reroute extends BaseAction {
 			param.workLog = workLog;
 			param.distinguishedNameList = business.organization().distinguishedName()
 					.list(wi.getDistinguishedNameList());
+			param.identity = business.organization().identity()
+					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}
 		return param;
 	}
 
 	private class Param {
+		private String identity;
 		private String routeName;
 		private String opinion;
 		private Work work;

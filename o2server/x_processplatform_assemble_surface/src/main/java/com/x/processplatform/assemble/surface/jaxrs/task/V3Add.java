@@ -24,8 +24,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
-import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -59,14 +57,16 @@ public class V3Add extends BaseAction {
 		}
 
 		this.add(param.task, param.distinguishedNameList, param.before, param.mode);
-		this.processingTask(param.task);
+		String taskCompletedId = this.processingTask(param.task);
 		this.processingWork(param.task, param.series);
-		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, param.series);
-		// 加签也记录流程意见和路由决策
-		rec.setOpinion(param.opinion);
-		rec.setRouteName(param.routeName);
-		RecordBuilder.processing(rec);
-		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
+//		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, param.series);
+//		// 加签也记录流程意见和路由决策
+//		rec.setOpinion(param.opinion);
+//		rec.setRouteName(param.routeName);
+//		RecordBuilder.processing(rec);
+//		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
+		Record rec = this.recordTaskProcessing(Record.TYPE_TASKADD, param.workLog.getJob(), param.workLog.getId(),
+				taskCompletedId, param.series);
 		return result(rec);
 	}
 

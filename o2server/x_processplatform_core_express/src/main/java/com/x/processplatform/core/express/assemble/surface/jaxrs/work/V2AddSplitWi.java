@@ -23,6 +23,27 @@ public class V2AddSplitWi extends GsonPropertyObject {
 	@Schema(description = "添加分支的工作日志标识.")
 	private String workLog;
 
+	@FieldDescribe("路由.")
+	private String routeName;
+	@FieldDescribe("办理意见.")
+	private String opinion;
+
+	public String getRouteName() {
+		return routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
+
 	public List<String> getSplitValueList() {
 		return splitValueList;
 	}

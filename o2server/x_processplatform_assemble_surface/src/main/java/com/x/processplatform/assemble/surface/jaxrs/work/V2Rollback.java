@@ -21,8 +21,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
-import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -46,9 +44,11 @@ class V2Rollback extends BaseAction {
 		Param param = this.init(effectivePerson, id, jsonElement);
 		this.rollback(param.work, param.workLog, param.distinguishedNameList);
 		this.processing(param.work, param.series);
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.workLog, effectivePerson, param.series);
-		RecordBuilder.processing(rec);
-		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
+		Record rec = this.recordWorkProcessing(Record.TYPE_ROLLBACK, "", "", param.work.getJob(), param.workLog.getId(),
+				param.identity, param.series);
+//		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.workLog, effectivePerson, param.series);
+//		RecordBuilder.processing(rec);
+//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
@@ -89,12 +89,15 @@ class V2Rollback extends BaseAction {
 
 			param.distinguishedNameList = business.organization().distinguishedName()
 					.list(wi.getDistinguishedNameList());
+			param.identity = business.organization().identity()
+					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}
 		return param;
 	}
 
 	private class Param {
 
+		private String identity;
 		private Work work;
 		private WorkLog workLog;
 		private List<String> distinguishedNameList;

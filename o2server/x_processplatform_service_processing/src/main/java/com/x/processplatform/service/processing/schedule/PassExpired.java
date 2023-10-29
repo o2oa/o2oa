@@ -32,7 +32,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Task_;
@@ -41,11 +40,6 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
-import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
-import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.RecordBuilder;
-import com.x.processplatform.service.processing.TaskBuilder;
 import com.x.processplatform.service.processing.ThisApplication;
 
 public class PassExpired extends AbstractJob {
@@ -102,11 +96,11 @@ public class PassExpired extends AbstractJob {
 						WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			}
 			this.passExpired(task);
-			this.porcessingTask(task);
+			String taskCompletedId = this.porcessingTask(task);
 			this.porcessingWork(task, series);
-			Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, workLog, null, series);
-			RecordBuilder.processing(rec);
-			TaskBuilder.updatePrevTask(series, task.getActivityToken(), task.getJob());
+			this.recordTaskProcessing(Record.TYPE_ROLLBACK, workLog.getJob(), workLog.getId(), taskCompletedId, series);
+//			RecordBuilder.processing(rec);
+//			TaskBuilder.updatePrevTask(series, task.getActivityToken(), task.getJob());
 		} catch (Exception e) {
 			throw new ExceptionPassExpired(e, task.getId(), task.getTitle());
 		}
@@ -120,6 +114,18 @@ public class PassExpired extends AbstractJob {
 		if (BooleanUtils.isNotTrue(respOfPassExpired.getValue())) {
 			throw new ExceptionInvokePassExpired(task.getId());
 		}
+	}
+
+	private Record recordTaskProcessing(String recordType, String job, String workLogId, String taskCompletedId,
+			String series) throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.record.ActionTaskProcessingWi req = new com.x.processplatform.core.express.service.processing.jaxrs.record.ActionTaskProcessingWi();
+		req.setRecordType(recordType);
+		req.setWorkLog(workLogId);
+		req.setTaskCompleted(taskCompletedId);
+		req.setSeries(series);
+		return ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("record", "task", "processing"), req, job).getData(Record.class);
+
 	}
 
 	private String porcessingTask(Task task) throws Exception {

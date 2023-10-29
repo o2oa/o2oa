@@ -22,8 +22,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
-import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
@@ -54,11 +52,14 @@ class V2Retract extends BaseAction {
 
 		this.processing(param);
 
-		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RETRACT, param.workLog, effectivePerson, param.series);
+		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", param.work.getJob(), param.workLog.getId(),
+				param.taskCompleted.getIdentity(), param.series);
 
-		RecordBuilder.processing(rec);
-
-		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
+//		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RETRACT, param.workLog, effectivePerson, param.series);
+//
+//		RecordBuilder.processing(rec);
+//
+//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 
 		result.setData(Wo.copier.copy(rec));
 
@@ -105,6 +106,7 @@ class V2Retract extends BaseAction {
 			if (null == destinationActivity) {
 				throw new ExceptionEntityNotExist(taskCompleted.getActivity());
 			}
+
 		}
 		return param;
 	}
