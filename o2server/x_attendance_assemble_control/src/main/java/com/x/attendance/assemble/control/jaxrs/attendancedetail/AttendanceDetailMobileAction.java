@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("attendancedetail/mobile")
-@JaxrsDescribe("移动考勤打卡信息管理服务")
+@JaxrsDescribe("移动考勤打卡信息管理服务（已弃用）")
 public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceDetailMobileAction.class);

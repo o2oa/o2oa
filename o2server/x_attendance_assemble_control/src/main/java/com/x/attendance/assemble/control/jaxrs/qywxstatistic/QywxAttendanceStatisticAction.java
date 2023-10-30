@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.LoggerFactory;
  */
 
 @Path("qywxstatistic")
-@JaxrsDescribe("企业微信打卡数据统计管理")
+@JaxrsDescribe("企业微信打卡数据统计管理（已弃用）")
 public class QywxAttendanceStatisticAction extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(QywxAttendanceStatisticAction.class);
