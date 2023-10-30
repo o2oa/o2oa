@@ -76,19 +76,13 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public AeiObjects(Business business, Work work, Activity activity, ProcessingAttributes processingAttributes)
 			throws Exception {
-		this(business, work, activity, new ProcessingConfigurator(), processingAttributes);
-	}
-
-	public AeiObjects(Business business, Work work, Activity activity, ProcessingConfigurator processingConfigurator,
-			ProcessingAttributes processingAttributes) throws Exception {
 		this.business = business;
 		this.work = work;
 		this.oldWork = new Work();
 		this.work.copyTo(this.oldWork);
 		this.activity = activity;
-		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
+		this.activityProcessingConfigurator = (new ProcessingConfigurator()).get(activity.getActivityType());
 		this.processingAttributes = processingAttributes;
-		this.processingConfigurator = processingConfigurator;
 	}
 
 	private transient Business business;

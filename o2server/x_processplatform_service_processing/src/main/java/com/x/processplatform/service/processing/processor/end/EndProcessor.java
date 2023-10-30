@@ -243,7 +243,7 @@ public class EndProcessor extends AbstractEndProcessor {
 		// 先把状态值注入,这样脚本执行时可以取得到值.
 		parent.setEmbedCompleted(ActivityType.end.toString());
 		AeiObjects parentAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
-				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
+				aeiObjects.getProcessingAttributes());
 		parentAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
 			ScriptContext scriptContext = parentAeiObjects.scriptContext();

@@ -118,7 +118,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 		// 先把状态值注入,这样脚本执行时可以取得到值.
 		parent.setEmbedCompleted(ActivityType.cancel.toString());
 		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
-				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
+				aeiObjects.getProcessingAttributes());
 		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedCancelScript(embed)) {
 			ScriptContext scriptContext = embedAeiObjects.scriptContext();
