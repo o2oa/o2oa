@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
+import com.x.organization.assemble.express.jaxrs.distinguishedname.DistinguishedNameAction;
 import com.x.organization.assemble.express.jaxrs.empower.EmpowerAction;
 import com.x.organization.assemble.express.jaxrs.empowerlog.EmpowerLogAction;
 import com.x.organization.assemble.express.jaxrs.group.GroupAction;
@@ -29,6 +30,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(UnitDutyAction.class);
 		classes.add(EmpowerAction.class);
 		classes.add(EmpowerLogAction.class);
+		classes.add(DistinguishedNameAction.class);
 		return classes;
 	}
 

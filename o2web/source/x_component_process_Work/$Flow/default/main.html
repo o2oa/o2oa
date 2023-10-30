@@ -1,0 +1,22 @@
+<div class="o2flow-node" data-o2-element="node">
+    <div class="o2flow-navi" data-o2-element="naviNode">
+        <div class="o2flow-navi-node">
+            {{each $.navi}}
+            <div data-o2-element="{{$.key}}TitleNode" class="o2flow-navi-item" data-o2-events="click:changeAction:{{$.key}}:;">{{$.label}}</div>
+            {{end each}}
+        </div>
+    </div>
+    <div class="o2flow-content-scrollNode" data-o2-element="contentScrollNode">
+        <div data-o2-element="contentWraper">
+            <div data-o2-element="quickSelectNode" class="o2flow-quick-select">
+                <i class="o2flow-quick-select-arrow o2icon-triangle_down"></i>
+                <div class="o2flow-quick-select-text">{{$.lp.quickSelect}}</div>
+            </div>
+            <div class="o2flow-content" data-o2-element="contentNode">
+                {{each $.navi}}
+                <div data-o2-element="{{$.key}}ContentNode" style="display: none;"></div>
+                {{end each}}
+            </div>
+        </div>
+    </div>
+</div>

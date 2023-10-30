@@ -67,7 +67,7 @@ class ActionTouch extends BaseAction {
 				emc.beginTransaction(Work.class);
 				Type type = new TypeToken<LinkedHashMap<String, Object>>() {
 				}.getType();
-				work.getProperties().setServiceValue(XGsonBuilder.instance().fromJson(jsonElement, type));
+				work.setServiceValue(XGsonBuilder.instance().fromJson(jsonElement, type));
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 				Wo wo = new Wo();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -74,13 +75,10 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.beginInquire(aeiObjects.getWork().getActivityToken(), begin));
-		List<Route> list = new ArrayList<>();
-		Route o = aeiObjects.getRoutes().get(0);
-		list.add(o);
-		return list;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

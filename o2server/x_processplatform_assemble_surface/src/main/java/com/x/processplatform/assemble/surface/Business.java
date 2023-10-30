@@ -30,6 +30,7 @@ import com.x.processplatform.assemble.surface.factory.content.ReviewFactory;
 import com.x.processplatform.assemble.surface.factory.content.SerialNumberFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
+import com.x.processplatform.assemble.surface.factory.content.TaskProcessModeFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
@@ -174,6 +175,15 @@ public class Business {
 			this.task = new TaskFactory(this);
 		}
 		return task;
+	}
+
+	private TaskProcessModeFactory taskProcessMode;
+
+	public TaskProcessModeFactory taskProcessMode() throws Exception {
+		if (null == this.taskProcessMode) {
+			this.taskProcessMode = new TaskProcessModeFactory(this);
+		}
+		return taskProcessMode;
 	}
 
 	private TaskCompletedFactory taskCompleted;
@@ -591,8 +601,9 @@ public class Business {
 		return emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, person, Read.job_FIELDNAME, job) > 0;
 	}
 
-	public boolean ifPersonHasTaskWithWork(String person, String workId) throws Exception {
-		return emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId) > 0;
+	public Optional<Task> ifPersonHasTaskWithWork(String person, String workId) throws Exception {
+		Task task = emc.firstEqualAndEqual(Task.class, Task.person_FIELDNAME, person, Task.work_FIELDNAME, workId);
+		return (null != task) ? Optional.of(task) : Optional.empty();
 	}
 
 	public boolean ifPersonHasPauseTaskWithWork(String person, String work) throws Exception {

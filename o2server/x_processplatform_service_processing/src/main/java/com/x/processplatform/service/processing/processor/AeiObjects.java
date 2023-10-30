@@ -26,6 +26,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Empower;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -57,6 +58,7 @@ import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
 import com.x.processplatform.core.entity.message.WorkEvent;
+import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
@@ -72,6 +74,11 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AeiObjects.class);
 
+	public AeiObjects(Business business, Work work, Activity activity, ProcessingAttributes processingAttributes)
+			throws Exception {
+		this(business, work, activity, new ProcessingConfigurator(), processingAttributes);
+	}
+
 	public AeiObjects(Business business, Work work, Activity activity, ProcessingConfigurator processingConfigurator,
 			ProcessingAttributes processingAttributes) throws Exception {
 		this.business = business;
@@ -79,9 +86,9 @@ public class AeiObjects extends GsonPropertyObject {
 		this.oldWork = new Work();
 		this.work.copyTo(this.oldWork);
 		this.activity = activity;
+		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 		this.processingAttributes = processingAttributes;
 		this.processingConfigurator = processingConfigurator;
-		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 	}
 
 	private transient Business business;
@@ -91,8 +98,6 @@ public class AeiObjects extends GsonPropertyObject {
 	private transient ActivityProcessingConfigurator activityProcessingConfigurator;
 
 	private ProcessingAttributes processingAttributes;
-
-	private List<Route> selectRoutes = new ArrayList<>();
 
 	private Work work;
 
@@ -490,9 +495,9 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getCreateReviews().add(review);
 	}
 
-	public void addSelectRoutes(List<Route> selectRoutes) {
-		this.selectRoutes.addAll(selectRoutes);
-	}
+//	public void addSelectRoutes(List<Route> selectRoutes) {
+//		this.selectRoutes.addAll(selectRoutes);
+//	}
 
 	public void deleteReview(Review review) {
 		this.getDeleteReviews().add(review);
@@ -521,10 +526,6 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public ProcessingAttributes getProcessingAttributes() {
 		return processingAttributes;
-	}
-
-	public List<Route> getSelectRoutes() {
-		return selectRoutes;
 	}
 
 	public Work getWork() {
@@ -1862,6 +1863,32 @@ public class AeiObjects extends GsonPropertyObject {
 		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
 		bindings.put(ScriptingFactory.BINDING_NAME_DATA, this.getData());
 		return this.scriptContext;
+	}
+
+	/**
+	 * 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
+	 * 
+	 * @param aeiObjects
+	 * @throws Exception
+	 */
+	public void empower() throws Exception {
+		if ((StringUtils.equals(this.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+				&& BooleanUtils.isNotFalse(this.getWork().getWorkThroughManual()))) {
+			return;
+		}
+		List<Ticket> list = this.getWork().getTickets().bubble().stream()
+				.filter(o -> StringUtils.isBlank(o.fromDistinguishedName())).collect(Collectors.toList());
+		List<String> values = ListUtils.subtract(
+				list.stream().map(Ticket::distinguishedName).collect(Collectors.toList()),
+				this.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+		List<Empower> empowers = this.business().organization().empower().listWithIdentityObject(
+				this.getWork().getApplication(), this.getProcess().getEdition(), this.getWork().getProcess(),
+				this.getWork().getId(), values);
+		for (Empower empower : empowers) {
+			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
+				list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
+			}
+		}
 	}
 
 }

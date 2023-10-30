@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
@@ -280,24 +282,34 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 			Boolean excludeLob) {
 		List<String> names = new ArrayList<>();
 		for (Field field : FieldUtils.getFieldsListWithAnnotation(clz, Column.class)) {
-			if (null == field.getAnnotation(ContainerTable.class)) {
-				if (BooleanUtils.isTrue(excludeInvisible) && FieldsInvisible.contains(field.getName())) {
-					continue;
-				}
-				if (BooleanUtils.isTrue(excludeLob)) {
-					if (null != field.getAnnotation(Lob.class)) {
-						continue;
-					} else {
-						Strategy strategy = field.getAnnotation(Strategy.class);
-						if ((null != strategy) && StringUtils.equals(JsonPropertiesValueHandler, strategy.value())) {
-							continue;
-						}
-					}
-				}
-				names.add(field.getName());
-			}
+			singularAttributeField(field, excludeInvisible, excludeLob, names);
+		}
+		if (names.contains(JpaObject.PROPERTIES_FIELDNAME)) {
+			names = Stream.concat(
+					names.stream().filter(o -> !StringUtils.equalsIgnoreCase(o, JpaObject.PROPERTIES_FIELDNAME)),
+					Stream.<String>of(JpaObject.PROPERTIES_FIELDNAME)).collect(Collectors.toList());
 		}
 		return names;
+	}
+
+	private static void singularAttributeField(Field field, Boolean excludeInvisible, Boolean excludeLob,
+			List<String> names) {
+		if (null == field.getAnnotation(ContainerTable.class)) {
+			if (BooleanUtils.isTrue(excludeInvisible) && FieldsInvisible.contains(field.getName())) {
+				return;
+			}
+			if (BooleanUtils.isTrue(excludeLob)) {
+				if (null != field.getAnnotation(Lob.class)) {
+					return;
+				} else {
+					Strategy strategy = field.getAnnotation(Strategy.class);
+					if ((null != strategy) && StringUtils.equals(JsonPropertiesValueHandler, strategy.value())) {
+						return;
+					}
+				}
+			}
+			names.add(field.getName());
+		}
 	}
 
 	public String nameOfEntity() {

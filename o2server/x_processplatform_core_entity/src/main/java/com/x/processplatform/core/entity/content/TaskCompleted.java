@@ -301,6 +301,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.serial = task.getSerial();
 		this.person = task.getPerson();
 		this.identity = task.getIdentity();
+		this.distinguishedName = task.getDistinguishedName();
 		this.unit = task.getUnit();
 		this.activity = task.getActivity();
 		this.activityName = task.getActivityName();
@@ -359,11 +360,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.latest = true;
 		this.duration = duration;
 		this.processingType = processingType;
-		/* 必须使用set方法,执行opinion的判断 */
+		// 必须使用set方法,执行opinion的判断
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
+		this.label = task.getLabel();
 	}
 
 	public TaskCompletedProperties getProperties() {
@@ -702,6 +704,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date viewTime;
 
+	public static final String DISTINGUISHEDNAME_FIELDNAME = "distinguishedName";
+	@Schema(description = "处理对象.")
+	@FieldDescribe("处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + DISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distinguishedName;
+
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
@@ -709,6 +719,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private TaskCompletedProperties properties;
+
+	public static final String LABEL_FIELDNAME = "label";
+	@Schema(description = "待办凭证标识.")
+	@FieldDescribe("待办凭证标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + LABEL_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LABEL_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String label;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -934,13 +952,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Date timeValue02;
 
-//	public String getDecision() {
-//		return decision;
-//	}
-//
-//	public void setDecision(String decision) {
-//		this.decision = decision;
-//	}
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	public String getJob() {
 		return job;
@@ -1548,6 +1566,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setRouteAlias(String routeAlias) {
 		this.routeAlias = routeAlias;
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.x.processplatform.core.entity.content;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -31,6 +33,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -93,11 +96,21 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 
 	@PostLoad
 	public void postLoad() {
-		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
-			this.title = this.getProperties().getTitle();
+		if (null != this.properties) {
+			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+				this.title = this.getProperties().getTitle();
+			}
+			this.parentJob = this.getProperties().getParentJob();
+			this.parentWork = this.getProperties().getParentWork();
+			this.data = this.getProperties().getData();
+			this.taskCompletedList = this.getProperties().getTaskCompletedList();
+			this.readCompletedList = this.getProperties().getReadCompletedList();
+			this.reviewList = this.getProperties().getReviewList();
+			this.recordList = this.getProperties().getRecordList();
+			this.workLogList = this.getProperties().getWorkLogList();
+			this.storeForm = this.getProperties().getStoreForm();
+			this.mobileStoreForm = this.getProperties().getMobileStoreForm();
 		}
-		this.parentJob = this.getProperties().getParentJob();
-		this.parentWork = this.getProperties().getParentWork();
 	}
 
 	/* 更新运行方法 */
@@ -139,6 +152,21 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.copyProjectionFields(work);
 		this.setParentWork(work.getParentWork());
 		this.setParentJob(work.getParentJob());
+	}
+
+	/**
+	 * 取得存储的表单数据.
+	 * 
+	 * @param mobile 优先取mobile表单数据
+	 * @return
+	 * @throws Exception
+	 */
+	public StoreForm storeForm(boolean mobile) {
+		if (mobile) {
+			return this.getMobileStoreForm();
+		} else {
+			return this.getStoreForm();
+		}
 	}
 
 	public void setParentWork(String parentWork) {
@@ -184,6 +212,108 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 	}
 
+	public Data getData() {
+		return data;
+	}
+
+	public void setData(Data data) {
+		this.getProperties().setData(data);
+		this.data = data;
+	}
+
+	public List<TaskCompleted> getTaskCompletedList() {
+		return taskCompletedList;
+	}
+
+	public void setTaskCompletedList(List<TaskCompleted> taskCompletedList) {
+		this.getProperties().setTaskCompletedList(taskCompletedList);
+		this.taskCompletedList = taskCompletedList;
+	}
+
+	public List<ReadCompleted> getReadCompletedList() {
+		return readCompletedList;
+	}
+
+	public void setReadCompletedList(List<ReadCompleted> readCompletedList) {
+		this.getProperties().setReadCompletedList(readCompletedList);
+		this.readCompletedList = readCompletedList;
+	}
+
+	public List<Review> getReviewList() {
+		return reviewList;
+	}
+
+	public void setReviewList(List<Review> reviewList) {
+		this.getProperties().setReviewList(reviewList);
+		this.reviewList = reviewList;
+	}
+
+	public List<Record> getRecordList() {
+		return recordList;
+	}
+
+	public void setRecordList(List<Record> recordList) {
+		this.getProperties().setRecordList(recordList);
+		this.recordList = recordList;
+	}
+
+	public List<WorkLog> getWorkLogList() {
+		return workLogList;
+	}
+
+	public void setWorkLogList(List<WorkLog> workLogList) {
+		this.getProperties().setWorkLogList(workLogList);
+		this.workLogList = workLogList;
+	}
+
+	public StoreForm getStoreForm() {
+		return storeForm;
+	}
+
+	public void setStoreForm(StoreForm storeForm) {
+		this.getProperties().setStoreForm(storeForm);
+		this.storeForm = storeForm;
+	}
+
+	public StoreForm getMobileStoreForm() {
+		return mobileStoreForm;
+	}
+
+	public void setMobileStoreForm(StoreForm mobileStoreForm) {
+		this.getProperties().setMobileStoreForm(mobileStoreForm);
+		this.mobileStoreForm = mobileStoreForm;
+	}
+
+	public static final String DATA_FIELDNAME = "data";
+	@Transient
+	@FieldDescribe("合并数据对象")
+	private Data data;
+
+	public static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
+	@Transient
+	@FieldDescribe("合并已办对象")
+	private List<TaskCompleted> taskCompletedList = new ArrayList<>();
+
+	public static final String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
+	@Transient
+	@FieldDescribe("合并已阅对象")
+	private List<ReadCompleted> readCompletedList = new ArrayList<>();
+
+	public static final String REVIEWLIST_FIELDNAME = "reviewList";
+	@Transient
+	@FieldDescribe("合并参阅对象")
+	private List<Review> reviewList = new ArrayList<>();
+
+	public static final String RECORDLIST_FIELDNAME = "recordList";
+	@Transient
+	@FieldDescribe("合并记录对象")
+	private List<Record> recordList = new ArrayList<>();
+
+	public static final String WORKLOGLIST_FIELDNAME = "workLogList";
+	@Transient
+	@FieldDescribe("合并工作日志对象")
+	private List<WorkLog> workLogList = new ArrayList<>();
+
 	public static final String PARENTWORK_FIELDNAME = "parentWork";
 	@Transient
 	@FieldDescribe("父工作,在当前工作是通过子流程调用时产生.")
@@ -193,6 +323,16 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@Transient
 	@FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
 	private String parentJob;
+
+	public static final String STOREFORM_FIELDNAME = "storeForm";
+	@Transient
+	@FieldDescribe("合并工作Form")
+	private StoreForm storeForm;
+
+	public static final String MOBILESTOREFORM_FIELDNAME = "mobileStoreForm";
+	@Transient
+	@FieldDescribe("合并工作Form,移动端.")
+	private StoreForm mobileStoreForm;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")

@@ -2,6 +2,7 @@ package com.x.processplatform.core.entity.content;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,6 +48,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.content.WorkProperties.GoBackStore;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -109,18 +111,23 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	@PostLoad
 	public void postLoad() {
-		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
-			this.title = this.getProperties().getTitle();
+		if (null != this.properties) {
+			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+				this.title = this.getProperties().getTitle();
+			}
+			this.splitValueList = this.getProperties().getSplitValueList();
+			this.embedTargetJob = this.getProperties().getEmbedTargetJob();
+			this.embedCompleted = this.getProperties().getEmbedCompleted();
+			this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
+			this.parentJob = this.getProperties().getParentJob();
+			this.parentWork = this.getProperties().getParentWork();
+			this.goBackStore = this.getProperties().getGoBackStore();
+			this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
+			this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
+			this.tickets = this.getProperties().getTickets();
+			this.serviceValue = this.getProperties().getServiceValue();
+			this.manualEmpowerMap = this.getProperties().getManualEmpowerMap();
 		}
-		this.splitValueList = this.getProperties().getSplitValueList();
-		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
-		this.embedCompleted = this.getProperties().getEmbedCompleted();
-		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
-		this.parentJob = this.getProperties().getParentJob();
-		this.parentWork = this.getProperties().getParentWork();
-		this.goBackStore = this.getProperties().getGoBackStore();
-		this.goBackActivityToken = this.getProperties().getGoBackActivityToken();
-		this.splitTokenValueMap = this.getProperties().getSplitTokenValueMap();
 	}
 
 	/* 更新运行方法 */
@@ -259,21 +266,65 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setSplitTokenValueMap(splitTokenValueMap);
 	}
 
+	public void setTickets(Tickets tickets) {
+		this.getProperties().setTickets(tickets);
+		this.tickets = tickets;
+	}
+
+	public Tickets getTickets() {
+		return tickets;
+	}
+
+	public Map<String, Object> getServiceValue() {
+		return this.serviceValue;
+	}
+
+	public void setServiceValue(Map<String, Object> serviceValue) {
+		this.getProperties().setServiceValue(serviceValue);
+		this.serviceValue = serviceValue;
+	}
+
+	public Map<String, String> getManualEmpowerMap() {
+		return manualEmpowerMap;
+	}
+
+	public void setManualEmpowerMap(Map<String, String> manualEmpowerMap) {
+		this.getProperties().setManualEmpowerMap(manualEmpowerMap);
+		this.manualEmpowerMap = manualEmpowerMap;
+	}
+
+	public static final String MANUALEMPOWERMAP_FIELDNAME = "manualEmpowerMap";
+	@Transient
+	@Deprecated(since = "8.2", forRemoval = true)
+	@FieldDescribe("授权对象")
+	private Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
+
+	public static final String SERVICEVALUE_FIELDNAME = "serviceValue";
+	@Transient
+	@FieldDescribe("服务回调值")
+	private Map<String, Object> serviceValue = new LinkedHashMap<>();
+
+	public static final String GOBACKACTIVITYTOKEN_FIELDNAME = "goBackActivityToken";
+	@Transient
 	@FieldDescribe("goBack进行跳转退回时使用的.")
 	private String goBackActivityToken;
 
+	public static final String GOBACKSTORE_FIELDNAME = "goBackStore";
 	@Transient
 	@FieldDescribe("回退临时存储数据.")
 	private GoBackStore goBackStore;
 
+	public static final String SPLITVALUELIST_FIELDNAME = "splitValueList";
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
 
+	public static final String EMBEDTARGETJOB_FIELDNAME = "embedTargetJob";
 	@Transient
 	@FieldDescribe("Embed活动生成的Work的Job.")
 	private String embedTargetJob;
 
+	public static final String EMBEDCOMPLETED_FIELDNAME = "embedCompleted";
 	@Transient
 	@FieldDescribe("子流程返回标识.")
 	private String embedCompleted;
@@ -297,6 +348,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
 	private String parentJob;
+
+	public static final String TICKETS_FIELDNAME = "tickets";
+	@Transient
+	@FieldDescribe("待办凭证.")
+	private Tickets tickets;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")

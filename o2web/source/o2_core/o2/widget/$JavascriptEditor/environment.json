@@ -59,7 +59,8 @@
     "readList":[],
     "control": {
       "allowVisit": "boolean:是否允许访问工作",
-      "allowProcessing": "boolean:是否允许流转",
+      "allowFlow": "boolean:是否允许流转",
+      "allowProcessing": "boolean:是否允许流转(提交)",
       "allowReadProcessing": "boolean:是否有待阅",
       "allowSave": "boolean:是否允许保存",
       "allowReset": "boolean:是否允许重置处理人",

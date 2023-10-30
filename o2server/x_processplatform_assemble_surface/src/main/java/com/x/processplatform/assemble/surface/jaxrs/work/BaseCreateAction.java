@@ -68,7 +68,7 @@ class BaseCreateAction extends BaseAction {
 			work.setTitle(title);
 			// 写入父work标识
 			if (StringUtils.isNotBlank(parentWork)) {
-				work.getProperties().setParentWork(parentWork);
+				work.setParentWork(parentWork);
 			}
 			work.setCreatorIdentity(identity);
 			work.setCreatorPerson(organization.person().getWithIdentity(identity));

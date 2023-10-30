@@ -11,7 +11,7 @@
 		"overflow": "hidden",
 		"border": "3px solid #666",
 		"border-radius": "10px",
-		"box-shadow": "0px 0px 15px #666", 
+		"box-shadow": "0px 0px 15px #666",
 		"position": "absolute",
 		"z-index":1001
 	},
@@ -246,18 +246,19 @@
 		"font-size": "12px",
 		"color": "#666666",
         "background": "transparent",
+		"position": "relative",
 		"border-bottom": "1px solid #ccc"
 	},
 	"searchInput": {
-		"width": "150px",
+		"width": "128px",
 		"height": "16px",
-		"border": "0px",
 		"margin-top": "2px",
 		"font-size": "12px",
 	  	"padding-left" : "22px",
 	  	"background" : "url(../x_component_Selector/$Selector/process/icon/search.png) 5px center no-repeat rgb(255, 255, 255)",
 	  	"border" : "1px solid #e3e4e8",
 		"float": "left",
+		"padding-right" : "22px",
 		"outline": "none"
 	},
 	"searchInputSingle": {
@@ -265,6 +266,16 @@
 		"height": "22px",
 		"border": "0px",
 		"margin": "3px"
+	},
+	"searchCancelAction": {
+		"background" : "url(../x_component_Selector/$Selector/flow/icon/cancel.png) center center / 12px 12px no-repeat rgb(255, 255, 255)",
+		"position": "absolute",
+		"left": "204px",
+		"top": "4px",
+		"height": "16px",
+		"width": "16px",
+		"cursor": "pointer",
+		"display": "none"
 	},
 	"letterAreaMobileNode": {
         "padding": "0px 9px",

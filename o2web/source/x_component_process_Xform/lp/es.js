@@ -319,8 +319,12 @@ MWF.xApplication.process.Xform.LP = {
         "closeTitle": "Cerrar el documento",
         "save": "Guardar",
         "saveTitle": "Guardar el documento",
-        "flow": "Continuar el flujo de trabajo",
-        "flowTitle": "Continuar el flujo de trabajo del documento",
+        "flow": "Entregar",
+        "flowTitle": "Enviar documento",
+        "process": "Entregar",
+        "processTitle": "Enviar documento",
+        "submit": "Entregar",
+        "submitTitle": "Enviar documento",
         "reroute": "Reprogramar",
         "rerouteTitle": "Reprogramar el documento",
         "reset": "Restablecer el responsable",
@@ -368,6 +372,8 @@ MWF.xApplication.process.Xform.LP = {
 
         "rollbackInfo": "Seleccione la etapa a la que desea retroceder el archivo",
         "addSplitInfo": "Configure los datos de división según su negocio. Estos datos deben coincidir con los criterios de división establecidos en el flujo de trabajo.<br/> Si hay varios valores, sepárelos con comas (,)",
+        "splitValue": "Dividir por",
+        "opinion": "opinión",
         "selectUnit": "Seleccionar organización o persona",
         "excludeBranches": "Excluir ramas existentes",
         "yes": "Sí",
@@ -386,9 +392,15 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "Agregar un responsable antes de que se procese la tarea",
         "addTaskAfterTitle": "Agregar un responsable después de que se procese la tarea",
         "addTaskType": "Método de asignación",
+        "modeType": "Método de procesamiento",
+        "single": "soltero",
+        "queue": "serie",
+        "parallel": "paralelo",
 
         "addTaskRepeatedTitle": "Recordatorio de asignación repetida",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> ya está en la lista de responsables y no se le puede volver a asignar."
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> ya está en la lista de responsables y no se le puede volver a asignar.",
+
+        "mergeWork": "Fusionar trabajo"
     },
 
     "sendRead": "Enviar lectura pendiente",

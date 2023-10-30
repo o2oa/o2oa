@@ -66,8 +66,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				} else {
 					job = business.job().findWithWorkCompleted(flag);
 					WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
-					if (ListTools.isNotEmpty(workCompleted.getProperties().getRecordList())) {
-						wos = Wo.copier.copy(workCompleted.getProperties().getRecordList());
+					if (ListTools.isNotEmpty(workCompleted.getRecordList())) {
+						wos = Wo.copier.copy(workCompleted.getRecordList());
 					} else {
 						wos = emc.fetchEqual(Record.class, Wo.copier, Record.job_FIELDNAME, job);
 					}

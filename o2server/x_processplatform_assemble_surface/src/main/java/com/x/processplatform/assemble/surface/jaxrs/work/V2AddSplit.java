@@ -19,28 +19,25 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
-import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddSplitWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddSplitWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -48,28 +45,39 @@ class V2AddSplit extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
 
-	private EffectivePerson effectivePerson;
-	private Work work;
-	private WorkLog addSplitWorkLog;
-	private Record rec;
-	private String series = StringTools.uniqueToken();
-	private List<String> existTaskIds = new ArrayList<>();
-	private V2AddSplitWi req = new V2AddSplitWi();
-
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		this.effectivePerson = effectivePerson;
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 		ActionResult<Wo> result = new ActionResult<>();
+		Param param = init(effectivePerson, id, jsonElement);
+		List<String> ids = addSplit(param.work.getId(), param.addSplitWorkLog.getId(), param.splitValueList,
+				param.work.getJob());
+		processing(ids, param.work.getId(), param.series, param.work.getJob());
+		Record rec = this.recordWorkProcessing(Record.TYPE_ADDSPLIT, param.routeName, param.opinion,
+				param.work.getJob(), param.addSplitWorkLog.getId(), param.identity, param.series);
+//		RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, param.addSplitWorkLog, effectivePerson, param.series);
+//		RecordBuilder.processing(rec);
+		Wo wo = Wo.copier.copy(rec);
+		result.setData(wo);
+		return result;
+	}
+
+	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.routeName = wi.getRouteName();
+		param.opinion = wi.getOpinion();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			work = emc.find(id, Work.class);
-
+			Work work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowAddSplit().build();
-			if (BooleanUtils.isNotTrue(control.getAllowAddSplit())) {
+			param.work = work;
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowAddSplit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())
+					&& BooleanUtils.isNotTrue(control.getAllowAddSplit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			Manual manual = business.manual().pick(work.getActivity());
@@ -77,46 +85,46 @@ class V2AddSplit extends BaseAction {
 					|| (!BooleanUtils.isTrue(work.getSplitting()))) {
 				throw new ExceptionCannotAddSplit(work.getId());
 			}
-
 			List<WorkLog> workLogs = this.listWorkLog(business, work);
-
 			WorkLogTree tree = new WorkLogTree(workLogs);
-
 			Node currentNode = tree.location(work);
-
 			if (null == currentNode) {
 				throw new ExceptionWorkLogWithActivityTokenNotExist(work.getActivityToken());
 			}
-
 			Node addSplitNode = this.findSplitNode(tree, currentNode);
 			if (null == addSplitNode) {
 				throw new ExceptionNoneSplitNode(work.getId());
 			}
-			addSplitWorkLog = addSplitNode.getWorkLog();
-
+			param.addSplitWorkLog = addSplitNode.getWorkLog();
 			if (BooleanUtils.isTrue(wi.getTrimExist())) {
 				List<String> splitValues = ListUtils.subtract(wi.getSplitValueList(),
 						this.existSplitValues(tree, addSplitNode));
 				if (ListTools.isEmpty(splitValues)) {
 					throw new ExceptionEmptySplitValueAfterTrim(work.getId());
 				}
-				req.setSplitValueList(splitValues);
+				param.splitValueList = splitValues;
 			} else {
 				if (ListTools.isEmpty(wi.getSplitValueList())) {
 					throw new ExceptionEmptySplitValue(work.getId());
 				}
-				req.setSplitValueList(wi.getSplitValueList());
+				param.splitValueList = wi.getSplitValueList();
 			}
-			existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+			param.identity = business.organization().identity()
+					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}
+		return param;
+	}
 
-		List<String> ids = addSplit();
-		processing(ids);
-		concreteRecord(addSplitWorkLog);
-		// record();
-		Wo wo = Wo.copier.copy(rec);
-		result.setData(wo);
-		return result;
+	private class Param {
+
+		private String identity;
+		private String routeName;
+		private String opinion;
+		private Work work;
+		private WorkLog addSplitWorkLog;
+		private String series = StringTools.uniqueToken();
+		private List<String> splitValueList = new ArrayList<>();
+
 	}
 
 	private List<String> existSplitValues(WorkLogTree tree, Node splitNode) {
@@ -147,46 +155,35 @@ class V2AddSplit extends BaseAction {
 		return null;
 	}
 
-	private List<String> addSplit() throws Exception {
-		req.setWorkLog(addSplitWorkLog.getId());
-		WrapStringList resp = ThisApplication.context().applications()
+	private List<String> addSplit(String workId, String addSplitWorkLogId, List<String> splitValueList, String job)
+			throws Exception {
+		com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWi req = new com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWi();
+		req.setWorkLog(addSplitWorkLogId);
+		req.setSplitValueList(splitValueList);
+		com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWo resp = ThisApplication.context()
+				.applications()
 				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "v2", work.getId(), "add", "split"), req, work.getJob())
-				.getData(WrapStringList.class);
+						Applications.joinQueryUri("work", "v2", workId, "add", "split"), req, job)
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWo.class);
 		if (ListTools.isEmpty(resp.getValueList())) {
-			throw new ExceptionReroute(this.work.getId());
+			throw new ExceptionReroute(workId);
 		}
 		return resp.getValueList();
-
 	}
 
-	private void processing(List<String> ids) throws Exception {
+	private void processing(List<String> ids, String workId, String series, String job) throws Exception {
 		for (String id : ids) {
 			ProcessingAttributes processingAttributes = new ProcessingAttributes();
 			processingAttributes.setType(ProcessingAttributes.TYPE_ADDSPLIT);
 			processingAttributes.setSeries(series);
-			WoId processingResp = ThisApplication.context().applications()
+			WoId resp = ThisApplication.context().applications()
 					.putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("work", id, "processing"), processingAttributes, work.getJob())
+							Applications.joinQueryUri("work", id, "processing"), processingAttributes, job)
 					.getData(WoId.class);
-			if (StringUtils.isBlank(processingResp.getId())) {
-				throw new ExceptionReroute(this.work.getId());
+			if (StringUtils.isBlank(resp.getId())) {
+				throw new ExceptionReroute(workId);
 			}
 		}
-	}
-
-	private void concreteRecord(WorkLog workLog) throws Exception {
-		List<String> newlyTaskIds = new ArrayList<>();
-		Activity activity = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			newlyTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-			newlyTaskIds = ListUtils.subtract(newlyTaskIds, existTaskIds);
-			activity = business.getActivity(workLog.getArrivedActivity(), workLog.getArrivedActivityType());
-		}
-		this.rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, workLog, effectivePerson, activity,
-				newlyTaskIds);
-		RecordBuilder.processing(rec);
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.V2AddSplit$Wi")
@@ -197,7 +194,7 @@ class V2AddSplit extends BaseAction {
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.V2AddSplit$Wo")
-	public static class Wo extends Record {
+	public static class Wo extends V2AddSplitWo {
 
 		private static final long serialVersionUID = -8410749558739884101L;
 

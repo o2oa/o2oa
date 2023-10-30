@@ -324,6 +324,10 @@ MWF.xApplication.process.Xform.LP = {
         "saveTitle": "保存文档",
         "flow": "继续流转",
         "flowTitle": "继续流转文档",
+        "process": "继续流转",
+        "processTitle": "继续流转文档",
+        "submit": "提交",
+        "submitTitle": "提交文档",
         "reroute": "调度",
         "rerouteTitle": "调度文档",
         "reset": "重置处理人",
@@ -371,7 +375,9 @@ MWF.xApplication.process.Xform.LP = {
         "readed" : "已阅",
 
         "rollbackInfo": "请选择文件要回溯到的位置",
-        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔",
+        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。多个值请用半角逗号(,)分隔",
+        "splitValue": "拆分依据",
+        "opinion": "意见",
         "selectUnit": "选择组织或人员",
         "excludeBranches": "排除已有分支",
         "yes": "是",
@@ -390,6 +396,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "在您处理之前添加处理人",
         "addTaskAfterTitle": "在您处理之后添加处理人",
         "addTaskType": "加签方式",
+        "modeType": "处理方式",
+        "single": "单人",
+        "queue": "串行",
+        "parallel": "并行",
 
         "goBackActivity": "退回到活动：",
         "goBackActivityWay": "退回后处理：",
@@ -402,8 +412,9 @@ MWF.xApplication.process.Xform.LP = {
 
 
         "addTaskRepeatedTitle": "重复加签提醒",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。",
 
+        "mergeWork": "合并工作"
     },
 
     "sendRead": "发送待阅",

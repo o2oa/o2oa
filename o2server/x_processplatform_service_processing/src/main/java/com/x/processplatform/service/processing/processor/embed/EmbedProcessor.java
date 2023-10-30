@@ -1,5 +1,15 @@
 package com.x.processplatform.service.processing.processor.embed;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
@@ -20,13 +30,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionAs
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EmbedProcessor extends AbstractEmbedProcessor {
 
@@ -169,13 +172,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken(), embed));
-		// 驱动上个环节新产生的work
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	private String targetIdentity(AeiObjects aeiObjects, Embed embed) throws Exception {

@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.cancel;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,16 +29,16 @@ abstract class AbstractCancelProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Cancel cancel = (Cancel) aeiObjects.getActivity();
-		return inquiring(aeiObjects, cancel);
+		return inquiring(aeiObjects, cancel).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Cancel cancel) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Cancel cancel) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Cancel cancel) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Cancel cancel) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

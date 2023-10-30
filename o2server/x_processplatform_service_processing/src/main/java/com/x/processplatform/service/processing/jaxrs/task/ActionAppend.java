@@ -40,6 +40,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentities;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
 
+@Deprecated(since = "8.2以后使用V2Reset来做转交.", forRemoval = true)
 class ActionAppend extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAppend.class);
@@ -167,14 +168,13 @@ class ActionAppend extends BaseAction {
 		for (TaskIdentity taskIdentity : taskIdentities) {
 			if (BooleanUtils.isNotTrue(taskIdentity.getIgnoreEmpower())
 					&& StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {
-				work.getProperties().getManualEmpowerMap().put(taskIdentity.getIdentity(),
-						taskIdentity.getFromIdentity());
+				work.getManualEmpowerMap().put(taskIdentity.getIdentity(), taskIdentity.getFromIdentity());
 			}
 		}
 		// properties中的集合对象需要重新new对象set进去，这样jpa才会更新数据
 		Map<String, String> manualEmpowerMap = new LinkedHashMap<>();
-		manualEmpowerMap.putAll(work.getProperties().getManualEmpowerMap());
-		work.getProperties().setManualEmpowerMap(manualEmpowerMap);
+		manualEmpowerMap.putAll(work.getManualEmpowerMap());
+		work.setManualEmpowerMap(manualEmpowerMap);
 		emc.commit();
 	}
 

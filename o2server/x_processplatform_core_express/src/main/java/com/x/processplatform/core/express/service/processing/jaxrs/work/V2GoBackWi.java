@@ -20,7 +20,7 @@ public class V2GoBackWi extends GsonPropertyObject {
 	private String way;
 
 	@FieldDescribe("人工活动强制处理人.")
-	private List<String> identityList = new ArrayList<>();
+	private List<String> distinguishedNameList = new ArrayList<>();
 
 	public String getActivityToken() {
 		return activityToken;
@@ -46,12 +46,12 @@ public class V2GoBackWi extends GsonPropertyObject {
 		this.way = way;
 	}
 
-	public List<String> getIdentityList() {
-		return identityList;
+	public List<String> getDistinguishedNameList() {
+		return distinguishedNameList;
 	}
 
-	public void setIdentityList(List<String> identityList) {
-		this.identityList = identityList;
+	public void setDistinguishedNameList(List<String> distinguishedNameList) {
+		this.distinguishedNameList = distinguishedNameList;
 	}
 
 }

@@ -1,0 +1,64 @@
+{
+    "identityNode": {
+        "padding": "5px",
+        "float": "left",
+        "margin-right": "10px",
+        "margin-bottom": "10px",
+        "background-color": "#FB4747",
+        "border-radius":"24px",
+        "color": "#fff",
+        "line-height": "24px",
+        "height": "24px",
+        "width": "24px",
+        "font-size": "12px",
+        "position":"relative",
+        "overflow": "hidden"
+    },
+    "identityNode_over": {
+
+    },
+    "identityRemoveNode": {
+        "background": "url("+o2.session.path+"/widget/$O2Identity/flowmobile/icon/del.png) center center no-repeat",
+        "width": "14px",
+        "height": "14px",
+        "position": "absolute",
+        "top": "-2px",
+        "right": "-2px"
+    },
+    "identityInforNode": {
+        "display": "none"
+    },
+    "identityInforNameNode": {
+        "height": "40px"
+    },
+    "identityInforPicNode": {
+        "height": "40px",
+        "width": "40px",
+        "float": "left"
+    },
+    "identityInforRightTextNode": {
+        "height": "40px",
+        "float": "left",
+        "margin-left": "20px",
+    },
+    "identityInforNameTextNode": {
+        "height": "24px",
+        "line-height": "24px",
+        "width": "120px",
+        "color": "#da7429",
+        "font-size": "14px",
+        "font-weight": "bold"
+    },
+    "identityInforEmployeeTextNode": {
+        "height": "16px",
+        "line-height": "16px",
+        "width": "120px",
+        "color": "#999999",
+        "font-size": "12px"
+    },
+    "identityInforPhoneNode": {
+        "padding": "0px",
+        "margin-top": "15px",
+        "height": "10px"
+    }
+}

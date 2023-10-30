@@ -31,6 +31,14 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this._loadCss();
 
         this.container = $(container);
+
+        if( ["flow"].contains(this.options.style)  ){
+            this.options.contentUrl = this.path + this.options.style + "/"+( this.options.embedded ? "selector_embedded":"selector" )+".html";
+            this.options.level1Indent = 10;
+            this.options.indent = 20;
+            this.options.tabStyle = "blue_flat";
+        }
+
         this.lp = MWF.xApplication.Selector.LP;
 
         this.lastPeople = "";
@@ -42,31 +50,44 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
     },
     load: function(){
         if( this.options.contentUrl ){
-            this.loadWithUrl()
+            this.loadWithUrl();
         }else {
             if (layout.mobile) {
                 this.loadMobile();
             } else {
                 this.loadPc();
             }
+            this.fireEvent("load");
         }
-        this.fireEvent("load");
     },
     loadWithUrl : function(){
-        var request = new Request.HTML({
-            url: this.options.contentUrl,
-            method: "GET",
-            async: false,
-            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-                this.node = responseTree[0];
+        if( this.options.style === "flow" ){
+            var node = new Element("div");
+            node.loadHtml( this.options.contentUrl, {
+                "bind": { "lp": MWF.xApplication.Selector.LP, "options": this.options },
+                "module": this
+            },function () {
+                this.node = node.getFirst();
+                this.node.loadCss("../x_component_Selector/$Selector/flow/style.css");
                 this.loadContentWithHTML();
                 this.fireEvent("load");
-            }.bind(this),
-            onFailure: function(xhr){
-                alert(xhr);
-            }
-        });
-        request.send();
+            }.bind(this));
+        }else{
+            var request = new Request.HTML({
+                url: this.options.contentUrl,
+                method: "GET",
+                async: false,
+                onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                    this.node = responseTree[0];
+                    this.loadContentWithHTML();
+                    this.fireEvent("load");
+                }.bind(this),
+                onFailure: function(xhr){
+                    alert(xhr);
+                }
+            });
+            request.send();
+         }
     },
     loadContentWithHTML : function(){
         var container = this.options.injectToBody ? $(document.body) : this.container;
@@ -80,15 +101,19 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         }
 
         if( !this.options.embedded ) {
-            this.node.setStyles(this.css.containerNodeMobile);
+            this.node.setStyles( layout.mobile ? this.css.containerNodeMobile : this.css.containerNode );
             this.node.setStyle("z-index", this.options.zIndex.toInt() + 1);
         }
-        this.node.setStyle("height", ( container.getSize().y ) + "px");
+        if( layout.mobile ){
+            this.node.setStyle("height", ( container.getSize().y ) + "px");
+        }
 
         this.titleNode = this.node.getElement(".MWF_selector_titleNode");
         this.titleTextNode = this.node.getElement(".MWF_selector_titleTextNode");
         this.titleCancelActionNode = this.node.getElement(".MWF_selector_titleCancelActionNode");
         this.titleOkActionNode = this.node.getElement(".MWF_selector_titleOkActionNode");
+
+        this.titleActionNode = this.node.getElement(".MWF_selector_titleActionNode");
 
         this.tabContainer = this.node.getElement(".MWF_selector_tabContainer");
         this.tabContainer.show();
@@ -96,8 +121,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.contentNode = this.node.getElement(".MWF_selector_contentNode");
 
         this.selectNode = this.node.getElement(".MWF_selector_selectNode");
+        this.selectTopNode = this.node.getElement(".MWF_selector_selectTopNode");
+        this.selectTopTextNode = this.node.getElement(".MWF_selector_selectTopTextNode");
         this.searchInputDiv = this.node.getElement(".MWF_selector_searchInputDiv");
         this.searchInput = this.node.getElement(".MWF_selector_searchInput");
+        this.searchCancelAction = this.node.getElement(".MWF_selector_searchCancelAction");
+        this.letterActionNode = this.node.getElement(".MWF_selector_letterActionNode");
 
         this.flatCategoryScrollNode = this.node.getElement(".MWF_selector_flatCategoryScrollNode");
         this.flatCategoryNode = this.node.getElement(".MWF_selector_flatCategoryNode");
@@ -110,6 +139,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.itemSearchAreaScrollNode = this.node.getElement(".MWF_selector_itemSearchAreaScrollNode");
         this.itemSearchAreaNode = this.node.getElement(".MWF_selector_itemSearchAreaNode");
 
+        this.selectedContainerNode = this.node.getElement(".MWF_selector_selectedContainerNode");
+
+        this.selectedTopNode = this.node.getElement(".MWF_selector_selectedTopNode");
+        this.selectedTopTextNode = this.node.getElement(".MWF_selector_selectedTopTextNode");
+        this.emptySelectedNode = this.node.getElement(".MWF_selector_emptySelectedNode");
+
         this.selectedScrollNode = this.node.getElement(".MWF_selector_selectedScrollNode");
         this.selectedNode = this.node.getElement(".MWF_selector_selectedNode");
         this.selectedItemSearchAreaNode = this.node.getElement(".MWF_selector_selectedItemSearchAreaNode");
@@ -118,11 +153,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.okActionNode = this.node.getElement(".MWF_selector_okActionNode");
         this.cancelActionNode = this.node.getElement(".MWF_selector_cancelActionNode");
 
-        if (this.titleNode) this.titleNode.setStyles(this.css.titleNodeMobile);
+        if (this.titleNode) this.titleNode.setStyles( layout.mobile ? this.css.titleNodeMobile : this.css.titleNode );
         if (this.titleTextNode){
-            this.titleTextNode.setStyles(this.css.titleTextNodeMobile);
+            this.titleTextNode.setStyles(layout.mobile ? this.css.titleTextNodeMobile : this.css.titleTextNode);
             if(this.options.title)this.titleTextNode.set("text", this.options.title);
         }
+        if (this.titleActionNode)this.titleActionNode.setStyles(this.css.titleActionNode);
         if (this.titleCancelActionNode) this.titleCancelActionNode.setStyles(this.css.titleCancelActionNodeMobile);
         if (this.titleOkActionNode) this.titleOkActionNode.setStyles(this.css.titleOkActionNodeMobile);
 
@@ -130,15 +166,24 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         if (this.contentNode) this.contentNode.setStyles(this.css.contentNode);
 
-        if (this.selectNode) this.selectNode.setStyles(this.css.selectNodeMobile);
+        if (this.selectNode) this.selectNode.setStyles( layout.mobile ? this.css.selectNodeMobile : this.css.selectNode);
+        if (this.selectTopNode)this.selectTopNode.setStyles(this.css.selectTopNode);
+        if (this.selectTopTextNode)this.selectTopTextNode.setStyles(this.css.selectTopTextNode);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
         if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput );
+        if (this.searchCancelAction) this.searchCancelAction.setStyles(this.css.searchCancelAction);
+        if (this.letterActionNode) this.letterActionNode.setStyles(this.css.letterActionNode);
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
 
         if (this.itemSearchAreaScrollNode) this.itemSearchAreaScrollNode.setStyles(this.css.itemSearchAreaScrollNode);
         if (this.itemSearchAreaNode) this.itemSearchAreaNode.setStyles(this.css.itemAreaNode);
+
+        if (this.selectedContainerNode)this.selectedContainerNode.setStyles(this.css.selectedContainerNode);
+        if (this.selectedTopNode)this.selectedTopNode.setStyles(this.css.selectedTopNode);
+        if (this.selectedTopTextNode)this.selectedTopTextNode.setStyles(this.css.selectedTopTextNode);
+        if (this.emptySelectedNode)this.emptySelectedNode.setStyles(this.css.selectedTopActionNode);
 
         if (this.selectedScrollNode) this.selectedScrollNode.setStyles(this.css.selectedScrollNode);
         if (this.selectedNode) this.selectedNode.setStyles(this.css.selectedNode);
@@ -154,10 +199,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.cancelActionNode.set("text", MWF.SelectorLP.cancel);
         }
 
+
+        this.node.inject( container );
+
         var size;
         if( this.options.injectToBody ){
             size = $(document.body).getSize();
-        }else{
+        }else if( layout.mobile ){
             var containerSize = this.container.getSize();
             var bodySize = $(document.body).getSize();
             if(containerSize.y === 0){
@@ -168,21 +216,42 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 "x" : Math.min( containerSize.x, bodySize.x ),
                 "y" : Math.min( containerSize.y, bodySize.y )
             };
+
+
+            var zoom = this.node.getStyle("zoom").toInt() || 0;
+            if( zoom ){
+                size.x = size.x * 100 / zoom;
+                size.y = size.y * 100 / zoom;
+            }
+            this.node.setStyles({
+                "width" : size.x+"px",
+                "height" : size.y+"px"
+            });
+        }else{
+            debugger;
+            if( this.options.width || this.options.height ){
+                this.setSize()
+            }
+            this.node.position({
+                relativeTo: this.container,
+                position: "center",
+                edge: "center"
+            });
+
+            size = this.container.getSize();
+            var nodeSize = this.node.getSize();
+            this.node.makeDraggable({
+                "handle": this.titleNode,
+                "limit": {
+                    "x": [0, size.x - nodeSize.x],
+                    "y": [0, size.y - nodeSize.y]
+                }
+            });
         }
-        var zoom = this.node.getStyle("zoom").toInt() || 0;
-        if( zoom ){
-            size.x = size.x * 100 / zoom;
-            size.y = size.y * 100 / zoom;
-        }
-        this.node.setStyles({
-            "width" : size.x+"px",
-            "height" : size.y+"px"
-        });
 
         var isFormWithAction = window.location.href.toLowerCase().indexOf("workmobilewithaction.html") > -1;
-        var height;
 
-        var height = size.y-this.getOffsetY( this.contentNode );
+        var height = this.node.getSize().y-this.getOffsetY( this.contentNode );
         if( this.tabContainer ){
             height = height - this.getOffsetY( this.tabContainer ) - ( this.tabContainer.getStyle("height").toInt() || 0 )
         }
@@ -206,8 +275,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             this.loadAction();
         }
 
-        this.node.inject( container );
-        if( !this.options.embedded ){
+        if( !this.options.embedded && layout.mobile ){
             this.node.setStyles({
                 "top": "0px",
                 "left": "0px"
@@ -256,21 +324,80 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
 
+        this.loadSelectedNodeMobile();
+
+        this.loadSelectedCountNode();
+
+        this.node.inject($(document.body));
+
         var size = $(document.body).getSize();
         //var height = size.y-40;
-        var height = size.y;
+        var height = size.y - this.selectedCountNode.getSize().y - this.getOffsetY(this.selectedCountNode);
+        height = height - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
         this.contentNode.setStyle("height", ""+height+"px");
         this.contentNode.setStyle("margin-top", "2px");
 
         this.loadContent();
-
-        this.node.inject($(document.body));
         this.node.setStyles({
             "top": "0px",
             "left": "0px"
         });
 
         this.setEvent();
+    },
+    loadSelectedNodeMobile: function(){
+        this.css.selectedWrapNodeMobile["z-index"] = this.options.zIndex + 2;
+        this.selectedWrapNode = new Element("div.selectedWrapNode", {
+            "styles": this.css.selectedWrapNodeMobile
+        }).inject(this.contentNode);
+
+        this.selectedTitleNode = new Element("div.selectedTitleNodeMobile", {
+            "styles": this.css.selectedTitleNodeMobile
+        }).inject(this.selectedWrapNode);
+        this.selectedTitleLabelNode = new Element("span", {
+            "style": "font-weight:bold; padding-right:5px;",
+            "text": MWF.SelectorLP.selected2
+        }).inject(this.selectedTitleNode);
+        // this.selectedTitleCountNode = new Element("span", {
+        //     "text": "(0)"
+        // }).inject(this.selectedTitleNode);
+
+
+        this.selectedScrollNode = new Element("div.selectedScrollNode", {
+            "styles": this.css.selectedScrollNodeMobile
+        }).inject(this.selectedWrapNode);
+
+
+        // this.selectedNode = new Element("div.selectedNode", {
+        //     "styles": this.css.selectedNodeMobile
+        // }).inject(this.selectedScrollNode);
+
+        this.selectedWrapNode.setStyle("display", "none");
+    },
+    loadSelectedCountNode: function(){
+        this.selectedCountNode = new Element("div.selectedCountNode", {
+            "styles": this.css.selectedCountNodeMobile,
+            "events":{
+                "click": function () {
+                    this.css.selectedMaskNodeMobile["z-index"] = this.options.zIndex + 2;
+                    this.selectedMaskNode = new Element("div", {
+                        "styles": this.css.selectedMaskNodeMobile,
+                        "events":{
+                            "click": function () {
+                                this.selectedWrapNode.hide();
+                                this.selectedMaskNode.destroy();
+                            }.bind(this)
+                        }
+                    }).inject( this.node );
+                    this.selectedWrapNode.show().inject( this.node );
+                }.bind(this)
+            }
+        }).inject(this.node);
+
+        this.selectedCountLabelNode = new Element("div", {
+            "styles": this.css.selectedCountLabelNodeMobile,
+            "text": MWF.SelectorLP.selected2
+        }).inject( this.selectedCountNode );
     },
     loadPc: function(){
         this.css.maskNode["z-index"] = this.options.zIndex;
@@ -417,36 +544,40 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if( this.options.contentUrl ){
             MWF.require("MWF.widget.Tab", function(){
 
-                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle });
+                this.tab = new MWF.widget.Tab( this.tabContainer || this.titleTextNode, {"style": this.options.tabStyle || "default" });
 
                 var width;
-                if( this.tabContainer ){
-                    var borderWidth = 0;
-                    if( this.tab.css.tabNode ){
-                        if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
-                        if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
-                    }
+                if( layout.mobile ){
+                    if( this.tabContainer ){
+                        var borderWidth = 0;
+                        if( this.tab.css.tabNode ){
+                            if( this.tab.css.tabNode["border-left"] )borderWidth += this.tab.css.tabNode["border-left"].toInt();
+                            if( this.tab.css.tabNode["border-right"] )borderWidth += this.tab.css.tabNode["border-right"].toInt();
+                        }
 
-                    var tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
+                        var tabWidth = "calc("+( 100 / this.options.types.length ) +"% - " + (borderWidth+"px")+")";
 
-                    if( this.tab.css.tabNode ){
-                        this.tab.css.tabNode["width"] = tabWidth;
-                    }
-                    if( this.tab.css.tabNodeCurrent ){
-                        this.tab.css.tabNodeCurrent["width"] = tabWidth;
+                        if( this.tab.css.tabNode ){
+                            this.tab.css.tabNode["width"] = tabWidth;
+                        }
+                        if( this.tab.css.tabNodeCurrent ){
+                            this.tab.css.tabNodeCurrent["width"] = tabWidth;
+                        }
+                    }else{
+                        width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
+                        var w = width / this.options.types.length - 2;
+                        var tabWidth = w < 60 ? w : 60;
+                        if( this.tab.css.tabNode ){
+                            this.tab.css.tabNode["min-width"] = tabWidth+"px";
+                        }
+                        if( this.tab.css.tabNodeCurrent ){
+                            this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
+                        }
                     }
                 }else{
-                    width = this.container.getSize().x - 160; //160是确定和返回按钮的宽度
-                    var w = width / this.options.types.length - 2;
-                    var tabWidth = w < 60 ? w : 60;
-                    if( this.tab.css.tabNode ){
-                        this.tab.css.tabNode["min-width"] = tabWidth+"px";
-                    }
-                    if( this.tab.css.tabNodeCurrent ){
-                        this.tab.css.tabNodeCurrent["min-width"] = tabWidth+"px";
-                    }
+                    this.tab = new MWF.widget.Tab(this.tabContainer, {"style": this.options.tabStyle || "default" });
+                    this.tab.load();
                 }
-
                 this.tab.load();
                 this.tab.contentNodeContainer.inject(this.contentNode);
             }.bind(this), false);
@@ -493,9 +624,14 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
 
-            if( index === 0 && this.contentHeight && !this.tabContainer ){
+            if( index === 0 && this.contentHeight ){
                 //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabContainer ) - tab.tabContainer.getStyle("height").toInt();
-                this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+                if( !this.tabContainer ){
+                    this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+                }
+                if( this.selectedCountNode ){
+                    this.contentHeight = this.contentHeight - this.getOffsetY( this.selectedCountNode ) - this.selectedCountNode.getStyle("height").toInt();
+                }
             }
 
             var t = type.capitalize();
@@ -535,15 +671,27 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
                 this.selectors[t] = new MWF.xApplication.Selector[t](this.container, options );
                 var selector = this.selectors[t];
+                selector.inMulitple = true;
+
+                var itemAreaScrollNode;
+
                 if( this.options.contentUrl ){
                     pageNode.set("html", this.contentHTML);
                     pageNode.setStyle("height", this.contentHeight);
                     selector.selectNode = pageNode.getElement(".MWF_selector_selectNode");
+                    selector.selectTopNode = pageNode.getElement(".MWF_selector_selectTopNode");
+                    selector.selectTopTextNode = pageNode.getElement(".MWF_selector_selectTopTextNode");
                     selector.searchInputDiv = pageNode.getElement(".MWF_selector_searchInputDiv");
                     selector.searchInput = pageNode.getElement(".MWF_selector_searchInput");
+                    selector.searchCancelAction = pageNode.getElement(".MWF_selector_searchCancelAction");
+                    selector.letterActionNode = pageNode.getElement(".MWF_selector_letterActionNode");
 
                     selector.flatCategoryScrollNode = pageNode.getElement(".MWF_selector_flatCategoryScrollNode");
                     selector.flatCategoryNode = pageNode.getElement(".MWF_selector_flatCategoryNode");
+                    if( this.options.flatCategory && selector.flatCategoryScrollNode ){
+                        selector.isFlatCategory = true;
+                        selector.flatSubCategoryNodeList = [];
+                    }
 
                     selector.letterAreaNode = pageNode.getElement(".MWF_selector_letterAreaNode");
 
@@ -553,20 +701,22 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     selector.itemSearchAreaScrollNode = pageNode.getElement(".MWF_selector_itemSearchAreaScrollNode");
                     selector.itemSearchAreaNode = pageNode.getElement(".MWF_selector_itemSearchAreaNode");
 
+                    selector.selectedContainerNode = pageNode.getElement(".MWF_selector_selectedContainerNode");
+
+                    selector.selectedTopNode = pageNode.getElement(".MWF_selector_selectedTopNode");
+                    selector.selectedTopTextNode = pageNode.getElement(".MWF_selector_selectedTopTextNode");
+                    selector.emptySelectedNode = pageNode.getElement(".MWF_selector_emptySelectedNode");
+
                     selector.selectedScrollNode = pageNode.getElement(".MWF_selector_selectedScrollNode");
                     selector.selectedNode = pageNode.getElement(".MWF_selector_selectedNode");
                     selector.selectedItemSearchAreaNode = pageNode.getElement(".MWF_selector_selectedItemSearchAreaNode");
 
-                    if( this.options.flatCategory && selector.flatCategoryScrollNode ){
-                        selector.isFlatCategory = true;
-                        selector.flatSubCategoryNodeList = [];
-                    }
 
                     selector.loadContent( pageNode, true );
 
                     if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
                         var startY=0, y=0;
-                        var itemAreaScrollNode = selector.itemAreaScrollNode;
+                        itemAreaScrollNode = selector.itemAreaScrollNode;
                         itemAreaScrollNode.addEvents({
                             'touchstart' : function( ev ){
                                 var touch = ev.touches[0]; //获取第一个触点
@@ -579,7 +729,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                             'touchend' : function( ev ){
                                 if (startY - y > 10) { //向上滑动超过10像素
                                     var obj = this.selectors.Person;
-                                    obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
+                                    if(obj._scrollEvent)obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
                                 }
                                 startY = 0;
                                 y = 0;
@@ -590,42 +740,50 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                     // if( this.contentWidth )options.width = this.contentWidth;
                     // if( this.contentHeight )options.height = this.contentHeight;
 
-                    if( this.contentWidth )this.selectors[t].options.width = this.contentWidth;
-                    if( this.contentHeight )this.selectors[t].options.height = this.contentHeight;
+                    if( this.contentWidth )selector.options.width = this.contentWidth;
+                    if( this.contentHeight )selector.options.height = this.contentHeight;
 
-                    this.selectors[t].loadContent( pageNode );
-                    this.selectors[t].setSize();
+                    if( layout.mobile ){
+                        selector.overrideSelectedItems();
+
+                        selector.selectedCountTextNode = new Element("div", {
+                            "styles": this.css.selectedCountTextNodeMobile,
+                            "text": (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0"
+                        }).inject( this.selectedCountNode );
+
+                        if( index === 0 ){
+                            new Element("span", { "text": "(" }).inject(this.selectedTitleNode);
+                            selector.selectedTitleCountNode = new Element("span", {
+                                "style": "padding-right:5px;",
+                                "text": (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0"
+                            }).inject(this.selectedTitleNode);
+                        }else if( index === this.options.types.length - 1 ){
+                            selector.selectedTitleCountNode = new Element("span", {
+                                "text": (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0"
+                            }).inject(this.selectedTitleNode);
+                            new Element("span", { "text": ")" }).inject(this.selectedTitleNode);
+                        }else{
+                            selector.selectedTitleCountNode = new Element("span", {
+                                "style": "padding-right:5px;",
+                                "text": (MWF.SelectorLP.quantifier[ selector.selectType ] || "") + ":0"
+                            }).inject(this.selectedTitleNode);
+                        }
+
+                        selector.selectedNode = new Element("div.selectedNode", {
+                            "styles": this.css.selectedNodeMobile
+                        }).inject(this.selectedScrollNode);
+                    }
+
+                    selector.loadContent( pageNode );
+                    if( !layout.mobile )selector.setSize();
 
                     if( layout.mobile ){
 
-                        var containerSize = this.container.getSize();
-                        var bodySize = $(document.body).getSize();
+                        tab.addEvent("postShow", function () {
+                            this.setSelectNodeSizeMobile(t, index, tab);
+                        }.bind(this))
 
-                        var size = {
-                            "x" : Math.min( containerSize.x, bodySize.x ),
-                            "y" : Math.min( containerSize.y, bodySize.y )
-                        };
-
-                        var height;
-                        if( isFormWithAction ){
-                            height = size.y-40-20-6-20;
-                        }else{
-                            height = size.y;
-                        }
-                        if(this.selectors[t].selectNode){
-                            this.selectors[t].selectNode.setStyle("height", ""+height+"px");
-                        }
-                        if( isFormWithAction ){
-                            height = size.y-40-20-78 - 20;
-                        }else{
-                            height = size.y-42-31-40;
-                        }
-                        height = height - 5;
-                        var itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
-                        if( itemAreaScrollNode ){
-                            itemAreaScrollNode.setStyle("height", ""+height+"px");
-                        }
-
+                        itemAreaScrollNode = selector.itemAreaScrollNode;
                         if( t.toLowerCase() == "person" || t.toLowerCase() == "group" ){
                             var startY=0, y=0;
                             itemAreaScrollNode.addEvents({
@@ -640,7 +798,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                                 'touchend' : function( ev ){
                                     if (startY - y > 10) { //向上滑动超过10像素
                                         var obj = this.selectors.Person;
-                                        obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
+                                        if(obj._scrollEvent)obj._scrollEvent( obj.itemAreaScrollNode.scrollTop + 100 );
                                     }
                                     startY = 0;
                                     y = 0;
@@ -663,6 +821,60 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 if( index == 0 )tab.showIm();
             }.bind(this));
         }.bind(this));
+    },
+    setSelectNodeSizeMobile: function(t, index, tab){
+        if( tab.isSetSize )return;
+        tab.isSetSize = true;
+        if( index === 0 ){
+            var containerSize = this.container.getSize();
+            var bodySize = $(document.body).getSize();
+
+            var size = {
+                "x" : Math.min( containerSize.x, bodySize.x ),
+                "y" : Math.min( containerSize.y, bodySize.y )
+            };
+
+            this.contentHeight = size.y;
+            if( !this.tabContainer ){
+                this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
+            }
+            if( this.selectedCountNode ){
+                this.contentHeight = this.contentHeight - this.getOffsetY( this.selectedCountNode ) - this.selectedCountNode.getStyle("height").toInt();
+            }
+            var formActionY = 0;
+            // height = height - formActionY - this.titleNode.getSize().y - this.getOffsetY(this.titleNode);
+            // if(this.selectedCountNode)height = height - this.selectedCountNode.getSize().y - this.getOffsetY(this.selectedCountNode);
+            // this.contentHeight = height;
+
+            var sel = this.selectors[t];
+            var offsetY = this.getOffsetY(sel.itemAreaScrollNode);
+            if(sel.searchInputDiv)offsetY = offsetY + sel.searchInputDiv.getSize().y + this.getOffsetY(sel.searchInputDiv);
+            if(sel.letterAreaNode)offsetY = offsetY + sel.letterAreaNode.getSize().y + this.getOffsetY(sel.letterAreaNode);
+
+            this.itemAreaHeight = this.contentHeight - offsetY;
+        }
+
+
+        // if( isFormWithAction ){
+        //     height = size.y-40-20-6-20;
+        // }else{
+        //     height = size.y;
+        // }
+        if(this.selectors[t].selectNode){
+            this.selectors[t].selectNode.setStyle("height", ""+this.contentHeight+"px");
+        }
+
+        // if( isFormWithAction ){
+        //     height = size.y-40-20-78 - 20;
+        // }else{
+        //     height = size.y-42-31-40;
+        // }
+        //height = height - 5;
+
+        itemAreaScrollNode = this.selectors[t].itemAreaScrollNode;
+        if( itemAreaScrollNode ){
+            itemAreaScrollNode.setStyle("height", ""+this.itemAreaHeight+"px");
+        }
     },
     getValueByType : function( values, type ){
         var result = [];

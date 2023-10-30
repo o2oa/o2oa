@@ -1004,7 +1004,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }
     },
     clickItem: function( callback, notActive ){
-        debugger;
         if (this._hasChild() && !this.loading){
             var firstLoaded = !this.loaded;
             this.loading = true;

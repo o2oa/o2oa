@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 
@@ -128,12 +129,10 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.delayInquire(aeiObjects.getWork().getActivityToken(), delay));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

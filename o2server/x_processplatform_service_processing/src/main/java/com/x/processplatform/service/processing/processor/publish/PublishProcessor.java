@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.publish;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -39,6 +40,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
  * 数据发布节点处理器
+ * 
  * @author sword
  */
 public class PublishProcessor extends AbstractPublishProcessor {
@@ -71,16 +73,16 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
 		switch (publish.getPublishTarget()) {
-			case Publish.PUBLISH_TARGET_CMS:
-				// 发布到内容管理
-				passThrough = this.publishToCms(aeiObjects, publish);
-				break;
-			case Publish.PUBLISH_TARGET_TABLE:
-				// 发布到数据中心自建表
-				passThrough = this.publishToTable(aeiObjects, publish);
-				break;
-			default:
-				break;
+		case Publish.PUBLISH_TARGET_CMS:
+			// 发布到内容管理
+			passThrough = this.publishToCms(aeiObjects, publish);
+			break;
+		case Publish.PUBLISH_TARGET_TABLE:
+			// 发布到数据中心自建表
+			passThrough = this.publishToTable(aeiObjects, publish);
+			break;
+		default:
+			break;
 		}
 		if (passThrough) {
 			results.add(aeiObjects.getWork());
@@ -94,12 +96,15 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	private boolean publishToTable(AeiObjects aeiObjects, Publish publish) throws Exception {
 		List<AssignPublish> list = this.evalTableBody(aeiObjects, publish);
 		boolean flag = true;
-		for (AssignPublish assignPublish : list){
-			WrapBoolean resp = ThisApplication.context().applications().postQuery(x_query_service_processing.class,
-					Applications.joinQueryUri("table", assignPublish.getTableName(), "update", aeiObjects.getWork().getJob()), assignPublish.getData())
+		for (AssignPublish assignPublish : list) {
+			WrapBoolean resp = ThisApplication.context().applications()
+					.postQuery(
+							x_query_service_processing.class, Applications.joinQueryUri("table",
+									assignPublish.getTableName(), "update", aeiObjects.getWork().getJob()),
+							assignPublish.getData())
 					.getData(WrapBoolean.class);
-			LOGGER.debug("publish to table：{}, result：{}",assignPublish.getTableName(),resp.getValue());
-			if(BooleanUtils.isFalse(resp.getValue())){
+			LOGGER.debug("publish to table：{}, result：{}", assignPublish.getTableName(), resp.getValue());
+			if (BooleanUtils.isFalse(resp.getValue())) {
 				flag = false;
 			}
 		}
@@ -108,16 +113,16 @@ public class PublishProcessor extends AbstractPublishProcessor {
 
 	private List<AssignPublish> evalTableBody(AeiObjects aeiObjects, Publish publish) throws Exception {
 		List<AssignPublish> list = new ArrayList<>();
-		if(ListTools.isNotEmpty(publish.getPublishTableList())){
-			for (PublishTable publishTable : publish.getPublishTableList()){
+		if (ListTools.isNotEmpty(publish.getPublishTableList())) {
+			for (PublishTable publishTable : publish.getPublishTableList()) {
 				AssignPublish assignPublish = new AssignPublish();
 				assignPublish.setTableName(publishTable.getTableName());
-				if(PublishTable.TABLE_DATA_BY_PATH.equals(publishTable.getQueryTableDataBy())){
+				if (PublishTable.TABLE_DATA_BY_PATH.equals(publishTable.getQueryTableDataBy())) {
 					this.evalTableBodyFromData(aeiObjects, publishTable, assignPublish);
-				}else {
+				} else {
 					this.evalTableBodyFromScript(aeiObjects, publishTable, assignPublish);
 				}
-				if(assignPublish.getData() == null){
+				if (assignPublish.getData() == null) {
 					assignPublish.setData(gson.toJsonTree(aeiObjects.getData()));
 				}
 				list.add(assignPublish);
@@ -126,16 +131,18 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		return list;
 	}
 
-	private void evalTableBodyFromData(AeiObjects aeiObjects, PublishTable publishTable, AssignPublish assignPublish) throws Exception {
-		if(StringUtils.isNotBlank(publishTable.getQueryTableDataPath())){
+	private void evalTableBodyFromData(AeiObjects aeiObjects, PublishTable publishTable, AssignPublish assignPublish)
+			throws Exception {
+		if (StringUtils.isNotBlank(publishTable.getQueryTableDataPath())) {
 			Object o = aeiObjects.getData().find(publishTable.getQueryTableDataPath());
-			if(o!=null){
+			if (o != null) {
 				assignPublish.setData(gson.toJsonTree(o));
 			}
 		}
 	}
 
-	private void evalTableBodyFromScript(AeiObjects aeiObjects, PublishTable publishTable,final AssignPublish assignPublish) throws Exception {
+	private void evalTableBodyFromScript(AeiObjects aeiObjects, PublishTable publishTable,
+			final AssignPublish assignPublish) throws Exception {
 		WrapScriptObject assignBody = new WrapScriptObject();
 		if (hasTableAssignDataScript(publishTable)) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
@@ -158,29 +165,30 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		cmsDocument.setWf_jobId(aeiObjects.getWork().getJob());
 		cmsDocument.setIdentity(aeiObjects.getWork().getCreatorIdentity());
 		String categoryId = this.getCmsCategoryId(data, publish);
-		if(StringUtils.isBlank(categoryId)){
+		if (StringUtils.isBlank(categoryId)) {
 			LOGGER.warn("{}工作数据发布到内容管理失败：分类ID为空！", () -> aeiObjects.getWork().getId());
 			return false;
 		}
 		cmsDocument.setCategoryId(categoryId);
-		if(BooleanUtils.isTrue(publish.getUseProcessForm())){
+		if (BooleanUtils.isTrue(publish.getUseProcessForm())) {
 			cmsDocument.setWf_formId(aeiObjects.getWork().getForm());
 		}
-		if(BooleanUtils.isTrue(publish.getInheritAttachment())){
+		if (BooleanUtils.isTrue(publish.getInheritAttachment())) {
 			List<Attachment> attachments = aeiObjects.getAttachments();
-			if(ListTools.isNotEmpty(attachments)){
-				cmsDocument.setWf_attachmentIds(ListTools.extractField(attachments, JpaObject.id_FIELDNAME, String.class, true, true));
+			if (ListTools.isNotEmpty(attachments)) {
+				cmsDocument.setWf_attachmentIds(
+						ListTools.extractField(attachments, JpaObject.id_FIELDNAME, String.class, true, true));
 			}
 		}
-		String title = (String)data.find(publish.getTitleDataPath());
-		if(StringUtils.isBlank(title)){
+		String title = (String) data.find(publish.getTitleDataPath());
+		if (StringUtils.isBlank(title)) {
 			title = aeiObjects.getWork().getTitle();
 		}
 		cmsDocument.setTitle(StringTools.utf8SubString(title, 255));
 		List<CmsPermission> readerList = new ArrayList<>();
 
 		List<String> list = this.findPathData(data, publish.getReaderDataPathList(), true);
-		if(ListTools.isNotEmpty(list)) {
+		if (ListTools.isNotEmpty(list)) {
 			List<Review> reviewList = aeiObjects.getReviews();
 			list.addAll(ListTools.extractField(reviewList, Review.person_FIELDNAME, String.class, true, true));
 		}
@@ -200,29 +208,33 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		});
 		cmsDocument.setAuthorList(authorList);
 		cmsDocument.setPictureList(this.findPathData(data, publish.getPictureDataPathList(), false));
-		WoId woId = ThisApplication.context().applications().putQuery(x_cms_assemble_control.class, CMS_PUBLISH_URI, cmsDocument).getData(WoId.class);
-		LOGGER.info("流程数据发布-发布文档【{}】到内容管理返回：{}",aeiObjects.getWork().getTitle(), woId.getId());
-		//发送消息通知
+		WoId woId = ThisApplication.context().applications()
+				.putQuery(x_cms_assemble_control.class, CMS_PUBLISH_URI, cmsDocument).getData(WoId.class);
+		LOGGER.info("流程数据发布-发布文档【{}】到内容管理返回：{}", aeiObjects.getWork().getTitle(), woId.getId());
+		// 发送消息通知
 		this.cmsDocumentNotify(aeiObjects, publish, woId);
 		return true;
 	}
 
-	private String getCmsCategoryId(Data data, Publish publish) throws Exception{
-		if(Publish.CMS_CATEGORY_FROM_DATA.equals(publish.getCategorySelectType())){
-			return StringUtils.isNotBlank(publish.getCategoryIdDataPath()) ? (String) data.find(publish.getCategoryIdDataPath()) : "";
-		}else{
+	private String getCmsCategoryId(Data data, Publish publish) throws Exception {
+		if (Publish.CMS_CATEGORY_FROM_DATA.equals(publish.getCategorySelectType())) {
+			return StringUtils.isNotBlank(publish.getCategoryIdDataPath())
+					? (String) data.find(publish.getCategoryIdDataPath())
+					: "";
+		} else {
 			return publish.getCategoryId();
 		}
 	}
 
-	private void cmsDocumentNotify(AeiObjects aeiObjects, Publish publish, WoId woId){
+	private void cmsDocumentNotify(AeiObjects aeiObjects, Publish publish, WoId woId) {
 		try {
-			if(StringUtils.isNotBlank(publish.getNotifyDataPathList())) {
+			if (StringUtils.isNotBlank(publish.getNotifyDataPathList())) {
 				List<String> list = this.findPathData(aeiObjects.getData(), publish.getNotifyDataPathList(), true);
 				if (ListTools.isNotEmpty(list)) {
 					CmsNotify cmsNotify = new CmsNotify(list);
-					ThisApplication.context().applications().postQuery(x_cms_assemble_control.class,
-							Applications.joinQueryUri("document", woId.getId(), "update", aeiObjects.getWork().getJob()), cmsNotify);
+					ThisApplication.context().applications().postQuery(x_cms_assemble_control.class, Applications
+							.joinQueryUri("document", woId.getId(), "update", aeiObjects.getWork().getJob()),
+							cmsNotify);
 				}
 			}
 		} catch (Exception e) {
@@ -245,7 +257,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				}
 			});
 		}
-		if(cmsDocument.getDocData() == null){
+		if (cmsDocument.getDocData() == null) {
 			cmsDocument.setDocData(gson.toJsonTree(aeiObjects.getData()));
 		}
 
@@ -257,14 +269,14 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		List<String> list = new ArrayList<>();
 		String[] paths = StringUtils.isNotBlank(path) ? path.split(",") : new String[0];
 		for (String str : paths) {
-			if(isUser) {
+			if (isUser) {
 				list.addAll(data.extractDistinguishedName(str.trim()));
-			}else{
+			} else {
 				Object o = data.find(str.trim());
-				if(o != null){
-					if(o instanceof List){
-						list.addAll((List)o);
-					}else {
+				if (o != null) {
+					if (o instanceof List) {
+						list.addAll((List) o);
+					} else {
 						list.add(o.toString());
 					}
 				}
@@ -296,7 +308,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		}
 	}
 
-	public class CmsDocument extends GsonPropertyObject{
+	public class CmsDocument extends GsonPropertyObject {
 		private String identity;
 		private String title;
 		private String wf_workId;
@@ -407,7 +419,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		}
 	}
 
-	public class CmsPermission extends GsonPropertyObject{
+	public class CmsPermission extends GsonPropertyObject {
 		private String permissionObjectName;
 
 		public String getPermissionObjectName() {
@@ -419,11 +431,12 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		}
 	}
 
-	public class CmsNotify extends GsonPropertyObject{
+	public class CmsNotify extends GsonPropertyObject {
 
-		public CmsNotify(List<String> notifyPersonList){
+		public CmsNotify(List<String> notifyPersonList) {
 			this.notifyPersonList = notifyPersonList;
 		}
+
 		private List<String> notifyPersonList;
 		private Boolean notifyByDocumentReadPerson = false;
 		private Boolean notifyCreatePerson = false;
@@ -459,13 +472,11 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Publish publish) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Publish publish) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.publishInquire(aeiObjects.getWork().getActivityToken(), publish));
-		List<Route> results = new ArrayList<>();
-		results.add(aeiObjects.getRoutes().get(0));
-		return results;
+		return aeiObjects.getRoutes().stream().findFirst();
 	}
 
 	@Override

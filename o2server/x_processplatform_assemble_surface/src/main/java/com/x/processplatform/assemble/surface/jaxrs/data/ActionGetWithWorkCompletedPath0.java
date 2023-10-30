@@ -38,7 +38,7 @@ class ActionGetWithWorkCompletedPath0 extends BaseAction {
 						workCompleted.getTitle(), workCompleted.getId());
 			}
 			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-				Data data = workCompleted.getProperties().getData();
+				Data data = workCompleted.getData();
 				Object o = data.find(path0);
 				result.setData(gson.toJsonTree(o));
 			} else {

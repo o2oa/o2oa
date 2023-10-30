@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.agent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 
@@ -61,9 +62,9 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Agent agent = (Agent) aeiObjects.getActivity();
-		return inquiring(aeiObjects, agent);
+		return inquiring(aeiObjects, agent).orElse(null);
 	}
 
 	@Override
@@ -80,7 +81,7 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 
 	protected abstract void executingCommitted(AeiObjects aeiObjects, Agent agent, List<Work> works) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Agent agent) throws Exception;
 
 	protected abstract void inquiringCommitted(AeiObjects aeiObjects, Agent agent) throws Exception;
 

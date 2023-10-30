@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.choice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.script.CompiledScript;
 
@@ -50,22 +51,20 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	}
 
 	@Override
-	protected List<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
+	protected Optional<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.choiceInquire(aeiObjects.getWork().getActivityToken(), choice));
-		List<Route> results = new ArrayList<>();
 		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {
 			CompiledScript compiledScript = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE);
 			if (BooleanUtils.isTrue(
 					JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext(), Boolean.FALSE))) {
-				results.add(o);
-				break;
+				return Optional.of(o);
 			}
 		}
-		return results;
+		return Optional.empty();
 	}
 
 	@Override

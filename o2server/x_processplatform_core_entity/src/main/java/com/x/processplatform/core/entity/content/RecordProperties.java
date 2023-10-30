@@ -72,6 +72,11 @@ public class RecordProperties extends JsonProperties {
 		}
 		return this.nextManualTaskIdentityList;
 	}
+	
+
+	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
+	}
 
 	public List<NextManual> getNextManualList() {
 		if (null == this.nextManualList) {
@@ -180,9 +185,6 @@ public class RecordProperties extends JsonProperties {
 		this.nextManualList = nextManualList;
 	}
 
-	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
-		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
-	}
 
 	public Date getStartTime() {
 		return startTime;

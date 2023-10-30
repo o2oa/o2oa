@@ -322,8 +322,12 @@ MWF.xApplication.process.Xform.LP = {
         "closeTitle": "Close Document",
         "save": "Save",
         "saveTitle": "Save Document",
-        "flow": "Flow",
-        "flowTitle": "Flow Document",
+        "flow": "Submit",
+        "flowTitle": "Submit Document",
+        "process": "Submit",
+        "processTitle": "Submit Document",
+        "submit": "Submit",
+        "submitTitle": "Submit Document",
         "reroute": "Reroute",
         "rerouteTitle": "Reroute to other Activity",
         "reset": "Reset",
@@ -371,6 +375,8 @@ MWF.xApplication.process.Xform.LP = {
 
         "rollbackInfo": "Select the location of the file to be rollback to",
         "addSplitInfo": "Split data according to your business settings. The data should match the split setting in the process. multiple values with a comma (,)",
+        "splitValue": "Split by",
+        "opinion": "opinion",
         "selectUnit": "Select Unit",
         "excludeBranches": "Exclude existing branches",
         "yes": "Yes",
@@ -389,9 +395,15 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskBeforeTitle": "Add a task before you process",
         "addTaskAfterTitle": "Add a task after you process",
         "addTaskType": "Add Task Type",
+        "modeType": "Processing method",
+        "single": "single",
+        "queue": "serial",
+        "parallel": "parallel",
 
         "addTaskRepeatedTitle": "Repeat Reminder",
-        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。"
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。",
+
+        "mergeWork": "Merge work"
     },
     "sendRead": "Send Read",
     "sendReadOk": "Sent Read:",

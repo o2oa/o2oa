@@ -316,6 +316,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         closeWork: function(){
             this.form.closeWork();
         },
+        flowWork: function(){
+            this.form.flowWork();
+        },
         processWork: function(){
             this.form.processWork();
         },

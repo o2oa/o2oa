@@ -63,8 +63,8 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					job = business.job().findWithWorkCompleted(flag);
 					WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job);
 					readList = emc.listEqual(Read.class, Read.job_FIELDNAME, job);
-					if (ListTools.isNotEmpty(workCompleted.getProperties().getReadCompletedList())) {
-						readCompletedList = workCompleted.getProperties().getReadCompletedList();
+					if (ListTools.isNotEmpty(workCompleted.getReadCompletedList())) {
+						readCompletedList = workCompleted.getReadCompletedList();
 					} else {
 						readCompletedList = emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job);
 					}

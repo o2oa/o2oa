@@ -108,8 +108,8 @@ class ActionMerge extends BaseAction {
 										relateFormMobile(business, form, mobileStoreForm),
 										relateScriptMobile(business, form, mobileStoreForm))
 								.get();
-						workCompleted.getProperties().setStoreForm(storeForm);
-						workCompleted.getProperties().setMobileStoreForm(mobileStoreForm);
+						workCompleted.setStoreForm(storeForm);
+						workCompleted.setMobileStoreForm(mobileStoreForm);
 					}
 					CompletableFuture.allOf(mergeItem(business, workCompleted, items),
 							mergeTaskCompleted(business, workCompleted, taskCompleteds),
@@ -147,7 +147,7 @@ class ActionMerge extends BaseAction {
 							ItemCategory.pp);
 					DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 					JsonElement jsonElement = converter.assemble(os);
-					workCompleted.getProperties().setData(gson.fromJson(jsonElement, Data.class));
+					workCompleted.setData(gson.fromJson(jsonElement, Data.class));
 					items.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -165,7 +165,7 @@ class ActionMerge extends BaseAction {
 							.stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime,
 									Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
-					workCompleted.getProperties().setTaskCompletedList(os);
+					workCompleted.setTaskCompletedList(os);
 					taskCompleteds.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -183,7 +183,7 @@ class ActionMerge extends BaseAction {
 							.stream().sorted(Comparator.comparing(ReadCompleted::getCreateTime,
 									Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
-					workCompleted.getProperties().setReadCompletedList(os);
+					workCompleted.setReadCompletedList(os);
 					readCompleteds.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -200,7 +200,7 @@ class ActionMerge extends BaseAction {
 							.listEqual(Review.class, Review.job_FIELDNAME, workCompleted.getJob()).stream()
 							.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
-					workCompleted.getProperties().setReviewList(os);
+					workCompleted.setReviewList(os);
 					reviews.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -217,7 +217,7 @@ class ActionMerge extends BaseAction {
 							.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, workCompleted.getJob()).stream()
 							.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
-					workCompleted.getProperties().setWorkLogList(os);
+					workCompleted.setWorkLogList(os);
 					workLogs.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);
@@ -234,7 +234,7 @@ class ActionMerge extends BaseAction {
 							.listEqual(Record.class, Record.job_FIELDNAME, workCompleted.getJob()).stream()
 							.sorted(Comparator.comparing(Record::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
-					workCompleted.getProperties().setRecordList(os);
+					workCompleted.setRecordList(os);
 					records.addAll(os);
 				} catch (Exception e) {
 					LOGGER.error(e);

@@ -1,6 +1,6 @@
 <div style="padding: 10px; font-size:14px;">
     <div style="margin-bottom:10px;">
-        <div style="line-height: 30px; margin-bottom:10px; overflow: hidden">
+        <div style="line-height: 30px; margin-bottom:20px; overflow: hidden">
             <div>{{$.lp.addTaskPerson}}: </div>
             <div style="margin-top: 10px">
 				<div id="resetWork_selPeopleArea" style="min-height: 24px; padding:3px; overflow: hidden; border-radius: 10px; border: 1px solid #DEDEDE; width: 95%"></div>
@@ -8,10 +8,19 @@
             </div>
         </div>
 		<div style="line-height: 30px; margin-bottom:20px; overflow: hidden;">
-			<div style="margin-top: 10px">
+			<div>{{$.lp.addTaskType}}: </div>
+			<div style="margin-top: 5px">
 				<span style="cursor: pointer" onclick="this.getFirst().checked=true;" title="{{$.lp.addTaskBeforeTitle}}"><input name="addTask_type" class="addTask_type" type="radio" value="before">{{$.lp.addTaskBefore}}</span>
 				<span style="cursor: pointer" onclick="this.getFirst().checked=true;" title="{{$.lp.addTaskAfterTitle}}"><input name="addTask_type" class="addTask_type" checked type="radio" value="after">{{$.lp.addTaskAfter}}</span>
 			</div>
+		</div>
+		<div style="line-height: 30px; margin-bottom:20px; overflow: hidden;">
+			<div>{{$.lp.modeType}}: </div>
+			<div style="margin-top: 5px">
+				<span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" checked type="radio" value="single">{{$.lp.single}}</span>
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" type="radio" value="queue">{{$.lp.queue}}</span>
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" type="radio" value="parallel">{{$.lp.parallel}}</span>
+            </div>
 		</div>
         <div style="line-height: 30px; margin-bottom:10px; overflow: hidden">
             <div style="height: 50px; line-height: 50px;">{{$.lp.addTaskOpinion}}: </div>

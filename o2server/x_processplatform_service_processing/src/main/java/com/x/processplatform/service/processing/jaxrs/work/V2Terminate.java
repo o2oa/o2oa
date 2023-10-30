@@ -13,7 +13,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -21,6 +20,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2TerminateWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
@@ -39,17 +39,30 @@ class V2Terminate extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		String executorSeed = null;
+		Param param = this.init(id);
 
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(new CallableImpl(param.id)).get(300,
+				TimeUnit.SECONDS);
+	}
+
+	private Param init(String id) throws Exception {
+		Param param = new Param();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			executorSeed = work.getJob();
+			param.id = work.getId();
+			param.job = work.getJob();
 		}
-		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get(300,
-				TimeUnit.SECONDS);
+		return param;
+	}
+
+	private class Param {
+
+		private String id;
+		private String job;
+
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
@@ -166,7 +179,7 @@ class V2Terminate extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WoId {
+	public static class Wo extends V2TerminateWo {
 
 		private static final long serialVersionUID = 8964324166261918394L;
 

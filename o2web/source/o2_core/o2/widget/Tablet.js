@@ -8,6 +8,9 @@ o2.widget.Tablet = o2.Tablet = new Class({
         "style": "default",
         "path": o2.session.path+"/widget/$Tablet/",
 
+        "iconfontEnable": false,
+        "mainColorEnable": false,
+
         "contentWidth" : 0, //绘图区域宽度，不制定则基础 this.node的宽度
         "contentHeight" : 0, //绘图区域高度，不制定则基础 this.node的高度 - 操作条高度
 
@@ -32,6 +35,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
             "reset",
             "cancel"
         ],
+
         "toolHidden": [],
         "description" : "", //描述文字
         "imageSrc": "",
@@ -100,6 +104,11 @@ o2.widget.Tablet = o2.Tablet = new Class({
         };
 
         this._loadCss();
+
+        if( this.options.iconfontEnable ){
+            this.node.loadCss(this.path + this.options.style+"/style.css");
+        }
+
         this.fireEvent("init");
     },
     load: function(  ){
@@ -1100,7 +1109,8 @@ o2.widget.Tablet.Toolbar = new Class({
         items = items.clean();
 
         var html = "";
-        var style = "toolItem";
+        var style = this.tablet.options.iconfontEnable ? "toolItemIconfont" : "toolItem";
+        var styleRight = this.tablet.options.iconfontEnable ? "toolRightItemIconfont" : "toolRightItem";
         items.each( function( item ){
             switch( item ){
                 case "|":
@@ -1149,7 +1159,7 @@ o2.widget.Tablet.Toolbar = new Class({
                     html +=  "<div item='imageClipper' styles='" + style + "'>"+ this.lp.imageClipper  +"</div>";
                     break;
                 case "cancel" :
-                    html +=  "<div item='cancel' styles='toolRightItem'>"+ this.lp.cancel  +"</div>";
+                    html +=  "<div item='cancel' styles='"+ styleRight +"'>"+ this.lp.cancel  +"</div>";
                     break;
 
             }
@@ -1168,7 +1178,14 @@ o2.widget.Tablet.Toolbar = new Class({
             var item =  el.get("item");
             if ( item ) {
                 this.items[ item ] = el;
-                el.setStyle("background-image","url("+ imagePath + item +"_normal.png)");
+                if( _self.tablet.options.iconfontEnable ){
+                    var text = el.get("text");
+                    el.set("text", "");
+                    new Element("i.o2icon-"+item, {styles: this.css.toolItemIconfont_icon}).inject( el, "top" );
+                    new Element("div", {text: text, styles: this.css.toolItemIconfont_text}).inject( el );
+                }else{
+                    el.setStyle("background-image","url("+ imagePath + item +"_normal.png)");
+                }
                 el.addEvents({
                     mouseover : function(){
                         _self._setItemNodeActive(this.el);
@@ -1273,8 +1290,13 @@ o2.widget.Tablet.Toolbar = new Class({
             if( ["fontSize","fontFamily"].contains( itemName ) ){
                 itemNode.hide();
             }else{
-                itemNode.setStyles( this.css.toolItem_disable );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_disable.png)");
+                if( this.tablet.options.iconfontEnable ){
+                    itemNode.setStyles(this.css.toolItemIconfont_disable);
+                    if( this.tablet.options.mainColorEnable )itemNode.removeClass("mainColor_color");
+                }else {
+                    itemNode.setStyles(this.css.toolItem_disable);
+                    itemNode.setStyle("background-image", "url(" + this.imagePath + item + "_disable.png)");
+                }
             }
         }
     },
@@ -1289,8 +1311,13 @@ o2.widget.Tablet.Toolbar = new Class({
                     }
                 }
             }else{
-                itemNode.setStyles( this.css.toolItem_over );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_active.png)");
+                if( this.tablet.options.iconfontEnable ){
+                    itemNode.setStyles(this.css.toolItemIconfont_over);
+                    if( this.tablet.options.mainColorEnable )itemNode.addClass("mainColor_color");
+                }else {
+                    itemNode.setStyles(this.css.toolItem_over);
+                    itemNode.setStyle("background-image", "url(" + this.imagePath + item + "_active.png)");
+                }
             }
         }
     },
@@ -1306,8 +1333,13 @@ o2.widget.Tablet.Toolbar = new Class({
                 }
             }else{
                 var style = itemNode.get("styles");
-                itemNode.setStyles( this.css[style] );
-                itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+                if( this.tablet.options.iconfontEnable ){
+                    itemNode.setStyles(this.css[style]);
+                    if( this.tablet.options.mainColorEnable )itemNode.removeClass("mainColor_color");
+                }else{
+                    itemNode.setStyles( this.css[style] );
+                    itemNode.setStyle("background-image","url("+  this.imagePath+ item +"_normal.png)");
+                }
             }
         }
     }
@@ -1575,7 +1607,7 @@ o2.widget.Tablet.SizePicker = new Class({
 o2.widget.Tablet.EraserRadiusPicker = new Class({
     Extends: o2.widget.Tablet.SizePicker,
     options: {
-        lineWidth : 10,
+        lineWidth : 20,
         nodeStyles : {
             "min-width" : "260px"
         },
@@ -1723,31 +1755,33 @@ o2.widget.Tablet.EraserRadiusPicker = new Class({
         this.fireEvent("select", this.lineWidth )
     },
     reset: function(){
-        this.lineWidth = this.options.lineWidth || 10;
+        this.lineWidth = this.options.lineWidth || 20;
         var step = this.lineWidth;
         this.slider.set( parseInt( step ) );
         this.drawPreview( this.lineWidth );
         this.fireEvent("select", this.lineWidth )
     },
     drawPreview : function( lineWidth ){
-        if( !lineWidth )lineWidth = this.options.lineWidth || 10;
+        if( !lineWidth )lineWidth = this.options.lineWidth || 20;
         var canvas = this.canvas;
         var ctx = this.ctx;
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
 
-        ctx.strokeStyle="#000000"; //线条颜色; 默认 #000000
-        ctx.lineCap = "round";　　//设置线条两端为圆弧
-        ctx.lineJoin = "round";　　//设置线条转折为圆弧
-        ctx.lineWidth=  lineWidth ;
+        // ctx.strokeStyle="#000000"; //线条颜色; 默认 #000000
+        // ctx.lineCap = "round";　　//设置线条两端为圆弧
+        // ctx.lineJoin = "round";　　//设置线条转折为圆弧
+        // ctx.lineWidth=  lineWidth ;
+        // ctx.beginPath();
+        // ctx.lineTo( 28, 25  );
+        // ctx.stroke();
 
-        // ctx.moveTo(1, 15);
-        // ctx.arc(30, 15, 1, 0, 2*Math.PI);
-        // ctx.fill();
-
-        ctx.strokeStyle="#000000";
         ctx.beginPath();
-        ctx.lineTo( 28, 25  );
-        ctx.stroke();
+        ctx.arc(30, 30, lineWidth/2, 0, 2 * Math.PI, false);
+        //ctx.fillStyle = 'green';
+        ctx.fill();
+        // ctx.lineWidth = 5;
+        // ctx.strokeStyle = '#000000';
+        //ctx.stroke();
 
     }
 });

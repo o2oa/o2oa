@@ -94,12 +94,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public void postLoad() {
 		if (null != this.properties) {
 			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
-				this.title = this.getProperties().getTitle();
+				this.title = this.properties.getTitle();
 			}
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
-				this.opinion = this.getProperties().getOpinion();
+				this.opinion = this.properties.getOpinion();
 			}
-			this.routeNameDisable = this.getProperties().getRouteNameDisable();
+			this.routeNameDisable = this.properties.getRouteNameDisable();
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
 		}
 	}
 
@@ -135,21 +137,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.properties = new TaskProperties();
 	}
 
-	public Boolean getRouteNameDisable() {
-		return routeNameDisable;
-	}
-
-	public void setRouteNameDisable(Boolean routeNameDisable) {
-		this.routeNameDisable = routeNameDisable;
-		this.getProperties().setRouteNameDisable(routeNameDisable);
-	}
-
-	@Transient
-	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
-	private Boolean routeNameDisable;
-
-	public Task(Work work, String identity, String person, String unit, String empowerFromIdentity, Date startTime,
-			Date expireTime, List<Route> routes, Boolean allowRapid) {
+	public Task(Work work, String distinguishedName, String person, String unit, String empowerFromIdentity,
+			Date startTime, Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this();
 		this.job = work.getJob();
 		this.setTitle(work.getTitle());
@@ -163,7 +152,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.processAlias = work.getProcessAlias();
 		this.serial = work.getSerial();
 		this.person = person;
-		this.identity = identity;
+		this.identity = distinguishedName;
+		this.distinguishedName = distinguishedName;
 		this.unit = unit;
 		this.empowerFromIdentity = empowerFromIdentity;
 		this.activity = work.getActivity();
@@ -181,7 +171,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeName = "";
 		this.routeAlias = "";
 		this.opinion = "";
-
 		this.modified = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);
@@ -203,6 +192,57 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 					});
 		}
 		return this;
+	}
+
+	public static final String ROUTENAMEDISABLE_FIELDNAME = "routeNameDisable";
+	@Transient
+	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
+	private Boolean routeNameDisable;
+
+	public Boolean getRouteNameDisable() {
+		if ((null == this.routeNameDisable) && (null != this.properties)) {
+			this.routeNameDisable = this.properties.getRouteNameDisable();
+		}
+		return this.routeNameDisable;
+	}
+
+	public void setRouteNameDisable(Boolean routeNameDisable) {
+		this.routeNameDisable = routeNameDisable;
+		this.getProperties().setRouteNameDisable(routeNameDisable);
+	}
+
+	public static final String PREVTASKIDENTITYLIST_FIELDNAME = "prevTaskIdentityList";
+	@Transient
+	@FieldDescribe("上一人工环节处理人列表.")
+	private List<String> prevTaskIdentityList;
+
+	public List<String> getPrevTaskIdentityList() {
+		if ((null != this.properties) && (null == this.prevTaskIdentityList)) {
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+		}
+		return this.prevTaskIdentityList;
+	}
+
+	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
+		this.getProperties().setPrevTaskIdentityList(prevTaskIdentityList);
+		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public static final String PREVTASKIDENTITY_FIELDNAME = "prevTaskIdentity";
+	@Transient
+	@FieldDescribe("上一人工环节处理人.")
+	private String prevTaskIdentity;
+
+	public String getPrevTaskIdentity() {
+		if ((null != this.properties) && (null == this.prevTaskIdentity)) {
+			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
+		}
+		return this.prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.getProperties().setPrevTaskIdentity(prevTaskIdentity);
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public TaskProperties getProperties() {
@@ -593,6 +633,30 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + workCreateType_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workCreateType;
+
+	public static final String LABEL_FIELDNAME = "label";
+	@Schema(description = "待办凭证标识.")
+	@FieldDescribe("待办凭证标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + LABEL_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + LABEL_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String label;
+
+	public static final String DISTINGUISHEDNAME_FIELDNAME = "distinguishedName";
+	@Schema(description = "处理对象.")
+	@FieldDescribe("处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + DISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String distinguishedName;
+
+	public static final String FROMDISTINGUISHEDNAME_FIELDNAME = "fromDistinguishedName";
+	@Schema(description = "授权处理对象.")
+	@FieldDescribe("授权处理对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + FROMDISTINGUISHEDNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMDISTINGUISHEDNAME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String fromDistinguishedName;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@Schema(description = "业务数据String值01.")
@@ -1439,6 +1503,30 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setRouteAlias(String routeAlias) {
 		this.routeAlias = routeAlias;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
+	}
+
+	public String getFromDistinguishedName() {
+		return fromDistinguishedName;
+	}
+
+	public void setFromDistinguishedName(String fromDistinguishedName) {
+		this.fromDistinguishedName = fromDistinguishedName;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,17 +29,16 @@ abstract class AbstractServiceProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	protected List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception {
+	protected Route inquireProcessing(AeiObjects aeiObjects) throws Exception {
 		Service service = (Service) aeiObjects.getActivity();
-		List<Route> list = inquiring(aeiObjects, service);
-		return list;
+	return  inquiring(aeiObjects, service).orElse(null);
 	}
 
 	protected abstract Work arriving(AeiObjects aeiObjects, Service service) throws Exception;
 
 	protected abstract List<Work> executing(AeiObjects aeiObjects, Service service) throws Exception;
 
-	protected abstract List<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception;
+	protected abstract Optional<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception;
 
 	@Override
 	protected void arriveCommitted(AeiObjects aeiObjects) throws Exception {

@@ -112,7 +112,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 	}
 
 	private void arriveCleanManualEmpowerMap(AeiObjects aeiObjects) {
-		aeiObjects.getWork().getProperties().setManualEmpowerMap(new LinkedHashMap<>());
+		aeiObjects.getWork().setManualEmpowerMap(new LinkedHashMap<>());
 	}
 
 	private void arriveUpdateWorkThroughManual(AeiObjects aeiObjects) throws Exception {
@@ -208,9 +208,14 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				this.callBeforeExecuteScript(aeiObjects);
 				work.setBeforeExecuted(true);
 			}
-			// 运行业务方法
-			List<Work> works = this.executeProcessing(aeiObjects);
-
+			List<Work> works = new ArrayList<>();
+			if (StringUtils.isNotEmpty(work.getDestinationActivity())
+					&& Objects.nonNull(work.getDestinationActivityType())) {
+				works.add(work);
+			} else {
+				// 运行业务方法
+				works.addAll(this.executeProcessing(aeiObjects));
+			}
 			if (ListTools.isNotEmpty(works)) {
 				for (Work o : works) {
 					results.add(o.getId());
@@ -223,7 +228,6 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				// 已经有返回的work将要离开当前环节,执行AfterExecuteScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
-
 			if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
 					|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
 				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
@@ -296,18 +300,18 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			// 运行查询路由前脚本
 			this.callBeforeInquireScript(aeiObjects);
 			// 运行主方法
-			List<Route> selectRoutes = this.inquireProcessing(aeiObjects);
+			Route selectRoute = this.inquireProcessing(aeiObjects);
 			// 主方法运行完成
-			aeiObjects.addSelectRoutes(selectRoutes);
-			if ((null == selectRoutes) || selectRoutes.isEmpty()) {
-				throw new IllegalStateException("inquire return empty routes");
+			// aeiObjects.addSelectRoutes(selectRoutes);
+			if (null == selectRoute) {
+				throw new IllegalStateException("inquire return empty route");
 			}
 			List<Work> works = new ArrayList<>();
 			// 运行查询路由后脚本
-			work.setDestinationActivity(selectRoutes.get(0).getActivity());
-			work.setDestinationActivityType(selectRoutes.get(0).getActivityType());
-			work.setDestinationRoute(selectRoutes.get(0).getId());
-			work.setDestinationRouteName(selectRoutes.get(0).getName());
+			work.setDestinationActivity(selectRoute.getActivity());
+			work.setDestinationActivityType(selectRoute.getActivityType());
+			work.setDestinationRoute(selectRoute.getId());
+			work.setDestinationRouteName(selectRoute.getName());
 			works.add(work);
 			for (Work o : works) {
 				results.add(o.getId());
@@ -379,8 +383,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 
 	protected abstract void executeCommitted(AeiObjects aeiObjects, List<Work> works) throws Exception;
 
-	// TODO 需要优化,只需要返回单值 MUST! 下一个版本一定改完
-	protected abstract List<Route> inquireProcessing(AeiObjects aeiObjects) throws Exception;
+	protected abstract Route inquireProcessing(AeiObjects aeiObjects) throws Exception;
 
 	protected abstract void inquireCommitted(AeiObjects aeiObjects) throws Exception;
 

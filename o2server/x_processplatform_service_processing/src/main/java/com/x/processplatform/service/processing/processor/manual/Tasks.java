@@ -25,6 +25,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -36,8 +37,48 @@ public class Tasks {
 		// nothing
 	}
 
+	public static Task createTask(AeiObjects aeiObjects, Manual manual, Ticket ticket) throws Exception {
+		String person = aeiObjects.business().organization().person().getWithIdentity(ticket.distinguishedName());
+		String unit = aeiObjects.business().organization().unit().getWithIdentity(ticket.distinguishedName());
+		Task task = new Task(aeiObjects.getWork(), ticket.distinguishedName(), person, unit,
+				ticket.fromDistinguishedName(), new Date(), null, aeiObjects.getRoutes(), manual.getAllowRapid());
+		task.setLabel(ticket.label());
+		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
+		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
+			task.setFirst(false);
+		} else {
+			task.setFirst(ListTools.isEmpty(aeiObjects.getJoinInquireTaskCompleteds()));
+		}
+		calculateExpire(aeiObjects, manual, task);
+		if (StringUtils.isNotEmpty(ticket.fromDistinguishedName())) {
+			aeiObjects.business().organization().empowerLog().log(
+					createEmpowerLog(aeiObjects.getWork(), ticket.fromDistinguishedName(), ticket.distinguishedName()));
+			String fromPerson = aeiObjects.business().organization().person()
+					.getWithIdentity(ticket.fromDistinguishedName());
+			String fromUnit = aeiObjects.business().organization().unit()
+					.getWithIdentity(ticket.fromDistinguishedName());
+			TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
+			empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
+			empowerTaskCompleted.setJoinInquire(false);
+			empowerTaskCompleted.setIdentity(ticket.fromDistinguishedName());
+			empowerTaskCompleted.setDistinguishedName(ticket.fromDistinguishedName());
+			empowerTaskCompleted.setUnit(fromUnit);
+			empowerTaskCompleted.setPerson(fromPerson);
+			empowerTaskCompleted.setEmpowerToIdentity(ticket.distinguishedName());
+			aeiObjects.createTaskCompleted(empowerTaskCompleted);
+			Read empowerRead = new Read(aeiObjects.getWork(), ticket.fromDistinguishedName(), fromUnit, fromPerson);
+			aeiObjects.createRead(empowerRead);
+		}
+		if (null != aeiObjects.getWork().getGoBackStore()) {
+			// 如果存储了退回说明下一步需要jump那么待办无需选择路由
+			task.setRouteNameDisable(true);
+		}
+		return task;
+	}
+
+	@Deprecated(since = "8.2", forRemoval = true)
 	public static Task createTask(AeiObjects aeiObjects, Manual manual, String identity) throws Exception {
-		String fromIdentity = aeiObjects.getWork().getProperties().getManualEmpowerMap().get(identity);
+		String fromIdentity = aeiObjects.getWork().getManualEmpowerMap().get(identity);
 		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
 		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,

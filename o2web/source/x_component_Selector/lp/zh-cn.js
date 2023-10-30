@@ -29,6 +29,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "waitingSelect" : "待选",
     "selected" : "已选",
     "empty" : "清空",
+    "remove": "移除",
+    "selected2": "已选择",
 
     "identity" : "身份",
     "person" : "个人",
@@ -43,6 +45,14 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "group" : "群组",
     "unit" : "组织",
     "systemList" : "系统列表",
+
+    "quantifier": {
+        "person": "个人",
+        "identity": "身份",
+        "unit": "组织",
+        "group": "群组",
+        "role": "角色"
+    },
 
     "appType" : {
         "process": "流程管理",

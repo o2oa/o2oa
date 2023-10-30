@@ -1544,6 +1544,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "saveTitle": "Save Document",
         "flow": "Flow",
         "flowTitle": "Flow Document",
+        "submit": "Submit",
+        "submitTitle": "Submit document",
         "reroute": "Reroute",
         "rerouteTitle": "Reroute to other Activity",
         "reset": "Reset",

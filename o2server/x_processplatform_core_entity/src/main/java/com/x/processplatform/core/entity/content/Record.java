@@ -1,6 +1,8 @@
 package com.x.processplatform.core.entity.content;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,9 +13,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.Persistent;
@@ -27,6 +31,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,8 +57,8 @@ public class Record extends SliceJpaObject {
 	/* 转交流转 */
 	public static final String TYPE_APPENDTASK = "appendTask";
 
-	/* 回退流转 */
-	public static final String TYPE_BACK = "back";
+//	/* 回退流转 */
+//	public static final String TYPE_BACK = "back";
 
 	/* 调度 */
 	public static final String TYPE_REROUTE = "reroute";
@@ -87,9 +92,12 @@ public class Record extends SliceJpaObject {
 
 	/* 外部调用流转 */
 	public static final String TYPE_SERVICE = "service";
-	
+
 	/* 添加待办 */
 	public static final String TYPE_TASKADD = "taskAdd";
+
+	/* 退回 */
+	public static final String TYPE_GOBACK = "goBack";
 
 	/* 定制意见 */
 	public static final String TYPE_CUSTOM = "custom";
@@ -121,13 +129,26 @@ public class Record extends SliceJpaObject {
 			this.display = true;
 		}
 	}
-	/* 更新运行方法 */
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			this.routeName = this.properties.getRouteName();
+			this.opinion = this.properties.getOpinion();
+			this.mediaOpinion = this.properties.getMediaOpinion();
+			this.empowerFromIdentity = this.properties.getEmpowerFromIdentity();
+			this.nextManualList = this.properties.getNextManualList();
+			this.nextManualTaskIdentityList = this.getProperties().getNextManualTaskIdentityList();
+			this.startTime = this.getProperties().getStartTime();
+		}
+	}
 
 	public Record() {
 		this.display = true;
 		this.recordTime = new Date();
 		this.order = recordTime.getTime();
 		this.properties = new RecordProperties();
+
 	}
 
 	public Record(WorkLog workLog, Task task) {
@@ -159,6 +180,125 @@ public class Record extends SliceJpaObject {
 		this.getProperties().setStartTime(workLog.getFromTime());
 		this.getProperties().setFromGroup(workLog.getFromGroup());
 		this.getProperties().setFromOpinionGroup(workLog.getFromOpinionGroup());
+	}
+
+	public static final String ROUTENAME_FIELDNAME = "routeName";
+	@FieldDescribe("路由名称.")
+	@Transient
+	private String routeName;
+
+	public String getRouteName() {
+		if ((null == this.routeName) && (null != this.properties)) {
+			this.routeName = this.properties.getRouteName();
+		}
+		return routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.getProperties().setRouteName(routeName);
+		this.routeName = routeName;
+	}
+
+	public static final String OPINION_FIELDNAME = "opinion";
+	@Transient
+	@FieldDescribe("意见.")
+	private String opinion;
+
+	public String getOpinion() {
+		if ((null != this.properties) && (null == this.opinion)) {
+			this.opinion = this.properties.getOpinion();
+		}
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.getProperties().setOpinion(opinion);
+		this.opinion = opinion;
+	}
+
+	public static final String MEDIAOPINION_FIELDNAME = "mediaOpinion";
+	@Transient
+	@FieldDescribe("多媒体意见")
+	private String mediaOpinion;
+
+	public String getMediaOpinion() {
+		if ((null != this.properties) && (null == this.mediaOpinion)) {
+			this.mediaOpinion = this.properties.getMediaOpinion();
+		}
+		return mediaOpinion;
+	}
+
+	public void setMediaOpinion(String mediaOpinion) {
+		this.getProperties().setMediaOpinion(mediaOpinion);
+		this.mediaOpinion = mediaOpinion;
+	}
+
+	public static final String EMPOWERFROMIDENTITY_FIELDNAME = "empowerFromIdentity";
+	@Transient
+	@FieldDescribe("授权自身份")
+	private String empowerFromIdentity;
+
+	public String getEmpowerFromIdentity() {
+		if ((null != this.properties) && (null == this.empowerFromIdentity)) {
+			this.empowerFromIdentity = this.properties.getEmpowerFromIdentity();
+		}
+		return empowerFromIdentity;
+	}
+
+	public void setEmpowerFromIdentity(String empowerFromIdentity) {
+		this.getProperties().setEmpowerFromIdentity(empowerFromIdentity);
+		this.empowerFromIdentity = empowerFromIdentity;
+	}
+
+	public static final String NEXTMANUALLIST_FIELDNAME = "nextManualList";
+	@Transient
+	@FieldDescribe("后续人工环节")
+	private List<NextManual> nextManualList = new ArrayList<>();
+
+	public List<NextManual> getNextManualList() {
+		if ((null == nextManualList) && (null != this.properties)) {
+			this.nextManualList = this.properties.getNextManualList();
+		}
+		return nextManualList;
+	}
+
+	public void setNextManualList(List<NextManual> nextManualList) {
+		this.getProperties().setNextManualList(nextManualList);
+		this.nextManualList = nextManualList;
+	}
+
+	public static final String NEXTMANUALTASKIDENTITYLIST_FIELDNAME = "nextManualTaskIdentityList";
+	@Transient
+	@FieldDescribe("后续人工环节处理人")
+	private List<String> nextManualTaskIdentityList = new ArrayList<>();
+
+	public List<String> getNextManualTaskIdentityList() {
+		if ((null == nextManualTaskIdentityList) && (null != this.properties)) {
+			this.nextManualTaskIdentityList = this.properties.getNextManualTaskIdentityList();
+		}
+		return nextManualTaskIdentityList;
+	}
+
+	public void setNextManualTaskIdentityList(List<String> nextManualTaskIdentityList) {
+		this.getProperties().setNextManualTaskIdentityList(nextManualTaskIdentityList);
+		this.nextManualTaskIdentityList = nextManualTaskIdentityList;
+	}
+
+	public static final String STARTTIME_FIELDNAME = "startTime";
+	@Transient
+	@FieldDescribe("开始时间.")
+	private Date startTime;
+
+	public Date getStartTime() {
+		if ((null == startTime) && (null != this.properties)) {
+			this.startTime = this.properties.getStartTime();
+		}
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.getProperties().setStartTime(startTime);
+		this.startTime = startTime;
 	}
 
 	public RecordProperties getProperties() {
@@ -273,42 +413,42 @@ public class Record extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String fromActivityToken;
 
-	public static final String arrivedActivity_FIELDNAME = "arrivedActivity";
-	@FieldDescribe("结束活动Id，可能为空，如果是未Connected的流程记录")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivity_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String arrivedActivity;
-
-	public static final String arrivedActivityType_FIELDNAME = "arrivedActivityType";
-	@FieldDescribe("结束活动类型.")
-	@Column(length = ActivityType.length, name = ColumnNamePrefix + arrivedActivityType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityType_FIELDNAME)
-	@Enumerated(EnumType.STRING)
-	@CheckPersist(allowEmpty = true)
-	private ActivityType arrivedActivityType;
-
-	public static final String arrivedActivityName_FIELDNAME = "arrivedActivityName";
-	@FieldDescribe("结束活动名称.")
-	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ arrivedActivityName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityName_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String arrivedActivityName;
-
-	public static final String arrivedActivityAlias_FIELDNAME = "arrivedActivityAlias";
-	@FieldDescribe("结束活动名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + arrivedActivityAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityAlias_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String arrivedActivityAlias;
-
-	public static final String arrivedActivityToken_FIELDNAME = "arrivedActivityToken";
-	@FieldDescribe("结束活动Token.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivityToken_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String arrivedActivityToken;
+//	public static final String arrivedActivity_FIELDNAME = "arrivedActivity";
+//	@FieldDescribe("结束活动Id，可能为空，如果是未Connected的流程记录")
+//	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivity_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + arrivedActivity_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String arrivedActivity;
+//
+//	public static final String arrivedActivityType_FIELDNAME = "arrivedActivityType";
+//	@FieldDescribe("结束活动类型.")
+//	@Column(length = ActivityType.length, name = ColumnNamePrefix + arrivedActivityType_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityType_FIELDNAME)
+//	@Enumerated(EnumType.STRING)
+//	@CheckPersist(allowEmpty = true)
+//	private ActivityType arrivedActivityType;
+//
+//	public static final String arrivedActivityName_FIELDNAME = "arrivedActivityName";
+//	@FieldDescribe("结束活动名称.")
+//	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
+//			+ arrivedActivityName_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityName_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String arrivedActivityName;
+//
+//	public static final String arrivedActivityAlias_FIELDNAME = "arrivedActivityAlias";
+//	@FieldDescribe("结束活动名称.")
+//	@Column(length = length_255B, name = ColumnNamePrefix + arrivedActivityAlias_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityAlias_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String arrivedActivityAlias;
+//
+//	public static final String arrivedActivityToken_FIELDNAME = "arrivedActivityToken";
+//	@FieldDescribe("结束活动Token.")
+//	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivityToken_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private String arrivedActivityToken;
 
 	public static final String recordTime_FIELDNAME = "recordTime";
 	@FieldDescribe("记录时间.")
@@ -490,44 +630,44 @@ public class Record extends SliceJpaObject {
 		this.process = process;
 	}
 
-	public String getArrivedActivity() {
-		return arrivedActivity;
-	}
-
-	public void setArrivedActivity(String arrivedActivity) {
-		this.arrivedActivity = arrivedActivity;
-	}
-
-	public ActivityType getArrivedActivityType() {
-		return arrivedActivityType;
-	}
-
-	public void setArrivedActivityType(ActivityType arrivedActivityType) {
-		this.arrivedActivityType = arrivedActivityType;
-	}
-
-	public String getArrivedActivityName() {
-		return arrivedActivityName;
-	}
-
-	public void setArrivedActivityName(String arrivedActivityName) {
-		this.arrivedActivityName = arrivedActivityName;
-	}
-
-	public String getArrivedActivityAlias() {
-		return arrivedActivityAlias;
-	}
-
-	public void setArrivedActivityAlias(String arrivedActivityAlias) {
-		this.arrivedActivityAlias = arrivedActivityAlias;
-	}
-
-	public String getArrivedActivityToken() {
-		return arrivedActivityToken;
-	}
-
-	public void setArrivedActivityToken(String arrivedActivityToken) {
-		this.arrivedActivityToken = arrivedActivityToken;
-	}
+//	public String getArrivedActivity() {
+//		return arrivedActivity;
+//	}
+//
+//	public void setArrivedActivity(String arrivedActivity) {
+//		this.arrivedActivity = arrivedActivity;
+//	}
+//
+//	public ActivityType getArrivedActivityType() {
+//		return arrivedActivityType;
+//	}
+//
+//	public void setArrivedActivityType(ActivityType arrivedActivityType) {
+//		this.arrivedActivityType = arrivedActivityType;
+//	}
+//
+//	public String getArrivedActivityName() {
+//		return arrivedActivityName;
+//	}
+//
+//	public void setArrivedActivityName(String arrivedActivityName) {
+//		this.arrivedActivityName = arrivedActivityName;
+//	}
+//
+//	public String getArrivedActivityAlias() {
+//		return arrivedActivityAlias;
+//	}
+//
+//	public void setArrivedActivityAlias(String arrivedActivityAlias) {
+//		this.arrivedActivityAlias = arrivedActivityAlias;
+//	}
+//
+//	public String getArrivedActivityToken() {
+//		return arrivedActivityToken;
+//	}
+//
+//	public void setArrivedActivityToken(String arrivedActivityToken) {
+//		this.arrivedActivityToken = arrivedActivityToken;
+//	}
 
 }

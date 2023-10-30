@@ -1,19 +1,45 @@
 <div style="padding: 5px 30px 0px 30px; font-size:14px;">
-    <div style="line-height: 18px; height: 40px; color: #999999; overflow: hidden">
-        {{$.lp.addSplitInfo}}
-    </div>
-    <div style="height: 38px; margin-bottom:10px;overflow-y:auto;">
-        <input style="width: 98%; overflow:auto; height: 30px;" type="text" />
-    </div>
+<!--    <div style="line-height: 18px; height: 40px; color: #999999; overflow: hidden">-->
+<!--        {{$.lp.addSplitInfo}}-->
+<!--    </div>-->
+<!--    <div style="height: 38px; margin-bottom:10px;overflow-y:auto;">-->
+<!--        <input style="width: 98%; overflow:auto; height: 30px;" type="text" />-->
+<!--    </div>-->
     <div>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <table width="100%" cellpadding="5" cellspacing="0" border="0">
             <tr>
-                <td><div class="o2_addSplit_selector" style="background: #eeeeee;margin-bottom:10px;border-radius: 5px; border: 1px solid #666; color: #666; height: 24px; line-height: 24px; width:130px;text-align:center; cursor: pointer;">{{$.lp.selectUnit}}</div></td>
-                <td valign="top" align="right"><b>{{$.lp.excludeBranches}}</b></td>
-                <td valign="top" align="right"><input class="o2_addSplit_radio" type="radio" value="true" name="o2_addSplit_radioCheck" checked/>{{$.lp.yes}} <input class="o2_addSplit_radio" type="radio" value="false" name="o2_addSplit_radioCheck"/>{{$.lp.no}}</td>
+                <td style="width:60px;"></td>
+                <td colspan="2">{{$.lp.addSplitInfo}}</td>
+            </tr>
+            <tr>
+                <td>{{$.lp.splitValue}}:</td>
+                <td colspan="2"><input style="width: 98%; overflow:auto; height: 30px;" type="text" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div class="o2_addSplit_selector" style="background: #eeeeee;margin-bottom:10px;border-radius: 5px; border: 1px solid #666; color: #666; height: 24px; line-height: 24px; width:130px;text-align:center; cursor: pointer;">
+                        {{$.lp.selectUnit}}
+                    </div>
+                </td>
+                <td valign="top" align="right">
+                    <b>{{$.lp.excludeBranches}}</b>
+                    <input class="o2_addSplit_radio" type="radio" value="true" name="o2_addSplit_radioCheck" checked/>{{$.lp.yes}}
+                    <input class="o2_addSplit_radio" type="radio" value="false" name="o2_addSplit_radioCheck"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td>{{$.lp.opinion}}:</td>
+                <td colspan="2">
+                    <textarea id="addSplit_opinion" style="width: 98%; overflow:auto; height: 50px;" type="text" class="addSplit_opinion"></textarea>
+                </td>
             </tr>
         </table>
     </div>
+<!--    <div style="min-height: 30px; line-height: 30px; ">-->
+<!--        <div style="float: left; width: 70px; height: 50px; line-height: 50px;">{{$.lp.opinion}}</div>-->
+<!--        <div style="margin-left: 70px"><textarea id="addSplit_opinion" style="width: 98%; overflow:auto; height: 50px;" type="text" class="addSplit_opinion"></textarea></div>-->
+<!--    </div>-->
 
     <!--<div style="height: 40px; line-height: 30px; margin:0px">-->
         <!--<div class="o2_addSplit_cancelButton" style="border-radius: 5px; float: right; margin-left: 10px; border: 1px solid #666; color: #666; height: 24px; line-height: 24px; width:80px; text-align:center; box-shadow: 1px 1px 3px #999; cursor: pointer;">取消</div>-->

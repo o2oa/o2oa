@@ -110,9 +110,9 @@ public class WebServerTools extends JettySeverTools {
 		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
-			addHttpsConnector(server, webServer.getPort(), true);
+			addHttpsConnector(server, webServer.getPort(), false);
 		} else {
-			addHttpConnector(server, webServer.getPort(), true);
+			addHttpConnector(server, webServer.getPort(), false);
 		}
 		GzipHandler gzipHandler = new GzipHandler();
 		gzipHandler.setHandler(handlers);
@@ -155,7 +155,7 @@ public class WebServerTools extends JettySeverTools {
 				if (!WebServers.WEB_SERVER_FOLDERS.contains(name)) {
 					try {
 						Path target = Config.path_webroot(true).resolve(name);
-						if (Files.exists(target)){
+						if (Files.exists(target)) {
 							FileUtils.copyDirectory(o.toFile(), target.toFile());
 							FileUtils.deleteDirectory(o.toFile());
 						} else {

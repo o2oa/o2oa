@@ -14,10 +14,6 @@ public class WorkLogProperties extends JsonProperties {
 
 	private List<String> splitValueList = new ArrayList<>();
 
-//	private String splitToken;
-//
-//	private String splitValue;
-
 	private ActivityType goBackFromActivityType;
 
 	private String goBackFromActivity;
@@ -69,21 +65,5 @@ public class WorkLogProperties extends JsonProperties {
 	public void setSplitValueList(List<String> splitValueList) {
 		this.splitValueList = splitValueList;
 	}
-
-//	public String getSplitToken() {
-//		return splitToken;
-//	}
-//
-//	public void setSplitToken(String splitToken) {
-//		this.splitToken = splitToken;
-//	}
-//
-//	public String getSplitValue() {
-//		return splitValue;
-//	}
-//
-//	public void setSplitValue(String splitValue) {
-//		this.splitValue = splitValue;
-//	}
 
 }

@@ -1540,6 +1540,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "saveTitle": "Guardar documento",
         "flow": "Enviar",
         "flowTitle": "Continuar el flujo de trabajo del documento",
+        "submit": "Enviar",
+        "submitTitle": "Enviar documento",
         "reroute": "Redirigir",
         "rerouteTitle": "Redirigir documento",
         "reset": "Restablecer",
