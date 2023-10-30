@@ -20,6 +20,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.recordList = recordList;
         this.processid = processid;
 
+        this.mobileScale = 2;
+
         this.load();
     },
     load: function(){
@@ -277,8 +279,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             this.paper = Raphael(this.paperInNode, "98%", "99%");
             if (layout.mobile){
                 var s = this.paper.canvas.getSize();
-                var x = s.x*2;
-                var y = s.y*2;
+                var x = s.x*this.mobileScale;
+                var y = s.y*this.mobileScale;
                 this.paper.canvas.set({
                     "viewBox": "0 0 "+x+" "+y+"",
                     "preserveAspectRatio": "xMinYMin meet"
@@ -423,6 +425,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this.process));
     },
     getlogNodePosition: function(activity, node, offset, psize){
+        debugger;
         offset.x = 0;
         offset.y = 0;
         var size = node.getSize();
