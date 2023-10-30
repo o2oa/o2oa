@@ -1953,7 +1953,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              */
             "openJob": function (id, choice, options, callback) {
                 var workData = null, handel;
-                o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
+                o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                     if (json.data) workData = json.data;
                 }.bind(this), null, false);
 
@@ -1964,7 +1964,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
                         callback(this);
                     }
-                };
+                }
 
                 runCallback = function ( handel ) {
                     if( o2.typeOf(callback) === "function" ) {
@@ -1973,24 +1973,21 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                         } else if (options && options.appId) {
                             if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
                                 callback(layout.desktop.apps[options.appId], true);
+                            }else{
+                                callback(handel, false);
                             }
+                        }else{
+                            callback(handel, false);
                         }
                     }
                 };
 
-
-
-                if (workData) {
+                if (workData){
                     var len = workData.workList.length + workData.workCompletedList.length;
-                    if (len) {
-                        if (len > 1 && choice) {
-                            var node = new Element("div", {
-                                "styles": {
-                                    "padding": "20px",
-                                    "width": "500px"
-                                }
-                            }).inject(_form.node);
-                            workData.workList.each(function (work) {
+                    if (len){
+                        if (len>1 && choice){
+                            var node = new Element("div", {"styles": {"padding": "20px", "width": "500px"}}).inject(_form.node);
+                            workData.workList.each(function(work){
                                 var workNode = new Element("div", {
                                     "styles": {
                                         "background": "#ffffff",
@@ -2002,25 +1999,25 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     }
                                 }).inject(node);
                                 var html = "<div style='height: 40px; width: 40px; float: left; background: url(../x_component_process_Xform/$Form/default/icon/work.png) no-repeat center center'></div>" +
-                                    "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>" + o2.LP.widget.open + "</div></div>" +
-                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>" + work.title + "</div>" +
-                                    "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>" + work.activityName + "</div>" +
-                                    "<div style='color:#999999; float: left; margin-right: 10px'>" + work.activityArrivedTime + "</div>" +
-                                    "<div style='color:#999999; float: left; margin-right: 10px'>" + (work.manualTaskIdentityText || "") + "</div></div>";
+                                    "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>"+o2.LP.widget.open+"</div></div>"+
+                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>"+work.title+"</div>" +
+                                    "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>"+work.activityName+"</div>" +
+                                    "<div style='color:#999999; float: left; margin-right: 10px'>"+work.activityArrivedTime+"</div>" +
+                                    "<div style='color:#999999; float: left; margin-right: 10px'>"+(work.manualTaskIdentityText || "")+"</div></div>";
                                 workNode.set("html", html);
                                 var action = workNode.getElement(".MWFAction");
                                 action.store("work", work);
-                                action.addEvent("click", function (e) {
+                                action.addEvent("click", function(e){
                                     var work = e.target.retrieve("work");
                                     if (work){
-                                       handel =  this.openWork(work.id, null, work.title, options);
-                                       runCallback( handel );
+                                        handel =  this.openWork(work.id, null, work.title, options);
+                                        runCallback( handel );
                                     }
                                     dlg.close();
                                 }.bind(this));
 
                             }.bind(this));
-                            workData.workCompletedList.each(function (work) {
+                            workData.workCompletedList.each(function(work){
                                 var workNode = new Element("div", {
                                     "styles": {
                                         "background": "#ffffff",
@@ -2032,14 +2029,14 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     }
                                 }).inject(node);
                                 var html = "<div style='height: 40px; width: 40px; float: left; background: url(../x_component_process_Xform/$Form/default/icon/work.png) no-repeat center center'></div>" +
-                                    "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>" + o2.LP.widget.open + "</div></div>" +
-                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>" + work.title + "</div>" +
-                                    "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>" + o2.LP.widget.workcompleted + "</div>" +
-                                    "<div style='color:#999999; float: left; margin-right: 10px'>" + work.completedTime + "</div>";
+                                    "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>"+o2.LP.widget.open+"</div></div>"+
+                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>"+work.title+"</div>" +
+                                    "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>"+o2.LP.widget.workcompleted+"</div>" +
+                                    "<div style='color:#999999; float: left; margin-right: 10px'>"+work.completedTime+"</div>";
                                 workNode.set("html", html);
                                 var action = workNode.getElement(".MWFAction");
                                 action.store("work", work);
-                                action.addEvent("click", function (e) {
+                                action.addEvent("click", function(e){
                                     var work = e.target.retrieve("work");
                                     if (work){
                                         handel =  this.openWork(null, work.id, work.title, options);
@@ -2049,38 +2046,44 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                 }.bind(this));
 
                             }.bind(this));
-                            var height = node.getSize().y + 20;
-                            if (height > 600) height = 600;
+                            var height = node.getSize().y+20;
+                            if (height>600) height = 600;
 
                             var dlg = o2.DL.open({
                                 "title": o2.LP.widget.choiceWork,
-                                "style": "user",
+                                "style" : "user",
                                 "isResize": false,
                                 "content": node,
                                 "buttonList": [
                                     {
-                                        "type": "cancel",
+                                        "type" : "cancel",
                                         "text": o2.LP.widget.close,
-                                        "action": function () {
-                                            dlg.close();
-                                        }
+                                        "action": function(){dlg.close();}
                                     }
                                 ]
                             });
-                        } else {
-                            if (workData.workList.length) {
-                                var work = workData.workList[0];
+                        }else{
+                            if (workData.workList.length){
+                                var work =  workData.workList[0];
                                 handel = this.openWork(work.id, null, work.title, options);
-                                runCallback(handel);
+                                runCallback( handel );
                                 return handel;
-                            } else {
-                                var work = workData.workCompletedList[0];
+                            }else{
+                                var work =  workData.workCompletedList[0];
                                 handel = this.openWork(null, work.id, work.title, options);
-                                runCallback(handel);
+                                runCallback( handel );
                                 return handel;
                             }
                         }
+                    }else{
+                        runCallback(new Error("Can't open this Job", {
+                            cause: workData
+                        }));
                     }
+                }else{
+                    runCallback(new Error("Can't open this Job", {
+                        cause: workData
+                    }));
                 }
             },
             /**打开一个内容管理文档

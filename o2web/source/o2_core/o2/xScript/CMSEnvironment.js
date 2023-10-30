@@ -1938,7 +1938,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                     if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
                     callback(this);
                 }
-            };
+            }
 
             runCallback = function ( handel ) {
                 if( o2.typeOf(callback) === "function" ) {
@@ -1947,7 +1947,11 @@ MWF.xScript.CMSEnvironment = function(ev){
                     } else if (options && options.appId) {
                         if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
                             callback(layout.desktop.apps[options.appId], true);
+                        }else{
+                            callback(handel, false);
                         }
+                    }else{
+                        callback(handel, false);
                     }
                 }
             };
@@ -1980,7 +1984,7 @@ MWF.xScript.CMSEnvironment = function(ev){
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
                                 if (work){
-                                   handel =  this.openWork(work.id, null, work.title, options);
+                                    handel =  this.openWork(work.id, null, work.title, options);
                                     runCallback( handel );
                                 }
                                 dlg.close();
@@ -2033,19 +2037,27 @@ MWF.xScript.CMSEnvironment = function(ev){
                             ]
                         });
                     }else{
-                        if (workData.workList.length) {
-                            var work = workData.workList[0];
+                        if (workData.workList.length){
+                            var work =  workData.workList[0];
                             handel = this.openWork(work.id, null, work.title, options);
-                            runCallback(handel);
+                            runCallback( handel );
                             return handel;
-                        } else {
-                            var work = workData.workCompletedList[0];
+                        }else{
+                            var work =  workData.workCompletedList[0];
                             handel = this.openWork(null, work.id, work.title, options);
-                            runCallback(handel);
+                            runCallback( handel );
                             return handel;
                         }
                     }
+                }else{
+                    runCallback(new Error("Can't open this Job", {
+                        cause: workData
+                    }));
                 }
+            }else{
+                runCallback(new Error("Can't open this Job", {
+                    cause: workData
+                }));
             }
         },
         "openDocument": function(id, title, options){

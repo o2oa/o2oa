@@ -314,16 +314,14 @@ MWF.xApplication.process.Work.Main = new Class({
                 }
             }else{
                 layout.sessionPromise.then(function(){
+                    this.notice( this.lp.openWorkError, "error");
                     this.close();
                 }.bind(this), function(){});
                 //this.close();
             }
-        }.bind(this), function(){
-            //this.close();
         }.bind(this));
     },
     loadWorkByDraft: function(work, data){
-	    debugger;
         o2.Actions.invokeAsync([
             {"action": this.action, "name": (layout.mobile) ? "getFormMobile": "getForm"}
         ], {"success": function(json_form){

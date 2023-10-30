@@ -3642,12 +3642,14 @@ MWF.xScript.Environment = function(ev){
          * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
          * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
          * @param {Object} [options] - 打开工作时传入的选项。
-         * @param {Function} [callback] - 打开工作时的回调方法，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）。
+         * @param {Function} [callback] - 打开工作成功或失败的回调方法，如果打开成功，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）；如果打开失败，此方法第一个参数是一个Error，其cause属性可获取通过jobId查询到的work数据。
          * @example
          this.form.openJob(jobId, true);
          * @example
          this.form.openJob(jobId, true, {}, function(handel){
-            //handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+            //通过Error.prototype.isPrototypeOf(handel)来判断handel是否是一个错误。
+            //如果打开成功，handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+            //如果打开错误，handel为为一个Error对象，其cause属性可获取通过jobId查询到的work数据
          });
          */
         "openJob": function(id, choice, options, callback){
@@ -3663,7 +3665,7 @@ MWF.xScript.Environment = function(ev){
                     if( o2.typeOf(queryLoad) === "function" )queryLoad.call(this);
                     callback(this);
                 }
-            };
+            }
 
             runCallback = function ( handel ) {
                 if( o2.typeOf(callback) === "function" ) {
@@ -3672,7 +3674,11 @@ MWF.xScript.Environment = function(ev){
                     } else if (options && options.appId) {
                         if (layout.desktop && layout.desktop.apps && layout.desktop.apps[options.appId]) {
                             callback(layout.desktop.apps[options.appId], true);
+                        }else{
+                            callback(handel, false);
                         }
+                    }else{
+                        callback(handel, false);
                     }
                 }
             };
@@ -3770,7 +3776,15 @@ MWF.xScript.Environment = function(ev){
                             return handel;
                         }
                     }
+                }else{
+                    runCallback(new Error("Can't open this Job", {
+                        cause: workData
+                    }));
                 }
+            }else{
+                runCallback(new Error("Can't open this Job", {
+                    cause: workData
+                }));
             }
             // var op = options || {};
             // op.workId = id;
