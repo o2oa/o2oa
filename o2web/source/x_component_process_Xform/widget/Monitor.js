@@ -425,7 +425,6 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this.process));
     },
     getlogNodePosition: function(activity, node, offset, psize){
-        debugger;
         offset.x = 0;
         offset.y = 0;
         var size = node.getSize();
