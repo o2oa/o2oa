@@ -20,6 +20,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.recordList = recordList;
         this.processid = processid;
 
+        this.mobileScale = 2;
+
         this.load();
     },
     load: function(){
@@ -277,8 +279,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             this.paper = Raphael(this.paperInNode, "98%", "99%");
             if (layout.mobile){
                 var s = this.paper.canvas.getSize();
-                var x = s.x*2;
-                var y = s.y*2;
+                var x = s.x*this.mobileScale;
+                var y = s.y*this.mobileScale;
                 this.paper.canvas.set({
                     "viewBox": "0 0 "+x+" "+y+"",
                     "preserveAspectRatio": "xMinYMin meet"
@@ -472,9 +474,37 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
 
         this.currentWorklogNode = activity.worklogNode;
         this.currentWorklogNode.setStyle("display", "block");
-
-        var p = this.getlogNodePosition(activity, activity.worklogNode, offset, psize)
-        activity.worklogNode.setPosition({"x": p.x, "y": p.y});
+        if( layout.mobile ){
+            var pSize = this.paperNode.getSize();
+            var bodySize =  $(document.body).getSize();
+            if( this.paperNode.getPosition().y + pSize.y > bodySize.y ){
+                var mobileActionNode = document.body.getElement(".o2_form_mobile_actions");
+                activity.worklogNode.inject( $(document.body) );
+                activity.worklogNode.setStyles({
+                    "display": "block",
+                    "position": "absolute",
+                    "width": "calc( 100% - 4px )",
+                    "max-width": "500px",
+                    "bottom": mobileActionNode ? (mobileActionNode.getSize().y+1+"px") : "1px",
+                    "left": "0px"
+                });
+                activity.worklogNode.setStyle("left", (bodySize.x - activity.worklogNode.getSize().x)/2 + "px");
+            }else{
+                activity.worklogNode.inject( this.paperNode );
+                activity.worklogNode.setStyles({
+                    "display": "block",
+                    "position": "absolute",
+                    "width": "calc( 100% - 4px )",
+                    "max-width": "500px",
+                    "bottom": "1px",
+                    "left": "0px"
+                });
+                activity.worklogNode.setStyle("left", (pSize.x - activity.worklogNode.getSize().x)/2 + "px");
+            }
+        }else{
+            var p = this.getlogNodePosition(activity, activity.worklogNode, offset, psize)
+            activity.worklogNode.setPosition({"x": p.x, "y": p.y});
+        }
     },
     hideCurrentWorklog: function(){
         if (this.currentWorklogNode){
