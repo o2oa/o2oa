@@ -105,6 +105,7 @@ public class ActionImportExcel extends BaseAction {
 
     public static class Wo extends GsonPropertyObject {
 
+        private static final long serialVersionUID = 6022979308455360363L;
         @FieldDescribe("返回的结果标识，下载结果文件使用")
         private String flag;
         @FieldDescribe("异常错误数据条目数")

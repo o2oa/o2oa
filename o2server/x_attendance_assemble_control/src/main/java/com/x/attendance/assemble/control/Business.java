@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 
 import com.x.attendance.assemble.control.factory.v2.AttendanceV2ManagerFactory;
 import org.apache.commons.lang3.StringUtils;

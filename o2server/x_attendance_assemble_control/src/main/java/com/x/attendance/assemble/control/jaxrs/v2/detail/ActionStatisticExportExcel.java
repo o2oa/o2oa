@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
+import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
@@ -16,6 +17,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.GeneralFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
@@ -37,36 +39,36 @@ public class ActionStatisticExportExcel extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionStatisticExportExcel.class);
     private static final ReentrantLock lock = new ReentrantLock();
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, String filter, String start, String end) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
         lock.lock();
-        LOGGER.info("开始统计考勤数据。。。filter: {}, start:{}, end:{} ", filter, start, end);
+        
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();
                 EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
-            if (StringUtils.isEmpty(filter)) {
-                throw new ExceptionEmptyParameter("过滤人员");
+            StatisticWi wi = this.convertToWrapIn(jsonElement, StatisticWi.class);
+            if (StringUtils.isEmpty(wi.getFilter()) && (wi.getFilterList() == null || wi.getFilterList().isEmpty())) {
+                throw new ExceptionEmptyParameter("过滤人员或组织");
             }
-            if (StringUtils.isEmpty(start)) {
+            if (StringUtils.isEmpty(wi.getStartDate())) {
                 throw new ExceptionEmptyParameter("开始日期");
             }
-            if (StringUtils.isEmpty(end)) {
+            if (StringUtils.isEmpty(wi.getEndDate())) {
                 throw new ExceptionEmptyParameter("结束日期");
             }
+            LOGGER.info("开始统计考勤数据。。。filter: {}, start:{}, end:{} ", ListTools.toStringJoin(wi.getFilterList()), wi.getStartDate(), wi.getEndDate());
             // 日期检查
-            Date startDate = DateTools.parse(start, DateTools.format_yyyyMMdd); // 检查格式
-            Date endDate = DateTools.parse(end, DateTools.format_yyyyMMdd); // 检查格式
+            Date startDate = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd); // 检查格式
+            Date endDate = DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd); // 检查格式
             if (startDate.after(endDate)) {
                 throw new ExceptionDateEndBeforeStartError();
             }
             List<String> userList = new ArrayList<>();
             Business business = new Business(emc);
-            if (filter.endsWith("@U")) { // 组织转化成人员列表
-                List<String> users = business.organization().person().listWithUnitSubNested(filter); // 递归查询下级成员
-                if (users != null && !users.isEmpty()) {
-                    userList.addAll(users);
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                for (String f : wi.getFilterList()) {
+                    analysisPerson(userList, f, business);
                 }
-            } else if (filter.endsWith("@P")) {
-                userList.add(filter);
+            } else if (StringUtils.isNotEmpty(wi.getFilter())) {
+                analysisPerson(userList, wi.getFilter(), business);
             }
             if (userList.isEmpty()) {
                 throw new ExceptionEmptyParameter("过滤人员");
@@ -75,20 +77,12 @@ public class ActionStatisticExportExcel extends BaseAction {
             // 根据人员循环查询 并统计数据
             List<StatisticWo> wos = new ArrayList<>();
             // 统计数据计算
-            StatisticWi wi = new StatisticWi();
-            wi.setFilter(filter);
-            wi.setStartDate(start);
-            wi.setEndDate(end);
             statisticDetail(wi, userList, business, wos);
             // 数据excel文件传教
             Workbook wb = new XSSFWorkbook();
             createExcelFile(wb, wos);
             // 生成excel
-            String name = filter;
-            if (name.contains("@")) {
-                name = name.split("@")[0];
-            }
-            String fileName = name+"的考勤统计_"+start + "-" + end + "_" +DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss)+".xlsx";
+            String fileName = "考勤统计_"+wi.getStartDate() + "-" + wi.getEndDate() + "_" +DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss)+".xlsx";
             wb.write(os);
             StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
             GeneralFile generalFile = new GeneralFile(gfMapping.getName(), fileName,
@@ -104,6 +98,17 @@ public class ActionStatisticExportExcel extends BaseAction {
         } finally {
             lock.unlock();
             LOGGER.info("统计结束。。。。。。。。。。。。");
+        }
+    }
+
+    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
+        if (filter.endsWith("@U")) { // 组织转化成人员列表 递归
+            List<String> users = business.organization().person().listWithUnitSubNested(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
         }
     }
 
@@ -165,6 +170,7 @@ public class ActionStatisticExportExcel extends BaseAction {
 
     public static class Wo extends GsonPropertyObject {
 
+        private static final long serialVersionUID = 1380487824637447358L;
         @FieldDescribe("返回的结果标识，下载结果文件使用")
         private String flag;
 
