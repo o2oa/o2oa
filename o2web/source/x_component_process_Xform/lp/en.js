@@ -375,6 +375,8 @@ MWF.xApplication.process.Xform.LP = {
 
         "rollbackInfo": "Select the location of the file to be rollback to",
         "addSplitInfo": "Split data according to your business settings. The data should match the split setting in the process. multiple values with a comma (,)",
+        "splitValue": "Split by",
+        "opinion": "opinion",
         "selectUnit": "Select Unit",
         "excludeBranches": "Exclude existing branches",
         "yes": "Yes",

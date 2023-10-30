@@ -372,6 +372,8 @@ MWF.xApplication.process.Xform.LP = {
 
         "rollbackInfo": "Seleccione la etapa a la que desea retroceder el archivo",
         "addSplitInfo": "Configure los datos de división según su negocio. Estos datos deben coincidir con los criterios de división establecidos en el flujo de trabajo.<br/> Si hay varios valores, sepárelos con comas (,)",
+        "splitValue": "Dividir por",
+        "opinion": "opinión",
         "selectUnit": "Seleccionar organización o persona",
         "excludeBranches": "Excluir ramas existentes",
         "yes": "Sí",

@@ -375,7 +375,9 @@ MWF.xApplication.process.Xform.LP = {
         "readed" : "已阅",
 
         "rollbackInfo": "请选择文件要回溯到的位置",
-        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。<br/>多个值请用半角逗号(,)分隔",
+        "addSplitInfo": "根据您的业务设置拆分数据，此处设置的数据应与流程中设置的拆分依据匹配。多个值请用半角逗号(,)分隔",
+        "splitValue": "拆分依据",
+        "opinion": "意见",
         "selectUnit": "选择组织或人员",
         "excludeBranches": "排除已有分支",
         "yes": "是",
