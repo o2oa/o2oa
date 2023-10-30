@@ -1530,6 +1530,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
 
             nodes.each(function(node){
                 var jsondata = "taskParticipant.data";
+                var vdata = property.data.taskParticipant.data;
+                var acts = (vdata) ? JSON.parse(vdata) : [];
 
                 Object.keys(this.process.manuals).forEach(function(k){
                     var a = this.process.manuals[k];
@@ -1537,6 +1539,9 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                         html: "<input name='"+id+jsondata+"' type='checkbox' value='"+a.data.id+"'>"+a.data.name
                     });
                     const input = label.firstChild;
+
+                    if (acts.indexOf(a.data.id)!==-1) input.checked = true;
+
                     input.addEvent("keydown", function(e){
                         e.stopPropagation();
                     });
