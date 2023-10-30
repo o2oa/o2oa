@@ -1,3 +1,4 @@
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.Currency", null, false);
 MWF.xApplication.portal.PageDesigner.Module.Currency = MWF.PCCurrency = new Class({
     Extends: MWF.FCCurrency
 });

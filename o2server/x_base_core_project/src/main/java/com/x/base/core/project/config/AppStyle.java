@@ -35,6 +35,7 @@ public class AppStyle extends ConfigObject {
 		this.indexCentered = false;
 		this.systemMessageSwitch = true;
 		this.systemMessageCanClick = true;
+		this.needGray = false;
 		this.appExitAlert = "";
 		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
 
@@ -138,6 +139,9 @@ public class AppStyle extends ConfigObject {
 	private Boolean systemMessageSwitch;
 	@FieldDescribe(("移动App系统通知是否可点击打开"))
 	private Boolean systemMessageCanClick;
+	
+	@FieldDescribe(("是否需要全局黑白"))
+	private Boolean needGray;
 
 	@FieldDescribe("app退出提示")
 	private String appExitAlert;
@@ -159,6 +163,14 @@ public class AppStyle extends ConfigObject {
 
 
 	
+
+	public Boolean getNeedGray() {
+		return needGray;
+	}
+
+	public void setNeedGray(Boolean needGray) {
+		this.needGray = needGray;
+	}
 
 	public Boolean getIndexCentered() {
     return indexCentered;

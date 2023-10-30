@@ -202,9 +202,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }.bind(this));
     },
     _loadUserInterface: function( callback ){
-
         this.viewJson = this.bindLP( this.viewJson );
+
+        var defaultSelectedScript, selectedAbleScript;
+        if( typeOf(this.json.defaultSelectedScript) === "function" )defaultSelectedScript = this.json.defaultSelectedScript;
+        if( typeOf(this.json.selectedAbleScript) === "function" )selectedAbleScript = this.json.selectedAbleScript;
         this.json = this.bindLP( this.json );
+        if(defaultSelectedScript)this.json.defaultSelectedScript = defaultSelectedScript;
+        if(selectedAbleScript)this.json.selectedAbleScript = selectedAbleScript;
 
         this.loadLayout();
         if( this.options.isloadActionbar )this.createActionbarNode();
@@ -392,7 +397,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
                             return false;
                         }
-                        debugger;
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
                         this._exportView(start, end, filename);
@@ -873,8 +877,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         if( d.bundleList.length ){
             this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
                 var resultJson, viewData = json.data;
-
-                debugger;
 
                 if (this.viewJson.group.column){
                     resultJson = [];
@@ -2355,6 +2357,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         }
 
         //默认选中
+        debugger;
         var selectedFlag;
         var defaultSelectedScript = this.view.json.defaultSelectedScript || this.view.viewJson.defaultSelectedScript;
         if( !this.isSelected && defaultSelectedScript ){
@@ -2449,29 +2452,33 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
-        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
-            var workCompletedCount = json.data.workCompletedList.length;
-            var workCount = json.data.workList.length;
-            var count = workCount+workCompletedCount;
-            if (count===1){
-                if (workCompletedCount) {
-                    this.openWorkCompleted(json.data.workCompletedList[0].id, e);
-                }else{
-                    this.openWork(json.data.workList[0].id, e);
-                }
-            }else if (count>1){
-                var worksAreaNode = this.createWorksArea();
-                json.data.workCompletedList.each(function(work){
-                    this.createWorkCompletedNode(work, worksAreaNode);
-                }.bind(this));
-                json.data.workList.each(function(work){
-                    this.createWorkNode(work, worksAreaNode);
-                }.bind(this));
-                this.showWorksArea(worksAreaNode, e);
-            }else{
+        var options = {"jobId": this.data.bundle};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "process.Work", options);
 
-            }
-        }.bind(this));
+        // MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
+        //     var workCompletedCount = json.data.workCompletedList.length;
+        //     var workCount = json.data.workList.length;
+        //     var count = workCount+workCompletedCount;
+        //     if (count===1){
+        //         if (workCompletedCount) {
+        //             this.openWorkCompleted(json.data.workCompletedList[0].id, e);
+        //         }else{
+        //             this.openWork(json.data.workList[0].id, e);
+        //         }
+        //     }else if (count>1){
+        //         var worksAreaNode = this.createWorksArea();
+        //         json.data.workCompletedList.each(function(work){
+        //             this.createWorkCompletedNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         json.data.workList.each(function(work){
+        //             this.createWorkNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         this.showWorksArea(worksAreaNode, e);
+        //     }else{
+        //
+        //     }
+        // }.bind(this));
     },
     createWorkNode: function(work, worksAreaNode){
         var worksAreaContentNode = worksAreaNode.getLast();
@@ -2607,7 +2614,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
     },
 
     select: function(  force ){
-        debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
         if (this.isSelected){
@@ -3688,9 +3694,7 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
             this.sequenceTd.set("text", sequence);
         }
 
-        debugger;
         Object.each(this.view.entries, function(c, k){
-            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
@@ -3742,7 +3746,6 @@ MWF.xApplication.query.Query.Viewer.AssociatedResultItem = new Class({
         }
 
         //默认选中
-
         //判断是不是在selectedItems中，用户手工选择
 
         this.setEvent();

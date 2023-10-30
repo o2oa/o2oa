@@ -16,6 +16,7 @@ import com.x.processplatform.assemble.surface.jaxrs.documentversion.DocumentVers
 import com.x.processplatform.assemble.surface.jaxrs.draft.DraftAction;
 import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
+import com.x.processplatform.assemble.surface.jaxrs.handover.HandoverAction;
 import com.x.processplatform.assemble.surface.jaxrs.job.JobAction;
 import com.x.processplatform.assemble.surface.jaxrs.keylock.KeyLockAction;
 import com.x.processplatform.assemble.surface.jaxrs.process.ProcessAction;
@@ -83,5 +84,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(CorrelationAction.class);
 		classes.add(DataRecordAction.class);
 		classes.add(TaskProcessModeAction.class);
+		classes.add(HandoverAction.class);
 	}
 }

@@ -242,11 +242,11 @@ public class EndProcessor extends AbstractEndProcessor {
 	private void updateParentWork(AeiObjects aeiObjects, Work parent, Embed embed) throws Exception {
 		// 先把状态值注入,这样脚本执行时可以取得到值.
 		parent.setEmbedCompleted(ActivityType.end.toString());
-		AeiObjects embedAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
+		AeiObjects parentAeiObjects = new AeiObjects(aeiObjects.business(), parent, embed,
 				aeiObjects.getProcessingConfigurator(), aeiObjects.getProcessingAttributes());
-		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
+		parentAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
-			ScriptContext scriptContext = embedAeiObjects.scriptContext();
+			ScriptContext scriptContext = parentAeiObjects.scriptContext();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
@@ -259,8 +259,9 @@ public class EndProcessor extends AbstractEndProcessor {
 						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDEND);
 				JsonScriptingExecutor.eval(cs, scriptContext);
 			}
+			aeiObjects.getWorkDataHelper().update(aeiObjects.getData());
 		}
-		embedAeiObjects.commit();
+		parentAeiObjects.commit();
 		touchWork(parent.getId());
 	}
 

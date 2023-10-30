@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("workplace")
-@JaxrsDescribe("工作区域信息管理服务")
+@JaxrsDescribe("工作区域信息管理服务（已弃用）")
 public class AttendanceWorkPlaceAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AttendanceWorkPlaceAction.class);

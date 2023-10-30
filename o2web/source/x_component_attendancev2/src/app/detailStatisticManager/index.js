@@ -15,7 +15,7 @@ export default content({
       lp,
       // 搜索表单
       form: {
-        filter: '',
+        filterList: [],
         startDate: '',
         endDate: ''
       },
@@ -102,15 +102,10 @@ export default content({
     await showLoading(this);
     this._showTableHeader();
     const form = this.bind.form;
-    form.filter = this.bind.filterList[0];
+    form.filterList = this.bind.filterList;
     try {
       const json = await detailAction("statistic", form);
       const list =  json || [];
-      console.log(list);
-      if (list.length > 0) {
-        const firstDetailList = (list[0].detailList || []).map(x=> x.recordDateString);
-        this.bind.tableHeaderList = firstDetailList;
-      }
       this.bind.statisticList = list;
     } catch (e) {
       console.error(e);
@@ -212,26 +207,13 @@ export default content({
   statisticExport() {
     if (this.validateForm()) {
       this.exportExcel();
-      // var _self = this;
-      // o2.api.page.confirm(
-      //   "warn",
-      //   this.bind.lp.alert,
-      //   this.bind.lp.detailExportConfirmMsg,
-      //   300,
-      //   100,
-      //   function () {
-      //     _self.exportExcel();
-      //     this.close();
-      //   },
-      //   function () {
-      //     this.close();
-      //   }
-      // );
     }
   },
   async exportExcel() {
     await showLoading(this, lp.detailExportConfirmMsg);
-    detailAction("statisticExport", this.bind.filterList[0], this.bind.form.startDate, this.bind.form.endDate).then( data => {
+    const form = this.bind.form;
+    form.filterList = this.bind.filterList;
+    detailAction("statisticExport", form).then( data => {
       if (data ) {
         this.downloadExcelConfirm(data);
       }

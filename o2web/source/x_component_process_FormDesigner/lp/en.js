@@ -471,9 +471,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "none",
         "default": "default",
         "byScript": "byScript",
+        "scriptLib": "Script Lib",
         "byFormat": "byFormat",
         "table": "Table",
-        "languageDefaultInfo": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack",
+        "languageDefaultInfoScript": "The system will automatically load a script named (\"lp-\"+o2.language) as a language pack",
+        "languageDefaultInfoDict": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack",
 
         "prefix": "Prefix",
         "suffix": "Suffix",

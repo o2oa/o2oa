@@ -306,6 +306,19 @@ MWF.APPPOD.LP = {
         "help": "帮助",
         "clearNoDomModule": "清除未在HTML树中的组件配置",
         "autoSave": "自动保存",
-        "brush": "格式刷"
-    }
+        "brush": "格式刷",
+        "viewAllVersion": "查看所有页面版本"
+    },
+    "version" : {
+        "title" : "查看页面版本记录",
+        "close" : "关闭",
+        "no":"序号",
+        "updateTime":"更新时间",
+        "op":"操作",
+        "person":"更新人",
+        "resume" : "恢复",
+        "resumeConfirm" : "恢复确认",
+        "resumeInfo" : "您确认是否需要执行表单恢复操作？确认恢复后当前表单会更新，需要手动保存当前页面才会生效。",
+        "resumeSuccess" :"恢复成功"
+    },
 };

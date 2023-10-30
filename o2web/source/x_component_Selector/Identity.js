@@ -374,7 +374,7 @@ MWF.xApplication.Selector.Identity = new Class({
         var list = [];
         identityList.each( function (d) {
             if( typeOf( d ) === "object"){
-                if( !d.unitLevelName || !d.distinguishedName )list.push( d.distinguishedName || d.id || d.unique )
+                if( !d.unitLevelName || !d.distinguishedName )list.push( d.distinguishedName || d.unique || d.id  )
             }else{
                 list.push( d )
             }

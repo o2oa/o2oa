@@ -96,6 +96,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class TaskProcessMode {
 			public static final String table = "PP_C_TASK_PROCESS_MODE";
 		}
+
+		public static class Handover {
+			public static final String table = "PP_C_HANDOVER";
+		}
 	}
 
 	public static class Element {

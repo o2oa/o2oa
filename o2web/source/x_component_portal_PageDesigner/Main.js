@@ -1696,6 +1696,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 	recordStatus: function(){
 		return {"id": this.options.id};
 	},
+    showFormVersion: function(){
+        this.page.showFormVersion();
+    },
     onPostClose: function(){
         if (this.pcPage){
             MWF.release(this.pcPage.moduleList);

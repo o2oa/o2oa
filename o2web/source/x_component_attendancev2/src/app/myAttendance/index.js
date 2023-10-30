@@ -144,15 +144,15 @@ export default content({
   // @param start 1 从星期一开始
   async loadDataByDate( start, currentYear, currentMonth) {
     // 获取当月的天数
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // 10-31
     // 获取当月第一天是星期几
-    const firstDayOfMonth =  new Date(currentYear, currentMonth, 1).getDay();
+    const firstDayOfMonth =  new Date(currentYear, currentMonth, 1).getDay(); // 星期天  0
     // 获取当月最后一天是星期几
     // 计算需要补齐的天数
-    const daysToPad = (7 - ((daysInMonth + firstDayOfMonth) % 7) + start) % 7;
+    const daysToPad = (7 - ((daysInMonth + firstDayOfMonth) % 7) + start) % 7; //  4
     // 计算需要补齐的前一个月的天数
     const lastMonthEndDate = new Date(currentYear, currentMonth, 0);
-    const daysInPrevMonth = lastMonthEndDate.getDate();
+    const daysInPrevMonth = lastMonthEndDate.getDate(); // 9-30  
     // 创建一个数组来存储日期
     let dates = [];
     // 查询当月的打卡数据
@@ -169,8 +169,9 @@ export default content({
      console.error(error);  
     }
     // 添加需要补齐的前一个月的日期
+    const preDay = firstDayOfMonth == 0 ? daysInPrevMonth - 6 + start : daysInPrevMonth - firstDayOfMonth + 1 + start 
     for (
-      let i = daysInPrevMonth - firstDayOfMonth + 1 + start;
+      let i = preDay;
       i <= daysInPrevMonth;
       i++
     ) {

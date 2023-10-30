@@ -16,6 +16,43 @@ MWF.xDesktop.requireApp("process.Xform", "ViewSelector", null, false);
 MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  new Class({
 	Implements: [Events],
 	Extends: MWF.xApplication.process.Xform.ViewSelector,
+    options: {
+        /**
+         * 视图参数（options）已经准备好，还未加载视图时执行。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
+         * @since V8.2
+         * @event MWF.xApplication.process.Xform.StatementSelector#beforeLoadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 视图设计已经获取，容器也已经准备好。
+         * @event MWF.xApplication.process.Xform.StatementSelector#loadViewLayout
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 异步加载查询视图后执行。
+         * @since V8.2
+         * @event MWF.xApplication.process.Xform.StatementSelector#loadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 选中查询视图中的一条记录后执行。
+         * @since V8.2
+         * @event MWF.xApplication.process.Xform.StatementSelector#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 取消选中查询视图中的一条记录后执行。
+         * @since V8.2
+         * @event MWF.xApplication.process.Xform.StatementSelector#unselect
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开查询视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.StatementSelector#openDocument，可以通过this.event得到打开的文档参数
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "unselect", "openDocument"]
+    },
     doResult: function(data){
         if (this.json.result === "script"){
             this.selectedData = data;
@@ -97,6 +134,9 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                 "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
                 "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
             };
+
+            this.fireEvent("beforeLoadView", [viewJson]);
+
             var options = {};
             // var width = options.width || "850";
             // var height = options.height || "700";
@@ -156,7 +196,29 @@ MWF.xApplication.process.Xform.StatementSelector = MWF.APPStatementSelector =  n
                             dlg.node.setStyle("z-index",200);
                         }
                         MWF.xDesktop.requireApp("query.Query", "Statement", function(){
-                            this.view = new MWF.xApplication.query.Query.Statement(dlg.content, viewJson, {"style": "select"}, this.form.app, this.form.Macro );
+                            this.view = new MWF.xApplication.query.Query.Statement(dlg.content, viewJson, {
+                                "style": "select",
+                                "onLoadLayout": function () {
+                                    this.fireEvent("loadViewLayout");
+                                }.bind(this),
+                                "onLoadView": function(){
+                                    this.fireEvent("loadView");
+                                }.bind(this),
+                                "onSelect": function(item){
+                                    this.fireEvent("select", [item]);
+                                }.bind(this),
+                                "onUnselect": function(item){
+                                    this.fireEvent("unselect", [item]);
+                                }.bind(this),
+                                "onOpenDocument": function(options, item){
+                                    this.openOptions = {
+                                        "options": options,
+                                        "item": item
+                                    };
+                                    this.fireEvent("openDocument", [this.openOptions]);
+                                    this.openOptions = null;
+                                }.bind(this)
+                            }, this.form.app, this.form.Macro );
                         }.bind(this));
                     }.bind(this)
                 });

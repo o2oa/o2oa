@@ -26,11 +26,23 @@ MWF.xApplication.cms.ScriptDesigner.LP = {
 
         "inputName": "Please enter the script name"
     },
+    "version" : {
+        "title" : "View form version history",
+        "close" : "Close",
+        "no":"SerialNumber",
+        "updateTime":"UpdateTime",
+        "op":"action",
+        "resume" : "Resume",
+        "resumeConfirm" : "Resume Confirmation",
+        "resumeInfo" : "Are you sure you need to perform a form recovery operation? After confirming the restoration, the current form will be updated, and the current form needs to be manually saved to take effect.",
+        "resumeSuccess" :"Resume Successfully"
+    },
     "formToolbar":{
         "save": "Save script",
         "autoSave": "AutoSave",
         "fontSize": "Font size",
         "style": "style",
-        "scriptEditor": "Script Editor"
+        "scriptEditor": "Script Editor",
+        "viewAllVersions": "View all script versions"
     }
 };

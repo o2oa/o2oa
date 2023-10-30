@@ -338,4 +338,22 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+    @JaxrsMethodDescribe(value = "待办处理人替换.", action = ActionReplace.class)
+    @POST
+    @Path("{id}/replace")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void replace(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+        ActionResult<ActionReplace.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionReplace().execute(effectivePerson, id, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }

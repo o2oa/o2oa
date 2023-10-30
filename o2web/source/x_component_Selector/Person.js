@@ -1733,15 +1733,15 @@ MWF.xApplication.Selector.Person = new Class({
             this.valueFlagMap = {};
             this.options.values.each( function( e ){
                 if( !e )return;
-                this.valueFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.id || e.unique || e.employee || e.levelName) ] = true;
+                this.valueFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id) ] = true;
             }.bind(this));
         }
         var map = this.valueFlagMap;
         return ( d.distinguishedName && map[ d.distinguishedName ] ) ||
-            ( d.id && map[ d.id ] ) ||
             ( d.unique && map[ d.unique ] ) ||
             ( d.employee && map[ d.employee ] ) ||
-            ( d.levelName && map[ d.levelName ] );
+            ( d.levelName && map[ d.levelName ] ) ||
+            ( d.id && map[ d.id ] );
     },
     isExcluded : function( d ){
         if( this.options.exclude.length === 0 )return false;
@@ -1749,7 +1749,7 @@ MWF.xApplication.Selector.Person = new Class({
             this.excludeFlagMap = {};
             this.options.exclude.each( function( e ){
                 if( !e )return;
-                this.excludeFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.id || e.unique || e.employee || e.levelName) ] = true;
+                this.excludeFlagMap[ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.unique || e.employee || e.levelName || e.id ) ] = true;
             }.bind(this));
         }
         var map = this.excludeFlagMap;
