@@ -145,7 +145,16 @@ public class Tickets implements Serializable {
 	}
 
 	public boolean add(Ticket ticket, Collection<String> targets, boolean before, String addMode) {
-		return addExec(ticket, targets.stream().map(Ticket::new).collect(Collectors.toList()), before, addMode);
+		List<Ticket> list = targets.stream().map(Ticket::new).collect(Collectors.toList());
+		// 并行加签当前已有待办的处理人排除掉
+		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
+			List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
+			list = list.stream().filter(o -> !exists.contains(o.distinguishedName())).collect(Collectors.toList());
+		}
+//		List<Ticket> fellow = this.listFellow(ticket);
+//		fellow.addAll(list);
+//		Tickets.interconnectedAsFellow(fellow);
+		return addExec(ticket, list, before, addMode);
 	}
 
 	private boolean addExec(Ticket ticket, Collection<Ticket> targets, boolean before, String addMode) {

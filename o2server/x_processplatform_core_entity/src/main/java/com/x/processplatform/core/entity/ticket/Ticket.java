@@ -62,14 +62,7 @@ public class Ticket implements Serializable {
 
 	public Ticket(String distinguishedName) {
 		this();
-		Matcher matcher = DISTINGUISHEDNAME_LABEL_PATTERN.matcher(distinguishedName);
-		if (matcher.find()) {
-			this.distinguishedName = matcher.group(1);
-			this.label = matcher.group(2);
-		} else {
-			this.distinguishedName = distinguishedName;
-		}
-
+		this.distinguishedName(distinguishedName);
 	}
 
 	public Ticket(String distinguishedName, String label) {
@@ -249,7 +242,13 @@ public class Ticket implements Serializable {
 	}
 
 	public Ticket distinguishedName(String distinguishedName) {
-		this.distinguishedName = distinguishedName;
+		Matcher matcher = DISTINGUISHEDNAME_LABEL_PATTERN.matcher(distinguishedName);
+		if (matcher.find()) {
+			this.distinguishedName = matcher.group(1);
+			this.label = matcher.group(2);
+		} else {
+			this.distinguishedName = distinguishedName;
+		}
 		return this;
 	}
 

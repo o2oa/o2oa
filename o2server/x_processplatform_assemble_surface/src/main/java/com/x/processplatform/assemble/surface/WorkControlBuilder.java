@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -28,7 +27,6 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.entity.ticket.Ticket;
-import com.x.processplatform.core.entity.ticket.Tickets;
 
 public class WorkControlBuilder {
 
@@ -537,9 +535,11 @@ public class WorkControlBuilder {
 				Manual manual = (Manual) activity;
 				if (hasTaskWithWork().isPresent() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
 					Optional<Ticket> opt = work.getTickets().findTicketWithLabel(hasTaskWithWork.get().getLabel());
-					if (opt.isPresent() && Objects.equals(opt.get().mode(), Tickets.MODE_PARALLEL)) {
+					if (opt.isPresent()) {
+//						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+//								|| taskCountWithWork() <= 1) {
 						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-								|| taskCountWithWork() <= 1) {
+								|| opt.get().fellow().isEmpty()) {
 							control.setAllowGoBack(true);
 						}
 					} else {
