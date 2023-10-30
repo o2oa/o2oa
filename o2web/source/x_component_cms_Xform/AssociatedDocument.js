@@ -70,6 +70,7 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 		var lp = MWF.xApplication.cms.Xform.LP;
 		var _self = this;
 		this.form.confirm("warn", e, lp.cancelAssociatedTitle, lp.cancelAssociated.replace("{title}", o2.txt(d.targetTitle)), 370, 120, function () {
+			_self.fireEvent("deleteDocument", [d]);
 			o2.Actions.load("x_cms_assemble_control").CorrelationAction.deleteWithDocument(_self.form.businessData.document.id, {
 				idList: [d.id]
 			},function (json) {
