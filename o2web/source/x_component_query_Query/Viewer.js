@@ -2452,29 +2452,33 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
-        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
-            var workCompletedCount = json.data.workCompletedList.length;
-            var workCount = json.data.workList.length;
-            var count = workCount+workCompletedCount;
-            if (count===1){
-                if (workCompletedCount) {
-                    this.openWorkCompleted(json.data.workCompletedList[0].id, e);
-                }else{
-                    this.openWork(json.data.workList[0].id, e);
-                }
-            }else if (count>1){
-                var worksAreaNode = this.createWorksArea();
-                json.data.workCompletedList.each(function(work){
-                    this.createWorkCompletedNode(work, worksAreaNode);
-                }.bind(this));
-                json.data.workList.each(function(work){
-                    this.createWorkNode(work, worksAreaNode);
-                }.bind(this));
-                this.showWorksArea(worksAreaNode, e);
-            }else{
+        var options = {"jobId": this.data.bundle};
+        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        layout.desktop.openApplication(e, "process.Work", options);
 
-            }
-        }.bind(this));
+        // MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(this.data.bundle, function(json){
+        //     var workCompletedCount = json.data.workCompletedList.length;
+        //     var workCount = json.data.workList.length;
+        //     var count = workCount+workCompletedCount;
+        //     if (count===1){
+        //         if (workCompletedCount) {
+        //             this.openWorkCompleted(json.data.workCompletedList[0].id, e);
+        //         }else{
+        //             this.openWork(json.data.workList[0].id, e);
+        //         }
+        //     }else if (count>1){
+        //         var worksAreaNode = this.createWorksArea();
+        //         json.data.workCompletedList.each(function(work){
+        //             this.createWorkCompletedNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         json.data.workList.each(function(work){
+        //             this.createWorkNode(work, worksAreaNode);
+        //         }.bind(this));
+        //         this.showWorksArea(worksAreaNode, e);
+        //     }else{
+        //
+        //     }
+        // }.bind(this));
     },
     createWorkNode: function(work, worksAreaNode){
         var worksAreaContentNode = worksAreaNode.getLast();

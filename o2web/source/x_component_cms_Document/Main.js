@@ -763,6 +763,8 @@ MWF.xApplication.cms.Document.Main = new Class({
                     "saveOnClose" : this.options.saveOnClose,
                     "onPostPublish" : this.options.postPublish,
                     "onAfterPublish" : this.options.afterPublish,
+                    "onAfterSave" : this.options.afterSave,
+                    "onBeforeClose" : this.options.beforeClose,
                     "onPostDelete" : this.options.postDelete,
                     "useProcessForm": this.useProcessForm
                 });

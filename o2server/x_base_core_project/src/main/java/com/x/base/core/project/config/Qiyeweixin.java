@@ -210,7 +210,7 @@ public class Qiyeweixin extends ConfigObject {
 			return cachedSyncAccessToken;
 		} else {
 			String address = getApiAddress() + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
-					+ this.getSyncSecret();
+					+ this.getCorpSecret();
 			System.out.println("address：" + address);
 			CorpAccessTokenResp resp = HttpConnection.getAsObject(address, null, CorpAccessTokenResp.class);
 			if (resp.getErrcode() != 0) {
