@@ -2864,6 +2864,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
     goBackToPerson: function(routeName, opinion, activity, way, callback){
         this.businessData.task.decision = routeName;
+        this.businessData.task.routeName = routeName;
         this.businessData.task.opinion = opinion;
         this.businessData.task.action = "goBack";
         this.businessData.task.option = {
