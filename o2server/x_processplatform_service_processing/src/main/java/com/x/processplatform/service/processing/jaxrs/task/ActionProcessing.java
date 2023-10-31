@@ -100,8 +100,7 @@ class ActionProcessing extends BaseAction {
 		private void evalCallManualBeforeTaskScript(Business business, Task task, Manual manual, Process process,
 				boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
 				throws Exception {
-			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-					new ProcessingAttributes());
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
 			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
@@ -148,8 +147,7 @@ class ActionProcessing extends BaseAction {
 		private void evalCallManualAfterTaskScript(Business business, TaskCompleted taskCompleted, Manual manual,
 				Process process, boolean processHasManualAfterTaskScript, boolean hasManualAfterTaskScript, Work work)
 				throws Exception {
-			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-					new ProcessingAttributes());
+			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
 					.bindTaskCompleted(taskCompleted);

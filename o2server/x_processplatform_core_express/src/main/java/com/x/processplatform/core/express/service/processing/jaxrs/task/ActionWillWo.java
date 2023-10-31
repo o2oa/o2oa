@@ -6,7 +6,7 @@ import java.util.List;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
 
-public class WillWo extends GsonPropertyObject {
+public class ActionWillWo extends GsonPropertyObject {
 
 	private static final long serialVersionUID = 2279846765261247910L;
 

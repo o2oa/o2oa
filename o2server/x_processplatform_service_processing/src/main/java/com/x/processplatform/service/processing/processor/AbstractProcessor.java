@@ -61,8 +61,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getDestinationActivityType(),
 						work.getDestinationActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			// 清空可能的Manual活动预期人员
 			this.arriveCleanManualTaskIdentityMatrix(aeiObjects);
 			// 清空可能的Manual活动授权信息
@@ -199,8 +198,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getActivityType(),
 						work.getActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
 			// 如果是调度路由,需要重新设置froceRoute
 			if (BooleanUtils.isNotTrue(work.getBeforeExecuted())) {
@@ -294,8 +292,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				throw new ExceptionActivityNotExist(work.getTitle(), work.getId(), work.getActivityType(),
 						work.getActivity());
 			}
-			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
-					processingAttributes);
+			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingAttributes);
 			aeiObjects.getUpdateWorks().add(work);
 			// 运行查询路由前脚本
 			this.callBeforeInquireScript(aeiObjects);

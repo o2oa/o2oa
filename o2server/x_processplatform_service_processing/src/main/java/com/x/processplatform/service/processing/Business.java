@@ -7,6 +7,7 @@ import com.x.processplatform.service.processing.factory.DataRecordFactory;
 import com.x.processplatform.service.processing.factory.DocumentVersionFactory;
 import com.x.processplatform.service.processing.factory.ElementFactory;
 import com.x.processplatform.service.processing.factory.ItemFactory;
+import com.x.processplatform.service.processing.factory.ProcessFactory;
 import com.x.processplatform.service.processing.factory.ReadCompletedFactory;
 import com.x.processplatform.service.processing.factory.ReadFactory;
 import com.x.processplatform.service.processing.factory.ReviewFactory;
