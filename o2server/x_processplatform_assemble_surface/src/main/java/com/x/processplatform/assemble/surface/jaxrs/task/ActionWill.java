@@ -17,7 +17,7 @@ import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WillWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionWillWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -51,7 +51,7 @@ class ActionWill extends BaseAction {
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionWill.Wo")
-	public static class Wo extends WillWo {
+	public static class Wo extends ActionWillWo {
 
 		private static final long serialVersionUID = 2279846765261247910L;
 

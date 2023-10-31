@@ -21,7 +21,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WillWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionWillWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
@@ -96,7 +96,7 @@ class ActionWill extends BaseAction {
 						if (Objects.equals(ActivityType.manual, nextActivity.getActivityType())) {
 							Manual nextManual = (Manual) nextActivity;
 							AeiObjects aeiObjects = new AeiObjects(business, work, nextManual,
-									new ProcessingConfigurator(), new ProcessingAttributes());
+									new ProcessingAttributes());
 							TaskIdentities taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects,
 									nextManual);
 							wo.setNextTaskIdentityList(taskIdentities.identities());
@@ -110,7 +110,7 @@ class ActionWill extends BaseAction {
 		}
 	}
 
-	public static class Wo extends WillWo {
+	public static class Wo extends ActionWillWo {
 
 		private static final long serialVersionUID = 663543271322651720L;
 	}

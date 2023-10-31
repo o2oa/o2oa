@@ -113,8 +113,7 @@ class ActionManualAfterProcessing extends BaseAction {
 	private void evalCallManualAfterProcessingScript(Business business, Task task, Record record, Manual manual,
 			Process process, boolean processHasManualAfterProcessingScript, boolean hasManualAfterProcessingScript,
 			Work work) throws Exception {
-		AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingConfigurator(),
-				new ProcessingAttributes());
+		AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
 		ScriptContext scriptContext = aeiObjects.scriptContext();
 		WorkContext workContext = (WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
 		workContext.bindTask(task);

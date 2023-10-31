@@ -79,8 +79,7 @@ class V2Terminate extends BaseAction {
 				Work work = emc.find(workId, Work.class);
 				Business business = new Business(emc);
 				Activity activity = business.element().getActivity(work.getActivity());
-				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingConfigurator(),
-						new ProcessingAttributes());
+				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingAttributes());
 				WorkCompleted workCompleted = createWorkCompleted(aeiObjects.getWork(), activity);
 				workCompleted.setAllowRollback(false);
 				aeiObjects.getCreateWorkCompleteds().add(workCompleted);

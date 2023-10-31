@@ -30,25 +30,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("待办")
 public class TaskAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
-
-	@JaxrsMethodDescribe(value = "更新待办中的上一处理人记录值.", action = ActionUpdatePrevTaskIdentity.class)
-	@PUT
-	@Path("prev/task/identity")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateNextTaskIdentity(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, JsonElement jsonElement) {
-		ActionResult<ActionUpdatePrevTaskIdentity.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionUpdatePrevTaskIdentity().execute(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskAction.class);
 
 	@JaxrsMethodDescribe(value = "保存并继续流转.", action = ActionProcessing.class)
 	@PUT
@@ -62,7 +44,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionProcessing().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -80,7 +62,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionWill().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -98,25 +80,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "添加待办.", action = ActionAppend.class)
-	@PUT
-	@Path("{id}/append")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void append(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionAppend.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionAppend().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -134,7 +98,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionPassExpired().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -152,7 +116,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionExpire().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -170,7 +134,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionUrge().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -188,7 +152,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new ActionPress().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -224,7 +188,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V2Pause().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -242,7 +206,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V2Resume().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -260,7 +224,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V2Reset().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -278,7 +242,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V2Remove().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -296,25 +260,7 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V2Edit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "更新待办中的上一处理人记录值.", action = V2UpdatePrevTask.class)
-	@POST
-	@Path("v2/update/prev/task")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2UpdatePrevTask(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			JsonElement jsonElement) {
-		ActionResult<V2UpdatePrevTask.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2UpdatePrevTask().execute(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -332,28 +278,28 @@ public class TaskAction extends StandardJaxrsAction {
 		try {
 			result = new V3Add().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-    @JaxrsMethodDescribe(value = "待办处理人替换.", action = ActionReplace.class)
-    @POST
-    @Path("{id}/replace")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void replace(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                       @JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
-        ActionResult<ActionReplace.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionReplace().execute(effectivePerson, id, jsonElement);
-        } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
+	@JaxrsMethodDescribe(value = "待办处理人替换.", action = ActionReplace.class)
+	@POST
+	@Path("{id}/replace")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void replace(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("待办标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionReplace.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReplace().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 }
