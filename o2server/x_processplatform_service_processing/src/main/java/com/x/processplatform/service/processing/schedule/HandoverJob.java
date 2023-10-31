@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.schedule;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
@@ -179,30 +180,28 @@ public class HandoverJob extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Read> root = cq.from(Read.class);
-		Path<String> id_path = root.get(Read_.id);
-		Path<String> job_path = root.get(Read_.job);
+		Path<String> idPath = root.get(Read_.id);
+		Path<String> jobPath = root.get(Read_.job);
 		Predicate p = cb.equal(root.get(Read_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(Read_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(Read_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(Read_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme()) && ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(Read_.job).in(handover.getJobList()));
 		}
-		cq.multiselect(id_path, job_path).where(p);
+		cq.multiselect(idPath, jobPath).where(p);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<Read> list = new ArrayList<>();
 		for (Tuple o : os) {
 			Read read = new Read();
-			read.setId(o.get(id_path));
-			read.setJob(o.get(job_path));
+			read.setId(o.get(idPath));
+			read.setJob(o.get(jobPath));
 			list.add(read);
 		}
 		return list;
@@ -215,19 +214,18 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
 		Predicate p = cb.equal(root.get(ReadCompleted_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(ReadCompleted_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(ReadCompleted_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(ReadCompleted_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(ReadCompleted_.job).in(handover.getJobList()));
 		}
 		cq.select(root.get(ReadCompleted_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -239,31 +237,30 @@ public class HandoverJob extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Task> root = cq.from(Task.class);
-		Path<String> id_path = root.get(Task_.id);
-		Path<String> job_path = root.get(Task_.job);
+		Path<String> idPath = root.get(Task_.id);
+		Path<String> jobPath = root.get(Task_.job);
 		Predicate p = cb.equal(root.get(Task_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(Task_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(Task_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(Task_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(Task_.job).in(handover.getJobList()));
 		}
 		p = cb.and(p, cb.notEqual(root.get(Task_.identity), handover.getTargetIdentity()));
-		cq.multiselect(id_path, job_path).where(p);
+		cq.multiselect(idPath, jobPath).where(p);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<Task> list = new ArrayList<>();
 		for (Tuple o : os) {
 			Task task = new Task();
-			task.setId(o.get(id_path));
-			task.setJob(o.get(job_path));
+			task.setId(o.get(idPath));
+			task.setJob(o.get(jobPath));
 			list.add(task);
 		}
 		return list;
@@ -276,19 +273,18 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 		Predicate p = cb.equal(root.get(TaskCompleted_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(TaskCompleted_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(TaskCompleted_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(TaskCompleted_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(TaskCompleted_.job).in(handover.getJobList()));
 		}
 		cq.select(root.get(TaskCompleted_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -301,19 +297,18 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Review> root = cq.from(Review.class);
 		Predicate p = cb.equal(root.get(Review_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(Review_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(Review_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(Review_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(Review_.job).in(handover.getJobList()));
 		}
 		cq.select(root.get(Review_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -326,19 +321,18 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.creatorPerson), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(Work_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(Work_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(Work_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(Work_.job).in(handover.getJobList()));
 		}
 		cq.select(root.get(Work_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -351,19 +345,18 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
 		Predicate p = cb.equal(root.get(WorkCompleted_.creatorPerson), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(WorkCompleted_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(WorkCompleted_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
-			if(ListTools.isNotEmpty(handover.getJobList())){
-				p = cb.and(p, root.get(WorkCompleted_.job).in(handover.getJobList()));
-			}
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())
+				&& ListTools.isNotEmpty(handover.getJobList())){
+			p = cb.and(p, root.get(WorkCompleted_.job).in(handover.getJobList()));
 		}
 		cq.select(root.get(WorkCompleted_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -376,16 +369,16 @@ public class HandoverJob extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Draft> root = cq.from(Draft.class);
 		Predicate p = cb.equal(root.get(Draft_.person), handover.getPerson());
-		if(HandoverSchemeEnum.APPLICATION.equals(handover.getScheme())){
+		if(HandoverSchemeEnum.APPLICATION.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getApplicationList())){
 				p = cb.and(p, root.get(Draft_.application).in(handover.getApplicationList()));
 			}
-		}else if(HandoverSchemeEnum.PROCESS.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.PROCESS.getValue().equals(handover.getScheme())){
 			if(ListTools.isNotEmpty(handover.getProcessList())){
 				List<String> processList = business.process().listEditionProcess(handover.getProcessList());
 				p = cb.and(p, root.get(Draft_.process).in(processList));
 			}
-		}else if(HandoverSchemeEnum.JOB.equals(handover.getScheme())){
+		}else if(HandoverSchemeEnum.JOB.getValue().equals(handover.getScheme())){
 			return Collections.emptyList();
 		}
 		cq.select(root.get(Draft_.id)).where(p);
@@ -399,9 +392,8 @@ public class HandoverJob extends AbstractJob {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Handover> root = cq.from(Handover.class);
 			Predicate p = cb.equal(root.get(Handover_.status), HandoverStatusEnum.WAIT.getValue());
-			cq.select(root.get(Handover_.id)).where(p).orderBy(cb.asc(root.get(Handover_.sequence)));
-			List<String> os = em.createQuery(cq).setMaxResults(10).getResultList();
-			return os;
+			cq.select(root.get(Handover_.id)).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
+			return em.createQuery(cq).setMaxResults(10).getResultList();
 		}
 	}
 
