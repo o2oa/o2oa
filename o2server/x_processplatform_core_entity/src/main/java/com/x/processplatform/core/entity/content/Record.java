@@ -57,9 +57,6 @@ public class Record extends SliceJpaObject {
 	/* 转交流转 */
 	public static final String TYPE_APPENDTASK = "appendTask";
 
-//	/* 回退流转 */
-//	public static final String TYPE_BACK = "back";
-
 	/* 调度 */
 	public static final String TYPE_REROUTE = "reroute";
 
@@ -98,6 +95,12 @@ public class Record extends SliceJpaObject {
 
 	/* 退回 */
 	public static final String TYPE_GOBACK = "goBack";
+
+	// 工作触发流转
+	public static final String TYPE_WORKTRIGGERPROCESSING = "workTriggerProcessing";
+
+	// 待办触发流转
+	public static final String TYPE_TASKTRIGGERPROCESSING = "taskTriggerProcessing";
 
 	/* 定制意见 */
 	public static final String TYPE_CUSTOM = "custom";
@@ -413,43 +416,6 @@ public class Record extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String fromActivityToken;
 
-//	public static final String arrivedActivity_FIELDNAME = "arrivedActivity";
-//	@FieldDescribe("结束活动Id，可能为空，如果是未Connected的流程记录")
-//	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivity_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + arrivedActivity_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String arrivedActivity;
-//
-//	public static final String arrivedActivityType_FIELDNAME = "arrivedActivityType";
-//	@FieldDescribe("结束活动类型.")
-//	@Column(length = ActivityType.length, name = ColumnNamePrefix + arrivedActivityType_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityType_FIELDNAME)
-//	@Enumerated(EnumType.STRING)
-//	@CheckPersist(allowEmpty = true)
-//	private ActivityType arrivedActivityType;
-//
-//	public static final String arrivedActivityName_FIELDNAME = "arrivedActivityName";
-//	@FieldDescribe("结束活动名称.")
-//	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-//			+ arrivedActivityName_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityName_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String arrivedActivityName;
-//
-//	public static final String arrivedActivityAlias_FIELDNAME = "arrivedActivityAlias";
-//	@FieldDescribe("结束活动名称.")
-//	@Column(length = length_255B, name = ColumnNamePrefix + arrivedActivityAlias_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityAlias_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String arrivedActivityAlias;
-//
-//	public static final String arrivedActivityToken_FIELDNAME = "arrivedActivityToken";
-//	@FieldDescribe("结束活动Token.")
-//	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivityToken_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String arrivedActivityToken;
-
 	public static final String recordTime_FIELDNAME = "recordTime";
 	@FieldDescribe("记录时间.")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -629,45 +595,5 @@ public class Record extends SliceJpaObject {
 	public void setProcess(String process) {
 		this.process = process;
 	}
-
-//	public String getArrivedActivity() {
-//		return arrivedActivity;
-//	}
-//
-//	public void setArrivedActivity(String arrivedActivity) {
-//		this.arrivedActivity = arrivedActivity;
-//	}
-//
-//	public ActivityType getArrivedActivityType() {
-//		return arrivedActivityType;
-//	}
-//
-//	public void setArrivedActivityType(ActivityType arrivedActivityType) {
-//		this.arrivedActivityType = arrivedActivityType;
-//	}
-//
-//	public String getArrivedActivityName() {
-//		return arrivedActivityName;
-//	}
-//
-//	public void setArrivedActivityName(String arrivedActivityName) {
-//		this.arrivedActivityName = arrivedActivityName;
-//	}
-//
-//	public String getArrivedActivityAlias() {
-//		return arrivedActivityAlias;
-//	}
-//
-//	public void setArrivedActivityAlias(String arrivedActivityAlias) {
-//		this.arrivedActivityAlias = arrivedActivityAlias;
-//	}
-//
-//	public String getArrivedActivityToken() {
-//		return arrivedActivityToken;
-//	}
-//
-//	public void setArrivedActivityToken(String arrivedActivityToken) {
-//		this.arrivedActivityToken = arrivedActivityToken;
-//	}
 
 }

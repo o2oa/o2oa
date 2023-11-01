@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -54,12 +53,6 @@ class V2Retract extends BaseAction {
 
 		Record rec = this.recordWorkProcessing(Record.TYPE_RETRACT, "", "", param.work.getJob(), param.workLog.getId(),
 				param.taskCompleted.getIdentity(), param.series);
-
-//		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RETRACT, param.workLog, effectivePerson, param.series);
-//
-//		RecordBuilder.processing(rec);
-//
-//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 
 		result.setData(Wo.copier.copy(rec));
 
@@ -168,14 +161,10 @@ class V2Retract extends BaseAction {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setType(ProcessingAttributes.TYPE_RETRACT);
 		req.setSeries(param.series);
-		com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo resp = ThisApplication
-				.context().applications()
+		ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", param.work.getId(), "processing"), req, param.work.getJob())
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo.class);
-		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionRetract(param.work.getId());
-		}
 	}
 
 	public static class Wo extends V2RetractWo {

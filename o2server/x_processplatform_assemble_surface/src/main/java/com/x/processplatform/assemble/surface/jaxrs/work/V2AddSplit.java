@@ -46,8 +46,10 @@ class V2AddSplit extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		
 		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> jsonElement);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Param param = init(effectivePerson, id, jsonElement);
 		List<String> ids = addSplit(param.work.getId(), param.addSplitWorkLog.getId(), param.splitValueList,
@@ -55,8 +57,6 @@ class V2AddSplit extends BaseAction {
 		processing(ids, param.work.getId(), param.series, param.work.getJob());
 		Record rec = this.recordWorkProcessing(Record.TYPE_ADDSPLIT, param.routeName, param.opinion,
 				param.work.getJob(), param.addSplitWorkLog.getId(), param.identity, param.series);
-//		RecordBuilder.ofWorkProcessing(Record.TYPE_ADDSPLIT, param.addSplitWorkLog, effectivePerson, param.series);
-//		RecordBuilder.processing(rec);
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;

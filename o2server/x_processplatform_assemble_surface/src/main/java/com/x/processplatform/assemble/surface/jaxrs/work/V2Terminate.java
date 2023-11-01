@@ -26,6 +26,7 @@ class V2Terminate extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Param param = this.init(effectivePerson, id);
 		Wo wo = new Wo();

@@ -1179,43 +1179,23 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-//	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = V2ManageRetract.class)
-//	@PUT
-//	@Path("v2/{id}/person/{person}/retract/manage")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void V2ManageRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-//			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-//			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
-//		ActionResult<V2ManageRetract.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new V2ManageRetract().execute(effectivePerson, id, person);
-//		} catch (Exception e) {
-//			LOGGER.error(e, effectivePerson, request, jsonElement);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-//	}
-//
-//	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2ManageRetract.class)
-//	@POST
-//	@Path("v2/{id}/person/{person}/retract/manage/mockputtopost")
-//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public void V2ManageRetractMockPutToPost(@Suspended final AsyncResponse asyncResponse,
-//			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-//			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
-//		ActionResult<V2ManageRetract.Wo> result = new ActionResult<>();
-//		EffectivePerson effectivePerson = this.effectivePerson(request);
-//		try {
-//			result = new V2ManageRetract().execute(effectivePerson, id, person);
-//		} catch (Exception e) {
-//			LOGGER.error(e, effectivePerson, request, jsonElement);
-//			result.error(e);
-//		}
-//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
-//	}
+	@JaxrsMethodDescribe(value = "尝试流转.", action = V2TriggerProcessing.class)
+	@GET
+	@Path("v2/{id}/trigger/processing")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2TriggerProcessing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<V2TriggerProcessing.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2TriggerProcessing().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "V2_根据Work或workCompleted取得内容.", action = V2GetWorkOrWorkCompleted.class)
 	@GET

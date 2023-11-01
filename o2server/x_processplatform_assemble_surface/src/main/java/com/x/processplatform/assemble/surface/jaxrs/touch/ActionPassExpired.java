@@ -1,4 +1,4 @@
-package com.x.processplatform.service.processing.jaxrs.touch;
+package com.x.processplatform.assemble.surface.jaxrs.touch;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -7,12 +7,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.service.processing.ThisApplication;
-import com.x.processplatform.service.processing.schedule.TouchDetained;
+import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.schedule.PassExpired;
 
-class ActionTouchDetained extends BaseAction {
+class ActionPassExpired extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTouchDetained.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPassExpired.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 
@@ -20,7 +20,7 @@ class ActionTouchDetained extends BaseAction {
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			ThisApplication.context().scheduleLocal(TouchDetained.class, 1);
+			ThisApplication.context().scheduleLocal(PassExpired.class, 1);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
@@ -30,7 +30,7 @@ class ActionTouchDetained extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = 8747020455521608101L;
+		private static final long serialVersionUID = 3884378140488608659L;
 
 	}
 

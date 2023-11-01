@@ -61,20 +61,12 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.processPlatform().getDeleteDraft().getEnable())) {
 				context.schedule(DeleteDraft.class, Config.processPlatform().getDeleteDraft().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getExpire().getEnable())) {
-				context.schedule(Expire.class, Config.processPlatform().getExpire().getCron());
-			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getLogLongDetained().getEnable())) {
 				context.schedule(LogLongDetained.class, Config.processPlatform().getLogLongDetained().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getPassExpired().getEnable())) {
-				context.schedule(PassExpired.class, Config.processPlatform().getPassExpired().getCron());
-			}
+
 			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDelay().getEnable())) {
 				context.schedule(TouchDelay.class, Config.processPlatform().getTouchDelay().getCron());
-			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getTouchDetained().getEnable())) {
-				context.schedule(TouchDetained.class, Config.processPlatform().getTouchDetained().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());

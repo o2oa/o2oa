@@ -24,7 +24,6 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionWillWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
-import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 import com.x.processplatform.service.processing.processor.manual.TaskIdentities;
 import com.x.processplatform.service.processing.processor.manual.TranslateTaskIdentityTools;
@@ -33,39 +32,58 @@ class ActionWill extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-		String executorSeed = null;
+		Param param = init(id);
+
+		CallableImpl callable = new CallableImpl(param);
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
+	}
+
+	private class Param {
+
+		private String job;
+		private String id;
+
+	}
+
+	private Param init(String id) throws Exception {
+
+		Param param = new Param();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
+			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME, Task.work_FIELDNAME));
 
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 
-			executorSeed = task.getJob();
+			Work work = emc.fetch(task.getWork(), Work.class, ListTools.toList(Work.job_FIELDNAME));
+			if (null == work) {
+				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+			}
+
+			param.job = task.getJob();
+			param.id = task.getId();
 		}
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(executorSeed).submit(new CallableImpl(id)).get(300,
-				TimeUnit.SECONDS);
+		return param;
+
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-		private String id;
+		private Param param;
 
-		private CallableImpl(String id) {
-			this.id = id;
+		private CallableImpl(Param param) {
+			this.param = param;
 		}
 
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				Wo wo = new Wo();
-				Task task = emc.find(id, Task.class);
+				Task task = emc.find(param.id, Task.class);
 				Work work = emc.find(task.getWork(), Work.class);
-				if (null == work) {
-					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
-				}
 				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
 				if (null == manual) {
 					throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);

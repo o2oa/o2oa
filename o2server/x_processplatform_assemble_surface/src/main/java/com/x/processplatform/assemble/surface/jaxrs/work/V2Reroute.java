@@ -51,14 +51,8 @@ class V2Reroute extends BaseAction {
 
 		reroute(param);
 		processing(param);
-		// Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_REROUTE,
-		// param.workLog, effectivePerson, param.series);
 		Record rec = this.recordWorkProcessing(Record.TYPE_REROUTE, param.routeName, param.opinion, param.work.getJob(),
 				param.workLog.getId(), param.identity, param.series);
-//		rec.setRouteName(param.routeName);
-//		rec.setOpinion(param.opinion);
-//		RecordBuilder.processing(rec);
-//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
 		return result;
