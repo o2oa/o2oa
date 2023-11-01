@@ -96,9 +96,9 @@ public class CenterServerTools extends JettySeverTools {
 		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
 
 		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
-			addHttpsConnector(server, centerServer.getPort(), false);
+			addHttpsConnector(server, centerServer.getPort(), true);
 		} else {
-			addHttpConnector(server, centerServer.getPort(), false);
+			addHttpConnector(server, centerServer.getPort(), true);
 		}
 
 		GzipHandler gzipHandler = new GzipHandler();
