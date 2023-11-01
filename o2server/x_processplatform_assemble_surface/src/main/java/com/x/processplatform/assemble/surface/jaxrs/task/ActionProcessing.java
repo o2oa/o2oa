@@ -284,14 +284,6 @@ class ActionProcessing extends BaseAction {
 		this.processingProcessingWork(param, ProcessingAttributes.TYPE_APPENDTASK);
 		return this.recordTaskProcessing(Record.TYPE_APPENDTASK, param.workLog.getJob(), param.workLog.getId(),
 				taskCompletedId, param.series);
-//		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_APPENDTASK, param.workLog, param.task, param.series);
-//		// 加签也记录流程意见和路由决策
-//		rec.setOpinion(param.task.getOpinion());
-//		rec.setRouteName(param.task.getRouteName());
-//		rec.setId(RecordBuilder.processing(rec));
-		// this.processingUpdateTaskCompleted(rec, taskCompletedId, param.task.getId());
-		// TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(),
-		// param.task.getJob());
 	}
 
 	// 8.2以后版本使用reset替代append
@@ -317,27 +309,15 @@ class ActionProcessing extends BaseAction {
 		}
 		Record rec = null;
 		if (flag) {
-			return this.recordTaskProcessing(Record.TYPE_TASK, param.workLog.getJob(), param.workLog.getId(),
+			rec = this.recordTaskProcessing(Record.TYPE_TASK, param.workLog.getJob(), param.workLog.getId(),
 					taskCompletedId, param.series);
-//			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
-//			// 加签也记录流程意见和路由决策
-//			rec.setRouteName(param.task.getRouteName());
-//			rec.setOpinion(param.task.getOpinion());
-//			rec.setId(RecordBuilder.processing(rec));
-//			// this.processingUpdateTaskCompleted(rec, taskCompletedId,
-//			// param.task.getJob());
-//			TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		} else {
+//			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
 			rec = new Record(param.workLog);
 			rec.setType(Record.TYPE_TASK);
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());
 			rec.setCompleted(true);
-//			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
-//			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
-//			rec.setRouteName(param.task.getRouteName());
-//			rec.setOpinion(param.task.getOpinion());
-//			rec.setCompleted(true);
 		}
 		return rec;
 	}
@@ -373,46 +353,6 @@ class ActionProcessing extends BaseAction {
 			throw new ExceptionWorkProcessing(param.task.getId());
 		}
 	}
-
-//	private void processingUpdateTaskCompleted(Record rec, String taskCompletedId, String job) throws Exception {
-//		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId, null, job);
-//	}
-
-//	private void processingUpdateTask(List<String> newTaskIds, List<TaskCompleted> taskCompleteds, Task task)
-//			throws Exception {
-//		TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, task);
-
-//		List<Task> empowerTasks = new ArrayList<>();
-//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//			for (Task o : emc.list(Task.class, newTaskIds)) {
-//				if (StringUtils.isNotEmpty(o.getEmpowerFromIdentity())
-//						&& (!StringUtils.equals(o.getEmpowerFromIdentity(), o.getIdentity()))) {
-//					empowerTasks.add(o);
-//				}
-//			}
-//		}
-//		List<Record> records = new ArrayList<>();
-//		if (!empowerTasks.isEmpty()) {
-//			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-//				Business business = new Business(emc);
-//				for (Task o : empowerTasks) {
-//					Record r = RecordBuilder.ofTaskEmpower(o,
-//							business.organization().person().getWithIdentity(o.getEmpowerFromIdentity()),
-//							business.organization().unit().getWithIdentity(o.getEmpowerFromIdentity()));
-//					records.add(r);
-//				}
-//			}
-//		}
-//		if (!records.isEmpty()) {
-//			records.stream().forEach(r -> {
-//				try {
-//					r.setId(RecordBuilder.processing(r));
-//				} catch (Exception e) {
-//					LOGGER.error(e);
-//				}
-//			});
-//		}
-//	}
 
 	/**
 	 * 处理退回操作
@@ -461,26 +401,13 @@ class ActionProcessing extends BaseAction {
 		if (flag) {
 			return this.recordTaskProcessing(Record.TYPE_GOBACK, param.workLog.getJob(), param.workLog.getId(),
 					taskCompletedId, param.series);
-//			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_GOBACK, param.workLog, param.task, param.series);
-//			// 加签也记录流程意见和路由选择
-//			rec.setOpinion(param.task.getOpinion());
-//			rec.setRouteName(param.task.getRouteName());
-//			rec.setId(RecordBuilder.processing(rec));
-			// this.processingUpdateTaskCompleted(rec, taskCompletedId,
-			// param.task.getJob());
-			// TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(),
-			// param.task.getJob());
 		} else {
+			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
 			rec = new Record(param.workLog);
 			rec.setType(Record.TYPE_GOBACK);
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());
 			rec.setCompleted(true);
-//			rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, param.workLog, param.task, param.series);
-//			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
-//			rec.setOpinion(param.task.getOpinion());
-//			rec.setRouteName(param.task.getRouteName());
-//			rec.setCompleted(true);
 		}
 		return rec;
 	}

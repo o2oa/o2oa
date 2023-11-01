@@ -26,7 +26,7 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 
 /**
- * @since 8.2 tickets 重置处理人 实际是以当前活动的类型进行后加签实现.
+ * @since 8.2 tickets 重置处理人.
  */
 class V2Reset extends BaseAction {
 

@@ -1,4 +1,4 @@
-package com.x.processplatform.service.processing.schedule;
+package com.x.processplatform.assemble.surface.schedule;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,18 +23,18 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.utils.time.TimeStamp;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
-import com.x.processplatform.service.processing.ThisApplication;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionExpireWo;
 
 public class Expire extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Expire.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Expire.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -61,7 +61,7 @@ public class Expire extends AbstractJob {
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.info("标识{}个过期待办, {}个待办处于挂起状态, 耗时:{}.", count.intValue(), pause.intValue(),
+			LOGGER.info("标识{}个过期待办, {}个待办处于挂起状态, 耗时:{}.", count.intValue(), pause.intValue(),
 					stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
@@ -73,10 +73,10 @@ public class Expire extends AbstractJob {
 			ThisApplication.context().applications()
 					.getQuery(x_processplatform_service_processing.class,
 							Applications.joinQueryUri("task", task.getId(), "expire"), task.getJob())
-					.getData(WoId.class);
+					.getData(ActionExpireWo.class);
 		} catch (Exception e) {
 			ExceptionExpire exceptionExpire = new ExceptionExpire(e, task.getId(), task.getTitle(), task.getSequence());
-			logger.error(exceptionExpire);
+			LOGGER.error(exceptionExpire);
 		}
 	}
 

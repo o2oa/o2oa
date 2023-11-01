@@ -230,23 +230,23 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_删除指定待办处理人.", action = V2Remove.class)
-	@DELETE
-	@Path("v2/{id}/remove")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2Remove(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
-		ActionResult<V2Remove.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2Remove().execute(effectivePerson, id);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+//	@JaxrsMethodDescribe(value = "V2_删除指定待办处理人.", action = V2Remove.class)
+//	@DELETE
+//	@Path("v2/{id}/remove")
+//	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	public void v2Remove(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+//			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+//		ActionResult<V2Remove.Wo> result = new ActionResult<>();
+//		EffectivePerson effectivePerson = this.effectivePerson(request);
+//		try {
+//			result = new V2Remove().execute(effectivePerson, id);
+//		} catch (Exception e) {
+//			LOGGER.error(e, effectivePerson, request, null);
+//			result.error(e);
+//		}
+//		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//	}
 
 	@JaxrsMethodDescribe(value = "更新待办中的办理意见以及路由决策.", action = V2Edit.class)
 	@PUT

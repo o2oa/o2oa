@@ -27,9 +27,26 @@ class V2Pause extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Pause.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
-		String job = null;
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		ActionResult<Wo> result = new ActionResult<>();
+
+		Param param = this.init(effectivePerson, id);
+
+		com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo resp = ThisApplication.context()
+				.applications()
+				.getQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", "v2", id, "pause"), param.job)
+				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo.class);
+		Wo wo = new Wo();
+		wo.setValue(resp.getValue());
+		result.setData(wo);
+		return result;
+	}
+
+	private Param init(EffectivePerson effectivePerson, String id) throws Exception {
+
+		Param param = new Param();
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Task task = emc.find(id, Task.class);
@@ -51,17 +68,17 @@ class V2Pause extends BaseAction {
 			if (BooleanUtils.isNotTrue(manual.getAllowPause())) {
 				throw new ExceptionNotAllowPause(task.getId());
 			}
-			job = task.getJob();
+			param.job = task.getJob();
 		}
-		com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo resp = ThisApplication.context()
-				.applications()
-				.getQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", "v2", id, "pause"), job)
-				.getData(com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo.class);
-		Wo wo = new Wo();
-		wo.setValue(resp.getValue());
-		result.setData(wo);
-		return result;
+
+		return param;
+
+	}
+
+	private class Param {
+
+		private String job;
+
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Pause$Wo")

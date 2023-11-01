@@ -39,16 +39,14 @@ class V2Rollback extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 
 		Param param = this.init(effectivePerson, id, jsonElement);
 		this.rollback(param.work, param.workLog, param.distinguishedNameList);
 		this.processing(param.work, param.series);
 		Record rec = this.recordWorkProcessing(Record.TYPE_ROLLBACK, "", "", param.work.getJob(), param.workLog.getId(),
 				param.identity, param.series);
-//		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_ROLLBACK, param.workLog, effectivePerson, param.series);
-//		RecordBuilder.processing(rec);
-//		TaskBuilder.updatePrevTask(param.series, param.work.getActivityToken(), param.work.getJob());
 		Wo wo = Wo.copier.copy(rec);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);

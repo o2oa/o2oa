@@ -1,4 +1,4 @@
-package com.x.processplatform.service.processing.schedule;
+package com.x.processplatform.assemble.surface.schedule;
 
 import com.x.base.core.project.exception.PromptException;
 

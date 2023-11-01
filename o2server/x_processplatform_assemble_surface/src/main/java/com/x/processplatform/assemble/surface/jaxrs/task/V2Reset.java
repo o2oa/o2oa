@@ -58,11 +58,6 @@ public class V2Reset extends BaseAction {
 		reset(param.task.getId(), param.distinguishedNameList, param.task.getJob());
 		String taskCompletedId = this.processingTask(param.task.getId(), param.task.getJob());
 		this.processingWork(param.work.getId(), param.series, param.work.getJob());
-//		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, param.workLog, effectivePerson, param.series);
-//		rec.setOpinion(param.opinion);
-//		rec.setRouteName(param.routeName);
-//		RecordBuilder.processing(rec);
-//		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		Record rec = this.recordTaskProcessing(Record.TYPE_RESET, param.workLog.getJob(), param.workLog.getId(),
 				taskCompletedId, param.series);
 		ActionResult<Wo> result = new ActionResult<>();

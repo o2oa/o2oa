@@ -5,10 +5,10 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionPressWo;
 import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionPress extends BaseAction {
@@ -27,7 +27,7 @@ class ActionPress extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			MessageFactory.task_press(task, "系统");
+			MessageFactory.task_press(task, "");
 			wo.setValue(task.getPerson());
 		}
 
@@ -36,7 +36,7 @@ class ActionPress extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapString {
+	public static class Wo extends ActionPressWo {
 
 		private static final long serialVersionUID = 6127898394613135325L;
 	}
