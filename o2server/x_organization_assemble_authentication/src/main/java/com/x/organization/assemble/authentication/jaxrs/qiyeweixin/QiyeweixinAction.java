@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -12,6 +13,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -65,5 +67,25 @@ public class QiyeweixinAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+
+
+	@JaxrsMethodDescribe(value = "企业微信获取jssdk签名信息.", action = ActionJssdkSignInfo.class)
+	@POST
+	@Path("info/sign")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void info(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, JsonElement jsonElement) {
+		ActionResult<ActionJssdkSignInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionJssdkSignInfo().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 }
