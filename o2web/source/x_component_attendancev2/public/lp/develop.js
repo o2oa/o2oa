@@ -147,6 +147,7 @@ MWF.xApplication.attendancev2.LP = {
   workAddressManagerTitle: "工作场所管理",
   workAddressSelector: "选择工作场所",
   workAddressAdd: "新建工作场所",
+  workAddressView: "查看工作场所",
   workAddressName: "场所名称",
   workAddressRange: "误差范围",
   workAddressDesc: "备注",
@@ -172,6 +173,8 @@ MWF.xApplication.attendancev2.LP = {
     success: "保存成功！",
     confirmDelete: "确认要删除这个【{name}】工作场所？",
     selectWorkAddressEmpty: "请选择至少选择一个工作场所",
+    locationCoordinateInfo: "点击地图定位工作场所地址",
+    locationCoordinateLabel: "定位坐标："
   },
   // 考勤组
   groupManagerTitle: "考勤组管理",

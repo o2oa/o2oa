@@ -6,33 +6,42 @@
             <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
         </div>
         <div class="o2-form-content">
-            <div style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
-                    class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>点击地图定位工作场所地址</div>
+            <div oo-if="!$.isView" style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
+                    class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>{{$.lp.workAddressForm.locationCoordinateInfo}}</div>
             <div class="bd-map">
                 <!-- 放百度地图 -->
             </div>
             <div class="form-item-line">
-                <div class="form-item-line-label"><span class="required">*</span>定位坐标：</div>
+                <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.locationCoordinateLabel}}</div>
                 <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude :
                     ''}}</div>
             </div>
-            <!-- <div class="form-item-label"><span class="required" >*</span>定位坐标：</div>
-           <div class="form-item-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude : ''}}</div> -->
-            <o-input
+            <div class="form-item-line" oo-if="$.isView">
+                <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.title}}</div>
+                <div class="form-item-line-content">{{$.form.placeName}}</div>
+            </div>
+            <o-input oo-else
                 oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.title, 'placeholder': $.lp.workAddressForm.titlePlaceholder , 'value': $.form.placeName}"
                 oo-model="form.placeName"></o-input>
-            <o-input
+            <div class="form-item-line" oo-if="$.isView">
+                <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.range}}</div>
+                <div class="form-item-line-content">{{$.form.errorRange}}</div>
+            </div>
+            <o-input oo-else
                 oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.range, 'placeholder': $.lp.workAddressForm.rangePlaceholder,  'value': $.form.errorRange}"
                 oo-model="form.errorRange"></o-input>
-            <o-textarea
+            <div class="form-item-line" oo-if="$.isView">
+                <div class="form-item-line-label">{{$.lp.workAddressForm.desc}}</div>
+                <div class="form-item-line-content">{{$.form.description}}</div>
+            </div>
+            <o-textarea oo-else
                 oo-prop="{'label':$.lp.workAddressForm.desc, 'placeholder': $.lp.workAddressForm.descPlaceholder , 'value': $.form.description}"
                 oo-model="form.description"></o-textarea>
         </div>
         <div class="o2-form-footer">
             <span>
-                <button style="width: 250px;" class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
+                <button style="width: 250px;" class="mainColor_bg" @click="submitAdd" oo-if="!$.isView">{{$.lp.save}}</button>
                 <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-
             </span>
         </div>
     </div>

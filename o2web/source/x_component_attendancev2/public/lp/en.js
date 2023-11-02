@@ -147,6 +147,7 @@ MWF.xApplication.attendancev2.LP = {
   workAddressManagerTitle: "Workplace Management",
   workAddressSelector: "Select Workplace",
   workAddressAdd: "Add Workplace",
+  workAddressView: "View Workplace",
   workAddressName: "Place Name",
   workAddressRange: "Error Range",
   workAddressDesc: "Remarks",
@@ -170,7 +171,9 @@ MWF.xApplication.attendancev2.LP = {
     rangeNeedNumber: "Punch Range (meters) must be a number!",
     success: "Save Successful!",
     confirmDelete: "Are you sure you want to delete this workplace '{name}'?",
-    selectWorkAddressEmpty: "Please select at least one workplace"
+    selectWorkAddressEmpty: "Please select at least one workplace",
+    locationCoordinateInfo: "Click on the map to locate the workplace address",
+    locationCoordinateLabel: "Positioning coordinates: "
 },
   // 考勤组
   groupManagerTitle: "Attendance Group Management",

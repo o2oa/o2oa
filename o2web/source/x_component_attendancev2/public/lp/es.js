@@ -147,6 +147,7 @@ MWF.xApplication.attendancev2.LP = {
   workAddressManagerTitle: "Gestión de lugares de trabajo",
   workAddressSelector: "Seleccionar lugar de trabajo",
   workAddressAdd: "Agregar lugar de trabajo",
+  workAddressView: "Ver el lugar de trabajo",
   workAddressName: "Nombre del lugar",
   workAddressRange: "Rango de error",
   workAddressDesc: "Descripción",
@@ -171,6 +172,8 @@ MWF.xApplication.attendancev2.LP = {
     success: "¡Guardado exitoso!",
     confirmDelete: "¿Estás seguro de que deseas eliminar este lugar de trabajo 【{name}】?",
     selectWorkAddressEmpty: "Selecciona al menos un lugar de trabajo",
+    locationCoordinateInfo: "Haga clic en el mapa para localizar la dirección del lugar de trabajo",
+    locationCoordinateLabel: "Coordenadas de posicionamiento: "
   },
   // 考勤组
   groupManagerTitle: "Gestión de grupos de asistencia",
