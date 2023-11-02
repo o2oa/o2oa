@@ -227,8 +227,7 @@ class ActionProcessing extends BaseAction {
 			new Thread(() -> {
 				RespProcessingSignal resp = null;
 				try {
-					resp = ThisApplication.context().applications().getQuery(effectivePerson.getDebugger(),
-							x_processplatform_service_processing.class,
+					resp = ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
 							Applications.joinQueryUri("work", param.work.getId(), "series", param.series,
 									"activitytoken", param.work.getActivityToken(), STRING_PROCESSING, "signal"),
 							param.work.getJob()).getData(RespProcessingSignal.class);
