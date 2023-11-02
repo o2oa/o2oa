@@ -503,9 +503,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 						Objects.toString(manual.getManualMode(), ""),
-						tickets.bubble().stream().map(Ticket::label).collect(Collectors.toList())));
+						tickets.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList())));
 		if (tickets.bubble().isEmpty() && (!taskCompleteds.isEmpty())) {
-			results.add(aeiObjects.getWork());
+			results.add(aeiObjects.getWork()); 
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
 					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
 					.collect(Collectors.toList());
