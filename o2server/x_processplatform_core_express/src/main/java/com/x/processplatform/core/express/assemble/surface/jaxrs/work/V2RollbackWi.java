@@ -15,6 +15,17 @@ public class V2RollbackWi extends GsonPropertyObject {
 	@FieldDescribe("组织对象专有标识.")
 	private List<String> distinguishedNameList;
 
+	@FieldDescribe("办理意见.")
+	private String opinion;
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
+
 	public String getWorkLog() {
 		return workLog;
 	}

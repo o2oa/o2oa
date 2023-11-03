@@ -22,13 +22,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Manual;
@@ -36,11 +33,14 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.entity.ticket.Tickets;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import com.x.processplatform.service.processing.processor.AeiObjects;
 
 class V2Rollback extends BaseAction {
 
@@ -113,26 +113,31 @@ class V2Rollback extends BaseAction {
 				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 				WorkLogTree tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
 				WorkLog workLog = getTargetWorkLog(workLogs, param.workLog.getId());
+				Activity activity = business.element().getActivity(workLog.getFromActivity());
+				AeiObjects aeiObjects = new AeiObjects(business, work, activity, new ProcessingAttributes());
 				Node workLogNode = tree.find(workLog);
 				Nodes nodes = tree.down(workLogNode);
 				List<String> activityTokens = activityTokenOfNodes(nodes);
 
 				LOGGER.debug("activityTokens:{}.", () -> gson.toJson(activityTokens));
 
-				emc.beginTransaction(Task.class);
-				emc.beginTransaction(TaskCompleted.class);
-				emc.beginTransaction(Read.class);
-				emc.beginTransaction(ReadCompleted.class);
-				emc.beginTransaction(WorkLog.class);
-				emc.beginTransaction(Work.class);
-				emc.beginTransaction(Record.class);
+				aeiObjects.getTasks().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteTasks()::add);
 
-				deleteTasks(business, work.getJob(), activityTokens);
-				deleteTaskCompleteds(business, work.getJob(), activityTokens);
-				deleteReads(business, work.getJob(), activityTokens);
-				deleteReadCompleteds(business, work.getJob(), activityTokens);
-				deleteRecords(business, work.getJob(), activityTokens);
-				deleteWorkLogs(business, work.getJob(), activityTokens);
+				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
+
+				aeiObjects.getReads().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteReads()::add);
+
+				aeiObjects.getReadCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						.forEach(aeiObjects.getDeleteReadCompleteds()::add);
+
+				aeiObjects.getRecords().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
+						.forEach(aeiObjects.getDeleteRecords()::add);
+
+				aeiObjects.getWorkLogs().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
+						.forEach(aeiObjects.getDeleteWorkLogs()::add);
 
 				List<String> workIds = workOfNodes(nodes);
 
@@ -147,7 +152,7 @@ class V2Rollback extends BaseAction {
 				List<TaskCompleted> taskCompleteds = new ArrayList<>();
 
 				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
-					// 如果指定了回退人
+					// 如果指定了回溯人员
 					taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
 							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, param.distinguishedNameList);
@@ -159,12 +164,13 @@ class V2Rollback extends BaseAction {
 
 				for (TaskCompleted o : taskCompleteds) {
 					if (BooleanUtils.isTrue(o.getJoinInquire())) {
-						emc.remove(o, CheckRemoveType.all);
+						aeiObjects.getDeleteTaskCompleteds().add(o);
 					}
 					manualTaskIdentityList.add(o.getIdentity());
 				}
-				updateManualTaskIdentityMatrix(business, work, manualTaskIdentityList);
-				emc.commit();
+				updateManualTaskIdentity(business, work, manualTaskIdentityList);
+				aeiObjects.getUpdateWorks().add(work);
+				aeiObjects.commit();
 			}
 
 			ActionResult<Wo> result = new ActionResult<>();
@@ -199,15 +205,16 @@ class V2Rollback extends BaseAction {
 			workLog.setArrivedTime(null);
 		}
 
-		private void updateManualTaskIdentityMatrix(Business business, Work work, List<String> manualTaskIdentityList)
+		private void updateManualTaskIdentity(Business business, Work work, List<String> manualTaskIdentityList)
 				throws Exception {
 			if (Objects.equals(ActivityType.manual, work.getActivityType())) {
 				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
-				if (null != manual) {
+				if ((null != manual) && ListTools.isNotEmpty(manualTaskIdentityList)) {
 					work.setTickets(manual.identitiesToTickets(manualTaskIdentityList));
+					return;
 				}
-
 			}
+			work.setTickets(new Tickets());
 		}
 
 		private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
@@ -232,59 +239,6 @@ class V2Rollback extends BaseAction {
 				os.add(o.getWorkLog().getWork());
 			}
 			return ListTools.trim(os, true, true);
-		}
-
-		private void deleteTasks(Business business, String job, List<String> activityTokens) throws Exception {
-			List<Task> os = business.entityManagerContainer().listEqualAndIn(Task.class, Task.job_FIELDNAME, job,
-					Task.activityToken_FIELDNAME, activityTokens);
-			for (Task o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				MessageFactory.task_delete(o);
-			}
-		}
-
-		private void deleteTaskCompleteds(Business business, String job, List<String> activityTokens) throws Exception {
-			List<TaskCompleted> os = business.entityManagerContainer().listEqualAndIn(TaskCompleted.class,
-					TaskCompleted.job_FIELDNAME, job, TaskCompleted.activityToken_FIELDNAME, activityTokens);
-			for (TaskCompleted o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				MessageFactory.taskCompleted_delete(o);
-			}
-		}
-
-		private void deleteReads(Business business, String job, List<String> activityTokens) throws Exception {
-			List<Read> os = business.entityManagerContainer().listEqualAndIn(Read.class, Read.job_FIELDNAME, job,
-					Read.activityToken_FIELDNAME, activityTokens);
-			for (Read o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				MessageFactory.read_delete(o);
-			}
-		}
-
-		private void deleteReadCompleteds(Business business, String job, List<String> activityTokens) throws Exception {
-			List<ReadCompleted> os = business.entityManagerContainer().listEqualAndIn(ReadCompleted.class,
-					ReadCompleted.job_FIELDNAME, job, ReadCompleted.activityToken_FIELDNAME, activityTokens);
-			for (ReadCompleted o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				MessageFactory.readCompleted_delete(o);
-			}
-		}
-
-		private void deleteRecords(Business business, String job, List<String> activityTokens) throws Exception {
-			List<Record> os = business.entityManagerContainer().listEqualAndIn(Record.class, Record.job_FIELDNAME, job,
-					Record.fromActivityToken_FIELDNAME, activityTokens);
-			for (Record o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-			}
-		}
-
-		private void deleteWorkLogs(Business business, String job, List<String> activityTokens) throws Exception {
-			List<WorkLog> os = business.entityManagerContainer().listEqualAndIn(WorkLog.class, WorkLog.JOB_FIELDNAME,
-					job, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, activityTokens);
-			for (WorkLog o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-
-			}
 		}
 
 		private void deleteWorks(Business business, String job, List<String> workIds) throws Exception {
