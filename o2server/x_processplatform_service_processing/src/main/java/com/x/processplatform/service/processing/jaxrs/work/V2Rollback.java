@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -51,11 +52,9 @@ class V2Rollback extends BaseAction {
 
 		Param param = this.init(id, jsonElement);
 
-		CallableImpl callable = new CallableImpl(param.getWorkId(), param.getWorkLogId(),
-				param.getDistinguishedNameList());
+		CallableImpl callable = new CallableImpl(param);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
-				TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -63,14 +62,28 @@ class V2Rollback extends BaseAction {
 		Param param = new Param();
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
+			Business business = new Business(emc);
+			Work work = emc.fetch(id, Work.class,
+					ListTools.toList(Work.job_FIELDNAME, Work.application_FIELDNAME, Work.process_FIELDNAME));
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			param.setJob(work.getJob());
-			param.setWorkId(work.getId());
-			param.setWorkLogId(id);
-			param.setDistinguishedNameList(wi.getDistinguishedNameList());
+			Application application = business.element().get(work.getApplication(), Application.class);
+			if (null == application) {
+				throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
+			}
+			Process process = business.element().get(work.getProcess(), Process.class);
+			if (null == process) {
+				throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
+			}
+			param.job = work.getJob();
+			param.work = work;
+			WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
+			}
+			param.workLog = workLog;
+			param.distinguishedNameList = wi.getDistinguishedNameList();
 		}
 		return param;
 	}
@@ -78,64 +91,28 @@ class V2Rollback extends BaseAction {
 	private class Param {
 
 		private String job;
-		private String workId;
-		private String workLogId;
+		private Work work;
+		private WorkLog workLog;
 		private List<String> distinguishedNameList;
-
-		public List<String> getDistinguishedNameList() {
-			return distinguishedNameList;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
-
-		public String getWorkId() {
-			return workId;
-		}
-
-		public void setWorkId(String workId) {
-			this.workId = workId;
-		}
-
-		public String getWorkLogId() {
-			return workLogId;
-		}
-
-		public void setWorkLogId(String workLogId) {
-			this.workLogId = workLogId;
-		}
 
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-		private CallableImpl(String workId, String workLogId, List<String> distinguishedNameList) {
-			this.workId = workId;
-			this.workLogId = workLogId;
-			this.distinguishedNameList = distinguishedNameList;
-		}
+		private Param param;
 
-		private String workId;
-		private String workLogId;
-		private List<String> distinguishedNameList;
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
 
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				Work work = getWork(business, workId);
+				Work work = emc.find(param.work.getId(), Work.class);
 				List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 				WorkLogTree tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
-				WorkLog workLog = getTargetWorkLog(workLogs, workLogId);
+				WorkLog workLog = getTargetWorkLog(workLogs, param.workLog.getId());
 				Node workLogNode = tree.find(workLog);
 				Nodes nodes = tree.down(workLogNode);
 				List<String> activityTokens = activityTokenOfNodes(nodes);
@@ -169,11 +146,11 @@ class V2Rollback extends BaseAction {
 
 				List<TaskCompleted> taskCompleteds = new ArrayList<>();
 
-				if (ListTools.isNotEmpty(distinguishedNameList)) {
+				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
 					// 如果指定了回退人
 					taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, distinguishedNameList);
+							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, param.distinguishedNameList);
 				} else {
 					taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
@@ -192,25 +169,9 @@ class V2Rollback extends BaseAction {
 
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			wo.setId(workId);
+			wo.setId(param.work.getId());
 			result.setData(wo);
 			return result;
-		}
-
-		private Work getWork(Business business, String workId) throws Exception {
-			Work work = business.entityManagerContainer().find(workId, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(workId, Work.class);
-			}
-			Application application = business.element().get(work.getApplication(), Application.class);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(work.getApplication(), Application.class);
-			}
-			Process process = business.element().get(work.getProcess(), Process.class);
-			if (null == process) {
-				throw new ExceptionEntityNotExist(work.getProcess(), Process.class);
-			}
-			return work;
 		}
 
 		private void update(Business business, Work work, WorkLog workLog) throws Exception {
@@ -250,11 +211,11 @@ class V2Rollback extends BaseAction {
 		}
 
 		private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
-			WorkLog workLog = list.stream().filter(o -> StringUtils.equals(o.getId(), id)).findFirst().orElse(null);
-			if (null == workLog) {
+			Optional<WorkLog> opt = list.stream().filter(o -> StringUtils.equals(o.getId(), id)).findFirst();
+			if (opt.isEmpty()) {
 				throw new ExceptionEntityNotExist(id, WorkLog.class);
 			}
-			return workLog;
+			return opt.get();
 		}
 
 		private List<String> activityTokenOfNodes(Nodes nodes) {

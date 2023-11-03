@@ -14,7 +14,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionTypeSnap extends BaseAction {
@@ -36,8 +38,9 @@ class ActionTypeSnap extends BaseAction {
 
 			job = work.getJob();
 
-			if (BooleanUtils.isNotTrue(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-					work.getApplication(), work.getProcess()))) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowDelete().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage()) && BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 		}

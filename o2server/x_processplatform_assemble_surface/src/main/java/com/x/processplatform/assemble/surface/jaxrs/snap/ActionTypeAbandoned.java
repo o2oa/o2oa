@@ -32,8 +32,9 @@ class ActionTypeAbandoned extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowDelete().build();
-			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowDelete().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage()) && BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			job = work.getJob();

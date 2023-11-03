@@ -29,7 +29,9 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
@@ -52,11 +54,9 @@ class ActionRollback extends BaseAction {
 
 		Param param = init(flag, jsonElement);
 
-		CallableImpl callable = new CallableImpl(param.getWorkCompleted(), param.getWorkLog(),
-				param.getDistinguishedNameList());
+		CallableImpl callable = new CallableImpl(param);
 
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
-				TimeUnit.SECONDS);
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -65,12 +65,20 @@ class ActionRollback extends BaseAction {
 		Param param = new Param();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			WorkCompleted workCompleted = emc.fetch(flag, WorkCompleted.class,
-					ListTools.toList(WorkCompleted.job_FIELDNAME));
+			WorkCompleted workCompleted = emc.fetch(flag, WorkCompleted.class, ListTools.toList(
+					WorkCompleted.job_FIELDNAME, WorkCompleted.application_FIELDNAME, WorkCompleted.process_FIELDNAME));
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(flag, WorkCompleted.class);
 			}
-			WorkLog workLog = emc.fetch(wi.getWorkLog(), WorkLog.class, ListTools.toList(WorkLog.JOB_FIELDNAME));
+			Application application = business.element().get(workCompleted.getApplication(), Application.class);
+			if (null == application) {
+				throw new ExceptionEntityNotExist(workCompleted.getApplication(), Application.class);
+			}
+			Process process = business.element().get(workCompleted.getProcess(), Process.class);
+			if (null == process) {
+				throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
+			}
+			WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
 			}
@@ -78,10 +86,10 @@ class ActionRollback extends BaseAction {
 			if (null == manual) {
 				throw new ExceptionEntityNotExist(workLog.getFromActivity(), Manual.class);
 			}
-			param.setJob(workCompleted.getJob());
-			param.setWorkCompleted(workCompleted.getId());
-			param.setWorkLog(workLog.getId());
-			param.setDistinguishedNameList(wi.getDistinguishedNameList());
+			param.job = workCompleted.getJob();
+			param.workCompleted = workCompleted;
+			param.workLog = workLog;
+			param.distinguishedNameList = wi.getDistinguishedNameList();
 		}
 		return param;
 	}
@@ -89,62 +97,26 @@ class ActionRollback extends BaseAction {
 	private class Param {
 
 		private String job;
-		private String workCompleted;
-		private String workLog;
+		private WorkCompleted workCompleted;
+		private WorkLog workLog;
 		private List<String> distinguishedNameList;
-
-		public List<String> getDistinguishedNameList() {
-			return distinguishedNameList;
-		}
-
-		public void setDistinguishedNameList(List<String> distinguishedNameList) {
-			this.distinguishedNameList = distinguishedNameList;
-		}
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
-
-		public String getWorkCompleted() {
-			return workCompleted;
-		}
-
-		public void setWorkCompleted(String workCompleted) {
-			this.workCompleted = workCompleted;
-		}
-
-		public String getWorkLog() {
-			return workLog;
-		}
-
-		public void setWorkLog(String workLog) {
-			this.workLog = workLog;
-		}
 
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
-		private String workCompletedId;
-		private String workLogId;
-		private List<String> distinguishedList;
+		private Param param;
 
-		private CallableImpl(String workCompletedId, String workLogId, List<String> distinguishedList) {
-			this.workCompletedId = workCompletedId;
-			this.workLogId = workLogId;
-			this.distinguishedList = distinguishedList;
+		private CallableImpl(Param param) {
+			this.param = param;
 		}
 
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				WorkCompleted workCompleted = emc.flag(this.workCompletedId, WorkCompleted.class);
-				WorkLog workLog = emc.find(this.workLogId, WorkLog.class);
+				WorkCompleted workCompleted = emc.find(param.workCompleted.getId(), WorkCompleted.class);
+				WorkLog workLog = emc.find(param.workLog.getId(), WorkLog.class);
 				if (BooleanUtils.isTrue(workLog.getSplitting())) {
 					throw new ExceptionSplittingNotRollback(workCompleted.getId(), workLog.getId());
 				}
@@ -163,9 +135,9 @@ class ActionRollback extends BaseAction {
 				emc.beginTransaction(Record.class);
 				emc.beginTransaction(Item.class);
 				Work work = createWork(business, workCompleted, workLog);
-				if (ListTools.isNotEmpty(distinguishedList)) {
+				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
 					Manual manual = (Manual) business.element().get(workLog.getFromActivity(), ActivityType.manual);
-					work.setTickets(manual.identitiesToTickets(distinguishedList));
+					work.setTickets(manual.identitiesToTickets(param.distinguishedNameList));
 				} else {
 					work.setTickets(null);
 				}
