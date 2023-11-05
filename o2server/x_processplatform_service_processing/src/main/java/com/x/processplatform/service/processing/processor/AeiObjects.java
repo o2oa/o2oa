@@ -489,10 +489,6 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getCreateReviews().add(review);
 	}
 
-//	public void addSelectRoutes(List<Route> selectRoutes) {
-//		this.selectRoutes.addAll(selectRoutes);
-//	}
-
 	public void deleteReview(Review review) {
 		this.getDeleteReviews().add(review);
 	}

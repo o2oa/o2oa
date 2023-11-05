@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +40,13 @@ public class Data extends ListOrderedMap<String, Object> {
 	}
 
 	@JsonIgnore
-	public Data setWork(Work work) throws Exception {
+	public Data setWork(Work work) {
 		DataWork dataWork = new DataWork();
 		if (null != work) {
 			DataWork.workCopier.copy(work, dataWork);
+			dataWork.setWorkId(work.getId());
+			this.put(WORK_PROPERTY, dataWork);
 		}
-		dataWork.setWorkId(work.getId());
-		this.put(WORK_PROPERTY, dataWork);
 		return this;
 	}
 
@@ -58,20 +59,20 @@ public class Data extends ListOrderedMap<String, Object> {
 	}
 
 	@JsonIgnore
-	public Data setWork(WorkCompleted workCompleted) throws Exception {
+	public Data setWork(WorkCompleted workCompleted) {
 		DataWork dataWork = new DataWork();
 		if (null != workCompleted) {
 			DataWork.workCompletedCopier.copy(workCompleted, dataWork);
+			dataWork.setWorkId(workCompleted.getWork());
+			dataWork.setWorkCompletedId(workCompleted.getId());
+			dataWork.setCompleted(true);
+			this.put(WORK_PROPERTY, dataWork);
 		}
-		dataWork.setWorkId(workCompleted.getWork());
-		dataWork.setWorkCompletedId(workCompleted.getId());
-		dataWork.setCompleted(true);
-		this.put(WORK_PROPERTY, dataWork);
 		return this;
 	}
 
 	@JsonIgnore
-	public Data setAttachmentList(List<Attachment> attachmentList) throws Exception {
+	public Data setAttachmentList(List<Attachment> attachmentList) {
 		List<DataAttachment> list = new ArrayList<>();
 		if (ListTools.isEmpty(attachmentList)) {
 			DataAttachment.copier.copy(attachmentList, list);
@@ -88,7 +89,8 @@ public class Data extends ListOrderedMap<String, Object> {
 		return this;
 	}
 
-	public List<String> extractDistinguishedName(String path) throws Exception {
+	public List<String> extractDistinguishedName(String path)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		List<String> list = new ArrayList<>();
 		if (StringUtils.isNotEmpty(path)) {
 			Object o = PropertyUtils.getProperty(this, path);
@@ -121,15 +123,16 @@ public class Data extends ListOrderedMap<String, Object> {
 		return list;
 	}
 
-	public Object find(String path) throws Exception {
+	public Object find(String path) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.find(StringUtils.split(path, "."));
 	}
 
-	public <T> T find(String path, Class<T> cls, T defaultValue) throws Exception {
+	public <T> T find(String path, Class<T> cls, T defaultValue)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return this.find(StringUtils.split(path, "."), cls, defaultValue);
 	}
 
-	public Object find(String[] paths) throws Exception {
+	public Object find(String[] paths) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object o = this;
 		for (String path : paths) {
 			if (StringUtils.isEmpty(path) || (null == o)) {
@@ -156,7 +159,9 @@ public class Data extends ListOrderedMap<String, Object> {
 		return o;
 	}
 
-	public <T> T find(String[] paths, Class<T> cls, T defaultValue) throws Exception {
+	@SuppressWarnings("unchecked")
+	public <T> T find(String[] paths, Class<T> cls, T defaultValue)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object o = this.find(paths);
 		if (null == o) {
 			return defaultValue;
@@ -169,10 +174,12 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public static class DataWork extends GsonPropertyObject {
 
-		public static WrapCopier<Work, DataWork> workCopier = WrapCopierFactory.wo(Work.class, DataWork.class, null,
-				JpaObject.FieldsInvisible);
+		private static final long serialVersionUID = -9086239850917572996L;
 
-		public static WrapCopier<WorkCompleted, DataWork> workCompletedCopier = WrapCopierFactory
+		public static final WrapCopier<Work, DataWork> workCopier = WrapCopierFactory.wo(Work.class, DataWork.class,
+				null, JpaObject.FieldsInvisible);
+
+		public static final WrapCopier<WorkCompleted, DataWork> workCompletedCopier = WrapCopierFactory
 				.wo(WorkCompleted.class, DataWork.class, null, JpaObject.FieldsInvisible);
 
 		private String job;
@@ -415,9 +422,12 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public static class DataAttachment extends GsonPropertyObject {
 
-		public static WrapCopier<Attachment, DataAttachment> copier = WrapCopierFactory.wo(Attachment.class,
+		private static final long serialVersionUID = 368032075562133125L;
+
+		public static final WrapCopier<Attachment, DataAttachment> copier = WrapCopierFactory.wo(Attachment.class,
 				DataAttachment.class, null, JpaObject.FieldsInvisible);
 
+		private String id;
 		private String name;
 		private String extension;
 		private String storage;
@@ -464,10 +474,18 @@ public class Data extends ListOrderedMap<String, Object> {
 			this.site = site;
 		}
 
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
 	}
 
 	/* 除了默认的数据之外不保有数据 */
-	public Boolean emptySet() throws Exception {
+	public Boolean emptySet() {
 		return this.keyList().stream().filter(
 				o -> (!StringUtils.equals(WORK_PROPERTY, o)) && (!StringUtils.equals(ATTACHMENTLIST_PROPERTY, o)))
 				.count() == 0;
