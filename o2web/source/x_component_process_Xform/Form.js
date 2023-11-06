@@ -3937,7 +3937,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeRollback");
 
             this.doRollbackActionInvoke(log, flowOption, idList, function (json) {
-                debugger;
                 if (json.data.properties) {
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
                     this.addRollbackMessage(json.data);
