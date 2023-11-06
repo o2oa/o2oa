@@ -58,7 +58,7 @@ export default content({
     const c = (await import('../recordManager/detail/index.js')).default;
     this.openFomVm(c, bindData);
   },
-  // 打开 打卡地点表单
+  // 打开 原始记录
   async openRecordListVm(bind) {
     this.closeFormVm();
     const bindData = bind || {};
@@ -78,7 +78,6 @@ export default content({
     const bindData = bind || {};
     const c = (await import('../addressManager/addAddress/index.js')).default;
     this.openFomVm(c, bindData);
-    debugger;
   },
   // 打开班次表单
   async openShiftForm(bind) {

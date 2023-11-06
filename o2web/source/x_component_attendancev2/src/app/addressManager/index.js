@@ -20,17 +20,17 @@ export default content({
   },
   async openBdAKConfig() {
     const bdKey = (await getPublicData("baiduAccountKey")) || "";
-    // const content = (await import('./bdAkConfig/index.js')).default;
-    // this.configBdAKVm = await content.generate(".form", {bind: {"baiduAccountKey": bdKey}} , this);
     this.$parent.openBDMapConfigForm({bind: {"baiduAccountKey": bdKey}});
   },
   async clickAdd() {
     debugger;
-     // 添加
-    //  const content = (await import(`./addAddress/index.js`)).default;
-    //  this.addAddressVm = await content.generate(".form", {}, this);
      this.$parent.openAddressForm({});
   },
+  // 查看位置
+  clickOpenView(address) {
+    this.$parent.openAddressForm({bind: { form: address }});
+  },
+  // 删除工作场所
   clickDeleteItem(id, name) {
     debugger;
     var _self = this;

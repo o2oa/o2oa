@@ -113,6 +113,10 @@ public class Qiyeweixin extends ConfigObject {
 	private static String cachedJsapiTicket;
 	private static Date cachedJsapiTicketDate;
 
+	private static String cachedAppJsapiTicket;
+	private static Date cachedAppJsapiTicketDate;
+
+
 	public String getSyncSecret() {
 		return StringUtils.isEmpty(syncSecret) ? default_syncSecret : this.syncSecret;
 	}
@@ -224,13 +228,17 @@ public class Qiyeweixin extends ConfigObject {
 		}
 	}
 
+	/**
+	 * 获取企业的jsapi_ticket
+	 * @return
+	 * @throws Exception
+	 */
 	public String getJsapiTicket() throws Exception {
 		if ((StringUtils.isNotEmpty(cachedJsapiTicket) && (null != cachedJsapiTicketDate))
 				&& (cachedJsapiTicketDate.after(new Date()))) {
 			return cachedJsapiTicket;
 		} else {
-			String address = getApiAddress() + "/get_jsapi_ticket?access_token=" + this.corpAccessToken()
-					+ "&type=jsapi";
+			String address = getApiAddress() + "/cgi-bin/get_jsapi_ticket?access_token=" + this.corpAccessToken();
 			JsapiTicketResp resp = HttpConnection.getAsObject(address, null, JsapiTicketResp.class);
 			if (resp.getErrcode() != 0) {
 				throw new ExceptionZhengwuDingdingJsapiTicket(resp.getErrcode(), resp.getErrmsg());
@@ -243,6 +251,30 @@ public class Qiyeweixin extends ConfigObject {
 		}
 	}
 
+	/**
+	 * 获取应用的jsapi_ticket
+	 * @return
+	 * @throws Exception
+	 */
+	public String getAppJsapiTicket() throws Exception {
+		if ((StringUtils.isNotEmpty(cachedAppJsapiTicket) && (null != cachedAppJsapiTicketDate))
+				&& (cachedAppJsapiTicketDate.after(new Date()))) {
+			return cachedJsapiTicket;
+		} else {
+			String address = getApiAddress() + "/cgi-bin/ticket/get?access_token=" + this.corpAccessToken() + "&type=agent_config";
+			JsapiTicketResp resp = HttpConnection.getAsObject(address, null, JsapiTicketResp.class);
+			if (resp.getErrcode() != 0) {
+				throw new ExceptionZhengwuDingdingJsapiTicket(resp.getErrcode(), resp.getErrmsg());
+			}
+			cachedAppJsapiTicket = resp.ticket;
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.MINUTE, 90);
+			cachedAppJsapiTicketDate = cal.getTime();
+			return cachedAppJsapiTicket;
+		}
+	}
+
+	
 	public void setApiAddress(String oapiAddress) {
 		this.apiAddress = oapiAddress;
 	}

@@ -24,7 +24,16 @@ export default content({
               latitude: "",
               description: "",
             },
+            isView: false,
         };
+    },
+    // 如果有数据过来
+    beforeRender() {
+        // 有值 表示是查看
+        if (this.bind.form.id) {
+            this.bind.isView = true;
+            this.bind.fTitle = lp.workAddressView;
+        }
     },
     afterRender() {
         this.loadBDMap();
@@ -41,11 +50,22 @@ export default content({
         }
         if( !window.BDMapV2ApiLoaded ){
             o2.load(apiPath, () => {
-                this.location();
+                this.loadViewOrLocation();
             });
+        } else {
+            this.loadViewOrLocation();
+        }
+    },
+    loadViewOrLocation() {
+        if (this.bind.isView) {
+            this.loadMapView();
         } else {
             this.location();
         }
+    },
+    loadMapView() {
+        const point = new BMap.Point(this.bind.form.longitude, this.bind.form.latitude);
+        this.createMap(point);
     },
     // 初始化地图
     location() {
@@ -68,46 +88,35 @@ export default content({
             maximumAge: 0,
             SDKLocation: true,
         });
-
-        // if (navigator.geolocation){
-        //     try{
-        //         navigator.geolocation.getCurrentPosition(this.initBDMap.bind(this), this.initBDMap.bind(this));
-        //     }catch( e ){
-        //         console.error(e);
-        //         this.initBDMap();
-        //     }
-        // }else{
-        //     this.initBDMap();
-        // }
     },
     // 初始化地图
-    initBDMap(position) {
-        console.debug("位置信息", position);
-        this.mapNode = this.dom.querySelector(".bd-map");
-        if (this.mapNode) {
-            let longitude = 120.135431;
-            let latitude = 30.27412;
-            if (position && position.coords) {
-                latitude = position.coords.latitude || 30.27412;
-                longitude = position.coords.longitude || 120.135431;
-            }
-            const gpsPoint = new BMap.Point(longitude, latitude);
-            const convertor = new BMap.Convertor();
-            const pointArr = [];
-            pointArr.push(gpsPoint);
-            console.debug("开始转化百度位置");
-            convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
-        } else {
-            console.error("map node 不存在？？？");
-        }
-    },
+    // initBDMap(position) {
+    //     console.debug("位置信息", position);
+    //     this.mapNode = this.dom.querySelector(".bd-map");
+    //     if (this.mapNode) {
+    //         let longitude = 120.135431;
+    //         let latitude = 30.27412;
+    //         if (position && position.coords) {
+    //             latitude = position.coords.latitude || 30.27412;
+    //             longitude = position.coords.longitude || 120.135431;
+    //         }
+    //         const gpsPoint = new BMap.Point(longitude, latitude);
+    //         const convertor = new BMap.Convertor();
+    //         const pointArr = [];
+    //         pointArr.push(gpsPoint);
+    //         console.debug("开始转化百度位置");
+    //         convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
+    //     } else {
+    //         console.error("map node 不存在？？？");
+    //     }
+    // },
     // 转化百度坐标
-    translateBMapPoint(data) {
-        console.debug("转化百度位置成功", data);
-        if (data.status === 0 && data.points && data.points[0]) {
-            this.createMap(data.points[0]);
-        }
-    },
+    // translateBMapPoint(data) {
+    //     console.debug("转化百度位置成功", data);
+    //     if (data.status === 0 && data.points && data.points[0]) {
+    //         this.createMap(data.points[0]);
+    //     }
+    // },
     // 加载百度地图
     createMap(point) {
         this.mapNode = this.dom.querySelector(".bd-map");
@@ -118,12 +127,13 @@ export default content({
             }
             this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
             this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-            // 测试定位 
-            // const marker = new BMap.Marker(point);
-            // this.map.addOverlay(marker);
-            // this.map.panTo(point);
             this.addControls();
-            this.addMapClick();
+            if (!this.bind.isView) {
+                this.addMapClick();
+            } else {
+                this.addMarkPoint(point, this.bind.form.placeName);
+            }
+            
         }
     },
     // 添加地图控件
