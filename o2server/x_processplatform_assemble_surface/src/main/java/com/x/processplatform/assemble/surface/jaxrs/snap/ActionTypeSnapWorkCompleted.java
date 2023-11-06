@@ -14,7 +14,9 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionTypeSnapWorkCompleted extends BaseAction {
@@ -32,8 +34,9 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-					workCompleted.getApplication(), workCompleted.getProcess()))) {
+			Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
+					.enableAllowManage().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())) {
 				throw new ExceptionAccessDenied(effectivePerson, workCompleted);
 			}
 			job = workCompleted.getJob();

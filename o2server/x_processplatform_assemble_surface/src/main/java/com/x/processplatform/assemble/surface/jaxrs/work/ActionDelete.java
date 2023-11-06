@@ -24,9 +24,9 @@ class ActionDelete extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Work work = null;
@@ -36,8 +36,9 @@ class ActionDelete extends BaseAction {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowDelete().build();
-			if (BooleanUtils.isNotTrue(control.getAllowDelete())) {
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
+					.enableAllowDelete().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage()) && BooleanUtils.isNotTrue(control.getAllowDelete())) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
 			}

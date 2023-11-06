@@ -52,6 +52,8 @@ class ActionWorkProcessing extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		param.recordType = wi.getRecordType();
 		param.series = wi.getSeries();
+		param.opinion = wi.getOpinion();
+		param.routeName = wi.getRouteName();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			WorkLog workLog = emc.find(wi.getWorkLog(), WorkLog.class);
@@ -87,6 +89,8 @@ class ActionWorkProcessing extends BaseAction {
 		private String identity;
 		private String unit;
 		private String person;
+		private String routeName;
+		private String opinion;
 
 	}
 
@@ -112,7 +116,8 @@ class ActionWorkProcessing extends BaseAction {
 				rec.setIdentity(param.identity);
 				rec.setUnit(param.unit);
 				rec.setPerson(param.person);
-				// fillIdentityAndUnit(business, rec);
+				rec.setRouteName(param.routeName);
+				rec.setOpinion(param.opinion);
 				elapsed(rec);
 				// 已经存在的已办理人员.
 				List<String> identities = listJoinInquireTaskCompletedIdentityWithActivityToken(business,

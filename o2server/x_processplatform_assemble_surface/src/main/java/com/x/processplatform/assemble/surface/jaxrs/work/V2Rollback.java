@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -10,6 +11,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -45,8 +47,8 @@ class V2Rollback extends BaseAction {
 		Param param = this.init(effectivePerson, id, jsonElement);
 		this.rollback(param.work, param.workLog, param.distinguishedNameList);
 		this.processing(param.work, param.series);
-		Record rec = this.recordWorkProcessing(Record.TYPE_ROLLBACK, "", "", param.work.getJob(), param.workLog.getId(),
-				param.identity, param.series);
+		Record rec = this.recordWorkProcessing(Record.TYPE_ROLLBACK, "", param.opinion, param.work.getJob(),
+				param.workLog.getId(), param.identity, param.series);
 		Wo wo = Wo.copier.copy(rec);
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
@@ -57,6 +59,7 @@ class V2Rollback extends BaseAction {
 	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.opinion = wi.getOpinion();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(id, Work.class);
@@ -86,7 +89,7 @@ class V2Rollback extends BaseAction {
 			}
 
 			param.distinguishedNameList = business.organization().distinguishedName()
-					.list(wi.getDistinguishedNameList());
+					.list(wi.getDistinguishedNameList().stream().distinct().collect(Collectors.toList()));
 			param.identity = business.organization().identity()
 					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}
@@ -96,6 +99,7 @@ class V2Rollback extends BaseAction {
 	private class Param {
 
 		private String identity;
+		private String opinion;
 		private Work work;
 		private WorkLog workLog;
 		private List<String> distinguishedNameList;
