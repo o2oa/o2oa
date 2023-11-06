@@ -3937,10 +3937,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeRollback");
 
             this.doRollbackActionInvoke(log, flowOption, idList, function (json) {
+                debugger;
                 if (json.data.properties) {
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
                     this.addRollbackMessage(json.data);
 
+                    if (!this.app.inBrowser) this.app.close();
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
                 } else {
                     var id = json.data.id;
                     this.workAction.listTaskByWork(function (workJson) {
@@ -3949,10 +3952,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         this.addRollbackMessage_old(workJson.data);
                         //this.app.notice(MWF.xApplication.process.Xform.LP.rollbackOk+": "+MWF.name.cns(names).join(", "), "success");
                         //if (!this.app.inBrowser) this.app.close();
+
+                        if (!this.app.inBrowser) this.app.close();
+                        if (this.mask) { this.mask.hide(); this.mask = null; }
                     }.bind(this), null, id);
                 }
-                if (!this.app.inBrowser) this.app.close();
-                if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
                 var errorText = error + ":" + text;
                 if (xhr) errorText = xhr.responseText;
