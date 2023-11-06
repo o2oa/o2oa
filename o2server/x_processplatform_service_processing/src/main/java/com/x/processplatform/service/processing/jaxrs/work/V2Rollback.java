@@ -8,21 +8,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
@@ -38,7 +34,6 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWo;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -139,36 +134,35 @@ class V2Rollback extends BaseAction {
 				aeiObjects.getWorkLogs().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
 						.forEach(aeiObjects.getDeleteWorkLogs()::add);
 
-				List<String> workIds = workOfNodes(nodes);
+				List<String> workIds = ListUtils.subtract(workOfNodes(nodes), ListTools.toList(work.getId()));
 
-				workIds = ListUtils.subtract(workIds, ListTools.toList(work.getId()));
-
-				deleteWorks(business, work.getJob(), workIds);
+				aeiObjects.getWorks().stream().filter(o -> workIds.contains(o.getId()))
+						.forEach(o -> aeiObjects.getDeleteWorks().add(o));
 
 				update(business, work, workLog);
 
-				List<String> manualTaskIdentityList = new ArrayList<>();
-
-				List<TaskCompleted> taskCompleteds = new ArrayList<>();
-
-				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
-					// 如果指定了回溯人员
-					taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, param.distinguishedNameList);
-				} else {
-					taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-							TaskCompleted.joinInquire_FIELDNAME, true);
-				}
-
-				for (TaskCompleted o : taskCompleteds) {
-					if (BooleanUtils.isTrue(o.getJoinInquire())) {
-						aeiObjects.getDeleteTaskCompleteds().add(o);
-					}
-					manualTaskIdentityList.add(o.getIdentity());
-				}
-				updateManualTaskIdentity(business, work, manualTaskIdentityList);
+//				List<String> manualTaskIdentityList = new ArrayList<>();
+//
+//				List<TaskCompleted> taskCompleteds = new ArrayList<>();
+//
+//				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
+//					// 如果指定了回溯人员
+//					taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
+//							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
+//							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, param.distinguishedNameList);
+//				} else {
+//					taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
+//							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
+//							TaskCompleted.joinInquire_FIELDNAME, true);
+//				}
+//
+//				for (TaskCompleted o : taskCompleteds) {
+//					if (BooleanUtils.isTrue(o.getJoinInquire())) {
+//						aeiObjects.getDeleteTaskCompleteds().add(o);
+//					}
+//					manualTaskIdentityList.add(o.getIdentity());
+//				}
+				updateManualTaskIdentity(business, work, param.distinguishedNameList);
 				aeiObjects.getUpdateWorks().add(work);
 				aeiObjects.commit();
 			}
@@ -241,14 +235,6 @@ class V2Rollback extends BaseAction {
 			return ListTools.trim(os, true, true);
 		}
 
-		private void deleteWorks(Business business, String job, List<String> workIds) throws Exception {
-			List<Work> os = business.entityManagerContainer().listEqualAndIn(Work.class, Work.job_FIELDNAME, job,
-					JpaObject.id_FIELDNAME, workIds);
-			for (Work o : os) {
-				business.entityManagerContainer().remove(o, CheckRemoveType.all);
-				MessageFactory.work_delete(o);
-			}
-		}
 	}
 
 	public static class Wi extends V2RollbackWi {

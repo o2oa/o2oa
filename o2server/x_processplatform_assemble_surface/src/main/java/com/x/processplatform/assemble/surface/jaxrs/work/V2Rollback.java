@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -88,7 +89,7 @@ class V2Rollback extends BaseAction {
 			}
 
 			param.distinguishedNameList = business.organization().distinguishedName()
-					.list(wi.getDistinguishedNameList());
+					.list(wi.getDistinguishedNameList().stream().distinct().collect(Collectors.toList()));
 			param.identity = business.organization().identity()
 					.getMajorWithPerson(effectivePerson.getDistinguishedName());
 		}

@@ -37,7 +37,7 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public void setAttachmentList(List<FileInfo> attachmentList) {
 		List<DataAttachment> list = new ArrayList<>();
-		if (ListTools.isEmpty(attachmentList)) {
+		if (ListTools.isNotEmpty(attachmentList)) {
 			DataAttachment.copier.copy(attachmentList, list);
 		}
 		this.put(ATTACHMENTLIST_PROPERTY, list);
@@ -77,12 +77,13 @@ public class Data extends ListOrderedMap<String, Object> {
 		return list;
 	}
 
-	public Object find(String path) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException  {
+	public Object find(String path) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return PropertyUtils.getProperty(this, path);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T find(String path, Class<T> cls, T defaultValue) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException  {
+	public <T> T find(String path, Class<T> cls, T defaultValue)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Object o = PropertyUtils.getProperty(this, path);
 		if (null == o) {
 			return defaultValue;
@@ -92,7 +93,6 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	public static class DataDocument extends GsonPropertyObject {
 
-		
 		private static final long serialVersionUID = -6298001381974881750L;
 
 		private static WrapCopier<Document, DataDocument> documentCopier = WrapCopierFactory.wo(Document.class,
