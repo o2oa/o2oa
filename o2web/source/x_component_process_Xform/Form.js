@@ -3915,7 +3915,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 text = text.replace("{log}", log.fromActivityName + "(" + log.arrivedTime + ")");
                 this.app.confirm("infor", e, this.app.lp.rollbackConfirmTitle, text, 450, 120, function () {
-                    _self.doRollbackAction(log.id, flowOption, dlg, idList);
+                    _self.doRollbackAction(log.id, flowOption, dlg, idList, log);
 
                     dlg.close();
 
@@ -3928,7 +3928,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
 
-    doRollbackAction: function (log, flowOption, dlg, idList) {
+    doRollbackAction: function (log, flowOption, dlg, idList, logObj) {
         MWF.require("MWF.widget.Mask", function () {
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
@@ -3941,6 +3941,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterRollback");
                     this.addRollbackMessage(json.data);
 
+                    if (!this.app.inBrowser) this.app.close();
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
                 } else {
                     var id = json.data.id;
                     this.workAction.listTaskByWork(function (workJson) {
@@ -3949,25 +3951,28 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         this.addRollbackMessage_old(workJson.data);
                         //this.app.notice(MWF.xApplication.process.Xform.LP.rollbackOk+": "+MWF.name.cns(names).join(", "), "success");
                         //if (!this.app.inBrowser) this.app.close();
+
+                        if (!this.app.inBrowser) this.app.close();
+                        if (this.mask) { this.mask.hide(); this.mask = null; }
                     }.bind(this), null, id);
                 }
-                if (!this.app.inBrowser) this.app.close();
-                if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this), function (xhr, text, error) {
                 var errorText = error + ":" + text;
                 if (xhr) errorText = xhr.responseText;
                 this.app.notice("request json error: " + errorText, "error");
                 if (this.mask) { this.mask.hide(); this.mask = null; }
-            }.bind(this));
+            }.bind(this), logObj);
         }.bind(this));
     },
-    doRollbackActionInvoke: function (id, flowOption, idList, success, failure) {
+    doRollbackActionInvoke: function (id, flowOption, idList, success, failure, logObj) {
+        var opinion = MWF.xApplication.process.Xform.LP.rollbackTo+":"+logObj.fromActivityName;
         if (this.businessData.work.completedTime) {
             var method = "rollbackWorkcompleted";
             o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, {
                 "workLog": id,
                 "distinguishedNameList": idList,
-                "processing": !!flowOption
+                "processing": !!flowOption,
+                "opinion": opinion
             }, function (json) {
                 if (success) success(json);
             }.bind(this), function (xhr, text, error) {
@@ -3977,7 +3982,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var body = {
                 "workLog": id,
                 "distinguishedNameList": idList,
-                "processing": !!flowOption
+                "processing": !!flowOption,
+                "opinion": opinion
             }
             o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2Rollback(this.businessData.work.id, body, function (json) {
                 //o2.Actions.get("x_processplatform_assemble_surface")[method](this.businessData.work.id, { "workLog": id }, function (json) {
