@@ -1583,7 +1583,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.getHistory(function(){
         }.bind(this), function(){
-            debugger;
             this.historyMode = false;
             this.resetData();
         }.bind(this));
@@ -1962,7 +1961,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }else{
                     this.options.pageShow="single";
                     this.reload();
-                    //this._singlePage();
+                    // this._singlePage();
+                    var _self = this;
+                    window.setTimeout(function(){
+                        _self.scaleTo(_self.documenteditorScale);
+                    },10);
+
                 }
             }.bind(this));
             if (this.json.canDoublePage==="n" || layout.mobile) this.doublePageAction.hide();
@@ -2164,8 +2168,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //this.node.addEvent("wheel", stopFun);
             this.resizeToolbar();
         }
-        this.getData();
-        this.reload();
+        if (this.options.pageShow!=="double"){
+            this.getData();
+        }
+        // this.getData();
+        var _self = this;
+        window.setTimeout(function(){
+            _self.reload();
+        },20)
+
     },
     /**缩放文件内容
      * @param scale{Number} 缩放的比率
@@ -2392,16 +2403,22 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.resizeSidebar();
             this.clearWaitSplitPage();
 
+            var s = 0;
             this.pages.forEach(function(page, i){
-                var s = i+1;
+                s++;
+                var styles = {
+                    "bottom": "-60px",
+                    "margin-top": "10px",
+                    "position": "absolute"
+                }
+                if (s % 2 === 0){
+                    styles.left = "0";
+                }else{
+                    styles.right = "0";
+                }
                 var pageNumberNode = new Element("div", {
                     "html": "<span>—</span><span> "+s+" </span><span>—</span>",
-                    "styles": {
-                        "right": "0",
-                        "bottom": "-60px",
-                        "margin-top": "10px",
-                        "position": "absolute"
-                    }
+                    "styles": styles
                 }).inject(page.getFirst());
 
 
@@ -3275,12 +3292,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this._computeData(false);
         this.pages = [];
         this.editMode = false;
-
         this._createPage(function(control){
             this._loadPageLayout(control);
             this.setData(this.data, diffFiletext);
             this._repage();
-            if (!this.editMode && this.allowEdit && !this.historyMode) {
+            if (!this.editMode && this.allowEdit && !this.historyMode && this.options.pageShow!=="double") {
                 this._editFiletext("inline");
                 this.editMode = true;
             }
@@ -3911,52 +3927,56 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     toWord: function(callback, name, cb, notSave){
         var docNmae = name || this.json.toWordFilename || this.form.businessData.data.subject || this.form.businessData.data["$work"].title;
         this.getData();
+        this.reload(function(){
+            if (!this.data.attachmentText && this.layout_attachmentText){
+                this.layout_attachmentText.set("text", "");
+            }
 
-        if (!this.data.attachmentText && this.layout_attachmentText){
-            this.layout_attachmentText.set("text", "");
-        }
+            var fileName = docNmae || this.json.toWordFilename || "$doc";
+            var n = fileName.lastIndexOf(".");
 
-        var fileName = docNmae || this.json.toWordFilename || "$doc";
-        var n = fileName.lastIndexOf(".");
+            if (this.json.wordConversionType==="service"){
+                if (n==-1) fileName = fileName+".doc";
+                var content = encodeURIComponent(this.getDocumentHtml());
 
-        if (this.json.wordConversionType==="service"){
-            if (n==-1) fileName = fileName+".doc";
-            var content = encodeURIComponent(this.getDocumentHtml());
+                var body = {
+                    "fileName": fileName,
+                    "site": this.json.toWordSite || "$doc",
+                    "content": content
+                };
+                this.toWordServiceService(body, callback, cb);
+            }else{
+                if (n==-1) fileName = fileName+".docx";
+                var extName = fileName.split('.').pop();
+                if (extName.toLowerCase()!=='docx') fileName = fileName+".docx";
 
-            var body = {
-                "fileName": fileName,
-                "site": this.json.toWordSite || "$doc",
-                "content": content
-            };
-            this.toWordServiceService(body, callback, cb);
-        }else{
-            if (n==-1) fileName = fileName+".docx";
-            var extName = fileName.split('.').pop();
-            if (extName.toLowerCase()!=='docx') fileName = fileName+".docx";
+                var content = this.getDocumentHtml();
+                o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
+                    (new o2.OOXML.WML({
+                        "protection": (this.json.wordConversionEncryption===true),
+                        "firstPageNumber": (this.json.firstPageNumber!==false)
+                    })).load(content).then(function(oo_content){
 
-            var content = this.getDocumentHtml();
-            o2.xDesktop.requireApp("process.Xform", "widget.OOXML", function(){
-                (new o2.OOXML.WML({
-                    "protection": (this.json.wordConversionEncryption===true),
-                    "firstPageNumber": (this.json.firstPageNumber!==false)
-                })).load(content).then(function(oo_content){
+                        if (!notSave) {
+                            oo_content.name = fileName
+                            var formData = new FormData();
+                            formData.append("site", this.json.toWordSite || "$doc");
+                            formData.append("fileName", fileName);
+                            formData.append('file', oo_content);
 
-                    if (!notSave) {
-                        oo_content.name = fileName
-                        var formData = new FormData();
-                        formData.append("site", this.json.toWordSite || "$doc");
-                        formData.append("fileName", fileName);
-                        formData.append('file', oo_content);
+                            this.toWordOOXMLService(formData, oo_content, callback, cb);
+                        }else{
+                            if (callback) callback(oo_content, fileName);
+                            if (cb) cb();
+                        }
 
-                        this.toWordOOXMLService(formData, oo_content, callback, cb);
-                    }else{
-                        if (callback) callback(oo_content, fileName);
-                        if (cb) cb();
-                    }
-
+                    }.bind(this));
                 }.bind(this));
-            }.bind(this));
-        }
+            }
+
+        }.bind(this));
+
+
     },
     toWordServiceService: function(body, callback, cb){
         if (this.toWordServiceServiceProcessing){

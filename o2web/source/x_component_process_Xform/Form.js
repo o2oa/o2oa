@@ -4531,13 +4531,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     selectPeople: function(dlg){
-        o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
+        // o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
             var identityList = [];
-            json.data.each(function(task){
-                identityList.push(task.identity);
-            });
+            // json.data.each(function(task){
+            //     identityList.push(task.identity);
+            // });
             this._selectPeople(dlg, identityList);
-        }.bind(this))
+        // }.bind(this))
     },
     _selectPeople: function (dlg, exclude) {
         var range = this.businessData.activity.resetRange || "department";
