@@ -864,7 +864,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
                 var classBg = "";
-                if (tool.action === "processWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract") {
+                debugger;
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract" || tool.id === "action_flowWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                     classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork" || tool.id === "action_delete") {
@@ -887,7 +888,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (this[t.action]) this[t.action](e);
                         }
                     }.bind(this);
-                    if (tool.action === "processWork" || tool.id === "action_processWork") {
+                    if (tool.action === "processWork" || tool.id === "action_processWork" || tool.action === "flowWork" || tool.id === "action_flowWork") {
                         //输入法激活的时候，需要一段时间等待输入法关闭
                         window.setTimeout(clickFun, 100)
                     } else {
@@ -906,7 +907,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
                 var classBg = "";
-                if (tool.action === "processWork" || tool.action === "retractWork") {
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                     classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork") {
@@ -963,7 +964,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.action === "processWork" || tool.action === "retractWork") {
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                 } else if (tool.action === "deleteWork") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
@@ -1147,7 +1148,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var hideFlag = this.Macro.exec(tool.condition, this);
             flag = flag && (!hideFlag);
         }
-        if (tool.id == "action_processWork") {
+        if (tool.id == "action_processWork" || tool.id == "action_flowWork") {
             if (this.businessData.work.startTime) { // 正常模式
                 if (!this.businessData.task || !this.businessData.work || !this.businessData.work.startTime) {
                     flag = false;
@@ -4531,13 +4532,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
     },
     selectPeople: function(dlg){
-        o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
-            var identityList = [];
-            json.data.each(function(task){
-                identityList.push(task.identity);
-            });
-            this._selectPeople(dlg, identityList);
-        }.bind(this))
+        // o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
+        //     var identityList = [];
+        //     json.data.each(function(task){
+        //         identityList.push(task.identity);
+        //     });
+        //     this._selectPeople(dlg, identityList);
+        // }.bind(this))
+        this._selectPeople(dlg, []);
     },
     _selectPeople: function (dlg, exclude) {
         var range = this.businessData.activity.resetRange || "department";

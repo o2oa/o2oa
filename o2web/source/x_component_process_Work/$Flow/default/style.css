@@ -113,21 +113,24 @@
     overflow: hidden;
     height: 100%;
     position: relative;
+    display: flex;
 }
 .o2flow-node-wide {
     width: 1100px;
     overflow: hidden;
     height: 100%;
     position: relative;
+    display: flex;
 }
 .o2flow-bg-opacity{
     background-color: rgba(74, 144, 226, 0.12)
 }
 
 .o2flow-navi {
-    position: absolute;
+    /*position: absolute;*/
     margin-top: 32px;
     margin-left: 6px;
+    padding-left: 10px;
 }
 .o2flow-navi-node {
     /*border-left: 2px solid #DEDEDE;*/
@@ -152,7 +155,8 @@
 }
 
 .o2flow-content-scrollNode {
-    padding-left: 90px;
+    flex: 1;
+    padding-left: 20px;
     height: 100%;
     overflow: auto;
     padding-right: 20px;
@@ -278,7 +282,7 @@
     position: absolute;
     right: 30px;
     bottom: 10px;
-    width: 60px;
+    width: 70px;
     height: 30px;
     line-height: 30px;
     background: #FFFFFF;

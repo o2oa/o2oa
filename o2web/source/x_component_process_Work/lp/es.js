@@ -33,7 +33,7 @@ MWF.xApplication.process.Work.LP = {
     "save": "Guardar",
     "process": "Continuar el flujo de trabajo",
     "flowWork": "manejar trabajo",
-    "handwriting": "Escritura a mano",
+    "handwriting": "Escribir",
     "audioRecord": "Grabación de audio",
 
     "noAppendTaskIdentityConfig" : "No se ha configurado un responsable para la transferencia, por favor contacte al administrador",
@@ -81,9 +81,10 @@ MWF.xApplication.process.Work.LP = {
     "duty": "Posición",
 
     "flowActions": {
-        "addTask": "Agregar firma",
-        "restablecer": "restablecer",
-        "proceso": "enviar",
+        "addTask": "Añadir",
+        "reset": "Restablecer",
+        "process": "Enviar",
+        "goBack": "Atrás"
     },
     "modeType": "método de procesamiento",
      "single": "soltero",
@@ -91,7 +92,7 @@ MWF.xApplication.process.Work.LP = {
      "parallel": "paralelo",
      "addTaskType": "Agregar método de firma",
      "addTaskBefore": "Agregar antes",
-     "addTaskAfter": "Agregar firma después",
+     "addTaskAfter": "Agregar atrás",
     "opinion": "opinión",
     "addTaskPerson": "Añadido",
     "inputOpinionNote": "Por favor escribe tu opinión aquí",

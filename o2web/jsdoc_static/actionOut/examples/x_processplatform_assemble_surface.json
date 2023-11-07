@@ -30,7 +30,8 @@
     "activityType": "text:work_activityType",
     "destinationActivityType": "text:work_activityType",
     "workStatus": "text:work_workStatus",
-    "goBackStore": "text:work_goBackStore"
+    "goBackStore": "text:work_goBackStore",
+    "tickets": "text:work_tickets"
   },
   "WorkParsed" : {
     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",
@@ -62,7 +63,8 @@
     "activityType": "text:work_activityType",
     "destinationActivityType": "text:work_activityType",
     "workStatus": "text:work_workStatus",
-    "goBackStore": "text:work_goBackStore"
+    "goBackStore": "text:work_goBackStore",
+    "tickets": "text:work_tickets"
   },
   "WorkCompleted" : {
     "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",
