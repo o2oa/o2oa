@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -17,6 +18,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -157,6 +159,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
 				this.opinion = this.getProperties().getOpinion();
 			}
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
 		}
 	}
 
@@ -366,6 +369,40 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
 		this.label = task.getLabel();
+	}
+
+	public static final String PREVTASKIDENTITYLIST_FIELDNAME = "prevTaskIdentityList";
+	@Transient
+	@FieldDescribe("上一人工环节处理人列表.")
+	private List<String> prevTaskIdentityList;
+
+	public List<String> getPrevTaskIdentityList() {
+		if ((null != this.properties) && (null == this.prevTaskIdentityList)) {
+			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+		}
+		return this.prevTaskIdentityList;
+	}
+
+	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
+		this.getProperties().setPrevTaskIdentityList(prevTaskIdentityList);
+		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public static final String PREVTASKLIST_FIELDNAME = "prevTaskList";
+	@Transient
+	@FieldDescribe("上一人工环节待办对象列表")
+	private List<PrevTask> prevTaskList;
+
+	public List<PrevTask> getPrevTaskList() {
+		if ((null != this.properties) && (null == this.prevTaskList)) {
+			this.prevTaskList = this.properties.getPrevTaskList();
+		}
+		return this.prevTaskList;
+	}
+
+	public void setPrevTaskList(List<PrevTask> prevTaskList) {
+		this.getProperties().setPrevTaskList(prevTaskList);
+		this.prevTaskList = prevTaskList;
 	}
 
 	public TaskCompletedProperties getProperties() {

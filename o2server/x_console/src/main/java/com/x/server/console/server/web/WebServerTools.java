@@ -155,6 +155,8 @@ public class WebServerTools extends JettySeverTools {
 				if (!WebServers.WEB_SERVER_FOLDERS.contains(name)) {
 					try {
 						Path target = Config.path_webroot(true).resolve(name);
+						LOGGER.warn("move the unofficial directory to webroot directory:{}.",
+								o.toAbsolutePath().toString());
 						if (Files.exists(target)) {
 							FileUtils.copyDirectory(o.toFile(), target.toFile());
 							FileUtils.deleteDirectory(o.toFile());

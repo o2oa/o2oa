@@ -54,6 +54,7 @@ public class TranslateTaskIdentityTools {
 		if (ListTools.isNotEmpty(manual.getTaskIdentityList())) {
 			taskIdentities.addIdentities(manual.getTaskIdentityList());
 		}
+		// 流程角色
 		if ((null != manual.getTaskParticipant()) && StringUtils.isNotBlank(manual.getTaskParticipant().getType())) {
 			taskIdentities.addIdentities(participant(aeiObjects, manual));
 		}
