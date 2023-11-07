@@ -1526,12 +1526,14 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             if (this.route) id = this.route.data.id;
             var property = this;
             if (!this.data.taskParticipant) this.data.taskParticipant = {type: "", data:""}
-            var ids = (this.data.taskParticipant && this.data.taskParticipant.data) ? JSON.parse(this.data.taskParticipant.data) : [];
+            // var ids = (this.data.taskParticipant && this.data.taskParticipant.data) ? JSON.parse(this.data.taskParticipant.data) : [];
+            var ids = this.data.taskParticipant.data || [];
 
             nodes.each(function(node){
                 var jsondata = "taskParticipant.data";
-                var vdata = property.data.taskParticipant.data;
-                var acts = (vdata) ? JSON.parse(vdata) : [];
+                // var vdata = property.data.taskParticipant.data;
+                // var acts = (vdata) ? JSON.parse(vdata) : [];
+                var acts = property.data.taskParticipant.data;
 
                 Object.keys(this.process.manuals).forEach(function(k){
                     var a = this.process.manuals[k];
@@ -1547,11 +1549,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     });
                     input.addEvent("change", function(e){
                         var v = property.getCheckboxValue(id+jsondata);
-                        property.data.taskParticipant.data = JSON.stringify(v);
+                        // property.data.taskParticipant.data = JSON.stringify(v);
+                        property.data.taskParticipant.data = v;
                     });
                     input.addEvent("blur", function(e){
                         var v = property.getCheckboxValue(id+jsondata);
-                        property.data.taskParticipant.data = JSON.stringify(v);
+                        // property.data.taskParticipant.data = JSON.stringify(v);
+                        property.data.taskParticipant.data = v;
                     });
 
                     label.inject(node);
