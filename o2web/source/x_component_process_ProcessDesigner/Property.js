@@ -1533,7 +1533,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var jsondata = "taskParticipant.data";
                 // var vdata = property.data.taskParticipant.data;
                 // var acts = (vdata) ? JSON.parse(vdata) : [];
-                var acts = property.data.taskParticipant.data;
+                var acts = property.data.taskParticipant.data || [];
 
                 Object.keys(this.process.manuals).forEach(function(k){
                     var a = this.process.manuals[k];
