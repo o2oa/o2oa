@@ -20,7 +20,7 @@ class QueueAdd implements Add {
 	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
+		List<Ticket> fellow = tickets.listFellow(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		Optional<Ticket> first = list.stream().findFirst();
@@ -35,7 +35,7 @@ class QueueAdd implements Add {
 	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
+		List<Ticket> fellow = tickets.listFellow(ticket, true);
 		List<Ticket> next = tickets.listNext(ticket);
 		sibling.addAll(targets);
 		Tickets.interconnectedAsSibling(sibling);
@@ -50,7 +50,7 @@ class QueueAdd implements Add {
 	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
+		List<Ticket> fellow = tickets.listFellow(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsFellow(fellow);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
@@ -61,7 +61,7 @@ class QueueAdd implements Add {
 	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket);
+		List<Ticket> fellow = tickets.listFellow(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets);
 		Optional<Ticket> first = list.stream().findFirst();
