@@ -59,12 +59,6 @@ public class V3Add extends BaseAction {
 		this.add(param.task, param.distinguishedNameList, param.before, param.mode);
 		String taskCompletedId = this.processingTask(param.task);
 		this.processingWork(param.task, param.series);
-//		Record rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, param.workLog, param.task, param.series);
-//		// 加签也记录流程意见和路由决策
-//		rec.setOpinion(param.opinion);
-//		rec.setRouteName(param.routeName);
-//		RecordBuilder.processing(rec);
-//		TaskBuilder.updatePrevTask(param.series, param.task.getActivityToken(), param.task.getJob());
 		Record rec = this.recordTaskProcessing(Record.TYPE_TASKADD, param.workLog.getJob(), param.workLog.getId(),
 				taskCompletedId, param.series);
 		return result(rec);
@@ -89,6 +83,9 @@ public class V3Add extends BaseAction {
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
+			}
+			if (StringUtils.isBlank(task.getLabel())) {
+				throw new ExceptionBeforeV82TaskUnsupportedAdd(id);
 			}
 			param.task = task;
 			Work work = emc.find(task.getWork(), Work.class);

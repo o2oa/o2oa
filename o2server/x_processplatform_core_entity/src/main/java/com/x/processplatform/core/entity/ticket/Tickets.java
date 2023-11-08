@@ -146,14 +146,11 @@ public class Tickets implements Serializable {
 
 	public boolean add(Ticket ticket, Collection<String> targets, boolean before, String addMode) {
 		List<Ticket> list = targets.stream().map(Ticket::new).collect(Collectors.toList());
-		// 并行加签当前已有待办的处理人排除掉
+		// 如果当前ticket是并行加签当前已有待办的处理人排除掉
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
 			list = list.stream().filter(o -> !exists.contains(o.distinguishedName())).collect(Collectors.toList());
 		}
-//		List<Ticket> fellow = this.listFellow(ticket);
-//		fellow.addAll(list);
-//		Tickets.interconnectedAsFellow(fellow);
 		return addExec(ticket, list, before, addMode);
 	}
 
@@ -174,23 +171,27 @@ public class Tickets implements Serializable {
 		case MODE_PARALLEL:
 			targets.stream().forEach(o -> o.mode(MODE_PARALLEL));
 			if (before) {
-				add.beforeParallel(this, ticket, this.trimWithBubble(targets));
+				targets = this.trimWithBubble(targets);
+				add.beforeParallel(this, ticket, targets);
 			} else {
-				add.afterParallel(this, ticket, this.trimWithBubble(targets));
+				targets = this.trimWithBubble(targets);
+				add.afterParallel(this, ticket, targets);
 			}
 			break;
 		case MODE_QUEUE:
 			targets.stream().forEach(o -> o.mode(MODE_QUEUE));
 			if (before) {
-				add.beforeQueue(this, ticket, this.trimWithBubble(targets));
+				add.beforeQueue(this, ticket, targets);
 			} else {
-				add.afterQueue(this, ticket, this.trimWithBubble(targets));
+				targets = this.trimWithBubble(targets);
+				add.afterQueue(this, ticket, targets);
 			}
 			break;
 		default:
 			targets.stream().forEach(o -> o.mode(MODE_SINGLE));
 			if (before) {
-				add.beforeSingle(this, ticket, this.trimWithBubble(targets));
+				targets = this.trimWithBubble(targets);
+				add.beforeSingle(this, ticket, targets);
 			} else {
 				add.afterSingle(this, ticket, targets);
 			}
@@ -216,7 +217,6 @@ public class Tickets implements Serializable {
 	}
 
 	public boolean reset(Ticket ticket, Collection<String> targets) {
-		// targets = trimLevelDistinguishedName(ticket, targets);
 		if (targets.isEmpty()) {
 			return false;
 		}
@@ -299,10 +299,18 @@ public class Tickets implements Serializable {
 		return new ArrayList<>(resultSet);
 	}
 
-	protected List<Ticket> listFellow(Ticket ticket) {
-		return this.listSibling(ticket, false).stream().flatMap(o -> o.fellow().stream()).distinct().map(context::get)
-				.filter(Objects::nonNull).flatMap(o -> this.listSibling(o, true).stream()).filter(Objects::nonNull)
-				.distinct().collect(Collectors.toList());
+	protected List<Ticket> listFellow(Ticket ticket, boolean selfInclude) {
+		List<Ticket> list = this.listSibling(ticket, false).stream().flatMap(o -> o.fellow().stream()).distinct()
+				.map(context::get).filter(Objects::nonNull).flatMap(o -> this.listSibling(o, true).stream())
+				.filter(Objects::nonNull).distinct().collect(Collectors.toList());
+		if (selfInclude) {
+			if (!list.contains(ticket)) {
+				list.add(ticket);
+			}
+		} else {
+			list.remove(ticket);
+		}
+		return list;
 	}
 
 	protected List<Ticket> listNext(Ticket ticket) {

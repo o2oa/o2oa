@@ -79,8 +79,8 @@ class ActionListWithJob extends BaseAction {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
-		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class,
-				JpaObject.singularAttributeField(Record.class, true, false), JpaObject.FieldsInvisible);
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
 	}
 

@@ -31,48 +31,39 @@ class V3Add extends BaseAction {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Param param = init(id, jsonElement);
 
-		Param param = init(id);
+		CallableImpl callable = new CallableImpl(param);
 
-		CallableImpl callable = new CallableImpl(param.getWork(), param.getLabel(), wi.getDistinguishedNameList(),
-				wi.getBefore(), wi.getMode());
-
-		return ProcessPlatformKeyClassifyExecutorFactory.get(param.getJob()).submit(callable).get(300,
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.task.getJob()).submit(callable).get(300,
 				TimeUnit.SECONDS);
 
 	}
 
-	private Param init(String id) throws Exception {
+	private Param init(String id, JsonElement jsonElement) throws Exception {
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Param param = new Param();
+		param.distinguishedNameList = wi.getDistinguishedNameList();
+		param.before = wi.getBefore();
+		param.mode = wi.getMode();
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Task task = emc.fetch(id, Task.class,
 					ListTools.toList(Task.job_FIELDNAME, Task.work_FIELDNAME, Task.LABEL_FIELDNAME));
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			param.setJob(task.getJob());
-			param.setWork(task.getWork());
-			param.setLabel(task.getLabel());
+			param.task = task;
 		}
 		return param;
 	}
 
 	public class CallableImpl implements Callable<ActionResult<Wo>> {
 
-		private String workId;
-		private String label;
-		private List<String> distinguishedNameList;
-		private boolean before;
-		private String mode;
+		private Param param;
 
-		public CallableImpl(String workId, String label, List<String> distinguishedNameList, boolean before,
-				String mode) {
-			this.workId = workId;
-			this.label = label;
-			this.distinguishedNameList = distinguishedNameList;
-			this.before = before;
-			this.mode = mode;
+		public CallableImpl(Param param) {
+			this.param = param;
 		}
 
 		@Override
@@ -81,13 +72,13 @@ class V3Add extends BaseAction {
 			Wo wo = new Wo();
 			wo.setValue(false);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Work work = emc.find(workId, Work.class);
+				Work work = emc.find(param.task.getWork(), Work.class);
 				if (null == work) {
-					throw new ExceptionEntityNotExist(workId, Work.class);
+					throw new ExceptionEntityNotExist(param.task.getWork(), Work.class);
 				}
 				emc.beginTransaction(Work.class);
 				Tickets tickets = work.getTickets();
-				wo.setValue(tickets.add(label, distinguishedNameList, before, mode));
+				wo.setValue(tickets.add(param.task.getLabel(), param.distinguishedNameList, param.before, param.mode));
 				work.setTickets(tickets);
 				emc.commit();
 			}
@@ -98,33 +89,10 @@ class V3Add extends BaseAction {
 
 	public static class Param {
 
-		private String job;
-		private String work;
-		private String label;
-
-		public String getJob() {
-			return job;
-		}
-
-		public void setJob(String job) {
-			this.job = job;
-		}
-
-		public String getWork() {
-			return work;
-		}
-
-		public void setWork(String work) {
-			this.work = work;
-		}
-
-		public String getLabel() {
-			return label;
-		}
-
-		public void setLabel(String label) {
-			this.label = label;
-		}
+		private Task task;
+		private List<String> distinguishedNameList;
+		private boolean before;
+		private String mode;
 
 	}
 

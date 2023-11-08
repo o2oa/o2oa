@@ -12,7 +12,8 @@ class QueueReset implements Reset {
 	public List<Ticket> reset(Tickets tickets, Ticket ticket, Collection<String> targets) {
 		List<Ticket> next = tickets.listNext(ticket);
 		List<Ticket> list = Tickets.interconnectedAsNext(targets.stream()
-				.map(o -> ticket.copy().distinguishedName(o).fromDistinguishedName("")).collect(Collectors.toList()));
+				.map(o -> ticket.copy().distinguishedName(o).fromDistinguishedName("").act(Tickets.ACT_RESET))
+				.collect(Collectors.toList()));
 		list.stream().forEach(o -> o.appendNext(next));
 		Optional<Ticket> opt = list.stream().findFirst();
 		if (opt.isPresent()) {
