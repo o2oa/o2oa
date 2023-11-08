@@ -77,6 +77,9 @@ public class V2Reset extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
+			if (StringUtils.isBlank(task.getLabel())) {
+				throw new ExceptionBeforeV82TaskUnsupportedReset(id);
+			}
 			param.task = task;
 			Work work = business.entityManagerContainer().find(task.getWork(), Work.class);
 			if (null == work) {
