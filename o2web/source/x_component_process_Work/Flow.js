@@ -479,13 +479,14 @@ MWF.ProcessFlow.Reset = new Class({
         }.bind(this) );
     },
     getSelOptions: function( callback ){
-        o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
-            var identityList = [];
-            json.data.each(function(task){
-                identityList.push(task.identity);
-            });
-            this._getSelOptions(identityList, callback);
-        }.bind(this))
+        // o2.Actions.get("x_processplatform_assemble_surface").listTaskByWork(this.businessData.work.id, function(json){
+        //     var identityList = [];
+        //     json.data.each(function(task){
+        //         identityList.push(task.identity);
+        //     });
+        //     this._getSelOptions(identityList, callback);
+        // }.bind(this))
+        this._getSelOptions([], callback);
     },
     _getSelOptions: function (exclude, callback) {
         var options = this.getSelDefaultOptions();
@@ -493,14 +494,14 @@ MWF.ProcessFlow.Reset = new Class({
         var range = this.businessData.activity.resetRange || "department";
         switch (range) {
             case "unit":
-                options.units = this.businessData.task.unit ? [this.businessData.task.unit] : [];
+                options.units = this.businessData.task.unitDn ? [this.businessData.task.unitDn] : [];
                 options.exclude = exclude;
                 callback( options );
                 break;
             case "topUnit":
                 MWF.require("MWF.xScript.Actions.UnitActions", function () {
                     orgActions = new MWF.xScript.Actions.UnitActions();
-                    var data = { "unitList": [this.businessData.task.unit] };
+                    var data = { "unitList": [this.businessData.task.unitDn] };
                     orgActions.listUnitSupNested(data, function (json) {
                         options.units = json.data[0] ? [json.data[0]]: [];
                         options.exclude = exclude;

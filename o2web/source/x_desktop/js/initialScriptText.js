@@ -3254,7 +3254,7 @@ bind.workContext = {
      * @static
      * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
      * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties,manualTaskIdentityMatrix]|Work对象:
-     * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties]|WorkCompleted对象:
+     * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties,data,taskCompletedList,readCompletedList,reviewList,recordList,workLogList,storeForm,mobileStoreForm]|WorkCompleted对象:
      * @o2syntax
      * var work = this.workContext.getWork();
      */
@@ -3445,7 +3445,7 @@ bind.workContext = {
      * @method getWorkLogList
      * @static
      * @return {WorkLog[]} 流程记录对象.
-     * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties]
+     * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties,goBackFromActivityType]
      * @o2syntax
      * var workLogList = this.workContext.getWorkLogList();
      */
@@ -3478,7 +3478,7 @@ bind.workContext = {
      * @method getAttachmentList
      * @static
      * @return {WorkAttachmentData[]} 附件数据.
-     * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment
+     * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment|ignoreProps=[properties]
      * @o2syntax
      * //获取附件列表
      * var attachmentList = this.workContext.getAttachmentList();

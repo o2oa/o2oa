@@ -4,13 +4,6 @@
     "textareaDisableResize" : true,
     "confirmStyle" : "green_flat_confirm",
     "dialogStyle" : "green_flat",
-//    "attachmentStyle" : {
-//      "style" : "blue_flat",
-//      "actionShowText" : true,
-//      "isReplaceHidden" : true,
-//      "iconConfigUrl" : "../x_component_File/$Main/blue_flat/icon.json",
-//      "iconFolderUrl" : "../x_component_File/$Main/blue_flat/file/"
-//    },
     "hideModuleIcon" : true,
     "nodeStyleWithhideModuleIcon" : {
         "margin-right" : "0px"
@@ -31,40 +24,8 @@
       "padding": "0px 15px",
       "background-color": "#f4f7f6"
     },
-//    "submitedDlgUseNotice" : true,
-//    "submitedDlgStyle" : {
-//      "style" : "blue_flat_notice",
-//      "promptPosition" : "center",
-//      "isTitle" : true,
-//      "title" : "提交成功",
-//      "width": 440,
-//      "height": "auto",
-//      "promptCloseTime" : 5,
-//      "maxTitleLength" : 30,
-//      "isCountDown" : true,
-//      "contentStyle" : {
-//        "width":"340px",
-//        "margin-top" : "0px",
-//        "margin-left" : "0px"
-//      }
-//    },
-//    "selectorStyle" : {
-//      "style" : "blue_flat",
-//      "width" : "700",
-//      "height" : "510",
-//      "hasLetter" : false, //字母
-//      "hasTop" : true, //可选、已选的标题
-//      "level1Indent" : 0,
-//      "indent" : 36,
-//      "tabStyle" : "blue_flat",
-//      "hasShuttle" : true, //穿梭按钮
-//      "searchbarInTopNode" : false,
-//      "hasSelectedSearchbar" : true,
-//      "itemHeight" : 27
-//    },
     "errorStyle" : {
       "node" : {
-        "border" : "1px solid #ffe1d3 ",
         "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error16.png) no-repeat 5px center",
         "color" : "#3C4658",
         "min-height" : "30px",
@@ -75,7 +36,6 @@
         "border" : "1px solid #ffddcc",
         "border-radius" : "3px",
         "position" : "relative"
-        //"box-shadow": "inset 0 1px 1px 0 rgba(255,255,255,0.35), inset 0 0 2px 0 #FFFFFF"
       },
       "close" : {
         "position" : "absolute",

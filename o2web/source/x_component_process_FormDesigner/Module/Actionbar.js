@@ -223,6 +223,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
                 }else{
                     this.multiToolsJson = this.json.multiTools;
                 }
+                this.multiToolsJson = this.multiToolsJson.filter(function (d) { return !d.hidden; });
 
                 this.setMultiToolbars(Array.clone(this.multiToolsJson), this.toolbarNode);
 

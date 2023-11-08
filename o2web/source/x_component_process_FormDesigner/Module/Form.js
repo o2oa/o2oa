@@ -153,6 +153,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 					tools = this.json.defaultTools;
 				}else{
 					tools = o2.JSON.get(this.path+"toolbars.json", null,false);
+					tools = tools.filter( function (d) { return !d.hidden; } );
 				}
 				tools.map( function (d) { d.system = true; return d; });
 				if (this.json.tools){

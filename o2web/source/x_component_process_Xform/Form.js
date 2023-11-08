@@ -571,100 +571,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (includeScriptText) this.Macro.exec(includeScriptText, this);
         }
     },
-    //@todo 载入脚本和数据字典
-    // loadResource : function( callback ){
-    //     var cb = function () {
-    //         if( this.syncScriptLoaded && this.asyncScriptLoaded && this.dictionaryLoaded ){
-    //             if(callback)callback();
-    //         }
-    //     }.bind(this);
-    //     // this.loadScriptList( cb );
-    //     this.loadDictionaryList( cb );
-    // },
-    // loadDictionaryList: function (callback) {
-    //     this.dictionaryLoaded = false;
-    //     var loadedCount = 0;
-    //     if (this.json.includeDictionaries && this.json.includeDictionaries.length) {
-    //         var fun = function () {
-    //             loadedCount++;
-    //             if (this.json.includeDictionaries.length <= loadedCount) {
-    //                 this.dictionaryLoaded = true;
-    //                 if (callback) callback();
-    //             }
-    //         }.bind(this);
-    //
-    //         this.json.includeDictionaries.map(function (d) {
-    //             var action = MWF.Actions.get(d.dictionary.appType === "cms" ? "x_cms_assemble_control" : "x_processplatform_assemble_surface");
-    //             if (d.path && d.path !== "root") {
-    //                 action["getDictData"](d.dictionary.id, d.dictionary.appId, d.path, function (json) {
-    //                     MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
-    //                     fun();
-    //                 }.bind(this), function () {
-    //                     fun();
-    //                 }.bind(this), true);
-    //             } else {
-    //                 action["getDictRoot"](d.dictionary.id, d.dictionary.appId, function (json) {
-    //                     MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
-    //                     fun();
-    //                 }.bind(this), function () {
-    //                     fun();
-    //                 }.bind(this), true);
-    //             }
-    //         }.bind(this));
-    //     } else {
-    //         this.dictionaryLoaded = true;
-    //         if (callback) callback();
-    //     }
-    // },
-    // loadScriptList : function( callback ){
-    //     var asyncList = [];
-    //     var syncList = [];
-    //
-    //     this.syncScriptLoaded = false;
-    //     this.asyncScriptLoaded = false;
-    //
-    //     if( this.json.scripts && this.json.scripts.length ){
-    //         for( var i=0; i<this.json.scripts.length; i++ ){
-    //             var script = this.json.scripts[i];
-    //             script.scriptList.map( function ( s ) {
-    //                 s.type = s.appType;
-    //                 s.application = s.application || s.appId || s.appName;
-    //             });
-    //             if( script.async ){
-    //                 asyncList = asyncList.concat( script.scriptList );
-    //             }else{
-    //                 syncList = syncList.concat( script.scriptList );
-    //             }
-    //         }
-    //     }
-    //
-    //     var loadSyncList = function () {
-    //         if( syncList.length === 0 ){
-    //             this.syncScriptLoaded = true;
-    //             if(callback)callback();
-    //         }else{
-    //             this.Macro.environment.include(syncList, function(){
-    //                 this.syncScriptLoaded = true;
-    //                 if(callback)callback();
-    //             }.bind(this), false);
-    //         }
-    //     }.bind(this);
-    //
-    //     var loadAsyncList = function () {
-    //         if( asyncList.length === 0 ){
-    //             this.asyncScriptLoaded = true;
-    //             if(callback)callback();
-    //         }else{
-    //             this.Macro.environment.include(asyncList, function(){
-    //                 this.asyncScriptLoaded = true;
-    //                 if(callback)callback();
-    //             }.bind(this), true);
-    //         }
-    //     }.bind(this);
-    //
-    //     loadAsyncList();
-    //     loadSyncList();
-    // },
     loadForm: function (callback) {
         if (this.lockDataPerson) {
             var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
@@ -864,7 +770,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
                 var classBg = "";
-                if (tool.action === "processWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract") {
+                debugger;
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork" || tool.id === "action_processWork" || tool.id === "action_retract" || tool.id === "action_flowWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                     classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork" || tool.id === "action_delete") {
@@ -887,7 +794,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (this[t.action]) this[t.action](e);
                         }
                     }.bind(this);
-                    if (tool.action === "processWork" || tool.id === "action_processWork") {
+                    if (tool.action === "processWork" || tool.id === "action_processWork" || tool.action === "flowWork" || tool.id === "action_flowWork") {
                         //输入法激活的时候，需要一段时间等待输入法关闭
                         window.setTimeout(clickFun, 100)
                     } else {
@@ -906,7 +813,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
                 var classBg = "";
-                if (tool.action === "processWork" || tool.action === "retractWork") {
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                     classBg = "mainColor_bg mainColor_border";
                 } else if (tool.action === "deleteWork") {
@@ -963,7 +870,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.action === "processWork" || tool.action === "retractWork") {
+                if (tool.action === "processWork" || tool.action === "flowWork" || tool.action === "retractWork") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                 } else if (tool.action === "deleteWork") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
@@ -1147,7 +1054,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var hideFlag = this.Macro.exec(tool.condition, this);
             flag = flag && (!hideFlag);
         }
-        if (tool.id == "action_processWork") {
+        if (tool.id == "action_processWork" || tool.id == "action_flowWork") {
             if (this.businessData.work.startTime) { // 正常模式
                 if (!this.businessData.task || !this.businessData.work || !this.businessData.work.startTime) {
                     flag = false;
