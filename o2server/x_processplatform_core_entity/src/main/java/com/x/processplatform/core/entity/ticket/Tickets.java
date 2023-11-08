@@ -190,7 +190,6 @@ public class Tickets implements Serializable {
 		default:
 			targets.stream().forEach(o -> o.mode(MODE_SINGLE));
 			if (before) {
-				targets = this.trimWithBubble(targets);
 				add.beforeSingle(this, ticket, targets);
 			} else {
 				add.afterSingle(this, ticket, targets);
