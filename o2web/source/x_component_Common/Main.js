@@ -824,7 +824,6 @@ MWF.xApplication.Common.Main = new Class({
 	alert: function (type, e, title, text, width, height, callback) {
 		MWF.require("MWF.widget.Dialog", function () {
 			var size = $(document.body).getSize();
-			debugger;
 			var x = 0, y = 0;
 			if (e === "center") {
 				if( layout.mobile ){
@@ -877,8 +876,8 @@ MWF.xApplication.Common.Main = new Class({
 				"height": height,
 				"text": ctext,
 				"html": chtml,
-				"maskNode": this.content,
-				"container": this.content,
+				"maskNode": layout.mobile ? $(document.body) : this.content,
+				"container": layout.mobile ? $(document.body) : this.content,
 				"buttonList": [
 					{
 						"text": MWF.LP.process.button.ok,
