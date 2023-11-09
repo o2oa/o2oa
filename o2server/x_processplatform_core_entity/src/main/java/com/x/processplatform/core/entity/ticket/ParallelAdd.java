@@ -8,31 +8,39 @@ import java.util.stream.Collectors;
 class ParallelAdd implements Add {
 
 	@Override
-	public void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> next = tickets.listNext(ticket);
-		Tickets.interconnectedAsFellow(targets);
-		targets.stream().forEach(o -> o.appendNext(next));
-		completedThenNotJoin(tickets, ticket);
-	}
-
-	@Override
-	public void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket, false);
-		List<Ticket> next = tickets.listNext(ticket);
-		List<Ticket> list = Tickets.interconnectedAsNext(targets);
-		Optional<Ticket> first = list.stream().findFirst();
-		if (first.isPresent()) {
-			first.get().appendSibling(sibling).appendFellow(fellow);
+	public Collection<Ticket> afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> next = tickets.listNext(ticket);
+			Tickets.interconnectedAsFellow(targets);
+			targets.stream().forEach(o -> o.appendNext(next));
+			completedThenNotJoin(tickets, ticket);
 		}
-		targets.stream().forEach(o -> o.appendNext(next));
-		completedThenNotJoin(tickets, ticket);
+		return targets;
 	}
 
 	@Override
-	public void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+	public Collection<Ticket> afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> sibling = tickets.listSibling(ticket, false);
+			List<Ticket> fellow = tickets.listFellow(ticket, false);
+			List<Ticket> next = tickets.listNext(ticket);
+			List<Ticket> list = Tickets.interconnectedAsNext(targets);
+			Optional<Ticket> first = list.stream().findFirst();
+			if (first.isPresent()) {
+				first.get().appendSibling(sibling).appendFellow(fellow);
+			}
+			targets.stream().forEach(o -> o.appendNext(next));
+			completedThenNotJoin(tickets, ticket);
+		}
+		return targets;
+	}
+
+	@Override
+	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket, true);
@@ -44,21 +52,27 @@ class ParallelAdd implements Add {
 		targets.stream().forEach(o -> o.appendNext(next));
 		tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
 		completedThenNotJoin(tickets, ticket);
+		return targets;
 	}
 
 	@Override
-	public void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket, false);
-		List<Ticket> next = tickets.listNext(ticket);
-		Tickets.interconnectedAsFellow(fellow);
-		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		targets.stream().forEach(o -> o.appendNext(sibling).appendNext(ticket).appendNext(next));
+	public Collection<Ticket> beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> sibling = tickets.listSibling(ticket, false);
+			List<Ticket> fellow = tickets.listFellow(ticket, false);
+			List<Ticket> next = tickets.listNext(ticket);
+			Tickets.interconnectedAsFellow(fellow);
+			tickets.listNextTo(ticket).stream()
+					.forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
+			targets.stream().forEach(o -> o.appendNext(sibling).appendNext(ticket).appendNext(next));
+		}
+		return targets;
 	}
 
 	@Override
-	public void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+	public Collection<Ticket> beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket, false);
@@ -70,16 +84,18 @@ class ParallelAdd implements Add {
 			tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(first.get()));
 		}
 		list.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
+		return targets;
 	}
 
 	@Override
-	public void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+	public Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		setLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets);
 		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
 		targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
+		return targets;
 	}
 
 }

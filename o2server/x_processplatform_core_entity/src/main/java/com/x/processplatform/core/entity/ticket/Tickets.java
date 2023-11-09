@@ -171,20 +171,17 @@ public class Tickets implements Serializable {
 		case MODE_PARALLEL:
 			targets.stream().forEach(o -> o.mode(MODE_PARALLEL));
 			if (before) {
-				targets = this.trimWithBubble(targets);
-				add.beforeParallel(this, ticket, targets);
+				targets = add.beforeParallel(this, ticket, targets);
 			} else {
-				targets = this.trimWithBubble(targets);
-				add.afterParallel(this, ticket, targets);
+				targets = add.afterParallel(this, ticket, targets);
 			}
 			break;
 		case MODE_QUEUE:
 			targets.stream().forEach(o -> o.mode(MODE_QUEUE));
 			if (before) {
-				add.beforeQueue(this, ticket, targets);
+				targets = add.beforeQueue(this, ticket, targets);
 			} else {
-				targets = this.trimWithBubble(targets);
-				add.afterQueue(this, ticket, targets);
+				targets = add.afterQueue(this, ticket, targets);
 			}
 			break;
 		default:
@@ -248,7 +245,7 @@ public class Tickets implements Serializable {
 //		return targets.stream().filter(o -> (!exists.contains(o))).collect(Collectors.toList());
 //	}
 
-	private List<Ticket> trimWithBubble(Collection<Ticket> targets) {
+	public List<Ticket> trimWithBubble(Collection<Ticket> targets) {
 		List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
 		return targets.stream().filter(o -> (!exists.contains(o.distinguishedName()))).collect(Collectors.toList());
 	}
