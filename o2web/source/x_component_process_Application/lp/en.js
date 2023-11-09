@@ -95,6 +95,7 @@ MWF.xApplication.process.Application.LP = {
     "flow": "flow",
     "readFlow" : "Ready to be read",
     "resetAction" : "Transfer",
+    "addSign" : "Add Sign",
     "resetActionFor" : "Transfer to",
     "readProcess" : "Pending read processing",
     "editAction" : "Maintenance",

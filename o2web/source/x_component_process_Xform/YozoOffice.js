@@ -15,18 +15,15 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
         this.node.store("module", this);
         this.json = json;
         this.form = form;
-        this.field = true;
-        this.openedAttachment = null;
         this.mode = "write";
+        this.appToken = "x_processplatform_assemble_surface";
+
     },
     _loadUserInterface: function(){
         this.node.empty();
         this.node.setStyles({
             "min-height": "100px"
         });
-        this.file = null;
-        if (!this.form.officeList) this.form.officeList=[];
-        this.form.officeList.push(this);
     },
     _afterLoaded: function(){
         if(!layout.serviceAddressList["x_yozofile_assemble_control"]){
@@ -34,30 +31,109 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
             return false;
         }
 
+        if(this.mode !== "read" && this.json.allowUpload){
+            this.createUpload();
+        }
+
         this.action = o2.Actions.load("x_yozofile_assemble_control");
         if (!this.json.isNotLoadNow){
 
             this.data = this.getData();
             if(this.data.documentId === ""){
-                this.createDocument(function (){
+
+                if (this.json.officeType === "other" && this.json.templateType === "script"){
+                    this.json.template = this.form.Macro.exec(this.json.templeteScript.code, this);
+                }
+
+
+                this[this.json.officeType === "other"&&this.json.template !== ""? "createDocumentByTemplate":"createDocument"](function (){
+
+
                     this.loadOffice();
                 }.bind(this));
+
+
             }else {
                 this.documentId = this.data.documentId;
                 this.loadOffice();
             }
         }
-        if (!this.json.isNotLoadNow){
-            this.loadOffice();
-        }
     },
+    reload : function (){
+        this.officeLoaded = false;
+        this.setData();
+        this.node.empty();
+        if(this.mode !== "read" && this.json.allowUpload){
+            this.createUpload();
+        }
+        this.loadOffice();
+    },
+    createDocumentByTemplate : function (callback){
+
+        this.action.CustomAction.getInfo(this.json.template).then(function(json) {
+            var data = {
+                "fileName": MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + json.data.extension,
+                "fileType": json.data.extension,
+                "appToken" : "x_processplatform_assemble_surface",
+                "workId" : this.form.businessData.work.id,
+                "site" : "filetext",
+                "tempId": this.json.template
+            };
+
+            this.action.CustomAction.createForO2(data, function( json ){
+                    debugger
+                    this.documentId = json.data.fileId;
+                    this.setData();
+                    if (callback) callback();
+                }.bind(this),null, false
+            );
+
+        }.bind(this))
+    },
+
     createDocument : function (callback){
-        this.action.CustomAction.createFileBlank(this.json.officeType,{"userId":layout.user.distinguishedName,"fileName":"文件正文." + this.getFileType()}, function( json ){
-            this.fireEvent("afterCreate");
-            this.documentId = json.data.docId;
-            this.setData();
-            if (callback) callback();
-        }.bind(this),null, false);
+        var data = {
+            "fileName" : MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + this.getFileType(this.json.officeType),
+            "appToken" : this.appToken,
+            "workId" : this.form.businessData.work.id,
+            "site" : "filetext"
+        };
+        this.action.CustomAction.createForO2(data,
+            function( json ){
+                debugger
+                this.documentId = json.data.fileId;
+                this.setData();
+                if (callback) callback();
+            }.bind(this),null, false
+        );
+    },
+    createUpload : function (){
+
+        this.uploadNode = new Element("div",{"style":"margin:10px;"}).inject(this.node);
+        var uploadBtn = new Element("button",{"text":MWF.xApplication.process.Xform.LP.ofdview.upload,"style":"margin-left: 15px; color: rgb(255, 255, 255); cursor: pointer; height: 26px; line-height: 26px; padding: 0px 10px; min-width: 40px; background-color: rgb(74, 144, 226); border: 1px solid rgb(82, 139, 204); border-radius: 15px;"}).inject(this.uploadNode);
+        uploadBtn.addEvent("click",function (){
+            o2.require("o2.widget.Upload", null, false);
+            var upload = new o2.widget.Upload(this.content, {
+                "action": o2.Actions.get("x_processplatform_assemble_surface").action,
+                "method": "uploadAttachment",
+                "accept" : ".docx,.xlsx,.pptx",
+                "parameter": {
+                    "id" : this.form.businessData.work.id
+                },
+                "data":{
+                },
+                "onCompleted": function(data){
+                    o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.delete(this.documentId,function( json ){
+                    }.bind(this));
+                    this.documentId = data.id;
+
+                    this.reload();
+                }.bind(this)
+            });
+
+            upload.load();
+        }.bind(this));
+
     },
     getData: function(){
         var data = {
@@ -68,11 +144,20 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
         }
         return data;
     },
-    setData: function(){
+    setData: function() {
         var data = {
-            "documentId" : this.documentId
-        };
+            "documentId": this.documentId,
+            "appToken": this.appToken
+        }
+        this.data = data;
         this._setBusinessData(data);
+
+        var jsonData = {}
+        jsonData[this.json.id] = data;
+
+        o2.Actions.load(this.appToken).DataAction.updateWithJob(this.form.businessData.work.job, jsonData, function (json) {
+            data = json.data;
+        })
     },
     loadOffice: function(){
         if (!this.officeLoaded){
@@ -85,12 +170,12 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
 
         if (this.isReadonly()){
-            this.mode  = "read";
+            this.mode  = "view";
         }else{
             if (this.json.readScript && this.json.readScript.code){
                 var flag = this.form.Macro.exec(this.json.readScript.code, this);
                 if (flag){
-                    this.mode = "read";
+                    this.mode = "view";
                 }
             }
         }
@@ -101,6 +186,14 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
     },
     show: function(){
         this.node.show();
+    },
+    isEmpty : function(){
+        var data = this.getData();
+        if(data.documentId === ""){
+            return true;
+        }else {
+            return false;
+        }
     },
     getFileType: function(){
         var ename = "docx";
@@ -116,26 +209,30 @@ MWF.xApplication.process.Xform.YozoOffice = MWF.APPYozoOffice =  new Class({
         }
         return ename;
     },
+    //书签赋值
+    setBookMarkValue : function(name,value){
+
+        var YozoOffice = this.iframe.contentWindow.YozoOffice;
+
+        if (YozoOffice.Application.ActiveDocument.Bookmarks.Exists(name)) {
+            YozoOffice.Application.Selection.GoTo(-1, null, null, name);
+            YozoOffice.Application.Selection.Text = value;
+        }
+    },
     loadOfficeEditor: function(){
 
-        this.action.CustomAction.getFileUrl(this.documentId,{"userId":layout.user.distinguishedName,"permission":this.mode}, function( json ){
+        this.action.CustomAction.getFileUrl(this.documentId,{"mode":this.mode,"appToken":this.appToken}, function( json ){
             var iframe = new Element("iframe").inject(this.node);
-            iframe.set("src",json.data.redirectUrl);
+            iframe.set("src",json.data.fileUrl);
+            iframe.set("id","_" + this.documentId);
             iframe.set("scrolling","no");
             iframe.set("frameborder",0);
             iframe.setStyles({
                 "height" : "100%",
                 "width" : "100%"
             });
+
+            this.iframe = iframe;
         }.bind(this),null, false);
-    },
-    isEmpty : function(){
-    },
-    save: function(){
-        if (!this.readonly){
-            this.fireEvent("beforeSave");
-            this.fireEvent("afterSave");
-        }
-    },
-    validation: function(){return true}
+    }
 });
