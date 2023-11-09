@@ -94,6 +94,7 @@ MWF.xApplication.process.Application.LP = {
 	"flow": "流转",
 	"readFlow" : "待阅转已阅",
 	"resetAction" : "转交",
+	"addSign" : "加签",
 	"resetActionFor" : "转交给",
 	"readProcess" : "待阅处理",
 	"editAction" : "维护",
