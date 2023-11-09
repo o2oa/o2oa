@@ -5,17 +5,17 @@ import java.util.Date;
 
 interface Add {
 
-	void afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	void afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	void afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	void beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	void beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	void beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
+	Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
 	default void setLevel(Ticket ticket, Collection<Ticket> targets) {
 		targets.stream().forEach(o -> o.level(ticket.level()).parent(ticket.parent()));
