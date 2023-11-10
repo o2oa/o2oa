@@ -11,7 +11,6 @@ class QueueAdd implements Add {
 	public Collection<Ticket> afterParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
 		List<Ticket> targets = tickets.trimWithBubble(collection);
 		if (!targets.isEmpty()) {
-			setParentLevel(ticket, targets);
 			List<Ticket> next = tickets.listNext(ticket);
 			Tickets.interconnectedAsFellow(targets);
 			targets.stream().forEach(o -> o.appendNext(next));
@@ -24,7 +23,6 @@ class QueueAdd implements Add {
 	public Collection<Ticket> afterQueue(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
 		List<Ticket> targets = tickets.trimWithBubble(collection);
 		if (!targets.isEmpty()) {
-			setParentLevel(ticket, targets);
 			List<Ticket> sibling = tickets.listSibling(ticket, false);
 			List<Ticket> fellow = tickets.listFellow(ticket, false);
 			List<Ticket> next = tickets.listNext(ticket);
@@ -41,7 +39,6 @@ class QueueAdd implements Add {
 
 	@Override
 	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket, true);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -59,7 +56,6 @@ class QueueAdd implements Add {
 	public Collection<Ticket> beforeParallel(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
 		List<Ticket> targets = tickets.trimWithBubble(collection);
 		if (!targets.isEmpty()) {
-			setParentLevel(ticket, targets);
 			List<Ticket> sibling = tickets.listSibling(ticket, false);
 			List<Ticket> fellow = tickets.listFellow(ticket, false);
 			List<Ticket> next = tickets.listNext(ticket);
@@ -73,7 +69,6 @@ class QueueAdd implements Add {
 
 	@Override
 	public Collection<Ticket> beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
@@ -89,7 +84,6 @@ class QueueAdd implements Add {
 
 	@Override
 	public Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setParentLevel(ticket, targets);
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
 		Tickets.interconnectedAsSibling(targets);

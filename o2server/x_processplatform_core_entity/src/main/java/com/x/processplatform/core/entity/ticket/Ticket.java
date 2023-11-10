@@ -39,8 +39,6 @@ public class Ticket implements Serializable {
 	private List<String> next;
 	// 模式
 	private String mode;
-	// 层级
-	private long level;
 	// 上级
 	private String parent;
 	// 授权标识
@@ -56,7 +54,7 @@ public class Ticket implements Serializable {
 		this.sibling = new ArrayList<>();
 		this.fellow = new ArrayList<>();
 		this.next = new ArrayList<>();
-		this.level = 0L;
+		this.parent = "";
 		this.fromDistinguishedName = "";
 	}
 
@@ -264,15 +262,6 @@ public class Ticket implements Serializable {
 		return fellow;
 	}
 
-	public long level() {
-		return this.level;
-	}
-
-	public Ticket level(long level) {
-		this.level = level;
-		return this;
-	}
-
 	public Ticket empower(String from, String to) {
 		if (StringUtils.isNotEmpty(from) && StringUtils.isNotEmpty(to)
 				&& StringUtils.isEmpty(this.fromDistinguishedName)
@@ -313,7 +302,7 @@ public class Ticket implements Serializable {
 		o.fellow = new ArrayList<>(fellow);
 		o.next = new ArrayList<>(next);
 		o.mode = this.mode;
-		o.level = this.level;
+		o.parent = this.parent;
 		o.fromDistinguishedName = this.fromDistinguishedName;
 		return o;
 	}

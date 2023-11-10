@@ -456,9 +456,9 @@ public class WorkControlBuilder {
 			control.setAllowRetract(false);
 			if (BooleanUtils
 					.isTrue(PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
-					&& (business.entityManagerContainer().countEqualAndEqualAndNotEqual(TaskCompleted.class,
+					&& (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 							TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
-							work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME, false) == 0)) {
+							work.getActivityToken()) == 0)) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,

@@ -46,11 +46,10 @@ public class Tickets implements Serializable {
 
 	public static Tickets single(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		long level = (new Date()).getTime();
 		tickets.mode = MODE_SINGLE;
 		Tickets.interconnectedAsSibling(targets).stream().forEach(o -> {
 			o.sibling(targets);
-			o.mode(MODE_SINGLE).level(level).act(ACT_CREATE);
+			o.mode(MODE_SINGLE).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -62,11 +61,10 @@ public class Tickets implements Serializable {
 
 	public static Tickets parallel(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		long level = (new Date()).getTime();
 		tickets.mode = MODE_PARALLEL;
 		Tickets.interconnectedAsFellow(targets).stream().forEach(o -> {
 			o.fellow(targets);
-			o.mode(MODE_PARALLEL).level(level).act(ACT_CREATE);
+			o.mode(MODE_PARALLEL).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -78,10 +76,9 @@ public class Tickets implements Serializable {
 
 	public static Tickets queue(Collection<Ticket> targets) {
 		Tickets tickets = new Tickets();
-		long level = (new Date()).getTime();
 		tickets.mode = MODE_QUEUE;
 		Tickets.interconnectedAsNext(targets).stream().forEach(o -> {
-			o.mode(MODE_QUEUE).level(level).act(ACT_CREATE);
+			o.mode(MODE_QUEUE).act(ACT_CREATE);
 			tickets.context.put(o.label(), o);
 		});
 		return tickets;
@@ -187,7 +184,10 @@ public class Tickets implements Serializable {
 			}
 			break;
 		}
-		targets.stream().forEach(o -> this.context.put(o.label(), o));
+		targets.stream().forEach(o -> {
+			o.parent(ticket.label());
+			this.context.put(o.label(), o);
+		});
 		return (!targets.isEmpty());
 	}
 
