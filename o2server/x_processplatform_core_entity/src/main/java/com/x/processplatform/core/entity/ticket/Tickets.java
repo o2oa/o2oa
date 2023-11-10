@@ -218,6 +218,11 @@ public class Tickets implements Serializable {
 		} else {
 			reset = new SingleReset();
 		}
+		List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
+		targets = targets.stream().filter(o -> (!exists.contains(o))).distinct().collect(Collectors.toList());
+		if (targets.isEmpty()) {
+			return false;
+		}
 		List<Ticket> list = reset.reset(this, ticket, targets);
 		list.stream().forEach(o -> this.context.put(o.label(), o));
 		ticket.completed(true).enable(false);
