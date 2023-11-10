@@ -167,6 +167,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             //if (att.fileType.toLowerCase()==this.json.id.toLowerCase()) this.attachmentController.addAttachment(att);
         }.bind(this));
         this.setAttachmentBusinessData();
+
+
+        this.addEvent("change", function () {
+            if(this.validationMode)this.validationMode();
+        }.bind(this))
+
         //}.bind(this));
     },
     loadAttachmentSelecter: function (option, callback) {
