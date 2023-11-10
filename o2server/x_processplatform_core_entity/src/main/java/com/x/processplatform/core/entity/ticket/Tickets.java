@@ -145,13 +145,7 @@ public class Tickets implements Serializable {
 	}
 
 	public boolean add(Ticket ticket, Collection<String> targets, boolean before, String addMode) {
-		List<Ticket> list = targets.stream().map(Ticket::new).collect(Collectors.toList());
-		// 如果当前ticket是并行加签当前已有待办的处理人排除掉
-		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
-			List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
-			list = list.stream().filter(o -> !exists.contains(o.distinguishedName())).collect(Collectors.toList());
-		}
-		return addExec(ticket, list, before, addMode);
+		return addExec(ticket, targets.stream().map(Ticket::new).collect(Collectors.toList()), before, addMode);
 	}
 
 	private boolean addExec(Ticket ticket, Collection<Ticket> targets, boolean before, String addMode) {
@@ -187,14 +181,14 @@ public class Tickets implements Serializable {
 		default:
 			targets.stream().forEach(o -> o.mode(MODE_SINGLE));
 			if (before) {
-				add.beforeSingle(this, ticket, targets);
+				targets = add.beforeSingle(this, ticket, targets);
 			} else {
-				add.afterSingle(this, ticket, targets);
+				targets = add.afterSingle(this, ticket, targets);
 			}
 			break;
 		}
 		targets.stream().forEach(o -> this.context.put(o.label(), o));
-		return true;
+		return (!targets.isEmpty());
 	}
 
 	/**
@@ -230,22 +224,7 @@ public class Tickets implements Serializable {
 		return true;
 	}
 
-//	/**
-//	 * 去掉在同层中已经有的组织专有标识
-//	 * 
-//	 * @param tickets
-//	 * @param ticket
-//	 * @param targets
-//	 * @return
-//	 */
-//	private List<String> trimLevelDistinguishedName(Ticket ticket, Collection<String> targets) {
-//		List<String> exists = this.list(false, true, true).stream()
-//				.filter(o -> Objects.equals(o.level(), ticket.level())).map(Ticket::distinguishedName)
-//				.collect(Collectors.toList());
-//		return targets.stream().filter(o -> (!exists.contains(o))).collect(Collectors.toList());
-//	}
-
-	public List<Ticket> trimWithBubble(Collection<Ticket> targets) {
+	protected List<Ticket> trimWithBubble(Collection<Ticket> targets) {
 		List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
 		return targets.stream().filter(o -> (!exists.contains(o.distinguishedName()))).collect(Collectors.toList());
 	}

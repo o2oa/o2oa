@@ -40,18 +40,21 @@ class ParallelAdd implements Add {
 	}
 
 	@Override
-	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket, true);
-		List<Ticket> next = tickets.listNext(ticket);
-		sibling.addAll(targets);
-		Tickets.interconnectedAsSibling(sibling);
-		fellow.addAll(targets);
-		Tickets.interconnectedAsFellow(fellow);
-		targets.stream().forEach(o -> o.appendNext(next));
-		tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		completedThenNotJoin(tickets, ticket);
+	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> sibling = tickets.listSibling(ticket, false);
+			List<Ticket> fellow = tickets.listFellow(ticket, true);
+			List<Ticket> next = tickets.listNext(ticket);
+			sibling.addAll(targets);
+			Tickets.interconnectedAsSibling(sibling);
+			fellow.addAll(targets);
+			Tickets.interconnectedAsFellow(fellow);
+			targets.stream().forEach(o -> o.appendNext(next));
+			tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
+			completedThenNotJoin(tickets, ticket);
+		}
 		return targets;
 	}
 
@@ -72,29 +75,36 @@ class ParallelAdd implements Add {
 	}
 
 	@Override
-	public Collection<Ticket> beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket, false);
-		List<Ticket> next = tickets.listNext(ticket);
-		List<Ticket> list = Tickets.interconnectedAsNext(targets);
-		Optional<Ticket> first = list.stream().findFirst();
-		if (first.isPresent()) {
-			first.get().appendFellow(fellow);
-			tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(first.get()));
+	public Collection<Ticket> beforeQueue(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> sibling = tickets.listSibling(ticket, false);
+			List<Ticket> fellow = tickets.listFellow(ticket, false);
+			List<Ticket> next = tickets.listNext(ticket);
+			List<Ticket> list = Tickets.interconnectedAsNext(targets);
+			Optional<Ticket> first = list.stream().findFirst();
+			if (first.isPresent()) {
+				first.get().appendFellow(fellow);
+				tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(first.get()));
+			}
+			list.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
 		}
-		list.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
 		return targets;
 	}
 
 	@Override
-	public Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
-		setLevel(ticket, targets);
-		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> next = tickets.listNext(ticket);
-		Tickets.interconnectedAsSibling(targets);
-		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
+	public Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> collection) {
+		List<Ticket> targets = tickets.trimWithBubble(collection);
+		if (!targets.isEmpty()) {
+			setLevel(ticket, targets);
+			List<Ticket> sibling = tickets.listSibling(ticket, false);
+			List<Ticket> next = tickets.listNext(ticket);
+			Tickets.interconnectedAsSibling(targets);
+			tickets.listNextTo(ticket).stream()
+					.forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
+			targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));
+		}
 		return targets;
 	}
 

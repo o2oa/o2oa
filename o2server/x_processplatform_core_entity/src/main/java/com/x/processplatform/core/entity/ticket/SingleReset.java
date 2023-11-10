@@ -2,7 +2,6 @@ package com.x.processplatform.core.entity.ticket;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 class SingleReset implements Reset {
