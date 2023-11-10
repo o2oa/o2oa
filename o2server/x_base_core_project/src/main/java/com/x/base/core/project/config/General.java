@@ -32,6 +32,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.Host;
+import com.x.base.core.project.tools.NumberTools;
 
 public class General extends ConfigObject {
 
@@ -61,6 +62,7 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
+	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 86400;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -81,6 +83,7 @@ public class General extends ConfigObject {
 		o.httpWhiteList = DEFAULT_HTTPWHITELIST;
 		o.attachmentConfig = new AttachmentConfig();
 		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
+		o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
 		return o;
 	}
 
@@ -137,6 +140,14 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("存储加密.1:AES,2:AES/GCM/NoPadding,空或者其他值不加密.")
 	private Integer storageEncrypt;
+
+	@FieldDescribe("web服务器Cache-Control max-age头设置,0表示不设置Cache-Control.")
+	private Integer webServerCacheControlMaxAge;
+
+	public Integer getWebServerCacheControlMaxAge() {
+		return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0) ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE
+				: this.webServerCacheControlMaxAge;
+	}
 
 	public Integer getStorageEncrypt() {
 		if (this.storageEncrypt == null || this.storageEncrypt < 0 || this.storageEncrypt > 2) {

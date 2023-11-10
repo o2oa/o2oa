@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 class SingleReset implements Reset {
 
 	@Override
-	public List<Ticket> reset(Tickets tickets, Ticket ticket, Collection<String> targets) {
-		List<Ticket> list = targets.stream()
-				.map(o -> ticket.copy().distinguishedName(o).fromDistinguishedName("").act(Tickets.ACT_RESET))
-				.collect(Collectors.toList());
-		list.addAll(tickets.listSibling(ticket, false));
-		return Tickets.interconnectedAsSibling(list);
+	public Collection<Ticket> reset(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		List<Ticket> sibling = tickets.listSibling(ticket, false);
+		sibling.addAll(targets);
+		Tickets.interconnectedAsSibling(sibling);
+		return targets;
 	}
 
 }

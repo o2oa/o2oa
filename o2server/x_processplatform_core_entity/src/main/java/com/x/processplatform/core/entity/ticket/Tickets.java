@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -218,12 +217,16 @@ public class Tickets implements Serializable {
 		} else {
 			reset = new SingleReset();
 		}
-		List<String> exists = this.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList());
-		targets = targets.stream().filter(o -> (!exists.contains(o))).distinct().collect(Collectors.toList());
-		if (targets.isEmpty()) {
+		Collection<Ticket> list = targets.stream().map(Ticket::new).collect(Collectors.toList());
+		list = trimWithBubble(list);
+		if (list.isEmpty()) {
 			return false;
 		}
-		List<Ticket> list = reset.reset(this, ticket, targets);
+		list.stream().forEach(o -> {
+			o.copyFromSkipLabelDistinguishedName(ticket);
+			o.act(Tickets.ACT_RESET);
+		});
+		list = reset.reset(this, ticket, list);
 		list.stream().forEach(o -> this.context.put(o.label(), o));
 		ticket.completed(true).enable(false);
 		return true;

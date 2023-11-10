@@ -290,21 +290,19 @@ public class Ticket implements Serializable {
 		return StringUtils.equalsIgnoreCase(label, other.label);
 	}
 
-	public Ticket copy() {
-		Ticket o = new Ticket();
-		// 不需要复制label
-		o.act = this.act;
-		o.completed = this.completed;
-		o.valid = this.valid;
-		o.enable = this.enable;
-		o.distinguishedName = this.distinguishedName;
-		o.sibling = new ArrayList<>(this.sibling);
-		o.fellow = new ArrayList<>(fellow);
-		o.next = new ArrayList<>(next);
-		o.mode = this.mode;
-		o.parent = this.parent;
-		o.fromDistinguishedName = this.fromDistinguishedName;
-		return o;
+	public Ticket copyFromSkipLabelDistinguishedName(Ticket ticket) {
+		// 不需要复制label,distinguishedName
+		this.act = ticket.act;
+		this.completed = ticket.completed;
+		this.valid = ticket.valid;
+		this.enable = ticket.enable;
+		this.sibling = new ArrayList<>(ticket.sibling);
+		this.fellow = new ArrayList<>(ticket.fellow);
+		this.next = new ArrayList<>(ticket.next);
+		this.mode = ticket.mode;
+		this.parent = ticket.parent;
+		this.fromDistinguishedName = ticket.fromDistinguishedName;
+		return this;
 	}
 
 }
