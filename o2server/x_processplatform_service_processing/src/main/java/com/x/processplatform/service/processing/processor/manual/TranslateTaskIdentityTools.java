@@ -47,10 +47,10 @@ public class TranslateTaskIdentityTools {
 	/* 计算manual节点中所有的待办，全部翻译成Identity */
 	public static TaskIdentities translate(AeiObjects aeiObjects, Manual manual) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();
-		/* 正常执行 */
+		// 正常执行
 		List<String> units = new ArrayList<>();
 		List<String> groups = new ArrayList<>();
-		/* 指定的身份 */
+		// 指定的身份
 		if (ListTools.isNotEmpty(manual.getTaskIdentityList())) {
 			taskIdentities.addIdentities(manual.getTaskIdentityList());
 		}
@@ -58,17 +58,17 @@ public class TranslateTaskIdentityTools {
 		if ((null != manual.getTaskParticipant()) && StringUtils.isNotBlank(manual.getTaskParticipant().getType())) {
 			taskIdentities.addIdentities(participant(aeiObjects, manual));
 		}
-		/* 选择了职务 */
+		// 选择了职务
 		taskIdentities.addIdentities(duty(aeiObjects, manual));
-		/* 指定data数据路径值 */
+		// 指定data数据路径值
 		data(taskIdentities, units, groups, aeiObjects.getData(), manual);
-		/* 使用脚本计算 */
+		// 使用脚本计算
 		script(taskIdentities, units, groups, aeiObjects, manual);
-		/* 指定处理组织 */
+		// 指定处理组织
 		if (ListTools.isNotEmpty(manual.getTaskUnitList())) {
 			units.addAll(manual.getTaskUnitList());
 		}
-		/* 指定处理群组 */
+		// 指定处理群组
 		if (ListTools.isNotEmpty(manual.getTaskGroupList())) {
 			groups.addAll(manual.getTaskGroupList());
 		}
@@ -119,7 +119,8 @@ public class TranslateTaskIdentityTools {
 				final List<String> taskParticipantActivities = new ArrayList<>();
 				manual.getTaskParticipant().getData().getAsJsonArray()
 						.forEach(o -> taskParticipantActivities.add(o.getAsString()));
-				aeiObjects.getTaskCompleteds().stream().filter(o -> BooleanUtils.isNotFalse(o.getJoinInquire()))
+				aeiObjects.getTaskCompleteds().stream()
+						.filter(o -> (!StringUtils.equalsIgnoreCase(o.getAct(), TaskCompleted.ACT_EMPOWER)))
 						.filter(o -> taskParticipantActivities.contains(o.getActivity()))
 						.map(TaskCompleted::getIdentity).filter(StringUtils::isNotBlank).forEach(list::add);
 			}
