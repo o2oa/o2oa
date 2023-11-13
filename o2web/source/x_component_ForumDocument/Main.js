@@ -420,10 +420,10 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			this.contentDiv.getElement( "[item='voteArea']").setStyle("display","");
 			this.loadVoteArea();
 		}
-		if(this.sectionData.sectionGrade){
-			this.contentDiv.getElements( "[item='gradeArea']").setStyle("display","");
-			this.loadGradeArea();
-		}
+		// if(this.sectionData.sectionGrade){
+		// 	this.contentDiv.getElements( "[item='gradeArea']").setStyle("display","");
+		// 	this.loadGradeArea();
+		// }
 
 
 		var actionTd = this.contentDiv.getElements("[item='action']")[0];
@@ -561,10 +561,10 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		debugger;
 		if( this.advanceId )data.id = this.advanceId;
 		data.attachmentList = this.attachment.getAttachmentIds();
-		if(this.sectionData.sectionGrade && this.selectstar==0 && this.advanceId){
-			MWF.xDesktop.notice("error", {x: "right", y:"top"}, this.lp.gradeNotice);
-		}else{
-			data.grade = this.selectstar;
+		// if(this.sectionData.sectionGrade && this.selectstar==0 && this.advanceId){
+		// 	MWF.xDesktop.notice("error", {x: "right", y:"top"}, this.lp.gradeNotice);
+		// }else{
+		//	data.grade = this.selectstar;
 			if (data) {
 				data.sectionId = this.sectionData.id;
 				//data.picId = this.picId || "";
@@ -588,7 +588,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 
 				}.bind(this))
 			}
-		}
+		//}
 
 	},
 	_createMiddleNode_read: function(){

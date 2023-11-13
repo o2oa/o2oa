@@ -1161,10 +1161,10 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
             "       <div styles='formItemSpan' item='replyPublishResult'></div>"+
             " </td>" +
 
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='sectionGrade'></td>" +
-            "   <td styles='formTableValue' item='sectionGrade'></td>" +
-            "   <td styles='formTableValue' colspan='2'></td>" +
+            // "</tr><tr>" +
+            // "   <td styles='formTableTitle' lable='sectionGrade'></td>" +
+            // "   <td styles='formTableValue' item='sectionGrade'></td>" +
+            // "   <td styles='formTableValue' colspan='2'></td>" +
             "</tr>" +
 
             "</tr><tr item='indexRecommendTr' style='"+ ( this.data.sectionVisible == this.lp.byPermission  ? "display:none;" : "display:;" ) +"'>" +
