@@ -429,7 +429,7 @@ MWF.xApplication.Profile.Main = new Class({
             var popForm = new MWF.xApplication.Profile.emPowerPopupForm(null, {}, {
                 "style": "empower",
                 "width": "550",
-                "height": layout.desktop.session.user.identityList.length>1?"490":"440",
+                "height": layout.desktop.session.user.identityList.length>1?"530":"480",
                 "hasTop": true,
                 "hasIcon": false,
                 "hasTopIcon" : false,
@@ -736,7 +736,7 @@ MWF.xApplication.Profile.Main = new Class({
                             var editPopForm = new MWF.xApplication.Profile.emPowerPopupForm(null, _data, {
                                 "style": "empower",
                                 "width": "550",
-                                "height": layout.desktop.session.user.identityList.length>1?"490":"440",
+                                "height": layout.desktop.session.user.identityList.length>1?"530":"480",
                                 "hasTop": true,
                                 "hasIcon": false,
                                 "hasTopIcon" : false,
@@ -793,7 +793,7 @@ MWF.xApplication.Profile.Main = new Class({
                     var popForm = new MWF.xApplication.Profile.emPowerPopupForm(null, {}, {
                         "style": "empower",
                         "width": "550",
-                        "height": layout.desktop.session.user.identityList.length>1?"490":"440",
+                        "height": layout.desktop.session.user.identityList.length>1?"530":"480",
                         "hasTop": true,
                         "hasIcon": false,
                         "hasTopIcon" : false,
@@ -1264,7 +1264,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
     options: {
         "style": "empower",
         "width": "550",
-        "height": "440",
+        "height": "480",
         "hasTop": true,
         "hasIcon": false,
         "hasTopIcon" : false,
@@ -1355,6 +1355,12 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                                 // this.loadAcceptAndReject( item );
                             }.bind(this)
                         },defaultValue:this.data.toPerson},
+                    keepTask: {
+                        type: "checkbox",
+                        selectText: [this.lp.keepTask],
+                        selectValue: ["true"],
+                        defaultValue: this.data.keepEnable ? "true" : "false"
+                    },
                     startDateInput: {
                         text: this.lp.startTime,
                         tType: "date",
@@ -1472,6 +1478,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
         sdata.toPerson = data.toPerson.split("@")[0];
         sdata.startTime = data.startDateInput+" "+data.startTimeInput+":00";
         sdata.completedTime = data.endDateInput+" "+data.endTimeInput+":00";
+        sdata.keepEnable = data.keepTask === "true";
 
         if( Date.parse(sdata.completedTime) - Date.parse(sdata.startTime) < 0 ){
             this.app.notice(this.lp.startTimeEarlyCompleteTime,"error");
@@ -1618,6 +1625,9 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
             "</tr>" +
             "<tr style='display:"+(this.data.type=="process"?"":"none")+"'><td styles='formTableTitleRight' lable='process'>"+this.lp.process+"</td>" +
             "    <td styles='formTableValue1' item='process' colspan='2'></td>" +
+            "</tr>" +
+            "<tr><td styles='formTableTitleRight' width='100'></td>" +
+            "    <td styles='formTableValue' item='keepTask' colspan='2'></td>" +
             "</tr>" +
             "</table>";
     }
