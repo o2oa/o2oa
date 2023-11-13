@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -16,12 +19,15 @@ public class TaskCompletedProperties extends JsonProperties {
 	@FieldDescribe("从task带过来的上一处理人")
 	private List<String> prevTaskIdentityList;
 
+	@Deprecated(since = "8.2")
 	@FieldDescribe("后续处理人")
-	private List<String> nextTaskIdentityList = new ArrayList<String>();
+	private List<String> nextTaskIdentityList = new ArrayList<>();
 
+	@Deprecated(since = "8.2")
 	@FieldDescribe("上一人工环节待办对象列表")
 	private List<PrevTask> prevTaskList;
 
+	@Deprecated(since = "8.2")
 	@FieldDescribe("上一人工环节最近待办对象")
 	private PrevTask prevTask;
 
@@ -30,6 +36,41 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	@FieldDescribe("意见")
 	private String opinion;
+
+	@FieldDescribe("Ticket创建方式,create,reset,add.")
+	private String act;
+
+//	public static final String EMPOWERFROM_FIELDNAME = "empowerFrom";
+//	@FieldDescribe("授权来源.")
+//	private String empowerFrom;
+//
+//	public static final String EMPOWERTO_FIELDNAME = "empowerTo";
+//	@FieldDescribe("授权对象.")
+//	private String empowerTo;
+//
+//	public String getEmpowerFrom() {
+//		return empowerFrom;
+//	}
+//
+//	public void setEmpowerFrom(String empowerFrom) {
+//		this.empowerFrom = empowerFrom;
+//	}
+//
+//	public String getEmpowerTo() {
+//		return empowerTo;
+//	}
+//
+//	public void setEmpowerTo(String empowerTo) {
+//		this.empowerTo = empowerTo;
+//	}
+
+	public String getAct() {
+		return act;
+	}
+
+	public void setAct(String act) {
+		this.act = act;
+	}
 
 	public List<PrevTask> getPrevTaskList() {
 		if (null == this.prevTaskList) {

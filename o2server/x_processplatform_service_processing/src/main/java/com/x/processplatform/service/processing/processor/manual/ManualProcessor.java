@@ -505,7 +505,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 						Objects.toString(manual.getManualMode(), ""),
 						tickets.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList())));
 		if (tickets.bubble().isEmpty() && (!taskCompleteds.isEmpty())) {
-			results.add(aeiObjects.getWork()); 
+			results.add(aeiObjects.getWork());
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
 					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
 					.collect(Collectors.toList());
@@ -534,7 +534,24 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 		}
 		aeiObjects.getWork().setTickets(tickets);
+		if (!results.isEmpty()) {
+			// work将要离开,将tickets记录到workLog
+			addTicketsToWorkLog(aeiObjects, tickets);
+		}
 		return results;
+	}
+
+	/**
+	 * 将tickets记录到workLog
+	 * 
+	 * @param aeiObjects
+	 * @param tickets
+	 * @throws Exception
+	 */
+	private void addTicketsToWorkLog(AeiObjects aeiObjects, Tickets tickets) throws Exception {
+		WorkLog fromWorkLog = aeiObjects.getFromWorkLog(aeiObjects.getWork());
+		fromWorkLog.setTickets(tickets);
+		aeiObjects.getUpdateWorkLogs().add(fromWorkLog);
 	}
 
 	private void checkValidTickets(AeiObjects aeiObjects, Tickets tickets) throws Exception {

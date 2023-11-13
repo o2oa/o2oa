@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.ticket.Tickets;
 
 public class WorkLogProperties extends JsonProperties {
 
@@ -19,6 +20,16 @@ public class WorkLogProperties extends JsonProperties {
 	private String goBackFromActivity;
 
 	private String goBackFromActivityToken;
+
+	private Tickets tickets;
+
+	public Tickets getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(Tickets tickets) {
+		this.tickets = tickets;
+	}
 
 	public ActivityType getGoBackFromActivityType() {
 		return goBackFromActivityType;

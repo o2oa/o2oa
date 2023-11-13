@@ -40,7 +40,7 @@ public class Tasks {
 	public static Task createTask(AeiObjects aeiObjects, Manual manual, Ticket ticket) throws Exception {
 		String person = aeiObjects.business().organization().person().getWithIdentity(ticket.distinguishedName());
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(ticket.distinguishedName());
-		Task task = new Task(aeiObjects.getWork(), ticket.distinguishedName(), person, unit,
+		Task task = new Task(aeiObjects.getWork(), ticket.act(), ticket.distinguishedName(), person, unit,
 				ticket.fromDistinguishedName(), new Date(), null, aeiObjects.getRoutes(), manual.getAllowRapid());
 		task.setLabel(ticket.label());
 		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
@@ -58,6 +58,7 @@ public class Tasks {
 			String fromUnit = aeiObjects.business().organization().unit()
 					.getWithIdentity(ticket.fromDistinguishedName());
 			TaskCompleted empowerTaskCompleted = new TaskCompleted(aeiObjects.getWork());
+			empowerTaskCompleted.setAct(TaskCompleted.ACT_EMPOWER);
 			empowerTaskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_EMPOWER);
 			empowerTaskCompleted.setJoinInquire(false);
 			empowerTaskCompleted.setIdentity(ticket.fromDistinguishedName());
@@ -81,7 +82,7 @@ public class Tasks {
 		String fromIdentity = aeiObjects.getWork().getManualEmpowerMap().get(identity);
 		String person = aeiObjects.business().organization().person().getWithIdentity(identity);
 		String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
-		Task task = new Task(aeiObjects.getWork(), identity, person, unit, fromIdentity, new Date(), null,
+		Task task = new Task(aeiObjects.getWork(), "create", identity, person, unit, fromIdentity, new Date(), null,
 				aeiObjects.getRoutes(), manual.getAllowRapid());
 		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
 		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {

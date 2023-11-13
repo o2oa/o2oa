@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -42,6 +44,17 @@ public class TaskProperties extends JsonProperties {
 
 	@FieldDescribe("待办是否禁用routeName,退回待办如果设置way=jump将直接跳转,则无需routeName.")
 	private Boolean routeNameDisable;
+
+	@FieldDescribe("Ticket创建方式,create,reset,add.")
+	private String act;
+
+	public String getAct() {
+		return act;
+	}
+
+	public void setAct(String act) {
+		this.act = act;
+	}
 
 	public Boolean getRouteNameDisable() {
 		return routeNameDisable;

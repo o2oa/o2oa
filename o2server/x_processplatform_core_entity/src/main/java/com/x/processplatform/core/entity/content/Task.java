@@ -58,6 +58,10 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	private static final long serialVersionUID = -5448210797584958826L;
 	private static final String TABLE = PersistenceProperties.Content.Task.table;
 
+	public static final String ACT_CREATE = "create";
+	public static final String ACT_RESET = "reset";
+	public static final String ACT_ADD = "add";
+
 	public String getId() {
 		return id;
 	}
@@ -102,6 +106,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 			this.routeNameDisable = this.properties.getRouteNameDisable();
 			this.prevTaskIdentity = this.properties.getPrevTaskIdentity();
 			this.prevTaskIdentityList = this.properties.getPrevTaskIdentityList();
+			this.act = this.properties.getAct();
 		}
 	}
 
@@ -137,7 +142,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.properties = new TaskProperties();
 	}
 
-	public Task(Work work, String distinguishedName, String person, String unit, String empowerFromIdentity,
+	public Task(Work work, String act, String distinguishedName, String person, String unit, String empowerFromIdentity,
 			Date startTime, Date expireTime, List<Route> routes, Boolean allowRapid) {
 		this();
 		this.job = work.getJob();
@@ -173,6 +178,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.opinion = "";
 		this.modified = false;
 		this.allowRapid = allowRapid;
+		this.act = act;
 		this.copyProjectionFields(work);
 		updateRoute(routes);
 	}
@@ -243,6 +249,23 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public void setPrevTaskIdentity(String prevTaskIdentity) {
 		this.getProperties().setPrevTaskIdentity(prevTaskIdentity);
 		this.prevTaskIdentity = prevTaskIdentity;
+	}
+
+	public static final String ACT_FIELDNAME = "act";
+	@Transient
+	@FieldDescribe("Ticket创建方式,create,reset,add.")
+	private String act;
+
+	public String getAct() {
+		if ((null != this.properties) && (null == this.act)) {
+			this.act = this.properties.getAct();
+		}
+		return this.act;
+	}
+
+	public void setAct(String act) {
+		this.getProperties().setAct(act);
+		this.act = act;
 	}
 
 	public TaskProperties getProperties() {

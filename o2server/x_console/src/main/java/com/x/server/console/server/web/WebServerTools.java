@@ -136,7 +136,10 @@ public class WebServerTools extends JettySeverTools {
 		context.setExtractWAR(false);
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", false + "");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-		context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl", "max-age=86400");
+		if (Config.general().getWebServerCacheControlMaxAge() != 0) {
+			context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl",
+					"max-age=" + Config.general().getWebServerCacheControlMaxAge());
+		}
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCacheSize", "256000000");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCachedFileSize", "200000000");
 		context.setWelcomeFiles(new String[] { "default.html", "index.html" });

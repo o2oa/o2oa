@@ -472,10 +472,11 @@ class ActionProcessing extends BaseAction {
 			throw new ExceptionGoBackWay(option.getActivity());
 		}
 		List<String> third = business.entityManagerContainer()
-				.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.joinInquire_FIELDNAME, true,
-						TaskCompleted.activityToken_FIELDNAME, pair.first().getFromActivityToken(),
-						TaskCompleted.job_FIELDNAME, param.task.getJob())
-				.stream().map(TaskCompleted::getIdentity).distinct().collect(Collectors.toList());
+				.listEqualAndEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
+						pair.first().getFromActivityToken(), TaskCompleted.job_FIELDNAME, param.task.getJob())
+				.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getAct(), Task.ACT_CREATE))
+				.flatMap(o -> Stream.of(o.getIdentity(), o.getDistinguishedName())).filter(StringUtils::isNotBlank)
+				.distinct().collect(Collectors.toList());
 		if (ListTools.isEmpty(third)) {
 			throw new ExceptionGoBackIdentityList();
 		}

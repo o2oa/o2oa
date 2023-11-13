@@ -17,14 +17,14 @@ interface Add {
 
 	Collection<Ticket> beforeSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets);
 
-	default void setLevel(Ticket ticket, Collection<Ticket> targets) {
-		targets.stream().forEach(o -> o.level(ticket.level()).parent(ticket.parent()));
-	}
-
-	default void setParentLevel(Ticket ticket, Collection<Ticket> targets) {
-		long level = (new Date()).getTime();
-		targets.stream().forEach(o -> o.level(level).parent(ticket.label()));
-	}
+//	default void setLevel(Ticket ticket, Collection<Ticket> targets) {
+//		targets.stream().forEach(o -> o.level(ticket.level()).parent(ticket.parent()));
+//	}
+//
+//	default void setParentLevel(Ticket ticket, Collection<Ticket> targets) {
+//		long level = (new Date()).getTime();
+//		targets.stream().forEach(o -> o.level(level).parent(ticket.label()));
+//	}
 
 	default void completedThenNotJoin(Tickets tickets, Ticket ticket) {
 		tickets.listSibling(ticket, true).stream().forEach(o -> o.completed(true));

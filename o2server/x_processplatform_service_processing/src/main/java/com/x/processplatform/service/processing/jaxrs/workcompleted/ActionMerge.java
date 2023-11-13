@@ -385,7 +385,6 @@ class ActionMerge extends BaseAction {
 					LOGGER.error(e);
 				}
 				storeForm.setRelatedScriptMap(map);
-				// }, ThisApplication.threadPool());
 			}, ThisApplication.forkJoinPool());
 		}
 
