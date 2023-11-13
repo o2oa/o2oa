@@ -1304,7 +1304,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
 			if( this.isMin() ){
@@ -1347,7 +1347,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
 
-			if(saveFlag)this.form.saveFormData();
+			if(saveFlag)this.saveFormData();
 		},
 		_cancelLineEdit: function(){
 			var line = this.currentEditedLine;
@@ -1365,7 +1365,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this._loadTotal();
 				if( line.sectionLine )line.sectionLine._loadTotal();
 				if(line.attachmentChangeFlag){
-					this.form.saveFormData();
+					this.saveFormData();
 					line.attachmentChangeFlag = false;
 				}
 				this.currentEditedLine = null;
@@ -1394,7 +1394,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadTotal();
 			if( line.sectionLine )line.sectionLine._loadTotal();
 			if(line.attachmentChangeFlag && !ignoerSave){
-				this.form.saveFormData();
+				this.saveFormData();
 				line.attachmentChangeFlag = false;
 			}
 			this.currentEditedLine = null;
@@ -1578,6 +1578,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				d[ this.sectionBy ] = data || { data: [] };
 				this.setAllSectionData( d, fireChange , operation);
 			}
+		},
+		deleteAttachment: function( attId ){
+			this.form.workAction.deleteAttachment(attId, this.form.businessData.work.id);
+		},
+		saveFormData: function(){
+			this.form.saveFormData();
 		},
 		/**
 		 * @summary 当数据表格设置为区段合并展现、区段合并编辑时，可以使用本方法设置所有区段数据。
@@ -2832,7 +2838,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if((json.type==="Attachment" || json.type==="AttachmentDg")){
 					module.addEvent("change", function(){
 						if( this.datatable.multiEditMode ){
-							_self.form.saveFormData();
+							_self.datatable.saveFormData();
 						}else{
 							_self.attachmentChangeFlag = true;
 						}
@@ -2931,7 +2937,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var array = module._getBusinessData();
 				(array || []).each(function(d){
 					saveFlag = true;
-					this.form.workAction.deleteAttachment(d.id, this.form.businessData.work.id);
+					this.datatable.deleteAttachment(d.id);
 
 					for( var i=0; i<this.form.businessData.attachmentList.length; i++ ){
 						var attData = this.form.businessData.attachmentList[i];
