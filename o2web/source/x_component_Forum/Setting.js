@@ -429,13 +429,13 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             "   <td styles='formTableTitle' lable='forumNotice'></td>" +
             "   <td styles='formTableValue' item='forumNotice' colspan='3'></td>" +
             "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='subjectMessageNotifyShow'></td>" +
-            "   <td styles='formTableValue' item='subjectMessageNotifyShow'></td>" +
-            "   <td styles='formTableValue' item='subjectMessageNotifyTypeShow' colspan='2'></td>" +
+            "   <td styles='formTableTitle' lable='subjectMessageNotifyTypeShow'></td>" +
+            // "   <td styles='formTableValue' item='subjectMessageNotifyShow'></td>" +
+            "   <td styles='formTableValue' item='subjectMessageNotifyTypeShow' colspan='3'></td>" +
             "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='replyMessageNotifyShow'></td>" +
-            "   <td styles='formTableValue' item='replyMessageNotifyShow'></td>" +
-            "   <td styles='formTableValue' item='replyMessageNotifyTypeShow' colspan='2'></td>" +
+            "   <td styles='formTableTitle' lable='replyMessageNotifyTypeShow'></td>" +
+            // "   <td styles='formTableValue' item='replyMessageNotifyShow'></td>" +
+            "   <td styles='formTableValue' item='replyMessageNotifyTypeShow' colspan='3'></td>" +
             "</tr>"+
             "</table>";
         this.formTableArea.set("html", html);
@@ -456,7 +456,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             }.bind(this));
         }
 
-        this.data.replyMessageNotifyShow = this.data.replyMessageNotify ? "true" : "false";
+        //this.data.replyMessageNotifyShow = this.data.replyMessageNotify ? "true" : "false";
 
         var replyMessageNotifyType = ( this.data.replyMessageNotifyType || "0,0,0" ).split(",");
         this.data.replyMessageNotifyTypeShow = [];
@@ -464,7 +464,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
         if( replyMessageNotifyType[1] === "1" )this.data.replyMessageNotifyTypeShow.push( "2" );
         if( replyMessageNotifyType[2] === "1" )this.data.replyMessageNotifyTypeShow.push( "3" );
 
-        this.data.subjectMessageNotifyShow = this.data.subjectMessageNotify ? "true" : "false";
+        //this.data.subjectMessageNotifyShow = this.data.subjectMessageNotify ? "true" : "false";
 
         var subjectMessageNotifyType = (this.data.subjectMessageNotifyType || "0,0").split(",");
         this.data.subjectMessageNotifyTypeShow = [];
@@ -503,10 +503,10 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                         }},
                     subjectType: {text: this.lp.subjectType, type: "text", defaultValue : this.lp.subjectTypeDefaultValue },
                     forumNotice: {text: this.lp.forumNotice, type: "rtf", RTFConfig : { "enablePreview": false }},
-                    replyMessageNotifyShow: {text: this.lp.replyMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
-                    replyMessageNotifyTypeShow: {type : "checkbox", selectValue : ["1","2","3"], selectText : this.lp.replyMessageNotifyType.split(",") },
-                    subjectMessageNotifyShow: {text: this.lp.subjectMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
-                    subjectMessageNotifyTypeShow: {type : "checkbox", selectValue : ["1","2"], selectText : this.lp.subjectMessageNotifyType.split(",") },
+                    //replyMessageNotifyShow: {text: this.lp.replyMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
+                    replyMessageNotifyTypeShow: {text: this.lp.replyMessageNotify, type : "checkbox", selectValue : ["1","2","3"], selectText : this.lp.replyMessageNotifyType.split(",") },
+                    //subjectMessageNotifyShow: {text: this.lp.subjectMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
+                    subjectMessageNotifyTypeShow: {text: this.lp.subjectMessageNotify, type : "checkbox", selectValue : ["1","2"], selectText : this.lp.subjectMessageNotifyType.split(",") },
                 }
             }, this.app);
             this.form.load();
@@ -531,7 +531,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
     },
     _ok: function (data, callback) {
         debugger;
-        data.subjectMessageNotify = data.subjectMessageNotifyShow === "true";
+        data.subjectMessageNotify = data.subjectMessageNotifyTypeShow.length > 0;
 
         var subjectMessageNotifyType = [];
         subjectMessageNotifyType.push( data.subjectMessageNotifyTypeShow.contains("1") ? "1" : "0" );
@@ -539,7 +539,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
         data.subjectMessageNotifyType = subjectMessageNotifyType.join(",");
 
 
-        data.replyMessageNotify = data.replyMessageNotifyShow === "true";
+        data.replyMessageNotify = data.replyMessageNotifyTypeShow.length > 0;
 
         var replyMessageNotifyType = [];
         replyMessageNotifyType.push( data.replyMessageNotifyTypeShow.contains("1") ? "1" : "0" );

@@ -235,7 +235,13 @@ o2.LP.desktop = {
         "customMessage": "您收到一条消息",
         "emoji": "表情",
         "processWork": "工作",
-        "cmsDoc": "信息文档"
+        "cmsDoc": "信息文档",
+
+        "bbsReplyCreateMessage" : "论坛回复提醒",
+        "bbsReplyCreate": "{title}",
+
+        "bbsSubjectCreateMessage": "论坛发帖提醒",
+        "bbsSubjectCreate": "{title}",
     },
     "styleMenu": {
         "default": "默认",
