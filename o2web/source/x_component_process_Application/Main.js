@@ -2740,7 +2740,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		}.bind(this));
 	},
 	loadTask : function () {
-		this.app.action.TaskAction.listWithJob(this.data.job).then(function(json){
+		this.app.action.TaskAction.listWithWork(this.data.id).then(function(json){
 			this.taskList = json.data;
 			this._loadTask();
 			this.initTask = true;
@@ -3997,6 +3997,13 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 });
 MWF.xApplication.process.Application.ManageWorkCompletedForm = new Class({
 	Extends: MWF.xApplication.process.Application.ManageWorkForm,
+	loadTask : function () {
+		this.app.action.TaskAction.listWithJob(this.data.job).then(function(json){
+			this.taskList = json.data;
+			this._loadTask();
+			this.initTask = true;
+		}.bind(this));
+	},
 	loadTab : function (){
 
 		this.tabNode = new Element("div",{"styles" : this.css.tabNode }).inject(this.formTableArea);
