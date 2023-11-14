@@ -1,0 +1,31 @@
+<div style="padding: 20px 20px 0px 30px; font-size:14px;">
+    <div style="margin-bottom:10px;">
+        <div style="line-height: 30px; margin-bottom:10px;">
+            <div style="float: left; width: 70px;">{{$.lp.addTaskPerson}}: </div>
+            <div style="margin-left: 70px; margin-top: 10px">
+                <div class="addTask_selPeopleButton mainColor_bg" style="font-size:12px; border-radius:20px; float:right; cursor: pointer; padding: 0 20px;">{{$.lp.selectPerson}}</div>
+                <div id="resetWork_selPeopleArea" style="margin-right: 70px; min-height: 24px; padding:3px; overflow: hidden; border-radius: 10px; border: 1px solid #DEDEDE; width: 400px"></div>
+            </div>
+        </div>
+        <div style="line-height: 30px; overflow: hidden;margin-bottom:10px;">
+            <div style="float: left; width: 70px;">{{$.lp.addTaskType}}:</div>
+            <div style="margin-left: 70px; ">
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;" title="{{$.lp.addTaskBeforeTitle}}"><input name="addTask_type" class="addTask_type" type="radio" value="before">{{$.lp.addTaskBefore}}</span>
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;" title="{{$.lp.addTaskAfterTitle}}"><input name="addTask_type" class="addTask_type" checked type="radio" value="after">{{$.lp.addTaskAfter}}</span>
+            </div>
+        </div>
+        <div style="line-height: 30px; overflow: hidden;margin-bottom:10px; ">
+            <div style="float: left; width: 70px;">{{$.lp.modeType}}:</div>
+            <div style="margin-left: 70px;">
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" checked type="radio" value="single">{{$.lp.single}}</span>
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" type="radio" value="queue">{{$.lp.queue}}</span>
+                <span style="cursor: pointer" onclick="this.getFirst().checked=true;"><input name="mode_type" class="addTask_type" type="radio" value="parallel">{{$.lp.parallel}}</span>
+            </div>
+        </div>
+        <div style="height: 30px; line-height: 30px; margin-bottom:10px;">
+            <div style="float: left; width: 70px; height: 50px; line-height: 50px;">{{$.lp.addTaskOpinion}}: </div>
+            <div style="margin-left: 70px"><textarea class="addTask_opinion" style="width: 500px; padding:5px; overflow:auto; height: 60px; border-radius: 10px; border: 1px solid #DEDEDE;" type="text" id="resetWork_opinion"></textarea></div>
+        </div>
+    </div>
+</div>
+

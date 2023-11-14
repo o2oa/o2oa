@@ -812,8 +812,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }.bind(this));
             if( callback )callback( moduleNodes, jsons, modules )
         },
-        _loadModule: function (json, node, beforeLoad) {
-            if (!json) return;
+        _loadModule: function (json, node, beforeLoad, replace) {
+            if (!json) return null;
 
             //流程组件返回
             if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
@@ -830,9 +830,9 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             var module = new MWF["CMS" + json.type](node, json, this);
             if (beforeLoad) beforeLoad.apply(module);
-            if (!this.all[json.id]) this.all[json.id] = module;
+            if (replace || !this.all[json.id]) this.all[json.id] = module;
             if (module.field) {
-                if (!this.forms[json.id]) this.forms[json.id] = module;
+                if (replace || !this.forms[json.id]) this.forms[json.id] = module;
             }
             module.readonly = this.options.readonly;
             module.load();
@@ -978,6 +978,33 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             data.isNewDocument = false;
             return data;
+        },
+        saveFormData: function (callback, sync) {
+            var data = this.getData();
+            var specialData = this.getSpecialData();
+            var documentData = this.getDocumentData(data);
+
+            if( documentData.docStatus === "waitPublish" ){
+                documentData.documentNotify = this.getNoticeOptions();
+            }
+
+            documentData.readerList = specialData.readers;
+            documentData.authorList = specialData.authors;
+            documentData.pictureList = specialData.pictures;
+            documentData.summary = specialData.summary;
+            documentData.cloudPictures = specialData.cloudPictures;
+            documentData.docData = data;
+            delete documentData.attachmentList;
+            if (this.officeList) {
+                this.officeList.each(function (module) {
+                    module.save();
+                });
+            }
+            this.documentAction.saveDocument(documentData, function () {
+                this.businessData.data.isNew = false;
+
+                if (callback && typeof callback === "function") callback();
+            }.bind(this), null, !sync);
         },
         saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");

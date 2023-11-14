@@ -170,15 +170,15 @@ public interface ProjectionInterface {
 
 		setLongValue05(source.getLongValue05());
 
-		setDateTimeValue01(getDateTimeValue01());
+		setDateTimeValue01(source.getDateTimeValue01());
 
-		setDateTimeValue02(getDateTimeValue02());
+		setDateTimeValue02(source.getDateTimeValue02());
 
-		setDateTimeValue03(getDateTimeValue03());
+		setDateTimeValue03(source.getDateTimeValue03());
 
-		setDateTimeValue04(getDateTimeValue04());
+		setDateTimeValue04(source.getDateTimeValue04());
 
-		setDateTimeValue05(getDateTimeValue05());
+		setDateTimeValue05(source.getDateTimeValue05());
 
 		setTimeValue01(source.getTimeValue01());
 
