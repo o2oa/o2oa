@@ -178,9 +178,10 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.opinion = "";
 		this.modified = false;
 		this.allowRapid = allowRapid;
-		this.act = act;
 		this.copyProjectionFields(work);
 		updateRoute(routes);
+		// 必须使用这个方法.act是Transient对象
+		this.setAct(act);
 	}
 
 	public Task updateRoute(List<Route> routes) {

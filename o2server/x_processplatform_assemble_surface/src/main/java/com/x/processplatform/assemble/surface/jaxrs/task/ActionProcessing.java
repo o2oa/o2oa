@@ -474,9 +474,17 @@ class ActionProcessing extends BaseAction {
 		List<String> third = business.entityManagerContainer()
 				.listEqualAndEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
 						pair.first().getFromActivityToken(), TaskCompleted.job_FIELDNAME, param.task.getJob())
-				.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getAct(), Task.ACT_CREATE))
+				.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getAct(), TaskCompleted.ACT_CREATE))
 				.flatMap(o -> Stream.of(o.getIdentity(), o.getDistinguishedName())).filter(StringUtils::isNotBlank)
 				.distinct().collect(Collectors.toList());
+		if (ListTools.isEmpty(third)) {
+			third = business.entityManagerContainer()
+					.listEqualAndEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
+							pair.first().getFromActivityToken(), TaskCompleted.job_FIELDNAME, param.task.getJob())
+					.stream().filter(o -> BooleanUtils.isNotFalse(o.getJoinInquire()))
+					.flatMap(o -> Stream.of(o.getIdentity(), o.getDistinguishedName())).filter(StringUtils::isNotBlank)
+					.distinct().collect(Collectors.toList());
+		}
 		if (ListTools.isEmpty(third)) {
 			throw new ExceptionGoBackIdentityList();
 		}

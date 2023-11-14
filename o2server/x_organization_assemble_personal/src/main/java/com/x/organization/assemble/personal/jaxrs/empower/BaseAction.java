@@ -50,7 +50,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                 }
                 break;
             default:
-                throw new ExceptionEntityFieldEmpty(Empower.class, Empower.type_FIELDNAME);
+                throw new ExceptionEntityFieldEmpty(Empower.class, Empower.TYPE_FIELDNAME);
         }
     }
 
@@ -89,7 +89,7 @@ abstract class BaseAction extends StandardJaxrsAction {
      */
     private boolean typeApplicationExist(Business business, Empower empower) throws Exception {
         if (StringUtils.isEmpty(empower.getApplication())) {
-            throw new ExceptionEntityFieldEmpty(Empower.class, Empower.application_FIELDNAME);
+            throw new ExceptionEntityFieldEmpty(Empower.class, Empower.APPLICATION_FIELDNAME);
         }
         EntityManager em = business.entityManagerContainer().get(Empower.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
