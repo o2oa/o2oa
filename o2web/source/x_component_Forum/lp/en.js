@@ -109,6 +109,10 @@ MWF.xApplication.Forum.LP = {
 		["#600000","#c21212","#824200","#424200","#004200","#004023","#00323f","#002060","#0020c2","#2222c0","#000080","#1f007f","#800080","#820040","#800000","#1f1f1f"],
 		["#400000","#a11f12","#604200","#212100","#002100","#00201f","#002041","#00204f","#0000e0","#0000a1","#000061","#1f0062","#40005f","#620042","#620012","#0f0f0f"]
 	],
+	"replyMessageNotify": "Enable reply message reminder",
+	"replyMessageNotifyType": "Notify the partition administrator,notify the moderator,notify the poster",
+	"subjectMessageNotify": "Enable posting message reminder",
+	"subjectMessageNotifyType": "Notify partition administrator,notify moderator",
 	"selectColor": "Select Color",
 	"selectList": "Select List",
 	"effect": "Effect",
