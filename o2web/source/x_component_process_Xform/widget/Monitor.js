@@ -8,7 +8,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     options: {
         "style": "default"
     },
-    initialize: function(container, worklog, recordList, processid, options){
+    initialize: function(container, worklog, recordList, processid, options, module){
         this.setOptions(options);
 
         this.path = "../x_component_process_Xform/widget/$Monitor/";
@@ -21,6 +21,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         this.processid = processid;
 
         this.mobileScale = 2;
+
+        this.module = module;
 
         this.load();
     },
@@ -86,6 +88,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             this.getProcess(function(json){
                 this.processData = json.data;
                 this.loadPaper();
+                this.bindTabEvent();
             }.bind(this));
         }
     },
@@ -510,6 +513,16 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (this.currentWorklogNode){
             this.currentWorklogNode.setStyle("display", "none");
             this.currentWorklogNode = null;
+        }
+    },
+    bindTabEvent: function(){
+        if( this.module ){
+            var tab = this.module.getParentModule();
+            if( tab && tab.page ){
+                tab.page.addEvent("postHide", function () {
+                    if(this.currentWorklogNode)this.currentWorklogNode.hide()
+                }.bind(this))
+            }
         }
     },
 
