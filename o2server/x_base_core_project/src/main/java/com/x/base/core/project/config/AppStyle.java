@@ -412,6 +412,7 @@ public class AppStyle extends ConfigObject {
 		private Integer id;
 		private String key;
 		private String name;
+		private String displayName;
 		private Boolean enable;
 		private IOS iOS = new IOS();
 
@@ -439,6 +440,7 @@ public class AppStyle extends ConfigObject {
 			this.name = name;
 		}
 
+		
 		public Boolean getEnable() {
 			return enable;
 		}
@@ -524,7 +526,7 @@ public class AppStyle extends ConfigObject {
 			NativeApp o = new NativeApp();
 			o.setId(6);
 			o.setKey("yunpan");
-			o.setName("云盘");
+			o.setName("企业网盘");
 			o.setEnable(true);
 			o.getiOS().setCategory("native");
 			o.getiOS().setSubcategory("coding");
@@ -537,7 +539,7 @@ public class AppStyle extends ConfigObject {
 			NativeApp o = new NativeApp();
 			o.setId(7);
 			o.setKey("bbs");
-			o.setName("论坛");
+			o.setName("企业论坛");
 			o.setEnable(true);
 			o.getiOS().setCategory("native");
 			o.getiOS().setSubcategory("coding");
@@ -650,6 +652,14 @@ public class AppStyle extends ConfigObject {
 			} else if (!id.equals(other.id))
 				return false;
 			return true;
+		}
+
+		public String getDisplayName() {
+			return displayName;
+		}
+
+		public void setDisplayName(String displayName) {
+			this.displayName = displayName;
 		}
 
 	}
