@@ -62,7 +62,7 @@ class ActionCreate extends BaseAction {
             emc.beginTransaction(Handover.class);
             Handover handover = new Handover();
             wi.copyTo(handover, JpaObject.FieldsUnmodifyIncludePorperties);
-            handover.setStatus(HandoverStatusEnum.PROCESSING.getValue());
+            handover.setStatus(HandoverStatusEnum.WAIT.getValue());
             emc.persist(handover, CheckPersistType.all);
             emc.commit();
             Wo wo = new Wo();
