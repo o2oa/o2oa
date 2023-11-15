@@ -122,6 +122,14 @@ class V2Rollback extends BaseAction {
 				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
 
+				// 将已有的已办标识为joinInquire=false,这样由于存在已办所以撤回将被禁用.
+				aeiObjects.getTaskCompleteds().stream()
+						.filter(o -> StringUtils.equals(workLog.getFromActivityToken(), o.getActivityToken()))
+						.forEach(o -> {
+							o.setJoinInquire(false);
+							aeiObjects.getUpdateTaskCompleteds().add(o);
+						});
+
 				aeiObjects.getReads().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteReads()::add);
 

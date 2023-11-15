@@ -28,29 +28,57 @@ class ActionCreateWithJob extends BaseAction {
 
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Param param = init(job, jsonElement);
 
-		Callable<ActionResult<Wo>> callable = () -> {
+		CallableImpl callable = new CallableImpl(param);
+
+		return ProcessPlatformKeyClassifyExecutorFactory.get(param.job).submit(callable).get(300, TimeUnit.SECONDS);
+
+	}
+
+	private class Param {
+
+		private Wi wi;
+		private String job;
+
+	}
+
+	private Param init(String job, JsonElement jsonElement) throws Exception {
+		Param param = new Param();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, job) == 0)
+					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job) == 0)) {
+				throw new ExceptionEntityNotExist(job, "job");
+			}
+		}
+		param.job = job;
+		param.wi = this.convertToWrapIn(jsonElement, Wi.class);
+		return param;
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private Param param;
+
+		private CallableImpl(Param param) {
+			this.param = param;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if ((emc.countEqual(Work.class, Work.job_FIELDNAME, job) == 0)
-						&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job) == 0)) {
-					throw new ExceptionEntityNotExist(job, "job");
-				}
 				emc.beginTransaction(Record.class);
-				Record r = Wi.copier.copy(wi);
-				r.setJob(job);
-				emc.persist(r);
+				Record rec = Wi.copier.copy(param.wi);
+				rec.setJob(param.job);
+				emc.persist(rec);
 				emc.commit();
 				Wo wo = new Wo();
-				wo.setId(r.getId());
+				wo.setId(rec.getId());
 				ActionResult<Wo> result = new ActionResult<>();
 				result.setData(wo);
 				return result;
 			}
-		};
-
-		return ProcessPlatformKeyClassifyExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
-
+		}
 	}
 
 	public static class Wi extends Record {

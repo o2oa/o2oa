@@ -18,6 +18,8 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
@@ -44,11 +46,9 @@ class ActionManageCreateWithJob extends BaseAction {
 				throw new ExceptionEntityNotExist(job, "job");
 			}
 			Business business = new Business(emc);
-			Application application = business.application().pick(wi.getApplication());
-			Process process = business.process().pick(wi.getProcess());
-			// 需要对这个应用的管理权限
-			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Control control = new JobControlBuilder(effectivePerson, business, job).enableAllowManage().build();
+			if (BooleanUtils.isNotTrue(control.getAllowManage())) {
+				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 		}
 		WoId resp = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,

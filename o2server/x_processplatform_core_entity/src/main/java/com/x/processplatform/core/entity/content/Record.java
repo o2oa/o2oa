@@ -160,10 +160,10 @@ public class Record extends SliceJpaObject {
 		this.setPerson(task.getPerson());
 		this.setUnit(task.getUnit());
 		this.getProperties().setOpinion(task.getOpinion());
-		this.getProperties().setRouteName(task.getRouteName());
-		this.getProperties().setMediaOpinion(task.getMediaOpinion());
-		this.getProperties().setStartTime(task.getStartTime());
-		this.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
+		this.setRouteName(task.getRouteName());
+		this.setMediaOpinion(task.getMediaOpinion());
+		this.setStartTime(task.getStartTime());
+		this.setEmpowerFromIdentity(task.getEmpowerFromIdentity());
 	}
 
 	public Record(WorkLog workLog) {
@@ -180,7 +180,7 @@ public class Record extends SliceJpaObject {
 		this.setFromActivityName(workLog.getFromActivityName());
 		this.setFromActivityAlias(workLog.getFromActivityAlias());
 		this.setFromActivityToken(workLog.getFromActivityToken());
-		this.getProperties().setStartTime(workLog.getFromTime());
+		this.setStartTime(workLog.getFromTime());
 		this.getProperties().setFromGroup(workLog.getFromGroup());
 		this.getProperties().setFromOpinionGroup(workLog.getFromOpinionGroup());
 	}

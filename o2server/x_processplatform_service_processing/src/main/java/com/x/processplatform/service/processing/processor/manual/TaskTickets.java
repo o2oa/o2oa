@@ -105,6 +105,8 @@ public class TaskTickets {
 				ticket.fromDistinguishedName(o.identity);
 				if (BooleanUtils.isTrue(o.keepEnable)) {
 					Ticket keepTicket = new Ticket(o.identity);
+					keepTicket.sibling(ticket);
+					ticket.sibling(keepTicket);
 					return Stream.of(ticket, keepTicket);
 				} else {
 					return Stream.of(ticket);

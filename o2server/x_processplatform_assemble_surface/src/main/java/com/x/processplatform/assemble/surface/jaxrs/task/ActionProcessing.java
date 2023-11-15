@@ -105,7 +105,7 @@ class ActionProcessing extends BaseAction {
 			}
 		}, String.format("%s:processing:%s", ActionProcessing.class.getName(), id)).start();
 
-		startSignalThreadIfAsyncSupported(effectivePerson, param, id, responeQueue);
+		startSignalThreadIfAsyncSupported(param, id, responeQueue);
 
 		Wo wo = responeQueue.poll(300, TimeUnit.SECONDS);
 
@@ -221,8 +221,7 @@ class ActionProcessing extends BaseAction {
 						com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWo.class);
 	}
 
-	private void startSignalThreadIfAsyncSupported(EffectivePerson effectivePerson, Param param, String id,
-			LinkedBlockingQueue<Wo> responeQueue) {
+	private void startSignalThreadIfAsyncSupported(Param param, String id, LinkedBlockingQueue<Wo> responeQueue) {
 		if (BooleanUtils.isNotFalse(param.asyncSupported)) {
 			new Thread(() -> {
 				RespProcessingSignal resp = null;
@@ -371,7 +370,10 @@ class ActionProcessing extends BaseAction {
 			WorkLogTree workLogTree = workLogTree(business, param.task.getJob());
 			Node node = workLogTree.find(param.workLog);
 			Nodes nodes = workLogTree.up(node);
-			List<WorkLog> workLogs = goBackTruncateWorkLog(nodes, param.work.getGoBackActivityToken());
+			List<WorkLog> workLogs = nodes.stream().filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+					&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)
+					&& (!StringUtils.equalsIgnoreCase(o.getWorkLog().getType(), ProcessingAttributes.TYPE_GOBACK)))
+					.map(Node::getWorkLog).collect(Collectors.toList());
 			triple = goBackParam(business, param, optionGoBack, workLogs);
 		}
 		V2GoBackWi req = new V2GoBackWi();
@@ -422,21 +424,21 @@ class ActionProcessing extends BaseAction {
 	 * @param activityToken
 	 * @return
 	 */
-	private List<WorkLog> goBackTruncateWorkLog(Nodes nodes, String activityToken) {
-		List<WorkLog> list = new ArrayList<>();
-		nodes.stream()
-				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
-						&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)
-						&& (!StringUtils.equalsIgnoreCase(o.getWorkLog().getType(), ProcessingAttributes.TYPE_GOBACK)))
-				.forEach(o -> {
-					if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
-						list.clear();
-					} else {
-						list.add(o.getWorkLog());
-					}
-				});
-		return list;
-	}
+//	private List<WorkLog> goBackTruncateWorkLog(Nodes nodes, String activityToken) {
+//		List<WorkLog> list = new ArrayList<>();
+//		nodes.stream()
+//				.filter(o -> BooleanUtils.isTrue(o.getWorkLog().getConnected())
+//						&& Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.manual)
+//						&& (!StringUtils.equalsIgnoreCase(o.getWorkLog().getType(), ProcessingAttributes.TYPE_GOBACK)))
+//				.forEach(o -> {
+//					if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
+//						list.clear();
+//					} else {
+//						list.add(o.getWorkLog());
+//					}
+//				});
+//		return list;
+//	}
 
 	private void processingWorkGoBack(String workId, String series, String job) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
