@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -535,14 +538,10 @@ public class WorkControlBuilder {
 				Manual manual = (Manual) activity;
 				if (hasTaskWithWork().isPresent() && BooleanUtils.isNotFalse(manual.getAllowGoBack())) {
 					Optional<Ticket> opt = work.getTickets().findTicketWithLabel(hasTaskWithWork.get().getLabel());
-					if (opt.isPresent()) {
-//						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-//								|| taskCountWithWork() <= 1) {
-						if (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
-								|| opt.get().fellow().isEmpty()) {
-							control.setAllowGoBack(true);
-						}
-					} else {
+					if (opt.isPresent() && (BooleanUtils.isNotFalse(manual.getGoBackConfig().getMultiTaskEnable())
+							|| ListUtils.intersection(
+									work.getTickets().bubble().stream().map(Ticket::label).collect(Collectors.toList()),
+									opt.get().fellow()).isEmpty())) {
 						control.setAllowGoBack(true);
 					}
 				}
