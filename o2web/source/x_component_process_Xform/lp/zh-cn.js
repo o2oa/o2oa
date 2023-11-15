@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.LP = {
     "rerouteTo": "调度到",
     "rollback": "流程回溯",
     "rollbackTo": "流程回溯到",
+    "rollback_success" : "回溯成功",
     "selectRollbackActivity" : "请选择文件要回溯到的位置：",
     "tryToProcess" : "并尝试继续流转",
     "in": "在",

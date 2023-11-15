@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.LP = {
     "rerouteTo": "Reajustar a",
     "rollback": "Retroceder proceso",
     "rollbackTo": "Retroceder proceso hasta",
+    "rollback_success" : "Éxito al revertir",
     "selectRollbackActivity" : "Por favor seleccione la posición en la que desea retroceder el archivo:",
     "tryToProcess" : "y tratar de continuar el proceso",
     "in": "en",
