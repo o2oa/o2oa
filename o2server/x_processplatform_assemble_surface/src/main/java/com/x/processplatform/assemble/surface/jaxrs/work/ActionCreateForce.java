@@ -61,7 +61,7 @@ class ActionCreateForce extends BaseCreateAction {
 		if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {
 			updateWork(identity, workId, wi.getTitle(), wi.getParentWork());
 			// 驱动工作,使用非队列方式
-			this.processingWork(workId);
+			this.processingCreateWork(workId);
 		} else {
 			// 如果是草稿,准备后面的直接打开
 			workId = lastestWorkId;

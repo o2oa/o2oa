@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.o2oa</groupId>
@@ -41,6 +44,10 @@
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_program_center_core_entity</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.o2oa</groupId>
+			<artifactId>x_cms_core_entity</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -58,7 +65,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.annotation.DescribeBuilder
+							<mainClass>
+								com.x.base.core.project.annotation.DescribeBuilder
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
@@ -76,7 +84,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.annotation.ApiBuilder
+							<mainClass>
+								com.x.base.core.project.annotation.ApiBuilder
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
@@ -94,7 +103,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CheckService</mainClass>
+							<mainClass>
+								com.x.base.core.project.build.CheckService</mainClass>
 						</configuration>
 					</execution>
 					<execution>
@@ -107,7 +117,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CreateWebXml</mainClass>
+							<mainClass>
+								com.x.base.core.project.build.CreateWebXml</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
 								<argument>${project.artifactId}</argument>

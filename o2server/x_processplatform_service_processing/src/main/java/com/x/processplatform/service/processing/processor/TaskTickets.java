@@ -1,4 +1,4 @@
-package com.x.processplatform.service.processing.processor.manual;
+package com.x.processplatform.service.processing.processor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import com.x.processplatform.core.entity.element.ManualProperties;
 import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.entity.ticket.Tickets;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.manual.TaskIdentity;
 
 /**
  * 在Manual环节计算所有的待办人的Identity
@@ -92,6 +92,20 @@ public class TaskTickets {
 					.map(o -> new EmpowerableIdentity(false, o)).collect(Collectors.toList()));
 		}
 
+		return translateEmpowerableIdentity(aeiObjects, manual, identities);
+	}
+
+	public static Tickets translate(AeiObjects aeiObjects, Manual manual, List<String> distinguishedNames)
+			throws Exception {
+		List<EmpowerableIdentity> identities = distinguishedNames.stream().distinct()
+				.map(o -> new EmpowerableIdentity(false, o)).collect(Collectors.toList());
+		return translateEmpowerableIdentity(aeiObjects, manual, identities);
+
+	}
+
+	private static Tickets translateEmpowerableIdentity(AeiObjects aeiObjects, Manual manual,
+			List<EmpowerableIdentity> identities) throws Exception {
+
 		identities = identities.stream().distinct().collect(Collectors.toList());
 
 		if (StringUtils.equalsIgnoreCase(Work.WORKCREATETYPE_ASSIGN, aeiObjects.getWork().getWorkCreateType())
@@ -115,6 +129,7 @@ public class TaskTickets {
 				return Stream.of(new Ticket(o.identity));
 			}
 		}).collect(Collectors.toList()));
+
 	}
 
 	/**
@@ -128,7 +143,7 @@ public class TaskTickets {
 		List<Empower> empowers = aeiObjects.business().organization().empower().listWithIdentityObject(
 				aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
 				aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(),
-				identities.stream().filter(o -> BooleanUtils.isFalse(o.empower)).map(o -> o.identity)
+				identities.stream().filter(o -> BooleanUtils.isFalse(o.skipEmpower)).map(o -> o.identity)
 						.collect(Collectors.toList()));
 		if (!empowers.isEmpty()) {
 			Map<String, EmpowerableIdentity> nameEmpowerableIdentityMap = identities.stream().collect(
@@ -293,13 +308,13 @@ public class TaskTickets {
 
 	private static class EmpowerableIdentity {
 
-		private Boolean empower;
+		private Boolean skipEmpower;
 		private String identity;
 		private String toIdentity;
 		private Boolean keepEnable;
 
-		private EmpowerableIdentity(Boolean empower, String identity) {
-			this.empower = empower;
+		private EmpowerableIdentity(Boolean skipEmpower, String identity) {
+			this.skipEmpower = skipEmpower;
 			this.identity = identity;
 		}
 
