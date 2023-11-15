@@ -3,6 +3,7 @@ MWF.xApplication.cms = MWF.xApplication.cms || {};
 MWF.xApplication.cms.Index = MWF.xApplication.cms.Index || {};
 //MWF.xDesktop.requireApp("cms.Index", "Actions.RestActions", null, false);
 MWF.require("MWF.xAction.org.express.RestActions", null, false);
+MWF.xDesktop.requireApp("cms.Index", "lp."+MWF.language, null, false);
 MWF.require("MWF.widget.Mask", null, false);
 MWF.xApplication.cms.Index.Newer = new Class({
     Extends: MPopupForm,
@@ -47,8 +48,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
         this.cssPath = "../x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
-        MWF.xDesktop.requireApp("cms.Index", "$Newer.lp."+MWF.language, null, false);
-        this.lp = MWF.xApplication.cms.Index.Newer.lp;
+        //MWF.xDesktop.requireApp("cms.Index", "$Newer.lp."+MWF.language, null, false);
+        //this.lp = MWF.xApplication.cms.Index.Newer.lp;
+
+        this.lp = MWF.xApplication.cms.Index.LP.newer;
 
         this.options.title = this.lp.createDocument;
 
