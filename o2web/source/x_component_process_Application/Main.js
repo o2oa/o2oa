@@ -3386,7 +3386,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				setOpinionButton.addEvent("click", function () {
 					_self = this;
 					var ideaNode = new Element("div", {"class": "control", "style": "margin:10px"});
-					var textareaNode = new Element("textarea", {"style":"height:80px","class": "textarea", "text": record.properties.opinion});
+					var textareaNode = new Element("textarea", {"style":"height:80px","class": "textarea", "text": record.opinion});
 					textareaNode.inject(ideaNode);
 
 					var ideaDlg = o2.DL.open({
@@ -3404,7 +3404,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 							{
 								"text": lp.ok,
 								"action": function () {
-									record.properties.opinion = textareaNode.get("value");
+									record.opinion = textareaNode.get("value");
 									_self.app.action.RecordAction.manageEdit(record.id,record,function(json){
 										_self.loadRecord();
 									},null,false);
