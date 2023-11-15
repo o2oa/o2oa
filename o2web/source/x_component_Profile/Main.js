@@ -1331,7 +1331,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                 isEdited: this.isEdited || this.isNew,
                 style : "profile",
                 itemTemplate: {
-                    fromPerson: { text: this.lp.fromPerson,type: "select", isEdited : (identityTextList.length>1),
+                    fromPerson: { text: this.lp.fromIdentity,type: "select", isEdited : (identityTextList.length>1),
                         selectText: identityTextList,
                         selectValue: identityList,
                         defaultValue: this.data.fromIdentity||identityList[0],
@@ -1350,7 +1350,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                             "margin": "0 0 10px 0"
                         }
                     },
-                    toPerson: { text: this.lp.toPerson,type: "org", isEdited : this.isEdited || this.isNew, orgType: ["identity"], count : 1, orgWidgetOptions : {
+                    toPerson: { text: this.lp.toIdentity,type: "org", isEdited : this.isEdited || this.isNew, orgType: ["identity"], count : 1, orgWidgetOptions : {
                             "onLoadedInfor": function(item){
                                 // this.loadAcceptAndReject( item );
                             }.bind(this)
@@ -1490,7 +1490,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
         sdata.toPerson = data.toPerson;
         sdata.startTime = data.startDateInput+" "+data.startTimeInput+":00";
         sdata.completedTime = data.endDateInput+" "+data.endTimeInput+":00";
-        sdata.keepEnable = data.keepTask === "true";
+        sdata.keepEnable = false; //data.keepTask === "true";
 
         if( Date.parse(sdata.completedTime) - Date.parse(sdata.startTime) < 0 ){
             this.app.notice(this.lp.startTimeEarlyCompleteTime,"error");
@@ -1638,9 +1638,9 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
             "<tr style='display:"+(this.data.type=="process"?"":"none")+"'><td styles='formTableTitleRight' lable='process'>"+this.lp.process+"</td>" +
             "    <td styles='formTableValue1' item='process' colspan='2'></td>" +
             "</tr>" +
-            "<tr><td styles='formTableTitleRight' width='100'></td>" +
-            "    <td styles='formTableValue' item='keepTask' colspan='2'></td>" +
-            "</tr>" +
+            // "<tr><td styles='formTableTitleRight' width='100'></td>" +
+            // "    <td styles='formTableValue' item='keepTask' colspan='2'></td>" +
+            // "</tr>" +
             "</table>";
     }
 });
