@@ -1098,14 +1098,14 @@ MWF.xApplication.process.Application.WorkList = new Class({
 
 		this.toolbarItems = {
 			"default":[
-				["delWork","jump","sendRead"],
+				["delWork","jump","sendRead","rollback"],
 				["processing","endWork","addReview"],
 				["manage"]
 			],
 			"unSelect":[
 			],
 			"selected":[
-				["delWork","jump","sendRead"],
+				["delWork","jump","sendRead","rollback"],
 				["processing","endWork","addReview"],
 				["manage"]
 			],
@@ -2217,7 +2217,7 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 		//node.inject(this.app.content);
 
 		var dlg = o2.DL.open({
-			"title": "回溯",
+			"title": MWF.xApplication.process.Work.LP.rollback,
 			"style": "user",
 			"isResize": false,
 			"content": node,
@@ -2226,31 +2226,29 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			"buttonList": [
 				{
 					"type": "ok",
-					"text": "确定",
+					"text": MWF.LP.process.button.ok,
 					"action": function (d, e) {
 						this.doRollback(node, e, dlg ,data.id);
 					}.bind(this)
 				},
 				{
 					"type": "cancel",
-					"text": "取消",
+					"text": MWF.LP.process.button.cancel,
 					"action": function () { dlg.close(); }
 				}
 			]
 		});
 	},
 	doRollback: function (node, e, dlg ,workid) {
-
+		var lp = MWF.xApplication.process.Work.LP;
 		var rollbackItemNode = node.getLast();
 		var items = rollbackItemNode.getChildren();
 		var flowOption = (node.getElement(".rollback_flowOption").checked);
 
-
-
 		var _self = this;
 		for (var i = 0; i < items.length; i++) {
 			if (items[i].retrieve("isSelected")) {
-				var text = "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）";
+				var text = lp.rollbackConfirmContent;
 				var log = items[i].retrieve("log");
 				var checks = items[i].getElements("input:checked");
 				var idList = [];
@@ -2261,20 +2259,15 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 
 				var opinion = MWF.xApplication.process.Xform.LP.rollbackTo+":"+log.fromActivityName;
 				text = text.replace("{log}", log.fromActivityName + "(" + log.arrivedTime + ")");
-				this.explorer.app.confirm("infor", e, "流程回溯确认", text, 450, 120, function () {
+				this.explorer.app.confirm("infor", e, lp.rollbackConfirmTitle, text, 450, 120, function () {
 
-					// console.log(log.id)
-					// console.log(flowOption)
-					// //console.log(dlg)
-					// console.log(idList)
-
-					_self.app.action.WorkCompletedAction.rollback(workid,{
+					_self.app.action[_self.type === "workCompleted"?"WorkCompletedAction":"WorkAction"][_self.type === "workCompleted"?"rollback":"V2Rollback"](workid,{
 						"workLog": log.id,
 						"distinguishedNameList": idList,
 						"processing": !!flowOption,
 						"opinion": opinion
 					},function (json){
-						_self.app.notice("回溯成功。");
+						_self.app.notice(lp.rollback_success);
 						_self.explorer.refresh();
 					},null,false);
 

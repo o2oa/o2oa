@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.LP = {
     "rerouteTo": "RerouteTo",
     "rollback": "Process rollback",
     "rollbackTo": "Process rollback to",
+    "rollback_success" : "Rollback success",
     "selectRollbackActivity": "Select the location of the file to be rollback to:",
     "tryToProcess": "try to continue flow",
     "in": " in ",
