@@ -221,14 +221,14 @@ class ActionRollback extends BaseAction {
 		private void rollbackTaskCompleted(Business business, Work work, Nodes nodes, WorkLog workLog,
 				List<TaskCompleted> list) throws Exception {
 			for (TaskCompleted o : list) {
-				if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
-						|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
-					business.entityManagerContainer().remove(o);
-					MessageFactory.taskCompleted_delete(o);
-				} else {
+				if (StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
+					o.setJoinInquire(false);
 					o.setCompleted(false);
 					o.setWorkCompleted("");
 					o.setWork(work.getId());
+				} else if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())) {
+					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
 				}
 			}
 		}
@@ -279,7 +279,7 @@ class ActionRollback extends BaseAction {
 			}
 		}
 
-		private void rollbackAttachment(Business business, Work work, List<Attachment> list) throws Exception {
+		private void rollbackAttachment(Business business, Work work, List<Attachment> list) {
 			for (Attachment o : list) {
 				o.setCompleted(false);
 				o.setWork(work.getId());

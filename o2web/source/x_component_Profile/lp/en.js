@@ -72,6 +72,7 @@ MWF.xApplication.Profile.LP = {
         "fromIdentity":"Identity",
         "toPerson":"EmpoweredPerson",
         "toIdentity":"EmpoweredIdentity",
+        "keepTask": "Keep my task",
         "application":"Application",
         "applicationName":"Application Name",
         "applicationAlias":"Application Alias",

@@ -62,6 +62,7 @@ public class Empower extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	/** 更新运行方法 */
@@ -69,112 +70,119 @@ public class Empower extends SliceJpaObject {
 	/** flag标志位 */
 	/** 默认内容结束 */
 
-	public static final String fromPerson_FIELDNAME = "fromPerson";
+	public static final String FROMPERSON_FIELDNAME = "fromPerson";
 	@FieldDescribe("人员.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromPerson_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromPerson_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + FROMPERSON_FIELDNAME)
 	private String fromPerson;
 
-	public static final String fromIdentity_FIELDNAME = "fromIdentity";
+	public static final String FROMIDENTITY_FIELDNAME = "fromIdentity";
 	@FieldDescribe("身份.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromIdentity_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + FROMIDENTITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMIDENTITY_FIELDNAME)
 	private String fromIdentity;
 
-	public static final String toPerson_FIELDNAME = "toPerson";
+	public static final String TOPERSON_FIELDNAME = "toPerson";
 	@FieldDescribe("委托人员.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + toPerson_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + toPerson_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + TOPERSON_FIELDNAME)
 	private String toPerson;
 
-	public static final String toIdentity_FIELDNAME = "toIdentity";
+	public static final String TOIDENTITY_FIELDNAME = "toIdentity";
 	@FieldDescribe("委托身份.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + toIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + toIdentity_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + TOIDENTITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + TOIDENTITY_FIELDNAME)
 	private String toIdentity;
 
-	public static final String application_FIELDNAME = "application";
+	public static final String APPLICATION_FIELDNAME = "application";
 	@FieldDescribe("应用.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + application_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + application_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + APPLICATION_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + APPLICATION_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String application;
 
-	public static final String applicationName_FIELDNAME = "applicationName";
+	public static final String APPLICATIONNAME_FIELDNAME = "applicationName";
 	@FieldDescribe("应用名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + applicationName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationName_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + APPLICATIONNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationName;
 
-	public static final String applicationAlias_FIELDNAME = "applicationAlias";
+	public static final String APPLICATIONALIAS_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
-	@Column(length = length_255B, name = ColumnNamePrefix + applicationAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationAlias_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + APPLICATIONALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
-	public static final String edition_FIELDNAME = "edition";
+	public static final String EDITION_FIELDNAME = "edition";
 	@FieldDescribe("流程版本.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + edition_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + edition_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + EDITION_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + EDITION_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String edition;
 
-	public static final String process_FIELDNAME = "process";
+	public static final String PROCESS_FIELDNAME = "process";
 	@FieldDescribe("流程ID.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + process_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + process_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + PROCESS_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + PROCESS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String process;
 
-	public static final String processName_FIELDNAME = "processName";
+	public static final String PROCESSNAME_FIELDNAME = "processName";
 	@FieldDescribe("流程名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + processName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processName_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + PROCESSNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processName;
 
-	public static final String processAlias_FIELDNAME = "processAlias";
+	public static final String PROCESSALIAS_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
-	@Column(length = length_255B, name = ColumnNamePrefix + processAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processAlias_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + PROCESSALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
-	public static final String filterListData_FIELDNAME = "filterListData";
+	public static final String FILTERLISTDATA_FIELDNAME = "filterListData";
 	@FieldDescribe("过滤条件.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + filterListData_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + FILTERLISTDATA_FIELDNAME)
 	private String filterListData;
 
-	public static final String type_FIELDNAME = "type";
+	public static final String TYPE_FIELDNAME = "type";
 	@FieldDescribe("授权类型:all,application,process,filter.")
-	@Column(name = ColumnNamePrefix + type_FIELDNAME, length = length_32B)
-	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
+	@Column(name = ColumnNamePrefix + TYPE_FIELDNAME, length = length_32B)
 	@CheckPersist(allowEmpty = false)
 	private String type;
 
-	public static final String startTime_FIELDNAME = "startTime";
+	public static final String STARTTIME_FIELDNAME = "startTime";
 	@FieldDescribe("授权开始时间.")
-	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + startTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + STARTTIME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + STARTTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date startTime;
 
-	public static final String completedTime_FIELDNAME = "completedTime";
+	public static final String COMPLETEDTIME_FIELDNAME = "completedTime";
 	@FieldDescribe("授权结束时间.")
-	@Column(name = ColumnNamePrefix + completedTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completedTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + COMPLETEDTIME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + COMPLETEDTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date completedTime;
 
-	public static final String enable_FIELDNAME = "enable";
+	public static final String ENABLE_FIELDNAME = "enable";
 	@FieldDescribe("是否启用.")
-	@Column(name = ColumnNamePrefix + enable_FIELDNAME)
+	@Column(name = ColumnNamePrefix + ENABLE_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean enable;
+
+	public static final String KEEPENABLE_FIELDNAME = "keepEnable";
+	@FieldDescribe("是否保留我的待办.")
+	@Column(name = ColumnNamePrefix + KEEPENABLE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean keepEnable;
+
+	public Boolean getKeepEnable() {
+		return keepEnable;
+	}
+
+	public void setKeepEnable(Boolean keepEnable) {
+		this.keepEnable = keepEnable;
+	}
 
 	public String getFilterListData() {
 		return filterListData;

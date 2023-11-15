@@ -1,5 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -268,7 +269,20 @@ public class Manual extends Activity {
 		}
 	}
 
-	public Tickets identitiesToTickets(List<String> identities) {
+	public Tickets toTickets(Collection<Ticket> targets) {
+		switch (this.getManualMode()) {
+		case parallel:
+			return Tickets.parallel(targets);
+		case queue:
+			return Tickets.queue(targets);
+		case single:
+		case grab:
+		default:
+			return Tickets.single(targets);
+		}
+	}
+
+	public Tickets identitiesToTickets(Collection<String> identities) {
 		switch (this.getManualMode()) {
 		case parallel:
 			return Tickets.parallel(identities.stream().map(Ticket::new).collect(Collectors.toList()));

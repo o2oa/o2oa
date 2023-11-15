@@ -14,6 +14,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
+import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -34,11 +36,9 @@ class ActionManageGet extends BaseAction {
 			if (null == rec) {
 				throw new ExceptionEntityNotExist(id, Record.class);
 			}
-			Application application = business.application().pick(rec.getApplication());
-			Process process = business.process().pick(rec.getProcess());
-			// 需要对这个应用的管理权限
-			if (BooleanUtils.isFalse(business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, process))) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			Control control = new JobControlBuilder(effectivePerson, business, rec.getJob()).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, rec.getJob());
 			}
 		}
 		Wo wo = Wo.copier.copy(rec);

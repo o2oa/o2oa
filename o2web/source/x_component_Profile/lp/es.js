@@ -73,6 +73,7 @@ MWF.xApplication.Profile.LP = {
     "fromIdentity":"Identidad",
     "toPerson":"Persona delegada",
     "toIdentity":"Identidad delegada",
+    "keepTask": "Guardar mis tareas pendientes",
     "application":"Aplicación",
     "applicationName":"Nombre de la aplicación",
     "applicationAlias":"Alias de la aplicación",

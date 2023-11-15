@@ -375,10 +375,11 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
-		//this.empowerFrom = task.getEmpowerFromIdentity();
+		// this.empowerFrom = task.getEmpowerFromIdentity();
 		this.viewTime = task.getViewTime();
 		this.label = task.getLabel();
-		this.act = task.getAct();
+		// 必须使用这个方法.act是Transient对象
+		this.setAct(task.getAct());
 	}
 
 	public static final String PREVTASKIDENTITYLIST_FIELDNAME = "prevTaskIdentityList";

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +77,8 @@ class V2ListActivityGoBack extends BaseAction {
 			Node node = workLogTree.location(work);
 			if (null != node) {
 				Nodes nodes = workLogTree.up(node);
-				List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
+//				List<WorkLog> workLogs = truncateWorkLog(nodes, work.getGoBackActivityToken());
+				List<WorkLog> workLogs = nodes.stream().map(Node::getWorkLog).collect(Collectors.toList());
 				// 过滤掉未链接的,过滤掉退回操作,过滤掉不是manual活动的,过滤掉和当前活动一样的活动,每个活动只取最近一次的workLog,stream需要使用LinkedHashMap保证元素顺序
 				workLogs = workLogs.stream()
 						.filter(o -> Objects.equals(o.getFromActivityType(), ActivityType.manual)
@@ -101,10 +103,12 @@ class V2ListActivityGoBack extends BaseAction {
 	 * @param activityToken
 	 * @return
 	 */
-	private List<WorkLog> truncateWorkLog(Nodes nodes, String activityToken) {
+	private List<WorkLog> truncateWorkLog(Nodes nodes, String goBackActivityToken) {
 		List<WorkLog> list = new ArrayList<>();
 		nodes.forEach(o -> {
-			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), activityToken)) {
+			// if (StringUtils.equalsIgnoreCase(o.getWorkLog().getGoBackFromActivityToken(),
+			// activityToken)) {
+			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), goBackActivityToken)) {
 				list.clear();
 			} else {
 				list.add(o.getWorkLog());
@@ -173,11 +177,20 @@ class V2ListActivityGoBack extends BaseAction {
 		// 拼装上最后一次环节处理人
 		list.stream().forEach(o -> {
 			try {
-				o.setLastIdentityList(business.entityManagerContainer()
-						.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
-								TaskCompleted.activityToken_FIELDNAME, o.getActivityToken(),
-								TaskCompleted.joinInquire_FIELDNAME, true)
-						.stream().map(TaskCompleted::getIdentity).collect(Collectors.toList()));
+				List<String> identities = business.entityManagerContainer()
+						.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME, o.getActivityToken())
+						.stream().filter(t -> StringUtils.equalsIgnoreCase(t.getAct(), TaskCompleted.ACT_CREATE))
+						.flatMap(t -> Stream.of(t.getDistinguishedName(), t.getIdentity()))
+						.filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
+				if (identities.isEmpty()) {
+					identities = business.entityManagerContainer()
+							.fetchEqualAndEqual(TaskCompleted.class, Arrays.asList(TaskCompleted.identity_FIELDNAME),
+									TaskCompleted.activityToken_FIELDNAME, o.getActivityToken(),
+									TaskCompleted.joinInquire_FIELDNAME, true)
+							.stream().map(TaskCompleted::getIdentity).filter(StringUtils::isNotBlank).distinct()
+							.collect(Collectors.toList());
+				}
+				o.setLastIdentityList(identities);
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}

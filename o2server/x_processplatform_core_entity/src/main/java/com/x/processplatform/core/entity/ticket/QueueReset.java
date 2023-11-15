@@ -8,6 +8,7 @@ class QueueReset implements Reset {
 
 	@Override
 	public Collection<Ticket> reset(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
+		Tickets.interconnectedAsNext(targets);
 		List<Ticket> next = tickets.listNext(ticket);
 		targets.stream().forEach(o -> o.appendNext(next));
 		Optional<Ticket> opt = targets.stream().findFirst();

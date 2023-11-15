@@ -1,6 +1,7 @@
 package com.x.processplatform.service.processing.processor.manual;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -76,7 +77,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// manual));
 		Tickets tickets = aeiObjects.getWork().getTickets();
 		if ((null == tickets) || tickets.isEmpty()) {
-			tickets = manual.identitiesToTickets(calculateTaskDistinguishedName(aeiObjects, manual));
+			tickets = calculateTaskDistinguishedName(aeiObjects, manual);
 		}
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		// Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual,
@@ -262,30 +263,20 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> calculateTaskDistinguishedName(AeiObjects aeiObjects, Manual manual) throws Exception {
-		TaskIdentities taskIdentities = new TaskIdentities();
-//		// 先计算强制处理人
-//		if (!aeiObjects.getWork().getProperties().getManualForceTaskIdentityList().isEmpty()) {
-//			List<String> identities = new ArrayList<>();
-//			identities.addAll(aeiObjects.getWork().getProperties().getManualForceTaskIdentityList());
-//			identities = aeiObjects.business().organization().identity().list(identities);
-//			if (ListTools.isNotEmpty(identities)) {
-//				taskIdentities.addIdentities(identities);
-//			}
-//		}
+	private Tickets calculateTaskDistinguishedName(AeiObjects aeiObjects, Manual manual) throws Exception {
+		Tickets tickets = new Tickets();
 		// 计算退回的结果
-		if (taskIdentities.isEmpty()) {
-			Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
-			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_BACK))) {
-				calculateRouteTypeBack(aeiObjects, manual, taskIdentities);
-			}
+		Route route = aeiObjects.business().element().get(aeiObjects.getWork().getDestinationRoute(), Route.class);
+		if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_BACK))) {
+			tickets = calculateRouteTypeBackDistinguishedName(aeiObjects, manual);
 		}
-		if (taskIdentities.isEmpty()) {
-			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
-			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, manual, taskIdentities);
-			// 处理授权
+		if (tickets.isEmpty()) {
+			tickets = TaskTickets.translate(aeiObjects, manual);
 		}
-		return taskIdentities.identities();
+		if (tickets.isEmpty()) {
+			tickets = this.ifTaskDistinguishedNameEmptyForceToCreatorOrMaintenance(aeiObjects, manual);
+		}
+		return tickets;
 	}
 
 	// 计算处理人
@@ -314,6 +305,35 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 		this.writeToEmpowerMap(aeiObjects, taskIdentities);
 		return taskIdentities.identities();
+	}
+
+	private Tickets calculateRouteTypeBackDistinguishedName(AeiObjects aeiObjects, Manual manual) throws Exception {
+		List<WorkLog> workLogs = Stream
+				.concat(Stream.concat(aeiObjects.getUpdateWorkLogs().stream(), aeiObjects.getCreateWorkLogs().stream()),
+						aeiObjects.getWorkLogs().stream())
+				.distinct().collect(Collectors.toList());
+		WorkLogTree tree = new WorkLogTree(workLogs);
+		Node node = tree.location(aeiObjects.getWork());
+		List<String> identities = new ArrayList<>();
+		if (null != node) {
+			Optional<Node> opt = tree.up(node).stream()
+					.filter(o -> StringUtils.equals(manual.getId(), o.getWorkLog().getFromActivity())).findFirst();
+			if (opt.isPresent()) {
+				List<TaskCompleted> taskCompleteds = aeiObjects.getTaskCompleteds().stream().filter(
+						o -> StringUtils.equals(opt.get().getWorkLog().getFromActivityToken(), o.getActivityToken()))
+						.filter(o -> StringUtils.equalsIgnoreCase(TaskCompleted.ACT_CREATE, o.getAct()))
+						.collect(Collectors.toList());
+				if (taskCompleteds.isEmpty()) {
+					taskCompleteds = aeiObjects.getTaskCompleteds().stream()
+							.filter(o -> StringUtils.equals(opt.get().getWorkLog().getFromActivityToken(),
+									o.getActivityToken()))
+							.filter(o -> BooleanUtils.isTrue(o.getJoinInquire())).collect(Collectors.toList());
+				}
+				identities = taskCompleteds.stream().flatMap(o -> Stream.of(o.getIdentity(), o.getDistinguishedName()))
+						.filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
+			}
+		}
+		return manual.identitiesToTickets(identities);
 	}
 
 	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
@@ -350,6 +370,44 @@ public class ManualProcessor extends AbstractManualProcessor {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * 如果没能计算到活动处理人,先判断人员活动是否有设置人员,如果有那么先返回工作创建者,再按照流程维护人,应用维护人,工作创建者,平台维护人顺序查找处理人
+	 * 
+	 * @param aeiObjects
+	 * @param manual
+	 * @param taskIdentities
+	 * @throws Exception
+	 */
+	private Tickets ifTaskDistinguishedNameEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, Manual manual)
+			throws Exception {
+		String identity = null;
+		if (!ifManualAssignTaskIdentity(manual)) {
+			identity = aeiObjects.business().organization().identity().get(aeiObjects.getWork().getCreatorIdentity());
+		}
+		if (StringUtils.isEmpty(identity) && StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
+			identity = aeiObjects.business().organization().identity()
+					.get(aeiObjects.getProcess().getMaintenanceIdentity());
+		}
+		if (StringUtils.isEmpty(identity)
+				&& StringUtils.isNotBlank(aeiObjects.getApplication().getMaintenanceIdentity())) {
+			identity = aeiObjects.business().organization().identity()
+					.get(aeiObjects.getApplication().getMaintenanceIdentity());
+		}
+		if (StringUtils.isEmpty(identity)) {
+			identity = aeiObjects.business().organization().identity().get(aeiObjects.getWork().getCreatorIdentity());
+		}
+		if (StringUtils.isEmpty(identity)
+				&& StringUtils.isNotBlank(Config.processPlatform().getMaintenanceIdentity())) {
+			identity = aeiObjects.business().organization().identity()
+					.get(Config.processPlatform().getMaintenanceIdentity());
+		}
+		if (StringUtils.isEmpty(identity)) {
+			throw new ExceptionExpectedEmpty(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
+					aeiObjects.getActivity().getName(), aeiObjects.getActivity().getId());
+		}
+		return manual.identitiesToTickets(Arrays.asList(identity));
 	}
 
 	/**
@@ -514,7 +572,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		} else {
 			if (tickets.isEmpty()) {
 				// 在添加分支的情况下需要在这里重新计算matrix
-				tickets = manual.identitiesToTickets(calculateTaskIdentities(aeiObjects, manual));
+				tickets = calculateTaskDistinguishedName(aeiObjects, manual);
 			}
 			switch (manual.getManualMode()) {
 			case parallel:

@@ -73,6 +73,7 @@ MWF.xApplication.Profile.LP = {
         "fromIdentity":"身份",
         "toPerson":"委托人员",
         "toIdentity":"委托身份",
+        "keepTask": "保留我的待办",
         "application":"应用",
         "applicationName":"应用名称",
         "applicationAlias":"应用别名",

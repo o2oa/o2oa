@@ -197,6 +197,12 @@ public class WorkLogTree {
 		return os;
 	}
 
+	/**
+	 * 不包含当前节点
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public Nodes down(Node node) {
 		Nodes ns = new Nodes();
 		for (Node o : node.children) {
@@ -236,6 +242,12 @@ public class WorkLogTree {
 		return nodes;
 	}
 
+	/**
+	 * 包含当前节点
+	 * 
+	 * @param n
+	 * @return
+	 */
 	public Nodes rootTo(Node n) {
 		Nodes os = new Nodes();
 		Nodes loop = new Nodes();
