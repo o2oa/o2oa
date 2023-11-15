@@ -6,10 +6,10 @@ package com.x.processplatform.core.entity.content;
  */
 public enum HandoverStatusEnum {
 
-	WAIT("wait", "待处理"),
+	WAIT("wait", "待运行"),
 	CANCEL("cancel", "已取消"),
-	PROCESSING("processing", "处理中"),
-	PROCESSED("processed", "已处理");
+	PROCESSING("processing", "运行中"),
+	PROCESSED("processed", "运行完成");
 
 	private String value;
 	private String name;

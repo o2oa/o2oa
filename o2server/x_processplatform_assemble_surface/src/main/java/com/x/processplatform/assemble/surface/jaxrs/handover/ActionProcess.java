@@ -11,7 +11,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Handover;
 import com.x.processplatform.core.entity.content.HandoverStatusEnum;
 
-class ActionCancel extends BaseAction {
+class ActionProcess extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -21,13 +21,13 @@ class ActionCancel extends BaseAction {
 				throw new ExceptionEntityNotExist(id);
 			}
 			if(!HandoverStatusEnum.WAIT.getValue().equals(handover.getStatus())){
-				throw new ExceptionHasProcess("不能取消");
+				throw new ExceptionHasProcess("不能再次运行");
 			}
 			if (!business.ifPersonCanManageApplicationOrProcess(effectivePerson, "", "")) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(Handover.class);
-			handover.setStatus(HandoverStatusEnum.CANCEL.getValue());
+			handover.setStatus(HandoverStatusEnum.PROCESSING.getValue());
 			emc.commit();
 			Wo wo = new Wo(true);
 			result.setData(wo);

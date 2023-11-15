@@ -391,7 +391,7 @@ public class HandoverJob extends AbstractJob {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Handover> root = cq.from(Handover.class);
-			Predicate p = cb.equal(root.get(Handover_.status), HandoverStatusEnum.WAIT.getValue());
+			Predicate p = cb.equal(root.get(Handover_.status), HandoverStatusEnum.PROCESSING.getValue());
 			cq.select(root.get(Handover_.id)).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
 			return em.createQuery(cq).setMaxResults(10).getResultList();
 		}
