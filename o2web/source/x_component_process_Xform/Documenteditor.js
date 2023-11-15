@@ -1481,7 +1481,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.filetextEditor.element.$.store("scale", this.scale);
         }
 
-        this._pageMargin();
+        if (this.options.pageShow!=="double") this._pageMargin();
     },
 
     _switchReadOrEdit: function(){
@@ -2056,8 +2056,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.zoomSelectAction.set("html", options);
         this.zoomSelectAction.addEvent("change", function(e){
             this.scaleTo(e.target.options[e.target.selectedIndex].value);
-            o2.UD.putData("documenteditorScale", {"scale": this.scale});
-            this.documenteditorScale = this.scale;
+
+            if (this.options.pageShow!=="double"){
+                o2.UD.putData("documenteditorScale", {"scale": this.scale});
+                this.documenteditorScale = this.scale;
+            }
+
         }.bind(this));
 
         this.zoomAddAction.addEvent("click", function(){
@@ -2070,8 +2074,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (v<0.5) v = 0.5;
             if (v>2) v = 2;
             this.scaleTo(v);
-            o2.UD.putData("documenteditorScale", {"scale": this.scale});
-            this.documenteditorScale = this.scale;
+            if (this.options.pageShow!=="double") {
+                o2.UD.putData("documenteditorScale", {"scale": this.scale});
+                this.documenteditorScale = this.scale;
+            }
         }.bind(this));
         this.zoomSubAction.addEvent("click", function(){
             var i = (this.scale/0.05).toInt();
@@ -2082,8 +2088,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (v<0.5) v = 0.5;
             if (v>2) v = 2;
             this.scaleTo(v);
-            o2.UD.putData("documenteditorScale", {"scale": this.scale});
-            this.documenteditorScale = this.scale;
+            if (this.options.pageShow!=="double") {
+                o2.UD.putData("documenteditorScale", {"scale": this.scale});
+                this.documenteditorScale = this.scale;
+            }
         }.bind(this));
     },
     _fullScreen: function(){

@@ -82,14 +82,15 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
 
     _loadVue: function(callback){
-        var flag = (o2.session.isDebugger && this.form.app.inBrowser);
-        var vue = flag ? "vue_develop" : "vue";
+        // var flag = (o2.session.isDebugger && this.form.app.inBrowser);
+        // var vue = flag ? "vue_develop" : "vue";
         //var vueName = flag ? "Vue" : "Cn";
         // if (!window.Vue || window.Vue.name!==vueName){
         //     o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
         // }else{
         //     if (callback) callback();
         // }
+        var vue = "vue";
         o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
     },
     _mountVueApp: function(){
