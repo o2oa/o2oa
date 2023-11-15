@@ -127,7 +127,7 @@ public class Handover extends SliceJpaObject {
 	private String scheme;
 
 	public static final String status_FIELDNAME = "status";
-	@FieldDescribe("状态：待处理|已处理.")
+	@FieldDescribe("状态：wait：待运行|processing：运行中|processed：运行完成|cancel：已取消.")
 	@Column(length = length_64B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String status;
