@@ -1466,16 +1466,28 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
     },
 
     _ok: function (data, callback) {
+        debugger;
+        data.fromIdentity = data.fromPerson;
+        data.toIdentity = data.toPerson;
+        var p1 = o2.Actions.load("x_organization_assemble_express").PersonAction.listWithIdentityObject({ identityList: [data.fromIdentity]});
+        var p2 = o2.Actions.load("x_organization_assemble_express").PersonAction.listWithIdentityObject({ identityList: [data.toIdentity]});
+        Promise.all([p1, p2]).then(function (arr) {
+            if(arr[0].data && arr[0].data.length)data.fromPerson = arr[0].data[0].distinguishedName;
+            if(arr[1].data && arr[1].data.length)data.toPerson = arr[1].data[0].distinguishedName;
+            this.__ok( data, callback );
+        }.bind(this))
+    },
+    __ok: function (data, callback) {
         //data 是表单的数据， callback 是正确的回调
         //data.
 
         var submitData = [];
         //数据处理
         var sdata = {};
-        sdata.fromIdentity = data.fromPerson;
-        sdata.fromPerson = data.fromPerson.split("@")[0];
-        sdata.toIdentity = data.toPerson;
-        sdata.toPerson = data.toPerson.split("@")[0];
+        sdata.fromIdentity = data.fromIdentity;
+        sdata.fromPerson = data.fromPerson;
+        sdata.toIdentity = data.toIdentity;
+        sdata.toPerson = data.toPerson;
         sdata.startTime = data.startDateInput+" "+data.startTimeInput+":00";
         sdata.completedTime = data.endDateInput+" "+data.endTimeInput+":00";
         sdata.keepEnable = data.keepTask === "true";
