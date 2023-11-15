@@ -54,8 +54,9 @@ class SingleAdd implements Add {
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
 		List<Ticket> fellow = tickets.listFellow(ticket, false);
 		List<Ticket> next = tickets.listNext(ticket);
+		fellow.addAll(targets);
 		Tickets.interconnectedAsFellow(fellow);
-		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
+		tickets.listNextTo(ticket).stream().forEach(o -> o.appendNext(targets));
 		targets.stream().forEach(o -> o.appendNext(sibling).appendNext(ticket).appendNext(next));
 		return targets;
 	}

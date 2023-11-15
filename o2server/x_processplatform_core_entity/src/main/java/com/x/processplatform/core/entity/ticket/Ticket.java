@@ -126,8 +126,8 @@ public class Ticket implements Serializable {
 		return appendNext(Arrays.asList(tickets));
 	}
 
-	public Ticket appendSibling(List<Ticket> list) {
-		list.stream().forEach(o -> {
+	public Ticket appendSibling(Collection<Ticket> collection) {
+		collection.stream().forEach(o -> {
 			if (!StringUtils.equals(this.label(), o.label())) {
 				if (!this.sibling().contains(o.label())) {
 					this.sibling().add(o.label());
@@ -140,8 +140,8 @@ public class Ticket implements Serializable {
 		return this;
 	}
 
-	public Ticket appendFellow(List<Ticket> list) {
-		list.stream().forEach(o -> {
+	public Ticket appendFellow(Collection<Ticket> collection) {
+		collection.stream().forEach(o -> {
 			if (!StringUtils.equals(this.label(), o.label())) {
 				if (!this.fellow().contains(o.label())) {
 					this.fellow().add(o.label());
@@ -154,8 +154,8 @@ public class Ticket implements Serializable {
 		return this;
 	}
 
-	public Ticket appendNext(List<Ticket> list) {
-		list.stream().forEach(o -> {
+	public Ticket appendNext(Collection<Ticket> collection) {
+		collection.stream().forEach(o -> {
 			if (!StringUtils.equals(this.label(), o.label())) {
 				this.next().add(o.label());
 			}

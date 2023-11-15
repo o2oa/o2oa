@@ -36,6 +36,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Rollba
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
 import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.TaskTickets;
 
 class V2Rollback extends BaseAction {
 
@@ -142,6 +143,10 @@ class V2Rollback extends BaseAction {
 				aeiObjects.getWorkLogs().stream().filter(o -> activityTokens.contains(o.getFromActivityToken()))
 						.forEach(aeiObjects.getDeleteWorkLogs()::add);
 
+				aeiObjects.getReviews().stream()
+						.filter(o -> o.getCreateTime().getTime() > workLog.getCreateTime().getTime())
+						.forEach(aeiObjects.getDeleteReviews()::add);
+
 				List<String> workIds = ListUtils.subtract(workOfNodes(nodes), ListTools.toList(work.getId()));
 
 				aeiObjects.getWorks().stream().filter(o -> workIds.contains(o.getId()))
@@ -149,28 +154,7 @@ class V2Rollback extends BaseAction {
 
 				update(business, work, workLog);
 
-//				List<String> manualTaskIdentityList = new ArrayList<>();
-//
-//				List<TaskCompleted> taskCompleteds = new ArrayList<>();
-//
-//				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
-//					// 如果指定了回溯人员
-//					taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-//							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-//							TaskCompleted.DISTINGUISHEDNAME_FIELDNAME, param.distinguishedNameList);
-//				} else {
-//					taskCompleteds = emc.listEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-//							work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
-//							TaskCompleted.joinInquire_FIELDNAME, true);
-//				}
-//
-//				for (TaskCompleted o : taskCompleteds) {
-//					if (BooleanUtils.isTrue(o.getJoinInquire())) {
-//						aeiObjects.getDeleteTaskCompleteds().add(o);
-//					}
-//					manualTaskIdentityList.add(o.getIdentity());
-//				}
-				updateManualTaskIdentity(business, work, param.distinguishedNameList);
+				updateTickets(business, aeiObjects, param.distinguishedNameList);
 				aeiObjects.getUpdateWorks().add(work);
 				aeiObjects.commit();
 			}
@@ -207,16 +191,17 @@ class V2Rollback extends BaseAction {
 			workLog.setArrivedTime(null);
 		}
 
-		private void updateManualTaskIdentity(Business business, Work work, List<String> manualTaskIdentityList)
-				throws Exception {
-			if (Objects.equals(ActivityType.manual, work.getActivityType())) {
-				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
-				if ((null != manual) && ListTools.isNotEmpty(manualTaskIdentityList)) {
-					work.setTickets(manual.identitiesToTickets(manualTaskIdentityList));
+		private void updateTickets(Business business, AeiObjects aeiObjects,
+				List<String> distinguishedNameList) throws Exception {
+			if (Objects.equals(ActivityType.manual, aeiObjects.getWork().getActivityType())) {
+				Manual manual = (Manual) business.element().get(aeiObjects.getWork().getActivity(),
+						ActivityType.manual);
+				if ((null != manual) && ListTools.isNotEmpty(distinguishedNameList)) {
+					aeiObjects.getWork().setTickets(TaskTickets.translate(aeiObjects, manual, distinguishedNameList));
 					return;
 				}
 			}
-			work.setTickets(new Tickets());
+			aeiObjects.getWork().setTickets(new Tickets());
 		}
 
 		private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {

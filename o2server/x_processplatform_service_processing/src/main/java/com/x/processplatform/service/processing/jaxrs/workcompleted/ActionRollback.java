@@ -35,12 +35,15 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.core.express.service.processing.jaxrs.workcompleted.ActionRollbackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.workcompleted.ActionRollbackWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.TaskTickets;
 import com.x.query.core.entity.Item;
 
 class ActionRollback extends BaseAction {
@@ -135,41 +138,31 @@ class ActionRollback extends BaseAction {
 				emc.beginTransaction(Record.class);
 				emc.beginTransaction(Item.class);
 				Work work = createWork(business, workCompleted, workLog);
+				Manual manual = (Manual) business.element().get(workLog.getFromActivity(), ActivityType.manual);
+				emc.persist(work, CheckPersistType.all);
+				restoreData(business, workCompleted);
+				disconnectWorkLog(work, workLog);
+				rollbackTaskCompleted(business, work, nodes, workLog,
+						emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()));
+				rollbackRead(business, work, nodes, workLog,
+						emc.listEqual(Read.class, Read.job_FIELDNAME, work.getJob()));
+				rollbackReadCompleted(business, work, nodes, workLog,
+						emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()));
+				rollbackReview(business, work, nodes, emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
+				rollbackRecord(business, work, nodes, workLog,
+						emc.listEqual(Record.class, Record.job_FIELDNAME, work.getJob()));
+				rollbackWorkLog(business, work, nodes, workLogs);
+				rollbackAttachment(business, work,
+						emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob()));
 				if (ListTools.isNotEmpty(param.distinguishedNameList)) {
-					Manual manual = (Manual) business.element().get(workLog.getFromActivity(), ActivityType.manual);
-					work.setTickets(manual.identitiesToTickets(param.distinguishedNameList));
+					work.setTickets(
+							TaskTickets.translate(new AeiObjects(business, work, manual, new ProcessingAttributes()),
+									manual, param.distinguishedNameList));
 				} else {
 					work.setTickets(null);
 				}
-				emc.persist(work, CheckPersistType.all);
-
-				restoreData(business, workCompleted);
-
-				disconnectWorkLog(work, workLog);
-
-				rollbackTaskCompleted(business, work, nodes, workLog,
-						emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()));
-
-				rollbackRead(business, work, nodes, workLog,
-						emc.listEqual(Read.class, Read.job_FIELDNAME, work.getJob()));
-
-				rollbackReadCompleted(business, work, nodes, workLog,
-						emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()));
-
-				rollbackReview(business, work, nodes, emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
-
-				rollbackRecord(business, work, nodes, workLog,
-						emc.listEqual(Record.class, Record.job_FIELDNAME, work.getJob()));
-
-				rollbackWorkLog(business, work, nodes, workLogs);
-
-				rollbackAttachment(business, work,
-						emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob()));
-
 				emc.remove(workCompleted);
-
 				emc.commit();
-
 				ActionResult<Wo> result = new ActionResult<>();
 				Wo wo = new Wo();
 				wo.setId(work.getId());
@@ -221,14 +214,18 @@ class ActionRollback extends BaseAction {
 		private void rollbackTaskCompleted(Business business, Work work, Nodes nodes, WorkLog workLog,
 				List<TaskCompleted> list) throws Exception {
 			for (TaskCompleted o : list) {
-				if (StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
+				if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())) {
+					business.entityManagerContainer().remove(o);
+					MessageFactory.taskCompleted_delete(o);
+				} else if (StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 					o.setJoinInquire(false);
 					o.setCompleted(false);
 					o.setWorkCompleted("");
 					o.setWork(work.getId());
-				} else if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())) {
-					business.entityManagerContainer().remove(o);
-					MessageFactory.taskCompleted_delete(o);
+				} else {
+					o.setCompleted(false);
+					o.setWorkCompleted("");
+					o.setWork(work.getId());
 				}
 			}
 		}

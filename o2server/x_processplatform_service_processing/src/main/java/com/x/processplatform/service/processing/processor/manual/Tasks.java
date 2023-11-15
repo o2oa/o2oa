@@ -150,7 +150,7 @@ public class Tasks {
 		}
 	}
 
-	private static EmpowerLog createEmpowerLog(Work work, String fromIdentity, String toIdentity) {
+	private static EmpowerLog createEmpowerLog(Work work, String fromIdentity,  String toIdentity) {
 		return new EmpowerLog().setApplication(work.getApplication()).setApplicationAlias(work.getApplicationAlias())
 				.setApplicationName(work.getApplicationName()).setProcess(work.getProcess())
 				.setProcessAlias(work.getProcessAlias()).setProcessName(work.getProcessName()).setTitle(work.getTitle())

@@ -4,13 +4,13 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class QiyeweixinBaseMessage extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 3912873590699285995L;
 
 	private String touser = "";
 	private String toparty = "";
 	private String totag = "";
 	private Long agentid = 0L;
 	private String msgtype;
-
 
 	public String getMsgtype() {
 		return msgtype;

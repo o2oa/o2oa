@@ -7,6 +7,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class EmpowerLog extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -2962512888249730611L;
+
 	@FieldDescribe("身份.")
 	private String fromIdentity;
 
