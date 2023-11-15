@@ -51,7 +51,7 @@
         <BaseBoolean v-model:value="appStyle.systemMessageCanClick" @change="(value)=>{appStyle.systemMessageCanClick = value; saveAppStyle(appStyle)}"></BaseBoolean>
       </div>
 
-      <BaseItem
+      <!-- <BaseItem
           :title="lp._appConfig.appExitAlert"
           :info="lp._appConfig.appExitAlertInfo"
           :config="appStyle.appExitAlert"
@@ -65,7 +65,7 @@
           :config="appStyle.contactPermissionView"
           :allowEditor="true"
           @changeConfig="(value)=>{appStyle.contactPermissionView = value; saveAppStyle(appStyle)}"
-      ></BaseItem>
+      ></BaseItem> -->
 
       <div class="item_title">{{lp._appConfig.nativeAppList}}</div>
       <div class="item_info" v-html="lp._appConfig.nativeAppListInfo"></div>
