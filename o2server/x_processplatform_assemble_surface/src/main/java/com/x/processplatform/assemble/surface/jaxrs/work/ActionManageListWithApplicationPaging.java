@@ -9,7 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,6 +31,8 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Review_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.content.Work_;
@@ -68,66 +72,66 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application,
 			Wi wi) throws Exception {
-		Predicate p = null;
-		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
-			p = this.toFilterPredicate(business, application.getId(), wi);
-		} else {
-			List<String> processList = business.process().listControllableProcess(effectivePerson, application);
-			if (ListTools.isNotEmpty(processList)) {
-				if (ListTools.isEmpty(wi.getProcessList())) {
-					wi.setProcessList(processList);
-				} else {
-					wi.getProcessList().retainAll(processList);
-					if (ListTools.isEmpty(wi.getProcessList())) {
-						return null;
-					}
-				}
-				p = this.toFilterPredicate(business, application.getId(), wi);
-			}
-		}
-		return p;
-	}
-
-	private Predicate toFilterPredicate(Business business, String appId, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Work.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Work> cq = cb.createQuery(Work.class);
 		Root<Work> root = cq.from(Work.class);
-		Predicate p = cb.equal(root.get(Work_.application), appId);
-
-		p = predicateWorkThroughManualWorkCreateTypeWorkStatus(p, cb, root, wi);
-		p = predicateStringValue(p, cb, root, wi);
-		p = predicateWorkJob(p, cb, root, wi);
-		p = predicateStartTimeEndTime(p, cb, root, wi);
-		p = predicateCreatorPersonCreatorUnitActivityName(business, p, cb, root, wi);
-
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
-				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
-			} else {
-				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
-			}
+		Predicate p = null;
+		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
+			p = predicateApplication(cb, root, application);
+		} else {
+			p = predicateProcess(effectivePerson, business, cb, cq, root, application, wi);
 		}
-
-		if (StringUtils.isNoneBlank(wi.getKey())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p, cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-
+		p = cb.and(p, predicateWorkThroughManualWorkCreateTypeWorkStatus(cb, root, wi));
+		p = cb.and(p, predicateStringValue(cb, root, wi));
+		p = cb.and(p, predicateWorkJob(cb, root, wi));
+		p = cb.and(p, predicateStartTimeEndTime(cb, root, wi));
+		p = cb.and(p, predicateCreatorPersonCreatorUnitActivityName(business, cb, root, wi));
 		if (StringUtils.isNotEmpty(wi.getTitle())) {
 			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
 			p = cb.and(p, cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
-
 		return p;
 	}
 
-	private Predicate predicateCreatorPersonCreatorUnitActivityName(Business business, Predicate p, CriteriaBuilder cb,
+	private Predicate predicateApplication(CriteriaBuilder cb, Root<Work> root, Application application) {
+		return cb.equal(root.get(Work_.application), application.getId());
+	}
+
+	private Predicate predicateProcess(EffectivePerson effectivePerson, Business business, CriteriaBuilder cb,
+			CriteriaQuery<Work> cq, Root<Work> root, Application application, Wi wi) throws Exception {
+		List<String> processes = ListUtils.intersection(wi.getProcessList(),
+				business.process().listWithApplication(application));
+		List<String> controllableProcesses = ListUtils.intersection(processes,
+				business.process().listControllableProcess(effectivePerson, application));
+		List<String> uncontrollableProcesses = ListUtils.subtract(processes,
+				business.process().listControllableProcess(effectivePerson, application));
+		Predicate predicate = null;
+		if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
+			predicate = root.get(Work_.process).in(controllableProcesses);
+		} else {
+			predicate = root.get(Work_.process).in(business.process().listEditionProcess(controllableProcesses));
+		}
+		Subquery<Review> subQuery = cq.subquery(Review.class);
+		Root<Review> reviewroot = subQuery
+				.from(business.entityManagerContainer().get(Review.class).getMetamodel().entity(Review.class));
+		subQuery.select(reviewroot);
+		CriteriaBuilder reviewcb = business.entityManagerContainer().get(Review.class).getCriteriaBuilder();
+		subQuery.where(reviewcb.and(reviewcb.equal(reviewroot.get(Review_.permissionWrite), true),
+				(BooleanUtils.isNotTrue(wi.getRelateEditionProcess())
+						? reviewroot.get(Review_.process).in(uncontrollableProcesses)
+						: reviewroot.get(Review_.process)
+								.in(business.process().listEditionProcess(controllableProcesses))),
+				reviewcb.equal(reviewroot.get(Review_.job), root.get(Work_.job))));
+		return cb.and(predicate, cb.exists(subQuery));
+	}
+
+	private Predicate predicateCreatorPersonCreatorUnitActivityName(Business business, CriteriaBuilder cb,
 			Root<Work> root, Wi wi) throws Exception {
+		Predicate p = cb.conjunction();
 		if (ListTools.isNotEmpty(wi.getCredentialList())) {
-			List<String> person_ids = business.organization().person().list(wi.getCredentialList());
-			person_ids = ListTools.isEmpty(person_ids) ? wi.getCredentialList() : person_ids;
-			p = cb.and(p, root.get(Work_.creatorPerson).in(person_ids));
+			p = cb.and(p,
+					root.get(Work_.creatorPerson).in(business.organization().person().list(wi.getCredentialList())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
@@ -138,8 +142,8 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate predicateStartTimeEndTime(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi)
-			throws Exception {
+	private Predicate predicateStartTimeEndTime(CriteriaBuilder cb, Root<Work> root, Wi wi) throws Exception {
+		Predicate p = cb.conjunction();
 		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
 			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
 		}
@@ -149,7 +153,8 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate predicateWorkJob(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi) {
+	private Predicate predicateWorkJob(CriteriaBuilder cb, Root<Work> root, Wi wi) {
+		Predicate p = cb.conjunction();
 		if (ListTools.isNotEmpty(wi.getWorkList())) {
 			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
 		}
@@ -159,8 +164,8 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate predicateWorkThroughManualWorkCreateTypeWorkStatus(Predicate p, CriteriaBuilder cb,
-			Root<Work> root, Wi wi) {
+	private Predicate predicateWorkThroughManualWorkCreateTypeWorkStatus(CriteriaBuilder cb, Root<Work> root, Wi wi) {
+		Predicate p = cb.conjunction();
 		if (null != wi.getWorkThroughManual()) {
 			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
 		}
@@ -179,7 +184,8 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		return p;
 	}
 
-	private Predicate predicateStringValue(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi) {
+	private Predicate predicateStringValue(CriteriaBuilder cb, Root<Work> root, Wi wi) {
+		Predicate p = cb.conjunction();
 		if (StringUtils.isNotBlank(wi.getStringValue01())) {
 			p = cb.and(p, cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
 		}
