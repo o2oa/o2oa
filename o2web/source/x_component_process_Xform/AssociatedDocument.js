@@ -389,9 +389,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     "isExpand": this.json.isExpand || "no",
                     "showActionbar" : this.json.actionbar === "show",
                     "filter": filter,
-                    "defaultSelectedScript" : function (obj) {
-                        return selectedJobs.contains(obj.data.bundle);
-                    },
+                    //"defaultSelectedScript" : function (obj) {
+                    //    return selectedJobs.contains(obj.data.bundle);
+                    //},
                     "selectedAbleScript" : function (obj) {
                         return !disableSelectJobs.contains(obj.data.bundle);
                     }
@@ -447,23 +447,30 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
 
                                 var array = [];
                                 _self.viewList.each(function (view) {
-                                    var orginData = [], orginBundles = _self.selectedBundleMap[view.json.id] || [];
-                                    orginData = orginBundles.map(function(bundle){
-                                        return {
-                                            bundle: bundle,
-                                            type: view.json.type,
-                                            view: view.json.id
-                                        };
+                                    //var orginData = [], orginBundles = _self.selectedBundleMap[view.json.id] || [];
+                                    //orginData = orginBundles.map(function(bundle){
+                                    //    return {
+                                    //        bundle: bundle,
+                                    //        type: view.json.type,
+                                    //        view: view.json.id
+                                    //    };
+                                    //}.bind(this));
+                                    //var data = [], data1 = view.getData();
+                                    //data1.each(function (d) {
+                                    //    if( !orginBundles.contains( d.bundle ) ){
+                                    //       d.type = view.json.type;
+                                    //        d.view = view.json.id;
+                                    //        data.push( d );
+                                    //    }
+                                    //}.bind(this));
+                                    //array = array.concat(orginData, data);
+
+                                    var data = view.getData().map(function (d) {
+                                        d.type = view.json.type;
+                                        d.view = view.json.id;
+                                        return d;
                                     }.bind(this));
-                                    var data = [], data1 = view.getData();
-                                    data1.each(function (d) {
-                                        if( !orginBundles.contains( d.bundle ) ){
-                                            d.type = view.json.type;
-                                            d.view = view.json.id;
-                                            data.push( d );
-                                        }
-                                    }.bind(this));
-                                    array = array.concat(orginData, data);
+                                    array = array.concat(data);
                                 }.bind(this));
 
                                 _self.fireEvent("selectResult", [array]);
@@ -515,6 +522,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                                     "isloadActionbar": this.status !== "showResult",
                                     "isloadSearchbar": this.status !== "showResult",
                                     "style": "select",
+                                    "defaultBundles": this.selectedBundleMap[viewJson.viewId] || [],
                                     "onLoadView": function(){
                                         this.fireEvent("loadView");
                                     }.bind(this),
