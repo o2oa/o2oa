@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -701,28 +702,45 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
 			List<TaskCompleted> taskCompleteds) {
-		tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
-			if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
-				if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
-						&& BooleanUtils.isTrue(t.getJoinInquire())) {
-					tickets.completed(o);
-				} else {
-					o.completed(true);
+		// 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
+		if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson())) {
+			List<List<Ticket>> list = tickets.bubble().stream().map(o -> {
+				String person = "";
+				try {
+					person = aeiObjects.business().organization().person().getWithIdentity(o.distinguishedName());
+				} catch (Exception e) {
+					LOGGER.error(e);
 				}
-			}
-		}));
-//			List<String> identities = matrix.flat();
-//			taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
-//			// 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
-//			if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson()) && (!identities.isEmpty())) {
-//				List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
-//						String.class, true, true);
-//				aeiObjects.business().organization().person().listPairIdentity(identities).stream().forEach(p -> {
-//					if (people.contains(p.getPerson())) {
-//						matrix.completed(p.getIdentity());
-//					}
-//				});
-//			}
+				return Pair.of(person, o);
+			}).collect(Collectors.groupingBy(Pair::first)).values().stream()
+					.map(o -> o.stream().map(Pair::second).collect(Collectors.toList())).collect(Collectors.toList());
+			taskCompleteds.stream().forEach(t -> {
+				Optional<List<Ticket>> opt = list.stream()
+						.filter(o -> o.stream().anyMatch(p -> StringUtils.equalsIgnoreCase(p.label(), t.getLabel())))
+						.findFirst();
+				if (opt.isPresent()) {
+					opt.get().forEach(o -> {
+						if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
+								&& BooleanUtils.isTrue(t.getJoinInquire())) {
+							tickets.completed(o);
+						} else {
+							o.completed(true);
+						}
+					});
+				}
+			});
+		} else {
+			tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
+				if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
+					if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
+							&& BooleanUtils.isTrue(t.getJoinInquire())) {
+						tickets.completed(o);
+					} else {
+						o.completed(true);
+					}
+				}
+			}));
+		}
 	}
 
 	@Override
