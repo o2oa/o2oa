@@ -40,6 +40,11 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}, applicationFlag:{}, jsonElement:{}.",
+				effectivePerson::getDistinguishedName, () -> page, () -> size, () -> applicationFlag,
+				() -> jsonElement);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -90,12 +95,91 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), appId);
 
+		p = predicateWorkThroughManualWorkCreateTypeWorkStatus(p, cb, root, wi);
+		p = predicateStringValue(p, cb, root, wi);
+		p = predicateWorkJob(p, cb, root, wi);
+		p = predicateStartTimeEndTime(p, cb, root, wi);
+		p = predicateCreatorPersonCreatorUnitActivityName(business, p, cb, root, wi);
+
+		if (ListTools.isNotEmpty(wi.getProcessList())) {
+			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
+			} else {
+				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
+		}
+
+		if (StringUtils.isNoneBlank(wi.getKey())) {
+			String key = StringTools.escapeSqlLikeKey(wi.getKey());
+			p = cb.and(p, cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = cb.and(p, cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
+		}
+
+		return p;
+	}
+
+	private Predicate predicateCreatorPersonCreatorUnitActivityName(Business business, Predicate p, CriteriaBuilder cb,
+			Root<Work> root, Wi wi) throws Exception {
+		if (ListTools.isNotEmpty(wi.getCredentialList())) {
+			List<String> person_ids = business.organization().person().list(wi.getCredentialList());
+			person_ids = ListTools.isEmpty(person_ids) ? wi.getCredentialList() : person_ids;
+			p = cb.and(p, root.get(Work_.creatorPerson).in(person_ids));
+		}
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
+		}
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
+		}
+		return p;
+	}
+
+	private Predicate predicateStartTimeEndTime(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi)
+			throws Exception {
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
+			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
+		}
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getEndTime()))) {
+			p = cb.and(p, cb.lessThan(root.get(Work_.startTime), DateTools.parse(wi.getEndTime())));
+		}
+		return p;
+	}
+
+	private Predicate predicateWorkJob(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi) {
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
+		}
+		return p;
+	}
+
+	private Predicate predicateWorkThroughManualWorkCreateTypeWorkStatus(Predicate p, CriteriaBuilder cb,
+			Root<Work> root, Wi wi) {
 		if (null != wi.getWorkThroughManual()) {
 			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
 		}
 		if (StringUtils.isNotBlank(wi.getWorkCreateType())) {
 			p = cb.and(p, cb.equal(root.get(Work_.workCreateType), wi.getWorkCreateType()));
 		}
+		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
+			if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())) {
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.start));
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())) {
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.processing));
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())) {
+				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.hanging));
+			}
+		}
+		return p;
+	}
+
+	private Predicate predicateStringValue(Predicate p, CriteriaBuilder cb, Root<Work> root, Wi wi) {
 		if (StringUtils.isNotBlank(wi.getStringValue01())) {
 			p = cb.and(p, cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
 		}
@@ -126,56 +210,6 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		if (StringUtils.isNotBlank(wi.getStringValue10())) {
 			p = cb.and(p, cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
 		}
-
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
-				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
-			} else {
-				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
-			}
-		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
-		}
-		if (ListTools.isNotEmpty(wi.getJobList())) {
-			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Work_.startTime), DateTools.parse(wi.getEndTime())));
-		}
-		if (ListTools.isNotEmpty(wi.getCredentialList())) {
-			List<String> person_ids = business.organization().person().list(wi.getCredentialList());
-			person_ids = ListTools.isEmpty(person_ids) ? wi.getCredentialList() : person_ids;
-			p = cb.and(p, root.get(Work_.creatorPerson).in(person_ids));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
-		}
-		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
-			if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.start));
-			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.processing));
-			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.hanging));
-			}
-		}
-		if (StringUtils.isNoneBlank(wi.getKey())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p, cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-
-		if (StringUtils.isNotEmpty(wi.getTitle())) {
-			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
-			p = cb.and(p, cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-
 		return p;
 	}
 
