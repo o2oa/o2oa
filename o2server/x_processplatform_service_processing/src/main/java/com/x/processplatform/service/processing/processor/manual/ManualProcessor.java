@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -552,18 +553,18 @@ public class ManualProcessor extends AbstractManualProcessor {
 		if ((null == tickets) || tickets.isEmpty()) {
 			return executingMatrix(aeiObjects, manual);
 		}
-		aeiObjects.empower();
-		List<Work> results = new ArrayList<>();
-		checkValidTickets(aeiObjects, tickets);
-		// 由于退回存在空名称的路由
-		List<TaskCompleted> taskCompleteds = aeiObjects
-				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-		executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, tickets, taskCompleteds);
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
 				.push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 						Objects.toString(manual.getManualMode(), ""),
 						tickets.bubble().stream().map(Ticket::distinguishedName).collect(Collectors.toList())));
+		// aeiObjects.empower();
+		List<Work> results = new ArrayList<>();
+		// checkValidTickets(aeiObjects, tickets);
+		// 由于退回存在空名称的路由
+		List<TaskCompleted> taskCompleteds = aeiObjects
+				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+		executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, tickets, taskCompleteds);
 		if (tickets.bubble().isEmpty() && (!taskCompleteds.isEmpty())) {
 			results.add(aeiObjects.getWork());
 			List<Task> tasks = aeiObjects.getTasks().stream().filter(
@@ -573,20 +574,18 @@ public class ManualProcessor extends AbstractManualProcessor {
 			uncompletedTaskToRead(aeiObjects, manual, tasks);
 		} else {
 			if (tickets.isEmpty()) {
-				// 在添加分支的情况下需要在这里重新计算matrix
+				// 在添加分支的情况下需要在这里重新计算
 				tickets = calculateTaskDistinguishedName(aeiObjects, manual);
 			}
-			switch (manual.getManualMode()) {
-			case parallel:
-				this.parallel(aeiObjects, manual, tickets, taskCompleteds);
-				break;
-			case queue:
-				this.queue(aeiObjects, manual, tickets, taskCompleteds);
-				break;
-			case grab:
-			case single:
-			default:
-				this.single(aeiObjects, manual, tickets, taskCompleteds);
+			if (soleDirect(aeiObjects, taskCompleteds)) {
+				tickets.list(null, null, null).stream().forEach(o -> o.enable(false));
+				List<Task> tasks = aeiObjects.getTasks().stream().filter(t -> StringUtils
+						.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+						.collect(Collectors.toList());
+				tasks.stream().forEach(aeiObjects::deleteTask);
+				uncompletedTaskToRead(aeiObjects, manual, tasks);
+			} else {
+				task(aeiObjects, manual, tickets);
 			}
 			// 可能在处理过程中删除了所有的待办,比如有优先路由
 			if (tickets.bubble().isEmpty()) {
@@ -614,16 +613,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 		aeiObjects.getUpdateWorkLogs().add(fromWorkLog);
 	}
 
-	private void checkValidTickets(AeiObjects aeiObjects, Tickets tickets) throws Exception {
-		List<Ticket> list = tickets.bubble();
-		List<String> names = list.stream().map(Ticket::distinguishedName).collect(Collectors.toList());
-		List<String> validNames = aeiObjects.business().organization().distinguishedName().list(names);
-		list.stream().forEach(o -> {
-			if (!validNames.contains(o.distinguishedName())) {
-				o.valid(false);
-			}
-		});
-	}
+//	private void checkValidTickets(AeiObjects aeiObjects, Tickets tickets) throws Exception {
+//		List<Ticket> list = tickets.bubble();
+//		List<String> names = list.stream().map(Ticket::distinguishedName).collect(Collectors.toList());
+//		List<String> validNames = aeiObjects.business().organization().distinguishedName().list(names);
+//		list.stream().forEach(o -> {
+//			if (!validNames.contains(o.distinguishedName())) {
+//				o.valid(false);
+//			}
+//		});
+//	}
 
 	private List<Work> executingMatrix(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
@@ -703,17 +702,23 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual, Tickets tickets,
 			List<TaskCompleted> taskCompleteds) {
 		// 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
+		Map<String, List<Ticket>> personTicketMap = tickets.bubble().stream().map(o -> {
+			String person = "";
+			try {
+				person = aeiObjects.business().organization().person().getWithIdentity(o.distinguishedName());
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return Pair.<String, Ticket>of(person, o);
+		}).collect(Collectors.groupingBy(Pair::first)).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+				o -> o.getValue().stream().map(Pair::second).collect(Collectors.toList())));
+		// 标识人员不存在的待办为valid =false
+		personTicketMap.entrySet().stream().filter(o -> StringUtils.isBlank(o.getKey()))
+				.forEach(o -> o.getValue().forEach(t -> t.valid(false)));
 		if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson())) {
-			List<List<Ticket>> list = tickets.bubble().stream().map(o -> {
-				String person = "";
-				try {
-					person = aeiObjects.business().organization().person().getWithIdentity(o.distinguishedName());
-				} catch (Exception e) {
-					LOGGER.error(e);
-				}
-				return Pair.of(person, o);
-			}).collect(Collectors.groupingBy(Pair::first)).values().stream()
-					.map(o -> o.stream().map(Pair::second).collect(Collectors.toList())).collect(Collectors.toList());
+			List<List<Ticket>> list = personTicketMap.entrySet().stream()
+					.filter(o -> StringUtils.isNotBlank(o.getKey())).map(Map.Entry::getValue)
+					.collect(Collectors.toList());
 			taskCompleteds.stream().forEach(t -> {
 				Optional<List<Ticket>> opt = list.stream()
 						.filter(o -> o.stream().anyMatch(p -> StringUtils.equalsIgnoreCase(p.label(), t.getLabel())))
@@ -730,16 +735,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 				}
 			});
 		} else {
-			tickets.bubble().stream().forEach(o -> taskCompleteds.stream().forEach(t -> {
-				if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
-					if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
-							&& BooleanUtils.isTrue(t.getJoinInquire())) {
-						tickets.completed(o);
-					} else {
-						o.completed(true);
-					}
-				}
-			}));
+			personTicketMap.entrySet().stream().filter(o -> StringUtils.isNotBlank(o.getKey()))
+					.flatMap(o -> o.getValue().stream()).forEach(o -> taskCompleteds.stream().forEach(t -> {
+						if (StringUtils.equalsIgnoreCase(o.label(), t.getLabel())) {
+							if (BooleanUtils.isTrue(o.enable()) && BooleanUtils.isTrue(o.valid())
+									&& BooleanUtils.isTrue(t.getJoinInquire())) {
+								tickets.completed(o);
+							} else {
+								o.completed(true);
+							}
+						}
+					}));
 		}
 	}
 
@@ -977,6 +983,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	@Deprecated
 	private void single(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
 			throws Exception {
 		// 是否有优先路由
@@ -1008,6 +1015,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	@Deprecated
 	private void parallel(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
 			throws Exception {
 		// 是否有优先路由
@@ -1038,6 +1046,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
+	@Deprecated
 	private void queue(AeiObjects aeiObjects, Manual manual, Tickets tickets, List<TaskCompleted> taskCompleteds)
 			throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
