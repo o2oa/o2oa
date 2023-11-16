@@ -1,9 +1,11 @@
 package com.x.processplatform.service.processing.processor.begin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -63,6 +65,25 @@ public class BeginProcessor extends AbstractBeginProcessor {
 			aeiObjects.getWork().setStartTime(new Date());
 			// 计算过期时间
 			this.calculateExpire(aeiObjects);
+			if (StringUtils.isNotEmpty(aeiObjects.getProcess().getPermissionWriteScript())
+					|| StringUtils.isNotEmpty(aeiObjects.getProcess().getPermissionWriteScriptText())) {
+				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
+						aeiObjects.getWork().getApplication(), aeiObjects.getProcess(), Business.EVENT_PERMISSIONWRITE);
+				List<String> distinguishedNames = JsonScriptingExecutor
+						.evalDistinguishedNames(cs, aeiObjects.scriptContext()).stream().distinct()
+						.collect(Collectors.toList());
+				aeiObjects.getReviews().forEach(o -> {
+					if (distinguishedNames.remove(o.getPerson()) && BooleanUtils.isNotTrue(o.getPermissionWrite())) {
+						o.setPermissionWrite(true);
+						aeiObjects.getUpdateReviews().add(o);
+					}
+				});
+				aeiObjects.business().organization().person().list(distinguishedNames).stream().forEach(o -> {
+					Review review = new Review(aeiObjects.getWork(), o);
+					review.setPermissionWrite(true);
+					aeiObjects.getCreateReviews().add(review);
+				});
+			}
 		}
 		list.add(aeiObjects.getWork());
 		return list;
