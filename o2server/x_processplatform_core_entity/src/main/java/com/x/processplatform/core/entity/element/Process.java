@@ -290,6 +290,8 @@ public class Process extends SliceJpaObject {
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
 			this.dataTraceFieldType = this.getProperties().getDataTraceFieldType();
 			this.dataTraceFieldList = this.getProperties().getDataTraceFieldList();
+			this.permissionWriteScript = this.getProperties().getPermissionWriteScript();
+			this.permissionWriteScriptText = this.getProperties().getPermissionWriteScriptText();
 		}
 	}
 
