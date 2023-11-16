@@ -55,7 +55,8 @@
         },
         "author": "",
         "license": "ISC",
-        "dependencies": {
+        "devDependencies": {
+                "@o2oa/language-tools": "^1.0.11",
                 "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
                 "docdash": "^1.2.0",
