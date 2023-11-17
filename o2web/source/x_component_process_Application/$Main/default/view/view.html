@@ -50,10 +50,12 @@
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-workCompleted"></icon></div>
                 <div class="menuItemText">{{$.lp.workcompleted}}</div>
             </div>
+            {{if $.acl.isProcessManager}}
             <div  style="padding-left:20px" class="menuItem" data-o2-element="snapMenuNode" data-o2-events="click:loadList:snap">
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-snap"></icon></div>
                 <div class="menuItemText">{{$.lp.workdelete}}</div>
             </div>
+            {{end if}}
             {{if $.acl.isAppManager}}
             <div  style="padding-left:20px" class="menuItem" data-o2-element="dictMenuNode" data-o2-events="click:loadList:dict">
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-dict"></icon></div>
