@@ -179,3 +179,5 @@ typings/
 *.lock
 *.checkstyle
 o2server/test.sh
+**/dest/
+**/dest_*/
