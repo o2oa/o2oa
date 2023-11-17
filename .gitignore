@@ -181,6 +181,6 @@ typings/
 o2server/test.sh
 **/dest/
 **/dest_*/
-**/dits/
+**/dist/
 *_bak.*
 *.bak
