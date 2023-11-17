@@ -38,6 +38,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         "isloadSearchbar": true,
         "export": false,
         "lazy": false,
+        "defaultBundles": [],
         "moduleEvents": [
             /**
              * 加载前触发。可通过this.target获取当前对象。
@@ -768,11 +769,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     this._initPage();
                     if (this.bundleItems.length){
                         if( this.noDataTextNode )this.noDataTextNode.destroy();
-                        this.loadCurrentPageData( function () {
-                            this.fireEvent("postLoad"); //用户配置的事件
-                            this.lookuping = false;
-                            if(callback)callback(this);
-                        }.bind(this));
+                            if( this.options.defaultBundles.length && !this.isDefaultDataLoaded ){
+                                this.loadDefaultData(function () {
+                                    this.loadCurrentPageData( function () {
+                                        this.fireEvent("postLoad"); //用户配置的事件
+                                        this.lookuping = false;
+                                        if(callback)callback(this);
+                                    }.bind(this));
+                                }.bind(this))
+                            }else{
+                                this.loadCurrentPageData( function () {
+                                    this.fireEvent("postLoad"); //用户配置的事件
+                                    this.lookuping = false;
+                                    if(callback)callback(this);
+                                }.bind(this));
+                            }
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
@@ -798,6 +809,36 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 }.bind(this));
             }
         }.bind(this));
+    },
+    loadDefaultData: function( callback ){
+        debugger;
+        var d = {};
+        d.bundleList = this.options.defaultBundles;
+        d.key = this.bundleKey;
+        this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+            var resultJson, viewData = json.data;
+
+            if (this.viewJson.group.column){
+                resultJson = [];
+                json.data.groupGrid.each(function (g) {
+                    resultJson = resultJson.concat( g.list );
+                })
+            }else{
+                resultJson = json.data.grid;
+            }
+
+            resultJson.each(function (data) {
+                this.selectedItems.push({
+                    data: data
+                })
+            }.bind(this));
+
+            this.isDefaultDataLoaded = true;
+            if(callback)callback();
+        }.bind(this), function () {
+            this.isDefaultDataLoaded = true;
+            if(callback)callback();
+        }, true );
     },
     loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
