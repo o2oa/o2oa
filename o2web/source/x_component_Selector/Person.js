@@ -579,6 +579,10 @@ MWF.xApplication.Selector.Person = new Class({
         }
 
         this.itemAreaScrollNode.setStyle("height", ""+height+"px");
+
+        if( this.itemSearchAreaScrollNode ){
+            this.itemSearchAreaScrollNode.setStyle("height", ""+height+"px");
+        }
     },
     getUnitIdentityCount : function(){
 
@@ -768,7 +772,7 @@ MWF.xApplication.Selector.Person = new Class({
             this.itemSearchAreaScrollNode.setStyles({
                 "display": "none",
                 "height": ""+height+"px",
-                "overflow" : "hidden"
+                "overflow" : "auto"
             });
         }
         this.itemSearchAreaNode.setStyle("display", "none");
@@ -858,7 +862,7 @@ MWF.xApplication.Selector.Person = new Class({
             this.itemSearchAreaScrollNode.setStyles({
                 "display": "none",
                 "height": ""+height+"px",
-                "overflow" : "hidden"
+                "overflow" : "auto"
             });
         }
         this.itemSearchAreaNode.setStyle("display", "none");
@@ -932,6 +936,10 @@ MWF.xApplication.Selector.Person = new Class({
             height = height - y;
 
             this.itemAreaScrollNode.setStyle("height", "" + height + "px");
+
+            if( this.itemSearchAreaScrollNode ){
+                this.itemSearchAreaScrollNode.setStyle("height", "" + height + "px");
+            }
         }
         this.itemAreaScrollNode.setStyle("overflow", "auto");
 
@@ -2050,6 +2058,10 @@ MWF.xApplication.Selector.Person = new Class({
             }
             itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.itemAreaScrollNode );
             this.itemAreaScrollNode.setStyle("height", itemAreaScrollNodeHeight);
+
+            if( this.itemSearchAreaScrollNode ){
+                this.itemSearchAreaScrollNode.setStyle("height", itemAreaScrollNodeHeight);
+            }
 
             var selectedContainerNodeHeight = nodeHeight - getOffsetY(this.selectedContainerNode);
             this.selectedContainerNode.setStyle("height", selectedContainerNodeHeight);
