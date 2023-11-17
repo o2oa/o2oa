@@ -37,7 +37,6 @@
                 <div class="menuItemCount" data-o2-element="draftCountNode"></div>
                 <div class="menuItemText">{{$.lp.draft}}</div>
             </div>
-            {{if $.acl.isProcessManager}}
             <div class="menuDivider"></div>
             <div class="menuItem" data-o2-events="">
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-zhankai"></icon></div>
@@ -55,7 +54,6 @@
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-snap"></icon></div>
                 <div class="menuItemText">{{$.lp.workdelete}}</div>
             </div>
-            {{end if}}
             {{if $.acl.isAppManager}}
             <div  style="padding-left:20px" class="menuItem" data-o2-element="dictMenuNode" data-o2-events="click:loadList:dict">
                 <div class="menuItemIcon"><icon class="o2WorkApplication icon-dict"></icon></div>
