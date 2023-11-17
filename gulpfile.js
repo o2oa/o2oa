@@ -25,6 +25,7 @@ var path = require('path');
 //var sourceMap = require('gulp-sourcemaps');
 
 var git = require('gulp-git');
+var {generate} = require('@o2oa/language-tools');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -42,7 +43,11 @@ var git = require('gulp-git');
 //     "windows": "/build/windows.tar.gz"
 // };
 
-var supportedLanguage = ["zh-cn", "en"];
+var supportedLanguage = ["zh-cn", "en", "es"];
+var translateLanguage = {
+    "en": "en",
+    "es": "spa"
+};
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
@@ -334,6 +339,16 @@ async function clear_jvm_git(cb){
     // }
     await del(['o2server/tmp/', 'o2server/jvm_git.tar.gz'], { force: true });
     cb();
+}
+
+function build_web_language_pack(){
+    return Promise.all([generate(null, translateLanguage, {
+        AK: "b1Nm4702MnZW5r3Um1cOaPlF",
+        SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
+    }), generate("o2_core", translateLanguage, {
+        AK: "b1Nm4702MnZW5r3Um1cOaPlF",
+        SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
+    })]);
 }
 
 var moduleFolder = [];
@@ -1209,6 +1224,7 @@ function chmod_servers(){
     return (shell.task('chmod 777 -R target/o2server/servers'))();
 }
 exports.build_web = gulp.series(
+    build_web_language_pack,
     build_web_module,
     build_web_minimize,
     build_web_move,

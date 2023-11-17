@@ -24,6 +24,8 @@ var git = require('gulp-git');
 var assetRev = require('gulp-o2oa-asset-rev');
 var apps = require('./gulpapps.js');
 
+var {generate} = require('@o2oa/language-tools');
+
 var ftpconfig;
 try{
     ftpconfig = require('./gulpconfig.js');
@@ -78,6 +80,21 @@ setOptions(o_options, getEvOptions(o_options.ev));
 
 var appTasks = [];
 
+function createLanguagePackTask(path){
+    let component;
+    const lps = ftpconfig.languagePack.lps, keys = ftpconfig.languagePack.accessKeys["baidu-translate"];
+
+    if (path.startsWith('x_component_')){
+        component = path.substring('x_component_'.length).replace('_', '.');
+    }else if(path==='o2_core') {
+        component = 'o2_core';
+    }
+    gulp.task(path+':LanguagePack', function(cb){
+        generate(component, lps, keys).then(()=>{
+            cb();
+        })
+    });
+}
 function createDefaultTask(path, isMin, thisOptions) {
     var pkgPath = nodePath.resolve('source', path, 'package.json');
     if (fs.existsSync(pkgPath)){
@@ -1221,17 +1238,20 @@ function createBaseConcatTask(path, isMin, thisOptions){
 var lpTasks = [];
 function getAppTask(path, isMin, thisOptions) {
     if (path==="x_component_process_Xform") {
+        createLanguagePackTask(path);
         createDefaultTask(path, isMin, thisOptions);
         createXFormConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path + " : concat");
+        return gulp.series(path+':LanguagePack', path, path + " : concat");
     }else if (path==="x_component_cms_Xform"){
+        createLanguagePackTask(path);
         createDefaultTask(path, isMin, thisOptions);
         createCMSXFormConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+" : concat");
+        return gulp.series(path+':LanguagePack', path, path+" : concat");
     }else if (path==="o2_core"){
+        createLanguagePackTask(path);
         createDefaultTask(path, isMin, thisOptions);
         createO2ConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+" : concat", path+".xDesktop : concat",  path+" : bundle");
+        return gulp.series(path+':LanguagePack',path, path+" : concat", path+".xDesktop : concat",  path+" : bundle");
     }else if (path==="x_desktop") {
         createDefaultTask(path, isMin, thisOptions);
 
@@ -1247,8 +1267,9 @@ function getAppTask(path, isMin, thisOptions) {
         return gulp.series(path, path+".base_work", path+".base_portal", path+".base_document", path+".base");
         //return gulp.series(path, path+".base_work : concat");
     }else{
+        createLanguagePackTask(path);
         createDefaultTask(path, isMin, thisOptions);
-        return gulp.series(path);
+        return gulp.series(path+':LanguagePack',path);
     }
 }
 
