@@ -1,0 +1,25 @@
+MWF.xApplication.appstore.LP = {
+    "title": "앱 스토어",
+    "all": "모두",
+    "searchPlaceholder": "검색어를 입력하세요",
+    "close": "닫기",
+    "install": "설치",
+    "installed": "설치됨",
+    "update": "업데이트",
+    "installVip": "문의하기",
+    "installing": "설치 중...",
+    "updateInfoTitle": "앱 업데이트 확인",
+    "installInfoTitle": "앱 설치 확인",
+    "updateInfo": "이 앱을 업데이트하시겠습니까? 앱을 수정한 경우, 이번 업데이트로 수정한 디자인이 대체됩니다.",
+    "installInfo": "이 앱을 설치하시겠습니까?",
+    "installSuccess": "앱 설치 성공!",
+    "contactUs": "WeChat을 스캔하여 판매 상담과 자세한 정보를 얻으세요!",
+    "phoneNumber": "400-888-0545",
+    "clickToConfig": "시스템 설정을 하려면 여기를 클릭하세요",
+    "clickToDoc": "설정 설명서를 보려면 여기를 클릭하세요",
+    "notAdmin": "죄송합니다. 앱 스토어에 액세스하려면 관리자만 접근할 수 있습니다. 권한이 부족합니다!",
+    "offlineInstall": "오프라인 설치",
+    "offlineInstallInfo": "앱 패키지를 오프라인으로 설치하려면 여기를 클릭하세요",
+
+    "configDocUrl": "https://www.o2oa.net/cms/serverdeployment/112.html"
+}

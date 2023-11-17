@@ -1,0 +1,25 @@
+MWF.xApplication.appstore.LP = {
+    "title": "アプリストア",
+    "all": "すべて",
+    "searchPlaceholder": "検索キーワードを入力してください",
+    "close": "閉じる",
+    "install": "インストール",
+    "installed": "インストール済み",
+    "update": "アップデート",
+    "installVip": "お問い合わせ",
+    "installing": "インストール中...",
+    "updateInfoTitle": "アプリのアップデート確認",
+    "installInfoTitle": "アプリのインストール確認",
+    "updateInfo": "このアプリをアップデートしますか？アプリを変更済みの場合、このアップデートで変更したデザインが置き換えられます。",
+    "installInfo": "このアプリをインストールしますか？",
+    "installSuccess": "アプリのインストールに成功しました！",
+    "contactUs": "WeChatをスキャンしてセールスコンサルタントにお問い合わせし、詳細情報を入手してください！",
+    "phoneNumber": "400-888-0545",
+    "clickToConfig": "システム設定を行うにはここをクリックしてください",
+    "clickToDoc": "設定説明を表示するにはここをクリックしてください",
+    "notAdmin": "申し訳ありませんが、アプリストアにアクセスするには管理者権限が必要です。権限が不足しています！",
+    "offlineInstall": "オフラインインストール",
+    "offlineInstallInfo": "アプリパッケージをオフラインでインストールするにはここをクリックしてください",
+
+    "configDocUrl": "https://www.o2oa.net/cms/serverdeployment/112.html"
+}

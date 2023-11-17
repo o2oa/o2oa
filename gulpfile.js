@@ -342,13 +342,15 @@ async function clear_jvm_git(cb){
 }
 
 function build_web_language_pack(){
-    return Promise.all([generate(null, translateLanguage, {
+    return generate(null, translateLanguage, {
         AK: "b1Nm4702MnZW5r3Um1cOaPlF",
         SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
-    }), generate("o2_core", translateLanguage, {
-        AK: "b1Nm4702MnZW5r3Um1cOaPlF",
-        SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
-    })]);
+    }).then(()=>{
+        return generate("o2_core", translateLanguage, {
+            AK: "b1Nm4702MnZW5r3Um1cOaPlF",
+            SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
+        });
+    });
 }
 
 var moduleFolder = [];

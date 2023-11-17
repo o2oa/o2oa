@@ -1,0 +1,135 @@
+MWF.xApplication.query = MWF.xApplication.query || {};
+MWF.xApplication.query.StatementDesigner = MWF.xApplication.query.StatementDesigner || {};
+if(!MWF.APPDSMD)MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
+MWF.xApplication.query.ViewDesigner = MWF.xApplication.query.ViewDesigner || {};
+MWF.xDesktop.requireApp("query.ViewDesigner", "lp."+MWF.language, null, false);
+MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.query.ViewDesigner.LP, {
+    "title": "쿼리 디자인",
+    "newStatement": "쿼리 설정 생성",
+    "unCategory": "분류되지 않음",
+    "statement": "쿼리 설정",
+    "property": "속성",
+    "run": "실행",
+    "runTest": "테스트 쿼리",
+    "statementType": "쿼리 유형",
+    "statementTable": "데이터 테이블",
+    "selectTable": "데이터 테이블 선택",
+    "save_success": "쿼리 설정 저장 완료!",
+    "inputStatementName": "쿼리 설정 이름을 입력하세요",
+    "saveStatementNotice" : "먼저 저장하세요!",
+    "cannotDisabledViewNotice": "뷰가 활성화되지 않았습니다",
+    "noViewNotice" : "뷰가 생성되지 않았습니다. 먼저 뷰를 생성하세요!",
+    "previewNotSelectStatementNotice" : "Select 쿼리 유형만 미리보기 가능합니다",
+    "field" : "필드",
+    "fileldSelectNote" : "- 필드를 선택한 후 쿼리에 삽입됩니다 -",
+
+    "statementFormat": "쿼리 형식:",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL 스크립트",
+    "nativeSql": "네이티브 SQL",
+    "nativeSqlScript": "네이티브 SQL 스크립트",
+
+    "queryParameter": "쿼리 파라미터",
+    "filterList": "필터 목록",
+    "pageNo": "페이지",
+    "perPage": "한 장",
+    "size": "개",
+
+    "statementCategory": "액세스 대상 유형",
+    "scriptTitle": "스크립트를 사용하여 JPQL 생성",
+    "sqlScriptTitle": "스크립트를 사용하여 SQL 생성",
+    "countMethod": "총계 쿼리",
+
+    "jpqlType": "JPQL 유형",
+    "jpqlFromResult": "쿼리 시작 항목",
+    "jpqlMaxResult": "최대 반환 결과",
+    "jpqlSelectTitle": "JPQL 문장",
+    "inputWhere": "아래 편집 상자에 Where 절을 입력할 수 있습니다",
+    "jpqlRunSuccess": "JPQL 실행 성공",
+    "newLineSuccess": "데이터 삽입 성공",
+    "newLineJsonError": "데이터 삽입 오류, 데이터 형식이 잘못되었습니다",
+    "queryStatement": "쿼리 문장",
+    "countStatement": "총계 문장",
+
+    "currentPerson": "현재 사용자",
+    "currentIdentity": "현재 신분",
+    "currentPersonDirectUnit": "현재 사용자가 직접 속한 조직",
+    "currentPersonAllUnit": "현재 사용자가 속한 모든 조직",
+    "currentPersonGroupList": "현재 사용자가 속한 그룹 목록",
+    "currentPersonRoleList": "현재 사용자가 보유한 역할 목록",
+    "defaultCondition": "자동 할당 조건:",
+
+    "ignore": "무시",
+    "auto": "자동",
+    "assign": "지정",
+
+    "mastInputParameter": "매개변수를 입력하십시오",
+    "pathExecption": "경로 형식은 \"테이블 별명.필드 이름\"이어야 하며 형식이 잘못되었습니다",
+
+    "modifyViewFilterNote": "문장 형식이 이미 변경되었습니다. 뷰의 필터 조건을 수정하십시오",
+
+    "systemTable": "시스템 테이블",
+    "customTable": "사용자 정의 데이터 테이블",
+
+    "taskInstance": "미해(Task)",
+    "taskCompletedInstance": "완료(TaskCompleted)",
+    "readInstance": "대기(Read)",
+    "readedInstance": "완료(ReadCompleted)",
+    "workInstance": "워크플로 인스턴스(Work)",
+    "workCompletedInstance": "완료된 워크플로 인스턴스(WorkCompleted)",
+    "reviewInstance": "읽을 수 있는(Review)",
+    "documentInstance": "문서 관리 문서(Document)",
+
+    "taskInstanceSql": "미해(PP_C_TASK)",
+    "taskCompletedInstanceSql": "완료(TaskCompleted)",
+    "readInstanceSql": "대기(PP_C_READ)",
+    "readedInstanceSql": "완료(PP_C_READCOMPLETED)",
+    "workInstanceSql": "워크플로 인스턴스(PP_C_WORK)",
+    "workCompletedInstanceSql": "완료된 워크플로 인스턴스(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "읽을 수 있는(PP_C_REVIEW)",
+    "documentInstanceSql": "문서 관리 문서(CMS_DOCUMENT)",
+
+    "propertyTemplate": {
+        // "statementFormat": "如何创建语句：",
+        // "statementJpql": "直接编写JPQL创建语句",
+        // "statementScript": "通过脚本创建语句",
+        // "statementCategory": "访问对象类型",
+
+        "idPath": "ID 경로",
+		"idPathNote": "참고: ID(문서 ID 또는 워크 ID)가 단일 데이터에 상대적인 경로입니다. 문서를 열 때 사용됩니다.",
+		"selectPath": "경로 선택",
+		"selectPathNote": "참고: 쿼리 문장을 올바르게 입력하면 테스트 문장을 실행하거나 뷰 데이터를 새로 고칠 때 선택(새로 고침) 경로가 표시됩니다.",
+		"dataPathNote": "참고: 이 열은 단일 데이터에 상대적인 경로를 가리킵니다. 예: 0, 제목 또는 0.제목",
+		"executionAuthority": "실행 권한",
+		"anonymousAccess": "익명 액세스",
+		"allowed": "허용됨",
+		"disAllowed": "허용되지 않음",
+		"executePerson": "실행자",
+		"executeUnit": "실행 조직",
+		"hidden": "숨김",
+		"orderNumber": "정렬 번호",
+
+        // "systemTable":"系统表",
+        // "customTable":"自建数据表",
+        // "taskInstance":"待办",
+        // "taskCompletedInstance": "已办",
+        // "readInstance":"待阅",
+        // "readedInstance":"已阅",
+        // "workInstance":"流程实例",
+        // "workCompletedInstance":"已完成流程实例",
+        // "reviewInstance":"可阅读",
+        // "documentInstance":"内容管理文档",
+
+        "parameter": "매개 변수",
+		"parameterNote": "참고: 쿼리 문장 및 총 수량 문장과 일치하는 매개 변수입니다;\n\": field\"의 경우 WHERE 조건으로 \"field\"를 입력하십시오;\n\"?1\"의 경우 WHERE 조건으로 \"?1\"을 입력하십시오.",
+		"pathNote": "참고: 경로는 \"테이블 별칭.필드 이름\"과 같이 작성됩니다. 예: o.title",
+		"userInput": "사용자 입력",
+		"export": "내보내기",
+		"exportWidth": "폭",
+		"exportEnable": "내보내기 허용",
+		"isTime": "시간 유형",
+		"isNumber": "숫자 유형",
+		"viewEnable": "뷰 활성화"
+
+    }
+});

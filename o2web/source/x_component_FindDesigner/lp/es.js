@@ -1,0 +1,46 @@
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.FindDesigner = MWF.xApplication.FindDesigner || {};
+MWF.xApplication.FindDesigner.LP={
+	"title": "Buscar en el diseño",
+	"filter": "Buscar en el diseño",
+	"range": "Alcance de la búsqueda",
+	"script": "Guion",
+	"form": "Formulario",
+	"process": "Proceso",
+	"page": "Página",
+	"widget": "Componentes",
+	"view": "Vista",
+	"statement": "Sentencia de consulta",
+	"stat": "Estadísticas",
+	"property": "Atributos",
+	"value": "Valor",
+	"processPlatform": "Plataforma de procesos",
+	"cms": "Gestión de contenidos",
+	"portal": "Gestión del portal",
+	"query": "Centro de datos",
+	"service": "Gestión de servicios",
+	"search_placeholder": "Por favor, introduzca el contenido de la consulta",
+	"dockToBottom": "Fijado a la parte inferior",
+	"dockToRight": "Fijado a la derecha",
+	"nothingFind": "No se ha encontrado ningún resultado, modifique los criterios de consulta",
+	"nothingFind_keyword": "No se han encontrado resultados\nPor favor, introduzca la palabra clave de consulta",
+	"nothingFind_noFilter": "No se han encontrado resultados\nPor favor, introduzca para seleccionar el tipo de consulta.",
+	"nothingFind_noRange": "No se han encontrado resultados\nPor favor, determine el alcance de la consulta.",
+	"nothingPreview": "Seleccione la lista de resultados de búsqueda, que se puede Previsualizar aquí",
+	"selectRange": "Selección del rango de búsqueda",
+	"patternCount": "[n] coincidencia de elementos",
+	"receiveToFind": "Preparando la consulta de datos...",
+	"readyToFind": "Los elementos de diseño están listos (un total de (...).",
+	"findPatternCount": "Se ha encontrado una coincidencia de elementos (...).",
+	"findPatternCountCompleted": "Se ha completado la consulta y se ha encontrado una coincidencia de elementos (...).",
+	"elementPattern": "< B > elementos: / / B > elementos, < B > atributos: / / B > property:",
+	"element": "Elementos",
+	"saveDesigner": "Guardar elementos de diseño",
+	"openDesigner": "Abrir aplicación",
+	"findInfor": "Encuentra una coincidencia en este elemento de diseño:",
+	"findInforOpen": "Haga clic aquí para abrir los elementos de diseño.",
+	"notice": {
+		"save_success": "¡Guardar exitoso!"
+	}
+}
+MWF.xApplication.FindDesigner["lp."+o2.language] = MWF.xApplication.FindDesigner.LP

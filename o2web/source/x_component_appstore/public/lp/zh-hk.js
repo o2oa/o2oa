@@ -1,0 +1,25 @@
+MWF.xApplication.appstore.LP = {
+    "title": "應用市場",
+    "all": "全部",
+    "searchPlaceholder": "請輸入搜索關鍵字",
+    "close": "關閉",
+    "install": "安裝",
+    "installed": "已安裝",
+    "update": "更新",
+    "installVip": "聯絡我們",
+    "installing": "安裝中...",
+    "updateInfoTitle": "更新應用確認",
+    "installInfoTitle": "安裝應用確認",
+    "updateInfo": "您確認要更新此應用嗎？如果您已經修改了應用，此次更新將替換您修改過的設計。",
+    "installInfo": "您確認要安裝此應用嗎？",
+    "installSuccess": "應用安裝成功！",
+    "contactUs": "掃描WeChat二維碼，聯絡銷售顧問，獲得更多信息！",
+    "phoneNumber": "400-888-0545",
+    "clickToConfig": "點擊此處進行系統配置",
+    "clickToDoc": "點擊此處查看配置說明",
+    "notAdmin": "抱歉，只有管理員才能訪問應用市場，您的權限不足！",
+    "offlineInstall": "離線安裝",
+    "offlineInstallInfo": "您可以點擊此處進行離線安裝應用包",
+
+    "configDocUrl": "https://www.o2oa.net/cms/serverdeployment/112.html"
+}

@@ -1,0 +1,135 @@
+MWF.xApplication.query = MWF.xApplication.query || {};
+MWF.xApplication.query.StatementDesigner = MWF.xApplication.query.StatementDesigner || {};
+if(!MWF.APPDSMD)MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
+MWF.xApplication.query.ViewDesigner = MWF.xApplication.query.ViewDesigner || {};
+MWF.xDesktop.requireApp("query.ViewDesigner", "lp."+MWF.language, null, false);
+MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.query.ViewDesigner.LP, {
+    "title": "查詢設計",
+    "newStatement": "新建查詢配置",
+    "unCategory": "未分類",
+    "statement": "查詢配置",
+    "property": "屬性",
+    "run": "執行",
+    "runTest": "測試語句",
+    "statementType": "語句類型",
+    "statementTable": "數據表",
+    "selectTable": "選擇數據表",
+    "save_success": "查詢配置保存成功！",
+    "inputStatementName": "請輸入查詢配置名稱",
+    "saveStatementNotice" : "請先保存！",
+    "cannotDisabledViewNotice": "視圖未啟用",
+    "noViewNotice" : "未創建視圖，請先創建視圖！",
+    "previewNotSelectStatementNotice" : "只有語句類型為 'Select' 才能預覽",
+    "field" : "字段",
+    "fileldSelectNote" : "- 選擇字段後將插入到語句中 -",
+
+    "statementFormat": "語句格式:",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL腳本",
+    "nativeSql": "本地SQL",
+    "nativeSqlScript": "本地SQL腳本",
+
+    "queryParameter": "查詢參數",
+    "filterList": "篩選條件",
+    "pageNo": "頁碼",
+    "perPage": "每頁",
+    "size": "條",
+
+    "statementCategory": "訪問對象類型",
+    "scriptTitle": "使用腳本創建JPQL",
+    "sqlScriptTitle": "使用腳本創建SQL",
+    "countMethod": "總數語句",
+
+    "jpqlType": "JPQL類型",
+    "jpqlFromResult": "查詢起始項目",
+    "jpqlMaxResult": "最大返回結果",
+    "jpqlSelectTitle": "JPQL語句",
+    "inputWhere": "您可以在下面的編輯框輸入Where子句",
+    "jpqlRunSuccess": "JPQL執行成功",
+    "newLineSuccess": "插入數據成功",
+    "newLineJsonError": "插入數據錯誤，數據格式有誤",
+    "queryStatement": "查詢語句",
+    "countStatement": "總數語句",
+
+    "currentPerson": "當前用戶",
+    "currentIdentity": "當前身份",
+    "currentPersonDirectUnit": "當前用戶所在直接組織",
+    "currentPersonAllUnit": "當前用戶所在所有組織",
+    "currentPersonGroupList": "當前用戶所在群組列表",
+    "currentPersonRoleList": "當前用戶所擁有角色列表",
+    "defaultCondition": "自動分配條件:",
+
+    "ignore": "忽略",
+    "auto": "自動",
+    "assign": "指定",
+
+    "mastInputParameter": "請輸入參數",
+    "pathExecption": "路徑的格式應為“表別名.字段名”，格式不正確",
+
+    "modifyViewFilterNote": "語句格式已經更改，請修改視圖的過濾條件",
+
+    "systemTable": "系統表",
+    "customTable": "自建數據表",
+
+    "taskInstance": "待辦(Task)",
+    "taskCompletedInstance": "已辦(TaskCompleted)",
+    "readInstance": "待閱(Read)",
+    "readedInstance": "已閱(ReadCompleted)",
+    "workInstance": "流程實例(Work)",
+    "workCompletedInstance": "已完成流程實例(WorkCompleted)",
+    "reviewInstance": "可閱讀(Review)",
+    "documentInstance": "內容管理文件(Document)",
+
+    "taskInstanceSql": "待辦(PP_C_TASK)",
+    "taskCompletedInstanceSql": "已辦(PP_C_TASKCOMPLETED)",
+    "readInstanceSql": "待閱(PP_C_READ)",
+    "readedInstanceSql": "已閱(PP_C_READCOMPLETED)",
+    "workInstanceSql": "流程實例(PP_C_WORK)",
+    "workCompletedInstanceSql": "已完成流程實例(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "可閱讀(PP_C_REVIEW)",
+    "documentInstanceSql": "內容管理文件(CMS_DOCUMENT)",
+
+    "propertyTemplate": {
+        // "statementFormat": "如何创建语句：",
+        // "statementJpql": "直接编写JPQL创建语句",
+        // "statementScript": "通过脚本创建语句",
+        // "statementCategory": "访问对象类型",
+
+        "idPath": "ID路徑",
+		"idPathNote": "備註：指ID（CMS文件ID或工作ID）相對於單條數據的路徑，用於打開文檔。",
+		"selectPath": "選擇路徑",
+		"selectPathNote": "備註：正確填寫了查詢語句，然後測試語句或刷新視圖數據可顯示（刷新）選擇路徑。",
+		"dataPathNote": "備註：指該列相對於單條數據的路徑。例如 0，標題，或 0.標題",
+		"executionAuthority": "執行權限",
+		"anonymousAccess": "匿名訪問",
+		"allowed": "允許",
+		"disAllowed": "不允許",
+		"executePerson": "執行人",
+		"executeUnit": "執行組織",
+		"hidden": "隱藏",
+		"orderNumber": "排序號",
+
+        // "systemTable":"系统表",
+        // "customTable":"自建数据表",
+        // "taskInstance":"待办",
+        // "taskCompletedInstance": "已办",
+        // "readInstance":"待阅",
+        // "readedInstance":"已阅",
+        // "workInstance":"流程实例",
+        // "workCompletedInstance":"已完成流程实例",
+        // "reviewInstance":"可阅读",
+        // "documentInstance":"内容管理文档",
+
+        "parameter": "參數",
+		"parameterNote": "備註：對應查詢語句和總數語句中的參數；\n如\":field\"的where條件，填寫\"field\"；\n如\"?1\"的where條件，填寫\"?1\"。",
+		"pathNote": "備註：路徑的寫法是\"表別名.字段名\"，如：o.title",
+		"userInput": "用戶輸入",
+		"export": "匯出",
+		"exportWidth": "寬度",
+		"exportEnable": "允許匯出",
+		"isTime": "時間類型",
+		"isNumber": "數字類型",
+		"viewEnable": "啟用視圖"
+
+    }
+});

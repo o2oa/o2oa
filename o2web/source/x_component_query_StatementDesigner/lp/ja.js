@@ -1,0 +1,135 @@
+MWF.xApplication.query = MWF.xApplication.query || {};
+MWF.xApplication.query.StatementDesigner = MWF.xApplication.query.StatementDesigner || {};
+if(!MWF.APPDSMD)MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
+MWF.xApplication.query.ViewDesigner = MWF.xApplication.query.ViewDesigner || {};
+MWF.xDesktop.requireApp("query.ViewDesigner", "lp."+MWF.language, null, false);
+MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.query.ViewDesigner.LP, {
+    "title": "クエリ設計",
+    "newStatement": "新しいクエリ設定",
+    "unCategory": "未分類",
+    "statement": "クエリ設定",
+    "property": "プロパティ",
+    "run": "実行",
+    "runTest": "テストクエリ",
+    "statementType": "クエリのタイプ",
+    "statementTable": "データテーブル",
+    "selectTable": "データテーブルを選択",
+    "save_success": "クエリ設定の保存に成功しました！",
+    "inputStatementName": "クエリ設定名を入力してください",
+    "saveStatementNotice" : "まず保存してください！",
+    "cannotDisabledViewNotice": "ビューが無効化されていません",
+    "noViewNotice" : "ビューが作成されていません。まずビューを作成してください！",
+    "previewNotSelectStatementNotice" : "プレビューはクエリのタイプが 'Select' の場合のみ可能です",
+    "field" : "フィールド",
+    "fileldSelectNote" : "- フィールドを選択するとクエリに挿入されます -",
+
+    "statementFormat": "ステートメント形式:",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQLスクリプト",
+    "nativeSql": "ネイティブSQL",
+    "nativeSqlScript": "ネイティブSQLスクリプト",
+
+    "queryParameter": "クエリパラメータ",
+    "filterList": "フィルタリスト",
+    "pageNo": "頁",
+    "perPage": "1頁",
+    "size": "件",
+
+    "statementCategory": "アクセスオブジェクトタイプ",
+    "scriptTitle": "スクリプトを使用してJPQLを作成",
+    "sqlScriptTitle": "スクリプトを使用してSQLを作成",
+    "countMethod": "合計クエリ",
+
+    "jpqlType": "JPQLタイプ",
+    "jpqlFromResult": "クエリの開始アイテム",
+    "jpqlMaxResult": "最大結果数",
+    "jpqlSelectTitle": "JPQLステートメント",
+    "inputWhere": "以下のエディットボックスにWhere句を入力できます",
+    "jpqlRunSuccess": "JPQLの実行に成功しました",
+    "newLineSuccess": "データの挿入に成功しました",
+    "newLineJsonError": "データの挿入中にエラーが発生しました。データの形式が誤っています",
+    "queryStatement": "クエリステートメント",
+    "countStatement": "合計ステートメント",
+
+    "currentPerson": "現在のユーザー",
+    "currentIdentity": "現在のアイデンティティ",
+    "currentPersonDirectUnit": "現在のユーザーの直接の単位",
+    "currentPersonAllUnit": "現在のユーザーのすべての単位",
+    "currentPersonGroupList": "現在のユーザーの所属グループリスト",
+    "currentPersonRoleList": "現在のユーザーの所有する役割リスト",
+    "defaultCondition": "自動割り当て条件:",
+
+    "ignore": "無視",
+    "auto": "自動",
+    "assign": "指定",
+
+    "mastInputParameter": "パラメータを入力してください",
+    "pathExecption": "パスの形式は「テーブル別名.フィールド名」でなければならず、形式が誤っています",
+
+    "modifyViewFilterNote": "ステートメントの形式が既に変更されています。ビューのフィルタ条件を修正してください",
+
+    "systemTable": "システムテーブル",
+    "customTable": "カスタムデータテーブル",
+
+    "taskInstance": "未完了タスク(Task)",
+    "taskCompletedInstance": "完了済みタスク(TaskCompleted)",
+    "readInstance": "未読(Read)",
+    "readedInstance": "読了(ReadCompleted)",
+    "workInstance": "ワークフローインスタンス(Work)",
+    "workCompletedInstance": "完了済みワークフローインスタンス(WorkCompleted)",
+    "reviewInstance": "閲覧可能(Review)",
+    "documentInstance": "ドキュメント管理文書(Document)",
+
+    "taskInstanceSql": "未完了タスク(PP_C_TASK)",
+    "taskCompletedInstanceSql": "完了済みタスク(PP_C_TASKCOMPLETED)",
+    "readInstanceSql": "未読(PP_C_READ)",
+    "readedInstanceSql": "読了(PP_C_READCOMPLETED)",
+    "workInstanceSql": "ワークフローインスタンス(PP_C_WORK)",
+    "workCompletedInstanceSql": "完了済みワークフローインスタンス(PP_C_WORKCOMPLETED)",
+    "reviewInstanceSql": "閲覧可能(PP_C_REVIEW)",
+    "documentInstanceSql": "ドキュメント管理文書(CMS_DOCUMENT)",
+
+    "propertyTemplate": {
+        // "statementFormat": "如何创建语句：",
+        // "statementJpql": "直接编写JPQL创建语句",
+        // "statementScript": "通过脚本创建语句",
+        // "statementCategory": "访问对象类型",
+
+        "idPath": "IDパス",
+		"idPathNote": "注：ID（CMSドキュメントIDまたはワークID）は単一のデータに対するパスを指します。ドキュメントを開くために使用されます。",
+		"selectPath": "パスを選択",
+		"selectPathNote": "注：クエリ文を正しく入力した場合、テスト文またはビューデータをリフレッシュすると、選択（リフレッシュ）パスが表示されます。",
+		"dataPathNote": "注：この列は単一のデータに対する相対パスを指します。たとえば、0、タイトル、または0.タイトル",
+		"executionAuthority": "実行権限",
+		"anonymousAccess": "匿名アクセス",
+		"allowed": "許可",
+		"disAllowed": "許可されていません",
+		"executePerson": "実行者",
+		"executeUnit": "実行組織",
+		"hidden": "非表示",
+		"orderNumber": "順序番号",
+
+        // "systemTable":"系统表",
+        // "customTable":"自建数据表",
+        // "taskInstance":"待办",
+        // "taskCompletedInstance": "已办",
+        // "readInstance":"待阅",
+        // "readedInstance":"已阅",
+        // "workInstance":"流程实例",
+        // "workCompletedInstance":"已完成流程实例",
+        // "reviewInstance":"可阅读",
+        // "documentInstance":"内容管理文档",
+
+        "parameter": "パラメータ",
+		"parameterNote": "注：クエリ文および合計文でのパラメータに対応します。\n\": field\"の場合、\"field\"をWHERE条件に入力してください。\n\"?1\"の場合、\"?1\"をWHERE条件に入力してください。",
+		"pathNote": "注：パスの書き方は\"テーブルエイリアス.フィールド名\"のようです。例：o.title",
+		"userInput": "ユーザー入力",
+		"export": "エクスポート",
+		"exportWidth": "幅",
+		"exportEnable": "エクスポートを許可",
+		"isTime": "時間の種類",
+		"isNumber": "数値の種類",
+		"viewEnable": "ビューを有効にする"
+
+    }
+});
