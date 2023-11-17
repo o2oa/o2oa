@@ -25,7 +25,7 @@ var path = require('path');
 //var sourceMap = require('gulp-sourcemaps');
 
 var git = require('gulp-git');
-var {generate} = require('@o2oa/language-tools');
+
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -44,10 +44,6 @@ var {generate} = require('@o2oa/language-tools');
 // };
 
 var supportedLanguage = ["zh-cn", "en", "es"];
-var translateLanguage = {
-    "en": "en",
-    "es": "spa"
-};
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
@@ -341,16 +337,12 @@ async function clear_jvm_git(cb){
     cb();
 }
 
-function build_web_language_pack(){
-    return generate(null, translateLanguage, {
-        AK: "b1Nm4702MnZW5r3Um1cOaPlF",
-        SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
-    }).then(()=>{
-        return generate("o2_core", translateLanguage, {
-            AK: "b1Nm4702MnZW5r3Um1cOaPlF",
-            SK: "WhLuLKOMaMWHa1LxyQWPOhNibUSkmpGX"
-        });
-    });
+function build_web_language_pack(cb){
+    if (fs.existsSync('./gulpfile_language_pack.js')){
+        const {check_language_pack} = require('./gulpfile_language_pack.js');
+        return check_language_pack();
+    }
+    cb();
 }
 
 var moduleFolder = [];
@@ -392,7 +384,9 @@ function build_web_minimize(cb) {
 ---------------------------------------------------------------------`);
 
     var dest = 'target/o2server/servers/webServer/';
-    var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    var lpFiles = supportedLanguage.join('|');
+
+    var src_min = ['o2web/source/**/*.js', '!**/lp/!('+lpFiles+').js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*', '!**/node_modules/**/*', '!**/dist/**/*'];
     moduleFolder.forEach((f)=>{
         src_min.push('!o2web/source/'+f+'/**/*');
     })
@@ -418,7 +412,10 @@ function build_web_minimize(cb) {
 
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
-    var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
+
+    var lpFiles = supportedLanguage.join('|');
+
+    var src_move = ['o2web/source/**/*', '!**/lp/!('+lpFiles+').js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!**/node_modules/**/*', '!**/dist/**/*'];
     moduleFolder.forEach((f)=>{
         src_move.push('!o2web/source/'+f+'/**/*');
     })
