@@ -1861,24 +1861,24 @@ public class AeiObjects extends GsonPropertyObject {
 	 * @param aeiObjects
 	 * @throws Exception
 	 */
-	public void empower() throws Exception {
-		if ((StringUtils.equals(this.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
-				&& BooleanUtils.isNotFalse(this.getWork().getWorkThroughManual()))) {
-			return;
-		}
-		List<Ticket> list = this.getWork().getTickets().bubble().stream()
-				.filter(o -> StringUtils.isBlank(o.fromDistinguishedName())).collect(Collectors.toList());
-		List<String> values = ListUtils.subtract(
-				list.stream().map(Ticket::distinguishedName).collect(Collectors.toList()),
-				this.getProcessingAttributes().getIgnoreEmpowerIdentityList());
-		List<Empower> empowers = this.business().organization().empower().listWithIdentityObject(
-				this.getWork().getApplication(), this.getProcess().getEdition(), this.getWork().getProcess(),
-				this.getWork().getId(), values);
-		for (Empower empower : empowers) {
-			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
-				list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
-			}
-		}
-	}
+//	public void empower() throws Exception {
+//		if ((StringUtils.equals(this.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
+//				&& BooleanUtils.isNotFalse(this.getWork().getWorkThroughManual()))) {
+//			return;
+//		}
+//		List<Ticket> list = this.getWork().getTickets().bubble().stream()
+//				.filter(o -> StringUtils.isBlank(o.fromDistinguishedName())).collect(Collectors.toList());
+//		List<String> values = ListUtils.subtract(
+//				list.stream().map(Ticket::distinguishedName).collect(Collectors.toList()),
+//				this.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+//		List<Empower> empowers = this.business().organization().empower().listWithIdentityObject(
+//				this.getWork().getApplication(), this.getProcess().getEdition(), this.getWork().getProcess(),
+//				this.getWork().getId(), values);
+//		for (Empower empower : empowers) {
+//			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
+//				list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
+//			}
+//		}
+//	}
 
 }

@@ -22,7 +22,6 @@ import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
@@ -38,13 +37,13 @@ class BaseCreateAction extends BaseAction {
 
 	protected void processingCreateWork(String workId) throws Exception {
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("work", workId, "processing"), null, StringTools.uniqueToken());
+				Applications.joinQueryUri("work", workId, "processing"), null);
 	}
 
 	protected String createWork(String processId, JsonElement jsonElement) throws Exception {
 		return ThisApplication.context().applications()
 				.postQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "process", processId), jsonElement, StringTools.uniqueToken())
+						Applications.joinQueryUri("work", "process", processId), jsonElement)
 				.getData(WoId.class).getId();
 	}
 
