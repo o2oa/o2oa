@@ -80,6 +80,31 @@ MWF.xApplication.process.TaskCenter.LP = {
     "open": "열기",
 
     "workcenter": "새 버전의 업무 센터가 온라인으로 제공됩니다. 새 버전의 업무 센터로 전환하시겠습니까?",
-    "gotoWorkcenter": "새 버전의 업무 센터로 이동"
+    "gotoWorkcenter": "새 버전의 업무 센터로 이동",
+
+    "processStarter": {
+        "start": "프로세스 시작",
+        "department": "부서",
+        "company": "회사",
+        "duty": "직무",
+        "identity": "신분",
+        "date": "날짜",
+        "subject": "문서 제목",
+        "process": "프로세스",
+
+        "cancel": "취소",
+        "ok": "확인",
+
+        "startProcess_cancel_title": "프로세스 시작 취소 확인",
+        "startProcess_cancel": "프로세스 시작을 취소하시겠습니까?",
+        "inputProcessSubject": "문서 제목을 입력하세요",
+        "selectStartId": "시작 부서를 선택하여 시작자 신분을 확인하세요",
+
+        "processStarted": "프로세스가 시작되었습니다",
+        "unnamed": "제목 없음",
+        "selectStartIdentity": "신분을 선택하세요",
+        "noIdentitys": "{name}은(는) 어떠한 조직에도 가입하지 않았으므로 프로세스를 시작할 수 없습니다. 관리자에게 연락하여 해당 조직에 가입해달라고 요청하세요.",
+        "identityNotInRange": "{name}은(는) 당신의 신분 범위 내에 없습니다. 관리자에게 문의하세요."
+    }
 
 };

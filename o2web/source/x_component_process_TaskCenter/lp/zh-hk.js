@@ -80,6 +80,31 @@ MWF.xApplication.process.TaskCenter.LP = {
     "open": "打開",
 
     "workcenter": "新版本的辦公中心已上線，是否切換到新版本的辦公中心？",
-    "gotoWorkcenter": "切換到新版本的辦公中心"
+    "gotoWorkcenter": "切換到新版本的辦公中心",
+
+    "processStarter": {
+        "start": "啟動流程",
+        "department": "部門",
+        "company": "公司",
+        "duty": "職務",
+        "identity": "身份",
+        "date": "日期",
+        "subject": "文件標題",
+        "process": "流程",
+
+        "cancel": "取消",
+        "ok": "確定",
+
+        "startProcess_cancel_title": "取消啟動流程確認",
+        "startProcess_cancel": "您確定要取消啟動流程嗎？",
+        "inputProcessSubject": "請輸入文件標題",
+        "selectStartId": "請選擇啟動部門以確定啟動者身份",
+
+        "processStarted": "流程已啟動",
+        "unnamed": "無標題",
+        "selectStartIdentity": "請選擇您的身份",
+        "noIdentitys": "“{name}”尚未加入任何組織，無法啟動流程。請聯絡管理員將您加入相應的組織。",
+        "identityNotInRange": "“{name}”不在您的身份範圍內。請聯絡管理員。"
+    }
 
 };

@@ -80,6 +80,31 @@ MWF.xApplication.process.TaskCenter.LP = {
     "open": "開く",
 
     "workcenter": "新しいバージョンのワークセンターがオンラインになりました。新しいバージョンのワークセンターに切り替えますか？",
-    "gotoWorkcenter": "新しいバージョンのワークセンターに移動"
+    "gotoWorkcenter": "新しいバージョンのワークセンターに移動",
+
+    "processStarter": {
+        "start": "プロセスを開始",
+        "department": "部署",
+        "company": "企業",
+        "duty": "役職",
+        "identity": "身分",
+        "date": "日付",
+        "subject": "ドキュメントのタイトル",
+        "process": "プロセス",
+
+        "cancel": "キャンセル",
+        "ok": "OK",
+
+        "startProcess_cancel_title": "プロセス開始をキャンセル確認",
+        "startProcess_cancel": "プロセス開始をキャンセルしますか？",
+        "inputProcessSubject": "ドキュメントのタイトルを入力してください",
+        "selectStartId": "開始部署を選択して開始者の身分を確認してください",
+
+        "processStarted": "プロセスが開始されました",
+        "unnamed": "無題",
+        "selectStartIdentity": "あなたの身分を選択してください",
+        "noIdentitys": "“{name}”はどの組織にも加入していないため、プロセスを開始できません。該当の組織に加入するよう管理者に連絡してください。",
+        "identityNotInRange": "“{name}”はあなたの身分範囲外です。管理者にお問い合わせください。"
+    }
 
 };
