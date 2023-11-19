@@ -571,19 +571,20 @@ public class ManualProcessor extends AbstractManualProcessor {
 					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
 					.collect(Collectors.toList());
 			tasks.stream().forEach(aeiObjects::deleteTask);
-			uncompletedTaskToRead(aeiObjects, manual, tasks);
+			uncompletedTicketToRead(aeiObjects, manual, tickets);
 		} else {
 			if (tickets.isEmpty()) {
 				// 在添加分支的情况下需要在这里重新计算
 				tickets = calculateTaskDistinguishedName(aeiObjects, manual);
 			}
+			// 计算优先路由
 			if (soleDirect(aeiObjects, taskCompleteds)) {
 				tickets.list(null, null, null).stream().forEach(o -> o.enable(false));
 				List<Task> tasks = aeiObjects.getTasks().stream().filter(t -> StringUtils
 						.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
 						.collect(Collectors.toList());
 				tasks.stream().forEach(aeiObjects::deleteTask);
-				uncompletedTaskToRead(aeiObjects, manual, tasks);
+				uncompletedTicketToRead(aeiObjects, manual, tickets);
 			} else {
 				task(aeiObjects, manual, tickets);
 			}
@@ -1186,6 +1187,25 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return exists;
 	}
 
+	private void uncompletedTicketToRead(AeiObjects aeiObjects, Manual manual, Tickets tickets) {
+		if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
+			tickets.list(false, true, true).stream().forEach(o -> {
+				try {
+					String identity = aeiObjects.business().organization().identity().get(o.distinguishedName());
+					String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
+					String person = aeiObjects.business().organization().person().getWithIdentity(identity);
+					if (StringUtils.isNotEmpty(identity) && StringUtils.isNotEmpty(unit)
+							&& StringUtils.isNotEmpty(person)) {
+						aeiObjects.getCreateReads().add(new Read(aeiObjects.getWork(), identity, unit, person));
+					}
+				} catch (Exception e) {
+					LOGGER.error(e);
+				}
+			});
+		}
+	}
+
+	@Deprecated(since = "8.2")
 	private void uncompletedTaskToRead(AeiObjects aeiObjects, Manual manual, List<Task> tasks) {
 		if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
 			tasks.stream().forEach(o -> {
