@@ -49,6 +49,7 @@ MWF.xApplication.process.Work.LP = {
 
     "rollbackConfirmTitle": "Rollback confirmation",
     "rollbackConfirmContent": "Are you sure you want to rollback the process back to the \"{log}\" state? (Process rollback will clear all information after this state)",
+    "rollbackSuccess" : "Retroceso exitoso",
 
     "recoverFileConfirmTitle": "Recover text confirmation",
     "recoverFileConfirmContent": "Are you sure you want to restore the text to the \"{att}\" version? (After restoring, the saved temporary files will be deleted and you cannot restore them again)",
