@@ -2767,6 +2767,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 			var restButton = new Element("button", {"text": this.lp.resetAction, "class": "button"}).inject(tdOpNode);
 			var deleteButton = new Element("button", {"text": this.lp.remove, "class": "button"}).inject(tdOpNode);
 			var addSignButton = new Element("button", {"text": this.lp.addSign, "class": "button"}).inject(tdOpNode);
+			var flowButton = new Element("button", {"text": this.lp.flow, "class": "button"}).inject(tdOpNode);
 
 			_self = this;
 			deleteButton.addEvent("click", function (e) {
@@ -2847,7 +2848,54 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				this._addSign(task);
 			}.bind(this));
 
+			flowButton.addEvent("click", function (e) {
+
+				this._flow(task,e);
+			}.bind(this));
+
 		}.bind(this));
+	},
+	_flow : function (taskData,ev){
+		var _self = this;
+
+		var processNode = new Element("div");
+		var dlg = o2.DL.open({
+			"title": _self.lp.flow,
+			"width": "600px",
+			"height": "360px",
+			"mask": true,
+			"content": processNode,
+			"container": null,
+			"positionNode": this.explorer.app.content,
+			"onQueryClose": function () {
+				processNode.destroy();
+			}.bind(this),
+			"onPostShow": function () {
+				dlg.reCenter();
+
+				o2.xDesktop.requireApp("process.Work", "Processor", function(){
+					new o2.xApplication.process.Work.Processor(processNode, taskData, {
+						"style": "task",
+						"onCancel": function(){
+							dlg.close();
+						},
+						"onSubmit": function(routeName, opinion){
+
+							var taskId = taskData.id;
+							var data = {
+								"routeName": routeName,
+								"opinion": opinion
+							};
+							_self.app.action.TaskAction.processing(taskId,data,function(json){
+								dlg.close();
+								_self.loadTask();
+							},null,false);
+
+						}
+					});
+				}.bind(this));
+			}.bind(this)
+		});
 	},
 	_addSign : function(task){
 
