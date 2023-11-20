@@ -37,12 +37,12 @@ class SingleAdd implements Add {
 	@Override
 	public Collection<Ticket> afterSingle(Tickets tickets, Ticket ticket, Collection<Ticket> targets) {
 		List<Ticket> sibling = tickets.listSibling(ticket, false);
-		List<Ticket> fellow = tickets.listFellow(ticket, true);
+		//List<Ticket> fellow = tickets.listFellow(ticket, true);
 		List<Ticket> next = tickets.listNext(ticket);
 		sibling.addAll(targets);
 		Tickets.interconnectedAsSibling(sibling);
-		fellow.addAll(targets);
-		Tickets.interconnectedAsFellow(fellow);
+//		fellow.addAll(targets);
+//		Tickets.interconnectedAsFellow(fellow);
 		targets.stream().forEach(o -> o.appendNext(next));
 		tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
 		completedThenNotJoin(tickets, ticket);
