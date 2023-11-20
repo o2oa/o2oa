@@ -1,15 +1,21 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.Subquery;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,6 +35,8 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Review_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.content.Work_;
@@ -40,142 +48,248 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, String applicationFlag,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}, applicationFlag:{}, jsonElement:{}.",
+				effectivePerson::getDistinguishedName, () -> page, () -> size, () -> applicationFlag,
+				() -> jsonElement);
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			ActionResult<List<Wo>> result = new ActionResult<>();
+			WorkCriteria workCriteria = this.initWorkCriteria(business);
+			CountCriteria countCriteria = this.initCountCriteria(business);
+			ReviewCriteria reviewCriteria = this.initReviewCriteria(business);
 			Application application = business.application().pick(applicationFlag);
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(applicationFlag);
 			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Predicate p = this.bindFilterPredicate(effectivePerson, business, application, wi);
-			if (p != null) {
-				List<Wo> wos = emc.fetchDescPaging(Work.class, Wo.copier, p, page, size, Work.startTime_FIELDNAME);
-				result.setData(wos);
-				result.setCount(emc.count(Work.class, p));
+			Predicate p = this.predicateApplication(application, workCriteria);
+			p = predicateWorkThroughManualWorkCreateTypeWorkStatus(wi, p, workCriteria);
+			p = predicateStringValue(wi, p, workCriteria);
+			p = predicateWorkJob(wi, p, workCriteria);
+			p = predicateStartTimeEndTime(wi, p, workCriteria);
+			p = predicateCreatorPersonCreatorUnitActivityName(business, wi, p, workCriteria);
+			p = predicateTitle(wi, p, workCriteria);
+			List<String> processes = business.process().listWithApplication(application);
+			if (ListTools.isNotEmpty(wi.getProcessList())) {
+				ListUtils.intersection(wi.getProcessList(), processes);
+			}
+			List<String> controllableProcesses = ListUtils.intersection(processes,
+					business.process().listControllableProcess(effectivePerson, application));
+			List<String> uncontrollableProcesses = ListUtils.subtract(processes, controllableProcesses);
+			if (BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
+				controllableProcesses = business.process().listEditionProcess(controllableProcesses);
+				uncontrollableProcesses = business.process().listEditionProcess(uncontrollableProcesses);
+			}
+
+			if (ListTools.isNotEmpty(uncontrollableProcesses)) {
+				this.fetch(effectivePerson, this.adjustPage(page), this.adjustSize(size), workCriteria, countCriteria,
+						reviewCriteria, p, controllableProcesses, uncontrollableProcesses, result);
 			} else {
-				result.setData(new ArrayList<>());
-				result.setCount(0L);
+				this.fetch(business, this.adjustPage(page), this.adjustSize(size), p, workCriteria,
+						controllableProcesses, result);
 			}
 			return result;
 		}
 	}
 
-	private Predicate bindFilterPredicate(EffectivePerson effectivePerson, Business business, Application application,
-			Wi wi) throws Exception {
-		Predicate p = null;
-		if (business.ifPersonCanManageApplicationOrProcess(effectivePerson, application, null)) {
-			p = this.toFilterPredicate(business, application.getId(), wi);
+	private void fetch(EffectivePerson effectivePerson, Integer page, Integer size, WorkCriteria workCriteria,
+			CountCriteria countCriteria, ReviewCriteria reviewCriteria, Predicate p, List<String> controllableProcesses,
+			List<String> uncontrollableProcesses, ActionResult<List<Wo>> result)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		result.setData(list(effectivePerson, page, size, workCriteria, reviewCriteria, p, controllableProcesses,
+				uncontrollableProcesses));
+		result.setCount(count(effectivePerson, countCriteria, reviewCriteria, p, controllableProcesses,
+				uncontrollableProcesses));
+	}
+
+	private List<Wo> list(EffectivePerson effectivePerson, Integer page, Integer size, WorkCriteria workCriteria,
+			ReviewCriteria reviewCriteria, Predicate p, List<String> controllableProcesses,
+			List<String> uncontrollableProcesses)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		List<String> fields = Wo.copier.getCopyFields();
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : Wo.copier.getCopyFields()) {
+			selections.add(workCriteria.root.get(str));
+		}
+		int max = (size == null || size < 1 || size > EntityManagerContainer.MAX_PAGESIZE)
+				? EntityManagerContainer.DEFAULT_PAGESIZE
+				: size;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		Subquery<String> subQuery = workCriteria.cq.subquery(String.class);
+		Root<Review> root = subQuery.from(reviewCriteria.em.getMetamodel().entity(Review.class));
+		subQuery.select(root.get(Review_.job));
+		subQuery.where(reviewCriteria.cb.and(reviewCriteria.cb.equal(root.get(Review_.permissionWrite), true),
+				reviewCriteria.cb.equal(root.get(Review_.job), workCriteria.root.get(Work_.job)),
+				reviewCriteria.cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName()),
+				root.get(Review_.process).in(uncontrollableProcesses)));
+		if (controllableProcesses.isEmpty()) {
+			p = workCriteria.cb.and(p, workCriteria.cb.exists(subQuery));
 		} else {
-			List<String> processList = business.process().listControllableProcess(effectivePerson, application);
-			if (ListTools.isNotEmpty(processList)) {
-				if (ListTools.isEmpty(wi.getProcessList())) {
-					wi.setProcessList(processList);
-				} else {
-					wi.getProcessList().retainAll(processList);
-					if (ListTools.isEmpty(wi.getProcessList())) {
-						return null;
-					}
-				}
-				p = this.toFilterPredicate(business, application.getId(), wi);
+			p = workCriteria.cb.and(p, (workCriteria.cb.or(workCriteria.cb.exists(subQuery),
+					workCriteria.root.get(Work_.process).in(controllableProcesses))));
+		}
+		workCriteria.cq.multiselect(selections).where(p)
+				.orderBy(workCriteria.cb.desc(workCriteria.root.get(Work.startTime_FIELDNAME)));
+		List<Wo> wos = new ArrayList<>();
+		LOGGER.debug("ActionManageListWithApplicationPaging execute query:{}.", workCriteria.cq.toString());
+		for (Tuple o : workCriteria.em.createQuery(workCriteria.cq).setFirstResult(startPosition).setMaxResults(max)
+				.getResultList()) {
+			Wo wo = new Wo();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(wo, fields.get(i), o.get(selections.get(i)));
+			}
+			wos.add(wo);
+		}
+		return wos;
+	}
+
+	private Long count(EffectivePerson effectivePerson, CountCriteria countCriteria, ReviewCriteria reviewCriteria,
+			Predicate p, List<String> controllableProcesses, List<String> uncontrollableProcesses) {
+		Subquery<String> subQuery = countCriteria.cq.subquery(String.class);
+		Root<Review> root = subQuery.from(reviewCriteria.em.getMetamodel().entity(Review.class));
+		subQuery.select(root.get(Review_.job));
+		subQuery.where(reviewCriteria.cb.and(reviewCriteria.cb.equal(root.get(Review_.permissionWrite), true),
+				countCriteria.cb.equal(root.get(Review_.job), countCriteria.root.get(Work_.job)),
+				countCriteria.cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName()),
+				root.get(Review_.process).in(uncontrollableProcesses)));
+		if (!controllableProcesses.isEmpty()) {
+			p = countCriteria.cb.and(p, (countCriteria.cb.or(countCriteria.cb.exists(subQuery),
+					countCriteria.root.get(Work_.process).in(controllableProcesses))));
+		} else {
+			p = countCriteria.cb.and(p, countCriteria.cb.exists(subQuery));
+		}
+		countCriteria.cq.select(countCriteria.cb.count(countCriteria.root)).where(p);
+		return countCriteria.em.createQuery(countCriteria.cq).getSingleResult();
+	}
+
+	private void fetch(Business business, Integer page, Integer size, Predicate p, WorkCriteria workCriteria,
+			List<String> controllableProcesses, ActionResult<List<Wo>> result) throws Exception {
+		if (!controllableProcesses.isEmpty()) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.process).in(controllableProcesses));
+		}
+		List<Wo> wos = business.entityManagerContainer().fetchDescPaging(Work.class, Wo.copier, p, page, size,
+				Work.startTime_FIELDNAME);
+		result.setData(wos);
+		result.setCount(business.entityManagerContainer().count(Work.class, p));
+	}
+
+	private Predicate predicateTitle(Wi wi, Predicate p, WorkCriteria workCriteria) {
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			p = workCriteria.cb.and(p, workCriteria.cb.like(workCriteria.root.get(Work_.title), "%" + title + "%",
+					StringTools.SQL_ESCAPE_CHAR));
+		}
+		return p;
+	}
+
+	private Predicate predicateApplication(Application application, WorkCriteria workCriteria) {
+		return workCriteria.cb.equal(workCriteria.root.get(Work_.application), application.getId());
+	}
+
+	private Predicate predicateCreatorPersonCreatorUnitActivityName(Business business, Wi wi, Predicate p,
+			WorkCriteria workCriteria) throws Exception {
+		if (ListTools.isNotEmpty(wi.getCredentialList())) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.creatorPerson)
+					.in(business.organization().person().list(wi.getCredentialList())));
+		}
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
+		}
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.activityName).in(wi.getActivityNameList()));
+		}
+		return p;
+	}
+
+	private Predicate predicateStartTimeEndTime(Wi wi, Predicate p, WorkCriteria workCriteria) throws Exception {
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
+			p = workCriteria.cb.and(p, workCriteria.cb.greaterThan(workCriteria.root.get(Work_.startTime),
+					DateTools.parse(wi.getStartTime())));
+		}
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getEndTime()))) {
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.lessThan(workCriteria.root.get(Work_.startTime), DateTools.parse(wi.getEndTime())));
+		}
+		return p;
+	}
+
+	private Predicate predicateWorkJob(Wi wi, Predicate p, WorkCriteria workCriteria) {
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.id).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = workCriteria.cb.and(p, workCriteria.root.get(Work_.job).in(wi.getJobList()));
+		}
+		return p;
+	}
+
+	private Predicate predicateWorkThroughManualWorkCreateTypeWorkStatus(Wi wi, Predicate p,
+			WorkCriteria workCriteria) {
+		if (null != wi.getWorkThroughManual()) {
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
+		}
+		if (StringUtils.isNotBlank(wi.getWorkCreateType())) {
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.workCreateType), wi.getWorkCreateType()));
+		}
+		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
+			if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())) {
+				p = workCriteria.cb.and(p,
+						workCriteria.cb.equal(workCriteria.root.get(Work_.workStatus), WorkStatus.start));
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())) {
+				p = workCriteria.cb.and(p,
+						workCriteria.cb.equal(workCriteria.root.get(Work_.workStatus), WorkStatus.processing));
+			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())) {
+				p = workCriteria.cb.and(p,
+						workCriteria.cb.equal(workCriteria.root.get(Work_.workStatus), WorkStatus.hanging));
 			}
 		}
 		return p;
 	}
 
-	private Predicate toFilterPredicate(Business business, String appId, Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Work.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Work> cq = cb.createQuery(Work.class);
-		Root<Work> root = cq.from(Work.class);
-		Predicate p = cb.equal(root.get(Work_.application), appId);
-
-		if (null != wi.getWorkThroughManual()) {
-			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
-		}
-		if (StringUtils.isNotBlank(wi.getWorkCreateType())) {
-			p = cb.and(p, cb.equal(root.get(Work_.workCreateType), wi.getWorkCreateType()));
-		}
+	private Predicate predicateStringValue(Wi wi, Predicate p, WorkCriteria workCriteria) {
 		if (StringUtils.isNotBlank(wi.getStringValue01())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue01), wi.getStringValue01()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue02())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue02), wi.getStringValue02()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue02), wi.getStringValue02()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue03())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue03), wi.getStringValue03()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue03), wi.getStringValue03()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue04())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue04), wi.getStringValue04()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue04), wi.getStringValue04()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue05())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue05), wi.getStringValue05()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue05), wi.getStringValue05()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue06())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue06), wi.getStringValue06()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue06), wi.getStringValue06()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue07())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue07), wi.getStringValue07()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue07), wi.getStringValue07()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue08())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue08), wi.getStringValue08()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue08), wi.getStringValue08()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue09())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue09), wi.getStringValue09()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue09), wi.getStringValue09()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue10())) {
-			p = cb.and(p, cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
+			p = workCriteria.cb.and(p,
+					workCriteria.cb.equal(workCriteria.root.get(Work_.stringValue10), wi.getStringValue10()));
 		}
-
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if (BooleanUtils.isNotTrue(wi.getRelateEditionProcess())) {
-				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
-			} else {
-				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
-			}
-		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
-		}
-		if (ListTools.isNotEmpty(wi.getJobList())) {
-			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Work_.startTime), DateTools.parse(wi.getEndTime())));
-		}
-		if (ListTools.isNotEmpty(wi.getCredentialList())) {
-			List<String> person_ids = business.organization().person().list(wi.getCredentialList());
-			person_ids = ListTools.isEmpty(person_ids) ? wi.getCredentialList() : person_ids;
-			p = cb.and(p, root.get(Work_.creatorPerson).in(person_ids));
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
-		}
-		if (StringUtils.isNotBlank(wi.getWorkStatus())) {
-			if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.start.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.start));
-			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.processing.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.processing));
-			} else if (wi.getWorkStatus().equalsIgnoreCase(WorkStatus.hanging.name())) {
-				p = cb.and(p, cb.equal(root.get(Work_.workStatus), WorkStatus.hanging));
-			}
-		}
-		if (StringUtils.isNoneBlank(wi.getKey())) {
-			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p, cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-
-		if (StringUtils.isNotEmpty(wi.getTitle())) {
-			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
-			p = cb.and(p, cb.like(root.get(Work_.title), "%" + title + "%", StringTools.SQL_ESCAPE_CHAR));
-		}
-
 		return p;
 	}
 
@@ -444,6 +558,50 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 		static WrapCopier<Work, Wo> copier = WrapCopierFactory.wo(Work.class, Wo.class,
 				JpaObject.singularAttributeField(Work.class, true, true), null);
 
+	}
+
+	private WorkCriteria initWorkCriteria(Business business) throws Exception {
+		WorkCriteria criteria = new WorkCriteria();
+		criteria.em = business.entityManagerContainer().get(Work.class);
+		criteria.cb = criteria.em.getCriteriaBuilder();
+		criteria.cq = criteria.cb.createQuery(Tuple.class);
+		criteria.root = criteria.cq.from(Work.class);
+		return criteria;
+	}
+
+	private CountCriteria initCountCriteria(Business business) throws Exception {
+		CountCriteria criteria = new CountCriteria();
+		criteria.em = business.entityManagerContainer().get(Work.class);
+		criteria.cb = criteria.em.getCriteriaBuilder();
+		criteria.cq = criteria.cb.createQuery(Long.class);
+		criteria.root = criteria.cq.from(Work.class);
+		return criteria;
+	}
+
+	private ReviewCriteria initReviewCriteria(Business business) throws Exception {
+		ReviewCriteria criteria = new ReviewCriteria();
+		criteria.em = business.entityManagerContainer().get(Review.class);
+		criteria.cb = criteria.em.getCriteriaBuilder();
+		return criteria;
+	}
+
+	private class WorkCriteria {
+		private EntityManager em;
+		private CriteriaBuilder cb;
+		private CriteriaQuery<Tuple> cq;
+		private Root<Work> root;
+	}
+
+	private class CountCriteria {
+		private EntityManager em;
+		private CriteriaBuilder cb;
+		private CriteriaQuery<Long> cq;
+		private Root<Work> root;
+	}
+
+	private class ReviewCriteria {
+		private EntityManager em;
+		private CriteriaBuilder cb;
 	}
 
 }

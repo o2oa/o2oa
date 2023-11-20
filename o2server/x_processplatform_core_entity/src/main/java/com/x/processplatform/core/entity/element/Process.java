@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -101,6 +100,39 @@ public class Process extends SliceJpaObject {
 		}
 	}
 
+	public static final String PERMISSIONWRITESCRIPT_FIELDNAME = "permissionWriteScript";
+	@FieldDescribe("可编辑权限脚本,返回组织专用标识.")
+	@Transient
+	private String permissionWriteScript;
+
+	public String getPermissionWriteScript() {
+		if ((null == permissionWriteScript) && (null != properties)) {
+			this.permissionWriteScript = this.properties.getPermissionWriteScript();
+		}
+		return permissionWriteScript;
+	}
+
+	public void setPermissionWriteScript(String permissionWriteScript) {
+		this.permissionWriteScript = permissionWriteScript;
+		this.getProperties().setPermissionWriteScript(permissionWriteScript);
+	}
+
+	public static final String PERMISSIONWRITESCRIPTTEXT_FIELDNAME = "permissionWriteScriptText";
+	@FieldDescribe("可编辑权限脚本文本,返回组织专用标识.")
+	@Transient
+	private String permissionWriteScriptText;
+
+	public String getPermissionWriteScriptText() {
+		if ((null == permissionWriteScriptText) && (null != properties)) {
+			this.permissionWriteScriptText = this.properties.getPermissionWriteScriptText();
+		}
+		return permissionWriteScriptText;
+	}
+
+	public void setPermissionWriteScriptText(String permissionWriteScriptText) {
+		this.permissionWriteScriptText = permissionWriteScriptText;
+		this.getProperties().setPermissionWriteScriptText(permissionWriteScriptText);
+	}
 	public static final String MAINTENANCEIDENTITY_FIELDNAME = "maintenanceIdentity";
 	@FieldDescribe("流程维护身份,如果无法找到处理身份默认的流程处理身份.")
 	@Transient
@@ -256,6 +288,8 @@ public class Process extends SliceJpaObject {
 			this.manualAfterProcessingScriptText = this.getProperties().getManualAfterProcessingScriptText();
 			this.dataTraceFieldType = this.getProperties().getDataTraceFieldType();
 			this.dataTraceFieldList = this.getProperties().getDataTraceFieldList();
+			this.permissionWriteScript = this.getProperties().getPermissionWriteScript();
+			this.permissionWriteScriptText = this.getProperties().getPermissionWriteScriptText();
 		}
 	}
 

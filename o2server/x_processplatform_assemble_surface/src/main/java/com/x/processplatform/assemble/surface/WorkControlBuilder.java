@@ -188,10 +188,17 @@ public class WorkControlBuilder {
 
 	private Boolean canManage = null;
 
+	/**
+	 * 判断是否可以对应用或者流程管理,额外判断是否review有permissionWrite标志
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private boolean canManage() throws Exception {
 		if (null == canManage) {
 			this.canManage = this.business.ifPersonCanManageApplicationOrProcess(this.effectivePerson,
-					this.work.getApplication(), this.work.getProcess());
+					this.work.getApplication(), this.work.getProcess())
+					|| this.business.ifPersonHasPermissionWriteReviewWithJob(this.effectivePerson, this.work.getJob());
 		}
 		return this.canManage;
 	}

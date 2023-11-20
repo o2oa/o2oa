@@ -1259,10 +1259,12 @@ public class AeiObjects extends GsonPropertyObject {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Review
 		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
 				.entrySet()
-				.forEach(entry -> entry.getValue().stream()
-						.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-								.reversed().thenComparing(
-										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo))))
+				.forEach(entry -> entry.getValue().stream().sorted(Comparator
+						.comparing(Review::getPermissionWrite, Comparator.nullsFirst(Boolean::compareTo).reversed())
+						.thenComparing(Comparator
+								.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo)).reversed()
+								.thenComparing(
+										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo)))))
 						.findFirst().ifPresent(o -> {
 							try {
 								Optional<Review> existOptional = this.getReviews().stream()
@@ -1273,7 +1275,11 @@ public class AeiObjects extends GsonPropertyObject {
 									this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 								} else {
 									// 如果逻辑上相同的已阅已经存在,覆盖内容.
+									boolean permissionWrite = BooleanUtils
+											.isTrue(existOptional.get().getPermissionWrite())
+											|| BooleanUtils.isTrue(o.getPermissionWrite());
 									o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+									existOptional.get().setPermissionWrite(permissionWrite);
 								}
 							} catch (Exception e) {
 								LOGGER.error(e);
