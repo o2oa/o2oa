@@ -36,7 +36,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = PersistenceProperties.Content.Review.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }),
+		@UniqueConstraint(name = PersistenceProperties.Content.Review.table + JpaObject.IndexNameMiddle
+				+ "JP", columnNames = { Review.person_FIELDNAME, Review.job_FIELDNAME }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Review extends SliceJpaObject implements ProjectionInterface {
 
