@@ -46,6 +46,7 @@ public class Business {
 	public static final String EVENT_TASKDUTY = "taskDuty";
 	public static final String EVENT_READDUTY = "readDuty";
 	public static final String EVENT_REVIEWDUTY = "reviewDuty";
+	public static final String EVENT_PERMISSIONWRITE = "permissionWrite";
 
 	private EntityManagerContainer emc;
 
