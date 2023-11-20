@@ -180,9 +180,6 @@ MWF.xDesktop.WebSocket = new Class({
                             case "bbs_replyCreate" :
                                 this.receivBBSReplyCreateMessage(data);
                                 break;
-                            case "bbs_subjectCreate" :
-                                this.receivBBSSubjectCreateMessage(data);
-                                break;
                             default:
                         }
                 }
@@ -899,38 +896,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.apps[appId].setCurrent();
             }else{
                 layout.desktop.openApplication(e, "ForumDocument", {"id": data.body.subjectId, "isEdited": false });
-            }
-        });
-    },
-    receivBBSSubjectCreateMessage: function (data) {
-        debugger;
-        var content = MWF.LP.desktop.messsage.bbsSubjectCreate;
-        content = content.replace(/{title}/g, (data.body.createPerson||"").split("@")[0] + o2.txt(data.title));
-
-        var msg = {
-            "subject": MWF.LP.desktop.messsage.bbsSubjectCreateMessage,
-            "content": content
-        };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
-        tooltipItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.hide();
-            var appId = "ForumDocument" + data.body.id;
-            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
-                layout.desktop.apps[appId].setCurrent();
-            }else{
-                layout.desktop.openApplication(e, "ForumDocument", {"id": data.body.id, "isEdited": false });
-            }
-        });
-
-        messageItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.addUnread(-1);
-            layout.desktop.message.hide();
-            var appId = "ForumDocument" + data.body.id;
-            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
-                layout.desktop.apps[appId].setCurrent();
-            }else{
-                layout.desktop.openApplication(e, "ForumDocument", {"id": data.body.id, "isEdited": false });
             }
         });
     }

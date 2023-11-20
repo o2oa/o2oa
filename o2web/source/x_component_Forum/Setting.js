@@ -428,13 +428,11 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
             "</tr><tr>" +
             "   <td styles='formTableTitle' lable='forumNotice'></td>" +
             "   <td styles='formTableValue' item='forumNotice' colspan='3'></td>" +
-            "</tr><tr>" +
-            "   <td styles='formTableTitle' lable='subjectMessageNotifyTypeShow'></td>" +
-            // "   <td styles='formTableValue' item='subjectMessageNotifyShow'></td>" +
-            "   <td styles='formTableValue' item='subjectMessageNotifyTypeShow' colspan='3'></td>" +
+            // "</tr><tr>" +
+            // "   <td styles='formTableTitle' lable='subjectMessageNotifyTypeShow'></td>" +
+            // "   <td styles='formTableValue' item='subjectMessageNotifyTypeShow' colspan='3'></td>" +
             "</tr><tr>" +
             "   <td styles='formTableTitle' lable='replyMessageNotifyTypeShow'></td>" +
-            // "   <td styles='formTableValue' item='replyMessageNotifyShow'></td>" +
             "   <td styles='formTableValue' item='replyMessageNotifyTypeShow' colspan='3'></td>" +
             "</tr>"+
             "</table>";
@@ -466,10 +464,10 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
 
         //this.data.subjectMessageNotifyShow = this.data.subjectMessageNotify ? "true" : "false";
 
-        var subjectMessageNotifyType = (this.data.subjectMessageNotifyType || "0,0").split(",");
-        this.data.subjectMessageNotifyTypeShow = [];
-        if( subjectMessageNotifyType[0] === "1" )this.data.subjectMessageNotifyTypeShow.push( "1" );
-        if( subjectMessageNotifyType[1] === "1" )this.data.subjectMessageNotifyTypeShow.push( "2" );
+        // var subjectMessageNotifyType = (this.data.subjectMessageNotifyType || "0,0").split(",");
+        // this.data.subjectMessageNotifyTypeShow = [];
+        // if( subjectMessageNotifyType[0] === "1" )this.data.subjectMessageNotifyTypeShow.push( "1" );
+        // if( subjectMessageNotifyType[1] === "1" )this.data.subjectMessageNotifyTypeShow.push( "2" );
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
@@ -506,7 +504,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
                     //replyMessageNotifyShow: {text: this.lp.replyMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
                     replyMessageNotifyTypeShow: {text: this.lp.replyMessageNotify, type : "checkbox", selectValue : ["1","2","3"], selectText : this.lp.replyMessageNotifyType.split(",") },
                     //subjectMessageNotifyShow: {text: this.lp.subjectMessageNotify, type : "select", selectValue : ["true","false"], selectText : this.lp.yesOrNo.split(","), defaultValue: "false" },
-                    subjectMessageNotifyTypeShow: {text: this.lp.subjectMessageNotify, type : "checkbox", selectValue : ["1","2"], selectText : this.lp.subjectMessageNotifyType.split(",") },
+                    //subjectMessageNotifyTypeShow: {text: this.lp.subjectMessageNotify, type : "checkbox", selectValue : ["1","2"], selectText : this.lp.subjectMessageNotifyType.split(",") },
                 }
             }, this.app);
             this.form.load();
@@ -531,12 +529,12 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
     },
     _ok: function (data, callback) {
         debugger;
-        data.subjectMessageNotify = data.subjectMessageNotifyTypeShow.length > 0;
-
-        var subjectMessageNotifyType = [];
-        subjectMessageNotifyType.push( data.subjectMessageNotifyTypeShow.contains("1") ? "1" : "0" );
-        subjectMessageNotifyType.push( data.subjectMessageNotifyTypeShow.contains("2") ? "1" : "0" );
-        data.subjectMessageNotifyType = subjectMessageNotifyType.join(",");
+        // data.subjectMessageNotify = data.subjectMessageNotifyTypeShow.length > 0;
+        //
+        // var subjectMessageNotifyType = [];
+        // subjectMessageNotifyType.push( data.subjectMessageNotifyTypeShow.contains("1") ? "1" : "0" );
+        // subjectMessageNotifyType.push( data.subjectMessageNotifyTypeShow.contains("2") ? "1" : "0" );
+        // data.subjectMessageNotifyType = subjectMessageNotifyType.join(",");
 
 
         data.replyMessageNotify = data.replyMessageNotifyTypeShow.length > 0;
