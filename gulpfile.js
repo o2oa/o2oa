@@ -22,26 +22,8 @@ var assetRev = require('gulp-o2oa-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
-//var sourceMap = require('gulp-sourcemaps');
 
 var git = require('gulp-git');
-
-
-//var downloadHost = "download.o2oa.net";
-// var downloadHost = "release.o2oa.net";
-// var protocol = "http";
-// var commonUrl = "/build/commons.tar.gz";
-
-// var jvmUrls = {
-//     "all": "/build/jvm.tar.gz",
-//     "linux": "/build/linux.tar.gz",
-//     "aix": "/build/aix.tar.gz",
-//     "arm": "/build/arm.tar.gz",
-//     "macos": "/build/macos.tar.gz",
-//     "risc": "/build/risc.tar.gz",
-//     "raspberrypi": "/build/raspberrypi.tar.gz",
-//     "windows": "/build/windows.tar.gz"
-// };
 
 var supportedLanguage = ["zh-cn", "en", "es"];
 
@@ -435,7 +417,7 @@ function build_web_move() {
         }))
         .pipe(gutil.noop());
 }
-exports.build_web_move = build_web_move;
+// exports.build_web_move = build_web_move;
 
 function build_concat_o2(){
     var src = [
@@ -1062,18 +1044,18 @@ function build_concat_basedocument_body() {
         .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 
-exports.build_concat = gulp.parallel(
-    build_concat_o2,
-    build_concat_base,
-    build_concat_desktop,
-    build_concat_xform,
-    build_concat_cms_xform,
-    build_bundle,
-    build_concat_lp,
-    gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
-    gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
-    gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
-);
+// exports.build_concat = gulp.parallel(
+//     build_concat_o2,
+//     build_concat_base,
+//     build_concat_desktop,
+//     build_concat_xform,
+//     build_concat_cms_xform,
+//     build_bundle,
+//     build_concat_lp,
+//     gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
+//     gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
+//     gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
+// );
 
 function getGitV(){
     var tagPromise = new Promise(function(s, f){
@@ -1151,7 +1133,7 @@ function build_web_v_o2() {
             .pipe(gutil.noop());
     });
 }
-exports.build_web_v_o2 = build_web_v_o2;
+exports.build_version = gulp.parallel(build_web_v_o2, build_web_v_html);
 
 async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
