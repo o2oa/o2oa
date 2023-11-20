@@ -238,10 +238,7 @@ o2.LP.desktop = {
 		"cmsDoc": "Documento de información",
 
         "bbsReplyCreateMessage" : "Alertas de respuesta del foro",
-        "bbsReplyCreate": "{title}",
-
-        "bbsSubjectCreateMessage": "Alertas de publicación en el foro",
-        "bbsSubjectCreate": "{title}",
+        "bbsReplyCreate": "{title}"
     },
 	"styleMenu": {
 		"default": "Predeterminado",

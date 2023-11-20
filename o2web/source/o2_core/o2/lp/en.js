@@ -237,10 +237,7 @@ o2.LP.desktop = {
 		"cmsDoc": "Information",
 
 		"bbsReplyCreateMessage" : "Forum reply reminder",
-		"bbsReplyCreate": "{title}",
-
-		"bbsSubjectCreateMessage": "Forum Posting reminder",
-		"bbsSubjectCreate": "{title}",
+		"bbsReplyCreate": "{title}"
 	},
 	"styleMenu": {
 		"default": "default",

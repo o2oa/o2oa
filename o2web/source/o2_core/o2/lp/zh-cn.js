@@ -238,10 +238,7 @@ o2.LP.desktop = {
         "cmsDoc": "信息文档",
 
         "bbsReplyCreateMessage" : "论坛回复提醒",
-        "bbsReplyCreate": "{title}",
-
-        "bbsSubjectCreateMessage": "论坛发帖提醒",
-        "bbsSubjectCreate": "{title}",
+        "bbsReplyCreate": "{title}"
     },
     "styleMenu": {
         "default": "默认",
