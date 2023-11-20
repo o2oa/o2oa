@@ -257,6 +257,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"starGroup": "Grupo de inicio",
 		"manager": "Administrador",
 		"maintenanceIdentity": "Encargado del mantenimiento",
+		"defaultIdentity": "Manejador predeterminado",
 
 		"number": "Número",
 		"numberActivity": "Actividad de numeración",
