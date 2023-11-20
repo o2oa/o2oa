@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -16,8 +17,11 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.utils.time.WorkTime;
+import com.x.organization.core.express.Organization.ClassifyDistinguishedName;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Begin;
@@ -59,14 +63,63 @@ public class BeginProcessor extends AbstractBeginProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.beginExecute(aeiObjects.getWork().getActivityToken(), begin));
 		List<Work> list = new ArrayList<>();
-		// 如果是再次进入begin节点那么就不需要设置开始时间
+		// 如果是再次进入begin节点那么就不需要设置开始时间.
 		if (aeiObjects.getWork().getStartTime() == null) {
+			// 创建work不会进入这里
 			aeiObjects.getWork().setStartTime(new Date());
 			// 计算过期时间
 			this.calculateExpire(aeiObjects);
 		}
+		// 设置维护人
+		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getPermissionWriteScript())
+				|| StringTools.ifScriptHasEffectiveCode(aeiObjects.getProcess().getPermissionWriteScriptText())) {
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					aeiObjects.getProcess(), Business.EVENT_PERMISSIONWRITE);
+			List<String> values = JsonScriptingExecutor.evalDistinguishedNames(cs, aeiObjects.scriptContext()).stream()
+					.distinct().collect(Collectors.toList());
+			ClassifyDistinguishedName classifyDistinguishedName = aeiObjects.business().organization()
+					.classifyDistinguishedNames(values);
+			List<String> distinguishedNames = this.convertToPerson(aeiObjects, classifyDistinguishedName);
+			distinguishedNames.stream().forEach(o -> {
+				Review review = new Review(aeiObjects.getWork(), o);
+				review.setPermissionWrite(true);
+				aeiObjects.getCreateReviews().add(review);
+			});
+		}
 		list.add(aeiObjects.getWork());
 		return list;
+	}
+
+	private List<String> convertToPerson(AeiObjects aeiObjects, ClassifyDistinguishedName classifyDistinguishedName)
+			throws Exception {
+
+		List<String> list = new ArrayList<>();
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getPersonList())) {
+			list.addAll(classifyDistinguishedName.getPersonList());
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getGroupList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithGroup(classifyDistinguishedName.getGroupList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getIdentityList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithIdentity(classifyDistinguishedName.getIdentityList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getRoleList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithRole(classifyDistinguishedName.getRoleList()));
+		}
+
+		if (ListTools.isNotEmpty(classifyDistinguishedName.getUnitList())) {
+			list.addAll(aeiObjects.business().organization().person()
+					.listWithUnitSubDirect(classifyDistinguishedName.getUnitList()));
+		}
+		return aeiObjects.business().organization().person().list(list).stream().distinct()
+				.collect(Collectors.toList());
 	}
 
 	@Override

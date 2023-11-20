@@ -48,11 +48,33 @@ public class ProcessProperties extends JsonProperties {
 	@FieldDescribe("数据脚本文本.")
 	private String targetAssignDataScriptText;
 
+	@FieldDescribe("可编辑权限脚本,返回组织专用标识.")
+	private String permissionWriteScript;
+
+	@FieldDescribe("可编辑权限脚本文本,返回组织专用标识.")
+	private String permissionWriteScriptText;
+
 	@FieldDescribe("需要记录数据变化的字段.")
 	private List<String> dataTraceFieldList;
 
 	@FieldDescribe("需要记录数据变化的字段配置方式：all|所有、custom|依据dataTraceFieldList配置的字段.")
 	private String dataTraceFieldType;
+
+	public String getPermissionWriteScript() {
+		return permissionWriteScript;
+	}
+
+	public void setPermissionWriteScript(String permissionWriteScript) {
+		this.permissionWriteScript = permissionWriteScript;
+	}
+
+	public String getPermissionWriteScriptText() {
+		return permissionWriteScriptText;
+	}
+
+	public void setPermissionWriteScriptText(String permissionWriteScriptText) {
+		this.permissionWriteScriptText = permissionWriteScriptText;
+	}
 
 	public String getMaintenanceIdentity() {
 		return maintenanceIdentity;

@@ -521,8 +521,10 @@ public class ElementFactory extends AbstractFactory {
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.manualAfterTaskScriptText_FIELDNAME));
 				break;
 			case Business.EVENT_MANUALAFTERPROCESSING:
-				scriptName = Objects.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPT_FIELDNAME));
-				scriptText = Objects.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME));
+				scriptName = Objects
+						.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Manual.MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME));
 				break;
 			case Business.EVENT_INVOKEJAXWSPARAMETER:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxwsParameterScript_FIELDNAME));
@@ -762,6 +764,11 @@ public class ElementFactory extends AbstractFactory {
 						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERPROCESSINGSCRIPT_FIELDNAME));
 				scriptText = Objects
 						.toString(PropertyUtils.getProperty(o, Process.MANUALAFTERPROCESSINGSCRIPTTEXT_FIELDNAME));
+				break;
+			case Business.EVENT_PERMISSIONWRITE:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Process.PERMISSIONWRITESCRIPT_FIELDNAME));
+				scriptText = Objects
+						.toString(PropertyUtils.getProperty(o, Process.PERMISSIONWRITESCRIPTTEXT_FIELDNAME));
 				break;
 			default:
 				break;

@@ -504,6 +504,24 @@ public class Business {
 		return opt.isPresent();
 	}
 
+	/**
+	 * 判断用户是否有Review的permissionWrite标志
+	 * 
+	 * @param effectivePerson
+	 * @param job
+	 * @return
+	 */
+	public boolean ifPersonHasPermissionWriteReviewWithJob(EffectivePerson effectivePerson, String job) {
+		try {
+			return emc.countEqualAndEqualAndEqual(Review.class, Review.person_FIELDNAME,
+					effectivePerson.getDistinguishedName(), Review.job_FIELDNAME, job, Review.PERMISSIONWRITE_FIELDNAME,
+					true) > 0;
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
+	}
+
 	public boolean ifPersonCanManageApplicationOrProcess(EffectivePerson effectivePerson, String applicationId,
 			String processId) throws Exception {
 		if (effectivePerson.isManager()) {
