@@ -1189,7 +1189,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private void uncompletedTicketToRead(AeiObjects aeiObjects, Manual manual, Tickets tickets) {
 		if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
-			tickets.list(false, true, true).stream().forEach(o -> {
+			tickets.list(false, false, true).stream().forEach(o -> {
 				try {
 					String identity = aeiObjects.business().organization().identity().get(o.distinguishedName());
 					String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
