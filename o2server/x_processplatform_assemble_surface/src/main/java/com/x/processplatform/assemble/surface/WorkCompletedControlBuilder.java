@@ -69,7 +69,9 @@ public class WorkCompletedControlBuilder {
 	private boolean canManage() throws Exception {
 		if (null == canManage) {
 			this.canManage = business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-					workCompleted.getApplication(), workCompleted.getProcess());
+					workCompleted.getApplication(), workCompleted.getProcess())
+					|| this.business.ifPersonHasPermissionWriteReviewWithJob(this.effectivePerson,
+							this.workCompleted.getJob());
 		}
 		return this.canManage;
 	}
