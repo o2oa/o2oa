@@ -26,8 +26,9 @@ interface Add {
 //		targets.stream().forEach(o -> o.level(level).parent(ticket.label()));
 //	}
 
-	default void completedThenNotJoin(Tickets tickets, Ticket ticket) {
-		tickets.listSibling(ticket, true).stream().forEach(o -> o.completed(true));
-	}
+//	default void completedThenNotJoin(Tickets tickets, Ticket ticket) {
+//		tickets.listSibling(ticket, false).stream().forEach(o -> o.enable(false));
+//		
+//	}
 
 }

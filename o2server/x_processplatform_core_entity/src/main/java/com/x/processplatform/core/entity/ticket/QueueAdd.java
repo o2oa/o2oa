@@ -14,7 +14,8 @@ class QueueAdd implements Add {
 			List<Ticket> next = tickets.listNext(ticket);
 			Tickets.interconnectedAsFellow(targets);
 			targets.stream().forEach(o -> o.appendNext(next));
-			completedThenNotJoin(tickets, ticket);
+			tickets.completed(ticket);
+			//completedThenNotJoin(tickets, ticket);
 		}
 		return targets;
 	}
@@ -32,7 +33,8 @@ class QueueAdd implements Add {
 				first.get().appendSibling(sibling).appendFellow(fellow);
 			}
 			targets.stream().forEach(o -> o.appendNext(next));
-			completedThenNotJoin(tickets, ticket);
+			tickets.completed(ticket);
+			//completedThenNotJoin(tickets, ticket);
 		}
 		return targets;
 	}
@@ -48,7 +50,8 @@ class QueueAdd implements Add {
 		Tickets.interconnectedAsFellow(fellow);
 		targets.stream().forEach(o -> o.appendNext(next));
 		tickets.listNextTo(ticket).forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
-		completedThenNotJoin(tickets, ticket);
+		tickets.completed(ticket);
+		//completedThenNotJoin(tickets, ticket);
 		return targets;
 	}
 
