@@ -283,7 +283,7 @@ public class Tickets implements Serializable {
 	}
 
 	protected List<Ticket> listFellow(Ticket ticket, boolean selfInclude) {
-		List<Ticket> list = this.listSibling(ticket, false).stream().flatMap(o -> o.fellow().stream()).distinct()
+		List<Ticket> list = this.listSibling(ticket, true).stream().flatMap(o -> o.fellow().stream()).distinct()
 				.map(context::get).filter(Objects::nonNull).flatMap(o -> this.listSibling(o, true).stream())
 				.filter(Objects::nonNull).distinct().collect(Collectors.toList());
 		if (selfInclude) {
