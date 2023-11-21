@@ -93,7 +93,7 @@ function ProgressBar(description, bar_length){
 
         if (opts.completed <= opts.total){
             var d = new Date();
-            var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count;
+            var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count+'\n';
             slog(cmdText);
         }
     };
@@ -320,8 +320,8 @@ async function clear_jvm_git(cb){
 }
 
 function build_web_language_pack(cb){
-    if (fs.existsSync('./gulpfile_language_pack.js')){
-        const {check_language_pack} = require('./gulpfile_language_pack.js');
+    if (fs.existsSync('./gulpconfig.js')){
+        const {check_language_pack} = require('./gulpconfig.js');
         return check_language_pack();
     }
     cb();
@@ -380,7 +380,7 @@ function build_web_minimize(cb) {
     var doCount = 0;
 
     var stream = gulp.src(src_min);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(uglify())
         .pipe(rename({ extname: '.min.js' }))
@@ -408,7 +408,7 @@ function build_web_move() {
     var doCount = 0;
 
     var stream = gulp.src(src_move);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -1172,7 +1172,7 @@ function deploy_server(){
     var doCount = 0;
 
     var stream = gulp.src(source);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -1287,5 +1287,27 @@ async function createHistroyJson(cb) {
     cb();
 }
 exports.build_historyJson = createHistroyJson;
+
+
+function detachLanguagePack(){
+    var dest = 'target/language-pack/';
+    var src_move = ['**/source/**/lp/*.js', '!**/*.spec.js', '!**/test/**', '!**/node_modules/**/*', '!**/target/**/*', '!**/dist/**/*'];
+
+    var entries = fg.sync(src_move, { dot: false});
+    var size = entries.length;
+    var pb = new ProgressBar('', 50);
+    var doCount = 0;
+
+    var stream = gulp.src(src_move);
+    // stream.on("end", ()=>{console.log();});
+
+    return stream.pipe(gulp.dest(dest))
+        .pipe(logger(function(){
+            doCount++;
+            if (doCount <= size) {pb.render({ completed: doCount, total: size, count: doCount})};
+        }))
+        .pipe(gutil.noop());
+}
+exports.detachLanguagePack = detachLanguagePack;
 
 // /exports.build_module = build_web_module;
