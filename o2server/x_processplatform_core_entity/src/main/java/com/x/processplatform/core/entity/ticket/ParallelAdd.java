@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+
 class ParallelAdd implements Add {
 
 	@Override
@@ -93,11 +95,11 @@ class ParallelAdd implements Add {
 		List<Ticket> targets = tickets.trimWithBubble(collection);
 		if (!targets.isEmpty()) {
 			List<Ticket> sibling = tickets.listSibling(ticket, false);
-			List<Ticket> fellow = tickets.listFellow(ticket, false);
+			List<Ticket> fellow = tickets.listFellow(ticket, true);
 			List<Ticket> next = tickets.listNext(ticket);
 			Tickets.interconnectedAsSibling(targets);
-			fellow.addAll(targets);
-			Tickets.interconnectedAsFellow(fellow);
+			fellow.stream().forEach(o -> o.appendFellow(targets));
+			targets.stream().forEach(o -> o.appendFellow(ticket));
 			tickets.listNextTo(ticket).stream()
 					.forEach(o -> o.appendNext(targets.stream().collect(Collectors.toList())));
 			targets.stream().forEach(o -> o.appendNext(ticket).appendNext(next).appendNext(sibling));

@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -74,9 +73,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 	private List<WoTaskCompleted> taskCompleteds(String job) {
 		List<WoTaskCompleted> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(TaskCompleted.class, WoTaskCompleted.copier, TaskCompleted.job_FIELDNAME, job).stream()
-					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
+			os = emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job).stream()
+					.sorted(Comparator.comparing(TaskCompleted::getCreateTime,
+							Comparator.nullsFirst(Date::compareTo).reversed()))
+					.map(WoTaskCompleted.copier::copy).collect(Collectors.toList());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -89,13 +89,9 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 			os = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job).stream()
 					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
 							&& (Objects.equals(o.getFromActivityType(), ActivityType.manual)))
-					.collect(Collectors.groupingBy(WorkLog::getFromActivity)).entrySet().stream()
-					.map(o -> o.getValue().stream()
-							.sorted(Comparator.comparing(WorkLog::getCreateTime,
-									Comparator.nullsFirst(Date::compareTo).reversed()))
-							.findFirst())
-					.filter(Optional::isPresent).map(Optional::get).map(o -> Wo.copier.copy(o))
-					.collect(Collectors.toList());
+					.sorted(Comparator.comparing(WorkLog::getCreateTime,
+							Comparator.nullsFirst(Date::compareTo).reversed()))
+					.map(o -> Wo.copier.copy(o)).collect(Collectors.toList());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

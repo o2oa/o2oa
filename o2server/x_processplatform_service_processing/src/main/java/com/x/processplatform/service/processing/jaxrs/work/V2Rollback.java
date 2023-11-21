@@ -120,9 +120,6 @@ class V2Rollback extends BaseAction {
 				aeiObjects.getTasks().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteTasks()::add);
 
-				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
-						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
-
 				// 将已有的已办标识为joinInquire=false,这样由于存在已办所以撤回将被禁用.
 				aeiObjects.getTaskCompleteds().stream()
 						.filter(o -> StringUtils.equals(workLog.getFromActivityToken(), o.getActivityToken()))
@@ -130,6 +127,11 @@ class V2Rollback extends BaseAction {
 							o.setJoinInquire(false);
 							aeiObjects.getUpdateTaskCompleteds().add(o);
 						});
+
+				aeiObjects.getTaskCompleteds().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
+						// 前面已经更新,不能再次删除
+						.filter(o -> !aeiObjects.getUpdateTaskCompleteds().contains(o))
+						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
 
 				aeiObjects.getReads().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteReads()::add);
@@ -191,8 +193,8 @@ class V2Rollback extends BaseAction {
 			workLog.setArrivedTime(null);
 		}
 
-		private void updateTickets(Business business, AeiObjects aeiObjects,
-				List<String> distinguishedNameList) throws Exception {
+		private void updateTickets(Business business, AeiObjects aeiObjects, List<String> distinguishedNameList)
+				throws Exception {
 			if (Objects.equals(ActivityType.manual, aeiObjects.getWork().getActivityType())) {
 				Manual manual = (Manual) business.element().get(aeiObjects.getWork().getActivity(),
 						ActivityType.manual);
