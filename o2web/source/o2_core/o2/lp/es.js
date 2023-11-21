@@ -235,7 +235,10 @@ o2.LP.desktop = {
 		"customMessage": "Ha recibido un mensaje",
 		"emoji": "Emoji",
 		"processWork": "Trabajo",
-		"cmsDoc": "Documento de información"
+		"cmsDoc": "Documento de información",
+
+        "bbsReplyCreateMessage" : "Alertas de respuesta del foro",
+        "bbsReplyCreate": "{title}"
     },
 	"styleMenu": {
 		"default": "Predeterminado",

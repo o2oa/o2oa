@@ -177,6 +177,9 @@ MWF.xDesktop.WebSocket = new Class({
                             case "cms_publish" :
                                 this.receiveCMSPublishMessage(data);
                                 break;
+                            case "bbs_replyCreate" :
+                                this.receivBBSReplyCreateMessage(data);
+                                break;
                             default:
                         }
                 }
@@ -819,4 +822,81 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.openApplication(e, "TeamWork.Task", options);
         }.bind(this));
     },
+    receiveBBSSubjectCreateMessage: function (data) {
+        var content = MWF.LP.desktop.messsage.canlendarAlarm;
+        content = content.replace(/{title}/g, o2.txt(data.title));
+
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.canlendarAlarmMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+    },
+    receivBBSReplyCreateMessage: function (data) {
+        debugger;
+        var content = MWF.LP.desktop.messsage.bbsReplyCreate;
+        content = content.replace(/{title}/g, (data.body.createPerson||"").split("@")[0] + o2.txt(data.title));
+
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.bbsReplyCreateMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            var appId = "ForumDocument" + data.body.subjectId;
+            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
+                layout.desktop.apps[appId].setCurrent();
+            }else{
+                layout.desktop.openApplication(e, "ForumDocument", {"id": data.body.subjectId, "isEdited": false });
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            var appId = "ForumDocument" + data.body.subjectId;
+            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
+                layout.desktop.apps[appId].setCurrent();
+            }else{
+                layout.desktop.openApplication(e, "ForumDocument", {"id": data.body.subjectId, "isEdited": false });
+            }
+        });
+    }
 });

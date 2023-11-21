@@ -235,6 +235,9 @@ o2.LP.desktop = {
 		"emoji": "Emoji",
 		"processWork": "Work",
 		"cmsDoc": "Information",
+
+		"bbsReplyCreateMessage" : "Forum reply reminder",
+		"bbsReplyCreate": "{title}"
 	},
 	"styleMenu": {
 		"default": "default",
