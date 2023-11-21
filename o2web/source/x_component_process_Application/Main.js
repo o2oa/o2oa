@@ -662,7 +662,7 @@ MWF.xApplication.process.Application.List = new Class({
 		dataList.each(function (data){
 			data.creatorPersonName = data.creatorPerson.split("@")[0];
 			data.creatorUnitName = data.creatorUnit.split("@")[0];
-
+			data.title = data.title || this.lp.unnamed;
 		}.bind(this));
 		return dataList;
 	},
@@ -909,6 +909,7 @@ MWF.xApplication.process.Application.AllList = new Class({
 					data.activityName = data.taskList[0].activityName;
 				}
 			}
+			data.title = data.title || this.lp.unnamed;
 		}.bind(this));
 		return dataList;
 	},
