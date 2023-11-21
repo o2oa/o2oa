@@ -84,10 +84,11 @@ abstract class AbstractBaseProcessor {
 		aeiObjects.getWork().setActivityDescription(aeiObjects.getActivity().getDescription());
 		aeiObjects.getWork().setActivityType(aeiObjects.getActivity().getActivityType());
 		aeiObjects.getWork().setWorkStatus(WorkStatus.processing);
+		// setDestinationRoute 和 setDestinationRouteName 在退回路由中使用到,无需赋空值
 		aeiObjects.getWork().setDestinationActivity(null);
 		aeiObjects.getWork().setDestinationActivityType(null);
-		aeiObjects.getWork().setDestinationRoute(null);
-		aeiObjects.getWork().setDestinationRouteName(null);
+//		aeiObjects.getWork().setDestinationRoute(null);
+//		aeiObjects.getWork().setDestinationRouteName(null);
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getForm())) {
 			/** 检查表单存在 */
 			Form form = this.business().element().get(aeiObjects.getActivity().getForm(), Form.class);

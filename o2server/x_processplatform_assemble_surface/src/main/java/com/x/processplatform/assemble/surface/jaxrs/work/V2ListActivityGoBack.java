@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -87,34 +88,18 @@ class V2ListActivityGoBack extends BaseAction {
 								&& (!StringUtils.equalsIgnoreCase(manual.getId(), o.getFromActivity())))
 						.collect(Collectors.groupingBy(WorkLog::getFromActivity, LinkedHashMap::new, // 生成一个新的LinkedHashMap来存储结果
 								Collectors.toList()))
-						.entrySet().stream().map(o -> o.getValue().get(0)).collect(Collectors.toList());
+						.entrySet().stream()
+						.map(o -> o.getValue().stream()
+								.sorted(Comparator.comparing(WorkLog::getCreateTime,
+										Comparator.nullsFirst(Date::compareTo).reversed()))
+								.findFirst())
+						.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 				wos = this.list(manual, workLogs);
 				wos = this.supplement(business, wos);
 			}
 		}
 		result.setData(wos);
 		return result;
-	}
-
-	/**
-	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
-	 * 
-	 * @param nodes
-	 * @param activityToken
-	 * @return
-	 */
-	private List<WorkLog> truncateWorkLog(Nodes nodes, String goBackActivityToken) {
-		List<WorkLog> list = new ArrayList<>();
-		nodes.forEach(o -> {
-			// if (StringUtils.equalsIgnoreCase(o.getWorkLog().getGoBackFromActivityToken(),
-			// activityToken)) {
-			if (StringUtils.equalsIgnoreCase(o.getWorkLog().getFromActivityToken(), goBackActivityToken)) {
-				list.clear();
-			} else {
-				list.add(o.getWorkLog());
-			}
-		});
-		return list;
 	}
 
 	private List<Wo> list(Manual manual, List<WorkLog> workLogs) {
