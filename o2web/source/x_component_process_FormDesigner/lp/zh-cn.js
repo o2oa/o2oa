@@ -1219,6 +1219,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_loading": "加载中",
         "el_autofocus": "默认焦点",
         "el_isText": "显示文字",
+        "el_iconPosition": "图标位置",
 
         "layout": "布局",
         "layoutCode": "布局代码",
