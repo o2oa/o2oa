@@ -44,6 +44,13 @@
 				</td>
 			</tr>
 			<tr>
+				<td class="editTableTitle">{{$.lp.el_iconPosition}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="iconPosition" value="left" text{($.iconPosition!='right')?'checked':''}/>{{$.lp.left}}
+					<input type="radio" name="iconPosition" value="right" text{($.iconPosition=='right')?'checked':''}/>{{$.lp.right}}
+				</td>
+			</tr>
+			<tr>
 				<td class="editTableTitle">{{$.lp.el_plain}}:</td>
 				<td class="editTableValue">
 					<input type="radio" name="plain" value="true" text{($.plain==true)?'checked':''}/>{{$.lp.yes}}
