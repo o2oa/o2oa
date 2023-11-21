@@ -24,6 +24,8 @@ var git = require('gulp-git');
 var assetRev = require('gulp-o2oa-asset-rev');
 var apps = require('./gulpapps.js');
 
+var {generate} = require('@o2oa/language-tools');
+
 var ftpconfig;
 try{
     ftpconfig = require('./gulpconfig.js');
@@ -78,12 +80,45 @@ setOptions(o_options, getEvOptions(o_options.ev));
 
 var appTasks = [];
 
+function setTaskName(task, name){
+    Object.defineProperty(task, 'name', {
+        value: name
+    });
+    return task;
+}
+function createLanguagePackTask(path){
+    let component;
+    if (ftpconfig && ftpconfig.languagePack && ftpconfig.languagePack.accessKeys){
+        const lps = ftpconfig.languagePack.lps, keys = ftpconfig.languagePack.accessKeys["baidu-translate"];
+        const name = path+" : LanguagePack";
+        const task = function(cb){
+            if (path.startsWith('x_component_')){
+                component = path.substring('x_component_'.length).replace('_', '.');
+                generate(component, lps, keys).then(()=>{
+                    cb();
+                });
+            }else if(path==='o2_core') {
+                component = 'o2_core';
+                generate(component, lps, keys).then(()=>{
+                    cb();
+                });
+            }else{
+                cb();
+            }
+        }
+        return setTaskName(task, name);
+    }else{
+        return function nothing(cb){cb();};
+    }
+}
 function createDefaultTask(path, isMin, thisOptions) {
     var pkgPath = nodePath.resolve('source', path, 'package.json');
     if (fs.existsSync(pkgPath)){
         var pkg = require(pkgPath);
         if (pkg.scripts['o2-deploy']){
-            gulp.task(path, gulp.series(shell.task('npm run o2-deploy', {cwd: nodePath.resolve('source', path), verbose:true}), function(cb){
+            const shellTask = shell.task('npm run o2-deploy', {cwd: nodePath.resolve('source', path), verbose:true});
+
+            const task = function(){
                 var option = thisOptions || options;
                 var dest = ['dest/' + path + '/**/*'];
                 return gulp.src(dest)
@@ -103,12 +138,15 @@ function createDefaultTask(path, isMin, thisOptions) {
                         remotePath: (option.remotePath || '/') + path
                     })))
                     .pipe(gutil.noop());
-            }));
-            return '';
+            }
+            return gulp.series(
+                setTaskName(shellTask, path+' : build'),
+                setTaskName(task, path+' : deploy'),
+            )
         }
     }
-    gulp.task(path, function (cb) {
-        //var srcFile = 'source/' + path + '/**/*';
+
+    const task = function (){
         var option = thisOptions || options;
 
         var src;
@@ -186,11 +224,12 @@ function createDefaultTask(path, isMin, thisOptions) {
                 .pipe(gulp.dest(dest))
                 .pipe(gutil.noop());
         }
-    });
+    }
+    return setTaskName(task, path+' : task');
 }
 
 function createXFormConcatTask(path, isMin, thisOptions) {
-    gulp.task(path+" : concat", function(){
+    return function process_Xform_concat(){
         var option = thisOptions || options;
         var src = [
             'source/o2_core/o2/widget/AttachmentController.js',
@@ -262,12 +301,12 @@ function createXFormConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    };
 }
 
 function createCMSXFormConcatTask(path, isMin, thisOptions) {
-    var processPath = "x_component_process_Xform";
-    gulp.task(path+" : concat", function(){
+    return function cms_xform_concat(){
+        var processPath = "x_component_process_Xform";
         var option = thisOptions || options;
         var src = [
             'source/o2_core/o2/widget/AttachmentController.js',
@@ -446,11 +485,11 @@ function createCMSXFormConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
 }
 
 function createO2ConcatTask(path, isMin, thisOptions) {
-    gulp.task(path+" : concat", function(){
+    function o2_core_concat(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/polyfill.js',
@@ -498,9 +537,9 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
 
-    gulp.task(path+".xDesktop : concat", function(){
+    function o2_core_xDesktop_concat(){
         var option = thisOptions || options;
         var src = [
             'source/'+path+'/o2/widget/Common.js',
@@ -558,10 +597,10 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path+"/o2/xDesktop/"
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+            .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+    }
 
-    gulp.task(path+" : bundle", function(){
+    function o2_core_bundle(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/polyfill.js',
@@ -613,7 +652,9 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+
+    return [o2_core_concat, o2_core_xDesktop_concat, o2_core_bundle];
 }
 
 function concat_Actions(){
@@ -665,7 +706,7 @@ function concat_Style(){
 }
 
 function createBaseWorkConcatStyleTask(path){
-    gulp.task(path+".base_work : style", function(){
+    const task = function(){
         return gulp.src([
             "source/x_component_process_Work/$Main/default/css.wcss",
             "source/x_component_process_Xform/$Form/default/css.wcss",
@@ -678,12 +719,14 @@ function createBaseWorkConcatStyleTask(path){
         ])
             .pipe(concat_Style())
             .pipe(concat('js/base_work_style_temp.js'))
-            .pipe(gulp.dest('source/x_desktop/'))
-    })
+            .pipe(gulp.dest('source/x_desktop/'));
+    }
+
+    return setTaskName(task, path+".base_work : style");
 }
 
 function createBaseWorkConcatActionTask(path){
-    gulp.task(path+".base_work : action", function(){
+    const task = function(){
         return gulp.src([
             "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
             "source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.json",
@@ -696,20 +739,22 @@ function createBaseWorkConcatActionTask(path){
             .pipe(concat_Actions())
             .pipe(concat('js/base_work_actions_temp.js'))
             .pipe(gulp.dest('source/x_desktop/'))
-    })
+    }
+    return setTaskName(task, path+".base_work : action")
 }
 function createBaseWorkConcatDelTempTask(path) {
-    gulp.task(path+".base_work : clean", function(cb){
+    const task = function(){
         var dest = [
             'source/'+path+'/js/base_work_actions_temp.js',
             'source/'+path+'/js/base_work_style_temp.js'
         ];
         return del(dest, cb);
-    });
+    }
+    return setTaskName(task, path+".base_work : clean");
 }
 
 function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
-    gulp.task(path+".base_work : concat", function(){
+    const task = function(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
@@ -804,10 +849,11 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+    return setTaskName(task, path+".base_work : concat");
 }
 function createBaseWorkConcatLanguageTask(path, thisOptions, language){
-    gulp.task(path+".base_lp : "+language, function(){
+    const task = function(){
         var option = thisOptions || options;
         var src = [
             'source/o2_core/o2/lp/'+(language)+'.js',
@@ -859,18 +905,21 @@ function createBaseWorkConcatLanguageTask(path, thisOptions, language){
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+    return setTaskName(task, path+".base_lp : "+language);
 }
 function createBaseWorkConcatTask(path, isMin, thisOptions){
-    createBaseWorkConcatActionTask(path);
-    createBaseWorkConcatStyleTask(path);
-    createBaseWorkConcatBodyTask(path, isMin, thisOptions);
-    createBaseWorkConcatDelTempTask(path);
-    gulp.task( path+".base_work", gulp.series(path+".base_work : action", path+".base_work : style", path+".base_work : concat", lpTasks, path+".base_work : clean"));
+    return gulp.series(
+        createBaseWorkConcatActionTask(path),
+        createBaseWorkConcatStyleTask(path),
+        createBaseWorkConcatBodyTask(path, isMin, thisOptions),
+        createBaseWorkConcatDelTempTask(path)
+    );
+    // gulp.task( path+".base_work", gulp.series(path+".base_work : action", path+".base_work : style", path+".base_work : concat", lpTasks, path+".base_work : clean"));
 }
 
 function createBasePortalConcatStyleTask(path){
-    gulp.task(path+".base_portal : style", function(){
+    const task = function(){
         return gulp.src([
             "source/x_component_process_Work/$Main/default/css.wcss",
             "source/x_component_portal_Portal/$Main/default/css.wcss",
@@ -881,11 +930,12 @@ function createBasePortalConcatStyleTask(path){
             .pipe(concat_Style())
             .pipe(concat('js/base_portal_style_temp.js'))
             .pipe(gulp.dest('source/x_desktop/'))
-    })
+    }
+    return setTaskName(task, path+".base_portal : style");
 }
 
 function createBasePortalConcatActionTask(path){
-    gulp.task(path+".base_portal : action", function(){
+    const task = function(){
         return gulp.src([
             "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
             "source/o2_core/o2/xAction/services/x_portal_assemble_surface.json",
@@ -899,20 +949,22 @@ function createBasePortalConcatActionTask(path){
             .pipe(concat_Actions())
             .pipe(concat('js/base_portal_actions_temp.js'))
             .pipe(gulp.dest('source/x_desktop/'))
-    })
+    }
+    return setTaskName(task, path+".base_portal : action");
 }
 function createBasePortalConcatDelTempTask(path) {
-    gulp.task(path+".base_portal : clean", function(cb){
+    const task = function(){
         var dest = [
             'source/'+path+'/js/base_portal_actions_temp.js',
             'source/'+path+'/js/base_portal_style_temp.js'
         ];
         return del(dest, cb);
-    });
+    }
+    return setTaskName(task, path+".base_portal : clean");
 }
 
 function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
-    gulp.task(path+".base_portal : concat", function(){
+    const task = function(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
@@ -1012,19 +1064,23 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+    return setTaskName(task, path+".base_portal : concat");
 }
 function createBasePortalConcatTask(path, isMin, thisOptions){
-    createBasePortalConcatActionTask(path);
-    createBasePortalConcatStyleTask(path);
-    createBasePortalConcatBodyTask(path, isMin, thisOptions);
-    createBasePortalConcatDelTempTask(path);
-    gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", lpTasks, path+".base_portal : clean"));
+    return gulp.series(
+        createBasePortalConcatActionTask(path),
+        createBasePortalConcatStyleTask(path),
+        createBasePortalConcatBodyTask(path, isMin, thisOptions),
+        createBasePortalConcatDelTempTask(path)
+    );
+
+    // gulp.task( path+".base_portal", gulp.series(path+".base_portal : action", path+".base_portal : style", path+".base_portal : concat", lpTasks, path+".base_portal : clean"));
 }
 
 
 function createBaseDocumentConcatActionTask(path){
-    gulp.task(path+".base_document : action", function(){
+    const task = function(){
         return gulp.src([
             "source/o2_core/o2/xAction/services/x_organization_assemble_authentication.json",
             "source/o2_core/o2/xAction/services/x_organization_assemble_control.json",
@@ -1035,11 +1091,12 @@ function createBaseDocumentConcatActionTask(path){
             .pipe(concat_Actions())
             .pipe(concat('js/base_document_actions_temp.js'))
             .pipe(gulp.dest('source/x_desktop/'))
-    })
+    }
+    return setTaskName(task, path+".base_document : action");
 }
 
 function createBaseDocumentConcatStyleTask(path){
-    gulp.task(path+".base_document : style", function(){
+    const task = function(){
         return gulp.src([
             "source/x_component_cms_Document/$Main/default/css.wcss",
             "source/x_component_cms_Xform/$Form/default/css.wcss",
@@ -1048,11 +1105,12 @@ function createBaseDocumentConcatStyleTask(path){
             .pipe(concat_Style())
             .pipe(concat('js/base_document_style_temp.js'))
             .pipe(gulp.dest('source/x_desktop/'))
-    })
+    }
+    return setTaskName(task, path+".base_document : style");
 }
 
 function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
-    gulp.task(path+".base_document : concat", function(){
+    const task = function(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_concat_head.js',
@@ -1142,31 +1200,35 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+    return setTaskName(task, path+".base_document : concat");
 }
 
 function createBaseDocumentConcatDelTempTask(path) {
-    gulp.task(path+".base_document : clean", function(cb){
+    const task = function(){
         var dest = [
             'source/'+path+'/js/base_document_actions_temp.js',
             'source/'+path+'/js/base_document_style_temp.js'
         ];
         return del(dest, cb);
-    });
+    }
+    return setTaskName(task, path+".base_document : clean")
 }
 
 function createBaseDocumentConcatTask(path, isMin, thisOptions){
-    createBaseDocumentConcatActionTask(path);
-    createBaseDocumentConcatStyleTask(path);
-    createBaseDocumentConcatBodyTask(path, isMin, thisOptions);
-    createBaseDocumentConcatDelTempTask(path);
-    gulp.task( path+".base_document", gulp.series(path+".base_document : action", path+".base_document : style", path+".base_document : concat", lpTasks, path+".base_document : clean"));
+    return gulp.series(
+        createBaseDocumentConcatActionTask(path),
+        createBaseDocumentConcatStyleTask(path),
+        createBaseDocumentConcatBodyTask(path, isMin, thisOptions),
+        createBaseDocumentConcatDelTempTask(path)
+    )
+    // gulp.task( path+".base_document", gulp.series(path+".base_document : action", path+".base_document : style", path+".base_document : concat", lpTasks, path+".base_document : clean"));
 }
 
 
 
 function createBaseConcatTask(path, isMin, thisOptions){
-    gulp.task(path+".base", function(){
+    const task = function(){
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base.js',
@@ -1215,40 +1277,50 @@ function createBaseConcatTask(path, isMin, thisOptions){
                 remotePath: (option.remotePath || '/') + path
             })))
             .pipe(gulp.dest(dest, {sourcemaps: '.'}))
-    });
+    }
+    return setTaskName(task, path+".base")
 }
 
 var lpTasks = [];
 function getAppTask(path, isMin, thisOptions) {
-    if (path==="x_component_process_Xform") {
-        createDefaultTask(path, isMin, thisOptions);
-        createXFormConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path + " : concat");
-    }else if (path==="x_component_cms_Xform"){
-        createDefaultTask(path, isMin, thisOptions);
-        createCMSXFormConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+" : concat");
-    }else if (path==="o2_core"){
-        createDefaultTask(path, isMin, thisOptions);
-        createO2ConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+" : concat", path+".xDesktop : concat",  path+" : bundle");
-    }else if (path==="x_desktop") {
-        createDefaultTask(path, isMin, thisOptions);
+    switch (path){
+        case 'x_component_process_Xform':
+            return gulp.series(
+                createLanguagePackTask(path),
+                createDefaultTask(path, isMin, thisOptions),
+                createXFormConcatTask(path, isMin, thisOptions)
+            );
+        case 'x_component_cms_Xform':
+            return gulp.series(
+                createLanguagePackTask(path),
+                createDefaultTask(path, isMin, thisOptions),
+                createCMSXFormConcatTask(path, isMin, thisOptions)
+            );
+        case 'o2_core':
+            return gulp.series(
+                createLanguagePackTask(path),
+                createDefaultTask(path, isMin, thisOptions),
+                createO2ConcatTask(path, isMin, thisOptions)
+            );
+        case 'x_desktop':
+            const tasks = supportedLanguage.map(function(lp){
+                return createBaseWorkConcatLanguageTask(path, thisOptions, lp);
+                // lpTasks.push(path+".base_lp : "+lp);
+            });
 
-        supportedLanguage.forEach(function(lp){
-            createBaseWorkConcatLanguageTask(path, thisOptions, lp);
-            lpTasks.push(path+".base_lp : "+lp);
-        });
-
-        createBaseWorkConcatTask(path, isMin, thisOptions);
-        createBasePortalConcatTask(path, isMin, thisOptions);
-        createBaseDocumentConcatTask(path, isMin, thisOptions);
-        createBaseConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+".base_work", path+".base_portal", path+".base_document", path+".base");
-        //return gulp.series(path, path+".base_work : concat");
-    }else{
-        createDefaultTask(path, isMin, thisOptions);
-        return gulp.series(path);
+            return gulp.series(
+                createDefaultTask(path, isMin, thisOptions),
+                ...tasks,
+                createBaseWorkConcatTask(path, isMin, thisOptions),
+                createBasePortalConcatTask(path, isMin, thisOptions),
+                createBaseDocumentConcatTask(path, isMin, thisOptions),
+                createBaseConcatTask(path, isMin, thisOptions)
+            );
+        default:
+            return gulp.series(
+                createLanguagePackTask(path),
+                createDefaultTask(path, isMin, thisOptions)
+            );
     }
 }
 
@@ -1274,7 +1346,8 @@ apps.map(function (app) {
 
 function getCleanTask(path) {
     return function (cb) {
-        if (path){
+        const p = path || '/';
+        if (p){
             var dest = (path=="/") ? options.dest+"/" : options.dest+'/' + path + '/';
             gutil.log("Clean", ":", gutil.colors.red(dest));
             del.sync(dest, cb);
@@ -1371,7 +1444,7 @@ function getWatchTask(path) {
 gulp.task("clean", getCleanTask(options.src))
 gulp.task("watch", getWatchTask(options.src));
 
-gulp.task("index", function () {
+function index() {
     var src = ['source/favicon.ico', 'source/index.html'];
     var dest = options.dest;
     return gulp.src(src)
@@ -1393,8 +1466,8 @@ gulp.task("index", function () {
         })))
         .pipe(gulp.dest(dest))
         .pipe(gutil.noop());
-});
-gulp.task("cleanAll", getCleanTask('/'));
+}
+// gulp.task("index", );
 
 function getGitV(){
     var tagPromise = new Promise(function(s){
@@ -1410,8 +1483,7 @@ function getGitV(){
     });
     return Promise.all([tagPromise,revPromise])
 }
-
-gulp.task("o2:new-v:html", function () {
+function o2_version_html(){
     var path = "x_desktop";
     var src = 'source/x_desktop/*.html';
     var dest = options.dest + '/x_desktop/';
@@ -1437,9 +1509,8 @@ gulp.task("o2:new-v:html", function () {
             .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
     });
-});
-
-gulp.task("o2:new-v:o2", function () {
+}
+function o2_version_o2(){
     var path = "o2_core";
     var src = options.dest +'/o2_core/o2.js';
     var dest = options.dest +'/o2_core/';
@@ -1485,24 +1556,25 @@ gulp.task("o2:new-v:o2", function () {
             .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
     });
-});
-gulp.task("o2:new-v", gulp.parallel("o2:new-v:o2", "o2:new-v:html"));
+}
+const version = gulp.parallel(o2_version_o2, o2_version_html);
+exports.o2_version = version;
 
 
-gulp.task("git_clean", function (cb) {
-    var dest = 'D:/O2/github/huqi1980/o2oa/o2web/source/';
-    del(dest, { dryRun: true, force: true }, cb);
-});
-
-gulp.task("git_dest", function () {
-    var dest = "D:/O2/github/huqi1980/o2oa/o2web/source";
-    return gulp.src(["source/**/*", "!./**/test/**"])
-        .pipe(changed(dest))
-        .pipe(gulp.dest(dest))
-});
-gulp.task("git", gulp.series('git_clean', 'git_dest'));
-
-gulp.task("default", gulp.series(gulp.parallel(appTasks, 'index'), "o2:new-v"));
+// gulp.task("git_clean", function (cb) {
+//     var dest = 'D:/O2/github/huqi1980/o2oa/o2web/source/';
+//     del(dest, { dryRun: true, force: true }, cb);
+// });
+//
+// gulp.task("git_dest", function () {
+//     var dest = "D:/O2/github/huqi1980/o2oa/o2web/source";
+//     return gulp.src(["source/**/*", "!./**/test/**"])
+//         .pipe(changed(dest))
+//         .pipe(gulp.dest(dest))
+// });
+// gulp.task("git", gulp.series('git_clean', 'git_dest'));
+//
+// gulp.task("default", gulp.series(gulp.parallel(appTasks, index), o2_version));
 
 function build(){
     options.ev = "p";
@@ -1515,12 +1587,4 @@ function build(){
     options.remotePath = o_options.remotePath || uploadOptions.remotePath;
     options.dest = o_options.dest || uploadOptions.dest || "dest";
 };
-gulp.task("build", gulp.series("clean", gulp.parallel(appTasks, 'index'), "o2:new-v"))
-
-gulp.task("temp_o2", function(){
-    return gulp.src("source/x_test/o2.js")
-        .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
-        .pipe(gulp.dest("source/x_test/"))
-        .pipe(gutil.noop());
-})
+exports.default = gulp.series("clean", gulp.parallel(appTasks, index), version);

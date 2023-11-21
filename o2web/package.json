@@ -27,6 +27,9 @@
   },
   "homepage": "https://github.com/huqi1980/o2oa_client_web#readme",
   "devDependencies": {
+    "@o2oa/language-tools": "^1.0.15",
+    "@o2oa/tidy-jsdoc-o2": "latest",
+    "glob": "^10.3.10",
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
     "gulp-cli": "^2.3.0",
@@ -35,10 +38,10 @@
     "gulp-ftp": "^1.1.0",
     "gulp-git": "^2.10.1",
     "gulp-if": "^2.0.2",
+    "gulp-o2oa-asset-rev": "^0.0.19",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
     "gulp-shell": "^0.8.0",
-    "gulp-o2oa-asset-rev": "^0.0.19",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
     "jasmine-core": "^3.6.0",
@@ -50,7 +53,6 @@
     "karma-jasmine": "^4.0.1",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10",
-    "@o2oa/tidy-jsdoc-o2": "latest"
+    "readline-sync": "^1.4.10"
   }
 }

@@ -22,27 +22,10 @@ var assetRev = require('gulp-o2oa-asset-rev');
 const os = require('os');
 var through2 = require('through2');
 var path = require('path');
-//var sourceMap = require('gulp-sourcemaps');
 
 var git = require('gulp-git');
 
-//var downloadHost = "download.o2oa.net";
-// var downloadHost = "release.o2oa.net";
-// var protocol = "http";
-// var commonUrl = "/build/commons.tar.gz";
-
-// var jvmUrls = {
-//     "all": "/build/jvm.tar.gz",
-//     "linux": "/build/linux.tar.gz",
-//     "aix": "/build/aix.tar.gz",
-//     "arm": "/build/arm.tar.gz",
-//     "macos": "/build/macos.tar.gz",
-//     "risc": "/build/risc.tar.gz",
-//     "raspberrypi": "/build/raspberrypi.tar.gz",
-//     "windows": "/build/windows.tar.gz"
-// };
-
-var supportedLanguage = ["zh-cn", "en"];
+var supportedLanguage = ["zh-cn", "en", "es"];
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
@@ -110,7 +93,7 @@ function ProgressBar(description, bar_length){
 
         if (opts.completed <= opts.total){
             var d = new Date();
-            var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count;
+            var cmdText = "["+dateFormat(d, "HH:MM:ss")+"]"+" "+this.description + ': ' + cell + empty + ' ' + (100*percent).toFixed(2) + '% '+speed+count+'\n';
             slog(cmdText);
         }
     };
@@ -336,6 +319,14 @@ async function clear_jvm_git(cb){
     cb();
 }
 
+function build_web_language_pack(cb){
+    if (fs.existsSync('./gulpconfig.js')){
+        const {check_language_pack} = require('./gulpconfig.js');
+        return check_language_pack();
+    }
+    cb();
+}
+
 var moduleFolder = [];
 async function build_web_module() {
     var dest = 'target/o2server/servers/webServer/';
@@ -375,7 +366,9 @@ function build_web_minimize(cb) {
 ---------------------------------------------------------------------`);
 
     var dest = 'target/o2server/servers/webServer/';
-    var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    var lpFiles = supportedLanguage.join('|');
+
+    var src_min = ['o2web/source/**/*.js', '!**/lp/!('+lpFiles+').js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*', '!**/node_modules/**/*', '!**/dist/**/*'];
     moduleFolder.forEach((f)=>{
         src_min.push('!o2web/source/'+f+'/**/*');
     })
@@ -387,7 +380,7 @@ function build_web_minimize(cb) {
     var doCount = 0;
 
     var stream = gulp.src(src_min);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(uglify())
         .pipe(rename({ extname: '.min.js' }))
@@ -401,7 +394,10 @@ function build_web_minimize(cb) {
 
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
-    var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
+
+    var lpFiles = supportedLanguage.join('|');
+
+    var src_move = ['o2web/source/**/*', '!**/lp/!('+lpFiles+').js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!**/node_modules/**/*', '!**/dist/**/*'];
     moduleFolder.forEach((f)=>{
         src_move.push('!o2web/source/'+f+'/**/*');
     })
@@ -412,7 +408,7 @@ function build_web_move() {
     var doCount = 0;
 
     var stream = gulp.src(src_move);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -421,7 +417,7 @@ function build_web_move() {
         }))
         .pipe(gutil.noop());
 }
-exports.build_web_move = build_web_move;
+// exports.build_web_move = build_web_move;
 
 function build_concat_o2(){
     var src = [
@@ -1048,18 +1044,18 @@ function build_concat_basedocument_body() {
         .pipe(gulp.dest(dest, {sourcemaps: '.'}));
 }
 
-exports.build_concat = gulp.parallel(
-    build_concat_o2,
-    build_concat_base,
-    build_concat_desktop,
-    build_concat_xform,
-    build_concat_cms_xform,
-    build_bundle,
-    build_concat_lp,
-    gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
-    gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
-    gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
-);
+// exports.build_concat = gulp.parallel(
+//     build_concat_o2,
+//     build_concat_base,
+//     build_concat_desktop,
+//     build_concat_xform,
+//     build_concat_cms_xform,
+//     build_bundle,
+//     build_concat_lp,
+//     gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
+//     gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
+//     gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
+// );
 
 function getGitV(){
     var tagPromise = new Promise(function(s, f){
@@ -1137,7 +1133,7 @@ function build_web_v_o2() {
             .pipe(gutil.noop());
     });
 }
-exports.build_web_v_o2 = build_web_v_o2;
+exports.build_version = gulp.parallel(build_web_v_o2, build_web_v_html);
 
 async function clear_build(cb) {
     console.log(`---------------------------------------------------------------------
@@ -1176,7 +1172,7 @@ function deploy_server(){
     var doCount = 0;
 
     var stream = gulp.src(source);
-    stream.on("end", ()=>{console.log();});
+    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -1209,6 +1205,7 @@ function chmod_servers(){
     return (shell.task('chmod 777 -R target/o2server/servers'))();
 }
 exports.build_web = gulp.series(
+    build_web_language_pack,
     build_web_module,
     build_web_minimize,
     build_web_move,
