@@ -2267,7 +2267,7 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 						"processing": !!flowOption,
 						"opinion": opinion
 					},function (json){
-						_self.app.notice(lp.rollback_success);
+						_self.app.notice(lp.rollbackSuccess);
 						_self.explorer.refresh();
 					},null,false);
 
@@ -2862,7 +2862,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		var dlg = o2.DL.open({
 			"title": _self.lp.flow,
 			"width": "600px",
-			"height": "360px",
+			"height": "420px",
 			"mask": true,
 			"content": processNode,
 			"container": null,
@@ -2876,6 +2876,7 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 				o2.xDesktop.requireApp("process.Work", "Processor", function(){
 					new o2.xApplication.process.Work.Processor(processNode, taskData, {
 						"style": "task",
+						"isManagerProcess" : true,
 						"onCancel": function(){
 							dlg.close();
 						},

@@ -49,6 +49,7 @@ MWF.xApplication.process.Work.LP = {
 
     "rollbackConfirmTitle": "流程回溯确认",
     "rollbackConfirmContent": "您确定要将流程回溯到“{log}”状态吗？（流程回溯会清除此状态之后的所有信息）",
+    "rollbackSuccess" : "回溯成功",
 
     "recoverFileConfirmTitle": "恢复正文确认",
     "recoverFileConfirmContent": "您确定要将正文恢复到 “{att}”版本吗？（恢复后，已保存的临时文件将被删除，您无法再次恢复）",
