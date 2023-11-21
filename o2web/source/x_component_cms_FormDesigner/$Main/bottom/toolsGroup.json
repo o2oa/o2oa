@@ -15,6 +15,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_layout,
   },
   {
+    "name": "layout",
+    "json": "tools-cms.json",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_cms,
+  },
+  {
     "name": "function",
     "json": "tools-function.json",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.group_function,
