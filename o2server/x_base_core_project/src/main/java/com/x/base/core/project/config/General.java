@@ -11,11 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -63,6 +59,8 @@ public class General extends ConfigObject {
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
 	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 86400;
+	private static final Map<String,String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN","简体中文",
+			"en","English");
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -84,6 +82,7 @@ public class General extends ConfigObject {
 		o.attachmentConfig = new AttachmentConfig();
 		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
 		o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
+		o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
 		return o;
 	}
 
@@ -143,6 +142,9 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("web服务器Cache-Control max-age头设置,0表示不设置Cache-Control.")
 	private Integer webServerCacheControlMaxAge;
+
+	@FieldDescribe("多语言配置，默认支持中文和英文.")
+	private Map<String,String> supportedLanguages;
 
 	public Integer getWebServerCacheControlMaxAge() {
 		return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0) ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE
@@ -220,6 +222,10 @@ public class General extends ConfigObject {
 	public Boolean getDeployResourceEnable() {
 
 		return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE : this.deployResourceEnable;
+	}
+
+	public Map<String, String> getSupportedLanguages() {
+		return supportedLanguages == null || supportedLanguages.isEmpty() ? DEFAULT_SUPPORTED_LANGUAGES : supportedLanguages;
 	}
 
 	public List<String> getHttpWhiteList() {
