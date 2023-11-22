@@ -258,6 +258,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manager": "Manager",
 		"maintenanceIdentity": "Maintainer",
 		"defaultIdentity": "Default handler",
+		"managerScript": "Maintainer Script",
 
 		"number": "Number",
 		"numberActivity": "NumberActivity",

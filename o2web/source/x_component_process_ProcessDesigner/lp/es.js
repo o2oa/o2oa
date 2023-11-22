@@ -258,6 +258,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"manager": "Administrador",
 		"maintenanceIdentity": "Encargado del mantenimiento",
 		"defaultIdentity": "Manejador predeterminado",
+		"managerScript": "mantenimiento",
 
 		"number": "Número",
 		"numberActivity": "Actividad de numeración",
