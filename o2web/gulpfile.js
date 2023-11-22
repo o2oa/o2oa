@@ -24,6 +24,9 @@ var git = require('gulp-git');
 var assetRev = require('gulp-o2oa-asset-rev');
 var apps = require('./gulpapps.js');
 
+const sourcemaps = require('gulp-sourcemaps');
+const terser = require('gulp-terser');
+
 var {generate} = require('@o2oa/language-tools');
 
 var ftpconfig;
@@ -498,7 +501,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/o2.js'
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('o2.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -518,9 +521,9 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             })))
             .pipe(gulp.dest(dest))
             .pipe(concat('o2.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
-            //.pipe(rename({ extname: '.min.js' }))
-            //.pipe(sourceMap.write(""))
+            .pipe(sourcemaps.write("./"))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
                 host: option.host,
@@ -536,7 +539,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
 
     function o2_core_xDesktop_concat(){
@@ -559,7 +562,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             'source/x_component_Common/Main.js'
         ];
         var dest = option.dest+'/' + path + '/o2/xDesktop/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('$all.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/o2/xDesktop/')))
@@ -579,7 +582,9 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             })))
             .pipe(gulp.dest(dest))
             .pipe(concat('$all.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(sourcemaps.write("./"))
             //.pipe(rename({ extname: '.min.js' }))
             //.pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/o2/xDesktop/')))
@@ -597,7 +602,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path+"/o2/xDesktop/"
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+            .pipe(gulp.dest(dest));
     }
 
     function o2_core_bundle(){
@@ -613,7 +618,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             "source/o2_core/o2/framework.js"
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('bundle.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -633,7 +638,9 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             })))
             .pipe(gulp.dest(dest))
             .pipe(concat('bundle.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(sourcemaps.write("./"))
             //.pipe(rename({ extname: '.min.js' }))
             //.pipe(sourceMap.write(""))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -651,7 +658,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
 
     return [o2_core_concat, o2_core_xDesktop_concat, o2_core_bundle];
@@ -743,7 +750,7 @@ function createBaseWorkConcatActionTask(path){
     return setTaskName(task, path+".base_work : action")
 }
 function createBaseWorkConcatDelTempTask(path) {
-    const task = function(){
+    const task = function(cb){
         var dest = [
             'source/'+path+'/js/base_work_actions_temp.js',
             'source/'+path+'/js/base_work_style_temp.js'
@@ -810,7 +817,7 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('js/base_work.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -831,7 +838,11 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
             .pipe(gulp.dest(dest))
 
             .pipe(concat('js/base_work.min.js'))
-            .pipe(uglify())
+
+            .pipe(sourcemaps.init())
+
+            .pipe(terser())
+            .pipe(sourcemaps.write("./"))
             //.pipe( sourceMap.write("") )
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
             .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
@@ -848,7 +859,7 @@ function createBaseWorkConcatBodyTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
     return setTaskName(task, path+".base_work : concat");
 }
@@ -866,7 +877,7 @@ function createBaseWorkConcatLanguageTask(path, thisOptions, language){
             'source/x_component_cms_Xform/lp/'+(language)+'.js',
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {allowEmpty: true, sourcemaps: true})
+        return gulp.src(src, {allowEmpty: true})
             //.pipe(sourceMap.init())
             .pipe(concat('js/base_lp_'+language+'.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -904,7 +915,7 @@ function createBaseWorkConcatLanguageTask(path, thisOptions, language){
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
     return setTaskName(task, path+".base_lp : "+language);
 }
@@ -953,7 +964,7 @@ function createBasePortalConcatActionTask(path){
     return setTaskName(task, path+".base_portal : action");
 }
 function createBasePortalConcatDelTempTask(path) {
-    const task = function(){
+    const task = function(cb){
         var dest = [
             'source/'+path+'/js/base_portal_actions_temp.js',
             'source/'+path+'/js/base_portal_style_temp.js'
@@ -1024,7 +1035,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('js/base_portal.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1045,7 +1056,9 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
             .pipe(gulp.dest(dest))
             // .pipe(gulp.src(src))
             .pipe(concat('js/base_portal.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(sourcemaps.write("./"))
             //.pipe( sourceMap.write("") )
             // .pipe(rename({ extname: '.min.js' }))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1063,7 +1076,7 @@ function createBasePortalConcatBodyTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
     return setTaskName(task, path+".base_portal : concat");
 }
@@ -1160,7 +1173,7 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('js/base_document.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1181,7 +1194,9 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
             .pipe(gulp.dest(dest))
             // .pipe(gulp.src(src))
             .pipe(concat('js/base_document.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(sourcemaps.write("./"))
             //.pipe( sourceMap.write("") )
             // .pipe(rename({ extname: '.min.js' }))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1199,13 +1214,13 @@ function createBaseDocumentConcatBodyTask(path, isMin, thisOptions) {
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
     return setTaskName(task, path+".base_document : concat");
 }
 
 function createBaseDocumentConcatDelTempTask(path) {
-    const task = function(){
+    const task = function(cb){
         var dest = [
             'source/'+path+'/js/base_document_actions_temp.js',
             'source/'+path+'/js/base_document_style_temp.js'
@@ -1237,7 +1252,7 @@ function createBaseConcatTask(path, isMin, thisOptions){
             'source/' + path + '/js/base_loader.js'
         ];
         var dest = option.dest+'/' + path + '/';
-        return gulp.src(src, {sourcemaps: true})
+        return gulp.src(src)
             //.pipe(sourceMap.init())
             .pipe(concat('js/base.js'))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1258,7 +1273,9 @@ function createBaseConcatTask(path, isMin, thisOptions){
             .pipe(gulp.dest(dest))
             // .pipe(gulp.src(src))
             .pipe(concat('js/base.min.js'))
+            .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(sourcemaps.write("./"))
             //.pipe( sourceMap.write("") )
             // .pipe(rename({ extname: '.min.js' }))
             .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
@@ -1276,7 +1293,7 @@ function createBaseConcatTask(path, isMin, thisOptions){
                 port: option.port || 22,
                 remotePath: (option.remotePath || '/') + path
             })))
-            .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+            .pipe(gulp.dest(dest))
     }
     return setTaskName(task, path+".base")
 }
