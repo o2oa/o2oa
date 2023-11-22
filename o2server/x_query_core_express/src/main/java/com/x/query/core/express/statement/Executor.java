@@ -59,10 +59,14 @@ public class Executor {
             EntityManager em = emc.get(DynamicBaseEntity.class);
             LOGGER.debug("executeDataSql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
             Query query;
-            if(isOld){
-                query = em.createNativeQuery(joinSql(executeTarget.getSql()));
-            } else{
-                query = em.createNativeQuery(executeTarget.getSql(), LinkedHashMap.class);
+            if(executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
+                if (isOld) {
+                    query = em.createNativeQuery(joinSql(executeTarget.getSql()));
+                } else {
+                    query = em.createNativeQuery(executeTarget.getSql(), LinkedHashMap.class);
+                }
+            }else{
+                query = em.createNativeQuery(executeTarget.getSql());
             }
             for (Map.Entry<String, Object> entry : executeTarget.getQuestionMarkParam().entrySet()) {
                 int idx = Integer.parseInt(entry.getKey().substring(1));
