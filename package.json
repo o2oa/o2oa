@@ -56,6 +56,7 @@
         "author": "",
         "license": "ISC",
         "devDependencies": {
+                "@o2oa/language-tools": "^1.0.15",
                 "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
                 "docdash": "^1.2.0",
@@ -71,6 +72,7 @@
                 "gulp-o2oa-asset-rev": "^0.0.19",
                 "gulp-rename": "^1.4.0",
                 "gulp-shell": "^0.8.0",
+                "gulp-sourcemaps": "^3.0.0",
                 "gulp-tm-uglify": "3.0.1",
                 "gulp-uglify-es": "^2.0.0",
                 "gulp-util": "^3.0.8",
@@ -81,7 +83,6 @@
                 "request": "^2.88.2",
                 "shelljs": "^0.8.4",
                 "single-line-log": "^1.1.2",
-                "targz": "^1.0.1",
-                "gulp-sourcemaps": "^3.0.0"
+                "targz": "^1.0.1"
         }
 }
