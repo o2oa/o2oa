@@ -4357,7 +4357,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 MWF.xDesktop.requireApp("process.Xform", "widget.Monitor", null, false);
                 var process = (this.businessData.work) ? this.businessData.work.process : this.businessData.workCompleted.process;
 
-                monitor = new MWF.xApplication.process.Xform.widget.Monitor(container, this.businessData.workLogList, [],process,{
+                monitor = new MWF.xApplication.process.Xform.widget.Monitor(container, this.businessData.workLogList, this.businessData.recordList,process,{
                     onPostLoad : function(){
 
                         monitor.paperNode.setStyles({
