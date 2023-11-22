@@ -170,6 +170,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 	 */
 	private static void writeWebServerConfigLanguage(LinkedHashMap<String, Object> map) throws Exception {
 		map.put("language", Config.person().getLanguage());
+		map.put("supportedLanguages", Config.general().getSupportedLanguages());
 	}
 
 	/**
