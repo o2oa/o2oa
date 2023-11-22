@@ -8,7 +8,6 @@ var gulp = require('gulp'),
     dateFormat = require('dateformat'),
     progress = require('progress-stream'),
     request = require("request"),
-    //uglify = require('gulp-tm-uglify'),
     uglify = require('gulp-uglify-es').default,
     rename = require('gulp-rename'),
     changed = require('gulp-changed'),
@@ -24,6 +23,7 @@ var through2 = require('through2');
 var path = require('path');
 
 var git = require('gulp-git');
+const sourcemaps = require('gulp-sourcemaps');
 
 var supportedLanguage = ["zh-cn", "en", "es"];
 
@@ -107,7 +107,6 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
     var fileHost = downloadHost;
     var filePath =  path;
     stream.on('finish', () => {
-        //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
         cb();
     });
     stream.on('error', (err) => {
@@ -138,12 +137,10 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
             request.get(options).pipe(str).pipe(stream);
         } else {
             downloadFile(path, filename, headcb, progresscb, cb)
-            //gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), "statusCode:"+res.statusCode);
         }
     })
     req.on('error', (e) => {
         downloadFile(path, filename, headcb, progresscb, cb)
-        //gutil.log(gutil.colors.red("download error"), ":", gutil.colors.red(filename), e);
     });
     req.end();
     //    }
@@ -165,7 +162,6 @@ function downloadFile(path, filename, headcb, progresscb, cb){
     var fileHost = downloadHost;
     var filePath =  path;
     stream.on('finish', () => {
-        //gutil.log("download", ":", gutil.colors.green(filename), " completed!");
         spinner.stop();
         spinner.succeed(filename + ' Downloaded!');
         cb();
@@ -212,9 +208,6 @@ function download_commons_and_jvm(cb){
             commonLoaded = true;
             if (jvmLoaded && commonLoaded) resolve();
         });
-        // var jvmName = jvmUrl.substr(jvmUrl.lastIndexOf("/"+1, jvmUrl.length));
-        // console.log(jvmName);
-        // console.log(jvmUrl);
         downloadFile_progress(jvmUrl, "jvm_git.tar.gz", (length)=>{
             jvmLenght = +length;
             initProgress();
@@ -227,7 +220,6 @@ function download_commons_and_jvm(cb){
         });
     });
     downloader.then(()=>{
-        //console.log();
         gutil.log(gutil.colors.green("download commons and jvm completed"));
         cb();
     });
@@ -249,7 +241,6 @@ function decompress_commons_and_jvm(cb){
                     count++;
                     var d = new Date();
                     slog("["+dateFormat(d, "HH:MM:ss")+"] " + count +" "+ header.name+" ...");
-                    //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
                 }}
         }, function(err){
             if(err) {
@@ -266,8 +257,6 @@ function decompress_commons_and_jvm(cb){
                     count++;
                     var d = new Date();
                     slog("["+dateFormat(d, "HH:MM:ss")+"] " + count +" "+ header.name+" ...");
-                    //slog(count +" "+ header.name+" ...");
-                    //gutil.log(gutil.colors.cyan(header.name), gutil.colors.yellow("..."));
                 }}
         }, function(err){
             if(err) {
@@ -309,12 +298,6 @@ async function clear_commons_git(cb) {
     cb();
 }
 async function clear_jvm_git(cb){
-    //var path;
-    // if (options.ev=="all"){
-    //     path = "o2server/tmp/evn-o2server-jvm-master-jvm/"
-    // }else{
-    //     path = "o2server/tmp/evn-o2server-jvm-master-jvm-"+options.ev+"/"
-    // }
     await del(['o2server/tmp/', 'o2server/jvm_git.tar.gz'], { force: true });
     cb();
 }
@@ -351,7 +334,6 @@ async function build_web_module() {
         });
         const shelljs = require('shelljs');
         return Promise.all(statP).then(()=>{
-            // var tasks = [];
             moduleFolder.forEach((f)=>{
                 shelljs.config.verbose = true;
                 shelljs.exec('npm install && npm run o2-build', {cwd: path.resolve(srcPath, f)});
@@ -380,7 +362,6 @@ function build_web_minimize(cb) {
     var doCount = 0;
 
     var stream = gulp.src(src_min);
-    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(uglify())
         .pipe(rename({ extname: '.min.js' }))
@@ -408,7 +389,6 @@ function build_web_move() {
     var doCount = 0;
 
     var stream = gulp.src(src_move);
-    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -417,7 +397,6 @@ function build_web_move() {
         }))
         .pipe(gutil.noop());
 }
-// exports.build_web_move = build_web_move;
 
 function build_concat_o2(){
     var src = [
@@ -427,15 +406,14 @@ function build_concat_o2(){
         'o2web/source/o2_core/o2.js'
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('o2.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('o2.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest))
 }
 function build_concat_base(){
     var src = [
@@ -445,15 +423,14 @@ function build_concat_base(){
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('base.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('base.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest));
 }
 function build_concat_desktop(){
     let path = "o2_core";
@@ -475,15 +452,14 @@ function build_concat_desktop(){
         'o2web/source/x_component_Common/Main.js'
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/o2/xDesktop/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest))
 }
 function build_concat_xform(){
     let path = "x_component_process_Xform";
@@ -515,15 +491,14 @@ function build_concat_xform(){
         '!o2web/source/' + path + '/TinyMCEEditor.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest))
 }
 
 function build_concat_cms_xform(){
@@ -610,15 +585,14 @@ function build_concat_cms_xform(){
         // '!source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('$all.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('$all.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest))
 }
 
 function build_bundle(){
@@ -634,15 +608,14 @@ function build_bundle(){
         "o2web/source/o2_core/o2/framework.js"
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('bundle.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}))
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest))
 }
 
 
@@ -748,28 +721,20 @@ function build_concat_lp(cb) {
             'o2web/source/x_component_cms_Xform/lp/'+(lp)+'.js',
         ];
         var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-        // lpTasks["build_concat_lp_"+lp] = function(){
-        //     return
-        // };
-        var stream = gulp.src(src, {"allowEmpty": true, sourcemaps: true});
+        var stream = gulp.src(src, {"allowEmpty": true});
         lpTasks.push(new Promise((resolve)=>{
             stream.on("end", ()=>{  resolve(); });
         }));
-        //.pipe(sourceMap.init())
         stream.pipe(concat('base_lp_' + lp + '.js'))
             .pipe(gulp.dest(dest))
+            .pipe(sourcemaps.init())
             .pipe(concat('base_lp_' + lp + '.min.js'))
             .pipe(uglify())
-            //.pipe(rename({ extname: '.min.js' }))
-            // .pipe(sourceMap.write(""))
-            .pipe(gulp.dest(dest, {sourcemaps: '.' }));
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(dest));
     });
 
     return Promise.all(lpTasks);
-
-//var build_concat_lp = gulp.parallel( Object.values(lpTasks) );
-
-//     return gulp.parallel(lpTasks);
 }
 
 
@@ -833,15 +798,14 @@ function build_concat_basework_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('base_work.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('base_work.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest(dest));
 }
 
 function build_concat_baseportal_style(){
@@ -940,15 +904,14 @@ function build_concat_baseportal_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('base_portal.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('base_portal.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(dest));
 }
 
 
@@ -1033,29 +996,15 @@ function build_concat_basedocument_body() {
         'o2web/source/x_desktop/js/base_loader.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
-    return gulp.src(src, {sourcemaps: true})
-        //.pipe(sourceMap.init())
+    return gulp.src(src)
         .pipe(concat('base_document.js'))
         .pipe(gulp.dest(dest))
+        .pipe(sourcemaps.init())
         .pipe(concat('base_document.min.js'))
         .pipe(uglify())
-        //.pipe(rename({ extname: '.min.js' }))
-        //.pipe(sourceMap.write(""))
-        .pipe(gulp.dest(dest, {sourcemaps: '.'}));
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(dest));
 }
-
-// exports.build_concat = gulp.parallel(
-//     build_concat_o2,
-//     build_concat_base,
-//     build_concat_desktop,
-//     build_concat_xform,
-//     build_concat_cms_xform,
-//     build_bundle,
-//     build_concat_lp,
-//     gulp.series(build_concat_basework_style, build_concat_basework_action, build_concat_basework_body,build_concat_basework_clean),
-//     gulp.series(build_concat_baseportal_style, build_concat_baseportal_action, build_concat_baseportal_body,build_concat_baseportal_clean),
-//     gulp.series(build_concat_basedocument_style, build_concat_basedocument_action, build_concat_basedocument_body,build_concat_basedocument_clean)
-// );
 
 function getGitV(){
     var tagPromise = new Promise(function(s, f){
@@ -1122,9 +1071,6 @@ function build_web_v_o2() {
         debugger;
         return gulp.src(src)
             .pipe(assetRev({"verConnecter": arr[0], "md5": arr[1], "replace": true}))
-            //.pipe(gulp.dest(dest))
-            // .pipe(uglify())
-            // .pipe(rename({ extname: '.min.js' }))
             .pipe(gulp.dest(dest))
             .pipe(gutil.noop());
     }, function(){
@@ -1172,7 +1118,6 @@ function deploy_server(){
     var doCount = 0;
 
     var stream = gulp.src(source);
-    // stream.on("end", ()=>{console.log();});
 
     return stream.pipe(gulp.dest(dest))
         .pipe(logger(function(){
@@ -1181,7 +1126,6 @@ function deploy_server(){
         }));
 }
 
-//exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm);
 exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm, clear_commons_git, clear_jvm_git);
 
 var shell = require('gulp-shell')
@@ -1223,7 +1167,6 @@ exports.build_web = gulp.series(
     ),
     build_web_v_html,
     build_web_v_o2,
-    //gulp.series(build_doc, build_web_api)
 );
 
 if (os.platform().indexOf("win")==-1){
@@ -1287,5 +1230,3 @@ async function createHistroyJson(cb) {
     cb();
 }
 exports.build_historyJson = createHistroyJson;
-
-// /exports.build_module = build_web_module;
