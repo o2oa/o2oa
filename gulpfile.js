@@ -26,6 +26,16 @@ var git = require('gulp-git');
 const sourcemaps = require('gulp-sourcemaps');
 
 var supportedLanguage = ["zh-cn", "en", "es"];
+var translateLanguage = {
+    "en": "en",
+    "es": "spa"
+};
+var {generate} = require('@o2oa/language-tools');
+function check_language_pack(token){
+    return generate(null, translateLanguage, token).then(()=>{
+        return generate("o2_core", translateLanguage, token);
+    });
+}
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
@@ -304,8 +314,8 @@ async function clear_jvm_git(cb){
 
 function build_web_language_pack(cb){
     if (fs.existsSync('./gulpconfig.js')){
-        const {check_language_pack} = require('./gulpconfig.js');
-        return check_language_pack();
+        const {token} = require('./gulpconfig.js');
+        return check_language_pack(token);
     }
     cb();
 }
