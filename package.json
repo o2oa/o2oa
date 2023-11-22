@@ -55,7 +55,7 @@
         },
         "author": "",
         "license": "ISC",
-        "dependencies": {
+        "devDependencies": {
                 "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
                 "docdash": "^1.2.0",
@@ -81,6 +81,7 @@
                 "request": "^2.88.2",
                 "shelljs": "^0.8.4",
                 "single-line-log": "^1.1.2",
-                "targz": "^1.0.1"
+                "targz": "^1.0.1",
+                "gulp-sourcemaps": "^3.0.0"
         }
 }
