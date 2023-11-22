@@ -257,7 +257,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"starGroup": "启动群组",
 		"manager": "管理者",
 		"maintenanceIdentity": "维护人",
-		"defaultIdentity": "默认处理人",
+		"managerScript": "管理者脚本",
 
 
 		"number": "编号",
