@@ -7,7 +7,6 @@ import com.x.attendance.assemble.control.jaxrs.workplace.BaseAction;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionLatitudeEmpty;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionLongitudeEmpty;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionWorkPlaceNameEmpty;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2WorkPlace;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -103,6 +102,8 @@ public class ActionSave extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+		private static final long serialVersionUID = -154464856504106329L;
+
 		public Wo(String id) {
 			setId(id);
 		}
