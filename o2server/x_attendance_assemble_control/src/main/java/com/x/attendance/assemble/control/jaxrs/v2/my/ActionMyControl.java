@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.my;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,19 +10,15 @@ import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
-import com.x.base.core.project.organization.UnitDuty;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.DefaultCharset;
 
 public class ActionMyControl extends BaseAction {
 
@@ -36,7 +33,8 @@ public class ActionMyControl extends BaseAction {
         return result;
       }
       // 查询个人信息 判断是否有[考勤管理员]职务
-      WoPerson p = ThisApplication.context().applications().getQuery(x_organization_assemble_control.class, "person/" + person.getDistinguishedName()).getData(WoPerson.class);
+      String encodePerson = URLEncoder.encode(person.getDistinguishedName(), DefaultCharset.name);
+      WoPerson p = ThisApplication.context().applications().getQuery(x_organization_assemble_control.class, "person/" + encodePerson).getData(WoPerson.class);
       if (p != null && p.getWoIdentityList() != null && !p.getWoIdentityList().isEmpty()) {
         List<WoUnitDuty> woUnitDutyList = new ArrayList<>();
         for (WoIdentity identity : p.getWoIdentityList()) {
