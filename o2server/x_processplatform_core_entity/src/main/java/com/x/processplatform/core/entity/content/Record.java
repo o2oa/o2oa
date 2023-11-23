@@ -424,25 +424,25 @@ public class Record extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Date recordTime;
 
-	public static final String person_FIELDNAME = "person";
+	public static final String PERSON_FIELDNAME = "person";
 	@FieldDescribe("记录人员")
-	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + PERSON_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + PERSON_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String person;
 
-	public static final String identity_FIELDNAME = "identity";
+	public static final String IDENTITY_FIELDNAME = "identity";
 	@FieldDescribe("记录身份")
-	@Column(length = length_255B, name = ColumnNamePrefix + identity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + identity_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + IDENTITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + IDENTITY_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String identity;
 
-	public static final String unit_FIELDNAME = "unit";
+	public static final String UNIT_FIELDNAME = "unit";
 	@FieldDescribe("记录人员所在组织.")
-	@Column(length = length_255B, name = ColumnNamePrefix + unit_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + unit_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + UNIT_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + UNIT_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String unit;
 
 	public static final String type_FIELDNAME = "type";

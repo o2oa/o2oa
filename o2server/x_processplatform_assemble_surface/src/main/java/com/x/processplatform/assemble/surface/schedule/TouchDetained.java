@@ -67,8 +67,8 @@ public class TouchDetained extends AbstractJob {
 		for (Work work : targets) {
 			try {
 				V2TriggerProcessingWo resp = ThisApplication.context().applications()
-						.postQuery(x_processplatform_assemble_surface.class,
-								Applications.joinQueryUri("work", "v2", work.getId(), "trigger", "processing"), null,
+						.getQuery(x_processplatform_assemble_surface.class,
+								Applications.joinQueryUri("work", "v2", work.getId(), "trigger", "processing"),
 								work.getJob())
 						.getData(V2TriggerProcessingWo.class);
 				if (BooleanUtils.isTrue(resp.getValue())) {
