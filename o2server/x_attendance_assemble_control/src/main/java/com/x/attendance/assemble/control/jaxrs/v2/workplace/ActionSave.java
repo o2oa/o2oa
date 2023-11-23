@@ -3,6 +3,8 @@ package com.x.attendance.assemble.control.jaxrs.v2.workplace;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
+import com.x.attendance.assemble.control.jaxrs.v2.workplace.util.BaiduLocationTransformHelper;
+import com.x.attendance.assemble.control.jaxrs.v2.workplace.util.TransformPosition;
 import com.x.attendance.assemble.control.jaxrs.workplace.BaseAction;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionLatitudeEmpty;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionLongitudeEmpty;
@@ -41,6 +43,23 @@ public class ActionSave extends BaseAction {
 		}
 		if (StringUtils.isBlank(wrapIn.getLongitude())) {
 			throw new ExceptionLongitudeEmpty();
+		}
+		// 默认百度地图
+		if (StringUtils.isBlank(wrapIn.getPositionType())) {
+			wrapIn.setPositionType(AttendanceV2WorkPlace.POSITION_TYPE_BAIDU);
+		}
+		// 转化 gps 坐标
+		Double dLat = Double.valueOf(wrapIn.getLatitude());
+		Double dLng = Double.valueOf(wrapIn.getLongitude());
+		// 高德地图
+		if (AttendanceV2WorkPlace.POSITION_TYPE_AMAP.equals(wrapIn.getPositionType())) {
+			TransformPosition tp = BaiduLocationTransformHelper.gcj02towgs84(dLng, dLat);
+			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
+			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
+		} else { // 百度地图
+			TransformPosition tp = BaiduLocationTransformHelper.bd09towgs84(dLng, dLat);
+			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
+			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
 		}
 		if (StringUtils.isBlank(wrapIn.getPlaceAlias())) {
 			wrapIn.setPlaceAlias(wrapIn.getPlaceName());

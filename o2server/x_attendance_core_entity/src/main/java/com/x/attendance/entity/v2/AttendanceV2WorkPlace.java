@@ -73,6 +73,14 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String creator = "";
 
+
+	public static final String POSITION_TYPE_BAIDU = "baidu"; // 百度地图
+	public static final String POSITION_TYPE_AMAP = "amap"; // 高德地图
+	public static final String positionType_FIELDNAME = "positionType";
+	@FieldDescribe("坐标类型，百度、高德")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + positionType_FIELDNAME)
+	private String positionType = POSITION_TYPE_BAIDU;
+
 	public static final String longitude_FIELDNAME = "longitude";
 	@FieldDescribe("经度")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + longitude_FIELDNAME)
@@ -176,6 +184,16 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
   public void setGpsLat(String gpsLat) {
     this.gpsLat = gpsLat;
   }
+
+  public String getPositionType() {
+    return positionType;
+  }
+
+  public void setPositionType(String positionType) {
+    this.positionType = positionType;
+  }
+
+	
 
 	
 

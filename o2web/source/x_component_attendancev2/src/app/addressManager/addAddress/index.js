@@ -89,34 +89,6 @@ export default content({
             SDKLocation: true,
         });
     },
-    // 初始化地图
-    // initBDMap(position) {
-    //     console.debug("位置信息", position);
-    //     this.mapNode = this.dom.querySelector(".bd-map");
-    //     if (this.mapNode) {
-    //         let longitude = 120.135431;
-    //         let latitude = 30.27412;
-    //         if (position && position.coords) {
-    //             latitude = position.coords.latitude || 30.27412;
-    //             longitude = position.coords.longitude || 120.135431;
-    //         }
-    //         const gpsPoint = new BMap.Point(longitude, latitude);
-    //         const convertor = new BMap.Convertor();
-    //         const pointArr = [];
-    //         pointArr.push(gpsPoint);
-    //         console.debug("开始转化百度位置");
-    //         convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
-    //     } else {
-    //         console.error("map node 不存在？？？");
-    //     }
-    // },
-    // 转化百度坐标
-    // translateBMapPoint(data) {
-    //     console.debug("转化百度位置成功", data);
-    //     if (data.status === 0 && data.points && data.points[0]) {
-    //         this.createMap(data.points[0]);
-    //     }
-    // },
     // 加载百度地图
     createMap(point) {
         this.mapNode = this.dom.querySelector(".bd-map");
@@ -133,7 +105,6 @@ export default content({
             } else {
                 this.addMarkPoint(point, this.bind.form.placeName);
             }
-            
         }
     },
     // 添加地图控件
