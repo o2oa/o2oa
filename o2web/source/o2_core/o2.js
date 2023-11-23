@@ -88,7 +88,7 @@ if (!window.o2) {
         var _debug = (_href.indexOf("debugger") !== -1);
         var _par = _href.substr(_href.lastIndexOf("?") + 1, _href.length);
 
-        var supportedLanguages = ["zh-cn", "en", "es", "ko", "zh-tw", "zh-hk", "ja"];
+        // var supportedLanguages = ["zh-cn", "en", "es", "ko", "zh-tw", "zh-hk", "ja"];
 
         var _lp = _language || navigator.language || "zh-cn";
         //if (!_lp) _lp = "zh-cn";
@@ -149,10 +149,10 @@ if (!window.o2) {
         this.o2.languageName = _lp;
         _lp = _lp.toLocaleLowerCase();
 
-        if (supportedLanguages.indexOf(_lp) == -1){
-            _lp = _lp.substring(0, _lp.indexOf('-'));
-        }
-        if (supportedLanguages.indexOf(_lp) == -1) _lp = "zh-cn";
+        // if (supportedLanguages.indexOf(_lp) == -1){
+        //     _lp = _lp.substring(0, _lp.indexOf('-'));
+        // }
+        // if (supportedLanguages.indexOf(_lp) == -1) _lp = "zh-cn";
         this.o2.language = _lp;
         this.o2.splitStr = /\s*(?:,|;)\s*/;
 
