@@ -117,6 +117,8 @@ MWF.xApplication.process.Xform.LP = {
     "workReset": "文件已重置",
     "resetWorkInfor": "您重置了文件：",
 
+    "system": "System",
+
     "workRollback": "文件已回溯",
     "rollbackOk": "文件已回溯给",
     "rollbackWorkInfor": "您回溯了文件：",
