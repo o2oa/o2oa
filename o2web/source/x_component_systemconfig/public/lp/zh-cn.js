@@ -72,11 +72,10 @@ o2.xApplication.systemconfig.LP = {
         "moduleStatus": "模块运行状态",
         "language": "语言环境",
         "languageInfo": "设置服务端语言环境",
-        "languageValues": {
-            "zh-CN": "简体中文",
-            "en": "英文",
-			"es": "西班牙语"
-        },
+        "supportedLanguages": "语言环境",
+        "supportedLanguagesInfo": "系统支持的语言环境",
+        "supportedLanguagesInfo2": "添加更多语言环境支持，请从应用市场安装语言包。",
+        "supportedLanguagesSetup": "打开应用市场",
 
         "running": "运行中",
         "stop": "已停用",

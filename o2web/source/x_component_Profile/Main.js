@@ -250,8 +250,9 @@ MWF.xApplication.Profile.Main = new Class({
         this.languageSelectNode = this.tab.pages[0].contentNode.getElement("select");
         this.languageSelectNode.empty();
         if (!this.personData.language) this.personData.language = "zh-cn";
-        Object.keys(this.lp.lps).each(function(key){
-            var option = new Element("option", {"value": key, "text": this.lp.lps[key]}).inject(this.languageSelectNode);
+        var lps = layout.config.supportedLanguages;
+        Object.keys(lps).each(function(key){
+            var option = new Element("option", {"value": key, "text": lps[key]}).inject(this.languageSelectNode);
             if (this.personData.language === key) option.set("selected", true);
         }.bind(this));
 

@@ -12,9 +12,8 @@
 <!--        type="select"-->
 <!--        @changeConfig="(value)=>{language = value; saveConfig('person', 'language', value)}"></BaseItem>-->
 
-<!--    <div class="item_title">{{lp._systemInfo.language}}</div>-->
-<!--    <div class="item_info">{{lp._systemInfo.languageInfo}}</div>-->
-<!--    <BaseSelect @change="(value)=>{saveConfig('person', 'language', value)}" v-model:value="language" :options="lp._systemInfo.languageValues"></BaseSelect>-->
+    <BaseItem name="supportedLanguages" :config="supportedLanguages" :allowEditor="false"/>
+    <div class="item_info">{{lp._systemInfo.supportedLanguagesInfo2}} <span @click="openAppstore" class="mainColor_color" style="cursor: pointer; text-decoration: underline;">{{lp._systemInfo.supportedLanguagesSetup}}</span></div>
 
     <BaseItem name="systemVersion" :config="systemVersion" :allowEditor="false"/>
   </div>
@@ -22,12 +21,13 @@
 
 <script setup>
 import {ref} from 'vue';
-import {lp} from '@o2oa/component';
+import {o2, lp, layout} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
 import BaseSelect from '@/components/item/BaseSelect.vue';
 import {getConfigData, getConfig, saveConfig} from '@/util/acrions';
 
 const systemVersion = layout.config.version;
+const supportedLanguages = Object.values(layout.config.supportedLanguages).join(", ");
 
 const systemName = ref('');
 const systemSubTitle = ref('');
@@ -46,9 +46,8 @@ const load = async () => {
 
 load();
 
-
-const test = ()=>{
-  systemName.value='www'
+const openAppstore = function(){
+  o2.api.page.openApplication('appstore');
 }
 </script>
 
