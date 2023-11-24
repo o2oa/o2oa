@@ -48,52 +48,52 @@ public class Record extends SliceJpaObject {
 
 	private static final long serialVersionUID = 8673378766635237050L;
 
-	/* 正常流转 */
+	// 正常流转
 	public static final String TYPE_CURRENTTASK = "currentTask";
 
-	/* 正常流转 */
+	// 正常流转
 	public static final String TYPE_TASK = "task";
 
-	/* 转交流转 */
+	// 转交流转
 	public static final String TYPE_APPENDTASK = "appendTask";
 
-	/* 调度 */
+	// 调度
 	public static final String TYPE_REROUTE = "reroute";
 
-	/* 撤回 */
+	// 撤回
 	public static final String TYPE_RETRACT = "retract";
 
-	/* 回滚 */
+	// 回滚
 	public static final String TYPE_ROLLBACK = "rollback";
 
-	/* 重置 */
+	// 重置
 	public static final String TYPE_RESET = "reset";
 
-	/* 增加分支 */
+	// 增加分支
 	public static final String TYPE_ADDSPLIT = "addSplit";
 
-	/* 催办 */
+	// 催办
 	public static final String TYPE_URGE = "urge";
 
-	/* 超时 */
+	// 超时
 	public static final String TYPE_EXPIRE = "expire";
 
-	/* 待阅 */
+	// 待阅
 	public static final String TYPE_READ = "read";
 
-	/* 授权 */
+	// 授权
 	public static final String TYPE_EMPOWER = "empower";
 
-	/* 超时自动流转 */
+	// 超时自动流转
 	public static final String TYPE_PASSEXPIRED = "passExpired";
 
-	/* 外部调用流转 */
+	// 外部调用流转
 	public static final String TYPE_SERVICE = "service";
 
-	/* 添加待办 */
+	// 添加待办
 	public static final String TYPE_TASKADD = "taskAdd";
 
-	/* 退回 */
+	// 退回
 	public static final String TYPE_GOBACK = "goBack";
 
 	// 工作触发流转
@@ -102,7 +102,10 @@ public class Record extends SliceJpaObject {
 	// 待办触发流转
 	public static final String TYPE_TASKTRIGGERPROCESSING = "taskTriggerProcessing";
 
-	/* 定制意见 */
+	// 终止工作
+	public static final String TYPE_TERMINATE = "terminate";
+
+	// 定制意见
 	public static final String TYPE_CUSTOM = "custom";
 
 	private static final String TABLE = PersistenceProperties.Content.Record.table;

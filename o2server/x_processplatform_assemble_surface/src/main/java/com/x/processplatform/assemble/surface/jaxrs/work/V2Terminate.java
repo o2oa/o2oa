@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,11 +27,13 @@ class V2Terminate extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Param param = this.init(effectivePerson, id);
+		String workCompletedId = this.terminate(param.id, param.job);
+		this.rec(param, workCompletedId);
 		Wo wo = new Wo();
-		wo.setId(this.terminate(param.id, param.job));
+		wo.setId(workCompletedId);
 		result.setData(wo);
 		return result;
 	}
@@ -43,6 +46,12 @@ class V2Terminate extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
+			String identity = business.organization().identity()
+					.getMajorWithPerson(effectivePerson.getDistinguishedName());
+			if (StringUtils.isEmpty(identity)) {
+				throw new ExceptionEmptyIdentity(effectivePerson.getDistinguishedName());
+			}
+			param.distinguishedName = identity;
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
 					.enableAllowTerminate().build();
 			if (BooleanUtils.isFalse(control.getAllowManage()) && BooleanUtils.isFalse(control.getAllowTerminate())) {
@@ -57,6 +66,9 @@ class V2Terminate extends BaseAction {
 	private class Param {
 		private String id;
 		private String job;
+		private String distinguishedName;
+		private String routeName;
+		private String opinion;
 	}
 
 	private String terminate(String id, String job) throws Exception {
@@ -66,6 +78,10 @@ class V2Terminate extends BaseAction {
 						Applications.joinQueryUri("work", "v2", id, "terminate"), job)
 				.getData(com.x.processplatform.core.express.service.processing.jaxrs.work.V2TerminateWo.class);
 		return resp.getId();
+	}
+
+	private void rec(Param param, String workCompleteId) throws Exception {
+		this.recordWorkTerminate(param.distinguishedName, "", "", workCompleteId, param.job);
 	}
 
 	public static class Wo extends V2TerminateWo {
