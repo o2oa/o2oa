@@ -8,7 +8,10 @@
         <div class="o2-form-content">
             <div oo-if="!$.form.isView" style="font-size: 15px; color: #333333; line-height: 20px;text-align: right;"><i
                     class="o2icon-icon_tishi" style="color: #fb4747;margin-right: 5px;"></i>{{$.lp.workAddressForm.locationCoordinateInfo}}</div>
-            <baidu-map :form="$.form"></baidu-map>
+            <!-- 地图 -->
+            <baidu-map :form="$.form" oo-if="$.form.positionType == 'baidu'" ></baidu-map>
+            <amap :form="$.form" oo-if="$.form.positionType == 'amap'" ></amap> 
+            
             <div class="form-item-line">
                 <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.locationCoordinateLabel}}</div>
                 <div class="form-item-line-content">{{$.form.longitude ? $.form.longitude + ', ' + $.form.latitude :

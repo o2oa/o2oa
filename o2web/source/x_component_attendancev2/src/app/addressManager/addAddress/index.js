@@ -7,12 +7,13 @@ import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
 import oTextarea from '../../../components/o-textarea';
 import baiduMap from './baidu-map'; // 百度地图
+import amap from './amap'; // 高德地图
 
 
 export default content({
     style,
     template,
-    components: {oInput, oTextarea, baiduMap},
+    components: {oInput, oTextarea, baiduMap, amap},
     autoUpdate: true,
     bind(){
         return {
@@ -25,6 +26,7 @@ export default content({
               latitude: "",
               description: "",
               isView: false,
+              positionType: "amap" // baidu amap
             },
         };
     },
