@@ -59,7 +59,7 @@ class ActionWorkTerminate extends BaseAction {
 			param.workCompleted = workCompleted;
 			Optional<WorkLog> opt = emc
 					.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, workCompleted.getJob()).stream().sorted(Comparator
-							.comparing(WorkLog::getUpdateTime, Comparator.nullsFirst(Date::compareTo).reversed()))
+							.comparing(WorkLog::getCreateTime, Comparator.nullsFirst(Date::compareTo)).reversed())
 					.findFirst();
 			if (opt.isEmpty()) {
 				throw new ExceptionWorkCompletedNotFoundWorkLog(workCompleted.getId());

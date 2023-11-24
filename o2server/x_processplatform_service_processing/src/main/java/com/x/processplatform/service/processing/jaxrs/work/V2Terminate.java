@@ -156,7 +156,7 @@ class V2Terminate extends BaseAction {
 				aeiObjects.commit();
 				ActionResult<Wo> result = new ActionResult<>();
 				Wo wo = new Wo();
-				wo.setId(work.getId());
+				wo.setId(workCompleted.getId());
 				result.setData(wo);
 				return result;
 			}

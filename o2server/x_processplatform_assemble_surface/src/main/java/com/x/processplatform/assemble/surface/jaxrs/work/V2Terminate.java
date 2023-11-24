@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -17,19 +18,22 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2TerminateWi;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2TerminateWo;
 
 class V2Terminate extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Terminate.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}, id:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> jsonElement);
 
 		ActionResult<Wo> result = new ActionResult<>();
-		Param param = this.init(effectivePerson, id);
+		Param param = this.init(effectivePerson, id, jsonElement);
 		String workCompletedId = this.terminate(param.id, param.job);
 		this.rec(param, workCompletedId);
 		Wo wo = new Wo();
@@ -38,8 +42,11 @@ class V2Terminate extends BaseAction {
 		return result;
 	}
 
-	private Param init(EffectivePerson effectivePerson, String id) throws Exception {
+	private Param init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Param param = new Param();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		param.opinion = wi.getOpinion();
+		param.routeName = StringUtils.isEmpty(wi.getRouteName()) ? Record.TYPE_TERMINATE : wi.getRouteName();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(id, Work.class);
@@ -81,7 +88,13 @@ class V2Terminate extends BaseAction {
 	}
 
 	private void rec(Param param, String workCompleteId) throws Exception {
-		this.recordWorkTerminate(param.distinguishedName, "", "", workCompleteId, param.job);
+		this.recordWorkTerminate(param.distinguishedName, param.routeName, param.opinion, workCompleteId, param.job);
+	}
+
+	public static class Wi extends V2TerminateWi {
+
+		private static final long serialVersionUID = 3258754723952001715L;
+
 	}
 
 	public static class Wo extends V2TerminateWo {
