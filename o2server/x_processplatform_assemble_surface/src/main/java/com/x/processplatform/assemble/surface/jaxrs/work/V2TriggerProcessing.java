@@ -44,7 +44,7 @@ class V2TriggerProcessing extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.find(param.work.getId(), Work.class);
 			if ((null == work)
-					|| StringUtils.equalsIgnoreCase(param.work.getActivityToken(), work.getActivityToken())) {
+					|| (!StringUtils.equalsIgnoreCase(param.work.getActivityToken(), work.getActivityToken()))) {
 				processingToNext = true;
 			}
 		}

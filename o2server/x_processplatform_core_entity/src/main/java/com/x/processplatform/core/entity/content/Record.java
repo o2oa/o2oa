@@ -48,52 +48,52 @@ public class Record extends SliceJpaObject {
 
 	private static final long serialVersionUID = 8673378766635237050L;
 
-	/* 正常流转 */
+	// 正常流转
 	public static final String TYPE_CURRENTTASK = "currentTask";
 
-	/* 正常流转 */
+	// 正常流转
 	public static final String TYPE_TASK = "task";
 
-	/* 转交流转 */
+	// 转交流转
 	public static final String TYPE_APPENDTASK = "appendTask";
 
-	/* 调度 */
+	// 调度
 	public static final String TYPE_REROUTE = "reroute";
 
-	/* 撤回 */
+	// 撤回
 	public static final String TYPE_RETRACT = "retract";
 
-	/* 回滚 */
+	// 回滚
 	public static final String TYPE_ROLLBACK = "rollback";
 
-	/* 重置 */
+	// 重置
 	public static final String TYPE_RESET = "reset";
 
-	/* 增加分支 */
+	// 增加分支
 	public static final String TYPE_ADDSPLIT = "addSplit";
 
-	/* 催办 */
+	// 催办
 	public static final String TYPE_URGE = "urge";
 
-	/* 超时 */
+	// 超时
 	public static final String TYPE_EXPIRE = "expire";
 
-	/* 待阅 */
+	// 待阅
 	public static final String TYPE_READ = "read";
 
-	/* 授权 */
+	// 授权
 	public static final String TYPE_EMPOWER = "empower";
 
-	/* 超时自动流转 */
+	// 超时自动流转
 	public static final String TYPE_PASSEXPIRED = "passExpired";
 
-	/* 外部调用流转 */
+	// 外部调用流转
 	public static final String TYPE_SERVICE = "service";
 
-	/* 添加待办 */
+	// 添加待办
 	public static final String TYPE_TASKADD = "taskAdd";
 
-	/* 退回 */
+	// 退回
 	public static final String TYPE_GOBACK = "goBack";
 
 	// 工作触发流转
@@ -102,7 +102,10 @@ public class Record extends SliceJpaObject {
 	// 待办触发流转
 	public static final String TYPE_TASKTRIGGERPROCESSING = "taskTriggerProcessing";
 
-	/* 定制意见 */
+	// 终止工作
+	public static final String TYPE_TERMINATE = "terminate";
+
+	// 定制意见
 	public static final String TYPE_CUSTOM = "custom";
 
 	private static final String TABLE = PersistenceProperties.Content.Record.table;
@@ -424,25 +427,25 @@ public class Record extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Date recordTime;
 
-	public static final String person_FIELDNAME = "person";
+	public static final String PERSON_FIELDNAME = "person";
 	@FieldDescribe("记录人员")
-	@Column(length = length_255B, name = ColumnNamePrefix + person_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + person_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + PERSON_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + PERSON_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String person;
 
-	public static final String identity_FIELDNAME = "identity";
+	public static final String IDENTITY_FIELDNAME = "identity";
 	@FieldDescribe("记录身份")
-	@Column(length = length_255B, name = ColumnNamePrefix + identity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + identity_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + IDENTITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + IDENTITY_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String identity;
 
-	public static final String unit_FIELDNAME = "unit";
+	public static final String UNIT_FIELDNAME = "unit";
 	@FieldDescribe("记录人员所在组织.")
-	@Column(length = length_255B, name = ColumnNamePrefix + unit_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + unit_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@Column(length = length_255B, name = ColumnNamePrefix + UNIT_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + UNIT_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String unit;
 
 	public static final String type_FIELDNAME = "type";

@@ -23,7 +23,6 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2TerminateWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
-import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
@@ -157,7 +156,7 @@ class V2Terminate extends BaseAction {
 				aeiObjects.commit();
 				ActionResult<Wo> result = new ActionResult<>();
 				Wo wo = new Wo();
-				wo.setId(work.getId());
+				wo.setId(workCompleted.getId());
 				result.setData(wo);
 				return result;
 			}
