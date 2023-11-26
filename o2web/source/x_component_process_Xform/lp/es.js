@@ -134,8 +134,9 @@ MWF.xApplication.process.Xform.LP = {
     "workDelete": "Archivo eliminado exitosamente",
 
     "terminateWorkTitle": "Terminar la confirmación del archivo",
-    "terminateWorkText": "Terminar el archivo significa que el archivo se abandona y se transferirá directamente. ¿Confirma que desea terminar este archivo?",
+    "terminateWorkText": "Terminar el archivo significa que el archivo se abandona y se transferirá directamente.",
     "workTerminate": "El archivo ha sido terminado",
+    "terminateWork": "terminar el archivo",
 
 
     "amount": "▌Total",

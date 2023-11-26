@@ -1325,18 +1325,18 @@ public class WorkAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "终止工作.", action = V2Terminate.class)
-	@GET
+	@POST
 	@Path("v2/{id}/terminate")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2Terminate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Terminate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2Terminate().execute(effectivePerson, id);
+			result = new V2Terminate().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

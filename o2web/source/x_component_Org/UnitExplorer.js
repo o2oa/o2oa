@@ -660,22 +660,29 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                     var woIdentityList = [];
                     var identityList = [];
 
-                    contentNode.empty();
+                    var dData = Object.clone(dutyData);
                     items.each(function(item, i){
                         woIdentityList.push(item.data);
                         identityList.push(item.data.id);
-
-                        new MWF.widget.O2Identity(item.data, contentNode, {
-                            "canRemove": true,
-                            "onRemove": function(O2Identity, e){
-                                _self.deleteDutyIdentity(dutyData, e, O2Identity);
-                            }
-                        })
                     }.bind(this));
-                    dutyData.identityList = identityList;
-                    dutyData.woIdentityList = woIdentityList;
+                    dData.identityList = identityList;
+                    dData.woIdentityList = woIdentityList;
 
-                    _self.saveDuty(dutyData);
+                    _self.saveDuty(dData, function () {
+                        contentNode.empty();
+                        items.each(function(item, i){
+                            new MWF.widget.O2Identity(item.data, contentNode, {
+                                "canRemove": true,
+                                "onRemove": function(O2Identity, e){
+                                    _self.deleteDutyIdentity(dutyData, e, O2Identity);
+                                }
+                            })
+                        }.bind(this));
+                        dutyData.identityList = identityList;
+                        dutyData.woIdentityList = woIdentityList;
+                    }.bind(this));
+
+
                 }.bind(this)
             });
             selector.load();
@@ -712,7 +719,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             var errorText = error;
             if (xhr) errorText = xhr.responseText;
             this.explorer.app.notice("request json error: "+errorText, "error");
-            this.content.propertyContentScrollNode.unmask();
+            this.propertyContentScrollNode.unmask();
         }.bind(this));
     },
     _listAttributes: function(){

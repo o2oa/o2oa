@@ -9,8 +9,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,6 +18,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,8 +45,9 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @throws Exception
      */
     public WoGroupShift getGroupShiftByPersonDate(String person, String date) throws Exception {
+        String encodePerson = URLEncoder.encode(person, DefaultCharset.name);
         return ThisApplication.context().applications()
-                .getQuery(x_attendance_assemble_control.class, "v2/group/person/" + person + "/date/" + date)
+                .getQuery(x_attendance_assemble_control.class, "v2/group/person/" + encodePerson + "/date/" + date)
                 .getData(WoGroupShift.class);
     }
 

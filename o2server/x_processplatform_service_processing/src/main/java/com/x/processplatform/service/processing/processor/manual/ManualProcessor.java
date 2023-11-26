@@ -334,6 +334,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 				}
 				identities = taskCompleteds.stream().flatMap(o -> Stream.of(o.getIdentity(), o.getDistinguishedName()))
 						.filter(StringUtils::isNotBlank).distinct().collect(Collectors.toList());
+				if (ListTools.isNotEmpty(identities)) {
+					identities = aeiObjects.business().organization().identity().list(identities);
+				}
 			}
 		}
 		return manual.identitiesToTickets(identities);
@@ -573,9 +576,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 			tasks.stream().forEach(aeiObjects::deleteTask);
 			uncompletedTicketToRead(aeiObjects, manual, tickets);
 		} else {
-			if (tickets.isEmpty()) {
+			if (tickets.bubble().isEmpty()) {
 				// 在添加分支的情况下需要在这里重新计算
 				tickets = calculateTaskDistinguishedName(aeiObjects, manual);
+			}
+			if (tickets.bubble().isEmpty()) {
+				throw new ExceptionEmptyTicket(aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(),
+						aeiObjects.getWork().getActivity(), aeiObjects.getWork().getActivityName());
 			}
 			// 计算优先路由
 			if (soleDirect(aeiObjects, taskCompleteds)) {

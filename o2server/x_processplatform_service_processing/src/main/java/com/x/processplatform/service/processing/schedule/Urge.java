@@ -18,6 +18,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.jaxrs.WoId;
@@ -33,7 +34,7 @@ import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class Urge extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Urge.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Urge.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -49,25 +50,23 @@ public class Urge extends AbstractJob {
 				if (!targets.isEmpty()) {
 					sequence = targets.get(targets.size() - 1).getSequence();
 					for (Task task : targets) {
-						try {
-							try {
-								ThisApplication.context().applications()
-										.getQuery(x_processplatform_service_processing.class,
-												Applications.joinQueryUri("task", task.getId(), "urge"), task.getJob())
-										.getData(WoId.class);
-								count.incrementAndGet();
-							} catch (Exception e) {
-								throw new ExceptionUrge(e, task.getId(), task.getTitle(), task.getSequence());
-							}
-						} catch (Exception e) {
-							logger.error(e);
-						}
+						urge(task, count);
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.print("完成{}个待办的催办, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
+			LOGGER.info("完成{}个待办的催办, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
+		}
+	}
+
+	private void urge(Task task, AtomicInteger count) {
+		try {
+			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("task", task.getId(), "urge"), task.getJob()).getData(WoId.class);
+			count.incrementAndGet();
+		} catch (Exception e) {
+			LOGGER.error(new ExceptionUrge(e, task.getId(), task.getTitle(), task.getSequence()));
 		}
 	}
 
@@ -76,24 +75,24 @@ public class Urge extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Task> root = cq.from(Task.class);
-		Path<String> id_path = root.get(Task_.id);
-		Path<String> job_path = root.get(Task_.job);
-		Path<String> sequence_path = root.get(Task_.sequence);
-		Path<Date> urgeTime_path = root.get(Task_.urgeTime);
-		Path<Boolean> urged_path = root.get(Task_.urged);
-		Predicate p = cb.or(cb.equal(urged_path, false), cb.isNull(urged_path));
-		p = cb.and(p, cb.lessThan(urgeTime_path, new Date()));
+		Path<String> idPath = root.get(Task_.id);
+		Path<String> jobPath = root.get(Task_.job);
+		Path<String> sequencePath = root.get(JpaObject_.sequence);
+		Path<Date> urgeTimePath = root.get(Task_.urgeTime);
+		Path<Boolean> urgedPath = root.get(Task_.urged);
+		Predicate p = cb.or(cb.equal(urgedPath, false), cb.isNull(urgedPath));
+		p = cb.and(p, cb.lessThan(urgeTimePath, new Date()));
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
+		cq.multiselect(idPath, jobPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Task> list = new ArrayList<>();
 		for (Tuple o : os) {
 			Task task = new Task();
-			task.setId(o.get(id_path));
-			task.setJob(o.get(job_path));
-			task.setSequence(o.get(sequence_path));
+			task.setId(o.get(idPath));
+			task.setJob(o.get(jobPath));
+			task.setSequence(o.get(sequencePath));
 			list.add(task);
 		}
 		return list;
