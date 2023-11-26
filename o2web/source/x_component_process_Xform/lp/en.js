@@ -133,9 +133,10 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkText": {"html": "<div style='color: red;'>Note: You are deleting this work, and the work cannot be retrieved after deletion. Are you sure you want to delete this work?</div>" , "text": "Note: You are deleting this work. The work cannot be retrieved after deletion. Are you sure you want to delete this work?"},
     "workDelete": "Work has been deleted",
 
-    "terminateWorkTitle": "Terminate file confirmation",
-    "terminateWorkText": "Terminating the file means that the file is abandoned and will be transferred directly. Do you confirm that you want to terminate this file?",
+    "terminateWorkTitle": "Terminate file",
+    "terminateWorkText": "Terminating the file means that the file is abandoned and will be transferred directly. ",
     "workTerminate": "The file has been terminated",
+    "terminateWork": "Terminate file",
 
     "amount": "▌Total",
     "sectionAmount": "▌Subtotal",

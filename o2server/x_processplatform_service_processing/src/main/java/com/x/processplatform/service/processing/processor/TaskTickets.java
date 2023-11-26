@@ -91,7 +91,6 @@ public class TaskTickets {
 			identities.addAll(aeiObjects.business().organization().identity().listWithGroup(groups).stream()
 					.map(o -> new EmpowerableIdentity(false, o)).collect(Collectors.toList()));
 		}
-
 		return translateEmpowerableIdentity(aeiObjects, manual, identities);
 	}
 
@@ -103,6 +102,15 @@ public class TaskTickets {
 
 	}
 
+	/**
+	 * 转换成Tickets,进行授权和检查
+	 * 
+	 * @param aeiObjects
+	 * @param manual
+	 * @param identities
+	 * @return
+	 * @throws Exception
+	 */
 	private static Tickets translateEmpowerableIdentity(AeiObjects aeiObjects, Manual manual,
 			List<EmpowerableIdentity> identities) throws Exception {
 
@@ -112,6 +120,14 @@ public class TaskTickets {
 				|| BooleanUtils.isTrue(aeiObjects.getWork().getWorkThroughManual())) {
 			empower(aeiObjects, identities);
 		}
+
+		List<String> checkIdentities = aeiObjects.business().organization().identity()
+				.list(identities.stream().flatMap(o -> Stream.of(o.identity, o.toIdentity))
+						.filter(StringUtils::isNotEmpty).distinct().collect(Collectors.toList()));
+
+		identities = identities.stream().filter(o -> checkIdentities.contains(o.identity))
+				.filter(o -> StringUtils.isEmpty(o.toIdentity) || checkIdentities.contains(o.toIdentity))
+				.collect(Collectors.toList());
 
 		return manual.toTickets(identities.stream().flatMap(o -> {
 			if (StringUtils.isNotEmpty(o.toIdentity)) {
