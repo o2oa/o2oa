@@ -482,6 +482,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"opinionRequired": "Se requiere opinión",
 		"routeType": "Tipo de ruta",
 		"defaultRoute": "Ruta predeterminada",
+		"defaultRouteSelected": "Ruta predeterminada",
 		"backRoute": "Ruta de retorno",
 		"appendTask": "Transferir (solo para la misma actividad)",
 		"appendTaskInfo": "La transferencia no activa eventos de actividad",
