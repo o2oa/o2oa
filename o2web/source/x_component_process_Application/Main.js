@@ -2734,10 +2734,15 @@ MWF.xApplication.process.Application.ManageWorkForm = new Class({
 		}.bind(this));
 	},
 	loadTask : function () {
-		this.app.action.TaskAction.listWithWork(this.data.id).then(function(json){
+		this.app.action.TaskAction.listWithWork(this.data.id,function (json){
+
 			this.taskList = json.data;
 			this._loadTask();
 			this.initTask = true;
+		}.bind(this),function (){
+			this.taskArea.empty();
+			this.initTask = true;
+			return true;
 		}.bind(this));
 	},
 	_loadTask : function (){
