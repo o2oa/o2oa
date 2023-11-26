@@ -21,6 +21,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -89,7 +90,7 @@ public class PassExpired extends AbstractJob {
 
 	private void taskTriggerProcessing(String id, String job) throws Exception {
 		ThisApplication.context().applications()
-				.getQuery(x_processplatform_service_processing.class,
+				.getQuery(x_processplatform_assemble_surface.class,
 						Applications.joinQueryUri("task", "v2", id, "trigger", "processing"), job)
 				.getData(V2TriggerProcessingWo.class);
 	}

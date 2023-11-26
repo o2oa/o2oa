@@ -52,12 +52,12 @@ class V2TriggerProcessing extends BaseAction {
 		}
 		Record rec = null;
 		if (flag) {
-			rec = this.recordTaskProcessing(Record.TYPE_TASK, param.workLog.getJob(), param.workLog.getId(),
+			rec = this.recordTaskProcessing(Record.TYPE_TASKTRIGGERPROCESSING, param.workLog.getJob(), param.workLog.getId(),
 					taskCompletedId, param.series);
 		} else {
 //			// 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
 			rec = new Record(param.workLog);
-			rec.setType(Record.TYPE_TASK);
+			rec.setType(Record.TYPE_TASKTRIGGERPROCESSING);
 			rec.setOpinion(param.task.getOpinion());
 			rec.setRouteName(param.task.getRouteName());
 			rec.setCompleted(true);
