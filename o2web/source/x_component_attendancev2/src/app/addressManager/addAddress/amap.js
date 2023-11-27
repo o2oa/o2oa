@@ -28,14 +28,19 @@ export default content({
   // 加载地图api等资源
   async loadAMap() {
     this.iconUrl = "../x_component_attendancev2/$Main/default/us_mk_icon.png"; //图标样式，发布时候修改为绝对路径
-    const aMapKey = await getPublicData("aMapAccountKey"); // 高德地图 key
-    const accountkey = aMapKey || "72232ca87eeec7abc23cf41a89ed7019";
-    let apiPath = "http://webapi.amap.com/maps?v=1.4.15&key=" + accountkey;
-    if (window.location.protocol.toLowerCase() === "https:") {
-      window.HOST_TYPE = "2";
-      apiPath = "//webapi.amap.com/maps?v=1.4.15&key=" + accountkey;
-    }
     if (!window.AMapApiLoaded) {
+      const config = await getPublicData("attendanceMapConfig"); // 地图配置
+      let accountkey =  "72232ca87eeec7abc23cf41a89ed7019";
+      if (config && config.aMapAccountKey) {
+        accountkey = config.aMapAccountKey;
+      } else {
+        console.error("没有配置地图 Key ！！！");
+      }
+      let apiPath = "http://webapi.amap.com/maps?v=1.4.15&key=" + accountkey;
+      if (window.location.protocol.toLowerCase() === "https:") {
+        window.HOST_TYPE = "2";
+        apiPath = "//webapi.amap.com/maps?v=1.4.15&key=" + accountkey;
+      }
       o2.load(apiPath, () => {
         console.debug("高德地图加载API加载完成，开始载入地图！");
         window.AMapApiLoaded = true;
