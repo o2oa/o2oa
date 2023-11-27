@@ -220,7 +220,7 @@ public class Executor {
                 int idx = Integer.parseInt(entry.getKey().substring(1));
                 query.setParameter(idx, entry.getValue());
             }
-            return (Long) query.getSingleResult();
+            return ((Number) query.getSingleResult()).longValue();
         }
     }
 
@@ -240,7 +240,7 @@ public class Executor {
                 int idx = Integer.parseInt(entry.getKey().substring(1));
                 query.setParameter(idx, entry.getValue());
             }
-            return (Long) query.getSingleResult();
+            return ((Number) query.getSingleResult()).longValue();
         }
     }
 
