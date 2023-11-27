@@ -491,6 +491,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"opinionRequired": "Opinion Required",
 		"routeType": "RouteType",
 		"defaultRoute": "Default Route",
+		"sole": "Selected by default",
 		"defaultRouteSelected": "Default Route",
 		"backRoute": "Back Route",
 		"appendTask": "AppendTask（Must point to the same activity）",
