@@ -17,577 +17,695 @@ MWF.xDesktop.requireApp("query.Query", "lp."+o2.language, null, false);
 MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
     /** @lends MWF.xApplication.query.Query.Importer# */
     {
-    Implements: [Options, Events],
-    Extends: MWF.widget.Common,
-    options: {
-        "style": "default",
-        "moduleEvents": [
-            /**
-             * 加载importer（导入模型对象）的时候执行。可通过this.target获取当前对象。
-             * @event MWF.xApplication.query.Query.Importer#queryLoad
-             */
-            "queryLoad",
-            /**
-             * 导入前触发，this.event指向导入的数据，您可以通过修改this.event来修改数据。
-             * @event MWF.xApplication.query.Query.Importer#beforeImport
-             * @example
-             * <caption>this.event数据格式如下：</caption>
-             *[
-             *  [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
-             *  [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
-             *]
-             */
-            "beforeImport",
-            /**
-             * 前台校验成功，并且后台执行完导入后触发，this.event指向后台返回的导入结果。
-             * @event MWF.xApplication.query.Query.Importer#afterImport
-             * @example
-             * <caption>this.event格式如下：</caption>
-             * {
-             *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
-             *     "data": {}, //前台组织好的需要导入的数据
-             *     "rowList": [], //前台组织的行对象数组
-             *     "count" : 10, //导入总数量
-             *     "failCount": 0, //失败数量
-             *     "distribution": "" //导入时候时的错误信息
-             * }
-             */
-            "afterImport",
-            /**
-             * 数据已经生成，前台进行数据校验时触发，this.event指向导入的数据。
-             * @event MWF.xApplication.query.Query.Importer#validImport
-             * @example
-             * <caption>this.event数据格式如下：</caption>
-             * {
-             *     "data" : [
-             *          [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
-             *          [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
-             * 	    ],
-             *     "rowList": [], //导入的行对象，数据格式常见本章API的afterCreateRowData说明。
-             *     "validted" : true  //是否校验通过，可以在本事件中修改该参数，确定是否强制导入
-             * }
-             */
-            "validImport",
-            /**
-             * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importData来修改数据。
-             * @event MWF.xApplication.query.Query.Importer#beforeCreateRowData
-             */
-            "beforeCreateRowData",
-            /**
-             * 创建每行需要导入的数据后触发，this.event指向当前行对象。
-             * @event MWF.xApplication.query.Query.Importer#afterCreateRowData
-             * @example
-             * <caption>this.event格式如下：</caption>
-             * {
-             *     "importData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
-             *     "data" : {//根据导入模型生成的业务数据
-             *  	   {
-             *  	    "subject", "标题一", //subject为导入模型列配置的路径
-             *  	 	"name" : "张三",
-             *  	    ...
-             *     },
-             *     "document": { //如果导入目标是内容管理，则包含document对象
-             *          "title": "标题一"
-             *          "identity": "xxx@xxx@I"
-             *          ...
-             *     },
-             *     "work": { //如果导入目标是流程管理，则包含work对象
-             *          "title": "标题一"
-             *          "identity": "xxx@xxx@I"
-             *          ...
-             *     },
-             *     "errorTextList" : [],  //错误信息
-             *     "errorTextListExcel": [] //在出错界面导出Excel时的错误信息
-             * }
-             */
-            "afterCreateRowData"
-         ]
-    },
-    initialize: function(container, json, options, app, parentMacro){
+        Implements: [Options, Events],
+        Extends: MWF.widget.Common,
+        options: {
+            "style": "default",
+            "moduleEvents": [
+                /**
+                 * 加载importer（导入模型对象）的时候执行。可通过this.target获取当前对象。
+                 * @event MWF.xApplication.query.Query.Importer#queryLoad
+                 */
+                "queryLoad",
+                /**
+                 * 导入前触发，this.event指向导入的数据，您可以通过修改this.event来修改数据。
+                 * @event MWF.xApplication.query.Query.Importer#beforeImport
+                 * @example
+                 * <caption>this.event数据格式如下：</caption>
+                 *[
+                 *  [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+                 *  [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+                 *]
+                 */
+                "beforeImport",
+                /**
+                 * 前台校验成功，并且后台执行完导入后触发，this.event指向后台返回的导入结果。
+                 * @event MWF.xApplication.query.Query.Importer#afterImport
+                 * @example
+                 * <caption>this.event格式如下：</caption>
+                 * {
+                 *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
+                 *     "data": {}, //前台组织好的需要导入的数据
+                 *     "rowList": [], //前台组织的行对象数组
+                 *     "count" : 10, //导入总数量
+                 *     "failCount": 0, //失败数量
+                 *     "distribution": "" //导入时候时的错误信息
+                 * }
+                 */
+                "afterImport",
+                /**
+                 * 数据已经生成，前台进行数据校验时触发，this.event指向导入的数据。
+                 * @event MWF.xApplication.query.Query.Importer#validImport
+                 * @example
+                 * <caption>this.event数据格式如下：</caption>
+                 * {
+                 *     "data" : [
+                 *          [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //第一行数据
+                 *          [ "标题二","李四","男","大学专科","数学","1998-1-2","2018-9-2" ]  //第二行数据
+                 * 	    ],
+                 *     "rowList": [], //导入的行对象，数据格式常见本章API的afterCreateRowData说明。
+                 *     "validted" : true  //是否校验通过，可以在本事件中修改该参数，确定是否强制导入
+                 * }
+                 */
+                "validImport",
+                /**
+                 * 创建每行需要导入的数据前触发，this.event指向当前行对象，您可以通过修改this.event.importData来修改数据。
+                 * @event MWF.xApplication.query.Query.Importer#beforeCreateRowData
+                 */
+                "beforeCreateRowData",
+                /**
+                 * 创建每行需要导入的数据后触发，this.event指向当前行对象。
+                 * @event MWF.xApplication.query.Query.Importer#afterCreateRowData
+                 * @example
+                 * <caption>this.event格式如下：</caption>
+                 * {
+                 *     "importData": [ "标题一","张三","男","大学本科","计算机","2001-1-2","2019-9-2" ], //导入的数据
+                 *     "data" : {//根据导入模型生成的业务数据
+                 *  	   {
+                 *  	    "subject", "标题一", //subject为导入模型列配置的路径
+                 *  	 	"name" : "张三",
+                 *  	    ...
+                 *     },
+                 *     "document": { //如果导入目标是内容管理，则包含document对象
+                 *          "title": "标题一"
+                 *          "identity": "xxx@xxx@I"
+                 *          ...
+                 *     },
+                 *     "work": { //如果导入目标是流程管理，则包含work对象
+                 *          "title": "标题一"
+                 *          "identity": "xxx@xxx@I"
+                 *          ...
+                 *     },
+                 *     "errorTextList" : [],  //错误信息
+                 *     "errorTextListExcel": [] //在出错界面导出Excel时的错误信息
+                 * }
+                 */
+                "afterCreateRowData"
+            ]
+        },
+        initialize: function(container, json, options, app, parentMacro){
 
-        this.setOptions(options);
+            this.setOptions(options);
 
-        this.path = "../x_component_query_Query/$Importer/";
-        this.cssPath = "../x_component_query_Query/$Importer/"+this.options.style+"/css.wcss";
-        this._loadCss();
-        this.lp = MWF.xApplication.query.Query.LP;
+            this.path = "../x_component_query_Query/$Importer/";
+            this.cssPath = "../x_component_query_Query/$Importer/"+this.options.style+"/css.wcss";
+            this._loadCss();
+            this.lp = MWF.xApplication.query.Query.LP;
 
-        this.app = app;
+            this.app = app;
 
-        this.json = json;
+            this.json = json;
 
-        this.container = container;
+            this.container = container;
 
-        this.parentMacro = parentMacro;
+            this.parentMacro = parentMacro;
 
-        this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
+            this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
 
-    },
-    load: function(){
-        this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+        },
+        load: function(){
+            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
 
-        this.getImporterJSON( function () {
-            this.loadMacro( function () {
-                this._loadModuleEvents();
-                this.fireEvent("queryLoad");
-                this.importFromExcel()
-            }.bind(this))
-        }.bind(this))
-
-    },
-    loadMacro: function (callback) {
-        MWF.require("MWF.xScript.Macro", function () {
-            this.Macro = new MWF.Macro.ViewContext(this);
-            if (callback) callback();
-        }.bind(this));
-    },
-    createLoadding: function(){
-        this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
-        new Element("div", {"styles": {"height": "5px"}}).inject(this.loadingAreaNode);
-        var loadingNode = new Element("div", {"styles": this.css.viewLoadingNode}).inject(this.loadingAreaNode);
-        new Element("div", {"styles": this.css.viewLoadingIconNode}).inject(loadingNode);
-        var loadingTextNode = new Element("div", {"styles": this.css.viewLoadingTextNode}).inject(loadingNode);
-        loadingTextNode.set("text", "loading...");
-    },
-    getImporterJSON: function(callback){
-        if( this.importerJson && this.json ){
-            if (callback) callback();
-        }else{
-            if (this.json.name){
-                this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
-                    this.importerId = json.data.id;
-                    this.importerJson = JSON.decode(json.data.data);
-                    json.data.data = this.importerJson;
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-            }else{
-                this.lookupAction.getImportModelById(this.json.id, function(json){
-                    this.importerId = json.data.id;
-                    this.importerJson = JSON.decode(json.data.data);
-                    json.data.data = this.importerJson;
-                    this.json.application = json.data.query;
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-            }
-        }
-    },
-    _loadModuleEvents : function(){
-        Object.each(this.json.data.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event, target){
-                        return this.Macro.fire(e.code, target || this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-    getDateColIndexArray: function(){
-        var dateColIndexArray = [];
-        this.json.data.columnList.each(function(columnJson, index){
-            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-            if( ["date","dateTime"].contains(dataType) )dateColIndexArray.push( index );
-        }.bind(this));
-        return dateColIndexArray;
-    },
-    getOrgColIndexArray : function(){
-        var orgColIndexArray = [];
-        this.json.data.columnList.each(function(columnJson, index){
-            if( columnJson.isName ) {
-                orgColIndexArray.push(index);
-            }
-            // }else if( this.json.type === "cms" ){
-            //     if( columnJson.isPublisher || columnJson.isAuthor || columnJson.isReader ){
-            //         orgColIndexArray.push( index );
-            //     }
-            // }
-        }.bind(this));
-        return orgColIndexArray;
-    },
-    importFromExcel : function(){
-
-        this.rowList = [];
-
-        this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
-
-            importedData = importedData.filter(function (array) {
-                for( var i=0; i<array.length; i++ ){
-                    if(array[i])return true;
-                }
-                return false;
-            });
-            if( !importedData.length )return;
-
-            var titleLength = importedData[0].length;
-            importedData.each(function (array) {
-                for( var i=0; i<titleLength; i++){
-                    if( typeOf(array[i]) === "null" )array[i] = "";
-                }
-            })
-
-            this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
-                "onPostShow": function(){
-                    this.progressBar.showCheckData();
-
-                    this.importedData = importedData;
-
-                    if( this.importedData.length > 0 )this.importedData.shift();
-
-                    this.fireEvent("beforeImport", [this.importedData]);
-                    Promise.resolve( this.importedData.promise ).then(function () {
-                        this.listAllOrgDataByImport( function () {
-                            this.importedData.each( function( lineData, lineIndex ){
-                                this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
-                            }.bind(this));
-
-                            var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
-                            Promise.resolve(isValid).then(function ( isValid ) {
-                                if( isValid ){
-                                    this.doImportData();
-                                }else{
-                                    this.openImportedErrorDlg();
-                                }
-                            }.bind(this));
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this)
-            });
-            this.progressBar.importerId = this.importerId;
-        }.bind(this));
-    },
-    getData : function(){
-        var data = ( this.rowList || [] ).map( function(row){
-            return row.getResult();
-        });
-        return data;
-    },
-    doImportData: function(){
-        //创建数据
-        // this.rowList.each( function( row, i ){
-        //     row.createData();
-        // }.bind(this));
-
-        //再次校验数据（计算的内容）
-        var date = new Date();
-
-        var flag = true;
-        this.rowList.each( function(row, index){
-            if( row.errorTextList.length )flag = false;
-        }.bind(this));
-
-        var arg = {
-            validted : flag,
-            data : this.importedData,
-            rowList : this.rowList
-        };
-        this.fireEvent( "validImport", [arg] );
-
-        Promise.resolve( arg.promise ).then(function(){
-            flag = arg.validted;
-
-            if( !flag ){
-                this.openImportedErrorDlg();
-                return;
-            }
-
-            var data = this.getData();
-
-            this.lookupAction.getUUID(function(json){
-                this.recordId = json.data;
-                this.lookupAction.executImportModel(this.json.id, {
-                    "recordId": this.recordId,
-                    "data" : data
-                }, function () {
-                    //this.showImportingStatus( data, date )
-                    this.progressBar.showImporting( this.recordId, function( data ){
-                        data.data = data;
-                        data.rowList = this.rowList;
-                        this.fireEvent("afterImport", data);
-                        return data;
-                    }.bind(this), date);
-
-                }.bind(this), function (xhr) {
-                    var requestJson = JSON.parse(xhr.responseText);
-                    this.app.notice(requestJson.message, "error");
-                    this.progressBar.close();
+            this.getImporterJSON( function () {
+                this.loadMacro( function () {
+                    this._loadModuleEvents();
+                    this.fireEvent("queryLoad");
+                    this.importFromExcel()
                 }.bind(this))
             }.bind(this))
-        }.bind(this))
-    },
-    objectToString: function (obj, type) {
-        if(!obj)return "";
-        var arr = [];
-        Object.each(obj,  function (value, key) {
-            if( type === "style" ){
-                arr.push( key + ":"+ value +";" )
-            }else{
-                arr.push( key + "='"+ value +"'" )
-            }
-        })
-        return arr.join( " " )
-    },
-    openImportedErrorDlg : function(){
-        if(this.progressBar)this.progressBar.close();
 
-        var _self = this;
-
-        var div = new Element("div", { style : "padding:10px;" });
-        var dlg = o2.DL.open({
-            "style" : "user",
-            "title": this.lp.importFail,
-            "content": div,
-            "offset": {"y": 0},
-            "isMax": true,
-            "width": 1000,
-            "height": 700,
-            "buttonList": [
-                {
-                    "type": "exportWithError",
-                    "text": this.lp.exportExcel,
-                    "action": function () { _self.exportWithImportDataToExcel(); }
-                },
-                {
-                    "type": "cancel",
-                    "text": this.lp.cancel,
-                    "action": function () { dlg.close(); }
-                }
-            ],
-            "onPostShow": function () {
-                var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
-
-                var titleStyle = this.objectToString( this.css.titleStyles, "style" );
-                htmlArray.push( "<tr>" );
-                this.json.data.columnList.each( function (columnJson, i) {
-                    htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
-                });
-                htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
-                htmlArray.push( "</tr>" );
-
-                var contentStyles = Object.clone( this.css.contentStyles );
-                if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
-                var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
-
-                this.rowList.each( function( row, lineIndex ){
-
-                    var lineData = row.importedData;
-
-                    htmlArray.push( "<tr>" );
-                    this.json.data.columnList.each( function (columnJson, i) {
-                        htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
-                    });
-                    htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
-                    htmlArray.push( "</tr>" );
-
-                }.bind(this));
-                htmlArray.push( "</table>" );
-                div.set("html" , htmlArray.join(""));
-            }.bind(this),
-            "onPostClose": function(){
-                dlg = null;
-            }.bind(this)
-        });
-
-    },
-    //必须校验的数据
-    checkNecessaryImportedData: function(){
-        var flag = true;
-
-        this.rowList.each( function(row, index){
-            if( !row.checkNecessary() )flag = false;
-        }.bind(this));
-
-        var arg = {
-            validted : flag,
-            data : this.importedData,
-            rowList : this.rowList
-        };
-        this.fireEvent( "validImport", [arg] );
-
-        return Promise.resolve( arg.promise ).then(function () {
-            return arg.validted;
-        });
-    },
-    //校验Excel中的数据
-    checkImportedData : function(){
-        var flag = true;
-
-        this.rowList.each( function(row, index){
-            if( !row.checkValid() )flag = false;
-        }.bind(this));
-
-        var arg = {
-            validted : flag,
-            data : this.importedData,
-            rowList : this.rowList
-        };
-        this.fireEvent( "validImport", [arg] );
-
-        return Promise.resolve( arg.promise ).then(function () {
-            return arg.validted;
-        });
-    },
-    getOrgData : function( str, ignoreNone, isParse ){
-        str = str.trim();
-        var flag = str.substr(str.length-2, 2);
-        var d;
-        switch (flag.toLowerCase()){
-            case "@i":
-                d =  this.identityMapImported[str];
-                break;
-            case "@p":
-                d = this.personMapImported[str];
-                break;
-            case "@u":
-                d = this.unitMapImported[str];
-                break;
-            case "@g":
-                d = this.groupMapImported[str];
-                break;
-            default:
-                d = this.identityMapImported[str] ||
-                    this.personMapImported[str] ||
-                    this.unitMapImported[str] ||
-                    this.groupMapImported[str];
-                break;
-        }
-        if( d )return isParse ? MWF.org.parseOrgData(d, true, true) : d;
-        if( ignoreNone ) {
-            return null;
-        }else{
-            return {"errorText":  str + this.lp.notExistInSystem };
-        }
-    },
-    stringToArray: function(string){
-        return string.replace(/[\n\r]/g,",").replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
-            return !!s;
-        });
-    },
-    listAllOrgDataByImport : function ( callback ) {
-
-        var orgColIndexArray = this.getOrgColIndexArray();
-
-        if( orgColIndexArray.length === 0 ){
-            if(callback)callback();
-            return;
-        }
-
-        var identityList = [], personList = [], unitList = [], groupList = [];
-        if( orgColIndexArray.length > 0 ){
-            this.importedData.each( function( lineData, lineIndex ){
-                // if( lineIndex === 0 )return;
-
-                orgColIndexArray.each( function (colIndex, i) {
-
-                    if( !lineData[colIndex] )return;
-
-                    var arr = this.stringToArray(lineData[colIndex]);
-                    arr.each( function( a ){
-                        a = a.trim();
-                        var flag = a.substr(a.length-2, 2);
-                        switch (flag.toLowerCase()){
-                            case "@i":
-                                identityList.push( a ); break;
-                            case "@p":
-                                personList.push( a ); break;
-                            case "@u":
-                                unitList.push( a ); break;
-                            case "@g":
-                                groupList.push( a ); break;
-                            default:
-                                identityList.push( a );
-                                personList.push( a );
-                                unitList.push( a );
-                                groupList.push( a );
-                                break;
-                        }
-                    })
-                }.bind(this))
+        },
+        loadMacro: function (callback) {
+            MWF.require("MWF.xScript.Macro", function () {
+                this.Macro = new MWF.Macro.ViewContext(this);
+                if (callback) callback();
             }.bind(this));
-            var identityLoaded, personLoaded, unitLoaded, groupLoaded;
-            var check = function () {
-                if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
-                    if(callback)callback();
+        },
+        createLoadding: function(){
+            this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
+            new Element("div", {"styles": {"height": "5px"}}).inject(this.loadingAreaNode);
+            var loadingNode = new Element("div", {"styles": this.css.viewLoadingNode}).inject(this.loadingAreaNode);
+            new Element("div", {"styles": this.css.viewLoadingIconNode}).inject(loadingNode);
+            var loadingTextNode = new Element("div", {"styles": this.css.viewLoadingTextNode}).inject(loadingNode);
+            loadingTextNode.set("text", "loading...");
+        },
+        getImporterJSON: function(callback){
+            if( this.importerJson && this.json ){
+                if (callback) callback();
+            }else{
+                if (this.json.name){
+                    this.lookupAction.getImportModel(this.json.name, this.json.application, function(json){
+                        this.importerId = json.data.id;
+                        this.importerJson = JSON.decode(json.data.data);
+                        json.data.data = this.importerJson;
+                        this.json = Object.merge(this.json, json.data);
+                        if (callback) callback();
+                    }.bind(this));
+                }else{
+                    this.lookupAction.getImportModelById(this.json.id, function(json){
+                        this.importerId = json.data.id;
+                        this.importerJson = JSON.decode(json.data.data);
+                        json.data.data = this.importerJson;
+                        this.json.application = json.data.query;
+                        this.json = Object.merge(this.json, json.data);
+                        if (callback) callback();
+                    }.bind(this));
                 }
-            };
+            }
+        },
+        _loadModuleEvents : function(){
+            Object.each(this.json.data.events, function(e, key){
+                if (e.code){
+                    if (this.options.moduleEvents.indexOf(key)!==-1){
+                        this.addEvent(key, function(event, target){
+                            return this.Macro.fire(e.code, target || this, event);
+                        }.bind(this));
+                    }
+                }
+            }.bind(this));
+        },
+        getDateColIndexArray: function(){
+            var dateColIndexArray = [];
+            this.json.data.columnList.each(function(columnJson, index){
+                var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+                if( ["date","dateTime"].contains(dataType) )dateColIndexArray.push( index );
+            }.bind(this));
+            return dateColIndexArray;
+        },
+        getOrgColIndexArray : function(){
+            var orgColIndexArray = [];
+            this.json.data.columnList.each(function(columnJson, index){
+                if( columnJson.isName ) {
+                    orgColIndexArray.push(index);
+                }
+                // }else if( this.json.type === "cms" ){
+                //     if( columnJson.isPublisher || columnJson.isAuthor || columnJson.isReader ){
+                //         orgColIndexArray.push( index );
+                //     }
+                // }
+            }.bind(this));
+            return orgColIndexArray;
+        },
+        importFromExcel : function(){
+
+            this.rowList = [];
 
             this.identityMapImported = {};
-            if( identityList.length ){
-                identityList = identityList.unique();
-                o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
-                    json.data.each( function (d) { if(d)this.identityMapImported[ d.matchKey ] = d; }.bind(this));
-                    identityLoaded = true;
-                    check();
-                }.bind(this))
-            }else{
-                identityLoaded = true;
-                check();
-            }
-
             this.personMapImported = {};
-            if( personList.length ){
-                personList = personList.unique();
-                o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
-                    json.data.each( function (d) { if(d)this.personMapImported[ d.matchKey ] = d; }.bind(this));
-                    personLoaded = true;
-                    check();
-                }.bind(this))
-            }else{
-                personLoaded = true;
-                check();
-            }
-
             this.unitMapImported = {};
-            if( unitList.length ){
-                unitList = unitList.unique();
-                o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
-                    json.data.each( function (d) { if(d)this.unitMapImported[ d.matchKey ] = d; }.bind(this));
-                    unitLoaded = true;
-                    check();
-                }.bind(this))
-            }else{
-                unitLoaded = true;
-                check();
-            }
-
             this.groupMapImported = {};
-            if( groupList.length ){
-                groupList = groupList.unique();
-                o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
-                    json.data.each( function (d) { if(d)this.groupMapImported[ d.matchKey ] = d; }.bind(this));
-                    groupLoaded = true;
-                    check();
+
+            this.excelUtils.upload( this.getDateColIndexArray(), function (importedData) {
+
+                importedData = importedData.filter(function (array) {
+                    for( var i=0; i<array.length; i++ ){
+                        if(array[i])return true;
+                    }
+                    return false;
+                });
+                if( !importedData.length )return;
+
+                var titleLength = importedData[0].length;
+                importedData.each(function (array) {
+                    for( var i=0; i<titleLength; i++){
+                        if( typeOf(array[i]) === "null" )array[i] = "";
+                    }
+                })
+
+                this.progressBar = new MWF.xApplication.query.Query.Importer.ProgressBar( this, {
+                    "onPostShow": function(){
+                        this.progressBar.showCheckData();
+
+                        debugger;
+
+                        this.importedData = importedData;
+
+                        if( this.importedData.length > 0 )this.importedData.shift();
+
+                        this.fireEvent("beforeImport", [this.importedData]);
+                        Promise.resolve( this.importedData.promise ).then(function () {
+                            this.listOrgDataFromDb(
+                                this.getImportedOrgData(),
+                                function () {
+                                    this.importedData.each( function( lineData, lineIndex ){
+                                        this.rowList.push( new MWF.xApplication.query.Query.Importer.Row( this, lineData, lineIndex ) )
+                                    }.bind(this));
+
+                                    var isValid = this.json.enableValid ? this.checkImportedData() : this.checkNecessaryImportedData();
+                                    Promise.resolve(isValid).then(function ( isValid1 ) {
+                                        if( isValid1 ){
+                                            this.doImportData();
+                                        }else{
+                                            this.openImportedErrorDlg();
+                                        }
+                                    }.bind(this));
+                                }.bind(this)
+                            );
+                        }.bind(this));
+                    }.bind(this)
+                });
+                this.progressBar.importerId = this.importerId;
+            }.bind(this));
+        },
+        getData : function(){
+            var data = ( this.rowList || [] ).map( function(row){
+                return row.getResult();
+            });
+            return data;
+        },
+        doImportData: function(){
+            //创建数据
+            // this.rowList.each( function( row, i ){
+            //     row.createData();
+            // }.bind(this));
+
+            //再次校验数据（计算的内容）
+            var date = new Date();
+
+            var flag = true;
+            this.rowList.each( function(row, index){
+                if( row.errorTextList.length )flag = false;
+            }.bind(this));
+
+            var arg = {
+                validted : flag,
+                data : this.importedData,
+                rowList : this.rowList
+            };
+            this.fireEvent( "validImport", [arg] );
+
+            Promise.resolve( arg.promise ).then(function(){
+                flag = arg.validted;
+
+                if( !flag ){
+                    this.openImportedErrorDlg();
+                    return;
+                }
+
+                var data = this.getData();
+
+                this.lookupAction.getUUID(function(json){
+                    this.recordId = json.data;
+                    this.lookupAction.executImportModel(this.json.id, {
+                        "recordId": this.recordId,
+                        "data" : data
+                    }, function () {
+                        //this.showImportingStatus( data, date )
+                        this.progressBar.showImporting( this.recordId, function( data ){
+                            data.data = data;
+                            data.rowList = this.rowList;
+                            this.fireEvent("afterImport", data);
+                            return data;
+                        }.bind(this), date);
+
+                    }.bind(this), function (xhr) {
+                        var requestJson = JSON.parse(xhr.responseText);
+                        this.app.notice(requestJson.message, "error");
+                        this.progressBar.close();
+                    }.bind(this))
                 }.bind(this))
-            }else{
-                groupLoaded = true;
-                check();
+            }.bind(this))
+        },
+        objectToString: function (obj, type) {
+            if(!obj)return "";
+            var arr = [];
+            Object.each(obj,  function (value, key) {
+                if( type === "style" ){
+                    arr.push( key + ":"+ value +";" );
+                }else{
+                    arr.push( key + "='"+ value +"'" );
+                }
+            })
+            return arr.join( " " )
+        },
+        openImportedErrorDlg : function(){
+            if(this.progressBar)this.progressBar.close();
+
+            var _self = this;
+
+            var div = new Element("div", { style : "padding:10px;" });
+            var dlg = o2.DL.open({
+                "style" : "user",
+                "title": this.lp.importFail,
+                "content": div,
+                "offset": {"y": 0},
+                "isMax": true,
+                "width": 1000,
+                "height": 700,
+                "buttonList": [
+                    {
+                        "type": "exportWithError",
+                        "text": this.lp.exportExcel,
+                        "action": function () { _self.exportWithImportDataToExcel(); }
+                    },
+                    {
+                        "type": "cancel",
+                        "text": this.lp.cancel,
+                        "action": function () { dlg.close(); }
+                    }
+                ],
+                "onPostShow": function () {
+                    var htmlArray = ["<table "+ this.objectToString( this.css.properties ) +" style='"+this.objectToString( this.css.tableStyles, "style" )+"'>"];
+
+                    var titleStyle = this.objectToString( this.css.titleStyles, "style" );
+                    htmlArray.push( "<tr>" );
+                    this.json.data.columnList.each( function (columnJson, i) {
+                        htmlArray.push( "<th style='"+titleStyle+"'>"+columnJson.displayName+"</th>" );
+                    });
+                    htmlArray.push( "<th style='"+titleStyle+"'> "+this.lp.validationInfor +"</th>" );
+                    htmlArray.push( "</tr>" );
+
+                    var contentStyles = Object.clone( this.css.contentStyles );
+                    if( !contentStyles[ "border-bottom" ] && !contentStyles[ "border" ] )contentStyles[ "border-bottom" ] = "1px solid #eee";
+                    var contentStyle = this.objectToString( Object.merge( contentStyles, {"text-align":"left"}) , "style" );
+
+                    this.rowList.each( function( row, lineIndex ){
+
+                        var lineData = row.importedData;
+
+                        htmlArray.push( "<tr>" );
+                        this.json.data.columnList.each( function (columnJson, i) {
+                            htmlArray.push( "<td style='"+contentStyle+"'>"+ ( lineData[ i ] || '' ).replace(/&#10;/g,"<br/>") +"</td>" ); //换行符&#10;
+                        });
+                        htmlArray.push( "<td style='"+contentStyle+"'>"+( row.errorTextList ? row.errorTextList.join("<br/>") : "" )+"</td>" );
+                        htmlArray.push( "</tr>" );
+
+                    }.bind(this));
+                    htmlArray.push( "</table>" );
+                    div.set("html" , htmlArray.join(""));
+                }.bind(this),
+                "onPostClose": function(){
+                    dlg = null;
+                }.bind(this)
+            });
+
+        },
+        //必须校验的数据
+        checkNecessaryImportedData: function(){
+            var flag = true;
+
+            var ps = this.rowList.each( function(row, index){
+                return row.checkNecessary();
+            }.bind(this));
+
+            return Promise.all( ps ).then(function (arr) {
+                for( var i=0; i<arr.length; i++ ){
+                    if( arr[i] === false )flag = false;
+                }
+                var arg = {
+                    validted : flag,
+                    data : this.importedData,
+                    rowList : this.rowList
+                };
+                this.fireEvent( "validImport", [arg] );
+
+                return Promise.resolve( arg.promise ).then(function () {
+                    return arg.validted;
+                });
+            })
+        },
+        //校验Excel中的数据
+        checkImportedData : function(){
+            var flag = true;
+
+            var ps = this.rowList.map( function(row, index){
+                return row.checkValid();
+            }.bind(this));
+
+            return Promise.all(ps).then(function (arr) {
+                for( var i=0; i<arr.length; i++ ){
+                    if( arr[i] === false )flag = false
+                }
+
+                var arg = {
+                    validted : flag,
+                    data : this.importedData,
+                    rowList : this.rowList
+                };
+                this.fireEvent( "validImport", [arg] );
+
+                return Promise.resolve( arg.promise ).then(function () {
+                    return arg.validted;
+                });
+
+            }.bind(this));
+        },
+        getOrgData : function( str, ignoreNone, isParse ){
+            str = str.trim();
+            var flag = str.substr(str.length-2, 2);
+            var d;
+            switch (flag.toLowerCase()){
+                case "@i":
+                    d =  this.identityMapImported[str];
+                    break;
+                case "@p":
+                    d = this.personMapImported[str];
+                    break;
+                case "@u":
+                    d = this.unitMapImported[str];
+                    break;
+                case "@g":
+                    d = this.groupMapImported[str];
+                    break;
+                default:
+                    d = this.identityMapImported[str] ||
+                        this.personMapImported[str] ||
+                        this.unitMapImported[str] ||
+                        this.groupMapImported[str];
+                    break;
             }
-        }
-    },
+            if( d )return isParse ? MWF.org.parseOrgData(d, true, true) : d;
+            if( ignoreNone ) {
+                return null;
+            }else{
+                return {"errorText":  str + this.lp.notExistInSystem };
+            }
+        },
+        getOrgExtendData: function( orgList ){
+            var identityList = [], personList = [], unitList = [], groupList = [];
+            orgList.each(function (org) {
+                var a;
+                switch (typeOf( org )) {
+                    case "string":
+                        a = org; break;
+                    case "object":
+                        a = org.distinguishedName || org.unique || org.employee; break;
+                }
+                if( !a )return;
 
-    // showImportingStatus: function( improtedData, date ){
-    //     this.progressBar.showImporting( this.recordId, function( data ){
-    //         data.data = improtedData;
-    //         data.rowList = this.rowList;
-    //         this.fireEvent("afterImport", data)
-    //     }.bind(this), date);
-    // },
+                var d = this.getOrgData(a, true, false);
+                if( d )return;
 
-    exportWithImportDataToExcel : function ( importData ) {
+                var flag = a.substr(a.length - 2, 2);
+                switch (flag.toLowerCase()) {
+                    case "@i":
+                        identityList.push(a);
+                        break;
+                    case "@p":
+                        personList.push(a);
+                        break;
+                    case "@u":
+                        unitList.push(a);
+                        break;
+                    case "@g":
+                        groupList.push(a);
+                        break;
+                    default:
+                        identityList.push(a);
+                        personList.push(a);
+                        unitList.push(a);
+                        groupList.push(a);
+                        break;
+                }
+            }.bind(this));
 
-        if( !this.excelUtils ){
-            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
-        }
+            return this.listOrgDataFromDb({
+                identityList: identityList,
+                personList: personList,
+                unitList: unitList,
+                groupList: groupList
+            });
+        },
+        stringToArray: function(string){
+            return string.replace(/[\n\r]/g,",").replace(/&#10;/g,",").split(/\s*,\s*/g ).filter(function(s){
+                return !!s;
+            });
+        },
+        getImportedOrgData: function() {
+            var orgColIndexArray = this.getOrgColIndexArray();
 
-        var exportTo = function () {
-            var resultArr = [];
-            var titleArr = this.getTitleArray();
-            titleArr.push( this.lp.validationInfor );
-            resultArr.push( titleArr );
+            var identityList = [], personList = [], unitList = [], groupList = [];
+            if( orgColIndexArray.length > 0 ) {
+                this.importedData.each(function (lineData, lineIndex) {
+                    // if( lineIndex === 0 )return;
 
-            if( importData ){
+                    orgColIndexArray.each(function (colIndex, i) {
 
+                        if (!lineData[colIndex]) return;
+
+                        var arr = this.stringToArray(lineData[colIndex]);
+                        arr.each(function (a) {
+                            a = a.trim();
+                            var flag = a.substr(a.length - 2, 2);
+                            switch (flag.toLowerCase()) {
+                                case "@i":
+                                    identityList.push(a);
+                                    break;
+                                case "@p":
+                                    personList.push(a);
+                                    break;
+                                case "@u":
+                                    unitList.push(a);
+                                    break;
+                                case "@g":
+                                    groupList.push(a);
+                                    break;
+                                default:
+                                    identityList.push(a);
+                                    personList.push(a);
+                                    unitList.push(a);
+                                    groupList.push(a);
+                                    break;
+                            }
+                        })
+                    }.bind(this))
+                }.bind(this));
+            };
+            return {
+                identityList: identityList,
+                personList: personList,
+                unitList: unitList,
+                groupList: groupList
+            };
+        },
+        listOrgDataFromDb : function (importedOrgData, callback ) {
+
+            var identityList = importedOrgData.identityList;
+            var personList = importedOrgData.personList;
+            var unitList = importedOrgData.unitList;
+            var groupList = importedOrgData.groupList;
+
+            var pIdentity;
+            if( identityList && identityList.length ){
+                pIdentity = o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList.unique() });
+            }
+
+            var pPerson;
+            if( personList && personList.length ){
+                pPerson = o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList.unique() });
+            }
+
+            var pUnit;
+            if( unitList && unitList.length ){
+                pUnit = o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList.unique() });
+            }
+
+            var pGroup;
+            if( groupList && groupList.length ){
+                pGroup = o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList.unique() });
+            }
+
+            return Promise.all( [pIdentity, pPerson, pUnit, pGroup] ).then(function (arr) {
+                if( arr[0] && arr[0].data && arr[0].data.length ){
+                    arr[0].data.each( function (d) { if(d)this.identityMapImported[ d.matchKey ] = d; }.bind(this));
+                }
+                if( arr[1] && arr[1].data && arr[1].data.length ){
+                    arr[1].data.each( function (d) { if(d)this.personMapImported[ d.matchKey ] = d; }.bind(this));
+                }
+                if( arr[2] && arr[2].data && arr[2].data.length ){
+                    arr[2].data.each( function (d) { if(d)this.unitMapImported[ d.matchKey ] = d; }.bind(this));
+                }
+                if( arr[3] && arr[3].data && arr[3].data.length ){
+                    arr[3].data.each( function (d) { if(d)this.groupMapImported[ d.matchKey ] = d; }.bind(this));
+                }
+                if( callback )callback();
+                return;
+            }.bind(this))
+        },
+        // listOrgDataFromDb : function (importedOrgData, callback ) {
+        //
+        //     var identityList = importedOrgData.identityList;
+        //     var personList = importedOrgData.personList;
+        //     var unitList = importedOrgData.unitList;
+        //     var groupList = importedOrgData.groupList;
+        //
+        //     var identityLoaded, personLoaded, unitLoaded, groupLoaded;
+        //     var check = function () {
+        //         if( identityLoaded && personLoaded && unitLoaded && groupLoaded ){
+        //             if(callback)callback();
+        //         }
+        //     };
+        //
+        //     if( identityList && identityList.length ){
+        //         identityList = identityList.unique();
+        //         o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({ identityList : identityList }, function (json) {
+        //             json.data.each( function (d) { if(d)this.identityMapImported[ d.matchKey ] = d; }.bind(this));
+        //             identityLoaded = true;
+        //             check();
+        //         }.bind(this))
+        //     }else{
+        //         identityLoaded = true;
+        //         check();
+        //     }
+        //
+        //     if( personList && personList.length ){
+        //         personList = personList.unique();
+        //         o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
+        //             json.data.each( function (d) { if(d)this.personMapImported[ d.matchKey ] = d; }.bind(this));
+        //             personLoaded = true;
+        //             check();
+        //         }.bind(this))
+        //     }else{
+        //         personLoaded = true;
+        //         check();
+        //     }
+        //
+        //     if( unitList && unitList.length ){
+        //         unitList = unitList.unique();
+        //         o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
+        //             json.data.each( function (d) { if(d)this.unitMapImported[ d.matchKey ] = d; }.bind(this));
+        //             unitLoaded = true;
+        //             check();
+        //         }.bind(this))
+        //     }else{
+        //         unitLoaded = true;
+        //         check();
+        //     }
+        //
+        //     if( groupList && groupList.length ){
+        //         groupList = groupList.unique();
+        //         o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({ groupList : groupList }, function (json) {
+        //             json.data.each( function (d) { if(d)this.groupMapImported[ d.matchKey ] = d; }.bind(this));
+        //             groupLoaded = true;
+        //             check();
+        //         }.bind(this))
+        //     }else{
+        //         groupLoaded = true;
+        //         check();
+        //     }
+        // },
+
+        // showImportingStatus: function( improtedData, date ){
+        //     this.progressBar.showImporting( this.recordId, function( data ){
+        //         data.data = improtedData;
+        //         data.rowList = this.rowList;
+        //         this.fireEvent("afterImport", data)
+        //     }.bind(this), date);
+        // },
+
+        exportWithImportDataToExcel : function ( importData ) {
+
+            if( !this.excelUtils ){
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
+            }
+
+            var exportTo = function () {
+                var resultArr = [];
+                var titleArr = this.getTitleArray();
+                titleArr.push( this.lp.validationInfor );
+                resultArr.push( titleArr );
+
+                if( importData ){
                     importData.each( function (lineData, lineIndex) {
                         var array = [];
                         if( o2.typeOf(lineData)==="array" ) {
@@ -604,166 +722,166 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                         }
                         resultArr.push( array );
                     }.bind(this));
+                }else{
+                    this.rowList.each( function( row, lineIndex ){
+                        var lineData = row.importedData;
+                        var array = [];
+                        for( var i=0; i<lineData.length; i++ ){
+                            var d = ( lineData[i] || '' ).replace(/&#10;/g, "\n");
+                            array.push( d );
+                        }
+                        // lineData.each( function (d, i) {
+                        //     array.push( ( d || '' ).replace(/&#10;/g, "\n") );
+                        // });
+
+                        array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
+                        resultArr.push( array );
+                    }.bind(this));
+                }
+
+
+                var colWidthArray = this.getColWidthArray();
+                colWidthArray.push(260);
+
+                var arg = {
+                    data : resultArr,
+                    colWidthArray : colWidthArray,
+                    title : this.getFileName()
+                };
+
+                this.fireEvent("export", [arg]);
+
+                this.excelUtils.exportToExcel(
+                    arg.data,
+                    arg.title,
+                    arg.colWidthArray,
+                    this.getDateIndexArray()
+                )
+            }.bind(this);
+
+            if( !this.importerJson ){
+                this.getImporterJSON( function () {
+                    exportTo();
+                }.bind(this))
             }else{
-                this.rowList.each( function( row, lineIndex ){
-                    var lineData = row.importedData;
-                    var array = [];
-                    for( var i=0; i<lineData.length; i++ ){
-                        var d = ( lineData[i] || '' ).replace(/&#10;/g, "\n");
-                        array.push( d );
-                    }
-                    // lineData.each( function (d, i) {
-                    //     array.push( ( d || '' ).replace(/&#10;/g, "\n") );
-                    // });
-
-                    array.push( row.errorTextListExcel ? row.errorTextListExcel.join("\n") : ""  );
-                    resultArr.push( array );
-                }.bind(this));
-            }
-
-
-            var colWidthArray = this.getColWidthArray();
-            colWidthArray.push(260);
-
-            var arg = {
-                data : resultArr,
-                colWidthArray : colWidthArray,
-                title : this.getFileName()
-            };
-
-            this.fireEvent("export", [arg]);
-
-            this.excelUtils.exportToExcel(
-                arg.data,
-                arg.title,
-                arg.colWidthArray,
-                this.getDateIndexArray()
-            )
-        }.bind(this);
-
-        if( !this.importerJson ){
-            this.getImporterJSON( function () {
                 exportTo();
-            }.bind(this))
-        }else{
-            exportTo();
-        }
-    },
-
-    downloadTemplate: function(fileName, callback){
-        if( !this.excelUtils ){
-            this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
-        }
-        var doExport = function () {
-            var arg = {
-                data : [this.getTitleArray()],
-                colWidthArray : this.getColWidthArray(),
-                title : this.getFileName(fileName)
-            };
-            if(callback)callback(arg);
-
-            this.excelUtils.exportToExcel(
-                arg.data,
-                arg.title,
-                arg.colWidthArray,
-                this.getDateIndexArray()
-            )
-        }.bind(this)
-        if( !this.importerJson ){
-            this.getImporterJSON( function () {
-                doExport()
-            }.bind(this))
-        }else{
-            doExport();
-        }
-    },
-    getFileName: function(fileName){
-        var title = fileName || this.json.name;
-        var titleA = title.split(".");
-        if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
-            titleA.splice( titleA.length-1 );
-        }
-        title = titleA.join(".");
-        return title;
-    },
-    getTitleArray: function(){
-        var titleArray = [];
-        this.json.data.columnList.each( function (columnJson, i) {
-            titleArray.push( columnJson.displayName );
-        }.bind(this));
-        return titleArray;
-    },
-    getColWidthArray : function(){
-        var colWidthArr = [];
-        this.json.data.columnList.each( function (columnJson, i) {
-            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-            switch ( dataType ) {
-                case "string":
-                case "stringList":
-                    if( columnJson.isName ){
-                        colWidthArr.push( 340 );
-                    }else if( columnJson.isSummary ){
-                        colWidthArr.push( 260 );
-                    }else{
-                        colWidthArr.push( 150 );
-                    }
-                    break;
-                case "number":
-                case "integer":
-                case "long":
-                case "double":
-                case "numberList":
-                case "integerList":
-                case "longList":
-                case "doubleList":
-                    colWidthArr.push(150);
-                    break;
-                case "date":
-                case "dateTime":
-                case "dateList":
-                case "dateTimeList":
-                    colWidthArr.push(150);
-                    break;
-                default:
-                    colWidthArr.push(150);
-                    break;
             }
-        }.bind(this));
+        },
 
-        return colWidthArr;
-    },
-    getDateIndexArray : function(){
-        var dateIndexArr = []; //日期格式列下标
-        this.json.data.columnList.each( function (columnJson, i) {
-            var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-            switch ( dataType ) {
-                case "date":
-                case "dateTime":
-                case "dateList":
-                case "dateTimeList":
-                    dateIndexArr.push(i);
-                    break;
-                default:
-                    break;
+        downloadTemplate: function(fileName, callback){
+            if( !this.excelUtils ){
+                this.excelUtils = new MWF.xApplication.query.Query.Importer.ExcelUtils( this );
             }
-        }.bind(this));
-        return dateIndexArr;
-    },
+            var doExport = function () {
+                var arg = {
+                    data : [this.getTitleArray()],
+                    colWidthArray : this.getColWidthArray(),
+                    title : this.getFileName(fileName)
+                };
+                if(callback)callback(arg);
+
+                this.excelUtils.exportToExcel(
+                    arg.data,
+                    arg.title,
+                    arg.colWidthArray,
+                    this.getDateIndexArray()
+                )
+            }.bind(this)
+            if( !this.importerJson ){
+                this.getImporterJSON( function () {
+                    doExport()
+                }.bind(this))
+            }else{
+                doExport();
+            }
+        },
+        getFileName: function(fileName){
+            var title = fileName || this.json.name;
+            var titleA = title.split(".");
+            if( ["xls","xlst"].contains( titleA[titleA.length-1].toLowerCase() ) ){
+                titleA.splice( titleA.length-1 );
+            }
+            title = titleA.join(".");
+            return title;
+        },
+        getTitleArray: function(){
+            var titleArray = [];
+            this.json.data.columnList.each( function (columnJson, i) {
+                titleArray.push( columnJson.displayName );
+            }.bind(this));
+            return titleArray;
+        },
+        getColWidthArray : function(){
+            var colWidthArr = [];
+            this.json.data.columnList.each( function (columnJson, i) {
+                var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+                switch ( dataType ) {
+                    case "string":
+                    case "stringList":
+                        if( columnJson.isName ){
+                            colWidthArr.push( 340 );
+                        }else if( columnJson.isSummary ){
+                            colWidthArr.push( 260 );
+                        }else{
+                            colWidthArr.push( 150 );
+                        }
+                        break;
+                    case "number":
+                    case "integer":
+                    case "long":
+                    case "double":
+                    case "numberList":
+                    case "integerList":
+                    case "longList":
+                    case "doubleList":
+                        colWidthArr.push(150);
+                        break;
+                    case "date":
+                    case "dateTime":
+                    case "dateList":
+                    case "dateTimeList":
+                        colWidthArr.push(150);
+                        break;
+                    default:
+                        colWidthArr.push(150);
+                        break;
+                }
+            }.bind(this));
+
+            return colWidthArr;
+        },
+        getDateIndexArray : function(){
+            var dateIndexArr = []; //日期格式列下标
+            this.json.data.columnList.each( function (columnJson, i) {
+                var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
+                switch ( dataType ) {
+                    case "date":
+                    case "dateTime":
+                    case "dateList":
+                    case "dateTimeList":
+                        dateIndexArr.push(i);
+                        break;
+                    default:
+                        break;
+                }
+            }.bind(this));
+            return dateIndexArr;
+        },
 
 
-    //api 使用 开始
+        //api 使用 开始
 
-    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
-        this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
-    },
-    alert: function (type, title, text, width, height) {
-        this.app.alert(type, "center", title, text, width, height);
-    },
-    notice: function (content, type, target, where, offset, option) {
-        this.app.notice(content, type, target, where, offset, option)
-    }
-    //api 使用 结束
-});
+        confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
+            this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
+        },
+        alert: function (type, title, text, width, height) {
+            this.app.alert(type, "center", title, text, width, height);
+        },
+        notice: function (content, type, target, where, offset, option) {
+            this.app.notice(content, type, target, where, offset, option)
+        }
+        //api 使用 结束
+    });
 
 MWF.xApplication.query.Query.Importer.Row = new Class({
     initialize: function(importer, importedData, rowIndex){
@@ -776,6 +894,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         this.data = {};
         this.errorTextList = [];
         this.errorTextListExcel = [];
+        this.calculateFieldDataMap = {};
     },
     checkValid : function(){
 
@@ -786,7 +905,6 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         var errorTextList = [];
         var errorTextListExcel = [];
-
 
         this.importer.json.data.columnList.each( function (columnJson, i) {
 
@@ -850,7 +968,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                         break;
                     case "dateList":
                     case "dateTimeList":
-                        var  arr = this.stringToArray(value);
+                        var arr = this.stringToArray(value);
                         arr.each( function(d, idx){
                             if( !( new Date(d).isValid() )){
                                 errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
@@ -897,19 +1015,55 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             return false;
         }
 
-        this.createData();
+        var p = this.createData();
 
-        if( this.importer.json.type === "cms" ){
-            this.checkCMS( true );
-        }else if( this.importer.json.type === "process" ){
-            this.checkProcess( true );
-        }
+        return Promise.resolve( p ).then(function (flag) {
 
-        if(this.errorTextList.length>0){
-            return false;
-        }
+            this.importer.json.data.calculateFieldList.each( function (fieldJson, i) {
+                if( !fieldJson.path )return;
+                if( fieldJson.isName ){
+                    var sourceData = this.calculateFieldDataMap[fieldJson.path];
+                    var arr = typeOf( sourceData ) === "array" ? sourceData : [sourceData];
+                    arr = typeOf( arr ) === "array" ? arr : [arr];
+                    arr.each(function (d, idx) {
+                        if( !d )return d;
+                        var a;
+                        switch (typeOf( d )) {
+                            case "string":
+                                a = d; break;
+                            case "object":
+                                a = d.distinguishedName || d.unique || d.employee; break;
+                        }
+                        if( !a )return d;
+                        var obj = this.importer.getOrgData( a );
+                        if( obj.errorText ){
+                            var errorText = (fieldJson.displayName || fieldJson.path) + ":" + obj.errorText + lp.fullstop;
+                            errorTextList.push( errorText );
+                            errorTextListExcel.push( errorText );
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
 
-        return true;
+            this.errorTextList = this.errorTextList.concat( errorTextList );
+            this.errorTextListExcel = this.errorTextListExcel.concat( errorTextListExcel );
+
+            if( this.errorTextList.length > 0 )return false;
+
+
+            if( this.importer.json.type === "cms" ){
+                this.checkCMS( true );
+            }else if( this.importer.json.type === "process" ){
+                this.checkProcess( true );
+            }
+
+            if(this.errorTextList.length>0){
+                return false;
+            }
+
+            return true;
+
+        }.bind(this));
     },
     checkNecessary: function(){
 
@@ -957,41 +1111,35 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
             return false;
         }
 
-        this.createData();
+        var p = this.createData();
 
-        if( this.importer.json.type === "cms" ){
-            this.checkCMS();
-        }else if( this.importer.json.type === "process" ){
-            this.checkProcess();
-        }
+        return Promise.resolve(p).then(function () {
+            if( this.importer.json.type === "cms" ){
+                this.checkCMS();
+            }else if( this.importer.json.type === "process" ){
+                this.checkProcess();
+            }
 
-        if(this.errorTextList.length>0){
-            return false;
-        }
+            if(this.errorTextList.length>0){
+                return false;
+            }
 
-        return true;
-
-        // var flag = true;
-        // if( this.importer.json.type === "cms" ){
-        //     if( !this.checkCMS() )flag = false;
-        // }else if( this.importer.json.type === "process" ){
-        //     if( !this.checkProcess() )flag = false;
-        // }
-        // return flag;
+            return true;
+        }.bind(this))
     },
     getCol: function(key, isExcel){
-        var lp = this.lp;
+        var text, lp = this.lp;
         if( this.pathIndexMap && typeOf(this.pathIndexMap[key]) === "number"){
             var i = this.pathIndexMap[key];
             if( isExcel ){
-                var text = lp.importValidationColumnTextExcel;
+                text = lp.importValidationColumnTextExcel;
                 return text.replace( "{n}", this.importer.excelUtils.index2ColName( i ) );
             }else{
-                var text =  lp.importValidationColumnText;
+                text =  lp.importValidationColumnText;
                 return text.replace( "{n}", i+1 );
             }
         }
-        return ""
+        return "";
     },
     checkCMS : function( notCheckName ){
 
@@ -1013,7 +1161,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         }
 
-        var data = this.document.publishTime;
+        data = this.document.publishTime;
         if(!data){
             errorTextList.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
             errorTextListExcel.push(this.getCol("publishTime", false) + lp.noPublishTime + lp.fullstop );
@@ -1069,7 +1217,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 errorTextListExcel.push( lp.noForm + lp.fullstop );
             }
 
-            var data = this.work.startTime;
+            data = this.work.startTime;
             if(!data){
                 errorTextList.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
                 errorTextListExcel.push(this.getCol("startTime", false) + lp.noStartTime + lp.fullstop );
@@ -1078,7 +1226,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 errorTextListExcel.push(this.getCol("startTime", false) + '"'+ data +'"'+ lp.startTimeFormatError + lp.fullstop );
             }
 
-            var data = this.work.completeTime;
+            data = this.work.completeTime;
             if(!data){
                 errorTextList.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
                 errorTextListExcel.push(this.getCol("completeTime", false) + lp.noEndTime + lp.fullstop );
@@ -1134,14 +1282,15 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                 this.setDataWithPath(this.data, columnJson.path, data);
             }
 
+            var array;
             if( json.type === "cms" ){
                 if( columnJson.isName ) {
                     if (columnJson.isAuthor) {
-                        var array = this.parseCMSReadAndAuthor(data, "作者");
+                        array = this.parseCMSReadAndAuthor(data, "作者");
                         this.document.authorList = this.document.authorList.concat(array)
                     }
                     if (columnJson.isReader) {
-                        var array = this.parseCMSReadAndAuthor(data, "阅读");
+                        array = this.parseCMSReadAndAuthor(data, "阅读");
                         this.document.readerList = this.document.readerList.concat(array)
                     }
                 }
@@ -1150,12 +1299,54 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
 
         }.bind(this));
 
+        var calculateOrgData = [], caculateMap = {};
         json.data.calculateFieldList.each( function (fieldJson, i) {
-            if( fieldJson.valueScript ){
-                var data = this.importer.Macro.exec( fieldJson.valueScript, this );
+            if( !fieldJson.path )return;
+            if( !fieldJson.valueScript )return;
+
+            var data = this.importer.Macro.exec(fieldJson.valueScript, this);
+            this.calculateFieldDataMap[fieldJson.path] = data;
+            caculateMap[fieldJson.path] = data;
+            if( fieldJson.isName && data ){
+                switch (o2.typeOf(data)) {
+                    case "array":
+                        if(data.length)calculateOrgData = calculateOrgData.concat(data); break;
+                    default:
+                        calculateOrgData.push(data); break;
+                }
+            }
+        }.bind(this));
+
+        var p = this.importer.getOrgExtendData( calculateOrgData );
+
+        return Promise.resolve(p).then(function () {
+
+            json.data.calculateFieldList.each( function (fieldJson, i) {
+                if( !fieldJson.path )return;
+                if( !fieldJson.valueScript )return;
+
+                var data;
+                if( fieldJson.isName ){
+                    var arr = caculateMap[fieldJson.path];
+                    arr = typeOf( arr ) === "array" ? arr : [arr];
+                    data = arr.map(function (d, idx) {
+                        if( !d )return d;
+                        var a;
+                        switch (typeOf( d )) {
+                            case "string":
+                                a = d; break;
+                            case "object":
+                                a = d.distinguishedName || d.unique || d.employee; break;
+                        }
+                        if( !a )return d;
+                        return this.importer.getOrgData( a, true, true );
+                    }.bind(this));
+                    data = data.clean();
+                }else{
+                    data = caculateMap[fieldJson.path];
+                }
 
                 if( o2.typeOf(data) === "null" )return;
-                if( !fieldJson.path )return;
 
                 if( json.type === "dynamicTable" ){
                     this.data[ fieldJson.path ] = data;
@@ -1174,58 +1365,58 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
                     }
 
                 }
+            }.bind(this));
+
+            var array;
+            if( json.type === "cms" ){
+                this.document.docData = this.data;
+
+                if( json.data.documentPublisher === "importer" ){
+                    array = layout.session.user.identityList;
+                    if( array && array.length ){
+                        this.document.identity = array[0].distinguishedName;
+                    }
+                }else{
+                    this.setDataWithField(this.document, "documentPublisherField", "identity", true);
+                }
+
+                if( json.data.documentPublishTime === "importer" ){
+                    this.document.publishTime = new Date().format("db");
+                }else{
+                    this.setDataWithField(this.document, "documentPublisherTimeField", "publishTime", false);
+                }
+
+                this.setDataWithField(this.document, "documentTitleField", "title", false);
+                if( !this.document.title )this.document.title = "无标题";
+
+                this.setDataWithField(this.document, "documentSummaryField", "summary", false);
+
+            }else if( json.type === "process" ){
+                this.work.data = this.data;
+
+                if( json.data.processDrafter === "importer" ){
+                    array = layout.session.user.identityList;
+                    if( array && array.length ){
+                        this.work.identity = array[0].distinguishedName
+                    }
+                }else{
+                    this.setDataWithField(this.work, "processDrafterField", "identity", true);
+                }
+
+                this.setDataWithField(this.work, "processTitleField", "title", false);
+                if( !this.work.title )this.work.title = "无标题";
+
+                if( json.data.processStatus === "completed" ){
+                    this.work.form = json.data.processForm || "";
+                    this.setDataWithField(this.work, "processSerialField", "serial", false);
+                    this.setDataWithField(this.work, "processStartTimeField", "startTime", false);
+                    this.setDataWithField(this.work, "processCompleteTimeField", "completeTime", false);
+                }
             }
+
+            this.importer.fireEvent("afterCreateRowData", [ this]);
         }.bind(this));
 
-        var array;
-        if( json.type === "cms" ){
-            this.document.docData = this.data;
-
-            if( json.data.documentPublisher === "importer" ){
-                array = layout.session.user.identityList;
-                if( array && array.length ){
-                    this.document.identity = array[0].distinguishedName
-                }
-            }else{
-                this.setDataWithField(this.document, "documentPublisherField", "identity", true);
-            }
-
-            if( json.data.documentPublishTime === "importer" ){
-                this.document.publishTime = new Date().format("db");
-            }else{
-                this.setDataWithField(this.document, "documentPublisherTimeField", "publishTime", false);
-            }
-
-            this.setDataWithField(this.document, "documentTitleField", "title", false);
-            if( !this.document.title )this.document.title = "无标题";
-
-            this.setDataWithField(this.document, "documentSummaryField", "summary", false);
-
-        }else if( json.type === "process" ){
-            this.work.data = this.data;
-
-            if( json.data.processDrafter === "importer" ){
-                array = layout.session.user.identityList;
-                if( array && array.length ){
-                    this.work.identity = array[0].distinguishedName
-                }
-            }else{
-                this.setDataWithField(this.work, "processDrafterField", "identity", true);
-            }
-
-            this.setDataWithField(this.work, "processTitleField", "title", false);
-            if( !this.work.title )this.work.title = "无标题";
-
-            if( json.data.processStatus === "completed" ){
-                this.work.form = json.data.processForm || "";
-                this.setDataWithField(this.work, "processSerialField", "serial", false);
-                this.setDataWithField(this.work, "processStartTimeField", "startTime", false);
-                this.setDataWithField(this.work, "processCompleteTimeField", "completeTime", false);
-            }
-        }
-
-
-        this.importer.fireEvent("afterCreateRowData", [ this]);
     },
     parseData: function(value, dataType, json){
         var data;
@@ -1353,7 +1544,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         }
     },
     isNumberString: function(string){
-       return string.toInt().toString() === string;
+        return string.toInt().toString() === string;
     },
     parseCMSReadAndAuthor : function( data, t ){
         var cnArray = ["组织","群组","人员","人员","角色"];

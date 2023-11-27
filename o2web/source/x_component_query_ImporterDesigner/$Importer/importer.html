@@ -44,6 +44,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', '');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}dynamicTableIdPathNote').setStyle('display', 'none');
                      }" name="text{$.id}*type" text{($.type!='dynamicTable' && $.type!='process')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -54,6 +55,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', '');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                         $$('.text{$.id}processFieldProperty').setStyle('display', 'none');
+                        $$('.text{$.id}dynamicTableIdPathNote').setStyle('display', '');
                      }" name="text{$.id}*type" text{($.type=='dynamicTable')?'checked':''} type="radio" value="dynamicTable"/>{{$.lp.tableData}}
                         <input class="editTableRadio" onclick="
                     if (this.checked){
@@ -64,6 +66,7 @@
                         $$('.text{$.id}dataTypeSelectedQuerytableArea').setStyle('display', 'none');
                         $$('.text{$.id}cmsFieldProperty').setStyle('display', 'none');
                         $$('.text{$.id}processFieldProperty').setStyle('display', '');
+                        $$('.text{$.id}dynamicTableIdPathNote').setStyle('display', 'none');
                     }" name="text{$.id}*type" text{($.type=='process')?'checked':''} type="radio" value="process"/>{{$.lp.processPlatformData}}
                     </td>
                 </tr>

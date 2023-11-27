@@ -152,7 +152,8 @@ MWF.xApplication.query.ImporterDesigner.LP = {
         "valueScriptImportedDataNote": "导入的原始数据",
         "valueScriptDataNote": "系统根据配置生成的业务数据",
         "valueScriptDocumentNote": "如果导入CMS文档，系统生成的文档数据",
-        "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据"
+        "valueScriptWorkNote": "如果导入流程work，系统生成的工作数据",
+        "idPathNote": "当导入自建表数据时，字段路径为'id'表示更新原有记录。"
     },
     "formToolbar":{
         "save": "保存",
