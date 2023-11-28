@@ -1000,6 +1000,15 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
     },
     loadChild: function(){
         //this.loadSearch();
+        var mapById = {};
+        this.data.each(function (app) {
+            if (app.processList && app.processList.length){
+                app.processList.each(function (process) {
+                    mapById[ process.id ] = process;
+                });
+            }
+        });
+
         MWF.UD.getDataJson("taskCenter_startTop", function(json){
             this.top5Data = json;
             debugger;
@@ -1009,6 +1018,10 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
 
                 this.top5Data.sort(function(p1, p2){
                     return 0-(p1.count-p2.count);
+                });
+
+                this.top5Data.each(function (d) {
+                    if( mapById[ d.id ] )d.name = mapById[ d.id ].name;
                 });
             }
 
