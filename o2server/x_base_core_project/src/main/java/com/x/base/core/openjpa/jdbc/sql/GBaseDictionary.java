@@ -13,7 +13,6 @@ import org.apache.openjpa.jdbc.identifier.DBIdentifier;
 import org.apache.openjpa.jdbc.schema.Column;
 import org.apache.openjpa.jdbc.sql.BooleanRepresentationFactory;
 import org.apache.openjpa.jdbc.sql.DBDictionary;
-import org.apache.openjpa.jdbc.sql.InformixDictionary;
 import org.apache.openjpa.jdbc.sql.SQLExceptions;
 import org.apache.openjpa.lib.util.Localizer;
 //import org.apache.openjpa.jdbc.sql.InformixDictionary;
@@ -25,7 +24,7 @@ public class GBaseDictionary extends DBDictionary {
 
 	public final boolean swapSchemaAndCatalog = false;
 
-	private static final Localizer _loc = Localizer.forPackage(InformixDictionary.class);
+	private static final Localizer _loc = Localizer.forPackage(GBaseDictionary.class);
 
 	/**
 	 * If true, then we will issue a "SET LOCK MODE TO WAIT N" statement whenever we

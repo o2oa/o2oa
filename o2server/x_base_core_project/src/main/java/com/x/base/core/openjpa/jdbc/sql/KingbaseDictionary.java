@@ -10,7 +10,7 @@ import org.apache.openjpa.lib.util.Localizer;
 public class KingbaseDictionary extends DBDictionary {
 
 	public static final String VENDOR_DAMENG = "Kingbase";
-	private static final Localizer _loc = Localizer.forPackage(DMDictionary.class);
+	private static final Localizer _loc = Localizer.forPackage(KingbaseDictionary.class);
 
 	public KingbaseDictionary() {
 		this.platform = "Kingbase";
