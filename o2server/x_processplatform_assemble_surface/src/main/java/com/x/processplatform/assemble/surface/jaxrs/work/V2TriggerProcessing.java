@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2TriggerProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
 
@@ -35,9 +36,11 @@ class V2TriggerProcessing extends BaseAction {
 
 		Param param = this.init(effectivePerson, id);
 
+		ProcessingAttributes processingAttributes = new ProcessingAttributes();
 		ThisApplication.context().applications()
 				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", param.work.getId(), "processing"), null, param.work.getJob())
+						Applications.joinQueryUri("work", param.work.getId(), "processing"), processingAttributes,
+						param.work.getJob())
 				.getData(ActionProcessingWo.class);
 
 		boolean processingToNext = false;
