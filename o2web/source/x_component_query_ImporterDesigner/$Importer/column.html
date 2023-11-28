@@ -13,7 +13,10 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.fieldPath}}:</td>
-                        <td class="editTableValue"><input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/></td>
+                        <td class="editTableValue">
+                            <input id="text{$.pid}viewColumnPathInput" type="text" name="path" value="text{$.path}" class="editTableInput"/>
+                            <div class="text{$.vid}dynamicTableIdPathNote" style="display:text{($.vtype==='dynamicTable')?'block':'none'};color:#999;">{{$.lp.idPathNote}}</div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">{{$.lp.isName}}:</td>
