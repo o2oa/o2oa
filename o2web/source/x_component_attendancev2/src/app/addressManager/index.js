@@ -1,7 +1,10 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { attendanceWorkPlaceV2Action, getPublicData } from '../../utils/actions';
-import { lpFormat } from '../../utils/common';
+import {
+  attendanceWorkPlaceV2Action,
+  getPublicData,
+} from "../../utils/actions";
+import { lpFormat, isEmpty } from "../../utils/common";
 import template from "./temp.html";
 
 export default content({
@@ -11,24 +14,54 @@ export default content({
   bind() {
     return {
       lp,
-     workAddressList: []
+      workAddressList: [],
+      // 地图配置
+      mapConfig: {
+        mapType: "baidu", //  amap baidu
+        baiduAccountKey: "",
+        aMapAccountKey: "",
+      },
     };
   },
   afterRender() {
     this.listenEventBus();
+    this.loadMapConfig();
     this.loadWorkAddressData();
   },
+  async loadMapConfig() {
+    const config = await getPublicData("attendanceMapConfig");
+    if (config) {
+      this.bind.mapConfig = config;
+    }
+  },
   async openBdAKConfig() {
-    const bdKey = (await getPublicData("baiduAccountKey")) || "";
-    this.$parent.openBDMapConfigForm({bind: {"baiduAccountKey": bdKey}});
+    this.$parent.openBDMapConfigForm({
+      bind: { mapConfig: this.bind.mapConfig },
+    });
   },
   async clickAdd() {
     debugger;
-     this.$parent.openAddressForm({});
+    if (
+      this.bind.mapConfig.mapType === "baidu" &&
+      isEmpty(this.bind.mapConfig.baiduAccountKey)
+    ) {
+      o2.api.page.notice(lp.workAddressMapKeyConfigEmpty, "error");
+      return;
+    }
+    if (
+      this.bind.mapConfig.mapType === "amap" &&
+      isEmpty(this.bind.mapConfig.aMapAccountKey)
+    ) {
+      o2.api.page.notice(lp.workAddressMapKeyConfigEmpty, "error");
+      return;
+    }
+    this.$parent.openAddressForm({
+      bind: { form: { positionType: this.bind.mapConfig.mapType } },
+    });
   },
   // 查看位置
   clickOpenView(address) {
-    this.$parent.openAddressForm({bind: { form: address }});
+    this.$parent.openAddressForm({ bind: { form: address } });
   },
   // 删除工作场所
   clickDeleteItem(id, name) {
@@ -71,8 +104,9 @@ export default content({
     }
   },
   listenEventBus() {
-    this.$topParent.listenEventBus('address', (data) => {
-      console.log('接收到了address消息', data);
+    this.$topParent.listenEventBus("address", (data) => {
+      console.log("接收到了address消息", data);
+      this.loadMapConfig();
       this.loadWorkAddressData();
     });
   },

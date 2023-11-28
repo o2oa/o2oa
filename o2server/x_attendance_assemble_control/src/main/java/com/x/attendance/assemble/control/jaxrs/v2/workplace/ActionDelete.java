@@ -3,7 +3,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.workplace;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
-import com.x.attendance.assemble.control.jaxrs.v2.ExceptionShiftUsed;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWorkPlaceUsed;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2WorkPlace;

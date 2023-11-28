@@ -73,6 +73,14 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String creator = "";
 
+
+	public static final String POSITION_TYPE_BAIDU = "baidu"; // 百度地图
+	public static final String POSITION_TYPE_AMAP = "amap"; // 高德地图
+	public static final String positionType_FIELDNAME = "positionType";
+	@FieldDescribe("坐标类型，百度、高德")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + positionType_FIELDNAME)
+	private String positionType = POSITION_TYPE_BAIDU;
+
 	public static final String longitude_FIELDNAME = "longitude";
 	@FieldDescribe("经度")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + longitude_FIELDNAME)
@@ -82,6 +90,16 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	@FieldDescribe("纬度")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + latitude_FIELDNAME)
 	private String latitude = null;
+
+	public static final String gpsLng_FIELDNAME = "gpsLng";
+	@FieldDescribe("经度, gps")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + gpsLng_FIELDNAME)
+	private String gpsLng = null;
+
+	public static final String gpsLat_FIELDNAME = "gpsLat";
+	@FieldDescribe("纬度, gps")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + gpsLat_FIELDNAME)
+	private String gpsLat = null;
 
 	public static final String errorRange_FIELDNAME = "errorRange";
 	@FieldDescribe("误差范围")
@@ -150,6 +168,34 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	public void setErrorRange(Integer errorRange) {
 		this.errorRange = errorRange;
 	}
+
+  public String getGpsLng() {
+    return gpsLng;
+  }
+
+  public void setGpsLng(String gpsLng) {
+    this.gpsLng = gpsLng;
+  }
+
+  public String getGpsLat() {
+    return gpsLat;
+  }
+
+  public void setGpsLat(String gpsLat) {
+    this.gpsLat = gpsLat;
+  }
+
+  public String getPositionType() {
+    return positionType;
+  }
+
+  public void setPositionType(String positionType) {
+    this.positionType = positionType;
+  }
+
+	
+
+	
 
 
 }
