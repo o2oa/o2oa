@@ -75,9 +75,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualArrive(aeiObjects.getWork().getActivityToken(), manual));
 		// 根据manual计算出来的活动处理人
-		// ManualTaskIdentityMatrix manualTaskIdentityMatrix = manual
-		// .identitiesToManualTaskIdentityMatrix(calculateTaskIdentities(aeiObjects,
-		// manual));
+		ManualTaskIdentityMatrix manualTaskIdentityMatrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+		if ((null != manualTaskIdentityMatrix) && (!manualTaskIdentityMatrix.isEmpty())) {
+			return arrivingMatrix(aeiObjects, manual);
+		}
 		Tickets tickets = aeiObjects.getWork().getTickets();
 		if ((null == tickets) || tickets.isEmpty()) {
 			tickets = calculateTaskDistinguishedName(aeiObjects, manual);
@@ -93,6 +94,18 @@ public class ManualProcessor extends AbstractManualProcessor {
 		this.arrivingPassSame(aeiObjects, tickets);
 		// aeiObjects.getWork().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
 		aeiObjects.getWork().setTickets(tickets);
+		return aeiObjects.getWork();
+	}
+
+	protected Work arrivingMatrix(AeiObjects aeiObjects, Manual manual) throws Exception {
+		ManualTaskIdentityMatrix manualTaskIdentityMatrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
+		Optional<Work> mergeWork = this.arrivingMergeSameJob(aeiObjects, manual, manualTaskIdentityMatrix);
+		if (mergeWork.isPresent()) {
+			return mergeWork.get();
+		}
+		this.arrivingPassSame(aeiObjects, manualTaskIdentityMatrix);
+		aeiObjects.getWork().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
 		return aeiObjects.getWork();
 	}
 
@@ -552,9 +565,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
+		ManualTaskIdentityMatrix manualTaskIdentityMatrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+		if ((null != manualTaskIdentityMatrix) && (!manualTaskIdentityMatrix.isEmpty())) {
+			return executingMatrix(aeiObjects, manual);
+		}
 		Tickets tickets = aeiObjects.getWork().getTickets();
 		if ((null == tickets) || tickets.isEmpty()) {
-			return executingMatrix(aeiObjects, manual);
+			tickets = calculateTaskDistinguishedName(aeiObjects, manual);
 		}
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes()
@@ -633,6 +650,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 //	}
 
 	private List<Work> executingMatrix(AeiObjects aeiObjects, Manual manual) throws Exception {
+
 		List<Work> results = new ArrayList<>();
 		// ManualTaskIdentityMatrix matrix =
 		// executingManualTaskIdentityMatrix(aeiObjects, manual);
@@ -805,9 +823,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getWork().setGoBackActivityToken(null);
 			return optional;
 		}
+//		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+//		Tickets tickets = aeiObjects.getWork().getTickets();
 		// 执行强制路由
 		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
-				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())) {
+				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
+				&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
+// 8.2版本以前没有使用destinationActivity作为强制路由,如果这里不单独判断,老版本的数据会原地转圈,在同一环节再次进入,重新生成activityToken,现象就是所有待办会重新生成.
 			Activity activity = aeiObjects.business().element()
 					.getActivity(aeiObjects.getWork().getDestinationActivity());
 			if (null != activity) {
@@ -822,6 +844,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 				return Optional.of(route);
 			}
 		}
+//		// workTrigger触发可能导致当前没有任何待办
+//		if (aeiObjects.getTaskCompleteds().stream()
+//				.filter(o -> StringUtils.equalsIgnoreCase(aeiObjects.getWork().getActivityToken(),
+//						o.getActivityToken()))
+//				.findAny().isEmpty()
+//				&& ((null == matrix || matrix.isEmpty()) && (null == tickets || tickets.bubble().isEmpty()))) {
+//			return Optional.empty();
+//		}
 		// 执行正常路由
 		if (aeiObjects.getRoutes().size() == 1) {
 			// 仅有单条路由

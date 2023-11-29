@@ -61,6 +61,17 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("待办凭证.")
 	private Tickets tickets;
 
+	@FieldDescribe("强制路由.")
+	private Boolean forceRouteEnable;
+
+	public Boolean getForceRouteEnable() {
+		return forceRouteEnable;
+	}
+
+	public void setForceRouteEnable(Boolean forceRouteEnable) {
+		this.forceRouteEnable = forceRouteEnable;
+	}
+
 	public Tickets getTickets() {
 		return tickets;
 	}

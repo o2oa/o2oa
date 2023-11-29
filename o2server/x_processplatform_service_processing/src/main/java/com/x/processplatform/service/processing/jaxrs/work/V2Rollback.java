@@ -1,13 +1,18 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -19,6 +24,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
@@ -132,6 +138,21 @@ class V2Rollback extends BaseAction {
 						// 前面已经更新,不能再次删除
 						.filter(o -> !aeiObjects.getUpdateTaskCompleteds().contains(o))
 						.forEach(aeiObjects.getDeleteTaskCompleteds()::add);
+
+				// 调整latest标识,否则有不是latest的已办不会在已办列表中显示
+				aeiObjects.getTaskCompleteds().stream().filter(o -> !aeiObjects.getDeleteTaskCompleteds().contains(o))
+						.collect(Collectors.groupingBy(TaskCompleted::getPerson)).entrySet().stream()
+						.map(Map.Entry::getValue)
+						.filter(o -> o.stream().noneMatch(t -> BooleanUtils.isTrue(t.getLatest()))).forEach(o -> {
+							Optional<TaskCompleted> opt = o.stream()
+									.sorted(Comparator.comparing(TaskCompleted::getCompletedTime,
+											Comparator.nullsFirst(Date::compareTo).reversed()))
+									.findFirst();
+							if (opt.isPresent()) {
+								opt.get().setLatest(true);
+								aeiObjects.getUpdateTaskCompleteds().add(opt.get());
+							}
+						});
 
 				aeiObjects.getReads().stream().filter(o -> activityTokens.contains(o.getActivityToken()))
 						.forEach(aeiObjects.getDeleteReads()::add);

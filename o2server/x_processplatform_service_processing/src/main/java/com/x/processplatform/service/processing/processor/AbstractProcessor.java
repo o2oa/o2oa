@@ -207,8 +207,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				work.setBeforeExecuted(true);
 			}
 			List<Work> works = new ArrayList<>();
+			// 8.2版本以前没有使用destinationActivity作为强制路由,如果这里不单独判断,老版本的数据会原地转圈,在同一环节再次进入,重新生成activityToken,现象就是所有待办会重新生成.
+			// 调度reroute靠此代码跳过执行.
 			if (StringUtils.isNotEmpty(work.getDestinationActivity())
-					&& Objects.nonNull(work.getDestinationActivityType())) {
+					&& Objects.nonNull(work.getDestinationActivityType())
+					&& BooleanUtils.isTrue(aeiObjects.getWork().getForceRouteEnable())) {
 				works.add(work);
 			} else {
 				// 运行业务方法
@@ -299,9 +302,8 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			// 运行主方法
 			Route selectRoute = this.inquireProcessing(aeiObjects);
 			// 主方法运行完成
-			// aeiObjects.addSelectRoutes(selectRoutes);
 			if (null == selectRoute) {
-				throw new IllegalStateException("inquire return empty route");
+				return results;
 			}
 			List<Work> works = new ArrayList<>();
 			// 运行查询路由后脚本

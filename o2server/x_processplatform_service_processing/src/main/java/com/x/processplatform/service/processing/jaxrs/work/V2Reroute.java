@@ -146,6 +146,7 @@ class V2Reroute extends BaseAction {
 				work.setWorkThroughManual(true);
 				work.setDestinationActivity(param.activity.getId());
 				work.setDestinationActivityType(param.activity.getActivityType());
+				work.setForceRouteEnable(true);
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
 				aeiObjects.getUpdateWorks().add(work);
