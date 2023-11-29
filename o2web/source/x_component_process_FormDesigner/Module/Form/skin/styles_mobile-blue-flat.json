@@ -103,7 +103,7 @@
       "border-bottom": "1px solid #E8ECEE",
       "border-right": "1px solid #CFD9DF",
       "border-radius" : "0px",
-      "width" : "calc(33.3% - 1px)"
+      "width" : "calc(25% - 1px)"
     },
     "tabTextStyles": {
       "color": "#000000",
@@ -113,7 +113,7 @@
       "margin-right": "2px",
       "margin-top": "0px",
       "margin-left": "2px",
-      "font-size": "18px"
+      "font-size": "16px"
     },
     "tabCurrentStyles": {
       "position": "relative",
@@ -126,7 +126,7 @@
       "border-bottom": "1px solid #1D1E1F",
       "border-right": "1px solid #CFD9DF",
       "border-radius" : "0px",
-      "width" : "calc(33.3% - 1px)"
+      "width" : "calc(25% - 1px)"
     },
     "tabCurrentTextStyles": {
       "color": "#000000",
@@ -135,7 +135,7 @@
       "text-align": "center",
       "margin-right": "2px",
       "margin-left": "2px",
-      "font-size": "18px"
+      "font-size": "16px"
     }
   },
   "tab$Content": {
@@ -299,7 +299,7 @@
       "font-size": "16px",
       "font-weight": "normal",
       "border-bottom": "0px",
-      "border-left" : "4px solid #32AAFF",
+      "border-left" : "0px",
       "margin-bottom" : "10px",
       "margin-top" : "10px"
     },
@@ -422,7 +422,7 @@
       "font-size": "16px",
       "font-weight": "normal",
       "border-bottom": "0px",
-      "border-left" : "4px solid #32AAFF",
+      "border-left" : "0px",
       "margin-bottom" : "10px",
       "margin-top" : "10px"
     },
