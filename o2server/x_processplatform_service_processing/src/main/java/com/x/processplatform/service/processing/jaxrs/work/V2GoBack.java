@@ -126,6 +126,7 @@ class V2GoBack extends BaseAction {
 				work.setWorkThroughManual(true);
 				work.setDestinationActivity(manual.getId());
 				work.setDestinationActivityType(manual.getActivityType());
+				work.setForceRouteEnable(true);
 				work.setDestinationRoute("");
 				work.setDestinationRouteName("");
 				work.setGoBackActivityToken(param.activityToken);

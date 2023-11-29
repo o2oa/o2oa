@@ -7,7 +7,7 @@ import org.apache.openjpa.lib.util.Localizer;
 public class OscarDictionary extends DBDictionary {
 
 	public static final String VENDOR_OSCAR = "Oscar";
-	private static final Localizer _loc = Localizer.forPackage(OscarDictionary.class);
+//	private static final Localizer _loc = Localizer.forPackage(OscarDictionary.class);
 
 	public OscarDictionary() {
 		this.platform = VENDOR_OSCAR;
