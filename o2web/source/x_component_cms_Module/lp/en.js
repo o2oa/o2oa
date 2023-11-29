@@ -1,13 +1,13 @@
-MWF.xApplication.cms.Module.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.cms = MWF.xApplication.cms || {};
+MWF.xApplication.cms.Module = MWF.xApplication.cms.Module || {};
+MWF.xApplication.cms.Module.LP={
 	"title": "Content Management",
-
 	"draftStatus": "Draft",
-	"delayStatus" : "Scheduled",
+	"delayStatus": "Scheduled",
 	"publishedStatus": "Published",
 	"archivedStatus": "Archived",
-
 	"noDescription": "Undefined description",
-
 	"searchKey": "Please enter a keyword",
 	"all": "All",
 	"allDocument": "All Documents",
@@ -18,7 +18,6 @@ MWF.xApplication.cms.Module.LP = {
 	"defaultView": "Default View",
 	"setDefaultView": "Set the next time you open the category to default to this view",
 	"setDefaultSuccess": "Set the default view successfully!",
-
 	"import": "Import",
 	"export": "Export",
 	"documentTitle": "Title",
@@ -28,10 +27,8 @@ MWF.xApplication.cms.Module.LP = {
 	"person": "Drafter",
 	"completedTime": "Completed Time",
 	"process": "Process",
-
 	"batchRemove": "Remove",
 	"batchRemoveConfirm": "Confirm to clear",
-
 	"processList": "Process",
 	"activityNameList": "Activity",
 	"creatorCompanyList": "Creator Company",
@@ -43,7 +40,6 @@ MWF.xApplication.cms.Module.LP = {
 	"key": "Keyword",
 	"noFormSelected": "No form is set for this category, please notify the administrator",
 	"documentStartedMessage": "You created a document:",
-
 	"copy": "Copy",
 	"copyto": "Copy to...",
 	"copyInfor": "Select documents, press Ctrl+C to copy the document, press Ctrl+V to paste the copied document into the column (this operation is cross-server)",
@@ -64,21 +60,17 @@ MWF.xApplication.cms.Module.LP = {
 	"copyConfirmCateogyrInfor_withChoice": "Or select the category to copy (if you choose to copy according to the selected category):",
 	"copyConfirm_SameCategory": "Subsequent documents of the same category are copied according to this operation",
 	"notSelectCategory": "Please select a category",
-
 	"open": "Open",
 	"delete": "Delete",
 	"edit": "Edit",
 	"setTop": "SetTop",
 	"share": "Share",
-
 	"phone": "Phone",
 	"mail": "Mail",
-
 	"deleteDocumentTitle": "Delete Confirmation",
 	"deleteDocument": "Are you sure you want to delete {title}?",
 	"deleteDocumentOK": "Document deleted successfully",
 	"currentDocument": "The document",
-
 	"untitled": "Untitled",
 	"select": "Select",
 	"cancelSelect": "Cancel Selection",
@@ -92,11 +84,9 @@ MWF.xApplication.cms.Module.LP = {
 	"clearDocSuccessNotice": "Clear successfully",
 	"selectCategoryText": "Select the category of {title}",
 	"systemList": "System List",
-
 	"enableCopy": "Enable Copy",
 	"attachmentBlankNotice": "The uploaded file cannot contain spaces",
 	"selectCategory": "Select Category",
-
 	"subject": "Title",
 	"appName": "App Name",
 	"category": "Category",
@@ -105,4 +95,5 @@ MWF.xApplication.cms.Module.LP = {
 	"creatorPerson": "Creator",
 	"publishTime": "Publish Time",
 	"publishTimeDelay": "Timed publishing time"
-};
+}
+MWF.xApplication.cms.Module["lp."+o2.language] = MWF.xApplication.cms.Module.LP
