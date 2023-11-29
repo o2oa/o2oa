@@ -87,6 +87,7 @@ abstract class AbstractBaseProcessor {
 		// setDestinationRoute 和 setDestinationRouteName 在退回路由中使用到,无需赋空值
 		aeiObjects.getWork().setDestinationActivity(null);
 		aeiObjects.getWork().setDestinationActivityType(null);
+		aeiObjects.getWork().setForceRouteEnable(false);
 //		aeiObjects.getWork().setDestinationRoute(null);
 //		aeiObjects.getWork().setDestinationRouteName(null);
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getForm())) {
