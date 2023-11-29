@@ -413,12 +413,11 @@
       "text-align": "right"
     },
     "itemTitleStyles": {
-      "height": "16px",
       "overflow" : "hidden",
       "background-color": "#ffffff",
-      "line-height": "16px",
+      "line-height": "28px",
       "padding": "0px 0px 0px 5px",
-      "color": "#000",
+      "color": "#32AAFF",
       "font-size": "16px",
       "font-weight": "normal",
       "border-bottom": "0px",
