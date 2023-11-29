@@ -19,15 +19,23 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.TaskProcessMode;
 import com.x.processplatform.core.entity.content.TaskProcessModeItem;
 import com.x.processplatform.core.entity.element.Process;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 快速选择列表展示规则：
+ * 依据当前人员、流程、流程节点列示
+ * 分前加签、后加签、提交的决策、退回、重置，每一种都是最多三条，次数最多的排前面，次数一样的最新的排在前面，不重复显示。
+ * @author sword
+ */
 class ActionList extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionList.class);
+	private static final Integer MAX_ITEM = 3;
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
@@ -59,8 +67,8 @@ class ActionList extends BaseAction {
 				List<TaskProcessModeItem> itemList = new ArrayList<>(mode.getTaskProcessModeItemList());
 				SortTools.desc(itemList, TaskProcessModeItem.hitCount_FIELDNAME,
 						TaskProcessModeItem.updateTime_FIELDNAME);
-				if (itemList.size() > 3) {
-					itemList = itemList.subList(0, 3);
+				if (itemList.size() > MAX_ITEM) {
+					itemList = itemList.subList(0, MAX_ITEM);
 				}
 				for (TaskProcessModeItem item : itemList) {
 					Wo wo = Wo.copier.copy(mode);
