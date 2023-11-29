@@ -1404,9 +1404,12 @@ function getCleanRemoteTask(path) {
 }
 
 function getWatchTask(path) {
+    var lpFiles = supportedLanguage.filter(function(l){
+        return l !== "zh-cn";
+    }).join("|");
     return (path) ? function (cb) {
         gutil.log("watch", ":", gutil.colors.green(path, "is watching ..."));
-        gulp.watch(['source/' + path + '/**/*', "!./**/test/**"], { "events": ['addDir', 'add', 'change'] }, gulp.parallel([path]));
+        gulp.watch(['source/' + path + '/**/*', "!./**/test/**", '!**/lp/('+lpFiles+').js'], { "events": ['addDir', 'add', 'change'] }, gulp.parallel([path]));
     } : function(cb){cb();};
 }
 
