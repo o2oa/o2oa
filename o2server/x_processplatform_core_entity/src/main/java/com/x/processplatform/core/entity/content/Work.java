@@ -127,6 +127,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.tickets = this.getProperties().getTickets();
 			this.serviceValue = this.getProperties().getServiceValue();
 			this.manualEmpowerMap = this.getProperties().getManualEmpowerMap();
+			this.forceRouteEnable = this.getProperties().getForceRouteEnable();
 		}
 	}
 
@@ -210,7 +211,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
 		if (null == this.manualTaskIdentityMatrix) {
-			this.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
+			this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
 		}
 		return this.manualTaskIdentityMatrix;
 	}
@@ -293,6 +294,18 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.manualEmpowerMap = manualEmpowerMap;
 	}
 
+	public Boolean getForceRouteEnable() {
+		if (null == this.forceRouteEnable) {
+			this.forceRouteEnable = this.getProperties().getForceRouteEnable();
+		}
+		return forceRouteEnable;
+	}
+
+	public void setForceRouteEnable(Boolean forceRouteEnable) {
+		this.getProperties().setForceRouteEnable(forceRouteEnable);
+		this.forceRouteEnable = forceRouteEnable;
+	}
+
 	public static final String MANUALEMPOWERMAP_FIELDNAME = "manualEmpowerMap";
 	@Transient
 	@Deprecated(since = "8.2", forRemoval = true)
@@ -353,6 +366,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("待办凭证.")
 	private Tickets tickets;
+
+	public static final String FORCEROUTEENABLE_FIELDNAME = "forceRouteEnable";
+	@Transient
+	@FieldDescribe("强制路由.")
+	private Boolean forceRouteEnable;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
