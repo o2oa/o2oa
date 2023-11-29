@@ -120,12 +120,16 @@ public class HandoverJob extends AbstractJob {
 		list = listReview(business, handover);
 		for (String id : list){
 			Review review = emc.find(id, Review.class);
+			emc.beginTransaction(Review.class);
 			if(!hasReview(business, review.getJob(), handover.getTargetPerson())){
-				emc.beginTransaction(Review.class);
 				review.setPerson(handover.getTargetPerson());
 				emc.commit();
 				jobSet.add(review.getJob());
+			}else{
+				emc.remove(review);
 			}
+			emc.commit();
+			jobSet.add(review.getJob());
 		}
 		list = listDraft(business, handover);
 		for (String id : list){
