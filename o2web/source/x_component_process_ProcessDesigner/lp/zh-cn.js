@@ -513,6 +513,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"opinionRequired": "意见必填",
 		"routeType": "路由类型",
 		"defaultRoute": "默认路由",
+		"sole": "默认选中",
 		"defaultRouteSelected": "默认选中路由",
 		"backRoute": "回退路由",
 		"appendTask": "转交（仅指向同活动时生效）",
