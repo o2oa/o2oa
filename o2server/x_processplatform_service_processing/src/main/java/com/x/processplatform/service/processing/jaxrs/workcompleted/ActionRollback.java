@@ -1,9 +1,14 @@
 package com.x.processplatform.service.processing.jaxrs.workcompleted;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -213,6 +218,7 @@ class ActionRollback extends BaseAction {
 
 		private void rollbackTaskCompleted(Business business, Work work, Nodes nodes, WorkLog workLog,
 				List<TaskCompleted> list) throws Exception {
+			List<TaskCompleted> remains = new ArrayList<>();
 			for (TaskCompleted o : list) {
 				if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())) {
 					business.entityManagerContainer().remove(o);
@@ -222,12 +228,26 @@ class ActionRollback extends BaseAction {
 					o.setCompleted(false);
 					o.setWorkCompleted("");
 					o.setWork(work.getId());
+					remains.add(o);
 				} else {
 					o.setCompleted(false);
 					o.setWorkCompleted("");
 					o.setWork(work.getId());
+					remains.add(o);
 				}
 			}
+			// 调整latest标识,否则有不是latest的已办不会在已办列表中显示
+			remains.stream().collect(Collectors.groupingBy(TaskCompleted::getPerson)).entrySet().stream()
+					.map(Map.Entry::getValue).filter(o -> o.stream().noneMatch(t -> BooleanUtils.isTrue(t.getLatest())))
+					.forEach(o -> {
+						Optional<TaskCompleted> opt = o.stream()
+								.sorted(Comparator.comparing(TaskCompleted::getCompletedTime,
+										Comparator.nullsFirst(Date::compareTo).reversed()))
+								.findFirst();
+						if (opt.isPresent()) {
+							opt.get().setLatest(true);
+						}
+					});
 		}
 
 		private void rollbackRead(Business business, Work work, Nodes nodes, WorkLog workLog, List<Read> list)
