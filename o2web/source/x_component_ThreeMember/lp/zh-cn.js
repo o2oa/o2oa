@@ -141,5 +141,5 @@ MWF.xApplication.ThreeMember.LP = {
 		"auditManagerPassword": "安全审计员密码",
 		"auditManagerPasswordNote": "auditManager密码"
 	},
-	"lptest": "这时语言包测试"
+	"lptest": "这是语言包测试"
 };
