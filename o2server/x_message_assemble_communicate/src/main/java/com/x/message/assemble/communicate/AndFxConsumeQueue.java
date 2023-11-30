@@ -183,10 +183,9 @@ public class AndFxConsumeQueue extends AbstractQueue<Message> {
 				String messageRedirectPortal = Config.andFx().getMessageRedirectPortal();
 				if (StringUtils.isNotBlank(messageRedirectPortal)) {
 					String portal = "portalmobile.html?id=" + messageRedirectPortal;
-					// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
+					portal = URLEncoder.encode(portal, DefaultCharset.name);
 					workUrl += "&redirectlink=" + portal;
 				}
-				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
 				LOGGER.debug("o2oa workUrl：" + workUrl);
 				workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 				o2oaUrl = o2oaUrl + workUrl;
@@ -194,6 +193,7 @@ public class AndFxConsumeQueue extends AbstractQueue<Message> {
 				o2oaUrl = o2oaUrl + openPage;
 			}
 			LOGGER.info("o2oa 地址：" + o2oaUrl);
+			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
 			return o2oaUrl;
 		} catch (Exception e) {
 			LOGGER.error(e);
