@@ -182,7 +182,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              * @event MWF.xApplication.process.Xform.Form#afterAddTask
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "afterAddTask"
+            "afterAddTask",
+
+            /**
+             * 退回前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeGoBack
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeGoBack",
+
+            /**
+             * 退回后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterGoBack
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterGoBack"
         ]
     },
     initialize: function (node, data, options) {

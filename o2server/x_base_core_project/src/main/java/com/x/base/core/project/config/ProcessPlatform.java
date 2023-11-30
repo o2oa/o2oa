@@ -433,7 +433,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final String DEFAULT_CRON = "30 30 12 * * ?";
 
-		public static final Boolean DEFAULT_ENABLE = true;
+		public static final Boolean DEFAULT_ENABLE = false;
 
 		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24;
 

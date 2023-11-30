@@ -823,8 +823,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getWork().setGoBackActivityToken(null);
 			return optional;
 		}
-		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
-		Tickets tickets = aeiObjects.getWork().getTickets();
+//		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
+//		Tickets tickets = aeiObjects.getWork().getTickets();
 		// 执行强制路由
 		if (StringUtils.isNotEmpty(aeiObjects.getWork().getDestinationActivity())
 				&& Objects.nonNull(aeiObjects.getWork().getDestinationActivityType())
@@ -844,14 +844,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 				return Optional.of(route);
 			}
 		}
-		// workTrigger触发可能导致当前没有任何待办
-		if (aeiObjects.getTaskCompleteds().stream()
-				.filter(o -> StringUtils.equalsIgnoreCase(aeiObjects.getWork().getActivityToken(),
-						o.getActivityToken()))
-				.findAny().isEmpty()
-				&& ((null == matrix || matrix.isEmpty()) && (null == tickets || tickets.bubble().isEmpty()))) {
-			return Optional.empty();
-		}
+//		// workTrigger触发可能导致当前没有任何待办
+//		if (aeiObjects.getTaskCompleteds().stream()
+//				.filter(o -> StringUtils.equalsIgnoreCase(aeiObjects.getWork().getActivityToken(),
+//						o.getActivityToken()))
+//				.findAny().isEmpty()
+//				&& ((null == matrix || matrix.isEmpty()) && (null == tickets || tickets.bubble().isEmpty()))) {
+//			return Optional.empty();
+//		}
 		// 执行正常路由
 		if (aeiObjects.getRoutes().size() == 1) {
 			// 仅有单条路由

@@ -1,9 +1,11 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.x.processplatform.core.entity.ticket.Ticket;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -82,6 +84,7 @@ class ActionReplace extends BaseAction {
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				Task task = emc.find(id, Task.class);
@@ -92,31 +95,30 @@ class ActionReplace extends BaseAction {
 					}
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(Task.class);
-					emc.beginTransaction(TaskCompleted.class);
-					emc.beginTransaction(Review.class);
-					String taskJson = XGsonBuilder.instance().toJson(work.getManualTaskIdentityMatrix());
-					if (StringUtils.isNotBlank(taskJson) && taskJson.indexOf(task.getIdentity()) > -1) {
-						taskJson = taskJson.replace(task.getIdentity(), wi.getTargetIdentity());
-						work.setManualTaskIdentityMatrix(
-								XGsonBuilder.instance().fromJson(taskJson, ManualTaskIdentityMatrix.class));
+					if(StringUtils.isBlank(task.getLabel())) {
+						String taskJson = XGsonBuilder.instance().toJson(work.getManualTaskIdentityMatrix());
+						if (StringUtils.isNotBlank(taskJson) && taskJson.indexOf(task.getIdentity()) > -1) {
+							taskJson = taskJson.replace(task.getIdentity(), wi.getTargetIdentity());
+							work.setManualTaskIdentityMatrix(
+									XGsonBuilder.instance().fromJson(taskJson, ManualTaskIdentityMatrix.class));
+						}
+						task.setPerson(wi.getTargetPerson());
+						task.setIdentity(wi.getTargetIdentity());
+					}else{
+						Long count = emc.countEqualAndEqual(Task.class, Task.identity_FIELDNAME, wi.getTargetIdentity(), Task.work_FIELDNAME, task.getWork());
+						if(count > 0) {
+							work.getTickets().disableDistinguishedName(wi.getTargetIdentity());
+							emc.remove(task);
+						}else{
+							work.getTickets().reset(task.getLabel(), List.of(wi.getTargetIdentity()));
+							task.setPerson(wi.getTargetPerson());
+							task.setIdentity(wi.getTargetIdentity());
+						}
 					}
 					if (work.getCreatorPerson().equals(wi.getPerson())) {
 						work.setCreatorPerson(wi.getTargetPerson());
 						work.setCreatorIdentity(wi.getTargetIdentity());
 					}
-					List<TaskCompleted> taskCompletedList = emc.listEqualAndEqual(TaskCompleted.class,
-							TaskCompleted.person_FIELDNAME, task.getPerson(), TaskCompleted.job_FIELDNAME,
-							task.getJob());
-					taskCompletedList.stream().forEach(o -> {
-						o.setPerson(wi.getTargetPerson());
-						o.setIdentity(wi.getTargetIdentity());
-					});
-					List<Review> reviewList = emc.listEqualAndEqual(Review.class, Review.person_FIELDNAME,
-							task.getPerson(), Review.job_FIELDNAME, task.getJob());
-					reviewList.stream().forEach(o -> o.setPerson(wi.getTargetPerson()));
-
-					task.setPerson(wi.getTargetPerson());
-					task.setIdentity(wi.getTargetIdentity());
 					emc.commit();
 				}
 
