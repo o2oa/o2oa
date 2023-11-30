@@ -458,6 +458,6 @@ MWF.xApplication.process.Xform.LP = {
     "associatedResult": "Resultado asociado",
     "selectDocNote": "Primero seleccione un documento",
     "associatedDocument": "Documento asociado",
-    "docDeleted": "El documento ha sido eliminado."
+    "docDeleted": "El documento ha sido eliminado o no tiene permiso para abrir este documento."
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

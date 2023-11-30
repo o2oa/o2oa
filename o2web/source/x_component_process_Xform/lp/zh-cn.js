@@ -474,7 +474,7 @@ MWF.xApplication.process.Xform.LP = {
     "associatedResult": "关联结果",
     "selectDocNote": "请先选择文档",
     "associatedDocument": "关联文档",
-    "docDeleted": "文档已经被删除。",
+    "docDeleted": "文档已经被删除或您没有权限打开此文档。",
 
     "uploading": "正在上传附件，请等待附件上传完成后再执行此操作。"
 
