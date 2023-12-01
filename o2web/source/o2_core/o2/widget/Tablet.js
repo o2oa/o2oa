@@ -1370,7 +1370,8 @@ o2.widget.Tablet.ToolbarMobile = new Class({
                     }.bind(this)
                 }
             }).inject(this.tablet.container);
-            if(item.text)this.items[item.name].set("text", item.text)
+            if(item.text)this.items[item.name].set("text", item.text);
+            if( item.name === "save" )this.items[item.name].addClass("mainColor_color");
         }.bind(this));
         this.setAllItemsStatus();
     },
