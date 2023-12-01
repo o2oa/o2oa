@@ -551,6 +551,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 dlg.show();
 
                 if (layout.mobile){
+                    if(dlg.title)dlg.title.addClass("mainColor_color");
                     var backAction = dlg.node.getElement(".MWF_dialod_Action_back");
                     var okAction = dlg.node.getElement(".MWF_dialod_Action_ok");
                     if (backAction) backAction.addEvent("click", function(e){
