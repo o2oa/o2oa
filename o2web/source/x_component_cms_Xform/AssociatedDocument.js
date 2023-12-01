@@ -12,20 +12,29 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
                 }, function (json) {
                     this.status = "showResult";
                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-                    var okNode = this.dlg.button.getFirst();
-                    if(okNode){
-                        okNode.hide();
-                        var cancelButton = okNode.getNext();
-                        if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                    if( layout.mobile ){
+                        var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+                        if (okAction) okAction.hide();
+                    }else{
+                        var okNode = this.dlg.button.getFirst();
+                        if(okNode){
+                            okNode.hide();
+                            var cancelButton = okNode.getNext();
+                            if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                        }
                     }
                     if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
                         this.showCreateResult(json.data.failureList, json.data.successList);
                     }
-                    this.loadAssociatedDocument();
+                    this.loadAssociatedDocument(function () {
+                        this.fireEvent("afterSelectResult", [this.documentList]);
+                    }.bind(this));
                 }.bind(this));
             }else{
                 this.status = "showResult";
-                this.loadAssociatedDocument();
+                this.loadAssociatedDocument(function () {
+                    this.fireEvent("afterSelectResult", [this.documentList]);
+                }.bind(this));
                 if( this.dlg )this.dlg.close();
             }
         }.bind(this));
@@ -59,11 +68,12 @@ MWF.xApplication.cms.Xform.AssociatedDocument = MWF.CMSAssociatedDocument =  new
 			if(callback)callback();
 		}
 	},
-	loadAssociatedDocument: function(){
+	loadAssociatedDocument: function( callback ){
 		this.documentListNode.empty();
 		o2.Actions.load("x_cms_assemble_control").CorrelationAction.listWithDocumentWithSite(this.form.businessData.document.id, (this.json.site || this.json.id), function (json) {
 			this.documentList = json.data;
 			this.showDocumentList();
+            if(callback)callback();
 		}.bind(this));
 	},
 	cancelAssociated: function(e, d, itemNode){
