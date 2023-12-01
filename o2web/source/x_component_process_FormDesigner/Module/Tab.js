@@ -37,6 +37,13 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 				"event": "click",
 				"action": "delete",
 				"title": MWF.APPFD.LP.formAction["delete"]
+			},
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
 			}
 		]
 	},

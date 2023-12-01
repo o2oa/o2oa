@@ -30,7 +30,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			},
 			{
 				"name": "selectParent",
-				"icon": "styleBrush.png",
+				"icon": "selectParent.png",
 				"event": "click",
 				"action": "selectParent",
 				"title": MWF.APPFD.LP.formAction["selectParent"]
@@ -336,7 +336,28 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.json.inputStyles) this.form.inputStyleBrushContent = Object.clone(this.json.inputStyles);
 	},
 	selectParent: function(){
-
+		var parentModule = this.getParentModule();
+		if(parentModule){
+			parentModule.selected();
+		}
+	},
+	getParentModule: function(){
+		var module, parent;
+		// if( ["tabpage", "tab", "widget", "table"].contains( this.moduleName) ){
+		// 	parent = this.node;
+		// }else{
+			parent = this.node.getParent();
+		// }
+		while(parent) {
+			var MWFtype = parent.get("MWFtype");
+			if( MWFtype ){ //&& !["tab$Content"].contains(this.moduleName)
+				module = parent.retrieve("module");
+				if( module )return module;
+			}else{
+				parent = parent.getParent();
+			}
+		}
+		return null;
 	},
 
 	_setNodeEvent: function(){
