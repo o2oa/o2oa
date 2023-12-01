@@ -118,10 +118,8 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                     this.status = "showResult";
                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
                     if( layout.mobile ){
-                        if (layout.mobile){
-                            var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
-                            if (okAction) okAction.hide();
-                        }
+                        var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+                        if (okAction) okAction.hide();
                     }else{
                         var okNode = this.dlg.button.getFirst();
                         if(okNode){
