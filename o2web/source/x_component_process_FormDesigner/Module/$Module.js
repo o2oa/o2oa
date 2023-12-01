@@ -342,15 +342,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	getParentModule: function(){
-		var module, parent;
-		// if( ["tabpage", "tab", "widget", "table"].contains( this.moduleName) ){
-		// 	parent = this.node;
-		// }else{
-			parent = this.node.getParent();
-		// }
+		var module;
+		var parent = this.node.getParent();
 		while(parent) {
 			var MWFtype = parent.get("MWFtype");
-			if( MWFtype ){ //&& !["tab$Content"].contains(this.moduleName)
+			if( MWFtype ){
 				module = parent.retrieve("module");
 				if( module )return module;
 			}else{
