@@ -27,6 +27,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				"event": "click",
 				"action": "delete",
 				"title": MWF.APPFD.LP.formAction["delete"]
+			},
+			{
+				"name": "selectParent",
+				"icon": "styleBrush.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
 			}
 			// {
 			//     "name": "styleBrush",
@@ -327,6 +334,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		//@todo
 		this.form.styleBrushContent = Object.clone(this.json.styles);
 		if (this.json.inputStyles) this.form.inputStyleBrushContent = Object.clone(this.json.inputStyles);
+	},
+	selectParent: function(){
+
 	},
 
 	_setNodeEvent: function(){
