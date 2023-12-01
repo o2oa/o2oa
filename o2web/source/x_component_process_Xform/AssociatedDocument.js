@@ -79,6 +79,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
             });
 
             this.button.addEvent("click", function(){
+                debugger;
                 this.selectedData = null;
                 this.selectView(function(data){
                     // if(data.length === 0){
@@ -116,11 +117,16 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 }, function (json) {
                     this.status = "showResult";
                     if(this.dlg.titleText)this.dlg.titleText.set("text", MWF.xApplication.process.Xform.LP.associatedResult);
-                    var okNode = this.dlg.button.getFirst();
-                    if(okNode){
-                        okNode.hide();
-                        var cancelButton = okNode.getNext();
-                        if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                    if( layout.mobile ){
+                        var okAction = this.dlg.node.getElement(".MWF_dialod_Action_ok");
+                        if (okAction) okAction.hide();
+                    }else{
+                        var okNode = this.dlg.button.getFirst();
+                        if(okNode){
+                            okNode.hide();
+                            var cancelButton = okNode.getNext();
+                            if(cancelButton)cancelButton.set("value", o2.LP.widget.close);
+                        }
                     }
                     if( (json.data.failureList && json.data.failureList.length) || (json.data.successList && json.data.successList.length)  ){
                         this.showCreateResult(json.data.failureList, json.data.successList);
@@ -209,7 +215,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 deleteNode = new Element("div", {
                     styles:  this.form.css.associatedDocumentDelete
                 }).inject( itemNode );
-                deleteNode.hide();
+                if(!layout.mobile)deleteNode.hide();
             }
 
             var textNode = new Element("div", {
@@ -237,7 +243,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 html: html
             }).inject(this.documentListNode);
             var deleteNode = itemNode.getElement("[data-o2-action='delete']");
-            deleteNode.hide();
+            if(!layout.mobile)deleteNode.hide();
             this._loadDocument(d, itemNode, deleteNode);
         }.bind(this))
     },
@@ -264,19 +270,27 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
         }
     },
     _loadDocument: function(d, itemNode, deleteNode){
-        itemNode.addEvents({
-            "mouseover": function () {
-                if(deleteNode)deleteNode.show();
-                itemNode.setStyles( this.form.css.associatedDocumentItem_over )
-            }.bind(this),
-            "mouseout": function () {
-                if(deleteNode)deleteNode.hide();
-                itemNode.setStyles( this.form.css.associatedDocumentItem )
-            }.bind(this),
-            "click": function (e) {
-                this.openDoc(e, d);
-            }.bind(this),
-        });
+	    if( layout.mobile ){
+            itemNode.addEvents({
+                "click": function (e) {
+                    this.openDoc(e, d);
+                }.bind(this),
+            });
+        }else{
+            itemNode.addEvents({
+                "mouseover": function () {
+                    if(deleteNode)deleteNode.show();
+                    itemNode.setStyles( this.form.css.associatedDocumentItem_over )
+                }.bind(this),
+                "mouseout": function () {
+                    if(deleteNode)deleteNode.hide();
+                    itemNode.setStyles( this.form.css.associatedDocumentItem )
+                }.bind(this),
+                "click": function (e) {
+                    this.openDoc(e, d);
+                }.bind(this),
+            });
+        }
         if( deleteNode ){
             if( !this.isReadonly() ){
                 deleteNode.addEvents({
@@ -445,36 +459,7 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                             "action": function(){
                                 //if (callback) callback(_self.view.selectedItems);
 
-                                var array = [];
-                                _self.viewList.each(function (view) {
-                                    //var orginData = [], orginBundles = _self.selectedBundleMap[view.json.id] || [];
-                                    //orginData = orginBundles.map(function(bundle){
-                                    //    return {
-                                    //        bundle: bundle,
-                                    //        type: view.json.type,
-                                    //        view: view.json.id
-                                    //    };
-                                    //}.bind(this));
-                                    //var data = [], data1 = view.getData();
-                                    //data1.each(function (d) {
-                                    //    if( !orginBundles.contains( d.bundle ) ){
-                                    //       d.type = view.json.type;
-                                    //        d.view = view.json.id;
-                                    //        data.push( d );
-                                    //    }
-                                    //}.bind(this));
-                                    //array = array.concat(orginData, data);
-
-                                    var data = view.getData().map(function (d) {
-                                        d.type = view.json.type;
-                                        d.view = view.json.id;
-                                        return d;
-                                    }.bind(this));
-                                    array = array.concat(data);
-                                }.bind(this));
-
-                                _self.fireEvent("selectResult", [array]);
-                                if (callback) callback(array, this);
+                                _self.afterSelectView( callback, dlg );
                                 //this.close();
                             }
                         },
@@ -572,9 +557,9 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                         dlg.close();
                     }.bind(this));
                     if (okAction) okAction.addEvent("click", function(e){
-                        //if (callback) callback(this.view.selectedItems);
-                        if (callback) callback(this.view.getData());
-                        dlg.close();
+                        //if (callback) callback(this.view.getData());
+                        _self.afterSelectView( callback, dlg );
+                        //dlg.close();
                     }.bind(this));
                 }
 
@@ -586,6 +571,21 @@ MWF.xApplication.process.Xform.AssociatedDocument = MWF.APPAssociatedDocument = 
                 // }.bind(this));
             }.bind(this));
         }
+    },
+    afterSelectView: function( callback, dlg ){
+        var array = [];
+        this.viewList.each(function (view) {
+
+            var data = view.getData().map(function (d) {
+                d.type = view.json.type;
+                d.view = view.json.id;
+                return d;
+            }.bind(this));
+            array = array.concat(data);
+        }.bind(this));
+
+        this.fireEvent("selectResult", [array]);
+        if (callback) callback(array, dlg );
     },
     openDoc: function(e, d){
 	    if( d.targetType === "processPlatform" ){
