@@ -101,11 +101,7 @@ public class ActionDateIsRestDay extends BaseAction {
           restDateList.add(date);
         }
       }
-      if (restDateList.isEmpty()) {
-        wo.setRestDateList(emptyListGetSatAndSun(wi.getDateList()));
-      } else {
-        wo.setRestDateList(restDateList);
-      }
+      wo.setRestDateList(restDateList);
       result.setData(wo);
       if (logger.isDebugEnabled()) {
         logger.debug("restDateList: " + ListTools.toStringJoin(restDateList));
