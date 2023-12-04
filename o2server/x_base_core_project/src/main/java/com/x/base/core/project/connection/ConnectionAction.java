@@ -131,6 +131,14 @@ public class ConnectionAction {
 		connection.setReadTimeout(readTimeout);
 		try {
 			connection.connect();
+			int status = connection.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
+				String redirect = connection.getHeaderField("Location");
+				if (StringUtils.isNotBlank(redirect)) {
+					connection.disconnect();
+					return getDeleteBinary(connectTimeout, readTimeout, redirect, method, heads);
+				}
+			}
 		} catch (Exception e) {
 			throw new ExceptionGetBinary(e, connection);
 		}
