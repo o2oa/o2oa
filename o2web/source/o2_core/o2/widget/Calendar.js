@@ -1075,7 +1075,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		if (!this.okButton){
-			this.okButton = new Element("button", {"text": o2.LP.widget.ok }).inject(this.showActionNode);
+			this.okButton = new Element("button.mainColor_bg", {"text": o2.LP.widget.ok }).inject(this.showActionNode);
 			this.okButton.addEvent("click", function(){
 				this._selectTime();
 				this.hide();
