@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -102,8 +103,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		if (null == this.getTickets()) {
 			this.manualTaskIdentityText = "";
 		} else {
-			this.setManualTaskIdentityText(StringUtils.join(this.getTickets().bubble().stream()
-					.map(Ticket::distinguishedName).map(OrganizationDefinition::name).filter(Objects::nonNull), ","));
+			this.setManualTaskIdentityText(this.getTickets().bubble().stream().map(Ticket::distinguishedName)
+					.map(OrganizationDefinition::name).filter(Objects::nonNull).collect(Collectors.joining(",")));
 		}
 	}
 
