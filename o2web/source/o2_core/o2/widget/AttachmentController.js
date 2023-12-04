@@ -120,6 +120,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
         this.checkActions();
         //this.attachments = atts;
+        if( layout.mobile ){
+            this.checkActionsZoom();
+        }
 	},
     loadMin: function(){
 
@@ -350,6 +353,10 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         if( !hiddenGroup.contains("list") )this.createListGroupActions();
         if( !hiddenGroup.contains("view") )this.createViewGroupActions();
 
+        if( layout.mobile ){
+            this.checkActionsZoom();
+        }
+
         //this.topNode = new Element("div", {"styles": this.css.topNode}).inject(this.node);
         //this.createEditGroupActions();
         //this.createReadGroupActions();
@@ -357,6 +364,46 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         //this.createViewGroupActions();
 
         //this.createConfigGroupActions();
+    },
+    checkActionsZoom: function(){
+        var width = 0;
+        this.topNode.getChildren().each(function( node ){
+            if(node.offsetParent)width = width + node.getSize().x + this.getOffsetX(node)
+        }.bind(this));
+        var topSize = this.topNode.getSize();
+        if( (topSize.x - 5) < width ){
+            var zoom = this.getDecimals((topSize.x - 5) / width);
+            this.topNode.setStyle( "zoom",  zoom*100+"%" );
+        }
+    },
+    getDecimals: function(v){ //截取两位小数
+        var decimals = 4;
+
+        var p = Math.pow(10,decimals);
+        var f_x = Math.round(v*p)/p;
+        var str = f_x.toString();
+
+        if (decimals>0){
+            var pos_decimal = str.indexOf('.');
+            if (pos_decimal < 0){
+                pos_decimal = str.length;
+                str += '.';
+            }
+            var decimalStr = (str).substr(pos_decimal+1, (str).length);
+            while (decimalStr.length < decimals){
+                str += '0';
+                decimalStr += 0;
+            }
+        }
+        return str;
+    },
+    getOffsetX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 ) +
+            (node.getStyle("padding-left").toInt() || 0 ) +
+            (node.getStyle("padding-right").toInt() || 0 )+
+            (node.getStyle("border-left-width").toInt() || 0 ) +
+            (node.getStyle("border-right-width").toInt() || 0 );
     },
     reloadTopNode : function(){
         this.createTopNode();
@@ -646,6 +693,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.setActionEnabled(this.downloadAllAction);
             this.setAttachmentsAction("download", true );
         }
+    },
+    isAttDblclickAvailable : function( att ){
+        return this.options.dblclick && this.options.dblclick !== "hidden";
     },
     isAttDownloadAvailable : function( att ){
         if( this.options.toolbarGroupHidden.contains("read") )return false;
@@ -1939,6 +1989,12 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
 
         this.actionAreaNode = new Element("div", {"styles": this.css.minAttachmentActionAreaNode}).inject(this.node);
 
+        if( this.controller.isAttDblclickAvailable(this) ){
+            this.openAction = this.createAction(this.actionAreaNode, "open_single", "open_single_over", o2.LP.widget.open, function (e, node) {
+                this.controller.dblclickAttachment(e, node, [this]);
+            }.bind(this));
+        }
+
         if ( this.controller.isAttDownloadAvailable(this) ) {
             this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
                 this.controller.downloadAttachment(e, node);
@@ -2006,6 +2062,12 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.node.setStyles(this.css.minAttachmentNode_sequence);
 
         this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        if( this.controller.isAttDblclickAvailable(this) ){
+            this.openAction = this.createAction(this.actionAreaNode, "open_single", "open_single_over", o2.LP.widget.open, function (e, node) {
+                this.controller.dblclickAttachment(e, node, [this]);
+            }.bind(this));
+        }
 
         if ( this.controller.isAttDownloadAvailable(this) ) {
             this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
