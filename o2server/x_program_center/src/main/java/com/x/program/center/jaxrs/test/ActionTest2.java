@@ -1,5 +1,8 @@
 package com.x.program.center.jaxrs.test;
 
+import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.Value;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -17,8 +20,15 @@ class ActionTest2 extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
-		GrralVMScriptingFactory.eval(wi.getText());
-
+		Source source = GrralVMScriptingFactory.functionalization(wi.getText());
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!222222222");
+		System.out.println(source.getCharacters());
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2222222222");
+		Value value = GrralVMScriptingFactory.eval(source);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(value);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		Wo wo = new Wo();
 		result.setData(wo);
 		return result;
 	}

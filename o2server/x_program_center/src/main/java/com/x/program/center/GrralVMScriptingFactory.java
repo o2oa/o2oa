@@ -26,11 +26,15 @@ public class GrralVMScriptingFactory {
 
 	private static Source initialScriptSource;
 
-	public static Value eval(String text) {
+	public static Value eval(Source source) {
 		try (Context context = Context.newBuilder().engine(getEngine()).build()) {
-			context.eval(getInitialScriptSource());
-			Source source = Source.create("js", functionalization(text));
-			return context.eval(source);
+			// context.eval(getInitialScriptSource());
+			// Source source = Source.create("js", functionalization(text));
+			Value value = context.eval(source);
+			System.out.println("!!!!!!!!!!!!!!!@@@@@@@@@@@@@");
+			System.out.println(value);
+			System.out.println("!!!!!!!!!!!!!!!@@@@@@@@@@@@@");
+			return value;
 		}
 	}
 
@@ -93,15 +97,24 @@ public class GrralVMScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
 	public static final String BINDING_NAME_SERVICE_BODY = "body";
 
-	public static String functionalization(String text) {
+//	public static Source functionalization(String text) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("var o = (function(){").append(System.lineSeparator());
+//		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
+//		sb.append("}.apply(this));").append(System.lineSeparator());
+//		sb.append("if (this.data && this.data.commit) this.data.commit();");
+//		sb.append(
+//				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(toJsJson(o));");
+//		return Source.create("js", sb.toString());
+//	}
+
+	public static Source functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("var o = (function(){").append(System.lineSeparator());
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
 		sb.append("}.apply(this));").append(System.lineSeparator());
-		sb.append("if (this.data && this.data.commit) this.data.commit();");
-		sb.append(
-				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(toJsJson(o));");
-		return sb.toString();
+		sb.append("o;");
+		return Source.create("js", sb.toString());
 	}
 
 }
