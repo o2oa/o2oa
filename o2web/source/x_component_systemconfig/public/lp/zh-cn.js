@@ -1207,7 +1207,7 @@ o2.xApplication.systemconfig.LP = {
         "appExitAlertInfo": "app退出的时候弹出窗口的提示语，为空就不弹窗",
 
         "nativeAppList": "应用列表",
-        "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
+        "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用，并可设置在APP中的显示名称",
 
         "imageNames": {
             "application_top": {"text": "应用页面顶部图片", "action": "ApplicationTop"},
