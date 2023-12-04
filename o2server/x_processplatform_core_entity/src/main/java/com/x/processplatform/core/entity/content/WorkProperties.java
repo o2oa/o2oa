@@ -64,6 +64,17 @@ public class WorkProperties extends JsonProperties {
 	@FieldDescribe("强制路由.")
 	private Boolean forceRouteEnable;
 
+	@FieldDescribe("当前处理人身份合并文本,用','分割,此字段仅用于显示当前工作的处理人,不索引.")
+	private String manualTaskIdentityText;
+
+	public String getManualTaskIdentityText() {
+		return manualTaskIdentityText;
+	}
+
+	public void setManualTaskIdentityText(String manualTaskIdentityText) {
+		this.manualTaskIdentityText = manualTaskIdentityText;
+	}
+
 	public Boolean getForceRouteEnable() {
 		return forceRouteEnable;
 	}
