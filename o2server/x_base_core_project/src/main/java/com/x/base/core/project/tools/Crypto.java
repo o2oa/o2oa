@@ -159,7 +159,7 @@ public class Crypto {
 			return new String(bt, StandardCharsets.UTF_8);
 		} else {
 			bt = decrypt(buf, key.getBytes());
-			return new String(bt);
+			return new String(bt, StandardCharsets.UTF_8);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class Crypto {
 
 	/**
 	 * AES加密
-	 * 
+	 *
 	 * @param data 明文
 	 * @param key  秘钥
 	 * @return
@@ -298,7 +298,7 @@ public class Crypto {
 
 	/**
 	 * AES解密
-	 * 
+	 *
 	 * @param data 密文
 	 * @param key  秘钥
 	 * @return
