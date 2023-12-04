@@ -103,7 +103,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.manualTaskIdentityText = "";
 		} else {
 			this.setManualTaskIdentityText(StringUtils.join(this.getTickets().bubble().stream()
-					.map(Ticket::distinguishedName).map(OrganizationDefinition::name), ","));
+					.map(Ticket::distinguishedName).map(OrganizationDefinition::name).filter(Objects::nonNull), ","));
 		}
 	}
 
