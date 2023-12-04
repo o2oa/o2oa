@@ -1115,6 +1115,16 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
             }
         }
 
+        //发文单位增加布局标志
+        var subtd = table.querySelector('table');
+        var issuanceUnit = table.querySelector('.doc_layout_issuanceUnit');
+        var issuanceDate = table.querySelector('.doc_layout_issuanceDate')
+        if ((issuanceUnit || issuanceDate) && !subtd){
+            var oo_tblLayout = this.createEl(oo_doc, "tblLayout");
+            this.setAttrs(oo_tblLayout, {"type": "fixed"});
+            oo_tblPr.appendChild(oo_tblLayout);
+        }
+
 
         // table.style
         //
@@ -1268,6 +1278,15 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
                 var oo_hideMark = this.createEl(oo_doc, "hideMark");
                 oo_tcPr.appendChild(oo_hideMark);
+
+                //发文单位增加不换行标志
+                var subtd = td.querySelector('td');
+                var issuanceUnit = td.querySelector('.doc_layout_issuanceUnit');
+                var issuanceDate = td.querySelector('.doc_layout_issuanceDate')
+                if ((issuanceUnit || issuanceDate) && !subtd){
+                    var oo_noWrap = this.createEl(oo_doc, "noWrap");
+                    oo_tcPr.appendChild(oo_noWrap);
+                }
 
                 //垂直合并单元格
                 var rowspan = td.get("rowspan");
