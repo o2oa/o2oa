@@ -893,6 +893,7 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                     // }else if (dom.tagName.toLowerCase() === "span") {
                     //     this.processRun(dom, oo_body, append);
                 }else if (dom.tagName.toLowerCase() === "br") {
+                    if (!oo_body || oo_body.tagName.toString().toLowerCase()!=="w:p") var oo_body = this.createParagraphFromDom(dom, oo_body, dom.parentElement);
                     this.processRun(dom, oo_body, append, "", "br");
                 }else if (dom.tagName.toLowerCase() === "hr") {
                     this.processHr(dom, oo_body, append);
