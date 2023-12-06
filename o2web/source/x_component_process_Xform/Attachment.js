@@ -491,6 +491,10 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         if (!hiddenGroup.contains("view")) this.createViewGroupActions();
         this.checkActions();
+
+        if( layout.mobile && this.checkActionsZoom ){
+            this.checkActionsZoom();
+        }
     },
     checkActions: function () {
         //    if (this.options.readonly){
