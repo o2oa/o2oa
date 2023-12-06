@@ -5464,6 +5464,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.mask.loadNode(this.app.content);
 
                 read.opinion = opinion;
+
+                this.fireEvent("beforeReaded");
+
                 this.app.action.setReaded(function () {
                     if (_self.mask) { _self.mask.hide(); _self.mask = null; }
 

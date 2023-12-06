@@ -445,7 +445,7 @@ if (!window.o2) {
         };
         /**
          * @summary 解析平台内的url，如果配置了反向代理的路径转发，平台内的url需要通过filterUrl解析后，才能得到正确的url。
-         * @see {@link https://www.o2oa.net/course/lskrtn.html?h=urlmapping|基于nginx快速集群部署-上下文分发}
+         * @see {@link https://www.o2oa.net/search.html?q=urlmapping|基于nginx快速集群部署-上下文分发}
          * @function filterUrl
          * @memberOf o2
          * @param {String} [url] 要解析的url
