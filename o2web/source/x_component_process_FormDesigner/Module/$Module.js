@@ -234,7 +234,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					"styles": this.options.actionNodeStyles,
 					"title": action.title
 				}).inject(this.actionArea);
-				actionNode.setStyle("background", "url("+this.path+this.options.style+"/icon/"+action.icon+") no-repeat left center");
+				if( action.name === "selectParent" ){
+					actionNode.setStyle("background", "url(../x_component_process_FormDesigner/Module/Form/default/icon/selectParent.png) no-repeat left center");
+				}else{
+					actionNode.setStyle("background", "url("+this.path+this.options.style+"/icon/"+action.icon+") no-repeat left center");
+				}
 				actionNode.addEvent(action.event, function(e){
 					this[action.action](e);
 				}.bind(this));
@@ -339,6 +343,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		var parentModule = this.getParentModule();
 		if(parentModule){
 			parentModule.selected();
+			if( parentModule.actionArea ){
+
+			}
 		}
 	},
 	getParentModule: function(){
