@@ -267,7 +267,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
 
             //formDataText
-            if (this.json.languageType!=="script" && this.json.languageType!=="default"){
+            if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
                 if (callback) callback();
                 return true;
             }
@@ -275,13 +275,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var language = MWF.xApplication.cms.Xform.LP.form;
             var languageJson = null;
 
+            var name = "lp-"+o2.language;
+            var application = this.businessData.document.appId;
+
             if (this.json.languageType=="script"){
                 if (this.json.languageScript && this.json.languageScript.code){
                     languageJson = this.Macro.exec(this.json.languageScript.code, this);
                 }
             }else if (this.json.languageType=="default") {
-                var name = "lp-"+o2.language;
-                var application = this.businessData.document.appId;
 
                 var p1 = new Promise(function(resolve, reject){
                     this.documentAction.getDictRoot(name, application, function(d){
@@ -304,6 +305,26 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }.bind(this));
 
                 languageJson = Promise.any([p1, p2]);
+
+            }else if (this.json.languageType=="lib") {
+                languageJson = new Promise(function(resolve, reject){
+                    this.documentAction.getScriptByNameV2(name, application, function(d){
+                        if (d.data.text) {
+                            resolve( this.Macro.exec(d.data.text, this) );
+                        }
+                    }.bind(this), function(){
+                        reject("");
+                    });
+                }.bind(this));
+
+            }else if (this.json.languageType=="dict") {
+                languageJson = new Promise(function(resolve, reject){
+                    this.documentAction.getDictRoot(name, application, function(d){
+                        resolve( d.data );
+                    }, function(){
+                        reject("");
+                    });
+                }.bind(this));
             }
 
             if (languageJson){
