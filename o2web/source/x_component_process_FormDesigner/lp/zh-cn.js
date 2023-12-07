@@ -752,6 +752,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "允许上载",
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
+        "allowDownloadBatch": "允许批量下载",
         "allowEdit": "允许编辑",
         "officeTool": "Office预览/编辑工具",
         "allowDelete": "允许删除",

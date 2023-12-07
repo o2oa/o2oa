@@ -695,6 +695,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"allowUpload": "Allow Upload",
 		"allowPreview": "Allow Preview",
 		"allowDownload": "Allow Download",
+		"allowDownloadBatch": "Allow Download Batch",
 		"allowEdit": "Allow Edit",
 		"officeTool": "Office Tool",
 		"allowDelete": "Allow Delete",
