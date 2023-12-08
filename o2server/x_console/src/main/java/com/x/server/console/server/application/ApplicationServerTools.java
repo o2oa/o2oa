@@ -191,7 +191,6 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
 					setStat(applicationServer, webApp);
-					setExposeJest(applicationServer, webApp);
 					handlers.addHandler(webApp);
 					webApp.start();
 				} else if (Files.exists(dir)) {
@@ -201,14 +200,6 @@ public class ApplicationServerTools extends JettySeverTools {
 				LOGGER.error(e);
 			}
 		});
-	}
-
-	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
-		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
-			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
-		}
 	}
 
 	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
@@ -251,7 +242,6 @@ public class ApplicationServerTools extends JettySeverTools {
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
 					setStat(applicationServer, webApp);
-					setExposeJest(applicationServer, webApp);
 					handlers.addHandler(webApp);
 					webApp.start();
 				} else if (Files.exists(dir)) {
