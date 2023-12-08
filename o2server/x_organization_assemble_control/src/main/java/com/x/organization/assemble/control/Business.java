@@ -243,6 +243,9 @@ public class Business {
         if (effectivePerson.isSecurityManager()) {
             return true;
         }
+        if(role!=null && OrganizationDefinition.Manager.equals(role.getName())){
+            return false;
+        }
         if (this.hasAnyRole(effectivePerson, OrganizationDefinition.Manager, OrganizationDefinition.OrganizationManager,
                 OrganizationDefinition.RoleManager, OrganizationDefinition.SecurityManager)) {
             return true;
