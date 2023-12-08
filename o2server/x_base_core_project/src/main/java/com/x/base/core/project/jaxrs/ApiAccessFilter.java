@@ -4,14 +4,9 @@ import com.x.base.core.project.config.Config;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
-@WebFilter(urlPatterns = {
-        "/jest/*",
-        "/describe/sources/*"
-}, asyncSupported = true)
-public class ApiJaxrsFilter implements Filter {
+public class ApiAccessFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
