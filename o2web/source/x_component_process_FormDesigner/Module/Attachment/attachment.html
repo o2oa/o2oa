@@ -186,6 +186,16 @@
                     <input class="editTableRadio" name="isDownload" text{($.isDownload=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
+
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowDownloadBatch}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isDownloadBatch" text{($.isDownloadBatch!=='n' && $.isDownloadBatch!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isDownloadBatch" text{($.isDownloadBatch=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isDownloadBatch" text{($.isDownloadBatch=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+
             <tr>
                 <td class="editTableTitle">{{$.lp.dblClickAttachment}}:</td>
                 <td class="editTableValue">

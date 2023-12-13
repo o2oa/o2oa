@@ -135,7 +135,22 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //     // }
         // }
     },
+    checkDownloadBatchAction: function(){
 
+        if( this.options.isDownloadBatch === "hidden" ){
+            this.setActionHidden(this.downloadBatchAction);
+            this.setActionHidden(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", false );
+        }else if (!this.options.isDownloadBatch){
+            this.setActionDisabled(this.downloadBatchAction);
+            this.setActionDisabled(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", false );
+        }else{
+            this.setActionEnabled(this.downloadBatchAction);
+            this.setActionEnabled(this.min_downloadBatchAction);
+            this.setAttachmentsAction("downloadBatch", true );
+        }
+    },
     checkEditAttAction: function () {
 
         if(layout.mobile){
@@ -496,6 +511,21 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.checkActionsZoom();
         }
     },
+    createReadGroupActions: function(){
+        //this.readActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        //this.readActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.readActionBoxNode);
+        if(!this.editActionBoxNode)this.editActionBoxNode = new Element("div", {"styles": this.css.actionsBoxNode}).inject(this.topNode);
+        if(!this.editActionsGroupNode)this.editActionsGroupNode = new Element("div", {"styles": this.css.actionsGroupNode}).inject(this.editActionBoxNode);
+
+        this.downloadAction = this.createAction(this.editActionsGroupNode, "download", o2.LP.widget.download, function(){
+            this.downloadAttachment();
+        }.bind(this));
+
+        this.downloadBatchAction = this.createAction(this.editActionsGroupNode, "downloadBatch", o2.LP.widget.downloadBatch, function(){
+            this.downloadBatchAttachment();
+        }.bind(this));
+
+    },
     checkActions: function () {
         //    if (this.options.readonly){
         //        this.setReadonly();
@@ -509,6 +539,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         //this.checkOfficeAction();
         this.checkDownloadAction();
+        this.checkDownloadBatchAction();
+
         this.checkSizeAction();
 
         this.checkConfigAction();
@@ -534,7 +566,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }.bind(this));
 
         var isShowRead = false;
-        ["isDownload"].each(function( key ){
+        ["isDownload","isDownloadBatch"].each(function( key ){
             if( this.options[key] !== "hidden" )isShowRead = true;
         }.bind(this));
 
@@ -561,7 +593,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if( this.min_closeOfficeAction ){
             isShowLeft = true;
         }else {
-            ["isUpload", "isDelete", "isReplace", "isDownload", "isOrder"].each(function (key) {
+            ["isUpload", "isDelete", "isReplace", "isDownload", "isDownloadBatch", "isOrder"].each(function (key) {
                 if (key === "isReplace" && this.options.isReplaceHidden) return;
                 if (this.options[key] !== "hidden") isShowLeft = true;
             }.bind(this));
@@ -723,7 +755,6 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     loadMinActions: function () {
 
-
         var hiddenGroup = this.options.toolbarGroupHidden;
         if (!hiddenGroup.contains("edit")) {
             this.min_uploadAction = this.createAction(this.minActionAreaNode, "upload", MWF.LP.widget.upload, function (e, node) {
@@ -753,6 +784,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.min_downloadAction = this.createAction(this.minActionAreaNode, "download", MWF.LP.widget.download
                 , function (e, node) {
                     this.downloadAttachment(e, node);
+                }.bind(this));
+
+            this.min_downloadBatchAction = this.createAction(this.minActionAreaNode, "downloadBatch", MWF.LP.widget.downloadBatch
+                , function (e, node) {
+                    this.downloadBatchAttachment(e, node);
                 }.bind(this));
 
             //if(!layout.mobile){
@@ -1407,7 +1443,21 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
         }
         this.checkActions();
-    }
+    },
+    downloadBatchAttachment : function (){
+        var job = this.module.form.businessData.work.job;
+        var site = this.module.json.id;
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/job/"+job+"/site/" + site;
+        url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
+
+        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+
+            url += "&" + o2.tokenName + "=" + layout.session.token;
+            window.location = url;
+        }else{
+            window.open(url);
+        }
+    },
 
 });
 
@@ -1602,6 +1652,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
@@ -2966,6 +3017,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isDelete": this.getFlagDefaultFalse("isDelete"),
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isDownloadBatch": this.getFlagDefaultFalse("isDownloadBatch"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
             "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
