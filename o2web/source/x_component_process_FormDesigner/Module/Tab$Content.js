@@ -6,7 +6,15 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 	options: {
 		"style": "default",
 		"propertyPath": "../x_component_process_FormDesigner/Module/Tab$Content/tab$Content.html",
-		"actions": [],
+		"actions": [
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
+			}
+		],
 		"injectActions" : [
 			{
 				"name" : "top",

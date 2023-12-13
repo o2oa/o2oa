@@ -77,7 +77,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"injectNotice": "Mantenga presionado Ctrl y suelte el mouse para posicionamiento preciso",
 		"selectedContainer": "Seleccionar objeto padre",
 		"property": "Propiedad",
-		"batchModify": "Modificación masiva"
+		"batchModify": "Modificación masiva",
+		"selectParent": "Seleccionar componentes superiores"
 	},
 	"actionbar": {
 		"readhide": "Establecer si se muestra al leer",
