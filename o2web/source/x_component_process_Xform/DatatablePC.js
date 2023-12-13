@@ -1486,10 +1486,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
 		 * @summary 为数据表格赋值，如果需要设置所有区段数据请使用setAllSectionData方法。
-		 * @param data{DatatableData|Promise|Array} 必选，数组或Promise.
+		 * @param data{DatatableData|Promise} 必选，数组或Promise.
 		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
 		 * @example
-		 *  this.form.get("fieldId").setData([]); //赋空值
+		 *  this.form.get("fieldId").setData({data:[]}); //赋空值
 		 * @example
 		 *  //如果无法确定表单上是否有组件，需要判断
 		 *  if( this.form.get('fieldId') ){ //判断表单是否有无对应组件
