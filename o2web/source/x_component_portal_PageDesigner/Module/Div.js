@@ -32,6 +32,13 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 				"event": "click",
 				"action": "makeWidget",
 				"title": MWF.APPPOD.LP.formAction["makeWidget"]
+			},
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
 			}
 		]
 	},

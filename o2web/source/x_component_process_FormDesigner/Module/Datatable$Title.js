@@ -20,7 +20,14 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		    	"event": "click",
 		    	"action": "deleteCol",
 		    	"title": MWF.LP.process.formAction.deleteCol
-		    }
+		    },
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
+			}
 		]
 	},
 	

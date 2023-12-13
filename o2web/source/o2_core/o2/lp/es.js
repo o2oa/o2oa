@@ -337,6 +337,7 @@ o2.LP.widget = {
 	"share": "Compartir",
 	"send": "Enviar",
 	"downloadAll": "Descargar todo",
+    "downloadBatch": "Descarga por lotes",
 	"createFolder": "Crear carpeta",
 	"rename": "Cambiar nombre",
 	"property": "Propiedad",

@@ -1,34 +1,13 @@
 package com.x.program.center.jaxrs.market;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_cms_assemble_control;
-import com.x.base.core.project.x_portal_assemble_designer;
-import com.x.base.core.project.x_processplatform_assemble_designer;
-import com.x.base.core.project.x_query_assemble_designer;
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.*;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.config.Collect;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
+import com.x.base.core.project.config.*;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.ConnectionAction;
@@ -39,12 +18,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.base.core.project.tools.ZipTools;
+import com.x.base.core.project.tools.*;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -57,6 +31,18 @@ import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.fs.Path;
+
+import java.io.*;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -68,17 +54,14 @@ abstract class BaseAction extends StandardJaxrsAction {
     protected static final String COLLECT_MARKET_INSTALL_INFO = "/o2_collect_assemble/jaxrs/application2/install/";
     protected static final String COLLECT_UNIT_IS_VIP = "/o2_collect_assemble/jaxrs/unit/is/vip";
     private static final String APP_SETUP_NAME = "setup.json";
+    private static final String APP_CUSTOM_CONFIG = "customConfig.json";
+    private static final String CONFIG_OPERATE_REPLACE = "replace";
+    private static final String MAC_DS_STORE = ".ds_store";
 
     protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(InstallLog.class);
 
     public boolean hasAuth(EffectivePerson effectivePerson, String person) {
-        if (effectivePerson.isManager()) {
-            return true;
-        }
-        if (effectivePerson.getDistinguishedName().equals(person)) {
-            return true;
-        }
-        return false;
+        return effectivePerson.isManager() || effectivePerson.getDistinguishedName().equals(person);
     }
 
     protected InstallData install(Application2 app, byte[] bytes) throws Exception {
@@ -117,66 +100,20 @@ abstract class BaseAction extends StandardJaxrsAction {
             }
             BeanUtils.copyProperties(app, offlineApp);
         }
-        File[] files = dist.listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(".ds_store"));
+        File[] files = dist.listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(MAC_DS_STORE));
         if (files == null || files.length == 0) {
             return installData;
         }
-
         for (File file : files) {
             if (file.isDirectory()) {
                 if (file.getName().toLowerCase().equals(InstallTypeEnum.CUSTOM.getValue())) {
-                    File[] subFiles = file
-                            .listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(".ds_store"));
-                    if (subFiles != null && subFiles.length > 0) {
-                        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                            List<String> list = new ArrayList<>();
-                            boolean flag = ZipTools.toZip(file, out, list);
-                            if (flag) {
-                                logger.info("开始部署[{}]的customApp", app.getName());
-                                this.installCustomApp(app.getId() + "-custom.zip", out.toByteArray());
-                                logger.info("完成部署[{}]的customApp，安装内容：{}", app.getName(), gson.toJson(list));
-                                installData.setCustomList(list);
-                            }
-                        }
-                    }
+                    this.deployCustomApp(file, installData, app);
                 } else if (file.getName().toLowerCase().equals(InstallTypeEnum.XAPP.getValue())) {
-                    File[] subFiles = file.listFiles(pathname -> pathname.isFile());
-                    if (subFiles != null && subFiles.length > 0) {
-                        List<WrapModule> moduleList = new ArrayList<>();
-                        for (File subFile : subFiles) {
-                            if (subFile.getName().toLowerCase().endsWith(".xapp")) {
-                                logger.info("开始部署[{}]", subFile.getName());
-                                String json = FileUtils.readFileToString(subFile, DefaultCharset.charset);
-                                Gson gson = new Gson();
-                                JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
-                                WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
-                                this.installModule(module);
-                                moduleList.add(module);
-                                logger.info("完成部署[{}]", subFile.getName());
-                            }
-                        }
-                        installData.setWrapModuleList(moduleList);
-                    }
+                    this.deployXapp(file, installData);
                 } else if (file.getName().toLowerCase().equals(InstallTypeEnum.WEB.getValue())) {
-                    File[] subFiles = file
-                            .listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(".ds_store"));
-                    if (subFiles != null && subFiles.length > 0) {
-                        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-                            List<String> list = new ArrayList<>();
-                            boolean flag = ZipTools.toZip(file, out, list);
-                            if (flag) {
-                                logger.info("开始部署[{}]的web资源", app.getName());
-                                Business.dispatch(false, app.getId() + "-web.zip", "", out.toByteArray());
-                                logger.info("完成部署[{}]的web资源", app.getName());
-                                installData.setWebList(list);
-                            }
-                        }
-                    }
-                } else if (file.getName().toLowerCase().equals(InstallTypeEnum.DATA.getValue())) {
-                    File[] subFiles = file.listFiles();
-                    if (subFiles != null && subFiles.length > 0) {
-                        // todo
-                    }
+                    this.deployWeb(file, installData, app);
+                } else if (file.getName().toLowerCase().equals(InstallTypeEnum.CONFIG.getValue())) {
+                    this.deployConfig(file, installData, app);
                 }
             }
         }
@@ -190,13 +127,121 @@ abstract class BaseAction extends StandardJaxrsAction {
         return installData;
     }
 
+    private void deployCustomApp(File file, InstallData installData, Application2 app) throws Exception{
+        File[] subFiles = file
+                .listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(MAC_DS_STORE));
+        if (subFiles != null && subFiles.length > 0) {
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                List<String> list = new ArrayList<>();
+                boolean flag = ZipTools.toZip(file, out, list);
+                if (flag) {
+                    logger.info("开始部署[{}]的customApp", app.getName());
+                    this.installDispatch(app.getId() + "-custom.zip", out.toByteArray(), InstallTypeEnum.CUSTOM.getValue());
+                    logger.info("完成部署[{}]的customApp，安装内容：{}", app.getName(), gson.toJson(list));
+                    installData.setCustomList(list);
+                }
+            }
+        }
+    }
+
+    private void deployXapp(File file, InstallData installData) throws Exception{
+        File[] subFiles = file.listFiles(pathname -> pathname.getName().toLowerCase().endsWith(".xapp"));
+        if (subFiles != null && subFiles.length > 0) {
+            List<WrapModule> moduleList = new ArrayList<>();
+            for (File subFile : subFiles) {
+                logger.info("开始部署[{}]", subFile.getName());
+                String json = FileUtils.readFileToString(subFile, DefaultCharset.charset);
+                Gson gson = new Gson();
+                JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
+                WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
+                this.installModule(module);
+                moduleList.add(module);
+                logger.info("完成部署[{}]", subFile.getName());
+            }
+            installData.setWrapModuleList(moduleList);
+        }
+    }
+
+    private void deployWeb(File file, InstallData installData, Application2 app) throws Exception{
+        File[] subFiles = file
+                .listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(MAC_DS_STORE));
+        if (subFiles != null && subFiles.length > 0) {
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                List<String> list = new ArrayList<>();
+                boolean flag = ZipTools.toZip(file, out, list);
+                if (flag) {
+                    logger.info("开始部署[{}]的web资源", app.getName());
+                    Business.dispatch(false, app.getId() + "-web.zip", "", out.toByteArray());
+                    logger.info("完成部署[{}]的web资源", app.getName());
+                    installData.setWebList(list);
+                }
+            }
+        }
+    }
+
+    private void deployConfig(File file, InstallData installData, Application2 app) throws Exception{
+        File[] subFiles = file.listFiles(pathname -> pathname.getName().toLowerCase().endsWith(".json"));
+        if (subFiles != null && subFiles.length > 0) {
+            logger.info("开始部署[{}]的config配置", app.getName());
+            final List<String> list = new ArrayList<>();
+            for (File subFile : subFiles) {
+                if(APP_CUSTOM_CONFIG.equalsIgnoreCase(subFile.getName())){
+                    Map<String, JsonElement> map = new HashMap<>();
+                    List<CustomConfig> customConfigList = gson.fromJson(Files.readString(subFile.toPath(), StandardCharsets.UTF_8),
+                            new TypeToken<List<CustomConfig>>(){}.getType());
+                    for (CustomConfig customConfig : customConfigList){
+                        String nameEnd = ".json";
+                        if(!StringUtils.endsWith(customConfig.getConfigName(), nameEnd)){
+                            continue;
+                        }
+                        JsonElement fileJson = map.containsKey(customConfig.getConfigName()) ? map.get(customConfig.getConfigName()) :
+                                Config.customConfig(StringUtils.substringBefore(customConfig.getConfigName(), nameEnd));
+                        if(fileJson!=null && customConfig.getData()!=null){
+                            JsonElement newFileJson;
+                            if(CONFIG_OPERATE_REPLACE.equalsIgnoreCase(customConfig.getOperate())){
+                                newFileJson = XGsonBuilder.replace(customConfig.getData(), fileJson, customConfig.getPath());
+                            }else{
+                                newFileJson = XGsonBuilder.cover(customConfig.getData(), fileJson, customConfig.getPath());
+                            }
+                            if(newFileJson != null){
+                                map.put(customConfig.getConfigName(), newFileJson);
+                            }
+                        }
+                    }
+                    map.entrySet().stream().forEach(o -> {
+                        try {
+                            String filePath = Config.DIR_CONFIG + Path.SEPARATOR + o.getKey();
+                            this.installDispatch(filePath, XGsonBuilder.toJson(o.getValue()).getBytes(DefaultCharset.charset), InstallTypeEnum.CONFIG.getValue());
+                            list.add(o.getKey());
+                        } catch (Exception e) {
+                            logger.error(e);
+                        }
+                    });
+                }else {
+                    String filePath = Config.DIR_CONFIG + Path.SEPARATOR + subFile.getName();
+                    this.installDispatch(filePath, FileUtils.readFileToByteArray(subFile), InstallTypeEnum.CONFIG.getValue());
+                    list.add(subFile.getName());
+                }
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                logger.debug(e.getMessage());
+            }
+            this.configFlush();
+            installData.setConfigList(list);
+            logger.info("完成部署[{}]的config配置", app.getName());
+        }
+    }
+
     protected ActionInstallOffline.InstallWo installModule(WrapModule module) throws Exception {
         ActionInstallOffline.InstallWo wo = new ActionInstallOffline.InstallWo();
+        String[] paths = {"input","cover"};
         if (module.getProcessPlatformList() != null) {
             for (WrapProcessPlatform obj : module.getProcessPlatformList()) {
                 wo.getProcessPlatformList().add(
                         ThisApplication.context().applications().putQuery(x_processplatform_assemble_designer.class,
-                                Applications.joinQueryUri("input", "cover"), obj).getData(WoId.class).getId());
+                                Applications.joinQueryUri(paths), obj).getData(WoId.class).getId());
                 obj.setIcon(null);
                 obj.setApplicationDictList(null);
                 obj.setFileList(null);
@@ -208,7 +253,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (module.getCmsList() != null) {
             for (WrapCms obj : module.getCmsList()) {
                 wo.getCmsList().add(ThisApplication.context().applications()
-                        .putQuery(x_cms_assemble_control.class, Applications.joinQueryUri("input", "cover"), obj)
+                        .putQuery(x_cms_assemble_control.class, Applications.joinQueryUri(paths), obj)
                         .getData(WoId.class).getId());
                 obj.setAppIcon(null);
                 obj.setAppDictList(null);
@@ -221,7 +266,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (module.getPortalList() != null) {
             for (WrapPortal obj : module.getPortalList()) {
                 wo.getPortalList().add(ThisApplication.context().applications()
-                        .putQuery(x_portal_assemble_designer.class, Applications.joinQueryUri("input", "cover"), obj)
+                        .putQuery(x_portal_assemble_designer.class, Applications.joinQueryUri(paths), obj)
                         .getData(WoId.class).getId());
                 obj.setIcon(null);
                 obj.setFileList(null);
@@ -233,7 +278,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (module.getQueryList() != null) {
             for (WrapQuery obj : module.getQueryList()) {
                 wo.getQueryList().add(ThisApplication.context().applications()
-                        .putQuery(x_query_assemble_designer.class, Applications.joinQueryUri("input", "cover"), obj)
+                        .putQuery(x_query_assemble_designer.class, Applications.joinQueryUri(paths), obj)
                         .getData(WoId.class).getId());
                 obj.setIcon(null);
                 obj.setViewList(null);
@@ -246,7 +291,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (module.getServiceModuleList() != null) {
             for (WrapServiceModule obj : module.getServiceModuleList()) {
                 wo.getServiceModuleList()
-                        .add(CipherConnectionAction.put(false, Config.url_x_program_center_jaxrs("input", "cover"), obj)
+                        .add(CipherConnectionAction.put(false, Config.url_x_program_center_jaxrs(paths), obj)
                                 .getData(WoId.class).getId());
                 if (obj.getAgentList() != null) {
                     for (WrapAgent agent : obj.getAgentList()) {
@@ -264,18 +309,25 @@ abstract class BaseAction extends StandardJaxrsAction {
         return wo;
     }
 
-    protected void installCustomApp(String fileName, byte[] bytes) throws Exception {
+    protected void installDispatch(String fileName, byte[] bytes, String installType) throws Exception {
         Nodes nodes = Config.nodes();
-        for (String node : nodes.keySet()) {
-            if (nodes.get(node).getApplication().getEnable()) {
-                logger.info("socket deploy custom app{} to {}:{}", fileName, node, nodes.get(node).nodeAgentPort());
-                try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
+        for (Map.Entry<String, Node> entry : nodes.entrySet()) {
+            String node = entry.getKey();
+            if (BooleanUtils.isNotFalse(entry.getValue().nodeAgentEnable())) {
+                logger.info("socket deploy installType={} file={} to {}:{}",installType, fileName, node, entry.getValue().nodeAgentPort());
+                try (Socket socket = new Socket(node, entry.getValue().nodeAgentPort())) {
                     socket.setKeepAlive(true);
-                    socket.setSoTimeout(10000);
+                    socket.setSoTimeout(6000);
                     try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                             DataInputStream dis = new DataInputStream(socket.getInputStream())) {
                         Map<String, Object> commandObject = new HashMap<>();
-                        commandObject.put("command", "redeploy:customZip");
+                        if(InstallTypeEnum.CONFIG.getValue().equals(installType)){
+                            commandObject.put("command", "syncFile:" + fileName);
+                        }else if(InstallTypeEnum.CUSTOM.getValue().equals(installType)) {
+                            commandObject.put("command", "redeploy:customZip");
+                        }else{
+                            return;
+                        }
                         commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 
                         dos.writeUTF(XGsonBuilder.toJson(commandObject));
@@ -292,9 +344,75 @@ abstract class BaseAction extends StandardJaxrsAction {
                             }
                         }
                     }
-
+                }catch (Exception e){
+                    logger.error(e);
                 }
             }
+        }
+    }
+
+    private void configFlush() throws Exception {
+        Config.flush();
+        ThisApplication.context().applications().values().forEach(o ->
+            o.stream().forEach(app -> {
+                try {
+                    CipherConnectionAction.get(false, app, "cache", "config", "flush");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            })
+        );
+        List<Map.Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
+        for (Map.Entry<String, CenterServer> centerEntry : centerList) {
+            try {
+                CipherConnectionAction.get(false,
+                        Config.url_x_program_center_jaxrs(centerEntry, "cache", "config", "flush"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static class CustomConfig extends GsonPropertyObject {
+        @FieldDescribe("配置文件名称，名称后缀必须为.json的文件名.")
+        private String configName;
+        @FieldDescribe("目标参数路径(可以为空，多级用.隔开，如：aaa.bbb).")
+        private String path;
+        @FieldDescribe("replace(完全替换)|cover(覆盖).")
+        private String operate;
+        @FieldDescribe("新的配置信息，必须是Json对象或者Json数组.")
+        private JsonElement data;
+
+        public String getConfigName() {
+            return configName;
+        }
+
+        public void setConfigName(String configName) {
+            this.configName = configName;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getOperate() {
+            return operate;
+        }
+
+        public void setOperate(String operate) {
+            this.operate = operate;
+        }
+
+        public JsonElement getData() {
+            return data;
+        }
+
+        public void setData(JsonElement data) {
+            this.data = data;
         }
     }
 
@@ -304,6 +422,8 @@ abstract class BaseAction extends StandardJaxrsAction {
         private List<String> webList;
 
         private List<String> customList;
+
+        private List<String> configList;
 
         public List<WrapModule> getWrapModuleList() {
             return wrapModuleList;
@@ -327,6 +447,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
         public void setCustomList(List<String> customList) {
             this.customList = customList;
+        }
+
+        public List<String> getConfigList() {
+            return configList;
+        }
+
+        public void setConfigList(List<String> configList) {
+            this.configList = configList;
         }
     }
 

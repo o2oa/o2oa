@@ -716,7 +716,7 @@ public class Config {
 
 	/**
 	 * dumpRestoreData配置不考虑进行缓存,每次直接取值
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -1192,6 +1192,11 @@ public class Config {
 				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG + "/" + configName + ".json", JsonObject.class);
 				if (obj != null) {
 					instance().customConfig.put(configName, obj);
+				}else{
+					obj = BaseTools.readConfigObject(DIR_CONFIGSAMPLE + "/" + configName + ".json", JsonObject.class);
+					if (obj != null) {
+						instance().customConfig.put(configName, obj);
+					}
 				}
 			}
 			return instance().customConfig.get(configName);
@@ -1561,7 +1566,7 @@ public class Config {
 
 	/**
 	 * 创建层级目录,将IOException转换为UncheckedIOException
-	 * 
+	 *
 	 * @param path
 	 */
 	private static void createDirectories(Path path) {

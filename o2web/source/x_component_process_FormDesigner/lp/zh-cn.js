@@ -83,7 +83,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "injectNotice" : "按住Ctrl松开鼠标精确定位",
         "selectedContainer": "选择父对象",
         "property": "属性",
-        "batchModify": "批量修改"
+        "batchModify": "批量修改",
+        "selectParent": "选择上级组件"
     },
 
     "actionbar": {
@@ -752,6 +753,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowUpload": "允许上载",
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
+        "allowDownloadBatch": "允许批量下载",
         "allowEdit": "允许编辑",
         "officeTool": "Office预览/编辑工具",
         "allowDelete": "允许删除",

@@ -77,7 +77,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"injectNotice": "Mantenga presionado Ctrl y suelte el mouse para posicionamiento preciso",
 		"selectedContainer": "Seleccionar objeto padre",
 		"property": "Propiedad",
-		"batchModify": "Modificación masiva"
+		"batchModify": "Modificación masiva",
+		"selectParent": "Seleccionar componentes superiores"
 	},
 	"actionbar": {
 		"readhide": "Establecer si se muestra al leer",
@@ -694,6 +695,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"allowUpload": "Permitir cargar",
 		"allowPreview": "Permitir previsualización",
 		"allowDownload": "Permitir descarga",
+		"allowDownloadBatch": "Permitir descargas por lotes",
 		"allowEdit": "Permitir edición",
 		"officeTool": "Herramienta de vista previa / edición de Office",
 		"allowDelete": "Permitir eliminación",
