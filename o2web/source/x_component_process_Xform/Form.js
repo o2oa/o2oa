@@ -4300,9 +4300,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     downloadAll: function () {
+
         var htmlFormId = "";
+        var html = this.app.content.get("html");
+        var port = layout.port === "" ? "" : ":" + port;
+
+        html = html.replace(/\.\.\/(x_|o2_)/g, "http://127.0.0.1" + port + "/$1");
+
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
-            "workHtml": encodeURIComponent(this.app.content.get("html")),
+            "workHtml": encodeURIComponent(html),
             "pageWidth": 1000
         }, function (json) {
             htmlFormId = json.data.id;

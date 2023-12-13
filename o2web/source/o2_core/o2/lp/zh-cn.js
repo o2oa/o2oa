@@ -337,6 +337,7 @@ o2.LP.widget = {
     "share": "分享",
     "send": "发送",
     "downloadAll": "全部下载",
+    "downloadBatch": "批量下载",
     "createFolder": "创建文件夹",
     "rename": "重命名",
     "property": "属性",

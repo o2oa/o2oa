@@ -461,7 +461,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != jsonElement) {
 			if (jsonElement.isJsonPrimitive()) {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
-				if (jsonPrimitive.isNumber()) {
+				if (jsonPrimitive.isBoolean()) {
+					value = jsonPrimitive.getAsBoolean();
+				}else if (jsonPrimitive.isNumber()) {
 					value = jsonPrimitive.getAsBoolean();
 				}
 			} else if (jsonElement.isJsonArray()) {

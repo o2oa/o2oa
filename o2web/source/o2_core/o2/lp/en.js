@@ -334,6 +334,7 @@ o2.LP.widget = {
 	"share": "Share",
 	"send": "Ssend",
 	"downloadAll": "Download All",
+	"downloadBatch": "Download Batch",
 	"createFolder": "Create Folder",
 	"rename": "Rename",
 	"property": "Property",
