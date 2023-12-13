@@ -1559,7 +1559,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          */
         uploadedAttachment: function (site, id) {
             this.documentAction.getAttachment(id, this.businessData.document.id, function (json) {
-
+                if (!json.data.control) json.data.control = {};
                 var flag = this.businessData.attachmentList.some(function (attData) {
                     return json.data.id === attData.id;
                 }.bind(this));
