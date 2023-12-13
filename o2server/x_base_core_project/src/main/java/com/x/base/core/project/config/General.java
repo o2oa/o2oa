@@ -55,7 +55,7 @@ public class General extends ConfigObject {
 
 	private static final Boolean DEFAULT_STATENABLE = false;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
-	private static final Boolean DEFAULT_EXPOSEJEST = true;
+	private static final Boolean DEFAULT_EXPOSEJEST = false;
 	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
 	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
 	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";

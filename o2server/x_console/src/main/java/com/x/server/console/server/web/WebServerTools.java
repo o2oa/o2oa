@@ -1,14 +1,16 @@
 package com.x.server.console.server.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.stream.Stream;
-
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.WebServer;
+import com.x.base.core.project.config.WebServers;
+import com.x.base.core.project.jaxrs.ApiAccessFilter;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.x_program_center;
+import com.x.server.console.server.JettySeverTools;
+import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.Servers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -18,21 +20,25 @@ import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.WebServer;
-import com.x.base.core.project.config.WebServers;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.server.console.server.JettySeverTools;
-import com.x.server.console.server.ServerRequestLog;
-import com.x.server.console.server.Servers;
+import javax.servlet.DispatcherType;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.EnumSet;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.stream.Stream;
 
 public class WebServerTools extends JettySeverTools {
 
@@ -146,7 +152,13 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
+		setExposeApi(context);
 		return context;
+	}
+
+	private static void setExposeApi(WebAppContext webApp) {
+		FilterHolder denialOfServiceFilterHolder = new FilterHolder(new ApiAccessFilter());
+		webApp.addFilter(denialOfServiceFilterHolder, "/api/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
 	private static void moveNonDefaultDirectoryToWebroot() throws Exception {
