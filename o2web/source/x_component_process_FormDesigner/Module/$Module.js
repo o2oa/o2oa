@@ -27,6 +27,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				"event": "click",
 				"action": "delete",
 				"title": MWF.APPFD.LP.formAction["delete"]
+			},
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
 			}
 			// {
 			//     "name": "styleBrush",
@@ -227,7 +234,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					"styles": this.options.actionNodeStyles,
 					"title": action.title
 				}).inject(this.actionArea);
-				actionNode.setStyle("background", "url("+this.path+this.options.style+"/icon/"+action.icon+") no-repeat left center");
+				if( action.name === "selectParent" ){
+					actionNode.setStyle("background", "url(../x_component_process_FormDesigner/Module/Form/default/icon/selectParent.png) no-repeat left center");
+				}else{
+					actionNode.setStyle("background", "url("+this.path+this.options.style+"/icon/"+action.icon+") no-repeat left center");
+				}
 				actionNode.addEvent(action.event, function(e){
 					this[action.action](e);
 				}.bind(this));
@@ -327,6 +338,29 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		//@todo
 		this.form.styleBrushContent = Object.clone(this.json.styles);
 		if (this.json.inputStyles) this.form.inputStyleBrushContent = Object.clone(this.json.inputStyles);
+	},
+	selectParent: function(){
+		var parentModule = this.getParentModule();
+		if(parentModule){
+			parentModule.selected();
+			if( parentModule.actionArea ){
+
+			}
+		}
+	},
+	getParentModule: function(){
+		var module;
+		var parent = this.node.getParent();
+		while(parent) {
+			var MWFtype = parent.get("MWFtype");
+			if( MWFtype ){
+				module = parent.retrieve("module");
+				if( module )return module;
+			}else{
+				parent = parent.getParent();
+			}
+		}
+		return null;
 	},
 
 	_setNodeEvent: function(){

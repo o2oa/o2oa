@@ -19,7 +19,14 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		    	"event": "click",
 		    	"action": "deleteCol",
 		    	"title": MWF.LP.process.formAction.deleteCol
-		    }
+		    },
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
+			}
 		],
 		"allowModules": ["textfield", "number", "currency", "personfield", "orgfield", "org", "calendar", "textarea", "select", "radio", "checkbox", "combox", "image", "label",
 			"htmleditor", "tinymceeditor", "button","imageclipper", "address", "attachment", "elinput", "elcheckbox", "elselect", "elautocomplete", "elnumber", "elradio", "elcascader",

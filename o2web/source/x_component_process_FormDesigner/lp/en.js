@@ -77,7 +77,8 @@ MWF.xApplication.process.FormDesigner.LP={
 		"injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
 		"selectedContainer": "Select Parent",
 		"property": "Property",
-		"batchModify": "Batch modify "
+		"batchModify": "Batch modify ",
+		"selectParent": "Select superior components"
 	},
 	"actionbar": {
 		"readhide": "Set whether to display when reading",

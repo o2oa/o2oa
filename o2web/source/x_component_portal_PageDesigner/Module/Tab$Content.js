@@ -4,7 +4,13 @@ MWF.xApplication.portal.PageDesigner.Module.Tab$Content = MWF.PCTab$Content = ne
 	options: {
 		"style": "default",
 		"propertyPath": "../x_component_portal_PageDesigner/Module/Tab$Content/tab$Content.html",
-		"actions": []
+		"actions": [{
+			"name": "selectParent",
+			"icon": "selectParent.png",
+			"event": "click",
+			"action": "selectParent",
+			"title": MWF.APPFD.LP.formAction["selectParent"]
+		}]
 	},
 	
 	initialize: function(tab, page, options){

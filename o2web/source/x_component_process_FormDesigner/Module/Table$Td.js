@@ -36,6 +36,13 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		    	"action": "deleteCol",
 		    	"title": MWF.APPFD.LP.formAction.deleteCol
 		    },
+			{
+				"name": "selectParent",
+				"icon": "selectParent.png",
+				"event": "click",
+				"action": "selectParent",
+				"title": MWF.APPFD.LP.formAction["selectParent"]
+			},
 		    {
 		    	"name": "splitCell",
 		    	"icon": "splitCell.png",
