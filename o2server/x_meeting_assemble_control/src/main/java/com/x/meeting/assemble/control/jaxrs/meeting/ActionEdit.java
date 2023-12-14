@@ -43,13 +43,24 @@ class ActionEdit extends BaseAction {
 			MeetingConfigProperties config = business.getConfig();
 			if(MeetingModeEnum.ONLINE.getValue().equals(wi.getMode())){
 				if(MeetingConfigProperties.ONLINE_PROJECT_HST.equals(config.getOnlineProduct())) {
-					wi.setRoomId(meeting.getRoomId());
-					wi.setRoomLink(meeting.getRoomLink());
+					if(MeetingModeEnum.ONLINE.getValue().equals(meeting.getMode())){
+						wi.setRoomId(meeting.getRoomId());
+						wi.setRoomLink(meeting.getRoomLink());
+					}else {
+						boolean flag = HstService.createMeeting(wi, config);
+						if(!flag){
+							throw new ExceptionCustomError("创建线上会议失败，请联系管理员！");
+						}
+					}
 				}else if(StringUtils.isBlank(wi.getRoomId()) || StringUtils.isBlank(wi.getRoomLink())){
 					throw new ExceptionCustomError("会议号和会议链接不能为空！");
 				}
-			}else if(StringUtils.isBlank(wi.getRoom())){
-				throw new ExceptionCustomError("会议室不能为空！");
+			}else{
+				wi.setRoomId("");
+				wi.setRoomLink("");
+				if(StringUtils.isBlank(wi.getRoom())){
+					throw new ExceptionCustomError("会议室不能为空！");
+				}
 			}
 			Room room = null;
 			if(StringUtils.isNotBlank(wi.getRoom())) {
