@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,7 +14,6 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -26,71 +23,77 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.FileInfoFactory;
 import com.x.cms.core.entity.FileInfo;
 
-
 public class ActionListByDocId extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListByDocId.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListByDocId.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String docId ) throws Exception {
+	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String docId) throws Exception {
+		LOGGER.debug("execute:{}, docId:{}.", effectivePerson::getDistinguishedName, () -> docId);
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
-		Boolean check = true;
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId, effectivePerson.getDistinguishedName());
-		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+		Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), docId, effectivePerson.getDistinguishedName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 
 		if (optional.isPresent()) {
 			wos = (List<Wo>) optional.get();
 			result.setData(wos);
 		} else {
-			if (check) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					FileInfoFactory fileInfoFactory = business.getFileInfoFactory();
-					List<String> ids = fileInfoFactory.listAttachmentByDocument( docId );// 获取指定文档的所有附件列表
-					List<FileInfo> fileInfoList = emc.list( FileInfo.class, ids );// 查询ID IN ids 的所有文件或者附件信息列表
-					List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-					List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			wos = list(effectivePerson, docId);
+			CacheManager.put(cacheCategory, cacheKey, wos);
+		}
+		result.setData(wos);
+		return result;
+	}
 
-					Wo wo = null;
-					wos = new ArrayList<>();
-					if( ListTools.isNotEmpty( fileInfoList )) {
-						for ( FileInfo fileInfo : fileInfoList ) {
-							wo =  Wo.copier.copy(fileInfo);
-							boolean canControl = this.control(wo, effectivePerson, identities, units, business);
-							boolean canEdit = this.edit(wo, effectivePerson, identities, units, business);
-							boolean canRead = this.read(wo, effectivePerson, identities, units, business);
-							if (canRead) {
-								wo.getControl().setAllowRead(true);
-								wo.getControl().setAllowEdit(canEdit);
-								wo.getControl().setAllowControl(canControl);
-								wos.add(wo);
-							}
-						}
-					}
-					wos = wos.stream()
-							.sorted(Comparator.comparing(Wo::getSeqNumber, Comparator.nullsLast(Integer::compareTo))
-									.thenComparing(
-											Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
-							.collect(Collectors.toList());
-					CacheManager.put(cacheCategory, cacheKey, wos );
-					result.setData(wos);
-				} catch (Throwable th) {
-					th.printStackTrace();
-					result.error(th);
+	private List<Wo> list(EffectivePerson effectivePerson, String docId) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			FileInfoFactory fileInfoFactory = business.getFileInfoFactory();
+			List<String> ids = fileInfoFactory.listAttachmentByDocument(docId);// 获取指定文档的所有附件列表
+			List<FileInfo> fileInfoList = emc.list(FileInfo.class, ids);// 查询ID IN ids 的所有文件或者附件信息列表
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			List<Wo> wos = new ArrayList<>();
+			if (ListTools.isNotEmpty(fileInfoList)) {
+				for (FileInfo fileInfo : fileInfoList) {
+					wos.add(concrete(effectivePerson, business, identities, units, fileInfo));
+				}
+			}
+			wos = wos.stream().sorted(Comparator.comparing(Wo::getSeqNumber, Comparator.nullsLast(Integer::compareTo))
+					.thenComparing(Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
+					.collect(Collectors.toList());
+			return wos;
+		}
+	}
+
+	private Wo concrete(EffectivePerson effectivePerson, Business business, List<String> identities, List<String> units,
+			FileInfo fileInfo) throws Exception {
+		Wo wo = Wo.copier.copy(fileInfo);
+		boolean canControl = this.control(effectivePerson, business, fileInfo, identities, units);
+		if (canControl) {
+			wo.getControl().setAllowRead(true);
+			wo.getControl().setAllowEdit(true);
+			wo.getControl().setAllowControl(true);
+		} else {
+			boolean canEdit = this.edit(effectivePerson, fileInfo, identities, units);
+			if (canEdit) {
+				wo.getControl().setAllowEdit(true);
+				wo.getControl().setAllowRead(true);
+			} else {
+				boolean canRead = this.read(effectivePerson, fileInfo, identities, units);
+				if (canRead) {
+					wo.getControl().setAllowRead(true);
 				}
 			}
 		}
-
-		return result;
+		return wo;
 	}
 
 	public static class Wo extends FileInfo {
 
 		private static final long serialVersionUID = -5076990764713538973L;
-
-		public static List<String> excludes = new ArrayList<String>();
 
 		private WoControl control = new WoControl();
 
@@ -102,83 +105,14 @@ public class ActionListByDocId extends BaseAction {
 			this.control = control;
 		}
 
-		public static final WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo( FileInfo.class, Wo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<FileInfo, Wo> copier = WrapCopierFactory.wo(FileInfo.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 	}
 
-	public static class WoControl extends GsonPropertyObject {
+	public static class WoControl extends AbstractWoControl {
 
-		private Boolean allowRead = false;
-		private Boolean allowEdit = false;
-		private Boolean allowControl = false;
+		private static final long serialVersionUID = -8008657773571124079L;
 
-		public Boolean getAllowRead() {
-			return allowRead;
-		}
-
-		public void setAllowRead(Boolean allowRead) {
-			this.allowRead = allowRead;
-		}
-
-		public Boolean getAllowEdit() {
-			return allowEdit;
-		}
-
-		public void setAllowEdit(Boolean allowEdit) {
-			this.allowEdit = allowEdit;
-		}
-
-		public Boolean getAllowControl() {
-			return allowControl;
-		}
-
-		public void setAllowControl(Boolean allowControl) {
-			this.allowControl = allowControl;
-		}
 	}
 
-	private boolean read(Wo woFileInfo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business) throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(woFileInfo.getCreatorUid())) {
-			value = true;
-		} else if (ListTools.isEmpty(woFileInfo.getReadIdentityList()) && ListTools.isEmpty(woFileInfo.getReadUnitList())) {
-			value = true;
-		} else if (ListTools.containsAny(identities, woFileInfo.getReadIdentityList()) || ListTools.containsAny(units, woFileInfo.getReadUnitList())) {
-			value = true;
-		} else {
-			value = this.edit(woFileInfo, effectivePerson, identities, units, business);
-		}
-		return value;
-	}
-
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business) throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getCreatorUid())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			value = true;
-		} else if (ListTools.containsAny(identities, wo.getEditIdentityList()) || ListTools.containsAny(units, wo.getEditUnitList())) {
-				value = true;
-		} else {
-			value = this.control(wo, effectivePerson, identities, units, business);
-		}
-		return value;
-	}
-
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units, Business business)
-			throws Exception {
-		boolean value = false;
-		if (business.isManager(effectivePerson)) {
-			value = true;
-		} else if (effectivePerson.isPerson(wo.getCreatorUid())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(units, wo.getControllerUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
 }
