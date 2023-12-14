@@ -1,4 +1,4 @@
-package com.x.program.center;
+package com.x.program.center.script;
 
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -12,15 +12,16 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-public class GrralVMScriptingFactory {
+public class GrralScriptingFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GrralVMScriptingFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GrralScriptingFactory.class);
 
-	private GrralVMScriptingFactory() {
+	private GrralScriptingFactory() {
 
 	}
 
-	private static ReentrantLock lock = new ReentrantLock();
+	private static ReentrantLock engineLock = new ReentrantLock();
+	private static ReentrantLock initialScriptSourceLock = new ReentrantLock();
 
 	private static Engine engine;
 
@@ -28,8 +29,7 @@ public class GrralVMScriptingFactory {
 
 	public static Value eval(Source source) {
 		try (Context context = Context.newBuilder().engine(getEngine()).build()) {
-			// context.eval(getInitialScriptSource());
-			// Source source = Source.create("js", functionalization(text));
+			context.eval(getInitialScriptSource());
 			Value value = context.eval(source);
 			System.out.println("!!!!!!!!!!!!!!!@@@@@@@@@@@@@");
 			System.out.println(value);
@@ -40,13 +40,13 @@ public class GrralVMScriptingFactory {
 
 	private static Engine getEngine() {
 		if (null == engine) {
-			lock.lock();
+			engineLock.lock();
 			try {
 				engine = Engine.newBuilder("js").build();
 			} catch (Exception e) {
 				LOGGER.error(e);
 			} finally {
-				lock.unlock();
+				engineLock.unlock();
 			}
 		}
 		return engine;
@@ -54,13 +54,13 @@ public class GrralVMScriptingFactory {
 
 	private static Source getInitialScriptSource() {
 		if (null == initialScriptSource) {
-			lock.lock();
+			initialScriptSourceLock.lock();
 			try {
 				initialScriptSource = Source.create("js", Config.initialScriptText());
 			} catch (Exception e) {
 				LOGGER.error(e);
 			} finally {
-				lock.unlock();
+				initialScriptSourceLock.unlock();
 			}
 		}
 		return initialScriptSource;
