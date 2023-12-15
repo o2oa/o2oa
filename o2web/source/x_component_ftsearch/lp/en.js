@@ -1,12 +1,11 @@
-MWF.xApplication.ftsearch.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.ftsearch = MWF.xApplication.ftsearch || {};
+MWF.xApplication.ftsearch.LP={
 	"title": "Search",
 	"searchCondition": "Search Condition",
-
 	"searchInfor": "Find about {count} of relevant results for you, which takes {time} seconds",
-
 	"location": "Your location:",
 	"searchDisable": "Search Disabled",
-
 	"cms": "CMS",
 	"processPlatform": "Process Management",
 	"processManager": "Process Management",
@@ -16,25 +15,19 @@ MWF.xApplication.ftsearch.LP = {
 	"noSearchkeyAndCondition": "Please enter a keyword or click filter to search",
 	"searchPlacholder": "Please enter a keyword and press \"Enter\" to search",
 	"docTotalInfor": "Find <span class='mainColor_color'>{count}</span> related results, it took {time} seconds",
-
 	"mainPage": "Home",
 	"search": "Search",
 	"index": "Advanced Search",
 	"ftsearch": "Full Text Search",
 	"filter": "Filter",
-
 	"summary": "Summary",
 	"docTitle": "Title",
-	// "processName": "Process",
 	"createTime": "Create Time",
 	"completedTime": "End Time",
 	"activityName": "Node",
 	"creatorUnit": "Department",
 	"creatorIdentity": "Creator",
-
-	// "categoryName": "Category",
 	"publishTime": "Publish Time",
-
 	"processList": "Process",
 	"creatorUnitList": "Create Organization",
 	"startTimeMonthList": "Creation month",
@@ -45,14 +38,12 @@ MWF.xApplication.ftsearch.LP = {
 	"completed": "Completed",
 	"true": "true",
 	"false": "false",
-
 	"application": "Process Application",
 	"process": "Process",
 	"appInfo": "Content Management",
 	"categoryInfo": "Category",
 	"general": "General",
-
-	"column":"Column",
+	"column": "Column",
 	"category": "Category",
 	"unit": "Organization",
 	"app": "App",
@@ -68,7 +59,6 @@ MWF.xApplication.ftsearch.LP = {
 	"categoryName": "Content Management Category",
 	"selectConditionNote": "Please select",
 	"fieldSelect": "Column Select",
-
 	"more": "more",
 	"collapse": "Collapse",
 	"multiSelect": "Multiple Select",
@@ -78,7 +68,6 @@ MWF.xApplication.ftsearch.LP = {
 	"export": "Export",
 	"moreFilter": "More filter criteria",
 	"collapseFilter": "Collapse filter criteria",
-
 	"rangeSeparator": "to",
 	"startPlaceholder": "Start time",
 	"endPlaceholder": "End time",
@@ -92,15 +81,13 @@ MWF.xApplication.ftsearch.LP = {
 	"tooMaxError": "Cannot be greater than the maximum value",
 	"moreFieldSelect": "More column selection",
 	"collapseFieldSelect": "Collapse column selection",
-
 	"firstPage": "First Page",
 	"lastPage": "Last Page",
-
 	"selectModule": "Select Application",
 	"searching": "You are searching",
 	"switch": "Switch",
 	"searchCorePlacholder": "Please enter a keyword and press \"Enter\" to search for an application or process",
-
-	"expandCondition":"Expand",
+	"expandCondition": "Expand",
 	"collapseCondition": "Collapse"
-};
+}
+MWF.xApplication.ftsearch["lp."+o2.language] = MWF.xApplication.ftsearch.LP
