@@ -244,6 +244,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
                         var moduleNode = this.node.getElement("#" + key);
                         if (moduleNode) moduleNode.set("id", formKey);
                         module.id = formKey;
+                        module._originId = key;
+                        module._subform = this.json.id;
                     }
                     this.form.json.moduleList[formKey] = module;
                     this.moduleList[formKey] = module;
@@ -418,6 +420,8 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                         var moduleNode = this.node.getElement("#" + key);
                         if (moduleNode) moduleNode.set("id", formKey);
                         module.id = formKey;
+                        module._originId = key;
+                        module._subform = this.json.id;
                     }
                     this.form.json.moduleList[formKey] = module;
                 }.bind(this));
