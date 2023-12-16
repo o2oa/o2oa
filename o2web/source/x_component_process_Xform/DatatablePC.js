@@ -2900,10 +2900,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		return this.options.index;
 	},
 	getModule: function(templateJsonId){
+		var _subform = this.datatable.json._subform;
+		if( _subform ){
+			var module = this.all_templateId[_subform+"_"+templateJsonId];
+			if( module )return module;
+		}
 		return this.all_templateId[templateJsonId];
 	},
 	get: function(templateJsonId){
-		return this.all_templateId[templateJsonId];
+		return this.getModule( templateJsonId );
 	},
 	getAttachmentSite: function(json, templateJsonId, sectionKey){
 		//确保site最长为64，否则后台会报错
