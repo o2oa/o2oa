@@ -31,10 +31,9 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 		if (ThisApplication.queueBatchOperation.isEmpty()) {
 			List<CmsBatchOperation> operations = null;
 			try {
-				logger.debug("Timertask_BatchOperationTask ->  query 1000 cms batch operation in database......");
+				logger.debug("Timertask_BatchOperationTask ->  query 1000 cms batch operation in database.");
 				operations = cmsBatchOperationQueryService.list(1000, 8);
 			} catch (Exception e) {
-				logger.warn("Timertask_BatchOperationTask -> list operations got an exception.");
 				logger.error(e);
 			}
 
@@ -42,16 +41,15 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 				for (CmsBatchOperation operation : operations) {
 					try {
 						logger.debug(
-								"Timertask_BatchOperationTask -> send operation to queue[queueBatchOperation]......");
+								"Timertask_BatchOperationTask -> send operation to queue[queueBatchOperation].");
 						ThisApplication.queueBatchOperation.send(operation);
 					} catch (Exception e) {
-						logger.warn("Timertask_BatchOperationTask -> send operation to queue got an exception.");
 						logger.error(e);
 					}
 				}
 			} else {
 				logger.info(
-						"Timertask_BatchOperationTask -> not found any cms batch operation, try to check unreview document in database......");
+						"Timertask_BatchOperationTask -> not found any cms batch operation, try to check unreview document in database.");
 				// 如果队列里已经没有任务了，那么检查一下是否还有未revieiw的文档，添加到队列
 				DocumentInfoService documentInfoService = new DocumentInfoService();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

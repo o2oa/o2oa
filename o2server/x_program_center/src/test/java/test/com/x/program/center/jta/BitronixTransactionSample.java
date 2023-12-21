@@ -1,16 +1,22 @@
-package test;
+package test.com.x.program.center.jta;
 
 import java.sql.PreparedStatement;
 
 import javax.sql.DataSource;
 
 import bitronix.tm.BitronixTransaction;
+import bitronix.tm.Configuration;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class BitronixTransactionSample {
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("!!!!!!!!!!!!!!!!!" + TransactionManagerServices.isTransactionManagerRunning());
+		Configuration conf = TransactionManagerServices.getConfiguration();
+		conf.setServerId("jvm-1");
+		conf.setLogPart1Filename("/data/Temp/part1.btm");
+		conf.setLogPart2Filename("/data/Temp/part2.btm");
 		// 1. 导入Bitronix相关依赖
 		// ...
 
@@ -23,13 +29,9 @@ public class BitronixTransactionSample {
 				"admin", "password");
 
 		// 3. 配置Bitronix事务管理器
-//        Journal journal = JournalFactory.getInstance().getJournal();
-//        ResourceFactory resourceFactory = new ResourceFactory();
-//        resourceFactory.setJournal(journal);
 		TransactionManagerServices.getTransactionManager().begin();
 		BitronixTransaction utx = (BitronixTransaction) TransactionManagerServices.getTransactionManager()
 				.getTransaction();
-
 		// 4. 使用事务管理器管理事务
 		try {
 			// 在主库中执行操作
@@ -54,7 +56,6 @@ public class BitronixTransactionSample {
 			x = 100 / x;
 			utx.commit();
 		} catch (Exception e) {
-			System.out.println("!!!!!!!!!!!@@@@@@@");
 			e.printStackTrace();
 			utx.rollback();
 		}
