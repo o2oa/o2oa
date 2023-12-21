@@ -1958,7 +1958,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return true;
     },
     notValidationRouteMode: function (flag, processor) {
-        if (processor) processor.routeSelectorArea.setStyle("background-color", "#ffe9e9");
+        if (processor) {
+            var node = (processor.routeSelectorArea || processor.routeWraper);
+            if(node)node.setStyle("background-color", "#ffe9e9");
+        }
         MWF.xDesktop.notice(
             "error",
             { "x": "center", "y": "top" },
@@ -1977,7 +1980,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //});
     },
     notValidationOpinionMode: function (flag, processor) {
-        if (processor) processor.inputTextarea.setStyle("background-color", "#ffe9e9");
+        if (processor) {
+            var node = (processor.inputTextarea || processor.opinionTextarea);
+            if(node)node.setStyle("background-color", "#ffe9e9");
+        }
         MWF.xDesktop.notice(
             "error",
             (processor) ? { "x": "center", "y": "top" } : { "x": "right", "y": "top" },
@@ -2069,7 +2075,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opinion = this.businessData.task.routeOpinionList[idx];
             }
         }
-        this.fireEvent("beforeProcess");
+        this.fireEvent("beforeProcess", {routeName: routeName, opinion: opinion});
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
 
         //处理忽略授权
@@ -2143,7 +2149,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                         debugger;
                         this.taskList = json.data;
-                        this.fireEvent("afterProcess");
+                        this.fireEvent("afterProcess", {routeName: routeName, opinion: opinion});
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterProcess");
                         //    this.notice(MWF.xApplication.process.Xform.LP.taskProcessed, "success");
                         this.addMessage(json.data, true);
@@ -2661,7 +2667,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "isHandwriting": false,
                 "onSubmit": function (names, opinion, mode, before, routeName) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeAddTask");
+                        _self.fireEvent("beforeAddTask", {mode: mode, opinion: opinion, before: before, names:names});
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeAddTask");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2679,7 +2685,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.AddTaskToPeson(names, opinion, mode, before, routeName, function (workJson) {
-                                _self.fireEvent("afterAddTask");
+                                _self.fireEvent("afterAddTask", {mode: mode, opinion: opinion, before: before, names:names});
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterAddTask");
                                 // _self.addResetMessage(workJson.data);
                                 this.destroy();
@@ -2702,7 +2708,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "isHandwriting": false,
                 "onSubmit": function (names, opinion, routeName) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeReset");
+                        _self.fireEvent("beforeReset", {routeName: routeName, opinion: opinion, names:names});
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2720,7 +2726,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.resetToPeson(names, opinion, routeName, function (workJson) {
-                                _self.fireEvent("afterReset");
+                                _self.fireEvent("afterReset", {routeName: routeName, opinion: opinion, names:names});
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterReset");
                                 // _self.addResetMessage(workJson.data);
                                 this.destroy();
@@ -2745,7 +2751,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 "isHandwriting": false,
                 "onSubmit": function (opinion, routeName, activity, way) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeGoBack");
+                        _self.fireEvent("beforeGoBack", {routeName: routeName, opinion: opinion, activity:activity, way:way});
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeGoBack");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2763,7 +2769,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.goBackToPerson(routeName, opinion, activity, way, function (workJson) {
-                                _self.fireEvent("afterGoBack");
+                                _self.fireEvent("afterGoBack", {routeName: routeName, opinion: opinion, activity:activity, way:way});
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterGoBack");
                                 this.destroy();
                                 hanlderNode.destroy();
@@ -4569,12 +4575,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
-            this.fireEvent("beforeReset");
+            this.fireEvent("beforeReset", {routeName: "", opinion: opinion, names:names});
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
 
             this.resetWorkToPeson(names, opinion, "", function (workJson) {
                 //this.workAction.loadWork(function (workJson) {
-                this.fireEvent("afterReset");
+                this.fireEvent("afterReset", {routeName: "", opinion: opinion, names:names});
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
                 this.addResetMessage(workJson.data);
                 //this.app.notice(MWF.xApplication.process.Xform.LP.resetOk + ": " + MWF.name.cns(names).join(", "), "success");
@@ -6196,11 +6202,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 var opinion = dlg.content.getElement(".addTask_opinion").get("value");
 
-                this.fireEvent("beforeAddTask");
+                this.fireEvent("beforeAddTask", {mode: mode, opinion: opinion, before: position === "before", names: dlg.identityList});
                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
 
                 this.doAddTaskToPeople(dlg.identityList, opinion, mode, position === "before", "", function (json) {
-                        this.fireEvent("afterAddTask");
+                        this.fireEvent("afterAddTask", {mode: mode, opinion: opinion, before: position === "before", names: dlg.identityList});
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
                         this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
 
