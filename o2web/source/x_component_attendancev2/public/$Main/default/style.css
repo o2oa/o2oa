@@ -1,11 +1,9 @@
-
 @font-face {
   font-family: 'o2Attendance';
-  src:  url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.eot?d6ubvq');
-  src:  url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.eot?d6ubvq#iefix') format('embedded-opentype'),
-    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.ttf?d6ubvq') format('truetype'),
-    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.woff?d6ubvq') format('woff'),
-    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.svg?d6ubvq#o2Attendance') format('svg');
+  src:
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.ttf?xgcf05') format('truetype'),
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.woff?xgcf05') format('woff'),
+    url('../x_component_attendancev2/$Main/default/fonts/o2Attendance.svg?xgcf05#o2Attendance') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -154,4 +152,10 @@
 }
 .o2icon-radio-unchecked:before {
   content: "\ea56";
+}
+.o2icon-enlarge:before {
+  content: "\e989";
+}
+.o2icon-shrink:before {
+  content: "\e98a";
 }

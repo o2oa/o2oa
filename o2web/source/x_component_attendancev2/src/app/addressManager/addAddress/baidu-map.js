@@ -4,9 +4,12 @@ import { lp, o2 } from "@o2oa/component";
 import { getPublicData } from "../../../utils/actions";
 
 const template = `
-      <div class="bd-map">
-          <!-- 放百度地图 -->
-      </div>
+      <div class=" {{ $.isMax ? 'bd-map-container-fixed': 'bd-map-container'}}">
+        <div class="bd-map" >
+        <!-- 放百度地图 -->
+        </div>
+        <div class="icon bd-map-btn" @click="mapMaxOrMini" ><i class="{{  $.isMax ? 'o2icon-shrink' : 'o2icon-enlarge' }}"></i></div>
+    </div>
 `;
 
 export default content({
@@ -20,6 +23,7 @@ export default content({
         latitude: "",
         isView: false,
       },
+      isMax: false, // 地图放大
     };
   },
 
@@ -160,5 +164,9 @@ export default content({
       marker.setLabel(label);
     }
     this.map.addOverlay(marker);
+  },
+  // 地图放大缩小
+  mapMaxOrMini() {
+    this.bind.isMax = !this.bind.isMax;
   },
 });

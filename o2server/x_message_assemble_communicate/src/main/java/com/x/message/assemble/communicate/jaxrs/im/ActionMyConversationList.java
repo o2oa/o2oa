@@ -85,7 +85,7 @@ public class ActionMyConversationList extends BaseAction {
 				Date aC = a.getLastMessage().getCreateTime();
 				Date bC = b.getLastMessage().getCreateTime();
 				if (aC != null  && bC != null ) {
-					return Long.compare(aC.getTime(), bC.getTime());
+					return -(Long.compare(aC.getTime(), bC.getTime()));
 				} else {
 					return 0;
 				}

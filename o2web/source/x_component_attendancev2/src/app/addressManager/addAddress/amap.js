@@ -3,9 +3,12 @@ import { lp, o2 } from "@o2oa/component";
 
 import { getPublicData } from "../../../utils/actions";
 const template = `
+  <div class=" {{ $.isMax ? 'bd-map-container-fixed': 'bd-map-container'}}">
       <div class="bd-map" id="amap-container">
           <!-- 高德地图 -->
       </div>
+      <div class="icon bd-map-btn" @click="mapMaxOrMini" ><i class="{{  $.isMax ? 'o2icon-shrink' : 'o2icon-enlarge' }}"></i></div>
+  </div>
 `;
 
 // 高德地图组件
@@ -20,6 +23,7 @@ export default content({
         latitude: "",
         isView: false,
       },
+      isMax: false, // 地图放大
     };
   },
   afterRender() {
@@ -142,5 +146,9 @@ export default content({
     });
 
     this.map.add(marker);
+  },
+  // 地图放大缩小
+  mapMaxOrMini() {
+    this.bind.isMax = !this.bind.isMax;
   },
 });
