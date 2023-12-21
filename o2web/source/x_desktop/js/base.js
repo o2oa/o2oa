@@ -397,9 +397,18 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                     } else {
                         if (options) options.appId = appId;
                         if (appNamespace.loading && appNamespace.loading.then){
-                            appNamespace.loading.then(function(){
-                                _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent, node);
-                            });
+
+                            if (!layout.desktop.loadingAppIdArr) layout.desktop.loadingAppIdArr = [];
+                            if( !layout.desktop.loadingAppIdArr.contains( appId ) ){
+
+                                if( appId )layout.desktop.loadingAppIdArr.push(appId);
+
+                                appNamespace.loading.then(function(){
+                                    _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent, node);
+
+                                    if( appId )layout.desktop.loadingAppIdArr.erase(appId);
+                                });
+                            }
                         }else{
                             _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent, node);
                         }
