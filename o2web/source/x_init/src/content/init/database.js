@@ -31,6 +31,7 @@ const template = `
                 <div style="margin-top:1rem; margin-bottom:1rem; width: 98%; display: flex; justify-content: space-between;">
                     <oo-input label="用户名：　　" style="width: 48%" oo-model="externalDataSources.username"></oo-input>
                     <oo-input label="密码：" style="width: 48%" oo-model="externalDataSources.password"></oo-input>
+                    <oo-input label="schema：" style="width: 48%" oo-model="externalDataSources.schema"></oo-input>
                 </div>
                 
                 <div style="width: 98%; display: flex; justify-content: space-between;">
