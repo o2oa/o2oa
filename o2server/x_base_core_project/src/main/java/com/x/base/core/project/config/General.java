@@ -11,7 +11,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -35,13 +40,14 @@ public class General extends ConfigObject {
 	private static final long serialVersionUID = 4393280516414081348L;
 	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
-	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
-			File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName(),
-			FileWriter.class.getName(), java.lang.System.class.getName(), Paths.class.getName(), Files.class.getName(),
-			FileOutputStream.class.getName(), RandomAccessFile.class.getName(), Socket.class.getName(),
-			ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
-			ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
-			URL.class.getName(), URI.class.getName());
+	private static final Set<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = new HashSet<>(
+			Arrays.asList(Runtime.class.getName(), File.class.getName(), Path.class.getName(),
+					java.lang.ProcessBuilder.class.getName(), FileWriter.class.getName(),
+					java.lang.System.class.getName(), Paths.class.getName(), Files.class.getName(),
+					FileOutputStream.class.getName(), RandomAccessFile.class.getName(), Socket.class.getName(),
+					ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
+					ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
+					URL.class.getName(), URI.class.getName()));
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -59,8 +65,7 @@ public class General extends ConfigObject {
 	private static final List<String> DEFAULT_HTTPWHITELIST = Arrays.asList(DEFAULT_HTTP_WHITE);
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
 	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 86400;
-	private static final Map<String,String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN","简体中文",
-			"en","English");
+	private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN", "简体中文", "en", "English");
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -117,7 +122,7 @@ public class General extends ConfigObject {
 	private Boolean exposeJest;
 
 	@FieldDescribe("脚本中禁止用的类名,保持为空则默认禁用Runtime,File,Path.")
-	private List<String> scriptingBlockedClasses;
+	private Set<String> scriptingBlockedClasses;
 
 	@FieldDescribe("http referer 校验正则表达式,可以对CSRF攻击进行防护校验,样例:(.+?)o2oa.net(.+?)")
 	private String refererHeadCheckRegular = "";
@@ -144,7 +149,7 @@ public class General extends ConfigObject {
 	private Integer webServerCacheControlMaxAge;
 
 	@FieldDescribe("多语言配置，默认支持中文和英文.")
-	private Map<String,String> supportedLanguages;
+	private Map<String, String> supportedLanguages;
 
 	public Integer getWebServerCacheControlMaxAge() {
 		return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0) ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE
@@ -202,7 +207,7 @@ public class General extends ConfigObject {
 		return BooleanUtils.isTrue(this.requestLogBodyEnable);
 	}
 
-	public List<String> getScriptingBlockedClasses() {
+	public Set<String> getScriptingBlockedClasses() {
 		return (null == this.scriptingBlockedClasses) ? DEFAULT_SCRIPTINGBLOCKEDCLASSES : this.scriptingBlockedClasses;
 	}
 
@@ -225,7 +230,8 @@ public class General extends ConfigObject {
 	}
 
 	public Map<String, String> getSupportedLanguages() {
-		return supportedLanguages == null || supportedLanguages.isEmpty() ? DEFAULT_SUPPORTED_LANGUAGES : supportedLanguages;
+		return supportedLanguages == null || supportedLanguages.isEmpty() ? DEFAULT_SUPPORTED_LANGUAGES
+				: supportedLanguages;
 	}
 
 	public List<String> getHttpWhiteList() {

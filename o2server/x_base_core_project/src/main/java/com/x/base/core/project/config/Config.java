@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
@@ -90,6 +89,7 @@ public class Config {
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
+	public static final String PATH_COMMONS_COMMONSCRIPT = "commons/commonScript.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
@@ -730,7 +730,7 @@ public class Config {
 
 	private String initialScriptText;
 
-	public static synchronized String initialScriptText() throws IOException, URISyntaxException {
+	public static synchronized String initialScriptText() throws IOException {
 		if (null == instance().initialScriptText) {
 			instance().initialScriptText = BaseTools.readString(PATH_COMMONS_INITIALSCRIPTTEXT);
 		}
@@ -739,11 +739,20 @@ public class Config {
 
 	private String initialServiceScriptText;
 
-	public static synchronized String initialServiceScriptText() throws IOException, URISyntaxException {
+	public static synchronized String initialServiceScriptText() throws IOException {
 		if (null == instance().initialServiceScriptText) {
 			instance().initialServiceScriptText = BaseTools.readString(PATH_COMMONS_INITIALSERVICESCRIPTTEXT);
 		}
 		return instance().initialServiceScriptText;
+	}
+
+	private String commonScript;
+
+	public static synchronized String commonScript() throws IOException {
+		if (null == instance().commonScript) {
+			instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
+		}
+		return instance().commonScript;
 	}
 
 	private MimeTypes mimeTypes;
@@ -1158,7 +1167,7 @@ public class Config {
 
 	public General general;
 
-	public static synchronized General general() throws Exception {
+	public static synchronized General general() {
 		if (null == instance().general) {
 			General obj = BaseTools.readConfigObject(PATH_CONFIG_GENERAL, General.class);
 			if (null == obj) {

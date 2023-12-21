@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.o2oa</groupId>
@@ -55,6 +58,12 @@
 			<artifactId>app-stream-client</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -72,7 +81,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.annotation.DescribeBuilder
+							<mainClass>
+								com.x.base.core.project.annotation.DescribeBuilder
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
@@ -90,7 +100,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.annotation.ApiBuilder
+							<mainClass>
+								com.x.base.core.project.annotation.ApiBuilder
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
@@ -108,7 +119,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CheckAssemble
+							<mainClass>
+								com.x.base.core.project.build.CheckAssemble
 							</mainClass>
 						</configuration>
 					</execution>
@@ -122,7 +134,8 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CreateWebXml</mainClass>
+							<mainClass>
+								com.x.base.core.project.build.CreateWebXml</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
 								<argument>${project.artifactId}</argument>

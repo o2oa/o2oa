@@ -33,7 +33,7 @@ public class HandoverJob extends AbstractJob {
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		LOGGER.info("开始处理权限交接任务===");
+		LOGGER.info("开始处理权限交接任务.");
 		try {
 			List<String> list = list();
 			for (String id : list){
@@ -42,7 +42,7 @@ public class HandoverJob extends AbstractJob {
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
-		LOGGER.info("完成处理权限交接任务===");
+		LOGGER.info("完成处理权限交接任务.");
 	}
 
 	private void dear(String id){

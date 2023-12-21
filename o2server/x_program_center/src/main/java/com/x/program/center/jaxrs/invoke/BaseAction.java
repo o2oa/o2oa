@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -29,6 +30,7 @@ import com.x.base.core.project.jaxrs.WoTemporaryRedirect;
 import com.x.base.core.project.jaxrs.WoText;
 import com.x.base.core.project.jaxrs.WoValue;
 import com.x.base.core.project.script.AbstractResources;
+import com.x.base.core.project.scripting.GraalVMScriptingFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
@@ -42,6 +44,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private static final String SEEOTHER = "seeOther";
 	private static final String TEMPORARYREDIRECT = "temporaryRedirect";
 
+	@Deprecated(since = "8.3", forRemoval = true)
 	protected ActionResult<Object> executeInvoke(HttpServletRequest request, EffectivePerson effectivePerson,
 			JsonElement jsonElement, CacheCategory cacheCategory, Invoke invoke) throws Exception {
 		ActionResult<Object> result = new ActionResult<>();
@@ -85,6 +88,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		result.setData(woSeeOther);
 	}
 
+	@Deprecated(since = "8.3", forRemoval = true)
 	private void binding(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement,
 			ScriptContext scriptContext, CustomResponse customResponse) throws Exception {
 		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
@@ -100,6 +104,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_CUSTOMRESPONSE, customResponse);
 	}
 
+	@Deprecated(since = "8.3", forRemoval = true)
 	protected CompiledScript getCompiledScript(CacheCategory cacheCategory, Invoke invoke) throws ScriptException {
 		CacheKey cacheKey = new CacheKey(ActionExecuteToken.class, CompiledScript.class.getSimpleName(),
 				invoke.getId());
@@ -201,5 +206,60 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (StringUtils.isEmpty(client)) {
 			throw new ExceptionClientEmpty();
 		}
+	}
+
+	protected Source getSource(CacheCategory cacheCategory, Invoke invoke) {
+		CacheKey cacheKey = new CacheKey(ActionExecuteToken.class, Source.class.getSimpleName(), invoke.getId());
+		Source source = null;
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			source = (Source) optional.get();
+		} else {
+			source = GraalVMScriptingFactory.functionalization(invoke.getText());
+			CacheManager.put(cacheCategory, cacheKey, source);
+		}
+		return source;
+	}
+
+	protected ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson,
+			JsonElement jsonElement, CacheCategory cacheCategory, Invoke invoke) throws Exception {
+		ActionResult<Object> result = new ActionResult<>();
+		CustomResponse customResponse = new CustomResponse();
+		Resources resources = new Resources();
+		resources.setContext(ThisApplication.context());
+		resources.setOrganization(new Organization(ThisApplication.context()));
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setApplications(ThisApplication.context().applications());
+		GraalVMScriptingFactory.Bindings bindings = new GraalVMScriptingFactory.Bindings()
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources)
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_REQUESTTEXT, gson.toJson(jsonElement))
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_REQUEST, request)
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson)
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_CUSTOMRESPONSE, customResponse);
+		Wo wo = new Wo();
+		try {
+			Source source = this.getSource(cacheCategory, invoke);
+			JsonElement element = GraalVMScriptingFactory.eval(source, bindings);
+			if (StringUtils.equals(SEEOTHER, customResponse.type)) {
+				seeOther(result, customResponse);
+			} else if (StringUtils.equals(TEMPORARYREDIRECT, customResponse.type)) {
+				temporayRedirect(result, customResponse);
+			} else if (null != customResponse.value) {
+				if (StringUtils.isNotEmpty(customResponse.contentType)) {
+					result.setData(new WoContentType(customResponse.value, customResponse.contentType));
+				} else if (customResponse.value instanceof WoText) {
+					result.setData(customResponse.value);
+				} else {
+					wo.setValue(customResponse.value);
+					result.setData(wo);
+				}
+			} else {
+				wo.setValue(element);
+				result.setData(wo);
+			}
+		} catch (Exception e) {
+			throw new ExceptionExecuteError(invoke.getName(), e);
+		}
+		return result;
 	}
 }

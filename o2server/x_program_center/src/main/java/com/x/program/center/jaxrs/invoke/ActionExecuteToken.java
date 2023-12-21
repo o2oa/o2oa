@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.http.TokenType;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -21,8 +19,10 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.Crypto;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Invoke;
@@ -88,11 +88,11 @@ class ActionExecuteToken extends BaseAction {
 						.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
 					tokenType = TokenType.auditManager;
 				}
-				effectivePerson = new EffectivePerson(person, tokenType,
-						Config.token().getCipher(), Config.person().getEncryptType());
+				effectivePerson = new EffectivePerson(person, tokenType, Config.token().getCipher(),
+						Config.person().getEncryptType());
 			}
 		}
-		return executeInvoke(request, effectivePerson, jsonElement, cacheCategory, invoke);
+		return execute(request, effectivePerson, jsonElement, cacheCategory, invoke);
 	}
 
 	private void checkTimeThreshold(String time) throws ExceptionTokenExpired {
