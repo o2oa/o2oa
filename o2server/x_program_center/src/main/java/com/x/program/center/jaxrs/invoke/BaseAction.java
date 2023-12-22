@@ -73,7 +73,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				result.setData(wo);
 			}
 		} catch (Exception e) {
-			throw new ExceptionExecuteError(invoke.getName(), e);
+			throw new ExceptionInvokeExecute(e, invoke.getId(), invoke.getName());
 		}
 		return result;
 	}
@@ -258,7 +258,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				result.setData(wo);
 			}
 		} catch (Exception e) {
-			throw new ExceptionExecuteError(invoke.getName(), e);
+			throw new ExceptionInvokeExecute(e, invoke.getId(), invoke.getName());
 		}
 		return result;
 	}
