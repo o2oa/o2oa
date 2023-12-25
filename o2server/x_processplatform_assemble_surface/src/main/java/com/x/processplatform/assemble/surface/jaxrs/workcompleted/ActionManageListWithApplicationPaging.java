@@ -71,7 +71,7 @@ class ActionManageListWithApplicationPaging extends BaseAction {
 			p = predicateTitle(wi, p, workCriteria);
 			List<String> processes = business.process().listWithApplication(application);
 			if (ListTools.isNotEmpty(wi.getProcessList())) {
-				ListUtils.intersection(wi.getProcessList(), processes);
+				processes = ListUtils.intersection(wi.getProcessList(), processes);
 			}
 			List<String> controllableProcesses = ListUtils.intersection(processes,
 					business.process().listControllableProcess(effectivePerson, application));
