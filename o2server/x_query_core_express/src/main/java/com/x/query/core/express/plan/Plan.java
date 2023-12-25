@@ -2,10 +2,12 @@ package com.x.query.core.express.plan;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -51,6 +53,8 @@ import com.x.query.core.entity.Item_;
 public abstract class Plan extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -4281507899642115426L;
+
+	private static final Collator COLLATOR = Collator.getInstance(Locale.CHINESE);
 
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
@@ -146,9 +150,9 @@ public abstract class Plan extends GsonPropertyObject {
 				Comparable c1 = (Comparable) o1;
 				Comparable c2 = (Comparable) o2;
 				if (StringUtils.equals(SelectEntry.ORDER_ASC, orderType)) {
-					return c1.compareTo(c2);
+					return COLLATOR.compare(c1, c2);
 				} else {
-					return c2.compareTo(c1);
+					return COLLATOR.compare(c2, c1);
 				}
 			}
 		}).collect(Collectors.toList());
