@@ -34,7 +34,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
-		<graalvm.version>22.2.0.1</graalvm.version>
+		<graalvm.version>22.3.4</graalvm.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
@@ -451,29 +451,26 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.graalvm.sdk</groupId>
-			<artifactId>graal-sdk</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.js</groupId>
-			<artifactId>js</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.js</groupId>
-			<artifactId>js-scriptengine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.tools</groupId>
-			<artifactId>profiler</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.tools</groupId>
-			<artifactId>chromeinspector</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+			<dependency>
+				<groupId>org.graalvm.sdk</groupId>
+				<artifactId>graal-sdk</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.js</groupId>
+				<artifactId>js</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.js</groupId>
+				<artifactId>js-scriptengine</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.tools</groupId>
+				<artifactId>profiler</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.tools</groupId>
+				<artifactId>chromeinspector</artifactId>
+			</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -1069,127 +1066,127 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_correlation_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_correlation_core_express</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>8.2</version>
+				<version>8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
@@ -1286,7 +1283,6 @@
 				<groupId>org.graalvm.js</groupId>
 				<artifactId>js</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.graalvm.js</groupId>
@@ -1297,13 +1293,11 @@
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>profiler</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>chromeinspector</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
