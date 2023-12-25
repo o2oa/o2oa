@@ -34,7 +34,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
-		<graalvm.version>22.2.0.1</graalvm.version>
+		<graalvm.version>22.3.4</graalvm.version>
 	</properties>
 	<modules>
 		<module>x_base_core_project</module>
@@ -1283,7 +1283,6 @@
 				<groupId>org.graalvm.js</groupId>
 				<artifactId>js</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.graalvm.js</groupId>
@@ -1294,13 +1293,11 @@
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>profiler</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.graalvm.tools</groupId>
 				<artifactId>chromeinspector</artifactId>
 				<version>${graalvm.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
