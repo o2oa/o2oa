@@ -36,6 +36,7 @@ class ActionExecute extends BaseAction {
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			/* 判断当前用户是否有权限访问 */
@@ -75,12 +76,10 @@ class ActionExecute extends BaseAction {
 						compiledScript = ScriptingFactory.functionalizationCompile(agent.getText());
 						CacheManager.put(cacheCategory, cacheKey, compiledScript);
 					}
-
 					try {
 						JsonScriptingExecutor.eval(compiledScript, scriptContext);
 					} catch (Exception e) {
-						throw new ExceptionAgentEval(e, e.getMessage(), agent.getId(), agent.getName(),
-								agent.getAlias(), agent.getText());
+						throw new ExceptionAgentExecute(e, agent.getId(), agent.getName());
 					}
 				} finally {
 					LOCK.remove(agent.getId());

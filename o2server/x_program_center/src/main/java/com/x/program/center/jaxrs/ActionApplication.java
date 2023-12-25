@@ -36,6 +36,7 @@ import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
 import com.x.program.center.jaxrs.script.ScriptAction;
+import com.x.program.center.jaxrs.test.TestAction;
 import com.x.program.center.jaxrs.tokenthreshold.TokenThresholdAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
 import com.x.program.center.jaxrs.validation.ValidationAction;
@@ -85,6 +86,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(DictAction.class);
 		classes.add(ScriptAction.class);
 		classes.add(AndFxAction.class);
+		classes.add(TestAction.class);
 		return classes;
 	}
 }
