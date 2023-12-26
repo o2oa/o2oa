@@ -84,11 +84,12 @@ MWFCalendar.EventForm = new Class({
                     this.calendarIds = [];
                     this.calendarNames = [];
                     this.calendarList = [];
+                    debugger;
                     (json.data.myCalendars || []).each(function (c) {
-                        if (c.publishable || c.manageable) this.calendarList.push(c)
+                        if ((c.publishable || c.manageable) && c.status !== "CLOSE") this.calendarList.push(c)
                     }.bind(this));
                     (json.data.unitCalendars || []).each(function (c) {
-                        if (c.publishable || c.manageable) this.calendarList.push(c)
+                        if ((c.publishable || c.manageable)  && c.status !== "CLOSE") this.calendarList.push(c)
                     }.bind(this));
                     this.calendarList.each(function (d) {
                         this.calendarIds.push(d.id);
