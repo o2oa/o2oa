@@ -54,7 +54,7 @@ public class ActionStatisticExportExcel extends BaseAction {
             if (StringUtils.isEmpty(wi.getEndDate())) {
                 throw new ExceptionEmptyParameter("结束日期");
             }
-            LOGGER.info("开始统计考勤数据。。。filter: {}, start:{}, end:{} ", ListTools.toStringJoin(wi.getFilterList()), wi.getStartDate(), wi.getEndDate());
+            LOGGER.info("开始统计考勤数据, filter: {}, start:{}, end:{} ", ListTools.toStringJoin(wi.getFilterList()), wi.getStartDate(), wi.getEndDate());
             // 日期检查
             Date startDate = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd); // 检查格式
             Date endDate = DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd); // 检查格式
@@ -97,7 +97,7 @@ public class ActionStatisticExportExcel extends BaseAction {
             return result;
         } finally {
             lock.unlock();
-            LOGGER.info("统计结束。。。。。。。。。。。。");
+            LOGGER.info("统计结束！");
         }
     }
 
