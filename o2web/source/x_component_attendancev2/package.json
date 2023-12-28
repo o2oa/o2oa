@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@o2oa/component": "^1.1.6",
-    "@o2oa/oovm": "^2.1.51",
-    "@o2oa/util": "^1.0.26"
+    "@o2oa/oovm": "^2.1.59",
+    "@o2oa/util": "^1.0.29"
   },
   "browserslist": [
     "> 0.1%",
