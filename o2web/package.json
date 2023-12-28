@@ -55,5 +55,8 @@
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10"
+  },
+  "dependencies": {
+    "@o2oa/component": "^1.1.7"
   }
 }
