@@ -605,9 +605,11 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
             var id = this.propertyExecuteButton.retrieve("id");
             if( id )o2.Actions.load("x_program_center").AgentAction.execute(id, function () {
                 this.notice( this.lp.runSuccess, "success");
-            }.bind(this), function () {
-                this.notice("request processToolbars error: "+xhr.responseText, "error");
             }.bind(this));
+            //, function (xhr) {
+            //     var responseJSON = JSON.parse( xhr.responseText );
+            //     this.notice("request error: "+responseJSON.message, "error");
+            // }.bind(this));
         }.bind(this));
         this.propertyExecuteButton.setStyle("margin","0px");
 
