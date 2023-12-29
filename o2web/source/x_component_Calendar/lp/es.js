@@ -1,6 +1,7 @@
-MWF.xApplication.Calendar.LP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.Calendar = MWF.xApplication.Calendar || {};
+MWF.xApplication.Calendar.LP={
 	"title": "Agenda",
-
 	"calendar": "Calendario",
 	"event": "Evento",
 	"subject": "Título",
@@ -23,7 +24,6 @@ MWF.xApplication.Calendar.LP = {
 	"cancel": "Cancelar",
 	"close": "Cerrar",
 	"save": "Guardar",
-	//"inputAddress": "Ingrese la dirección",
 	"begin": "Inicio",
 	"beginTime": "Hora de inicio",
 	"end": "Fin",
@@ -33,7 +33,10 @@ MWF.xApplication.Calendar.LP = {
 	"repeat": "Repetir",
 	"notRepeat": "No repetir",
 	"repeatUntilAvailable": "Finalizar",
-	"repeatUntilAvailableTextArr": ["Nunca", "Fecha final"],
+	"repeatUntilAvailableTextArr": [
+		"Nunca",
+		"Fecha final"
+	],
 	"eventTime": "Horario del evento",
 	"endDate": "Fecha final",
 	"remindWhenBegin": "Recordar al inicio",
@@ -44,10 +47,12 @@ MWF.xApplication.Calendar.LP = {
 	"createNewCalendar": "Crear calendario",
 	"seeMore": "Ver más",
 	"calendarMarket": "Plaza del calendario",
-
-    "description": "Comentario",
+	"description": "Comentario",
 	"type": "Tipo",
-	"canlendarTypeArr": ["Calendario personal", "Calendario de organización"],
+	"canlendarTypeArr": [
+		"Calendario personal",
+		"Calendario de organización"
+	],
 	"unitCalendar": "Departamento",
 	"myFollowCalendar": "Seguir",
 	"unit": "Unidad perteneciente",
@@ -60,41 +65,65 @@ MWF.xApplication.Calendar.LP = {
 	"cancelFollowSuccess": "El seguimiento se ha cancelado satisfactoriamente",
 	"follow": "Seguir",
 	"followSuccess": "Se ha seguido satisfactoriamente",
-
 	"saveOptionDialogTitle": "Modificar",
 	"selectModifyCalendarTypeNotice": "Seleccione el tipo de cambio de evento que desea realizar",
-	"calendarModifyTypeArr": ["Solo modificar este evento", "Modificar este evento y eventos repetidos futuros", "Modificar todos los eventos repetidos"],
-
+	"calendarModifyTypeArr": [
+		"Solo modificar este evento",
+		"Modificar este evento y eventos repetidos futuros",
+		"Modificar todos los eventos repetidos"
+	],
 	"deleteOptionDialogTitle": "Eliminar",
 	"selectDeleteCalendarTypeNotice": "Seleccione el tipo de eliminación de evento que desea realizar",
-	"calendarDeleteTypeArr": ["Solo eliminar este evento", "Eliminar este evento y eventos repetidos futuros", "Eliminar todos los eventos repetidos"],
-
-    "countEvents": "Eventos",
+	"calendarDeleteTypeArr": [
+		"Solo eliminar este evento",
+		"Eliminar este evento y eventos repetidos futuros",
+		"Eliminar todos los eventos repetidos"
+	],
+	"countEvents": "Eventos",
 	"noEventWeek": "No hay eventos esta semana",
 	"am": "AM",
 	"pm": "PM",
 	"eventNotice": "Recordatorio de eventos",
-
 	"delete": "Eliminar",
-
 	"cancel_confirm_title": "Confirmación",
 	"cancel_confirm": "¿Está seguro de que desea eliminar el evento \"{name}\"? Esta acción no se puede deshacer.",
-
 	"cancelEvent": "Eliminar evento",
-
 	"addEvent": "Nuevo evento",
 	"editEvent": "Editar evento",
 	"readEvent": "Ver evento",
 	"color": "Color",
-	"repeatFrequencyArr": ["No", "Diariamente", "Semanalmente", "Mensualmente (en este día)", "Anualmente (en este día)"],
-	"repeatFrequencyArr2": ["No repetir", "Diariamente", "Semanalmente", "Mensualmente (en este día)", "Anualmente (en este día)"],
+	"repeatFrequencyArr": [
+		"No",
+		"Diariamente",
+		"Semanalmente",
+		"Mensualmente (en este día)",
+		"Anualmente (en este día)"
+	],
+	"repeatFrequencyArr2": [
+		"No repetir",
+		"Diariamente",
+		"Semanalmente",
+		"Mensualmente (en este día)",
+		"Anualmente (en este día)"
+	],
 	"repeatInfor": "Repetir cada {frequency}",
-	"remindIntervalArr": ["No recordar", "Al inicio", "5 minutos antes", "10 minutos antes", "15 minutos antes", "30 minutos antes", "1 hora antes", "2 horas antes"],
+	"remindIntervalArr": [
+		"No recordar",
+		"Al inicio",
+		"5 minutos antes",
+		"10 minutos antes",
+		"15 minutos antes",
+		"30 minutos antes",
+		"1 hora antes",
+		"2 horas antes"
+	],
 	"allDay": "Todo el día",
-	"trueFalseArr": ["Sí", "No"],
+	"trueFalseArr": [
+		"Sí",
+		"No"
+	],
 	"font": "Fuente",
-
-    "refresh": "Actualizar",
+	"refresh": "Actualizar",
 	"setting": "Configuración",
 	"phone": "Teléfono",
 	"mail": "Correo electrónico",
@@ -104,48 +133,31 @@ MWF.xApplication.Calendar.LP = {
 	"eventDetail": "Detalles",
 	"content": "Contenido",
 	"none": "Ninguno",
-
 	"address": "Dirección",
 	"locationName": "Nombre del lugar",
 	"name": "Nombre",
 	"eventTopInfor": "{userName}, hola! <br/> ¡Hoy tienes<span style='color: #FB4747'>{count}</span> eventos en tu agenda!: ",
 	"noEventTopInfor": "{userName}, hola! No tienes eventos programados para hoy. ",
-
-    "createSuccess": "¡Creado exitosamente!",
+	"createSuccess": "¡Creado exitosamente!",
 	"updateSuccess": "¡Guardado exitosamente!",
 	"config_saveSuccess": "¡Configuración guardada correctamente!",
-
 	"deleteCalendar": "Eliminar calendario",
 	"deleteCalendarTitle": "Confirmar",
 	"deleteCalendarContent": "¿Está seguro de que desea eliminar \"{name}\"? Esta acción no se puede deshacer.",
 	"deleteSuccess": "Eliminado correctamente",
-
 	"editCalendar": "Editar calendario",
 	"onlyViewCurrent": "Calendario actual",
 	"viewCalendar": "Detalles del calendario",
 	"noPublicCalendar": "¡No hay calendarios públicos en el sistema!",
 	"create": "Crear",
-
 	"cancel_createEvent_title": "Confirmación",
 	"cancel_createEvent": "Perderá la información ingresada en el evento. ¿Está seguro de que desea cancelar la creación del evento?",
-
 	"event_input_error": "Por favor, complete los siguientes campos correctamente:<br/>",
-    //"event_input_subject_error": "请填写完整日程标题！",
-    //"event_input_room_error": "请选择日程室！",
-    //"event_input_person_error": "请选择邀请参会人员！",
-    //"event_input_date_error": "请正确选择日程开始日期和时间！",
-    //"event_input_time_error": "请正确选择日程开始时间和结束时间！",
-
-    "event_input_subject_error": "¡El título del evento no puede estar vacío!",
+	"event_input_subject_error": "¡El título del evento no puede estar vacío!",
 	"event_input_time_error": "¡La hora de finalización del evento no puede ser anterior a la hora de inicio!",
-
-
-    //"event_input_subject_error": "请填写完整日程标题！",
-    "event_saveSuccess": "¡Evento guardado correctamente!",
-
+	"event_saveSuccess": "¡Evento guardado correctamente!",
 	"deleteAttachmentTitle": "Confirmación",
 	"deleteAttachment": "¿Está seguro de que desea eliminar los archivos adjuntos seleccionados?",
-
 	"dateFormatMonth": "%Y年%m月",
 	"dateFormatMonthDay": "%m月%d日",
 	"dateFormatMonthDay2": "%m月%e日",
@@ -168,13 +180,11 @@ MWF.xApplication.Calendar.LP = {
 	"manager": "Administrador",
 	"viewerRange": "Rango visible",
 	"publisherRange": "Rango de creación",
-
-    "noTask": "No hay eventos programados para hoy.",
+	"noTask": "No hay eventos programados para hoy.",
 	"noEvent": "No hay eventos programados para este día.",
 	"noAddress": "Dirección no especificada",
 	"noEventCurMonth": "No hay eventos programados para este mes.",
 	"weeklyViewTitle": "{month}, semana {week}",
-
 	"week": "Semana",
 	"weeks": {
 		"Sun": "Domingo",
@@ -184,8 +194,24 @@ MWF.xApplication.Calendar.LP = {
 		"Thur": "Jueves",
 		"Fri": "Viernes",
 		"Sat": "Sábado",
-		"arr": ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-		"rruleArr": ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+		"arr": [
+			"Domingo",
+			"Lunes",
+			"Martes",
+			"Miércoles",
+			"Jueves",
+			"Viernes",
+			"Sábado"
+		],
+		"rruleArr": [
+			"SU",
+			"MO",
+			"TU",
+			"WE",
+			"TH",
+			"FR",
+			"SA"
+		]
 	},
 	"weeksShort": {
 		"Sun": "Dom",
@@ -195,11 +221,27 @@ MWF.xApplication.Calendar.LP = {
 		"Thur": "Jue",
 		"Fri": "Vie",
 		"Sat": "Sáb",
-		"arr": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
-		"rruleArr": ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+		"arr": [
+			"Dom",
+			"Lun",
+			"Mar",
+			"Mié",
+			"Jue",
+			"Vie",
+			"Sáb"
+		],
+		"rruleArr": [
+			"SU",
+			"MO",
+			"TU",
+			"WE",
+			"TH",
+			"FR",
+			"SA"
+		]
 	},
-    "config": {
-        "navi": "Navegación",
+	"config": {
+		"navi": "Navegación",
 		"autoHide": "Ocultar automáticamente",
 		"default": "Vista predeterminada",
 		"applyProcess": "Proceso del evento",
@@ -213,9 +255,12 @@ MWF.xApplication.Calendar.LP = {
 		"viewSetting": "Vista habilitada",
 		"viewCustomName": "Nombre personalizado de la vista",
 		"mobileCreateEnable": "¿Permitir la creación de eventos en dispositivos móviles?",
-		"mobileCreateEnableOptions": ["Sí", "No"]
-    },
-    "nextActivity": "Próxima actividad:",
+		"mobileCreateEnableOptions": [
+			"Sí",
+			"No"
+		]
+	},
+	"nextActivity": "Próxima actividad:",
 	"nextUser": "Persona encargada:",
 	"deal": "Procesar",
 	"processStarted": "Proceso iniciado",
@@ -227,4 +272,5 @@ MWF.xApplication.Calendar.LP = {
 		"current": "Actualmente tienes",
 		"someEvent": "eventos programados!"
 	}
-};
+}
+MWF.xApplication.Calendar["lp."+o2.language] = MWF.xApplication.Calendar.LP
