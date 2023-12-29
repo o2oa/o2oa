@@ -43,10 +43,12 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
     },
     _queryLoaded: function(){
         var data = this._getBusinessData();
-        if( ["datetimerange"].contains(this.json.selectType) ) {
-            if (typeOf(data) === "string") this._setBusinessData([data, ""]);
-        }else{
-            if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+        if( data ){
+            if( ["datetimerange"].contains(this.json.selectType) ) {
+                if (typeOf(data) === "string") this._setBusinessData([data, ""]);
+            }else{
+                if( typeOf(data) === "array" )this._setBusinessData(data[0] || "");
+            }
         }
     },
     __setReadonly: function(data){
