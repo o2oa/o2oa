@@ -32,22 +32,11 @@ public class JpushConfig extends ConfigObject {
     private String appKey;
     @FieldDescribe("极光推送应用的Master Secret")
     private String masterSecret;
+    // "thirdPartyChannel": { "xiaomi": {"channel_id": ""}, "huawei": { "importance": "NORMAL", "category": "WORK" } }
+    @FieldDescribe("第三方通道参数配置")
+    private Map<String, Map<String, String>> thirdPartyChannel;
 
 
-    @FieldDescribe("华为通道参数配置")
-    private Map<String, String> huawei;
-
-
-    @FieldDescribe("小米通道参数配置")
-    private Map<String, String> xiaomi;
-
-
-    @FieldDescribe("VIVO通道参数配置")
-    private Map<String, String> vivo;
-
-
-    @FieldDescribe("OPPO通道参数配置")
-    private Map<String, String> oppo;
 
 
 
@@ -88,35 +77,11 @@ public class JpushConfig extends ConfigObject {
         this.masterSecret = masterSecret;
     }
 
-    public Map<String, String> getHuawei() {
-        return huawei;
+    public Map<String, Map<String, String>> getThirdPartyChannel() {
+        return thirdPartyChannel;
     }
 
-    public void setHuawei(Map<String, String> huawei) {
-        this.huawei = huawei;
-    }
-
-    public Map<String, String> getXiaomi() {
-        return xiaomi;
-    }
-
-    public void setXiaomi(Map<String, String> xiaomi) {
-        this.xiaomi = xiaomi;
-    }
-
-    public Map<String, String> getVivo() {
-        return vivo;
-    }
-
-    public void setVivo(Map<String, String> vivo) {
-        this.vivo = vivo;
-    }
-
-    public Map<String, String> getOppo() {
-        return oppo;
-    }
-
-    public void setOppo(Map<String, String> oppo) {
-        this.oppo = oppo;
+    public void setThirdPartyChannel(Map<String, Map<String, String>> thirdPartyChannel) {
+        this.thirdPartyChannel = thirdPartyChannel;
     }
 }

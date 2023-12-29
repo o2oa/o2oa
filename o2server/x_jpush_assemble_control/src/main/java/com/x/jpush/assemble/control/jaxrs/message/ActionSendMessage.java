@@ -100,48 +100,21 @@ public class ActionSendMessage extends StandardJaxrsAction {
                 .build();
 
         // 第三方通道的特殊参数
+        Map<String, Map<String, String>> thirdPartyChannelConfig = Config.pushConfig().getThirdPartyChannel();
         Map<String, JsonObject> thirdPartyChannel = new HashMap<>();
-        // huawei 参数 importance：NORMAL ， category：WORK
-        Map<String, String> huaweiProperty = Config.pushConfig().getHuawei();
-        if (huaweiProperty != null && !huaweiProperty.isEmpty()) {
-            JsonObject huawei = new JsonObject();
-            for (Map.Entry<String, String> entry : huaweiProperty.entrySet()) {
-                huawei.addProperty(entry.getKey(), entry.getValue());
+        if (thirdPartyChannelConfig != null && !thirdPartyChannelConfig.isEmpty()) {
+            for (Map.Entry<String, Map<String, String>> entry : thirdPartyChannelConfig.entrySet()) {
+                String key = entry.getKey();
+                Map<String, String> value = entry.getValue();
+                if (value != null && !value.isEmpty()) {
+                    JsonObject channel = new JsonObject();
+                    for (Map.Entry<String, String> channelEntry : value.entrySet()) {
+                        channel.addProperty(channelEntry.getKey(), channelEntry.getValue());
+                    }
+                    thirdPartyChannel.put(key, channel);
+                }
             }
-//            huawei.addProperty("importance", "NORMAL");
-//            huawei.addProperty("category", "WORK");
-            thirdPartyChannel.put("huawei", huawei);
         }
-        // xiaomi参数 channel_id:xxxxx
-        Map<String, String> xiaomiProperty = Config.pushConfig().getXiaomi();
-        if (xiaomiProperty != null && !xiaomiProperty.isEmpty()) {
-            JsonObject xiaomi = new JsonObject();
-            for (Map.Entry<String, String> entry : xiaomiProperty.entrySet()) {
-                xiaomi.addProperty(entry.getKey(), entry.getValue());
-            }
-//            xiaomi.addProperty("channel_id", "113850");
-            thirdPartyChannel.put("xiaomi", xiaomi);
-        }
-
-        // oppo参数
-        Map<String, String>  oppoProperty = Config.pushConfig().getOppo();
-        if (oppoProperty != null && !oppoProperty.isEmpty()) {
-            JsonObject oppo = new JsonObject();
-            for (Map.Entry<String, String> entry : oppoProperty.entrySet()) {
-                oppo.addProperty(entry.getKey(), entry.getValue());
-            }
-            thirdPartyChannel.put("oppo", oppo);
-        }
-        // vivo参数
-        Map<String, String>  vivoProperty = Config.pushConfig().getVivo();
-        if (vivoProperty != null && !vivoProperty.isEmpty()) {
-            JsonObject vivo = new JsonObject();
-            for (Map.Entry<String, String> entry : vivoProperty.entrySet()) {
-                vivo.addProperty(entry.getKey(), entry.getValue());
-            }
-            thirdPartyChannel.put("vivo", vivo);
-        }
-
         PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
                 .setAudience(Audience.registrationId(jiguangDeviceList))
                 .setNotification(n)
