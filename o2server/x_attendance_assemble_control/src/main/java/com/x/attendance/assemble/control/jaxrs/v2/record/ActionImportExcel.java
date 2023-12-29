@@ -42,7 +42,9 @@ public class ActionImportExcel extends BaseAction {
     ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
             throws Exception {
         lock.lock();
-        LOGGER.info("开始导入打卡记录数据。。。。。。。。。。");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("开始导入打卡记录数据！！！！！！");
+        }
         try (InputStream is = new ByteArrayInputStream(bytes);
              XSSFWorkbook workbook = new XSSFWorkbook(is);
              ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -99,7 +101,9 @@ public class ActionImportExcel extends BaseAction {
             return result;
         } finally {
             lock.unlock();
-            LOGGER.info("导入结束。。。。。。。。。。。。");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("导入结束！！！！！！");
+            }
         }
     }
 

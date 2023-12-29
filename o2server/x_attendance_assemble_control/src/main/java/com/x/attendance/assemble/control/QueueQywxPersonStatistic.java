@@ -30,7 +30,7 @@ public class QueueQywxPersonStatistic extends AbstractQueue<Date> {
 
     @Override
     protected void execute(Date date) throws Exception {
-        logger.info("开始执行人员企业微信考勤统计。。。time:"+DateTools.format(date));
+        logger.info("开始执行人员企业微信考勤统计，time:"+DateTools.format(date));
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             saveStatisticPersonForMonth(business, emc, date);
@@ -126,7 +126,7 @@ public class QueueQywxPersonStatistic extends AbstractQueue<Date> {
 
                 //是否还有更多用户
                 if (list.size() < personPageSize) {
-                    logger.info("统计企业微信考勤个人数据 结束。。。。。。。。。。。。。。。");
+                    logger.info("统计企业微信考勤个人数据 结束！");
                     hasNextPerson = false;
                 } else {
                     //还有更多用户继续查询
@@ -134,7 +134,7 @@ public class QueueQywxPersonStatistic extends AbstractQueue<Date> {
                 }
             }else {
                 //没有用户查询到结束
-                logger.info("统计企业微信考勤个人数据 结束。。。。。。。。。。。。。。。");
+                logger.info("统计企业微信考勤个人数据 结束！");
                 hasNextPerson = false;
             }
         }

@@ -154,7 +154,7 @@ export default content({
         break;
       }
     }
-    if (detail) {
+    if (detail && detail.workDay) {
       const recordList = detail.recordList || [];
       for (let index = 0; index < recordList.length; index++) {
         const element = recordList[index];

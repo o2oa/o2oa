@@ -48,7 +48,7 @@ public class DingdingStreamClient {
               }
               // 处理事件
               if (tags.contains(eventType)) {
-                logger.info("通讯录变更。。。。添加定时任务的队列消息。event : {}", eventType);
+                logger.info("通讯录变更，添加定时任务的队列消息。event : {}", eventType);
                 ThisApplication.dingdingSyncOrganizationCallbackRequest.add(new Object());
               }
               // 消费成功

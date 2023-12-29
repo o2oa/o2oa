@@ -28,7 +28,6 @@ public class ActionSyncOrganizationCallbackUrlRegister extends BaseAction {
 
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, boolean enable) throws Exception {
-        logger.info("注册钉钉回调接口。。。。。。。");
         ActionResult<Wo> result = new ActionResult<>();
         if (Config.dingding().getEnable()) {
             RegisterObject registerObject = new RegisterObject();
