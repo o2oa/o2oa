@@ -25,8 +25,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Application", description = "服务管理应用.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.Application.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Application.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Application.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Application.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -34,7 +34,7 @@ public class Application extends SliceJpaObject {
 
 	private static final long serialVersionUID = 874852784032487858L;
 
-	private static final String TABLE = PersistenceProperties.Application.table;
+	private static final String TABLE = PersistenceProperties.Application.TABLE;
 
 	public String getId() {
 		return id;

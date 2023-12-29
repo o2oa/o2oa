@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "UnexpectedErrorLog", description = "服务管理异常错误.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
-@Table(name = PersistenceProperties.UnexpectedErrorLog.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.UnexpectedErrorLog.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.UnexpectedErrorLog.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.UnexpectedErrorLog.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -35,7 +35,7 @@ public class UnexpectedErrorLog extends SliceJpaObject {
 
 	private static final long serialVersionUID = -2976141463716490951L;
 
-	private static final String TABLE = PersistenceProperties.UnexpectedErrorLog.table;
+	private static final String TABLE = PersistenceProperties.UnexpectedErrorLog.TABLE;
 
 	public String getId() {
 		return id;

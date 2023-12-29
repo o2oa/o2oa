@@ -92,23 +92,25 @@ public class TriggerAgent extends BaseAction {
 			if (StringUtils.isEmpty(pair.getCron())) {
 				return;
 			}
+			if (LOCK.contains(pair.getId())) {
+				throw new ExceptionAgentLastNotEnd(pair);
+			}
 			Date date = CronTools.next(pair.getCron(), pair.getLastStartTime());
 			if (date.before(new Date())) {
-				if (LOCK.contains(pair.getId())) {
-					throw new ExceptionAgentLastNotEnd(pair);
-				}
 				Agent agent = null;
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					agent = emc.find(pair.getId(), Agent.class);
 				}
 				if (null != agent && agent.getEnable() && StringTools.ifScriptHasEffectiveCode(agent.getText())) {
-					LOGGER.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
-							pair.getName(), pair.getCron(),
+					LOGGER.info("trigger agent:{}, name:{}, cron:{}, lastStartTime:{}.", pair.getId(), pair.getName(),
+							pair.getCron(),
 							(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
 					ExecuteThread thread = new ExecuteThread(agent);
 					executorService.execute(thread);
 				}
 			}
+		} catch (ExceptionAgentLastNotEnd e) {
+			LOGGER.error(e);
 		} catch (Exception e) {
 			LOGGER.error(new ExceptionAgentTrigger(e, pair.getId(), pair.getName(), pair.getCron()));
 		}
@@ -202,8 +204,6 @@ public class TriggerAgent extends BaseAction {
 				} else {
 					evalRemote(centerServer);
 				}
-			} catch (Exception e) {
-				LOGGER.error(e);
 			} finally {
 				LOCK.remove(agent.getId());
 			}
@@ -215,8 +215,7 @@ public class TriggerAgent extends BaseAction {
 						Config.url_x_program_center_jaxrs(centerServer, "agent", agent.getId(), "execute") + "?tt="
 								+ System.currentTimeMillis());
 			} catch (Exception e) {
-				LOGGER.warn("trigger agent {} on center {} error:{}", agent.getName(), centerServer.getKey(),
-						e.getMessage());
+				LOGGER.error(new ExceptionAgentEvalRemote(e, agent.getId(), agent.getName(), centerServer.getKey()));
 			}
 		}
 
@@ -224,12 +223,12 @@ public class TriggerAgent extends BaseAction {
 			try {
 				eval();
 			} catch (Exception e) {
-				LOGGER.error(new ExceptionAgentExecute(e, agent.getId(), agent.getName()));
+				LOGGER.error(new ExceptionAgentEvalLocal(e, agent.getId(), agent.getName()));
 			}
 		}
 
 		private void eval() throws Exception {
-			updateLastStartTime();
+			stampLastStartTime();
 			CacheCategory cacheCategory = new CacheCategory(Agent.class);
 			CacheKey cacheKey = new CacheKey(TriggerAgent.class, agent.getId());
 			Source source = null;
@@ -248,10 +247,10 @@ public class TriggerAgent extends BaseAction {
 			resources.setApplications(ThisApplication.context().applications());
 			bindings.putMember(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
 			GraalVMScriptingFactory.eval(source, bindings);
-			updateLastEndTime();
+			stampLastEndTime();
 		}
 
-		private void updateLastStartTime() throws Exception {
+		private void stampLastStartTime() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Agent o = emc.find(agent.getId(), Agent.class);
 				if (null != o) {
@@ -262,7 +261,7 @@ public class TriggerAgent extends BaseAction {
 			}
 		}
 
-		private void updateLastEndTime() {
+		private void stampLastEndTime() {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Agent o = emc.find(agent.getId(), Agent.class);
 				if (null != o) {
@@ -278,35 +277,33 @@ public class TriggerAgent extends BaseAction {
 		private Map.Entry<String, CenterServer> getCenterServer(String agentId) {
 			try {
 				Map.Entry<String, CenterServer> entry = AGENTRUNONCENTERSERVER.get(agentId);
-				if (null != entry) {
-					ActionResponse response = CipherConnectionAction.get(false, 2000, 4000,
-							Config.url_x_program_center_jaxrs(entry, "echo"));
-					JsonElement jsonElement = response.getData(JsonElement.class);
-					if (null != jsonElement && (!jsonElement.isJsonNull())) {
-						return entry;
-					}
+				if ((null != entry) && ifCenterServerValid(entry)) {
+					return entry;
 				}
 				List<Map.Entry<String, CenterServer>> list = new ArrayList<>(Config.nodes().centerServers().entrySet());
 				Collections.shuffle(list);
-				Optional<Map.Entry<String, CenterServer>> optional = list.stream().filter(o -> {
-					try {
-						ActionResponse response = CipherConnectionAction.get(false, 2000, 4000,
-								Config.url_x_program_center_jaxrs(o, "echo"));
-						JsonElement jsonElement = response.getData(JsonElement.class);
-						return (null != jsonElement && (!jsonElement.isJsonNull()));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return false;
-				}).findFirst();
+				Optional<Map.Entry<String, CenterServer>> optional = list.stream().filter(this::ifCenterServerValid)
+						.findFirst();
 				if (optional.isPresent()) {
 					AGENTRUNONCENTERSERVER.put(agentId, optional.get());
 					return optional.get();
 				}
 			} catch (Exception e) {
-				LOGGER.debug(e.getMessage());
+				LOGGER.error(e);
 			}
 			return null;
+		}
+
+		private boolean ifCenterServerValid(Map.Entry<String, CenterServer> entry) {
+			try {
+				ActionResponse response = CipherConnectionAction.get(false, 2000, 4000,
+						Config.url_x_program_center_jaxrs(entry, "echo"));
+				JsonElement jsonElement = response.getData(JsonElement.class);
+				return (null != jsonElement && (!jsonElement.isJsonNull()));
+			} catch (Exception e) {
+				LOGGER.warn("center server not valid:{}.", entry.getKey());
+				return false;
+			}
 		}
 	}
 

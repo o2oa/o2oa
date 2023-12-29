@@ -1,4 +1,4 @@
-package com.x.program.center.jaxrs.test;
+package com.x.program.center.jaxrs.validation;
 
 import java.io.IOException;
 
@@ -17,9 +17,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-class ActionTest1 extends BaseAction {
+class ActionScriptingBenchmark extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTest1.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionScriptingBenchmark.class);
 
 	private static final int WARMUP = 30;
 	private static final int ITERATIONS = 10;

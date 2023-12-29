@@ -26,15 +26,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "MPWeixinMenu", description = "服务管理微信菜单.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.MPWeixinMenu.table, uniqueConstraints = {
-        @UniqueConstraint(name = PersistenceProperties.MPWeixinMenu.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.MPWeixinMenu.TABLE, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.MPWeixinMenu.TABLE + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
                 JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class MPWeixinMenu extends SliceJpaObject {
 
 
-    private static final String TABLE = PersistenceProperties.MPWeixinMenu.table;
+    private static final String TABLE = PersistenceProperties.MPWeixinMenu.TABLE;
     private static final long serialVersionUID = 1188998090619699016L;
 
 

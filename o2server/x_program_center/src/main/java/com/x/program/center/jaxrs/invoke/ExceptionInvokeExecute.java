@@ -7,6 +7,6 @@ class ExceptionInvokeExecute extends LanguagePromptException {
 	private static final long serialVersionUID = -8597019540568284908L;
 
 	ExceptionInvokeExecute(Throwable cause, String id, String name) {
-		super(cause, "agent execute error, id:{}, name:{}, message:{}.", id, name, cause.getMessage());
+		super(cause, "invoke execute error, id:{}, name:{}, message:{}.", id, name, cause.getMessage());
 	}
 }
