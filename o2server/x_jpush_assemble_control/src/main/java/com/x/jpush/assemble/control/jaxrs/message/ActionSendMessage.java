@@ -99,22 +99,6 @@ public class ActionSendMessage extends StandardJaxrsAction {
 								.build())
                 .build();
 
-        // 第三方通道的特殊参数
-        Map<String, Map<String, String>> thirdPartyChannelConfig = Config.pushConfig().getThirdPartyChannel();
-        Map<String, JsonObject> thirdPartyChannel = new HashMap<>();
-        if (thirdPartyChannelConfig != null && !thirdPartyChannelConfig.isEmpty()) {
-            for (Map.Entry<String, Map<String, String>> entry : thirdPartyChannelConfig.entrySet()) {
-                String key = entry.getKey();
-                Map<String, String> value = entry.getValue();
-                if (value != null && !value.isEmpty()) {
-                    JsonObject channel = new JsonObject();
-                    for (Map.Entry<String, String> channelEntry : value.entrySet()) {
-                        channel.addProperty(channelEntry.getKey(), channelEntry.getValue());
-                    }
-                    thirdPartyChannel.put(key, channel);
-                }
-            }
-        }
         PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
                 .setAudience(Audience.registrationId(jiguangDeviceList))
                 .setNotification(n)
@@ -122,7 +106,7 @@ public class ActionSendMessage extends StandardJaxrsAction {
                         Options
                                 .newBuilder()
                                 .setApnsProduction(true)
-                                .setThirdPartyChannelV2(thirdPartyChannel)
+                                .setThirdPartyChannelV2(Config.pushConfig().getThirdPartyChannel()) // 第三方通道的特殊参数
                                 .build()) // ios 发布证书
 				.build();
         logger.info("极光推送 body: {}", pushPayload.toString());
