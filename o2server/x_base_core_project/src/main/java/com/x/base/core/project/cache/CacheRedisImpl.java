@@ -58,19 +58,16 @@ public class CacheRedisImpl implements Cache {
 
 	@Override
 	public Optional<Object> get(CacheCategory category, CacheKey key) {
-		Jedis jedis = RedisTools.getJedis();
-		if (jedis != null) {
-			try {
-				byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
-				if ((null != bytes) && bytes.length > 0) {
-					try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-							ObjectInputStream ois = new ObjectInputStream(bais)) {
-						return Optional.ofNullable(ois.readObject());
-					}
+		try (Jedis jedis = RedisTools.getJedis()) {
+			byte[] bytes = jedis.get(concrete(category, key).getBytes(StandardCharsets.UTF_8));
+			if ((null != bytes) && bytes.length > 0) {
+				try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+						ObjectInputStream ois = new ObjectInputStream(bais)) {
+					return Optional.ofNullable(ois.readObject());
 				}
-			} catch (Exception e) {
-				RedisTools.closeJedis(jedis);
 			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 		return Optional.empty();
 	}
