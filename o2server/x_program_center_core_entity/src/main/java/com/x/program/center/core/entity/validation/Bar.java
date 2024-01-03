@@ -116,7 +116,7 @@ public class Bar extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ SL1_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + SL1_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	//@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + SL1_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + SL1_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -127,7 +127,7 @@ public class Bar extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ SL2_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + SL2_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	//@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + SL2_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + SL2_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -138,7 +138,7 @@ public class Bar extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ SL3_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + SL3_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	//@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + SL3_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + SL3_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
@@ -149,7 +149,7 @@ public class Bar extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ SL4_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + SL4_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	//@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + SL4_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + SL4_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)

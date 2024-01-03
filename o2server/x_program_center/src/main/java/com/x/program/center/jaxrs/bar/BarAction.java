@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.bar;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -39,6 +41,84 @@ public class BarAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateMass().execute(effectivePerson, count);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询数据测试1.", action = ActionSelect1.class)
+	@GET
+	@Path("select1/field/{field}/value/{value}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void select1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("字段") @PathParam("field") String field,
+			@JaxrsParameterDescribe("值") @PathParam("value") String value,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionSelect1.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSelect1().execute(effectivePerson, field, value, count);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询数据测试2.", action = ActionSelect2.class)
+	@GET
+	@Path("select2/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void select2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionSelect2.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSelect2().execute(effectivePerson, count);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询数据测试3.", action = ActionSelect3.class)
+	@GET
+	@Path("select3/field/{field}/value/{value}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void select3(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("字段") @PathParam("field") String field,
+			@JaxrsParameterDescribe("值") @PathParam("value") String value,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<String>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSelect3().execute(effectivePerson, field, value, count);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "查询数据测试4.", action = ActionSelect4.class)
+	@GET
+	@Path("select4/field/{field}/value/{value}/count/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void select4(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("字段") @PathParam("field") String field,
+			@JaxrsParameterDescribe("值") @PathParam("value") String value,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionSelect4.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionSelect4().execute(effectivePerson, field, value, count);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

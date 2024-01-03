@@ -1,8 +1,8 @@
 package com.x.program.center.jaxrs.bar;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,50 +22,46 @@ class ActionCreateMass extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setValue(true);
-		List<String> sl1 = IntStream.range(0, 100).boxed().map(o -> "sl1_" + Integer.toString(o))
-				.collect(Collectors.toList());
-		List<String> sl2 = IntStream.range(0, 1000).boxed().map(o -> "sl2_" + Integer.toString(o))
-				.collect(Collectors.toList());
-		List<String> sl3 = IntStream.range(0, 10000).boxed().map(o -> "sl3_" + Integer.toString(o))
-				.collect(Collectors.toList());
-		mass(count, sl1, sl2, sl3);
+		mass(count);
 		result.setData(wo);
 		return result;
 	}
 
-	private void mass(int count, List<String> sl1, List<String> sl2, List<String> sl3) throws Exception {
-
+	private void mass(Integer count) throws Exception {
+		AtomicInteger totalSeed = new AtomicInteger();
+		AtomicInteger sl1Seed = new AtomicInteger();
+		AtomicInteger sl2Seed = new AtomicInteger();
+		AtomicInteger sl3Seed = new AtomicInteger();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			for (int i = 0; i < count; i++) {
+			for (int i = 1; i <= count; i++) {
+				List<String> sl1 = new ArrayList<>();
+				for (int j = 0; j < 10; j++) {
+					sl1.add("sl1_" + sl1Seed.incrementAndGet());
+				}
+				List<String> sl2 = new ArrayList<>();
+				for (int j = 0; j < 100; j++) {
+					sl2.add("sl2_" + sl2Seed.incrementAndGet());
+				}
+				List<String> sl3 = new ArrayList<>();
+				for (int j = 0; j < 1000; j++) {
+					sl3.add("sl3_" + sl2Seed.incrementAndGet());
+				}
 				Bar bar = new Bar();
-				String name = "name_" + pad(i, 10);
+				String name = "name_" + totalSeed.incrementAndGet();
 				bar.setName(name);
 				bar.setSl1(sl1);
 				bar.setSl2(sl2);
 				bar.setSl3(sl3);
 				emc.persist(bar);
-				if (i != 0 && ((i % 1000) == 0)) {
+				if ((i % 100) == 0) {
+					sl1Seed.set(0);
+					sl2Seed.set(0);
+					sl3Seed.set(0);
 					LOGGER.info("create bar mass:{}.", i);
 					emc.beginTransaction(Bar.class);
 					emc.commit();
 				}
 			}
-		}
-	}
-
-	public static String pad(int number, int paddedLength) {
-		String numberStr = String.valueOf(number);
-		int diff = paddedLength - numberStr.length();
-
-		if (diff <= 0) {
-			return numberStr; // Number length is greater or equal to padded length
-		} else {
-			StringBuilder paddedNumber = new StringBuilder();
-			for (int i = 0; i < diff; i++) {
-				paddedNumber.append("0"); // Add zeros to the beginning
-			}
-			paddedNumber.append(numberStr); // Append the number
-			return paddedNumber.toString();
 		}
 	}
 
