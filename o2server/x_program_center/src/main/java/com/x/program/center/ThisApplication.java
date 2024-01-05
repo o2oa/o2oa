@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.program.center.dingding.DingdingStreamClient;
 import com.x.program.center.schedule.AndFxSyncOrganization;
 import com.x.program.center.schedule.Area;
 import com.x.program.center.schedule.Cleanup;
@@ -90,8 +89,6 @@ public class ThisApplication {
 				context().scheduleLocal(DingdingSyncOrganization.class, Config.dingding().getSyncCron());
 				// 添加一个强制同步任务
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
-				// 添加事件监听
-				new DingdingStreamClient().startClient();
 			}
 			// WeLink同步
 			if (BooleanUtils.isTrue(Config.weLink().getEnable())

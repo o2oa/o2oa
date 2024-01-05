@@ -1,5 +1,6 @@
 package com.x.base.core.project.config;
 
+import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -34,7 +35,7 @@ public class JpushConfig extends ConfigObject {
     private String masterSecret;
     // "thirdPartyChannel": { "xiaomi": {"channel_id": ""}, "huawei": { "importance": "NORMAL", "category": "WORK" } }
     @FieldDescribe("第三方通道参数配置")
-    private Map<String, Map<String, String>> thirdPartyChannel;
+    private Map<String, JsonObject> thirdPartyChannel;
 
 
 
@@ -77,11 +78,11 @@ public class JpushConfig extends ConfigObject {
         this.masterSecret = masterSecret;
     }
 
-    public Map<String, Map<String, String>> getThirdPartyChannel() {
+    public Map<String, JsonObject> getThirdPartyChannel() {
         return thirdPartyChannel;
     }
 
-    public void setThirdPartyChannel(Map<String, Map<String, String>> thirdPartyChannel) {
+    public void setThirdPartyChannel(Map<String, JsonObject> thirdPartyChannel) {
         this.thirdPartyChannel = thirdPartyChannel;
     }
 }
