@@ -3,7 +3,6 @@ package com.x.program.center.jaxrs.mpweixin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.base.core.project.config.Mpweixin;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Mpweixin;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;

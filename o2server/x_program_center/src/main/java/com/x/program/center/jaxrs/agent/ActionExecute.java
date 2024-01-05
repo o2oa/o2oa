@@ -17,11 +17,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.GraalVMScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
+import com.x.program.center.AgentEvalResources;
 import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
@@ -69,7 +69,7 @@ class ActionExecute extends BaseAction {
 	}
 
 	private GraalVMScriptingFactory.Bindings getBindingResource() throws Exception {
-		Resources resources = new Resources();
+		AgentEvalResources resources = new AgentEvalResources();
 		resources.setContext(ThisApplication.context());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		resources.setApplications(ThisApplication.context().applications());
@@ -131,19 +131,6 @@ class ActionExecute extends BaseAction {
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 1334633437933937791L;
-
-	}
-
-	public static class Resources extends AbstractResources {
-		private Organization organization;
-
-		public Organization getOrganization() {
-			return organization;
-		}
-
-		public void setOrganization(Organization organization) {
-			this.organization = organization;
-		}
 
 	}
 

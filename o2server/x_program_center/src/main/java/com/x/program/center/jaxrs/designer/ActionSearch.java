@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.x.program.center.core.entity.Script;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,6 +27,7 @@ import com.x.base.core.project.tools.PropertyTools;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
+import com.x.program.center.core.entity.Script;
 
 class ActionSearch extends BaseAction {
 

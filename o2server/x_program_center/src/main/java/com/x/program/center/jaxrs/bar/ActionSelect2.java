@@ -17,7 +17,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.core.entity.validation.Bar;
-import com.x.program.center.core.entity.validation.Bar_;
 
 class ActionSelect2 extends BaseAction {
 

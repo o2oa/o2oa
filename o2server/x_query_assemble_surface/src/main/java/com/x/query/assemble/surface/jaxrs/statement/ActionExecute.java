@@ -48,7 +48,7 @@ class ActionExecute extends BaseAction {
             }
             //兼容旧版本jsonElement本身即为parameter参数内容
             JsonObject runTimeJson = jsonElement.getAsJsonObject();
-            if (!runTimeJson.has(Runtime.parameter_FIELDNAME) && !runTimeJson.has(Runtime.parameter_FIELDNAME)){
+            if (!runTimeJson.has(Runtime.parameter_FIELDNAME)){
                 JsonObject rtJson = new JsonObject();
                 rtJson.add(Runtime.parameter_FIELDNAME, jsonElement);
                 runTimeJson = rtJson;

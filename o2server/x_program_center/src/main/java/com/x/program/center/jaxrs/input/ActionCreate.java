@@ -22,7 +22,11 @@ import com.x.program.center.Business;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
 import com.x.program.center.core.entity.Script;
-import com.x.program.center.core.entity.wrap.*;
+import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
+import com.x.program.center.core.entity.wrap.WrapAgent;
+import com.x.program.center.core.entity.wrap.WrapInvoke;
+import com.x.program.center.core.entity.wrap.WrapScript;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 
 class ActionCreate extends BaseAction {
 

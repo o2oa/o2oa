@@ -38,14 +38,13 @@ import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.GraalVMScriptingFactory;
-import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
+import com.x.program.center.AgentEvalResources;
 import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
@@ -240,12 +239,12 @@ public class TriggerAgent extends BaseAction {
 				CacheManager.put(cacheCategory, cacheKey, source);
 			}
 			GraalVMScriptingFactory.Bindings bindings = new GraalVMScriptingFactory.Bindings();
-			Resources resources = new Resources();
+			AgentEvalResources resources = new AgentEvalResources();
 			resources.setContext(ThisApplication.context());
 			resources.setOrganization(new Organization(ThisApplication.context()));
 			resources.setWebservicesClient(new WebservicesClient());
 			resources.setApplications(ThisApplication.context().applications());
-			bindings.putMember(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+			bindings.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
 			GraalVMScriptingFactory.eval(source, bindings);
 			stampLastEndTime();
 		}
@@ -305,19 +304,6 @@ public class TriggerAgent extends BaseAction {
 				return false;
 			}
 		}
-	}
-
-	public static class Resources extends AbstractResources {
-		private Organization organization;
-
-		public Organization getOrganization() {
-			return organization;
-		}
-
-		public void setOrganization(Organization organization) {
-			this.organization = organization;
-		}
-
 	}
 
 }
