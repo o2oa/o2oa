@@ -217,8 +217,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 "y" : Math.min( containerSize.y, bodySize.y )
             };
 
-
-            var zoom = this.node.getStyle("zoom").toInt() || 0;
+            var zoom = this.node.getStyle("zoom").toInt();
+            zoom = zoom ? (zoom * 100) : 0;
             if( zoom ){
                 size.x = size.x * 100 / zoom;
                 size.y = size.y * 100 / zoom;
