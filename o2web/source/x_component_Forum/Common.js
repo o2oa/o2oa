@@ -94,17 +94,20 @@ MWFForum.isReplyMuted = function(){
 }
 
 MWFForum.isUseNickName = function(){
+    if( layout.desktop.session.user.name === "anonymous" )return false;
     return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";
 };
 
 MWFForum.Nick_Name_Map = {};
 MWFForum.getDisplayName = function( dn ){
+    if( layout.desktop.session.user.name === "anonymous" )return "";
     if( !dn || dn === layout.desktop.session.user.distinguishedName){
         dn = layout.desktop.session.user.distinguishedName;
+        if( !dn )return "";
         if( MWFForum.isUseNickName() ){
-            return layout.desktop.session.user.nickName || dn.split("@")[0];
+            return layout.desktop.session.user.nickName || (dn||"").split("@")[0];
         }else{
-            return dn.split("@")[0];
+            return (dn||"").split("@")[0];
         }
     }else{
         if( MWFForum.isUseNickName() ){
@@ -116,7 +119,7 @@ MWFForum.getDisplayName = function( dn ){
                 return "";
             })
         }else{
-            return dn.split("@")[0];
+            return (dn||"").split("@")[0];
         }
     }
 };

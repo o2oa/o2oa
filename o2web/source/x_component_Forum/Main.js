@@ -30,7 +30,7 @@ MWF.xApplication.Forum.Main = new Class({
         this.setTitle( this.getMainPageTitle() )
     },
     getMainPageTitle : function(){
-        var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+        var tail = (this.inBrowser && layout.desktop.session.user.name !== "anonymous") ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
         return ( MWFForum.getBBSName() || MWF.xApplication.Forum.LP.title ) + tail;
     },
     loadApplication: function (callback) {

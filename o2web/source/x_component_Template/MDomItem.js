@@ -2718,7 +2718,7 @@ MDomItem.Rtf = new Class({
         var value = this.options.value || this.options.defaultValue ;
         var attr = this.options.attr || {};
         var parent = this.container ;
-        COMMON.AjaxModule.load("ckeditor", function(){
+        window.COMMON.AjaxModule.load("ckeditor", function(){
             CKEDITOR.disableAutoInline = true;
             var item = new Element("div",{
                 "name" : name,
