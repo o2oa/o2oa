@@ -25,8 +25,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "ScheduleLog", description = "服务管理日志记录.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
-@Table(name = PersistenceProperties.ScheduleLog.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.ScheduleLog.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.ScheduleLog.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.ScheduleLog.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -34,7 +34,7 @@ public class ScheduleLog extends SliceJpaObject {
 
 	private static final long serialVersionUID = -3922384457908855834L;
 
-	private static final String TABLE = PersistenceProperties.ScheduleLog.table;
+	private static final String TABLE = PersistenceProperties.ScheduleLog.TABLE;
 
 	public ScheduleLog() {
 

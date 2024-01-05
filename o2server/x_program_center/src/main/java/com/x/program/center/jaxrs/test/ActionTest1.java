@@ -10,35 +10,25 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 class ActionTest1 extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTest1.class);
 
-		ActionResult<Wo> result = new ActionResult<>();
+	private static final int WARMUP = 30;
+	private static final int ITERATIONS = 10;
 
-		Wo wo = new Wo();
-		test();
-		result.setData(wo);
-		return result;
-	}
-
-	private void test() throws IOException {
-		benchGraalPolyglotContext();
-		benchGraalScriptEngine();
-		benchNashornScriptEngine();
-	}
-
-	public static final int WARMUP = 30;
-	public static final int ITERATIONS = 10;
-	public static final String BENCHFILE = "src/bench.js";
+	private static final String PRIMESMAIN = "primesMain";
 
 	public static final String SOURCE = "" + "var N = 2000;\n" + "var EXPECTED = 17393;\n" + "\n"
 			+ "function Natural() {\n" + "    x = 2;\n" + "    return {\n"
-			+ "        'next' : function() { return x++; }\n" + "    };\n" + "}\n" + "\n"
+			+ "        'next' : function() { return x++; }\n" + "};\n" + "}\n" + "\n"
 			+ "function Filter(number, filter) {\n" + "    var self = this;\n" + "    this.number = number;\n"
 			+ "    this.filter = filter;\n" + "    this.accept = function(n) {\n" + "      var filter = self;\n"
 			+ "      for (;;) {\n" + "          if (n % filter.number === 0) {\n" + "              return false;\n"
@@ -54,74 +44,119 @@ class ActionTest1 extends BaseAction {
 			+ "    for (var i=0;i<=N;i++) { primArray.push(primes.next()); }\n"
 			+ "    if (primArray[N] != EXPECTED) { throw new Error('wrong prime found: '+primArray[N]); }\n" + "}\n";
 
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws IOException, IllegalAccessException {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
+		ActionResult<Wo> result = new ActionResult<>();
+
+		Wo wo = new Wo();
+		wo.setGraalPolyglot(benchGraalPolyglotContext());
+		wo.setGraalScriptEngine(benchGraalScriptEngine());
+		wo.setNashornScriptEngine(benchNashornScriptEngine());
+		result.setData(wo);
+		return result;
+	}
+
 	static long benchGraalPolyglotContext() throws IOException {
-		System.out.println("=== Graal.js via org.graalvm.polyglot.Context === ");
+		LOGGER.print("Graal.js via org.graalvm.polyglot.Context");
 		long sum = 0;
 		try (Context context = Context.create()) {
 			context.eval(Source.newBuilder("js", SOURCE, "src.js").build());
-			Value primesMain = context.getBindings("js").getMember("primesMain");
-			System.out.println("warming up ...");
+			Value primesMain = context.getBindings("js").getMember(PRIMESMAIN);
+			LOGGER.print("warming up ...");
 			for (int i = 0; i < WARMUP; i++) {
 				primesMain.execute();
 			}
-			System.out.println("warmup finished, now measuring");
+			LOGGER.print("warmup finished, now measuring");
 			for (int i = 0; i < ITERATIONS; i++) {
 				long start = System.currentTimeMillis();
 				primesMain.execute();
 				long took = System.currentTimeMillis() - start;
 				sum += took;
-				System.out.println("iteration: " + took);
+				LOGGER.print("iteration: " + took);
 			}
-		} // context.close() is automatic
+		}
 		return sum;
 	}
 
-	static long benchNashornScriptEngine() throws IOException {
-		System.out.println("=== Nashorn via javax.script.ScriptEngine ===");
+	static long benchNashornScriptEngine() throws IllegalAccessException {
+		LOGGER.print("=== Nashorn via javax.script.ScriptEngine ===");
 		ScriptEngine nashornEngine = new ScriptEngineManager().getEngineByName("nashorn");
 		if (nashornEngine == null) {
-			System.out.println("*** Nashorn not found ***");
-			return 0;
+			throw new IllegalAccessException("Nashorn not found.");
 		} else {
 			return benchScriptEngineIntl(nashornEngine);
 		}
 	}
 
-	static long benchGraalScriptEngine() throws IOException {
-		System.out.println("=== Graal.js via javax.script.ScriptEngine ===");
+	static long benchGraalScriptEngine() throws IllegalAccessException {
+		LOGGER.print("Graal.js via javax.script.ScriptEngine");
 		ScriptEngine graaljsEngine = new ScriptEngineManager().getEngineByName("graal.js");
 		if (graaljsEngine == null) {
-			System.out.println("*** Graal.js not found ***");
-			return 0;
+			throw new IllegalAccessException("Graal.js not found.");
 		} else {
 			return benchScriptEngineIntl(graaljsEngine);
 		}
 	}
 
-	private static long benchScriptEngineIntl(ScriptEngine eng) throws IOException {
+	private static long benchScriptEngineIntl(ScriptEngine eng) {
 		long sum = 0L;
 		try {
 			eng.eval(SOURCE);
 			Invocable inv = (Invocable) eng;
-			System.out.println("warming up ...");
+			LOGGER.print("warming up ...");
 			for (int i = 0; i < WARMUP; i++) {
-				inv.invokeFunction("primesMain");
+				inv.invokeFunction(PRIMESMAIN);
 			}
-			System.out.println("warmup finished, now measuring");
+			LOGGER.print("warmup finished, now measuring");
 			for (int i = 0; i < ITERATIONS; i++) {
 				long start = System.currentTimeMillis();
-				inv.invokeFunction("primesMain");
+				inv.invokeFunction(PRIMESMAIN);
 				long took = System.currentTimeMillis() - start;
 				sum += took;
-				System.out.println("iteration: " + (took));
+				LOGGER.print("iteration: " + (took));
 			}
 		} catch (Exception ex) {
-			System.out.println(ex);
+			LOGGER.error(ex);
 		}
 		return sum;
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -1189545887919434403L;
+
+		@FieldDescribe("graalPolyglot")
+		private Long graalPolyglot;
+		@FieldDescribe("graalScriptEngine")
+		private Long graalScriptEngine;
+		@FieldDescribe("nashornScriptEngine")
+		private Long nashornScriptEngine;
+
+		public Long getGraalPolyglot() {
+			return graalPolyglot;
+		}
+
+		public void setGraalPolyglot(Long graalPolyglot) {
+			this.graalPolyglot = graalPolyglot;
+		}
+
+		public Long getGraalScriptEngine() {
+			return graalScriptEngine;
+		}
+
+		public void setGraalScriptEngine(Long graalScriptEngine) {
+			this.graalScriptEngine = graalScriptEngine;
+		}
+
+		public Long getNashornScriptEngine() {
+			return nashornScriptEngine;
+		}
+
+		public void setNashornScriptEngine(Long nashornScriptEngine) {
+			this.nashornScriptEngine = nashornScriptEngine;
+		}
 
 	}
 

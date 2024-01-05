@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.market;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
@@ -12,7 +14,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.program.center.Business;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionIsVip extends BaseAction {
 

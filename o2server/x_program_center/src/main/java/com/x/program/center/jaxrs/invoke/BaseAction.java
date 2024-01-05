@@ -234,7 +234,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources)
 				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_REQUESTTEXT, gson.toJson(jsonElement))
 				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_REQUEST, request)
-				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson)
+				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, gson.toJson(effectivePerson))
 				.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_CUSTOMRESPONSE, customResponse);
 		Wo wo = new Wo();
 		try {

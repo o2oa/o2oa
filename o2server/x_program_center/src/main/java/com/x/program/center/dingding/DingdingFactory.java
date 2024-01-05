@@ -1,8 +1,13 @@
 package com.x.program.center.dingding;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.config.Config;
@@ -12,7 +17,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.lang3.BooleanUtils;
 
 public class DingdingFactory {
 

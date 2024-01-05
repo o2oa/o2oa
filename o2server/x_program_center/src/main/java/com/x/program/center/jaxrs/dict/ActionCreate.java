@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.dict;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,8 +21,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.general.core.entity.ApplicationDictItem;
 import com.x.program.center.Business;
-
-import java.util.List;
 
 class ActionCreate extends BaseAction {
 

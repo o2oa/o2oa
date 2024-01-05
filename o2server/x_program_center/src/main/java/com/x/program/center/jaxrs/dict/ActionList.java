@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.dict;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -10,8 +12,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.program.center.Business;
-
-import java.util.List;
 
 class ActionList extends BaseAction {
 

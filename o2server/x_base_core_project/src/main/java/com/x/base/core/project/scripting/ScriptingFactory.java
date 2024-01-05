@@ -94,7 +94,7 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_MESSAGE = "java_message";
 
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
-	public static final String BINDING_NAME_SERVICE_BODY = "body";
+//	public static final String BINDING_NAME_SERVICE_BODY = "body";
 
 	public static synchronized CompiledScript initialServiceScript()
 			throws IOException, ScriptException, URISyntaxException {

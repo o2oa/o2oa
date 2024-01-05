@@ -31,8 +31,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Structure", description = "服务管理结构体.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Structure.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Structure.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Structure.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Structure.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -41,7 +41,7 @@ public class Structure extends StorageObject {
 
 	private static final long serialVersionUID = -5766284757128874055L;
 
-	private static final String TABLE = PersistenceProperties.Structure.table;
+	private static final String TABLE = PersistenceProperties.Structure.TABLE;
 
 	public static final String default_extension = "xapp";
 

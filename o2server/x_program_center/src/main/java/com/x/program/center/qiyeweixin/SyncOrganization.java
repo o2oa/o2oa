@@ -18,7 +18,6 @@ import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
-import com.x.organization.core.entity.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -38,6 +37,17 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.PersonAttribute_;
+import com.x.organization.core.entity.Person_;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitAttribute;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.Unit_;
 import com.x.program.center.Business;
 import com.x.program.center.qiyeweixin.User.Extattr.Attr;
 

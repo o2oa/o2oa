@@ -21,13 +21,14 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("test")
-@JaxrsDescribe("test")
+@JaxrsDescribe("测试")
 public class TestAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(TestAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestAction.class);
 
-	@JaxrsMethodDescribe(value = "获取指定Script.", action = ActionTest1.class)
+	@JaxrsMethodDescribe(value = "test1.", action = ActionTest1.class)
 	@GET
+	@Path("test1")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void test1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
@@ -36,7 +37,24 @@ public class TestAction extends StandardJaxrsAction {
 		try {
 			result = new ActionTest1().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "test2.", action = ActionTest2.class)
+	@GET
+	@Path("test2")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void test2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionTest2.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTest2().execute(effectivePerson);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

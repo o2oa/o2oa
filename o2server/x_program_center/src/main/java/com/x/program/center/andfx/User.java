@@ -2,9 +2,6 @@ package com.x.program.center.andfx;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
 public class User extends GsonPropertyObject {
 
 	private String uid;

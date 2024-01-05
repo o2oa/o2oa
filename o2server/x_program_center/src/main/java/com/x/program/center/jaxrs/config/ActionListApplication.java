@@ -5,14 +5,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
-
-import com.x.base.core.project.annotation.Module;
 
 public class ActionListApplication extends BaseAction {
 

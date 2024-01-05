@@ -1,16 +1,17 @@
 package com.x.program.center.jaxrs.appstyle;
 
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.config.AppStyle.Image;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 class ActionImageApplicationTopErase extends BaseAction {
 

@@ -1,16 +1,17 @@
 package com.x.program.center.factory;
 
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Group_;
-import com.x.program.center.AbstractFactory;
-import com.x.program.center.Business;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Group_;
+import com.x.program.center.AbstractFactory;
+import com.x.program.center.Business;
 
 public class GroupFactory extends AbstractFactory {
 

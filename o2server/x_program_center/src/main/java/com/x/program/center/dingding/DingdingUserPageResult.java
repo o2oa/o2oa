@@ -2,7 +2,6 @@ package com.x.program.center.dingding;
 
 import java.util.List;
 
-
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class DingdingUserPageResult extends GsonPropertyObject {

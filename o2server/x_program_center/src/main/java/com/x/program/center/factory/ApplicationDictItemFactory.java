@@ -1,15 +1,21 @@
 package com.x.program.center.factory;
 
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.general.core.entity.ApplicationDictItem;
 import com.x.general.core.entity.ApplicationDictItem_;
 import com.x.program.center.AbstractFactory;
 import com.x.program.center.Business;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.util.List;
 
 public class ApplicationDictItemFactory extends AbstractFactory {
 

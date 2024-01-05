@@ -1,5 +1,19 @@
 package com.x.program.center.jaxrs.appstyle;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+
 import com.x.base.core.project.config.AppStyle.Image;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -8,20 +22,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.Business;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr.Method;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 
 /**

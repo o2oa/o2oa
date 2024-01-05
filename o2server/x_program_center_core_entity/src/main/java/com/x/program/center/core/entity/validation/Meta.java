@@ -40,8 +40,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Meta", description = "服务管理验证数据结构.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.Validation.Meta.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Validation.Meta.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.Validation.Meta.TABLE, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.Validation.Meta.TABLE + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -57,7 +57,7 @@ public class Meta extends SliceJpaObject {
 
 	}
 
-	private static final String TABLE = PersistenceProperties.Validation.Meta.table;
+	private static final String TABLE = PersistenceProperties.Validation.Meta.TABLE;
 
 	public String getId() {
 		return id;
