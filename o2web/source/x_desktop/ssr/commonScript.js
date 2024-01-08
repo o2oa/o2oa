@@ -33,7 +33,7 @@ function _getBytes(str){
  * });
  * @example
  * <caption>
- *    <b>样例一：<b> 发起get请求。获取json数据，并在header中附带认证信息。
+ *    <b>样例二一：<b> 发起get请求。获取json数据，并在header中附带认证信息。
  * </caption>
  * fetch('http://hostname/resource', {
  *     headers: {
@@ -217,6 +217,10 @@ function fetch(url, options = {}) {
 //执行JS脚本
 /**
  * 执行代码片段，类似eval。使用Function包装。
+ * @module exec()
+ * @o2category server.common
+ * @o2ordernumber 151
+ * @o2cn 方法定义
  * @param text {String} 需要执行的代码片段
  * @param bind {Object} 代码片段中this的指向
  * @param arg {Object} 传入参数。如：{x:1, y:'5'}，在代码片段中可使用 x 和 y 变量。
@@ -398,6 +402,132 @@ Object.assign(Action, {
  */
 const Actions = {
     "loadedActions": {},
+    /**
+     * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。由于是运行在服务器端，服务都是同步调用。
+     * @method load
+     * @methodOf module:server.Actions
+     * @instance
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
+     * 如:
+     *<pre><code class='language-js'>
+     * "x_processplatform_assemble_surface" //流程平台相关服务根
+     * </code></pre>
+     * @return {Object} 返回action对象，用于后续服务调用
+     * @o2syntax
+     * var actions = this.Actions.load( root );
+     * @o2syntax
+     * //获取流程平台服务对象。
+     * var processAction = this.Actions.load("x_processplatform_assemble_surface");
+     * @o2syntax
+     * <caption>
+     *     通过this.Actions.load(root)方法得到action对象，就可以访问此服务下的方法了。<br/>
+     *     访问方法的规则如下：
+     *  </caption>
+     *  var requestString = this.Actions.load( root )[actionName][methodName]( arguements );
+     *
+     *  requestString : 服务返回的响应数据，字符串格式，可以通过 requestObjest = JSON.parse(requestString);解析成对象
+     *
+     *  root : 平台服务根名称，如果 x_processplatform_assemble_surface
+     *
+     *  actionName : 服务下的Action分类名称，如 TaskAction
+     *
+     *  methodName : Action分类下的方法名称，如 get
+     *
+     *  arguements : 需调用的RESTful服务的相关参数。这些参数需要按照先后顺序传入。根据实际情况可以省略某些参数。参数序列分别是:
+     *
+     *      uri的参数, data(Post, Put方法), success, failure, async。
+     *
+     *      uri参数：如果有uri有多个参数，需要按先后顺序传入。
+     *
+     *      data参数：要提交到后台的数据。POST 和 PUT 方法需要传入，GET方法和DELETE方法省略。
+     *
+     *      success参数：服务执行成功时的回调方法，形如 function(json){
+     *          json为后台服务传回的数据
+     *      }。
+     *
+     *      failure 参数：服务执行失败时的回调方法，形如 function(xhr){
+     *          xhr XmlHttpRequest对象，服务器请求失败时有值
+     *       }
+     *      此参数可以省略，如果省略，系统会自动弹出错误信息。
+     *  @o2syntax
+     *  <caption>
+     *  处理返回的数据有两种方式，二选一即可：<br/>
+     *  1、该方法返回的结果是响应数据字符串，通过JSON.parse(responseString)获取对象。<br/>
+     *  2、通过success方法作为第一个参数来处理结果，建议此方法处理请求结果
+     *  </caption>
+     *  //success：arguements中的第一个function对象
+     *  function(json){
+     *    //json为后台服务传回的数据
+     *  }
+     *  @example
+     * <caption>
+     *     <b>样例1:</b>
+     *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
+     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html (v7.2之前版本需要加端口20020)<br/>
+     *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
+     *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
+     *     该服务有以下信息：<br/>
+     *     1、actionName是：TaskAction<br/>
+     *     2、methodName是：V2ListPaging<br/>
+     *     3、有两个url参数，分别是 page(分页), size(每页数量)<br/>
+     *     4、有一系列的body参数<br/>
+     *     5、该服务方法类型是POST<br/>
+     *     根据这些信息我们可以组织出下面的方法：
+     * </caption>
+     * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
+     * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
+     * //执行方法1
+     * method(
+     *  1,  //uri 第1个参数，如果无uri参数，可以省略
+     *  20, //uri 第2个参数，如果无uri参数，可以省略，如果还有其他uri参数，可以用逗号, 分隔
+     *  {   //body 参数，对POST和PUT请求，该参数必须传，可以为空对象
+     *      processList : [xxx] //具体参数
+     *  },
+     *  function(json){ //正确调用的回调
+     *       //json.data得到服务返回数据
+     *  },
+     *  function(responseJSON){ //可选，错误信息, json格式
+     *      print( JSON.stringify(responseJSON) )
+     *  }
+     * );
+     *
+     * //执行方法2
+     * var responseString = method( 1, 20, {processList : [xxx]} )
+     * var responseObject = JSON.parse(responseObject);
+     * @example
+     * <caption>出错信息responseJSON的格式</caption>
+     * {
+     *       "type": "error", //类型为错误
+     *       "message": "标识为:343434 的 Task 对象不存在.", //提示文本
+     *       "date": "2020-12-29 17:02:13", //出错时间
+     *       "prompt": "com.x.base.core.project.exception.ExceptionEntityNotExist" //后台错误类
+     *}
+     * @example
+     * <caption>
+     *     <b>样例2:</b>
+     *      已知流程实例的workid，在脚本中获取数据，修改后进行保存。
+     * </caption>
+     * //查询服务列表找到获取data数据服务为DataAction的getWithWork方法
+     * //查询服务列表找到更新data数据服务为DataAction的updateWithWork方法
+     *
+     * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
+     * var data;
+     * this.Actions.load("x_processplatform_assemble_surface").DataAction.getWithWork( //平台封装好的方法
+     *      workid, //uri的参数
+     *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+     *          data = json.data; //为变量data赋值
+     *      }.bind(this)
+     * )
+     *
+     * data.subject = "新标题"; //修改数据
+     * this.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithWork(
+     *      workid, //uri的参数
+     *      data, //保存的数据
+     *      function(){ //服务调用成功的回调函数
+     *
+     *      }.bind(this)
+     * );
+     */
     "load": function(root){
         if (this.loadedActions[root]) return this.loadedActions[root];
         const jaxrsString = globalThis.applications.describeApi(root);
@@ -439,7 +569,7 @@ function _parsePrint(str, ...pars){
  * @module print()
  * @o2cn 控制台输出打印
  * @o2category server.common
- * @o2ordernumber 145
+ * @o2ordernumber 152
  *
  * @param {(String)} text 要输出的文本信息。</b>
  * @param {(String)} type 要输出的文本信息的类型，会添加到输出信息的前面，默认为“PRINT”。</b>
@@ -466,7 +596,7 @@ function print(text, type){
 
 /**
  * this.log是一个服务器控制台输出方法，可使用log, log.error, log.info, log.warn方法在服务器控制台输入信息。<br/>
- * @module console
+ * @module log
  * @o2category server.common
  * @o2ordernumber 155
  * @o2cn 分等级控制台输出
@@ -502,6 +632,29 @@ function _getNameFlag(name){
     }
 }
 
+/**
+ * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。后端调用都是同步的。
+ * @module server.org
+ * @o2cn 组织查询
+ * @o2category server.common
+ * @o2ordernumber 170
+ * @property    {GroupFactory}  group   后端的GroupFactory实例，可用于获取group群组相关数据, <a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/GroupFactory.html">查看javadoc</a>
+ * @property    {IdentityFactory}  identity   后端的IdentityFactory实例，可用于获取identity身份相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/IdentityFactory.html">查看javadoc</a>
+ * @property    {PersonFactory}  person   后端的PersonFactory实例，可用于获取person人员相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonFactory.html">查看javadoc</a>
+ * @property    {PersonAttributeFactory}  personAttribute   后端的GroupFactory实例，可用于获取personAttribute人员属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonAttributeFactory.html">查看javadoc</a>
+ * @property    {RoleFactory}  role   后端的RoleFactory实例，可用于获取role角色相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/RoleFactory.html">查看javadoc</a>
+ * @property    {UnitFactory}  unit   后端的UnitFactory实例，可用于获取unit相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitFactory.html">查看javadoc</a>
+ * @property    {UnitAttributeFactory}  unitAttribute   后端的UnitAttributeFactory实例，可用于获取unitAttribute组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitAttributeFactory.html">查看javadoc</a>
+ * @property    {UnitDutyFactory}  unitDuty   后端的UnitDutyFactory实例，可用于获取unitDuty组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitDutyFactory.html">查看javadoc</a>
+ * @o2syntax
+ * //您可以通过this来获取当前实例的org对象，如下：
+ * var org = this.org;
+ *
+ *@example
+ * //通过后端java类，来获取当前人所在的部门名称
+ * var unit = this.org.unit;
+ * var unitNames = unit.listWithPerson("张三@xxx@P");
+ */
 const org = {}
 function _javaOrg(){
     return globalThis.java_resources.getOrganization();
@@ -1612,6 +1765,51 @@ function include( optionsOrName , callback ){
 }
 
 //Dict数据字典
+/**
+ * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
+ * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
+ * @module server.Dict
+ * @o2cn 数据字典
+ * @o2category server.common
+ * @o2ordernumber 180
+ * @o2syntax
+ * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
+ * var dict = new this.Dict( options )
+ * @example
+ * var dict = new this.Dict({
+ *     //type: 应用类型。可以为process  cms portal service。流程脚本默认为process，服务管理中默认为service。
+ *    type : "cms",
+ *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
+ *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
+ *
+ * //引用服务管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "service",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用流程管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用内容管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用门户管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "dictName"
+ * });
+ */
 function Dict(optionsOrName){
     const options = (typeof options) == "string" ? { name : optionsOrName } : optionsOrName;
     const name = this.name = options.name;
@@ -2934,9 +3132,9 @@ const o= {
     organization: { configurable: true, get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getOrganization() : null)} },
     //service: { configurable: true, get: function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
     /**
-     * 获取当前用户的全称。
+     * 获取当前用户对象。
      * @module server.currentPerson
-     * @o2cn 当前用户全称
+     * @o2cn 当前用户全称对象
      * @o2category server.common
      * @o2ordernumber 250
      * @o2syntax

@@ -25,7 +25,8 @@
             "./o2web/source/x_component_cms_Xform",
             "./o2web/source/x_component_query_Query",
             "./o2web/source/x_desktop/js/initialScriptText.js",
-            "./o2web/source/x_desktop/js/initialServiceScriptText.js"
+//            "./o2web/source/x_desktop/js/initialServiceScriptText.js",
+            "./o2web/source/x_desktop/ssr/commonScript.js"
 
         ],
         "includePattern": ".+\\.js(doc|x)?$", //抽取的源文件名称正则表达式
