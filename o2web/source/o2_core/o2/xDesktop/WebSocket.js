@@ -177,6 +177,9 @@ MWF.xDesktop.WebSocket = new Class({
                             case "cms_publish" :
                                 this.receiveCMSPublishMessage(data);
                                 break;
+                            case "bbs_replyCreate" :
+                                this.receivBBSReplyCreateMessage(data);
+                                break;
                             default:
                         }
                 }
@@ -276,8 +279,6 @@ MWF.xDesktop.WebSocket = new Class({
                 var options = {"documentId": data.body.id, "appId": appId};
                 layout.desktop.openApplication(e, "cms.Document", options);
             }
-
-            messageItem.closeItem(null,true);        //@haoyu.lan 23-11-02 处理消息队列待办消息的自动消除
         });
     },
     receiveChatMessage: function(data){
@@ -318,8 +319,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             if( data.type !== "task_delete" )this.openWork(task.work,e);
-
-            messageItem.closeItem(null,true);
         }.bind(this));
     },
     receiveReadMessage: function(data){
@@ -343,7 +342,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             this.openWork(read.work || read.workCompleted,e);
-            messageItem.closeItem(null,true);
         }.bind(this));
     },
     receiveCustomMessage: function(data){
@@ -367,11 +365,11 @@ MWF.xDesktop.WebSocket = new Class({
         var imBody = data.body;
         // 更新会话或删除会话
         if (data.type === "im_conv_update" || data.type === "im_conv_delete") {
-             // 执行im callback 刷新页面信息
-             if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
+            // 执行im callback 刷新页面信息
+            if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
                 this.imListenerMap["im_conversation"](imBody);
-                }
-                return;
+            }
+            return;
         }
         // 撤回消息
         if (data.type == "im_revoke") {
@@ -406,7 +404,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "IMV2", options);
-                messageItem.closeItem(null,true);
             }.bind(this));
 
             var tooltipItem = layout.desktop.message.addTooltip(msg);
@@ -453,7 +450,6 @@ MWF.xDesktop.WebSocket = new Class({
                     "navi": "review"
                 }
             });
-            messageItem.closeItem(null,true);
         });
     },
 
@@ -485,7 +481,6 @@ MWF.xDesktop.WebSocket = new Class({
                     "node": data.person
                 }
             });
-            messageItem.closeItem(null,true);
         });
     },
 
@@ -524,7 +519,6 @@ MWF.xDesktop.WebSocket = new Class({
                     "node": data.person
                 }
             });
-            messageItem.closeItem(null,true);
         });
     },
     getMeeting: function(data, callback){
@@ -577,7 +571,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
-                messageItem.closeItem(null,true);
             });
         }.bind(this));
     },
@@ -606,7 +599,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
-                messageItem.closeItem(null,true);
             });
         }.bind(this));
     },
@@ -635,7 +627,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
-                messageItem.closeItem(null,true);
             });
         }.bind(this));
     },
@@ -665,7 +656,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
-                messageItem.closeItem(null,true);
             });
         }.bind(this));
     },
@@ -695,7 +685,6 @@ MWF.xDesktop.WebSocket = new Class({
                 layout.desktop.message.addUnread(-1);
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
-                messageItem.closeItem(null,true);
             });
         }.bind(this));
     },
@@ -718,7 +707,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"13"});
-            messageItem.closeItem(null,true);
         });
     },
     receiveAttendanceAppealAcceptMessage : function(data){
@@ -740,7 +728,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
-            messageItem.closeItem(null,true);
         });
     },
     receiveAttendanceAppealRejectMessage : function(data){
@@ -762,7 +749,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
-            messageItem.closeItem(null,true);
         });
     },
     receiveCalendarAlarmMessage: function(data){
@@ -809,7 +795,6 @@ MWF.xDesktop.WebSocket = new Class({
             }else{
                 layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
             }
-            messageItem.closeItem(null,true);
         });
     },
     receiveTeamWorkMessage: function(data){
@@ -835,7 +820,6 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.hide();
             var options = {"taskId": task.id, "projectId": task.project};
             layout.desktop.openApplication(e, "TeamWork.Task", options);
-            messageItem.closeItem(null,true);
         }.bind(this));
     },
     receiveBBSSubjectCreateMessage: function (data) {
