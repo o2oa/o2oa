@@ -169,8 +169,8 @@ public class HstService {
             map.put("roomId", meeting.getRoomId());
 
             String url = config.getOnlineConfig().getHstUrl() + FIXED_MEETING_API;
-            if(!DateTools.beforeNowMinutesNullIsTrue(meeting.getStartTime(), -60)) {
-                map.put("hopeStartTime", DateTools.format(DateTools.getAdjustTimeDay(meeting.getStartTime(), 0, 0, -10, 0)));
+            if(!DateTools.beforeNowMinutesNullIsTrue(meeting.getStartTime(), -30)) {
+                map.put("hopeStartTime", DateTools.format(DateTools.getAdjustTimeDay(meeting.getStartTime(), 0, 0, -30, 0)));
                 map.put("hopeEndTime", DateTools.format(meeting.getCompletedTime()));
                 url = config.getOnlineConfig().getHstUrl() + RESERVE_MEETING_API;
             }
