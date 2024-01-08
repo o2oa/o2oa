@@ -44,6 +44,7 @@
     "gulp-shell": "^0.8.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-tm-uglify": "3.0.1",
+    "gulp-terser": "^2.1.0",
     "gulp-uglify-es": "^2.0.0",
     "jasmine-core": "^3.6.0",
     "jsdoc": "^3.6.6",

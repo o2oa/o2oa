@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     del = require('del'),
-    uglify = require('gulp-uglify-es').default,
+    // uglify = require('gulp-uglify-es').default,
+    uglify = require('gulp-terser'),
     rename = require('gulp-rename'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
