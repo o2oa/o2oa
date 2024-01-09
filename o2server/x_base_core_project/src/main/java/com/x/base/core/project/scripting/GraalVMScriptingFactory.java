@@ -2,14 +2,16 @@ package com.x.base.core.project.scripting;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Context;
@@ -41,29 +43,35 @@ public class GraalVMScriptingFactory {
 
 	private static final String LANGUAGE_ID_JS = "js";
 	private static final String NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY = "nativeJsObjectBindingToStringify";
+	private static final String THEN = "then";
 
-	private static final ReentrantLock ENGINELOCK = new ReentrantLock();
 	private static final ReentrantLock COMMONSCRIPTLOCK = new ReentrantLock();
 	private static final Source STRINGIFYSOURCE = Source.create(LANGUAGE_ID_JS,
 			"JSON.stringify(" + NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY + ")");
 
-	private static Engine engine;
+	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();;
 	private static Source commonScriptSource;
 
 	public static JsonElement eval(Source source, Bindings bindings) {
-		try (Context context = Context.newBuilder().engine(getEngine()).allowHostClassLoading(true)
+		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
 				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalVMScriptingFactory::notBlockedClass)
 				.build()) {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
 			bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
 			context.eval(getcommonScriptSource());
-			Value value = context.eval(source);
-			if (value.isHostObject()) {
-				return gson.toJsonTree(value.asHostObject());
-			} else {
-				context.getBindings(LANGUAGE_ID_JS).putMember(NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY, value);
-				return gson.fromJson(context.eval(STRINGIFYSOURCE).asString(), JsonElement.class);
-			}
+			return promise(context, context.eval(source));
+		}
+	}
+
+	private static JsonElement promise(Context context, Value v) {
+		final AtomicReference<Value> reference = new AtomicReference<>();
+		Consumer<Value> javaThen = reference::set;
+		v.invokeMember(THEN, javaThen);
+		if (reference.get().isHostObject()) {
+			return gson.toJsonTree(reference.get().asHostObject());
+		} else {
+			context.getBindings(LANGUAGE_ID_JS).putMember(NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY, reference.get());
+			return gson.fromJson(context.eval(STRINGIFYSOURCE).asString(), JsonElement.class);
 		}
 	}
 
@@ -111,30 +119,26 @@ public class GraalVMScriptingFactory {
 		return Helper.stringOrDistinguishedNameAsList(eval(source, bindings));
 	}
 
-	private static Engine getEngine() {
-		if (null == engine) {
-			ENGINELOCK.lock();
-			try {
-				engine = Engine.newBuilder(LANGUAGE_ID_JS).build();
-			} catch (Exception e) {
-				LOGGER.error(e);
-			} finally {
-				ENGINELOCK.unlock();
-			}
-		}
-		return engine;
-	}
-
 	private static Source getcommonScriptSource() {
-		if (null == commonScriptSource) {
-			COMMONSCRIPTLOCK.lock();
-			try {
-				commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
-			} catch (Exception e) {
-				LOGGER.error(e);
-			} finally {
-				COMMONSCRIPTLOCK.unlock();
-			}
+		// TODO
+		// 临时修改为不缓存
+//		if (null == commonScriptSource) {
+//			COMMONSCRIPTLOCK.lock();
+//			try {
+//				commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
+//			} catch (Exception e) {
+//				LOGGER.error(e);
+//			} finally {
+//				COMMONSCRIPTLOCK.unlock();
+//			}
+//		}
+		COMMONSCRIPTLOCK.lock();
+		try {
+			commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			COMMONSCRIPTLOCK.unlock();
 		}
 		return commonScriptSource;
 	}
@@ -168,23 +172,22 @@ public class GraalVMScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_MESSAGE = "java_message";
 
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
-	// public static final String BINDING_NAME_SERVICE_BODY = "body";
 
-	private static final List<String> BINDING_NAMES = Arrays.asList(BINDING_NAME_RESOURCES, BINDING_NAME_WORKCONTEXT,
-			BINDING_NAME_ASSIGNDATA, BINDING_NAME_JAXWSPARAMETERS, BINDING_NAME_JAXWSRESPONSE,
-			BINDING_NAME_JAXRSPARAMETERS, BINDING_NAME_JAXRSRESPONSE, BINDING_NAME_JAXRSHEADERS, BINDING_NAME_JAXRSBODY,
-			BINDING_NAME_REQUESTTEXT, BINDING_NAME_EXPIRE, BINDING_NAME_EFFECTIVEPERSON, BINDING_NAME_DATA,
-			BINDING_NAME_EMBEDDATA, BINDING_NAME_SERIAL, BINDING_NAME_PROCESS, BINDING_NAME_SERVICE_RESOURCES,
-			BINDING_NAME_SERVICE_EFFECTIVEPERSON, BINDING_NAME_SERVICE_CUSTOMRESPONSE, BINDING_NAME_SERVICE_REQUESTTEXT,
-			BINDING_NAME_SERVICE_REQUEST, BINDING_NAME_SERVICE_PARAMETERS, BINDING_NAME_SERVICE_MESSAGE,
-			BINDING_NAME_SERVICE_PERSON);
+	private static final List<String> BINDING_NAMES = Stream
+			.of(BINDING_NAME_RESOURCES, BINDING_NAME_WORKCONTEXT, BINDING_NAME_ASSIGNDATA, BINDING_NAME_JAXWSPARAMETERS,
+					BINDING_NAME_JAXWSRESPONSE, BINDING_NAME_JAXRSPARAMETERS, BINDING_NAME_JAXRSRESPONSE,
+					BINDING_NAME_JAXRSHEADERS, BINDING_NAME_JAXRSBODY, BINDING_NAME_REQUESTTEXT, BINDING_NAME_EXPIRE,
+					BINDING_NAME_EFFECTIVEPERSON, BINDING_NAME_DATA, BINDING_NAME_EMBEDDATA, BINDING_NAME_SERIAL,
+					BINDING_NAME_PROCESS, BINDING_NAME_SERVICE_RESOURCES, BINDING_NAME_SERVICE_EFFECTIVEPERSON,
+					BINDING_NAME_SERVICE_CUSTOMRESPONSE, BINDING_NAME_SERVICE_REQUESTTEXT, BINDING_NAME_SERVICE_REQUEST,
+					BINDING_NAME_SERVICE_PARAMETERS, BINDING_NAME_SERVICE_MESSAGE, BINDING_NAME_SERVICE_PERSON)
+			.collect(Collectors.toList());
 
 	public static Source functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("var o = (function(){").append(System.lineSeparator());
+		sb.append("((async function(){").append(System.lineSeparator());
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-		sb.append("}.apply(this));").append(System.lineSeparator());
-		sb.append("o;");
+		sb.append("}.apply(globalThis));");
 		return Source.create(LANGUAGE_ID_JS, sb.toString());
 	}
 
