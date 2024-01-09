@@ -42,11 +42,10 @@ public class GraalVMScriptingFactory {
 	}
 
 	private static final String LANGUAGE_ID_JS = "js";
+//	private static final String NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY = "nativeJsObjectBindingToStringify";
 	private static final String THEN = "then";
-	private static final String LEFT_SQUARE_BRACKETS = "[";
 
 	private static final ReentrantLock COMMONSCRIPTLOCK = new ReentrantLock();
-//	private static final String NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY = "nativeJsObjectBindingToStringify";
 //	private static final Source STRINGIFYSOURCE = Source.create(LANGUAGE_ID_JS,
 //			"JSON.stringify(" + NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY + ")");
 
@@ -60,24 +59,19 @@ public class GraalVMScriptingFactory {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
 			bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
 			context.eval(getcommonScriptSource());
-			return promise(context.eval(source));
+			return promise(context, context.eval(source));
 		}
 	}
 
-	private static JsonElement promise(Value v) {
+	private static JsonElement promise(Context context, Value v) {
 		final AtomicReference<Value> reference = new AtomicReference<>();
 		Consumer<Value> javaThen = reference::set;
 		v.invokeMember(THEN, javaThen);
 		if (reference.get().isHostObject()) {
 			return gson.toJsonTree(reference.get().asHostObject());
 		} else {
-			String txt = reference.get().toString();
-			if (reference.get().hasArrayElements()) {
-				txt = txt.substring(txt.indexOf(LEFT_SQUARE_BRACKETS) - 1);
-			}
-			return gson.fromJson(txt, JsonElement.class);
-//			context.getBindings(LANGUAGE_ID_JS).putMember(NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY, reference.get());
-//			return gson.fromJson(context.eval(STRINGIFYSOURCE).asString(), JsonElement.class);
+			return gson.fromJson(context.getBindings(LANGUAGE_ID_JS).getMember("JSON")
+					.invokeMember("stringify", reference.get()).asString(), JsonElement.class);
 		}
 	}
 
