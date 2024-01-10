@@ -626,7 +626,7 @@ keys.forEach((k)=>{
 //组织相关服务
 const _getNameFlag = function(name){
     if (Array.isArray(name)){
-        return name.map(n=>_getNameFlag(n));
+        return name.map(n=>((typeof n)==="object" ? (n.distinguishedName || n.id || n.unique || n.name) : n));
     }else{
         return [((typeof name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
     }
@@ -2335,7 +2335,7 @@ function Table(name){
      * @method listRowNext
      * @methodOf module:server.Table
      * @instance
-     * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"。
+     * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"或 "0"。
      * @param {String|Number} count 下一页的行数
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
@@ -2698,15 +2698,15 @@ const statement = {
     },
     _parseFilter: function(filter=[], parameter={}, format){
         return filter.map((d)=>{
-            const pName = d.path.replace(/\./g, '_');
+            let pName = d.path.replace(/\./g, '_');
 
-            d.value = (parameter[pName]) ?
+            pName = (parameter[pName]) ?
                 (function unique(name, i){
                     return (parameter[name+'_'+i]) ? unique(name, ++i) : name+'_'+i;
                 })(pName, 1) :
                 pName;
 
-            parameter[d.value] = (d.comparison === 'like' || d.comparison === 'notLike') ?
+            parameter[pName] = (d.comparison === 'like' || d.comparison === 'notLike') ?
                 `%${d.value.replace(/^%|%$/g, '')}%` :
                 (() => {
                     if (d.formatType === "numberValue") {
@@ -2718,6 +2718,8 @@ const statement = {
                     return d.value;
                 })();
 
+            d.value = pName;
+
             return d;
         });
     },
@@ -2728,6 +2730,7 @@ const statement = {
             "filterList": filterList,
             "parameter" : parameter
         };
+
         return Actions.load("x_query_assemble_surface").StatementAction.executeV2(
             statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
             callback
