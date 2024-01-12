@@ -292,7 +292,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
                 data : this.importedData,
                 rowList : this.rowList
             };
-            this.fireEvent( "validImport", [arg] );
+            this.fireEvent( "import", [arg] );
 
             Promise.resolve( arg.promise ).then(function(){
                 flag = arg.validted;
