@@ -365,11 +365,11 @@ MWF.xDesktop.WebSocket = new Class({
         var imBody = data.body;
         // 更新会话或删除会话
         if (data.type === "im_conv_update" || data.type === "im_conv_delete") {
-             // 执行im callback 刷新页面信息
-             if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
+            // 执行im callback 刷新页面信息
+            if (this.imListenerMap && this.imListenerMap["im_conversation"] && typeof this.imListenerMap["im_conversation"] == 'function') {
                 this.imListenerMap["im_conversation"](imBody);
-                }
-                return;
+            }
+            return;
         }
         // 撤回消息
         if (data.type == "im_revoke") {

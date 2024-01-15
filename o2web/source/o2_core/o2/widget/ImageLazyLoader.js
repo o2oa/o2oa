@@ -47,7 +47,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         }
     },
     parseOnerror: function(){
-        var html = this.html;
+        var html = this.replaceOnAttribute(this.html);
         var regexp_all = /(i?)(<img)([^>]+>)/gmi;
         var images = this.html.match(regexp_all);
         if(images){
@@ -66,7 +66,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         this.html_new = html;
     },
     parseHtml: function(){
-        var html = this.html;
+        var html = this.replaceOnAttribute(this.html);
         var regexp_all = /(i?)(<img)([^>]+>)/gmi;
         var images = this.html.match(regexp_all);
         if(images){
@@ -104,6 +104,28 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
         html = this.replaceHrefJavascriptStr( html );
 
         this.html_new = html;
+    },
+    replaceOnAttribute: function (htmlString){
+
+        var tempDiv = document.createElement('div');
+
+        tempDiv.innerHTML = htmlString;
+
+        var elements = tempDiv.getElementsByTagName('*');
+
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+
+            var attributeNames = element.getAttributeNames();
+
+            for (var j = 0; j < attributeNames.length; j++) {
+                var attributeName = attributeNames[j];
+                if (attributeName.substr(0,2).toLowerCase() === 'on') {
+                    element.removeAttribute(attributeName);
+                }
+            }
+        }
+        return tempDiv.innerHTML;
     },
     replaceHrefJavascriptStr: function( html ){
         var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
