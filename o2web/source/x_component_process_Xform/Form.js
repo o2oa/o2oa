@@ -4157,7 +4157,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
 
     createGoBackActivity: function(area, activity, i){
-        var item = new Element('div.item', {styles: this.css.goBack_activity}).inject(area);
+        var item = new Element('div.item', {styles: this.css[layout.mobile ? 'goBack_activity_mobile' : 'goBack_activity']}).inject(area);
 
         var itemCheck = new Element('div', {styles: this.css.goBack_activity_check, html: "<input type='radio' name='goBackActivity' value='"+activity.activity+"' data-text='"+activity.name+"'/>"}).inject(item);
         var radio = itemCheck.getElement('input');
@@ -4173,18 +4173,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         item.addEvent("click", function(e){
             // var radio = this.getPrevious('div').getElement('input');
+
             var radio = this.getElement('input');
             radio.click();
 
             var items = area.getElements(".item");
             items.each(function(i){
                 var actRadio = i.getFirst().getElement('input');
-                var wayArea = i.getLast().getFirst();
+                var wayArea = i.getElement('.wayArea'); //i.getLast().getFirst();
                 if (actRadio.checked){
-                    wayArea.show();
+                    if(wayArea)wayArea.getFirst().show();
                     i.addClass('lightColor_bg');
                 }else{
-                    wayArea.hide();
+                    if(wayArea)wayArea.getFirst().hide();
                     i.removeClass('lightColor_bg');
                 }
             });
@@ -4196,7 +4197,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             wayRadio = "<div><div><label style='cursor: pointer'><input type='radio' checked name='"+activity.activity+"goBackWay' value='step'/>"+o2.xApplication.process.Xform.LP.form.goBackActivityWayStep+"</label></div>" +
                 "<div><label style='cursor: pointer'><input type='radio' name='"+activity.activity+"goBackWay' value='jump'/>"+o2.xApplication.process.Xform.LP.form.goBackActivityWayJump+"</label></div></div>"
         }
-        var itemWay = new Element('div', {styles: this.css.goBack_activity_way, html:wayRadio}).inject(item);
+        var itemWay = new Element('div.wayArea', {styles: this.css[ layout.mobile ? 'goBack_activity_way_mobile' : 'goBack_activity_way' ], html:wayRadio}).inject( layout.mobile ? itemContent : item);
         itemWay.getFirst().hide();
     },
 

@@ -1322,6 +1322,16 @@
      "goBack_activityArea": {
 
      },
+     "goBack_activity_mobile": {
+         "padding": "6px 0",
+         "overflow": "hidden",
+         "display": "flex",
+         "width": "97%",
+         "justify-content": "space-between",
+         "cursor": "pointer",
+         "border-bottom": "1px solid #cccccc",
+         "border-radius": "10px"
+       },
   "goBack_activity": {
     "padding": "6px 0",
     "overflow": "hidden",
@@ -1349,6 +1359,10 @@
     "align-items": "center",
     "justify-content": "center",
     "padding-right": "20px"
+  },
+  "goBack_activity_way_mobile": {
+    "color": "#666666",
+    "font-size": "12px"
   },
   "goBack_activity_check": {
     "width": "40px",
