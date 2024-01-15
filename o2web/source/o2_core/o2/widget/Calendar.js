@@ -966,98 +966,104 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var div, items;
 
 		this.calculateCurrentHour(h);
-		if( !this.hMobileSelect ){
-			items = [];
-			for( var i=0; i<24; i++ ) {
-				div = new Element("div.hselect", {
-					"text": this.addZero(i, 2),
-					"styles": this.css.calendarTimeSelectItem_mobile
-				}).inject(this.itmeHNode);
-				div.store("d", i);
-				if (!this.isEnableHour(this.cDate, i)){
-					div.hide();
-				}else{
-					items.push(i);
-				}
-			}
-			this.selectedHour = this.cHour; //this.addZero(h, 2 );
-			this.hMobileSelect = new o2.Calendar.MobileSelect( this.itmeHNode.getParent(), {
-				"lineHeight" : 40,
-				"items" : items, //24,
-				"currentItem" : parseInt( this.cHour ),
-				"onChange": function(value){
-					this.selectedHour = value; //this.addZero(value, 2 );
-					this.cHour = this.selectedHour;
-					if( this.options.enableMinutes )this._resetMinuteSelect_mobile();
-					if( this.options.enableSeconds )this._resetSecondSelect_mobile();
-					//this.showHNode.set("text", this.addZero(i, 2 ));
-					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
-				}.bind(this)
-			});
-			this.hMobileSelect.load();
+		if( this.hMobileSelect ){
+			this.itmeHNode.empty();
+			this.hMobileSelect = null;
 		}
+		items = [];
+		for( var i=0; i<24; i++ ) {
+			div = new Element("div.hselect", {
+				"text": this.addZero(i, 2),
+				"styles": this.css.calendarTimeSelectItem_mobile
+			}).inject(this.itmeHNode);
+			div.store("d", i);
+			if (!this.isEnableHour(this.cDate, i)){
+				div.hide();
+			}else{
+				items.push(i);
+			}
+		}
+		this.selectedHour = this.cHour; //this.addZero(h, 2 );
+		this.hMobileSelect = new o2.Calendar.MobileSelect( this.itmeHNode.getParent(), {
+			"lineHeight" : 40,
+			"items" : items, //24,
+			"currentItem" : parseInt( this.cHour ),
+			"onChange": function(value){
+				this.selectedHour = value; //this.addZero(value, 2 );
+				this.cHour = this.selectedHour;
+				if( this.options.enableMinutes )this._resetMinuteSelect_mobile();
+				if( this.options.enableSeconds )this._resetSecondSelect_mobile();
+				//this.showHNode.set("text", this.addZero(i, 2 ));
+				//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+			}.bind(this)
+		});
+		this.hMobileSelect.load();
 
 		this.calculateCurrentMinute(m);
-		if( !this.mMobileSelect ) {
-			items = [];
-			for (var i = 0; i < 60; i++) {
-				div = new Element("div.mselect", {
-					"text": this.addZero(i, 2),
-					"styles": this.css.calendarTimeSelectItem_mobile
-				}).inject(this.itmeMNode);
-				div.store("d", i);
-				if (!this.isEnableMinute(this.cDate, this.cHour, i)) {
-					div.hide();
-				}else{
-					items.push(i);
-				}
-			}
-			this.selectedMinute = this.cMinute; //this.addZero(m, 2);
-			this.mMobileSelect = new o2.Calendar.MobileSelect(this.itmeMNode.getParent(), {
-				"lineHeight": 40,
-				"items": items, //60,
-				"currentItem": parseInt(this.cMinute),
-				"onChange": function (value) {
-					this.selectedMinute = value; //this.addZero(value, 2);
-					//this.showHNode.set("text", this.addZero(i, 2 ));
-					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
-					this.cMinute = this.selectedMinute;
-					if( this.options.enableSeconds )this._resetSecondSelect_mobile();
-				}.bind(this)
-			});
-			this.mMobileSelect.load();
+		if( this.mMobileSelect ){
+			this.itmeMNode.empty();
+			this.mMobileSelect = null;
 		}
+		items = [];
+		for (var i = 0; i < 60; i++) {
+			div = new Element("div.mselect", {
+				"text": this.addZero(i, 2),
+				"styles": this.css.calendarTimeSelectItem_mobile
+			}).inject(this.itmeMNode);
+			div.store("d", i);
+			if (!this.isEnableMinute(this.cDate, this.cHour, i)) {
+				div.hide();
+			}else{
+				items.push(i);
+			}
+		}
+		this.selectedMinute = this.cMinute; //this.addZero(m, 2);
+		this.mMobileSelect = new o2.Calendar.MobileSelect(this.itmeMNode.getParent(), {
+			"lineHeight": 40,
+			"items": items, //60,
+			"currentItem": parseInt(this.cMinute),
+			"onChange": function (value) {
+				this.selectedMinute = value; //this.addZero(value, 2);
+				//this.showHNode.set("text", this.addZero(i, 2 ));
+				//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+				this.cMinute = this.selectedMinute;
+				if( this.options.enableSeconds )this._resetSecondSelect_mobile();
+			}.bind(this)
+		});
+		this.mMobileSelect.load();
 
 		if(this.options.secondEnable ){
 			this.calculateCurrentSecond(s);
-			if(!this.sMobileSelect){
-				items = [];
-				for( var i=0; i<60; i++ ){
-					div = new Element("div.sselect",{
-						"text" : this.addZero(i, 2 ),
-						"styles" : this.css.calendarTimeSelectItem_mobile
-					}).inject( this.itmeSNode );
-					div.store("d", i);
-					if (!this.isEnableMinute(this.cDate, this.cHour, this.cMinute, i)) {
-						div.hide();
-					}else{
-						items.push(i);
-					}
-				}
-				this.selectedSecond = this.cSecond; //this.addZero(s, 2 );
-				this.sMobileSelect = new o2.Calendar.MobileSelect( this.itmeSNode.getParent(), {
-					"lineHeight" : 40,
-					"items" : items, //60,
-					"currentItem" : parseInt(this.cSecond),
-					"onChange": function(value){
-						this.selectedSecond = value; //this.addZero(value, 2 );
-						//this.showHNode.set("text", this.addZero(i, 2 ));
-						//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
-						this.cSecond = this.selectedSecond;
-					}.bind(this)
-				});
-				this.sMobileSelect.load();
+			if( this.sMobileSelect ){
+				this.itmeSNode.empty();
+				this.sMobileSelect = null;
 			}
+			items = [];
+			for( var i=0; i<60; i++ ){
+				div = new Element("div.sselect",{
+					"text" : this.addZero(i, 2 ),
+					"styles" : this.css.calendarTimeSelectItem_mobile
+				}).inject( this.itmeSNode );
+				div.store("d", i);
+				if (!this.isEnableMinute(this.cDate, this.cHour, this.cMinute, i)) {
+					div.hide();
+				}else{
+					items.push(i);
+				}
+			}
+			this.selectedSecond = this.cSecond; //this.addZero(s, 2 );
+			this.sMobileSelect = new o2.Calendar.MobileSelect( this.itmeSNode.getParent(), {
+				"lineHeight" : 40,
+				"items" : items, //60,
+				"currentItem" : parseInt(this.cSecond),
+				"onChange": function(value){
+					this.selectedSecond = value; //this.addZero(value, 2 );
+					//this.showHNode.set("text", this.addZero(i, 2 ));
+					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+					this.cSecond = this.selectedSecond;
+				}.bind(this)
+			});
+			this.sMobileSelect.load();
 		}else{
 			this.itmeSNode.hide();
 
