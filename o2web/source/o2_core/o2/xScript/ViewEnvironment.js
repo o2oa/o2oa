@@ -4503,6 +4503,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "selectOrg": function ( container, options,  delayLoad) {
             if( !container )container = _form.app.content;
+            MWF.xDesktop.requireApp("Selector", "package", null, false);
             return new MWF.O2Selector(container, options, delayLoad);
         },
 
