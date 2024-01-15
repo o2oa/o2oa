@@ -3,7 +3,7 @@ import { lp, o2 } from "@o2oa/component";
 import { myAction } from "../../utils/actions";
 import { EventBus } from "../../utils/eventBus";
 import template from "./template.html";
-import style from "./style.css";
+import style from "./style.scope.css";
 import myMenu from "../menu";
 
 export default content({
