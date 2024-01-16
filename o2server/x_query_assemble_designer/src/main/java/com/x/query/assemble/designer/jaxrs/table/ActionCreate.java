@@ -68,7 +68,7 @@ class ActionCreate extends BaseAction {
 			table.setData("");
 			table.setStatus(Table.STATUS_DRAFT);
 			table.setBuildSuccess(false);
-			checkDuplicate(business, query, table);
+			checkDuplicate(business, table);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Table.class);
