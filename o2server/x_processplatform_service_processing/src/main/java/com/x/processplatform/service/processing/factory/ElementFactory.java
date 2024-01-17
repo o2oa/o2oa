@@ -12,11 +12,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.CompiledScript;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
@@ -24,7 +24,7 @@ import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -56,7 +56,7 @@ import com.x.processplatform.service.processing.Business;
 
 public class ElementFactory extends AbstractFactory {
 
-	private static Logger logger = LoggerFactory.getLogger(ElementFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ElementFactory.class);
 
 	public ElementFactory(Business business) throws Exception {
 		super(business);
@@ -464,13 +464,13 @@ public class ElementFactory extends AbstractFactory {
 
 	private static final String GETCOMPILEDSCRIPT = "getCompiledScript";
 
-	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
+	public Source getCompiledScript(String applicationId, Activity o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(o.getClass(), Script.class);
 		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		CompiledScript compiledScript = null;
+		Source source = null;
 		if (optional.isPresent()) {
-			compiledScript = (CompiledScript) optional.get();
+			source = (Source) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -630,18 +630,18 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
-				CacheManager.put(cacheCategory, cacheKey, compiledScript);
+				source = GraalvmScriptingFactory.functionalization(sb.toString());
+				CacheManager.put(cacheCategory, cacheKey, source);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
-		return compiledScript;
+		return source;
 	}
 
-	public CompiledScript getCompiledScript(String applicationId, String scriptName, String scriptText) {
+	public Source getCompiledScript(String applicationId, String scriptName, String scriptText) {
 		StringBuilder sb = new StringBuilder();
-		CompiledScript compiledScript = null;
+		Source source = null;
 		try {
 			if (StringUtils.isNotEmpty(scriptName)) {
 				List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
@@ -652,20 +652,20 @@ public class ElementFactory extends AbstractFactory {
 			if (StringUtils.isNotEmpty(scriptText)) {
 				sb.append(scriptText).append(System.lineSeparator());
 			}
-			compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
+			source = GraalvmScriptingFactory.functionalization(sb.toString());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
-		return compiledScript;
+		return source;
 	}
 
-	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
+	public Source getCompiledScript(String applicationId, Route o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(Route.class, Script.class);
 		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		CompiledScript compiledScript = null;
+		Source source = null;
 		if (optional.isPresent()) {
-			compiledScript = (CompiledScript) optional.get();
+			source = (Source) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -693,22 +693,22 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
-				CacheManager.put(cacheCategory, cacheKey, compiledScript);
+				source = GraalvmScriptingFactory.functionalization(sb.toString());
+				CacheManager.put(cacheCategory, cacheKey, source);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
-		return compiledScript;
+		return source;
 	}
 
-	public CompiledScript getCompiledScript(String applicationId, Process o, String event) throws Exception {
+	public Source getCompiledScript(String applicationId, Process o, String event) throws Exception {
 		CacheCategory cacheCategory = new CacheCategory(Process.class, Script.class);
 		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, applicationId, o.getId(), event);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		CompiledScript compiledScript = null;
+		Source source = null;
 		if (optional.isPresent()) {
-			compiledScript = (CompiledScript) optional.get();
+			source = (Source) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -784,31 +784,31 @@ public class ElementFactory extends AbstractFactory {
 				if (StringUtils.isNotEmpty(scriptText)) {
 					sb.append(scriptText).append(System.lineSeparator());
 				}
-				compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
-				CacheManager.put(cacheCategory, cacheKey, compiledScript);
+				source = GraalvmScriptingFactory.functionalization(sb.toString());
+				CacheManager.put(cacheCategory, cacheKey, source);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
-		return compiledScript;
+		return source;
 	}
 
-	public CompiledScript getCompiledScript(Activity activity, String event, String name, String code) {
+	public Source getCompiledScript(Activity activity, String event, String name, String code) {
 		CacheCategory cacheCategory = new CacheCategory(activity.getClass(), Script.class);
 		CacheKey cacheKey = new CacheKey(GETCOMPILEDSCRIPT, activity.getId(), event, name, code);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-		CompiledScript compiledScript = null;
+		Source source = null;
 		if (optional.isPresent()) {
-			compiledScript = (CompiledScript) optional.get();
+			source = (Source) optional.get();
 		} else {
 			try {
-				compiledScript = ScriptingFactory.functionalizationCompile(code);
-				CacheManager.put(cacheCategory, cacheKey, compiledScript);
+				source = GraalvmScriptingFactory.functionalization(code);
+				CacheManager.put(cacheCategory, cacheKey, source);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
-		return compiledScript;
+		return source;
 	}
 
 	/**

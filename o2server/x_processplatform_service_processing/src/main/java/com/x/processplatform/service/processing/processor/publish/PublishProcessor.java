@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -21,8 +19,8 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -145,14 +143,13 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			final AssignPublish assignPublish) throws Exception {
 		WrapScriptObject assignBody = new WrapScriptObject();
 		if (hasTableAssignDataScript(publishTable)) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					publishTable.getTargetAssignDataScript(), publishTable.getTargetAssignDataScriptText());
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
-					assignBody);
-			JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
-				if (!o.isJsonNull()) {
-					assignPublish.setData(o);
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, assignBody);
+			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
+				if (!jsonElement.isJsonNull()) {
+					assignPublish.setData(jsonElement);
 				}
 			});
 		}
@@ -246,21 +243,19 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		CmsDocument cmsDocument = new CmsDocument();
 		WrapScriptObject assignBody = new WrapScriptObject();
 		if (hasCmsAssignDataScript(publish)) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_PUBLISHCMSBODY);
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
-					assignBody);
-			JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
-				if (!o.isJsonNull()) {
-					cmsDocument.setDocData(o);
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, assignBody);
+			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
+				if (!jsonElement.isJsonNull()) {
+					cmsDocument.setDocData(jsonElement);
 				}
 			});
 		}
 		if (cmsDocument.getDocData() == null) {
 			cmsDocument.setDocData(gson.toJsonTree(aeiObjects.getData()));
 		}
-
 		return cmsDocument;
 	}
 
@@ -274,11 +269,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			} else {
 				Object o = data.find(str.trim());
 				if (o != null) {
-					if (o instanceof List) {
-						list.addAll((List) o);
-					} else {
-						list.add(o.toString());
-					}
+					list.addAll(JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(gson.toJsonTree(o)));
 				}
 			}
 		}
@@ -420,6 +411,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	public class CmsPermission extends GsonPropertyObject {
+		private static final long serialVersionUID = -5739174280288142754L;
 		private String permissionObjectName;
 
 		public String getPermissionObjectName() {
@@ -432,6 +424,8 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	public class CmsNotify extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 5831963157463553841L;
 
 		public CmsNotify(List<String> notifyPersonList) {
 			this.notifyPersonList = notifyPersonList;

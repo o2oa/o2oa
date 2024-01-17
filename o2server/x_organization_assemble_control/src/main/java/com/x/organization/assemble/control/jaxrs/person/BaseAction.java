@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.jaxrs.person;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -12,14 +13,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -31,8 +30,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
@@ -294,15 +292,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
-			CompiledScript cs = ScriptingFactory
-					.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON, person);
-			return JsonScriptingExecutor.evalString(cs, scriptContext);
-		} else {
-			return str;
+			Source source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+			bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PERSON, person);
+			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+			if (opt.isPresent()) {
+				str = opt.get();
+			}
 		}
+		return str;
 	}
 
 	protected void removeMemberOfUnitDuty(Business business, List<Identity> identities) throws Exception {

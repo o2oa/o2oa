@@ -6,11 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.script.CompiledScript;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -20,6 +19,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
@@ -38,11 +38,11 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  */
 public class TranslateTaskIdentityTools {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
+
 	private TranslateTaskIdentityTools() {
 		// nothing
 	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(TranslateTaskIdentityTools.class);
 
 	/* 计算manual节点中所有的待办，全部翻译成Identity */
 	public static TaskIdentities translate(AeiObjects aeiObjects, Manual manual) throws Exception {
@@ -92,10 +92,9 @@ public class TranslateTaskIdentityTools {
 				JsonObject o = iterator.next().getAsJsonObject();
 				String name = o.get("name").getAsString();
 				String code = o.get("code").getAsString();
-				CompiledScript compiledScript = aeiObjects.business().element()
-						.getCompiledScript(aeiObjects.getActivity(), Business.EVENT_TASKDUTY, name, code);
-				List<String> ds = JsonScriptingExecutor.evalDistinguishedNames(compiledScript,
-						aeiObjects.scriptContext());
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getActivity(),
+						Business.EVENT_TASKDUTY, name, code);
+				List<String> ds = GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings());
 				if (ListTools.isNotEmpty(ds)) {
 					for (String str : ds) {
 						List<String> os = aeiObjects.business().organization().unitDuty()
@@ -144,12 +143,12 @@ public class TranslateTaskIdentityTools {
 			AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(manual.getTaskScript())) || (StringUtils.isNotEmpty(manual.getTaskScriptText()))) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					manual, Business.EVENT_MANUALTASK);
-			JsonScriptingExecutor.jsonElement(cs, aeiObjects.scriptContext(), o -> {
+			GraalvmScriptingFactory.eval(source, aeiObjects.bindings(), jsonElement -> {
 				try {
 					addObjectToTaskIdentities(taskIdentities, units, groups,
-							JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(o));
+							JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(jsonElement));
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}

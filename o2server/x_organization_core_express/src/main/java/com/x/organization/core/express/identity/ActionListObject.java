@@ -7,7 +7,6 @@ import java.util.List;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.WoIdentity;
 

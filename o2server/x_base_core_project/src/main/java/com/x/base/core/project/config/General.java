@@ -66,6 +66,7 @@ public class General extends ConfigObject {
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
 	private static final Integer DEFAULT_WEBSERVERCACHECONTROLMAXAGE = 86400;
 	private static final Map<String, String> DEFAULT_SUPPORTED_LANGUAGES = Map.of("zh-CN", "简体中文", "en", "English");
+	private static final Boolean DEFAULT_GRAALVMEVALASPROMISE = true;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -88,6 +89,7 @@ public class General extends ConfigObject {
 		o.storageEncrypt = DEFAULT_STORAGEENCRYPT;
 		o.webServerCacheControlMaxAge = DEFAULT_WEBSERVERCACHECONTROLMAXAGE;
 		o.supportedLanguages = DEFAULT_SUPPORTED_LANGUAGES;
+		o.graalvmEvalAsPromise = DEFAULT_GRAALVMEVALASPROMISE;
 		return o;
 	}
 
@@ -150,6 +152,13 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("多语言配置，默认支持中文和英文.")
 	private Map<String, String> supportedLanguages;
+
+	@FieldDescribe("graalvm执行脚本包装为promise.")
+	private Boolean graalvmEvalAsPromise;
+
+	public Boolean getGraalvmEvalAsPromise() {
+		return BooleanUtils.isNotFalse(this.graalvmEvalAsPromise);
+	}
 
 	public Integer getWebServerCacheControlMaxAge() {
 		return NumberTools.nullOrLessThan(this.webServerCacheControlMaxAge, 0) ? DEFAULT_WEBSERVERCACHECONTROLMAXAGE

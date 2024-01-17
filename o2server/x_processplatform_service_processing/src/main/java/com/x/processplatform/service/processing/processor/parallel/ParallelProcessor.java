@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -77,10 +75,10 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 		List<Route> routes = new ArrayList<>();
 		/* 多条路由进行判断 */
 		for (Route o : aeiObjects.getRoutes()) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-					o, Business.EVENT_ROUTE);
-			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(cs, scriptContext, Boolean.FALSE))) {
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), o,
+					Business.EVENT_ROUTE);
+			Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, aeiObjects.bindings());
+			if (opt.isPresent() && BooleanUtils.isTrue(opt.get())) {
 				routes.add(o);
 			}
 		}

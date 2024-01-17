@@ -3,19 +3,17 @@ package com.x.processplatform.service.processing.processor.manual;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.EmpowerLog;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
@@ -150,7 +148,7 @@ public class Tasks {
 		}
 	}
 
-	private static EmpowerLog createEmpowerLog(Work work, String fromIdentity,  String toIdentity) {
+	private static EmpowerLog createEmpowerLog(Work work, String fromIdentity, String toIdentity) {
 		return new EmpowerLog().setApplication(work.getApplication()).setApplicationAlias(work.getApplicationAlias())
 				.setApplicationName(work.getApplicationName()).setProcess(work.getProcess())
 				.setProcessAlias(work.getProcessAlias()).setProcessName(work.getProcessName()).setTitle(work.getTitle())
@@ -208,15 +206,16 @@ public class Tasks {
 
 	private static void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
-		ScriptContext scriptContext = aeiObjects.scriptContext();
-		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
-				manual, Business.EVENT_MANUALTASKEXPIRE);
-		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
-		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
-			if (null != o) {
-				expire.setDate(o.getDate());
-				expire.setHour(o.getHour());
-				expire.setWorkHour(o.getWorkHour());
+		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), manual,
+				Business.EVENT_MANUALTASKEXPIRE);
+		GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
+			if (null != jsonElement) {
+				ExpireScriptResult res = XGsonBuilder.instance().fromJson(jsonElement, ExpireScriptResult.class);
+				expire.setDate(res.getDate());
+				expire.setHour(res.getHour());
+				expire.setWorkHour(res.getWorkHour());
 			}
 		});
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {

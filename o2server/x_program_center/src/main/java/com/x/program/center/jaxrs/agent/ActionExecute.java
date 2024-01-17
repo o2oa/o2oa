@@ -17,7 +17,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.GraalVMScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
@@ -44,7 +44,7 @@ class ActionExecute extends BaseAction {
 		try {
 			LOCK.add(agent.getId());
 			this.stampLastStartTime(agent.getId());
-			GraalVMScriptingFactory.Bindings bindings = getBindingResource();
+			GraalvmScriptingFactory.Bindings bindings = getBindingResource();
 			CacheCategory cacheCategory = new CacheCategory(Agent.class);
 			CacheKey cacheKey = new CacheKey(ActionExecute.class, agent.getId());
 			Source source = getSource(cacheCategory, cacheKey, agent);
@@ -59,22 +59,22 @@ class ActionExecute extends BaseAction {
 		return result;
 	}
 
-	private void eval(Source source, GraalVMScriptingFactory.Bindings bindings, Agent agent)
+	private void eval(Source source, GraalvmScriptingFactory.Bindings bindings, Agent agent)
 			throws ExceptionAgentExecute {
 		try {
-			GraalVMScriptingFactory.eval(source, bindings);
+			GraalvmScriptingFactory.eval(source, bindings);
 		} catch (Exception e) {
 			throw new ExceptionAgentExecute(e, agent.getId(), agent.getName());
 		}
 	}
 
-	private GraalVMScriptingFactory.Bindings getBindingResource() throws Exception {
+	private GraalvmScriptingFactory.Bindings getBindingResource() throws Exception {
 		AgentEvalResources resources = new AgentEvalResources();
 		resources.setContext(ThisApplication.context());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setWebservicesClient(new WebservicesClient());
-		return new GraalVMScriptingFactory.Bindings().putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_RESOURCES,
+		return new GraalvmScriptingFactory.Bindings().putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES,
 				resources);
 	}
 
@@ -84,7 +84,7 @@ class ActionExecute extends BaseAction {
 		if (optional.isPresent()) {
 			source = (Source) optional.get();
 		} else {
-			source = GraalVMScriptingFactory.functionalization(agent.getText());
+			source = GraalvmScriptingFactory.functionalization(agent.getText());
 			CacheManager.put(cacheCategory, cacheKey, source);
 		}
 		return source;

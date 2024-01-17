@@ -16,6 +16,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,9 +28,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -37,10 +35,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 
 public class Crypto {
 
@@ -239,10 +237,12 @@ public class Crypto {
 				if (StringUtils.startsWithIgnoreCase(matcher.group(1), ENCRYPT_PREFIX)) {
 					return decrypt(matcher.group(2), NEVERCHANGEKEY, null);
 				} else if (StringUtils.startsWithIgnoreCase(matcher.group(1), SCRIPT_PREFIX)) {
-					CompiledScript cs = ScriptingFactory
-							.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(2)));
-					ScriptContext scriptContext = new SimpleScriptContext();
-					return JsonScriptingExecutor.evalString(cs, scriptContext);
+					Source source = GraalvmScriptingFactory
+							.functionalization(StringEscapeUtils.unescapeJson(matcher.group(2)));
+					Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, null);
+					if (opt.isPresent()) {
+						return opt.get();
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -250,7 +250,6 @@ public class Crypto {
 		} else {
 			return text;
 		}
-
 		return null;
 	}
 

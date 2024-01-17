@@ -1,7 +1,6 @@
 package com.x.organization.core.express.person;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class PersonFactory {
 	private AbstractContext context;
 
 	/** 判断个人是否拥有指定角色中的一个或者多个 */
-	public Boolean hasRole(EffectivePerson effectivePerson, Collection<String> values) throws Exception {
+	public Boolean hasRole(EffectivePerson effectivePerson, List<String> values) throws Exception {
 		return ActionHasRole.execute(context, effectivePerson.getDistinguishedName(), values);
 	}
 
@@ -31,7 +30,7 @@ public class PersonFactory {
 	}
 
 	/** 判断个人是否拥有指定角色中的一个或者多个 */
-	public Boolean hasRole(String person, Collection<String> values) throws Exception {
+	public Boolean hasRole(String person, List<String> values) throws Exception {
 		return ActionHasRole.execute(context, person, values);
 	}
 
@@ -65,11 +64,11 @@ public class PersonFactory {
 	}
 
 	/** 批量获取个人的distinguishedName */
-	public List<String> list(Collection<String> values) throws Exception {
+	public List<String> list(List<String> values) throws Exception {
 		return ActionList.execute(context, values, false);
 	}
 
-	public List<String> list(Collection<String> values, Boolean useNameFind) throws Exception {
+	public List<String> list(List<String> values, Boolean useNameFind) throws Exception {
 		return ActionList.execute(context, values, useNameFind);
 	}
 
@@ -131,12 +130,12 @@ public class PersonFactory {
 	}
 
 	/** 批量获取个人对象 */
-	public List<Person> listObject(Collection<String> values) throws Exception {
+	public List<Person> listObject(List<String> values) throws Exception {
 		List<? extends Person> os = ActionListObject.execute(context, values, false);
 		return (List<Person>) os;
 	}
 
-	public List<Person> listObject(Collection<String> values, Boolean useNameFind) throws Exception {
+	public List<Person> listObject(List<String> values, Boolean useNameFind) throws Exception {
 		List<? extends Person> os = ActionListObject.execute(context, values, useNameFind);
 		return (List<Person>) os;
 	}
@@ -148,7 +147,7 @@ public class PersonFactory {
 	}
 
 	/** 根据群组获取组织的递归下级成员个人 */
-	public List<String> listWithGroup(Collection<String> values) throws Exception {
+	public List<String> listWithGroup(List<String> values) throws Exception {
 		return ActionListWithGroup.execute(context, values);
 	}
 
@@ -168,7 +167,7 @@ public class PersonFactory {
 	}
 
 	/** 批量根据身份获取个人 */
-	public List<String> listWithIdentity(Collection<String> values) throws Exception {
+	public List<String> listWithIdentity(List<String> values) throws Exception {
 		return ActionListWithIdentity.execute(context, values);
 	}
 
@@ -183,7 +182,7 @@ public class PersonFactory {
 	}
 
 	/** 根据个人获取个人直接分管的个人 */
-	public List<String> listWithPersonSubDirect(Collection<String> values) throws Exception {
+	public List<String> listWithPersonSubDirect(List<String> values) throws Exception {
 		return ActionListWithPersonSubDirect.execute(context, values);
 	}
 
@@ -192,7 +191,7 @@ public class PersonFactory {
 	}
 
 	/** 根据个人获取个人嵌套分管的个人 */
-	public List<String> listWithPersonSubNested(Collection<String> values) throws Exception {
+	public List<String> listWithPersonSubNested(List<String> values) throws Exception {
 		return ActionListWithPersonSubNested.execute(context, values);
 	}
 
@@ -211,7 +210,7 @@ public class PersonFactory {
 	}
 
 	/** 根据个人获取个人直接主管 */
-	public List<String> listWithPersonSupDirect(Collection<String> values) throws Exception {
+	public List<String> listWithPersonSupDirect(List<String> values) throws Exception {
 		return ActionListWithPersonSupDirect.execute(context, values);
 	}
 
@@ -220,7 +219,7 @@ public class PersonFactory {
 	}
 
 	/** 根据个人获取个人嵌套主管 */
-	public List<String> listWithPersonSupNested(Collection<String> values) throws Exception {
+	public List<String> listWithPersonSupNested(List<String> values) throws Exception {
 		return ActionListWithPersonSupNested.execute(context, values);
 	}
 
@@ -229,7 +228,7 @@ public class PersonFactory {
 	}
 
 	/** 根据角色获取组织的递归下级成员个人 */
-	public List<String> listWithRole(Collection<String> values) throws Exception {
+	public List<String> listWithRole(List<String> values) throws Exception {
 		return ActionListWithRole.execute(context, values);
 	}
 
@@ -239,7 +238,7 @@ public class PersonFactory {
 	}
 
 	/** 根据组织获取组织的直接下级成员对应的个人 */
-	public List<String> listWithUnitSubDirect(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubDirect(List<String> values) throws Exception {
 		return ActionListWithUnitSubDirect.execute(context, values);
 	}
 
@@ -249,7 +248,7 @@ public class PersonFactory {
 	}
 
 	/** 根据组织获取组织的递归下级成员对应的个人 */
-	public List<String> listWithUnitSubNested(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubNested(List<String> values) throws Exception {
 		return ActionListWithUnitSubNested.execute(context, values);
 	}
 
@@ -269,7 +268,7 @@ public class PersonFactory {
 	}
 
 	// 批量根据身份获取个人,返回身份人员匹配对
-	public List<IdentityPersonPair> listPairIdentity(Collection<String> values) throws Exception {
+	public List<IdentityPersonPair> listPairIdentity(List<String> values) throws Exception {
 		return ActionListPairIdentity.execute(context, values);
 	}
 

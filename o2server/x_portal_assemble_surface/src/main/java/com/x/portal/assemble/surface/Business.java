@@ -1,19 +1,22 @@
 package com.x.portal.assemble.surface;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
-import com.x.portal.assemble.surface.factory.*;
+import com.x.portal.assemble.surface.factory.ApplicationDictFactory;
+import com.x.portal.assemble.surface.factory.ApplicationDictItemFactory;
+import com.x.portal.assemble.surface.factory.FileFactory;
+import com.x.portal.assemble.surface.factory.PageFactory;
+import com.x.portal.assemble.surface.factory.PortalFactory;
+import com.x.portal.assemble.surface.factory.ScriptFactory;
+import com.x.portal.assemble.surface.factory.WidgetFactory;
 import com.x.portal.assemble.surface.factory.cms.CmsFactory;
 import com.x.portal.assemble.surface.factory.process.ProcessFactory;
 import com.x.portal.assemble.surface.factory.service.CenterServiceFactory;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
 
 public class Business {
 
@@ -126,15 +129,17 @@ public class Business {
 		return centerService;
 	}
 
-	public void binding(EffectivePerson effectivePerson, ScriptContext scriptContext) throws Exception {
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+	public GraalvmScriptingFactory.Bindings binding(EffectivePerson effectivePerson) throws Exception {
 		Resources resources = new Resources();
 		resources.setContext(ThisApplication.context());
 		resources.setOrganization(new Organization(ThisApplication.context()));
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setApplications(ThisApplication.context().applications());
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+		GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+		bindings.put(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.put(GraalvmScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON,
+				XGsonBuilder.toJson(effectivePerson));
+		return bindings;
 	}
 
 	public static class Resources extends AbstractResources {

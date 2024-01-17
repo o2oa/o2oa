@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Route;
@@ -40,9 +39,9 @@ public class AgentProcessor extends AbstractAgentProcessor {
 		aeiObjects.getProcessingAttributes().push(Signal.agentExecute(aeiObjects.getWork().getActivityToken(), agent));
 		List<Work> results = new ArrayList<>();
 		if (StringUtils.isNotEmpty(agent.getScript()) || StringUtils.isNotEmpty(agent.getScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_AGENT);
-			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 		}
 		results.add(aeiObjects.getWork());
 		return results;

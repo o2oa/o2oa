@@ -1,7 +1,6 @@
 package com.x.organization.core.express.unit;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
@@ -52,11 +51,11 @@ public class UnitFactory {
 	}
 
 	/** 批量获取组织的distinguishedName */
-	public List<String> list(Collection<String> values) throws Exception {
+	public List<String> list(List<String> values) throws Exception {
 		return ActionList.execute(context, values, false);
 	}
 
-	public List<String> list(Collection<String> values, Boolean useNameFind) throws Exception {
+	public List<String> list(List<String> values, Boolean useNameFind) throws Exception {
 		return ActionList.execute(context, values, useNameFind);
 	}
 
@@ -96,12 +95,12 @@ public class UnitFactory {
 	}
 
 	/** 批量获取组织对象 */
-	public List<Unit> listObject(Collection<String> values) throws Exception {
+	public List<Unit> listObject(List<String> values) throws Exception {
 		List<? extends Unit> os = ActionListObject.execute(context, values, false);
 		return (List<Unit>) os;
 	}
 
-	public List<Unit> listObject(Collection<String> values, Boolean useNameFind) throws Exception {
+	public List<Unit> listObject(List<String> values, Boolean useNameFind) throws Exception {
 		List<? extends Unit> os = ActionListObject.execute(context, values, useNameFind);
 		return (List<Unit>) os;
 	}
@@ -123,7 +122,7 @@ public class UnitFactory {
 	}
 
 	/** 批量根据身份获取组织 */
-	public List<String> listWithIdentity(Collection<String> values) throws Exception {
+	public List<String> listWithIdentity(List<String> values) throws Exception {
 		return ActionListWithIdentity.execute(context, values);
 	}
 
@@ -133,7 +132,7 @@ public class UnitFactory {
 	}
 
 	/** 批量根据身份获取组织,并递归查找其上层组织 */
-	public List<String> listWithIdentitySupNested(Collection<String> values) throws Exception {
+	public List<String> listWithIdentitySupNested(List<String> values) throws Exception {
 		return ActionListWithIdentitySupNested.execute(context, values);
 	}
 
@@ -143,7 +142,7 @@ public class UnitFactory {
 	}
 
 	/** 批量查询指定组织层级的组织 */
-	public List<String> listWithLevel(Collection<Integer> values) throws Exception {
+	public List<String> listWithLevel(List<Integer> values) throws Exception {
 		return ActionListWithLevel.execute(context, values);
 	}
 
@@ -153,7 +152,7 @@ public class UnitFactory {
 	}
 
 	/** 批量查询指定组织层级的组织对象 */
-	public List<Unit> listWithLevelObject(Collection<Integer> values) throws Exception {
+	public List<Unit> listWithLevelObject(List<Integer> values) throws Exception {
 		List<? extends Unit> os = ActionListWithLevelObject.execute(context, values);
 		return (List<Unit>) os;
 	}
@@ -165,7 +164,7 @@ public class UnitFactory {
 	}
 
 	/** 批量个人获取所在的组织 */
-	public List<String> listWithPerson(Collection<String> values) throws Exception {
+	public List<String> listWithPerson(List<String> values) throws Exception {
 		return ActionListWithPerson.execute(context, values);
 	}
 
@@ -185,7 +184,7 @@ public class UnitFactory {
 	}
 
 	/** 批量个人获取所在的组织,并递归其上级组织 */
-	public List<String> listWithPersonSupNested(Collection<String> values) throws Exception {
+	public List<String> listWithPersonSupNested(List<String> values) throws Exception {
 		return ActionListWithPersonSupNested.execute(context, values);
 	}
 
@@ -205,7 +204,7 @@ public class UnitFactory {
 	}
 
 	/** 根据组织获取组织的直接下级组织 */
-	public List<String> listWithUnitSubDirect(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubDirect(List<String> values) throws Exception {
 		return ActionListWithUnitSubDirect.execute(context, values);
 	}
 
@@ -215,7 +214,7 @@ public class UnitFactory {
 	}
 
 	/** 根据组织获取组织的嵌套下级组织 */
-	public List<String> listWithUnitSubNested(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSubNested(List<String> values) throws Exception {
 		return ActionListWithUnitSubNested.execute(context, values);
 	}
 
@@ -225,7 +224,7 @@ public class UnitFactory {
 	}
 
 	/** 根据组织获取组织的直接上级组织 */
-	public List<String> listWithUnitSupDirect(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSupDirect(List<String> values) throws Exception {
 		return ActionListWithUnitSupDirect.execute(context, values);
 	}
 
@@ -235,7 +234,7 @@ public class UnitFactory {
 	}
 
 	/** 根据组织获取组织的嵌套上级组织 */
-	public List<String> listWithUnitSupNested(Collection<String> values) throws Exception {
+	public List<String> listWithUnitSupNested(List<String> values) throws Exception {
 		return ActionListWithUnitSupNested.execute(context, values);
 	}
 

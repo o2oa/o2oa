@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
@@ -129,11 +127,9 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	private List<String> splitWithPath(AeiObjects aeiObjects, Split split) throws Exception {
 		List<String> list = new ArrayList<>();
 		if ((StringUtils.isNotEmpty(split.getScript())) || (StringUtils.isNotEmpty(split.getScriptText()))) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					split, Business.EVENT_SPLIT);
-			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(cs, scriptContext);
-			list.addAll(os);
+			list.addAll(GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings()));
 		}
 		return list;
 	}
