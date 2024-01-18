@@ -200,6 +200,9 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                 }
 
                 this.node.set("html", this.widgetData.html);
+                if( this.widgetData.json.styles ){
+                    this.node.getFirst().setStyles(this.widgetData.json.styles);
+                }
 
                 Object.each(this.widgetData.json.moduleList, function(module, key){
                     var formKey = key;
