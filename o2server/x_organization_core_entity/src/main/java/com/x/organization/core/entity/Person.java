@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -111,6 +112,9 @@ public class Person extends SliceJpaObject {
 		if (null == this.orderNumber) {
 			this.orderNumber = DateTools.timeOrderNumber();
 		}
+		if(StringUtils.isBlank(status)){
+			this.status = PersonStatusEnum.NORMAL.getValue();
+		}
 	}
 
 	/* 更新运行方法 */
@@ -171,7 +175,6 @@ public class Person extends SliceJpaObject {
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("描述.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
@@ -201,7 +204,7 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("唯一标识,不可重复,为空则使用自动填充值")
 	@Column(length = length_255B, name = ColumnNamePrefix + unique_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + unique_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists = @CitationNotExist(fields = unique_FIELDNAME, type = Person.class))
+	@CheckPersist(allowEmpty = false, simplyString = false, citationNotExists = @CitationNotExist(fields = unique_FIELDNAME, type = Person.class))
 	private String unique;
 
 	public static final String distinguishedName_FIELDNAME = "distinguishedName";
@@ -274,7 +277,6 @@ public class Person extends SliceJpaObject {
 
 	public static final String lastLoginClient_FIELDNAME = "lastLoginClient";
 	@FieldDescribe("最后登录客户端类型,web,android或者ios.")
-	@Index(name = TABLE + IndexNameMiddle + lastLoginClient_FIELDNAME)
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + lastLoginClient_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String lastLoginClient;
@@ -282,7 +284,6 @@ public class Person extends SliceJpaObject {
 	public static final String ipAddress_FIELDNAME = "ipAddress";
 	@FieldDescribe("允许登录的IP.")
 	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + ipAddress_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + ipAddress_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String ipAddress;
 
@@ -313,7 +314,7 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("必填,手机号.")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + mobile_FIELDNAME)
 	/** 其他地区手机号不一致,所以这里使用外部校验,不使用mobileString */
-	@Index(name = TABLE + IndexNameMiddle + mobile_FIELDNAME, unique = true)
+	@Index(name = TABLE + IndexNameMiddle + mobile_FIELDNAME)
 	@CheckPersist(allowEmpty = false, citationNotExists = @CitationNotExist(fields = mobile_FIELDNAME, type = Person.class))
 	private String mobile;
 
@@ -341,7 +342,6 @@ public class Person extends SliceJpaObject {
 	@Temporal(TemporalType.DATE)
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + birthday_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + birthday_FIELDNAME)
 	private Date birthday;
 
 	public static final String age_FIELDNAME = "age";
@@ -360,7 +360,6 @@ public class Person extends SliceJpaObject {
 	public static final String dingdingHash_FIELDNAME = "dingdingHash";
 	@FieldDescribe("钉钉人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + dingdingHash_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dingdingHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String dingdingHash;
 
@@ -374,7 +373,6 @@ public class Person extends SliceJpaObject {
 	public static final String weLinkHash_FIELDNAME = "weLinkHash";
 	@FieldDescribe("WeLink人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + weLinkHash_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + weLinkHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String weLinkHash;
 
@@ -395,7 +393,6 @@ public class Person extends SliceJpaObject {
 	public static final String zhengwuDingdingHash_FIELDNAME = "zhengwuDingdingHash";
 	@FieldDescribe("政务钉钉人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + zhengwuDingdingHash_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + zhengwuDingdingHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String zhengwuDingdingHash;
 
@@ -409,14 +406,12 @@ public class Person extends SliceJpaObject {
 	public static final String qiyeweixinHash_FIELDNAME = "qiyeweixinHash";
 	@FieldDescribe("企业微信人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + qiyeweixinHash_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + qiyeweixinHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String qiyeweixinHash;
 
 	public static final String andFxHash_FIELDNAME = "andFxHash";
 	@FieldDescribe("移动办公人员哈希特征.")
 	@Column(length = length_255B, name = ColumnNamePrefix + andFxHash_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + andFxHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String andFxHash;
 
@@ -484,7 +479,6 @@ public class Person extends SliceJpaObject {
 	public static final String language_FIELDNAME = "language";
 	@FieldDescribe("国际化语言,如：zh-CN,zh,en,zh_TW等.")
 	@Column(length = length_255B, name = ColumnNamePrefix + language_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + language_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String language;
 
@@ -503,9 +497,27 @@ public class Person extends SliceJpaObject {
 	public static final String SUBJECTSECURITYCLEARANCE_FIELDNAME = "subjectSecurityClearance";
 	@FieldDescribe("主体秘级标识.")
 	@Column(name = ColumnNamePrefix + SUBJECTSECURITYCLEARANCE_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + SUBJECTSECURITYCLEARANCE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer subjectSecurityClearance;
+
+	public static final String status_FIELDNAME = "status";
+	@FieldDescribe("状态：0|正常、1|锁定、2|禁用.")
+	@Column(length = length_32B, name = ColumnNamePrefix + status_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String status;
+
+	public static final String lockTime_FIELDNAME = "lockTime";
+	@FieldDescribe("锁定到期时间.")
+	@Temporal(TemporalType.TIMESTAMP)
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + lockTime_FIELDNAME)
+	private Date lockExpireTime;
+
+	public static final String statusDes_FIELDNAME = "statusDes";
+	@FieldDescribe("状态描述.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + statusDes_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String statusDes;
 
 	public Integer getSubjectSecurityClearance() {
 		return subjectSecurityClearance;
@@ -929,5 +941,29 @@ public class Person extends SliceJpaObject {
 
 	public void setAndFxHash(String andFxHash) {
 		this.andFxHash = andFxHash;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getStatusDes() {
+		return statusDes;
+	}
+
+	public void setStatusDes(String statusDes) {
+		this.statusDes = statusDes;
+	}
+
+	public Date getLockExpireTime() {
+		return lockExpireTime;
+	}
+
+	public void setLockExpireTime(Date lockExpireTime) {
+		this.lockExpireTime = lockExpireTime;
 	}
 }

@@ -191,7 +191,11 @@ public class PersonFactory extends AbstractFactory {
 
 	public void setPassword(Person person, String password, boolean isInitialization) throws Exception {
 		Calendar cal = Calendar.getInstance();
-		person.setChangePasswordTime(cal.getTime());
+		if(isInitialization) {
+			person.setChangePasswordTime(null);
+		}else{
+			person.setChangePasswordTime(cal.getTime());
+		}
 		person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()));
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod == null || passwordPeriod <= 0) {
