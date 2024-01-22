@@ -109,8 +109,8 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.validFieldType}}:</td>
                     <td class="editTableValue">
-                        <input name="validFieldType" type="radio" value="true" text{($.enableValid)!==false?'checked':''}/>{{$.lp.yes}}
-                        <input name="validFieldType" type="radio" value="false" text{($.enableValid)===false?'checked':''}/>{{$.lp.no}}
+                        <input name="validFieldType" type="radio" value="true" text{($.validFieldType)!==false?'checked':''}/>{{$.lp.yes}}
+                        <input name="validFieldType" type="radio" value="false" text{($.validFieldType)===false?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
