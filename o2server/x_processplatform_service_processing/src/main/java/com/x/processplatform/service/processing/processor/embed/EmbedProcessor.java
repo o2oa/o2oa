@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -134,18 +131,19 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			throw new ExceptionEmptyTargetIdentity(embed.getName());
 		}
 		assignData.setIdentity(targetIdentity);
-		assignData.setTitle(this.targetTitle(aeiObjects, embed));
 		assignData.setProcessing(true);
 		assignData.setParentWork(aeiObjects.getWork().getId());
 		assignData.setParentJob(aeiObjects.getWork().getJob());
+		assignData.setTitle(this.targetTitle(aeiObjects, embed, assignData));
 		if (this.hasAssignDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assignData));
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
-			ActionAssignCreateWi returnData = JsonScriptingExecutor.eval(cs, scriptContext, ActionAssignCreateWi.class);
+			ActionAssignCreateWi returnData = GraalvmScriptingFactory.eval(source, bindings,
+					ActionAssignCreateWi.class);
 			if (null != returnData) {
 				assignData = returnData;
 			} else {
@@ -196,10 +194,10 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			break;
 		}
 		if (this.hasIdentityScript(embed)) {
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-					aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETIDENTITY);
-			List<String> os = JsonScriptingExecutor.evalDistinguishedNames(compiledScript, scriptContext);
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETIDENTITY);
+			List<String> os = GraalvmScriptingFactory.evalAsDistinguishedNames(source, bindings);
 			os = ListTools.trim(os, true, false);
 			if (ListTools.isEmpty(os)) {
 				value = "";
@@ -210,12 +208,19 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		return value;
 	}
 
-	private String targetTitle(AeiObjects aeiObjects, Embed embed) throws Exception {
+	private String targetTitle(AeiObjects aeiObjects, Embed embed, ActionAssignCreateWi assignData) throws Exception {
 		String value = "";
 		if (this.hasTitleScript(embed)) {
-			CompiledScript compiledScript = aeiObjects.business().element()
-					.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDTARGETTITLE);
-			value = JsonScriptingExecutor.evalString(compiledScript, aeiObjects.scriptContext());
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+					embed, Business.EVENT_EMBEDTARGETTITLE);
+			WrapScriptObject wrap = new WrapScriptObject();
+			wrap.set(gson.toJson(assignData));
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
+			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+			if (opt.isPresent()) {
+				value = opt.get();
+			}
 		}
 		if (StringUtils.isEmpty(value)) {
 			value = embed.getName() + ":" + aeiObjects.getWork().getTitle();

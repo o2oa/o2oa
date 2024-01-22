@@ -18,16 +18,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -45,15 +43,14 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.LdapTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.jaxrs.authentication.ActionCaptchaLogin.Wi;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
@@ -413,12 +410,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 			});
 		} else {
 			LOGGER.debug("info script:{}.", oauthClient.getInfoScriptText());
-			CompiledScript sc = ScriptingFactory.functionalizationCompile(oauthClient.getInfoScriptText());
-			//ScriptContext scriptContext = new SimpleScriptContext();
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put("text", body);
-			JsonScriptingExecutor.jsonElement(sc, scriptContext, jsonElement -> {
+			Source source = GraalvmScriptingFactory.functionalization(oauthClient.getInfoScriptText());
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_TEXT, body);
+			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 				Map<String, Object> info = XGsonBuilder.instance().fromJson(jsonElement, OAUTH_PARAMTYPE);
 				param.putAll(info);
 			});

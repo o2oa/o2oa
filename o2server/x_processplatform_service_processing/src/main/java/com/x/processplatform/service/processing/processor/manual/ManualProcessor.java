@@ -17,9 +17,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -28,14 +25,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -783,22 +778,21 @@ public class ManualProcessor extends AbstractManualProcessor {
 			boolean hasManualStayScript = this.hasManualStayScript(manual);
 			boolean processHasManualStayScript = this.hasManualStayScript(aeiObjects.getProcess());
 			if (hasManualStayScript || processHasManualStayScript) {
-				ScriptContext scriptContext = aeiObjects.scriptContext();
-				Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-				WorkContext workContext = (WorkContext) bindings.get(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
+				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+				WorkContext workContext = (WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT);
 				// 只有一条待办绑定到task
 				if (aeiObjects.getCreateTasks().size() == 1) {
 					workContext.bindTask(aeiObjects.getCreateTasks().get(0));
 				}
 				if (processHasManualStayScript) {
-					JsonScriptingExecutor
+					GraalvmScriptingFactory
 							.eval(aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-									aeiObjects.getProcess(), Business.EVENT_MANUALSTAY), scriptContext);
+									aeiObjects.getProcess(), Business.EVENT_MANUALSTAY), bindings);
 				}
 				if (hasManualStayScript) {
-					JsonScriptingExecutor
+					GraalvmScriptingFactory
 							.eval(aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-									aeiObjects.getActivity(), Business.EVENT_MANUALSTAY), scriptContext);
+									aeiObjects.getActivity(), Business.EVENT_MANUALSTAY), bindings);
 				}
 				// 解除绑定
 				workContext.bindTask(null);

@@ -1,7 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -13,8 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
@@ -25,7 +22,6 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionManualAfterProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.WorkContext;
-import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 /**
@@ -114,17 +110,17 @@ class ActionManualAfterProcessing extends BaseAction {
 			Process process, boolean processHasManualAfterProcessingScript, boolean hasManualAfterProcessingScript,
 			Work work) throws Exception {
 		AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
-		ScriptContext scriptContext = aeiObjects.scriptContext();
-		WorkContext workContext = (WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT);
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+		WorkContext workContext = (WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT);
 		workContext.bindTask(task);
 		workContext.bindRecord(record);
 		if (processHasManualAfterProcessingScript) {
-			JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
-					Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
+			GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), process,
+					Business.EVENT_MANUALAFTERPROCESSING), bindings);
 		}
 		if (hasManualAfterProcessingScript) {
-			JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
-					Business.EVENT_MANUALAFTERPROCESSING), scriptContext);
+			GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), manual,
+					Business.EVENT_MANUALAFTERPROCESSING), bindings);
 		}
 	}
 

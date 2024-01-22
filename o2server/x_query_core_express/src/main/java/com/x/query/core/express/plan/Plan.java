@@ -25,8 +25,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -42,11 +40,8 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -201,42 +196,42 @@ public abstract class Plan extends GsonPropertyObject {
 		}
 		Table table = this.order(fillTable);
 		// 新增测试
-		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
-			for (SelectEntry selectEntry : this.selectList) {
-				if (StringTools.ifScriptHasEffectiveCode(selectEntry.code)) {
-					List<ExtractObject> extractObjects = new TreeList<>();
-					table.stream().forEach(r -> {
-						ExtractObject extractObject = new ExtractObject();
-						extractObject.setBundle(r.bundle);
-						extractObject.setColumn(selectEntry.getColumn());
-						extractObject.setValue(r.find(selectEntry.getColumn()));
-						extractObject.setEntry(r);
-						extractObjects.add(extractObject);
-					});
-					scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects", extractObjects);
-					StringBuilder text = new StringBuilder();
-					text.append("function executeScript(o){\n");
-					text.append(selectEntry.code);
-					text.append("\n");
-					text.append("}\n");
-					text.append("for each (var extractObject in extractObjects) {\n");
-					text.append("var o= {\n");
-					text.append("'value':extractObject.getValue(),\n");
-					text.append("'entry':extractObject.getEntry(),\n");
-					text.append("'columnName':extractObject.getColumn()\n");
-					text.append("}\n");
-					text.append("extractObject.setValue(executeScript.apply(o));\n");
-					text.append("}");
-					CompiledScript cs = ScriptingFactory.compile(text.toString());
-					JsonScriptingExecutor.eval(cs, scriptContext);
-					for (ExtractObject extractObject : extractObjects) {
-						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
-					}
-				}
-			}
-		}
+//		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
+//			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
+//			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
+//			for (SelectEntry selectEntry : this.selectList) {
+//				if (StringTools.ifScriptHasEffectiveCode(selectEntry.code)) {
+//					List<ExtractObject> extractObjects = new TreeList<>();
+//					table.stream().forEach(r -> {
+//						ExtractObject extractObject = new ExtractObject();
+//						extractObject.setBundle(r.bundle);
+//						extractObject.setColumn(selectEntry.getColumn());
+//						extractObject.setValue(r.find(selectEntry.getColumn()));
+//						extractObject.setEntry(r);
+//						extractObjects.add(extractObject);
+//					});
+//					scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects", extractObjects);
+//					StringBuilder text = new StringBuilder();
+//					text.append("function executeScript(o){\n");
+//					text.append(selectEntry.code);
+//					text.append("\n");
+//					text.append("}\n");
+//					text.append("for each (var extractObject in extractObjects) {\n");
+//					text.append("var o= {\n");
+//					text.append("'value':extractObject.getValue(),\n");
+//					text.append("'entry':extractObject.getEntry(),\n");
+//					text.append("'columnName':extractObject.getColumn()\n");
+//					text.append("}\n");
+//					text.append("extractObject.setValue(executeScript.apply(o));\n");
+//					text.append("}");
+//					CompiledScript cs = ScriptingFactory.compile(text.toString());
+//					JsonScriptingExecutor.eval(cs, scriptContext);
+//					for (ExtractObject extractObject : extractObjects) {
+//						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
+//					}
+//				}
+//			}
+//		}
 
 		this.grid = table;
 		if (null != this.findGroupSelectEntry()) {

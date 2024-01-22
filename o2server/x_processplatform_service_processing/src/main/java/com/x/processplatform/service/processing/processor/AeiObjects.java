@@ -8,9 +8,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,9 +23,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.Empower;
 import com.x.base.core.project.script.AbstractResources;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
@@ -58,7 +54,6 @@ import com.x.processplatform.core.entity.element.util.MappingFactory;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
 import com.x.processplatform.core.entity.message.WorkEvent;
-import com.x.processplatform.core.entity.ticket.Ticket;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
@@ -139,8 +134,6 @@ public class AeiObjects extends GsonPropertyObject {
 	private transient WorkDataHelper workDataHelper = null;
 	// 使用用懒加载,初始为null
 	private Data data = null;
-	// 使用用懒加载,初始为null
-	private transient ScriptContext scriptContext = null;
 
 	private List<Work> createWorks = new ArrayList<>();
 	private List<Work> updateWorks = new ArrayList<>();
@@ -1845,46 +1838,16 @@ public class AeiObjects extends GsonPropertyObject {
 
 	}
 
-	public ScriptContext scriptContext() throws Exception {
-		if (null == this.scriptContext) {
-			this.scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
-		}
-		Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+	public GraalvmScriptingFactory.Bindings bindings() throws Exception {
 		Resources resources = new Resources();
 		resources.setApplications(ThisApplication.context().applications());
 		resources.setOrganization(this.business().organization());
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setContext(ThisApplication.context());
-		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this));
-		bindings.put(ScriptingFactory.BINDING_NAME_DATA, this.getData());
-		return this.scriptContext;
+		return new GraalvmScriptingFactory.Bindings()
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_RESOURCES, resources)
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(this))
+				.putMember(GraalvmScriptingFactory.BINDING_NAME_DATA, this.getData());
 	}
-
-	/**
-	 * 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
-	 * 
-	 * @param aeiObjects
-	 * @throws Exception
-	 */
-//	public void empower() throws Exception {
-//		if ((StringUtils.equals(this.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
-//				&& BooleanUtils.isNotFalse(this.getWork().getWorkThroughManual()))) {
-//			return;
-//		}
-//		List<Ticket> list = this.getWork().getTickets().bubble().stream()
-//				.filter(o -> StringUtils.isBlank(o.fromDistinguishedName())).collect(Collectors.toList());
-//		List<String> values = ListUtils.subtract(
-//				list.stream().map(Ticket::distinguishedName).collect(Collectors.toList()),
-//				this.getProcessingAttributes().getIgnoreEmpowerIdentityList());
-//		List<Empower> empowers = this.business().organization().empower().listWithIdentityObject(
-//				this.getWork().getApplication(), this.getProcess().getEdition(), this.getWork().getProcess(),
-//				this.getWork().getId(), values);
-//		for (Empower empower : empowers) {
-//			if (StringUtils.isNotEmpty(empower.getFromIdentity()) && StringUtils.isNotEmpty(empower.getToIdentity())) {
-//				list.stream().forEach(o -> o.empower(empower.getFromIdentity(), empower.getToIdentity()));
-//			}
-//		}
-//	}
 
 }

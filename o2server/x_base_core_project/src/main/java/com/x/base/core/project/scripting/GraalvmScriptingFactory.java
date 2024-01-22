@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
@@ -23,27 +24,30 @@ import org.graalvm.polyglot.Value;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-public class GraalVMScriptingFactory {
+public class GraalvmScriptingFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GraalVMScriptingFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
 
 	private static Gson gson = XGsonBuilder.instance();
 
-	private GraalVMScriptingFactory() {
+	private GraalvmScriptingFactory() {
 
 	}
 
 	private static final String LANGUAGE_ID_JS = "js";
 //	private static final String NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY = "nativeJsObjectBindingToStringify";
 	private static final String THEN = "then";
+	private static final String CATCH = "catch";
 
 	private static final ReentrantLock COMMONSCRIPTLOCK = new ReentrantLock();
 //	private static final Source STRINGIFYSOURCE = Source.create(LANGUAGE_ID_JS,
@@ -52,21 +56,44 @@ public class GraalVMScriptingFactory {
 	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();;
 	private static Source commonScriptSource;
 
-	public static JsonElement eval(Source source, Bindings bindings) {
+	private static Type stringsType = new TypeToken<ArrayList<String>>() {
+	}.getType();
+
+	public static JsonElement eval(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
-				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalVMScriptingFactory::notBlockedClass)
+				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalvmScriptingFactory::notBlockedClass)
 				.build()) {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
-			bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
+			if (null != bindings) {
+				bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
+			}
 			context.eval(getcommonScriptSource());
 			return promise(context, context.eval(source));
 		}
 	}
 
-	private static JsonElement promise(Context context, Value v) {
+	public static void eval(Source source, Bindings bindings, Consumer<JsonElement> consumer)
+			throws ExceptionEvalPromiseScript {
+		consumer.accept(eval(source, bindings));
+	}
+
+	private static JsonElement promise(Context context, Value v) throws ExceptionEvalPromiseScript {
 		final AtomicReference<Value> reference = new AtomicReference<>();
 		Consumer<Value> javaThen = reference::set;
-		v.invokeMember(THEN, javaThen);
+		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
+			final AtomicReference<String> message = new AtomicReference<>();
+			Consumer<Object> javaCatch = e -> message.set(Objects.toString(e.toString(), ""));
+			v.invokeMember(CATCH, javaCatch);
+			if (!Objects.isNull(message.get())) {
+				throw new ExceptionEvalPromiseScript(message.get());
+			}
+			v.invokeMember(THEN, javaThen);
+		} else {
+			reference.set(v);
+		}
+		if (Objects.isNull(reference.get())) {
+			return JsonNull.INSTANCE;
+		}
 		if (reference.get().isHostObject()) {
 			return gson.toJsonTree(reference.get().asHostObject());
 		} else {
@@ -79,7 +106,7 @@ public class GraalVMScriptingFactory {
 		return !Config.general().getScriptingBlockedClasses().contains(className);
 	}
 
-	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) {
+	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		JsonElement jsonElement = eval(source, bindings);
 		if (jsonElement != null && jsonElement.isJsonPrimitive()) {
 			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
@@ -90,7 +117,7 @@ public class GraalVMScriptingFactory {
 		return Optional.empty();
 	}
 
-	public static Optional<String> evalAsString(Source source, Bindings bindings) {
+	public static Optional<String> evalAsString(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		JsonElement jsonElement = eval(source, bindings);
 		if (jsonElement != null && jsonElement.isJsonPrimitive()) {
 			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
@@ -101,22 +128,65 @@ public class GraalVMScriptingFactory {
 		return Optional.empty();
 	}
 
-	public static <T> T eval(Source source, Bindings bindings, Class<T> clz) {
+	public static Optional<Integer> evalAsInteger(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
+		JsonElement jsonElement = eval(source, bindings);
+		if (jsonElement != null && jsonElement.isJsonPrimitive()) {
+			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
+			if (jsonPrimitive.isNumber()) {
+				return Optional.of(jsonPrimitive.getAsInt());
+			}
+		}
+		return Optional.empty();
+	}
+
+	public static Optional<Double> evalAsDouble(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
+		JsonElement jsonElement = eval(source, bindings);
+		if (jsonElement != null && jsonElement.isJsonPrimitive()) {
+			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
+			if (jsonPrimitive.isNumber()) {
+				return Optional.of(jsonPrimitive.getAsDouble());
+			}
+		}
+		return Optional.empty();
+	}
+
+	public static Optional<Float> evalAsFloat(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
+		JsonElement jsonElement = eval(source, bindings);
+		if (jsonElement != null && jsonElement.isJsonPrimitive()) {
+			JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
+			if (jsonPrimitive.isNumber()) {
+				return Optional.of(jsonPrimitive.getAsFloat());
+			}
+		}
+		return Optional.empty();
+	}
+
+	public static <T> T eval(Source source, Bindings bindings, Class<T> clz) throws ExceptionEvalPromiseScript {
 		JsonElement jsonElement = eval(source, bindings);
 		return gson.fromJson(jsonElement, clz);
 	}
 
-	public static <T> T eval(Source source, Bindings bindings, Type type) {
+	public static <T> T eval(Source source, Bindings bindings, Type type) throws ExceptionEvalPromiseScript {
 		JsonElement jsonElement = eval(source, bindings);
 		return gson.fromJson(jsonElement, type);
 	}
 
-	public static <R> R eval(Source source, Bindings bindings, Function<JsonElement, R> function) {
+	public static <R> R eval(Source source, Bindings bindings, Function<JsonElement, R> function)
+			throws ExceptionEvalPromiseScript {
 		return function.apply(eval(source, bindings));
 	}
 
-	public static List<String> evalAsDistinguishedNames(Source source, Bindings bindings) {
+	public static List<String> evalAsDistinguishedNames(Source source, Bindings bindings)
+			throws ExceptionEvalPromiseScript {
 		return Helper.stringOrDistinguishedNameAsList(eval(source, bindings));
+	}
+
+	public static List<String> evalAsStrings(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
+		JsonElement jsonElement = eval(source, bindings);
+		if (jsonElement.isJsonArray()) {
+			return XGsonBuilder.instance().fromJson(jsonElement, stringsType);
+		}
+		return new ArrayList<>();
 	}
 
 	private static Source getcommonScriptSource() {
@@ -170,6 +240,7 @@ public class GraalVMScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_REQUEST = "java_request";
 	public static final String BINDING_NAME_SERVICE_PARAMETERS = "java_parameters";
 	public static final String BINDING_NAME_SERVICE_MESSAGE = "java_message";
+	public static final String BINDING_NAME_SERVICE_TEXT = "text";
 
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
 
@@ -185,9 +256,12 @@ public class GraalVMScriptingFactory {
 
 	public static Source functionalization(String text) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("((async function(){").append(System.lineSeparator());
-		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
-		sb.append("}.apply(globalThis));");
+		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
+			sb.append("(async function(){ ").append(Objects.toString(text, ""))
+					.append(" }.apply(globalThis)).catch((e)=>{ throw e.stack; });");
+		} else {
+			sb.append("(function(){ ").append(Objects.toString(text, "")).append(" }.apply(globalThis));");
+		}
 		return Source.create(LANGUAGE_ID_JS, sb.toString());
 	}
 

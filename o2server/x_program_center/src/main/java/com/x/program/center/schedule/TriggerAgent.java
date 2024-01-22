@@ -38,7 +38,7 @@ import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.GraalVMScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
@@ -235,17 +235,17 @@ public class TriggerAgent extends BaseAction {
 			if (optional.isPresent()) {
 				source = (Source) optional.get();
 			} else {
-				source = GraalVMScriptingFactory.functionalization(agent.getText());
+				source = GraalvmScriptingFactory.functionalization(agent.getText());
 				CacheManager.put(cacheCategory, cacheKey, source);
 			}
-			GraalVMScriptingFactory.Bindings bindings = new GraalVMScriptingFactory.Bindings();
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
 			AgentEvalResources resources = new AgentEvalResources();
 			resources.setContext(ThisApplication.context());
 			resources.setOrganization(new Organization(ThisApplication.context()));
 			resources.setWebservicesClient(new WebservicesClient());
 			resources.setApplications(ThisApplication.context().applications());
-			bindings.putMember(GraalVMScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-			GraalVMScriptingFactory.eval(source, bindings);
+			bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+			GraalvmScriptingFactory.eval(source, bindings);
 			stampLastEndTime();
 		}
 

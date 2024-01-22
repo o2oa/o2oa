@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,14 +15,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -33,8 +32,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
@@ -287,15 +285,15 @@ public class SyncOrganization {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(str);
 		if (matcher.matches()) {
-			CompiledScript cs = ScriptingFactory
-					.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON, person);
-			return JsonScriptingExecutor.evalString(cs, scriptContext);
-		} else {
-			return str;
+			Source source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PERSON, person);
+			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+			if (opt.isPresent()) {
+				str = opt.get();
+			}
 		}
+		return str;
 	}
 
 	private Person updatePerson(Business business, PullResult result, Person person, User user) throws Exception {
