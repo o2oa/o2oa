@@ -126,7 +126,7 @@ const _getBytes = function(str){
  *      log.error(`请求出现错误：${e.message}`);
  * }
  */
-function fetch(url, options = {}) {
+const fetch = function(url, options = {}) {
     const JavaURL = Java.type('java.net.URL');
     const urlObj = new JavaURL(url);
     return new Promise((resolve, reject) => {
@@ -227,7 +227,7 @@ function fetch(url, options = {}) {
  * @param throwError {boolean} 当代码片段运行错误时，是否抛出错误
  * @returns {any} 返回执行的代码片段的返回值
  */
-function exec(text, bind, arg=null, throwError=true){
+const exec = function(text, bind, arg=null, throwError=true){
     const b = bind || globalThis;
     const p = (arg) ? Object.values(arg) : [];
     const k = (arg) ? Object.keys(arg).join(',') : '';
@@ -261,10 +261,10 @@ function exec(text, bind, arg=null, throwError=true){
  * </caption>
  * //定义一个方法
  * this.define("getFileSQL",function(){
- *   var application = ["公司发文","部门发文","党委发文"];
- *   var appSql = " ( ";
- *   for(var i=0;i<application.length;i++){
- *       if(i==application.length-1){
+ *   const application = ["公司发文","部门发文","党委发文"];
+ *   const appSql = " ( ";
+ *   for (let i=0; i<application.length; i++){
+ *       if (i==application.length-1){
  *           appSql = appSql + " o.applicationName = '"+application[i]+"' "
  *       }else{
  *           appSql = appSql + " o.applicationName = '"+application[i]+"' OR "
@@ -272,7 +272,7 @@ function exec(text, bind, arg=null, throwError=true){
  *   }
  *   appSql = appSql + " ) ";
  *   return appSql;
- *}.bind(this));
+ *});
  * @example
  * <caption>
  *      2、在查询语句中使用该方法。
@@ -288,7 +288,7 @@ function exec(text, bind, arg=null, throwError=true){
  *
  * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
  */
-function define(name, fun, overwrite){
+const define = function(name, fun, overwrite){
     const over = overwrite===false;
     const o = {};
     o[name] = {"value": fun, "configurable": over};
@@ -296,7 +296,7 @@ function define(name, fun, overwrite){
 }
 
 //restful服务Action
-function Action(root, json){
+const Action = function(root, json){
     this.actions = json;
     this.root = root;
 
@@ -452,8 +452,8 @@ const Actions = {
      *  @o2syntax
      *  <caption>
      *  处理返回的数据有两种方式，二选一即可：<br/>
-     *  1、该方法返回的结果是响应数据字符串，通过JSON.parse(responseString)获取对象。<br/>
-     *  2、通过success方法作为第一个参数来处理结果，建议此方法处理请求结果
+     *  1、该方法返回的结果是响应的 json对象。<br/>
+     *  2、通过success方法作为第一个参数来处理结果。
      *  </caption>
      *  //success：arguements中的第一个function对象
      *  function(json){
@@ -474,8 +474,8 @@ const Actions = {
      *     5、该服务方法类型是POST<br/>
      *     根据这些信息我们可以组织出下面的方法：
      * </caption>
-     * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
-     * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
+     * const processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
+     * const method = processAction.TaskAction.V2ListPaging; //获取列式方法
      * //执行方法1
      * method(
      *  1,  //uri 第1个参数，如果无uri参数，可以省略
@@ -492,8 +492,7 @@ const Actions = {
      * );
      *
      * //执行方法2
-     * var responseString = method( 1, 20, {processList : [xxx]} )
-     * var responseObject = JSON.parse(responseObject);
+     * const responsJSON = method( 1, 20, {processList : [xxx]} );
      * @example
      * <caption>出错信息responseJSON的格式</caption>
      * {
@@ -510,22 +509,16 @@ const Actions = {
      * //查询服务列表找到获取data数据服务为DataAction的getWithWork方法
      * //查询服务列表找到更新data数据服务为DataAction的updateWithWork方法
      *
-     * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
-     * var data;
-     * this.Actions.load("x_processplatform_assemble_surface").DataAction.getWithWork( //平台封装好的方法
+     * const workid = "cce8bc22-225a-4f85-8132-7374d546886e";
+     * const json = this.Actions.load("x_processplatform_assemble_surface").DataAction.getWithWork( //平台封装好的方法
      *      workid, //uri的参数
-     *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
-     *          data = json.data; //为变量data赋值
-     *      }.bind(this)
-     * )
+     * );
+     * const data = json.data;
      *
      * data.subject = "新标题"; //修改数据
-     * this.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithWork(
+     * const result = this.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithWork(
      *      workid, //uri的参数
      *      data, //保存的数据
-     *      function(){ //服务调用成功的回调函数
-     *
-     *      }.bind(this)
      * );
      */
     "load": function(root){
@@ -580,7 +573,7 @@ const _parsePrint = function(str, ...pars){
  * this.print("这是一个自定义类型的信息", "MYTYPE");
  * //2021-12-20 13:26:24.765 [script] MYTYPE 这是一个自定义类型的信息
  */
-function print(text, type){
+const print = function(text, type){
     // const d = new Intl.DateTimeFormat(undefined, {
     //     year: "numeric",
     //     month: "2-digit",
@@ -613,7 +606,7 @@ function print(text, type){
  * log.warn("这是一个警告信息");
  * //2021-12-20 13:26:24.765 [script] WARN 这是一个警告信息
  */
-function log(...arg){
+const log = function(...arg){
     print(_parsePrint(...arg));
 }
 const keys = ['error', 'info', 'warn'];
@@ -626,7 +619,7 @@ keys.forEach((k)=>{
 //组织相关服务
 const _getNameFlag = function(name){
     if (Array.isArray(name)){
-        return name.map(n=>_getNameFlag(n));
+        return name.map(n=>((typeof n)==="object" ? (n.distinguishedName || n.id || n.unique || n.name) : n));
     }else{
         return [((typeof name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
     }
@@ -647,27 +640,29 @@ const _getNameFlag = function(name){
  * @property    {UnitAttributeFactory}  unitAttribute   后端的UnitAttributeFactory实例，可用于获取unitAttribute组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitAttributeFactory.html">查看javadoc</a>
  * @property    {UnitDutyFactory}  unitDuty   后端的UnitDutyFactory实例，可用于获取unitDuty组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitDutyFactory.html">查看javadoc</a>
  * @o2syntax
- * //您可以通过this来获取当前实例的org对象，如下：
- * var org = this.org;
+ * //您可以通过以下引用来获取当前实例的org对象，如下：
+ * this.org;
+ * globalThis.org;
+ * org
  *
  *@example
  * //通过后端java类，来获取当前人所在的部门名称
- * var unit = this.org.unit;
- * var unitNames = unit.listWithPerson("张三@xxx@P");
+ * const unit = org.unit;
+ * const unitNames = unit.listWithPerson("张三@xxx@P");
  */
 const org = {}
 const _javaOrg = function(){
     return globalThis.java_resources.getOrganization();
 }
 Object.defineProperties(org, {
-    oGroup:             { configurable: true, get: ()=>_javaOrg().group() },
-    oIdentity:          { configurable: true, get: ()=>_javaOrg().identity() },
-    oPerson:            { configurable: true, get: ()=>_javaOrg().person() },
-    oPersonAttribute:   { configurable: true, get: ()=>_javaOrg().personAttribute() },
-    oRole:              { configurable: true, get: ()=>_javaOrg().role() },
-    oUnit:              { configurable: true, get: ()=>_javaOrg().unit() },
-    oUnitAttribute:     { configurable: true, get: ()=>_javaOrg().unitAttribute() },
-    oUnitDuty:          { configurable: true, get: ()=>_javaOrg().unitDuty() }
+    oGroup:             { get: ()=>_javaOrg().group() },
+    oIdentity:          { get: ()=>_javaOrg().identity() },
+    oPerson:            { get: ()=>_javaOrg().person() },
+    oPersonAttribute:   { get: ()=>_javaOrg().personAttribute() },
+    oRole:              { get: ()=>_javaOrg().role() },
+    oUnit:              { get: ()=>_javaOrg().unit() },
+    oUnitAttribute:     { get: ()=>_javaOrg().unitAttribute() },
+    oUnitDuty:          { get: ()=>_javaOrg().unitDuty() }
 });
 Object.assign(org,  {
     group: ()=> this.oGroup,
@@ -699,7 +694,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.GroupAction.listObject|example=Group
      * @o2syntax
      * //返回群组，单个是Object，多个是Array。
-     * var groupList = this.org.getGroup( name );
+     * const groupList = this.org.getGroup( name );
      */
     getGroup: function(name){
         const v = this.oGroup.listObject(_getNameFlag(name));
@@ -721,7 +716,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSubDirectObject|example=Group
      * @o2syntax
      * //返回嵌套下级群组数组。
-     * var groupList = this.org.listSubGroup( name, true );
+     * const groupList = this.org.listSubGroup( name, true );
      */
     listSubGroup: function(name, nested){
         return this.getObject(this.oGroup, this.oGroup[(nested) ? 'listWithGroupSubNested' : 'listWithGroupSubDirect'](_getNameFlag(name)));
@@ -742,7 +737,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSupDirectObject|example=Group
      * @o2syntax
      * //返回嵌套上级群组数组。
-     * var groupList = this.org.listSupGroup( name, true );
+     * const groupList = this.org.listSupGroup( name, true );
      */
     listSupGroup:function(name, nested){
         return this.getObject(this.oGroup, this.oGroup[(nested) ? 'listWithGroupSupNested' : 'listWithGroupSupDirect'](_getNameFlag(name)));
@@ -760,7 +755,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
      * @o2syntax
      * //返回群组数组。
-     * var groupList = this.org.listGroupWithPerson( name );
+     * const groupList = this.org.listGroupWithPerson( name );
      */
     listGroupWithPerson:function(name){
         return this.getObject(this.oGroup, this.oGroup.listWithPerson(_getNameFlag(name)));
@@ -778,7 +773,7 @@ Object.assign(org,  {
      * @return {Boolean} 如果群组拥有角色返回true, 否则返回false。
      * @o2syntax
      * //返回判断结果。
-     * var groupList = this.org.groupHasRole( name, roleList );
+     * const groupList = this.org.groupHasRole( name, roleList );
      */
     groupHasRole: function(name, roleList){
         const nameFlag = (typeof name==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
@@ -798,7 +793,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.RoleAction.listObject|example=Role
      * @o2syntax
      * //返回角色，单个为对象，多个为数组。
-     * var roleList = this.org.getRole( name );
+     * const roleList = this.org.getRole( name );
      */
     getRole: function(name){
         const v = this.oRole.listObject(_getNameFlag(name));
@@ -818,7 +813,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.RoleAction.listWithPersonObject|example=Role
      * @o2syntax
      * //返回角色数组。
-     * var roleList = this.org.listRoleWithPerson( name );
+     * const roleList = this.org.listRoleWithPerson( name );
      */
     listRoleWithPerson:function(name){
         return this.getObject(this.oRole, this.oRole.listWithPerson(_getNameFlag(name)));
@@ -837,7 +832,7 @@ Object.assign(org,  {
      * @return {Boolean} 如果人员拥有角色返回true, 否则返回false。
      * @o2syntax
      * //返回判断结果。
-     * var groupList = this.org.personHasRole( name, roleList );
+     * const groupList = this.org.personHasRole( name, roleList );
      */
     personHasRole: function(name, roleList){
         const nameFlag = (typeof name==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
@@ -856,10 +851,10 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
      * @o2syntax
      * //返回人员对象。
-     * var person = this.org.getPersonData( name );
+     * const person = this.org.getPersonData( name );
      */
     getPersonData: function(name){
-        const v = this.oPerson.getExt(_getNameFlag(name));
+        const v = this.oPerson.getExt((typeof name==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name);
         return (!v) ? null : JSON.parse(v.toString());
     },
 
@@ -876,7 +871,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
      * @o2syntax
      * //返回人员，单个是对象，多个是数组。
-     * var personList = this.org.getPerson( name );
+     * const personList = this.org.getPerson( name );
      */
     getPerson: function(name, findCN){
         const v = this.oPerson.listObject(_getNameFlag(name), !!findCN);
@@ -898,7 +893,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSubDirectObject|example=Person
      * @o2syntax
      * //返回嵌套下级人员数组。
-     * var personList = this.org.listSubPerson( name, true );
+     * const personList = this.org.listSubPerson( name, true );
      */
     listSubPerson: function(name, nested){
         return this.getObject(this.oPerson, this.oPerson[(nested) ? 'listWithPersonSubNested' : 'listWithPersonSubDirect'](_getNameFlag(name)));
@@ -918,7 +913,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSupDirectObject|example=Person
      * @o2syntax
      * //返回嵌套上级人员数组。
-     * var personList = this.org.listSupPerson( name, true );
+     * const personList = this.org.listSupPerson( name, true );
      */
     listSupPerson: function(name, nested){
         return this.getObject(this.oPerson, this.oPerson[(nested) ? 'listWithPersonSupNested' : 'listWithPersonSupDirect'](_getNameFlag(name)));
@@ -936,7 +931,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithGroupObject|example=Person
      * @o2syntax
      * //返回人员数组。
-     * var personList = this.org.listPersonWithGroup( group );
+     * const personList = this.org.listPersonWithGroup( group );
      */
     listPersonWithGroup: function(name){
         return this.getObject(this.oPerson, this.oPerson.listWithGroup(_getNameFlag(name)));
@@ -954,7 +949,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithRoleObject|example=Person
      * @o2syntax
      * //返回人员数组。
-     * var personList = this.org.listPersonWithRole( role );
+     * const personList = this.org.listPersonWithRole( role );
      */
     listPersonWithRole: function(name){
         return this.getObject(this.oPerson, this.oPerson.listWithRole(_getNameFlag(name)));
@@ -972,7 +967,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
      * @o2syntax
      * //返回人员数组。
-     * var personList = this.org.listPersonWithIdentity( identity );
+     * const personList = this.org.listPersonWithIdentity( identity );
      */
     listPersonWithIdentity: function(name){
         return this.getObject(this.oPerson, this.oPerson.listWithIdentity(_getNameFlag(name)));
@@ -990,7 +985,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
      * @o2syntax
      * //返回人员，单个是Object，多个是Array。
-     * var personList = this.org.listPersonWithIdentity( identity );
+     * const personList = this.org.listPersonWithIdentity( identity );
      */
     getPersonWithIdentity: function(name){
         const v = this.oPerson.listWithIdentity(_getNameFlag(name));
@@ -1012,10 +1007,10 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithUnitSubDirectObject|example=Person
      * @o2syntax
      * //返回组织的直接人员数组。
-     * var personList = this.org.listPersonWithUnit( unit );
+     * const personList = this.org.listPersonWithUnit( unit );
      *
      * //返回组织的以及嵌套下级组织所有的人员数组。
-     * var personList = this.org.listPersonWithUnit( unit, true );
+     * const personList = this.org.listPersonWithUnit( unit, true );
      */
     listPersonWithUnit: function(name, nested){
         return this.getObject(this.oPerson, this.oPerson[(nested) ? 'listWithUnitSubNested' : 'listWithUnitSubDirect'](_getNameFlag(name)));
@@ -1073,7 +1068,7 @@ Object.assign(org,  {
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
      * @o2syntax
      * //返回该人员的属性值数组。
-     * var attributeList = this.org.getPersonAttribute( person, attr );
+     * const attributeList = this.org.getPersonAttribute( person, attr );
      */
     getPersonAttribute: function(person, attr){
         const personFlag = (typeof person==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
@@ -1096,7 +1091,7 @@ Object.assign(org,  {
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
      * //返回人员所有属性的名称数组。
-     * var attributeNameList = this.org.listPersonAttributeName( person );
+     * const attributeNameList = this.org.listPersonAttributeName( person );
      */
     listPersonAttributeName: function(name){
         const p = _getNameFlag(name);
@@ -1125,7 +1120,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|example=Identity|ignoreNoDescr=true|ignoreProps=[woUnitDutyList,woUnit,woGroupList]
      * @o2syntax
      * //返回身份，单个是对象，多个是数组。
-     * var identityList = this.org.getIdentity( name );
+     * const identityList = this.org.getIdentity( name );
      */
     getIdentity: function(name){
         const v = this.oIdentity.listObject(_getNameFlag(name));
@@ -1145,7 +1140,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithPersonObject|example=Identity
      * @o2syntax
      * //返回身份对象数组。
-     * var identityList = this.org.listIdentityWithPerson( person );
+     * const identityList = this.org.listIdentityWithPerson( person );
      */
     listIdentityWithPerson: function(name){
         return this.getObject(this.oIdentity, this.oIdentity.listWithPerson(_getNameFlag(name)));
@@ -1165,11 +1160,10 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
      * @o2syntax
      * //返回直接组织身份对象数组。
-     * var identityList = this.org.listIdentityWithUnit( unit );
-     *
+     * const identityList = this.org.listIdentityWithUnit( unit );
      *
      * //返回嵌套组织身份对象数组。
-     * var identityList = this.org.listIdentityWithUnit( unit, true );
+     * const identityList = this.org.listIdentityWithUnit( unit, true );
      */
     listIdentityWithUnit: function(name, nested){
         return this.getObject(this.oIdentity, this.oIdentity[(nested) ? 'listWithUnitSubNested' : 'listWithUnitSubDirect'](_getNameFlag(name)));
@@ -1189,7 +1183,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
      * //返回组织，单个是对象，多个是数组。
-     * var unitList = this.org.getUnit( name );
+     * const unitList = this.org.getUnit( name );
      */
     getUnit: function(name, findCN){
         const v = this.oUnit.listObject(_getNameFlag(name), !!findCN);
@@ -1211,7 +1205,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSubNestedObject|example=Unit
      * @o2syntax
      * //返回嵌套下级组织数组。
-     * var unitList = this.org.listSubUnit( name, true );
+     * const unitList = this.org.listSubUnit( name, true );
      */
     listSubUnit: function(name, nested){
         return this.getObject(this.oUnit, this.oUnit[(nested) ? 'listWithUnitSubNested' : 'listWithUnitSubDirect'](_getNameFlag(name)));
@@ -1231,7 +1225,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
      * @o2syntax
      * //返回嵌套上级组织数组。
-     * var unitList = this.org.listSupUnit( name, true );
+     * const unitList = this.org.listSupUnit( name, true );
      */
     listSupUnit: function(name, nested){
         return this.getObject(this.oUnit, this.oUnit[(nested) ? 'listWithUnitSupNested' : 'listWithUnitSupDirect'](_getNameFlag(name)));
@@ -1249,17 +1243,17 @@ Object.assign(org,  {
      * @static
      * @param {IdentityFlag} name - 身份的distinguishedName、id、unique属性值，身份对象。
      * @param {String|Number} [flag]  当值为数字的时候， 表示获取第几层的组织。<br/> 当值为字符串的时候，表示获取指定类型的组织。<br/> 当值为空的时候，表示获取直接所在组织。
-     * @return {UnitData|UnitData[]} 返回对应组织，单个为对象，多个为数组。
+     * @return {UnitData} 返回对应的组织对象。
      * @o2ActionOut x_organization_assemble_express.UnitAction.getWithIdentityWithLevelObject|example=Unit
      * @o2syntax
-     * //返回直接所在组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name );
+     * //返回直接所在组织。
+     * const unit = this.org.getUnitByIdentity( name );
      *
-     * //返回第一层组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name, 1 );
+     * //返回第一层组织。
+     * const unit = this.org.getUnitByIdentity( name, 1 );
      *
-     * * //返回类型为company的组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name, "company" );
+     * * //返回类型为company的最近上级组织。
+     * const unit = this.org.getUnitByIdentity( name, "company" );
      */
     getUnitByIdentity: function(name, flag){
         let getUnitMethod = "current";
@@ -1296,7 +1290,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithIdentitySupNestedObject|example=Unit
      * @o2syntax
      * //返回组织数组。
-     * var unitList = this.org.listAllSupUnitWithIdentity( name );
+     * const unitList = this.org.listAllSupUnitWithIdentity( name );
      */
     listAllSupUnitWithIdentity: function(name){
         return this.getObject(this.oUnit, this.oUnit.listWithIdentitySupNested(_getNameFlag(name)));
@@ -1314,7 +1308,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonObject|example=Unit
      * @o2syntax
      * //返回组织数组。
-     * var unitList = this.org.listUnitWithPerson( name );
+     * const unitList = this.org.listUnitWithPerson( name );
      */
     listUnitWithPerson: function(name){
         return this.getObject(this.oUnit, this.oUnit.listWithPerson(_getNameFlag(name)));
@@ -1332,7 +1326,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonSupNestedObject|example=Unit
      * @o2syntax
      * //返回组织数组。
-     * var unitList = this.org.listAllSupUnitWithPerson( name );
+     * const unitList = this.org.listAllSupUnitWithPerson( name );
      */
     listAllSupUnitWithPerson: function(name){
         return this.getObject(this.oUnit, this.oUnit.listWithPersonSupNested(_getNameFlag(name)));
@@ -1351,7 +1345,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitAttributeObject|example=Unit
      * @o2syntax
      * //返回组织数组。
-     * var unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
+     * const unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
      */
     listUnitWithAttribute: function(name, attribute){
         return this.getObject(this.oUnit, this.oUnit.listWithUnitAttribute(name, attribute));
@@ -1370,7 +1364,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitDutyObject|example=Unit
      * @o2syntax
      * //返回组织数组。
-     * var unitList = this.org.listUnitWithDuty( dutyName, identity );
+     * const unitList = this.org.listUnitWithDuty( dutyName, identity );
      */
     listUnitWithDuty: function(name, id){
         const idflag = (typeof id==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id;
@@ -1391,7 +1385,7 @@ Object.assign(org,  {
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.getWithUnitWithName|example=Identity
      * @o2syntax
      * //返回身份数组。
-     * var identityList = this.org.getDuty( dutyName, unit );
+     * const identityList = this.org.getDuty( dutyName, unit );
      */
     getDuty: function(duty, id){
         const unit = (typeof id==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id;
@@ -1409,10 +1403,10 @@ Object.assign(org,  {
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
      * //返回职务名称数组。
-     * var dutyNameList = this.org.listDutyNameWithIdentity( identity );
+     * const dutyNameList = this.org.listDutyNameWithIdentity( identity );
      */
     listDutyNameWithIdentity: function(id){
-        const ids = _getNameFlag(name);
+        const ids = _getNameFlag(id);
         const nameList = [];
         for (let i=0; i<ids.length; i++){
             const v = this.oUnitDuty.listNameWithIdentity(ids[i]);
@@ -1436,7 +1430,7 @@ Object.assign(org,  {
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
      * //返回职务名称数组。
-     * var dutyNameList = this.org.listDutyNameWithUnit( unit );
+     * const dutyNameList = this.org.listDutyNameWithUnit( unit );
      */
     listDutyNameWithUnit: function(name){
         const ids = _getNameFlag(name);
@@ -1459,12 +1453,12 @@ Object.assign(org,  {
      * @o2membercategory duty
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag} name - 组织的distinguishedName、id、unique属性值，组织对象。
      * @return {Object[]} 返回职务数组
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=Duty
      * @o2syntax
      * //返回职务数组。
-     * var dutyList = this.org.listUnitAllDuty( unit );
+     * const dutyList = this.org.listUnitAllDuty( unit );
      */
     listUnitAllDuty: function(name){
         const u = _getNameFlag(name)[0];
@@ -1527,7 +1521,7 @@ Object.assign(org,  {
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
      * @o2syntax
      * //返回该组织的属性值数组。
-     * var attributeList = this.org.getUnitAttribute( unit, attr );
+     * const attributeList = this.org.getUnitAttribute( unit, attr );
      */
     getUnitAttribute: function(unit, attr){
         const unitFlag = (typeof unit==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
@@ -1550,7 +1544,7 @@ Object.assign(org,  {
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
      * //返回组织所有属性的名称数组。
-     * var attributeNameList = this.org.listUnitAttributeName( unit );
+     * const attributeNameList = this.org.listUnitAttributeName( unit );
      */
     listUnitAttributeName: function(name){
         const p = _getNameFlag(name);
@@ -1585,7 +1579,7 @@ Object.assign(org,  {
      * }]</code></pre>
      * @o2syntax
      * //返回组织所有属性的对象数组。
-     * var attributeObjectList = this.org.listUnitAllAttribute( unit );
+     * const attributeObjectList = this.org.listUnitAllAttribute( unit );
      */
     listUnitAllAttribute: function(name){
         const u = _getNameFlag(name)[0];
@@ -1598,8 +1592,6 @@ Object.assign(org,  {
         return [];
     }
 })
-
-
 
 
 //定义所需的服务
@@ -1639,7 +1631,7 @@ const serviceActions = new Action("x_program_center", {
     "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "PUT"},
     "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "POST"},
     "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "DELETE"},
-    "getScript":  {"uri": "/jaxrs/script/name/{name}","method": "POST"}
+    "getScript":  {"uri": "/jaxrs/script/name/{name}/imported","method": "GET"}
 });
 
 
@@ -1726,10 +1718,10 @@ const includedScripts = {};
  *   application : 'fileRes',
  *   name : 'FileSql'
  * });
- * var sql = this.getFileSQL();
+ * const sql = this.getFileSQL();
  * return `SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE ${sql}`;
  */
-function include( optionsOrName , callback ){
+const include = function( optionsOrName , callback ){
     const options = (typeof optionsOrName) == "string" ? { name : optionsOrName } : optionsOrName;
     const name = options.name;
 
@@ -1755,7 +1747,7 @@ function include( optionsOrName , callback ){
         service: serviceActions,
     }
 
-    const json = actionsMap[type].getScript( name, application, {"importedList":includedScripts[application]});
+    const json = (type==='service') ? actionsMap[type].getScript(name) : actionsMap[type].getScript(name, application, {"importedList":includedScripts[application]});
     includedScripts[application] = includedScripts[application].concat(json.data.importedList);
     includedScripts[application].push(name);
     if (json.data && json.data.text){
@@ -1774,9 +1766,9 @@ function include( optionsOrName , callback ){
  * @o2ordernumber 180
  * @o2syntax
  * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
- * var dict = new this.Dict( options )
+ * const dict = new this.Dict( options )
  * @example
- * var dict = new this.Dict({
+ * const dict = new this.Dict({
  *     //type: 应用类型。可以为process  cms portal service。流程脚本默认为process，服务管理中默认为service。
  *    type : "cms",
  *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
@@ -1784,34 +1776,34 @@ function include( optionsOrName , callback ){
  * });
  *
  * //引用服务管理中的数据字典
- * var dict = new this.Dict({
+ * const dict = new this.Dict({
  *   "type": "service",
  *   "name": "dictName"
  * });
  *
  * //引用流程管理中的数据字典
- * var dict = new this.Dict({
+ * const dict = new this.Dict({
  *   "type": "process",
  *   "application": "appName",
  *   "name": "dictName"
  * });
  *
  * //引用内容管理中的数据字典
- * var dict = new this.Dict({
+ * const dict = new this.Dict({
  *   "type": "cms",
  *   "application": "appName",
  *   "name": "dictName"
  * });
  *
  * //引用门户管理中的数据字典
- * var dict = new this.Dict({
+ * const dict = new this.Dict({
  *   "type": "portal",
  *   "application": "appName",
  *   "name": "dictName"
  * });
  */
-function Dict(optionsOrName){
-    const options = (typeof options) == "string" ? { name : optionsOrName } : optionsOrName;
+const Dict = function(optionsOrName){
+    const options = (typeof optionsOrName) == "string" ? { name : optionsOrName } : optionsOrName;
     const name = this.name = options.name;
     const type = (!options.type) ? 'process' : options.type;
     const applicationId = options.application || ((globalThis.java_workContext) ? globalThis.java_workContext.getWork().application : "");
@@ -1843,20 +1835,20 @@ function Dict(optionsOrName){
      * @return {(Object|Array|String|Number|Boolean)}
      * 返回数据字典的数据，类型和配置数据字典时候指定的一致。
      * @o2syntax
-     * var data = dict.get( path, success, failure )
+     * const data = dict.get( path, success, failure )
      * @example
      * <caption>
      *     已经配置好了如下图所示的数据字典
      * <img src='img/module/Dict/dict.png' />
      * </caption>
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
-     * var data = dict.get();
+     * const data = dict.get();
      * //data的值为
      * {
      *    "category": [
@@ -1875,7 +1867,7 @@ function Dict(optionsOrName){
      *    ]
      * }
      *
-     *  var category = dict.get("category");
+     *  const category = dict.get("category");
      *  //category的值为
      *  [
      *     {
@@ -1892,7 +1884,7 @@ function Dict(optionsOrName){
      *    }
      *  ]
      *
-     *  var array0 = dict.get("category.0");
+     *  const array0 = dict.get("category.0");
      *  //array0 的值为
      *  {
      *    "enable": true,
@@ -1901,7 +1893,7 @@ function Dict(optionsOrName){
      *    "value": "company"
      * }
      *
-     * var enable = dict.get("category.0.eanble");
+     * const enable = dict.get("category.0.eanble");
      * //enable 的值为 true
      */
     this.get = function(path, success, failure){
@@ -1930,7 +1922,7 @@ function Dict(optionsOrName){
      * @o2syntax
      * dict.set( path, data, success, failure )
      * @example
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
@@ -1949,7 +1941,7 @@ function Dict(optionsOrName){
      * <caption>
      *     对Example add的数据字典进行赋值，如下：
      * </caption>
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
@@ -2068,7 +2060,7 @@ function Dict(optionsOrName){
      * @o2syntax
      * dict.add( path, data, success, failure )
      * @example
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
@@ -2087,7 +2079,7 @@ function Dict(optionsOrName){
      * <caption>
      *     对get方法样例的数据字典进行赋值，如下：
      * </caption>
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
@@ -2206,7 +2198,7 @@ function Dict(optionsOrName){
      * @o2syntax
      * dict.delete( path, success, failure )
      * @example
-     * var dict = new this.Dict({
+     * const dict = new this.Dict({
      *    //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
@@ -2221,7 +2213,7 @@ function Dict(optionsOrName){
      * <caption>
      *     对Example set的数据字典进行赋值，如下：
      * </caption>
-     * var dict = new this.Dict("bulletinDictionary");
+     * const dict = new this.Dict("bulletinDictionary");
      *
      * dict.delete( "archiveOptions");
      * //数据字典的值变为
@@ -2324,9 +2316,9 @@ function Dict(optionsOrName){
  * @return {Object} table对象
  * @o2syntax
  * //您可以在脚本中，通过this.Table()来返回Table的对象，如下：
- * var table = new this.Table( tableName )
+ * const table = new this.Table( tableName )
  */
-function Table(name){
+const Table = function(name){
     this.name = name;
     this.action = Actions.load("x_query_assemble_surface").TableAction;
 
@@ -2335,14 +2327,14 @@ function Table(name){
      * @method listRowNext
      * @methodOf module:server.Table
      * @instance
-     * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"。
+     * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"或 "0"。
      * @param {String|Number} count 下一页的行数
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @o2syntax
      * table.listRowNext( id, count, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * table.listRowNext( "0", 20, function(data){
      *    //data 形如
@@ -2372,14 +2364,14 @@ function Table(name){
      * @method listRowPrev
      * @methodOf module:server.Table
      * @instance
-     * @param {String} id  当前页第一条数据的Id，如果是最后一页使用"(0)"。
+     * @param {String} id  当前页第一条数据的Id，如果是最后一页使用"(0)"或 "0"。
      * @param {String|Number} count 上一页的行数
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @o2syntax
      * table.listRowPrev( id, count, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * table.listRowPrev( "0", 20, function(data){
      *    //data 形如
@@ -2417,7 +2409,7 @@ function Table(name){
      * @o2syntax
      * table.listRowSelect( where, orderBy, size, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * //查询字段name等于zhangsan的数据，结果按updateTime倒序
      * table.listRowSelect( "o.name='zhangsan'", "o.updateTime desc", 20, function(data){
@@ -2457,7 +2449,7 @@ function Table(name){
      * @o2syntax
      * table.rowCountWhere( where, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * //查询字段name等于zhangsan的数据，结果按updateTime倒序
      * table.rowCountWhere( "o.name='zhangsan'", function(data){
@@ -2488,7 +2480,7 @@ function Table(name){
      * @o2syntax
      * table.deleteRow( id, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * table.deleteRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
      *    //data 形如
@@ -2517,7 +2509,7 @@ function Table(name){
      * @o2syntax
      * table.deleteAllRow( success, failure, async )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * table.deleteAllRow( function(data){
      *    //data 形如
@@ -2547,7 +2539,7 @@ function Table(name){
      * @o2syntax
      * table.getRow( id, success, failure )
      * @example
-     * var table = new this.Table("table1");
+     * const table = new this.Table("table1");
      *
      * table.getRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
      *    //data 形如
@@ -2581,8 +2573,8 @@ function Table(name){
      * @o2syntax
      * table.insertRow( data, success, failure )
      * @example
-     * var table = new this.Table("table1");
-     * var data = [
+     * const table = new this.Table("table1");
+     * const data = [
      *  {
      *    "subject": "标题一",
      *    ... //其他字段
@@ -2617,8 +2609,8 @@ function Table(name){
      * @o2syntax
      * table.addRow( data, success, failure, async )
      * @example
-     * var table = new this.Table("table1");
-     * var data = {
+     * const table = new this.Table("table1");
+     * const data = {
      *    "subject": "标题一",
      *    ... //其他字段
      *  };
@@ -2651,8 +2643,8 @@ function Table(name){
      * @o2syntax
      * table.updateRow( id, data, success, failure )
      * @example
-     * var table = new this.Table("table1");
-     * var data = {
+     * const table = new this.Table("table1");
+     * const data = {
      *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
      *    "subject": "标题一",
      *    ... //其他字段
@@ -2684,7 +2676,7 @@ function Table(name){
  * @o2ordernumber 190
  * @o2syntax
  * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
- * var statement = this.statement;
+ * const statement = this.statement;
  */
 const statement = {
     _parseParameter: function(obj, format){
@@ -2698,15 +2690,15 @@ const statement = {
     },
     _parseFilter: function(filter=[], parameter={}, format){
         return filter.map((d)=>{
-            const pName = d.path.replace(/\./g, '_');
+            let pName = d.path.replace(/\./g, '_');
 
-            d.value = (parameter[pName]) ?
+            pName = (parameter[pName]) ?
                 (function unique(name, i){
                     return (parameter[name+'_'+i]) ? unique(name, ++i) : name+'_'+i;
                 })(pName, 1) :
                 pName;
 
-            parameter[d.value] = (d.comparison === 'like' || d.comparison === 'notLike') ?
+            parameter[pName] = (d.comparison === 'like' || d.comparison === 'notLike') ?
                 `%${d.value.replace(/^%|%$/g, '')}%` :
                 (() => {
                     if (d.formatType === "numberValue") {
@@ -2718,6 +2710,8 @@ const statement = {
                     return d.value;
                 })();
 
+            d.value = pName;
+
             return d;
         });
     },
@@ -2728,6 +2722,7 @@ const statement = {
             "filterList": filterList,
             "parameter" : parameter
         };
+
         return Actions.load("x_query_assemble_surface").StatementAction.executeV2(
             statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
             callback
@@ -2805,8 +2800,8 @@ const statement = {
      *     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
      *   }
      * }, function(json){
-     *  var count = json.count; //总数语句执行后返回的数字
-     *  var list = json.data; //查询语句后返回的数组
+     *  const count = json.count; //总数语句执行后返回的数字
+     *  const list = json.data; //查询语句后返回的数组
      *   //......
      * });
      */
@@ -2825,7 +2820,7 @@ const statement = {
  * @o2ordernumber 195
  * @o2syntax
  * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
- * var view = this.view;
+ * const view = this.view;
  */
 const view = {
     /**
@@ -2869,8 +2864,8 @@ const view = {
      *       }
      *   ]
      *}, function(data){
-     *   var grid = data.grid; //得到过滤后的数据
-     *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
+     *   const grid = data.grid; //得到过滤后的数据
+     *   const groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
      *   //......
      *});
      * @example
@@ -2897,8 +2892,8 @@ const view = {
      *       },
      *   ]
      *}, function(data){
-     *   var grid = data.grid; //得到过滤后的数据
-     *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
+     *   const grid = data.grid; //得到过滤后的数据
+     *   const groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
      *   //......
      *});
      */
@@ -2924,12 +2919,12 @@ const view = {
  * @o2cn 通用service调用
  * @o2category server.common
  * @o2syntax
- * var service = this.service;
+ * const service = this.service;
  * @example
  * //通过get方法发起restful请求，获取json数据
- * var res = this.service.restful("get", "config/myjson.json");
+ * const res = this.service.restful("get", "config/myjson.json");
  * if (res.responseCode>=200 && responseCode<300){
- *     var jsonData = res.json;
+ *     const jsonData = res.json;
  * }
  */
 const service = {
@@ -3055,82 +3050,1171 @@ const service = {
 //====以上为公共对象和方法，在服务端脚本中通用================================================/
 //=========================================================================================/
 
-
-//====对象response在服务管理的invoke中存在，用于设置响应======================================/
-//接口响应对象，服务端注入对象 java_customResponse
-/**
- * 用于服务管理的接口脚本，描述服务的响应对象。<br>
- * @o2range 服务管理-接口
- * @o2cn 服务的响应对象
- * @module server.service.response
- * @o2category server.service
- * @o2ordernumber 245
- * @o2syntax
- * var res = this.response;
- */
-const response = {
-    /**
-     * @summary 服务返回一个303跳转。
-     * @method seeOther
-     * @methodOf service.service.module:response
-     * @static
-     * @param {String} [url] 跳转的url。
-     * @o2syntax
-     * this.response.seeOther(url);
-     */
-    seeOther: function(url){
-        globalThis.java_customResponse.seeOther(url);
-    },
-    /**
-     * @summary 服务返回一个301跳转。
-     * @method redirect
-     * @methodOf service.service.module:response
-     * @static
-     * @param {String} [url] 跳转的url。
-     * @o2syntax
-     * this.response.redirect(url);
-     */
-    redirect: function(url){
-        globalThis.java_customResponse.temporaryRedirect(url);
-    },
-    /**
-     * @summary 服务正常返回数据（200）。
-     * @method setBody
-     * @methodOf service.service.module:response
-     * @static
-     * @param {String|Object} [body] 响应内容，文本或json对象。
-     * @param {String} [contentType] 响应头的Content-Type。
-     * @o2syntax
-     * this.response.setBody(body, contentType);
-     * @example
-     * //设置json格式的响应内容
-     * this.response.setBody({
-     *     "key1": "value1",
-     *     "key2": "value2"
-     * }, "application/json");
-     */
-    setBody: function(body, contentType=''){
-        const o = (typeof body==='object') ? JSON.stringify(body) : body;
-        globalThis.java_customResponse.setBody(o, contentType);
+/*****************************************************************/
+/* response - 服务调用活动，响应脚本，获取响应内容 ******************/
+/*            服务管理 invoke，用于设置响应内容  *******************/
+/*    - 接口响应对象，服务端注入对象 java_customResponse  **********/
+/*    - java_jaxrsResponse, type()  ******************************/
+/*      java_jaxrsResponse, get() 字符串  ************************/
+/*      java_jaxwsResponse  直接返回不做处理  *********************/
+/*****************************************************************/
+const responseDescriptor = {
+    get: function(){
+        if (globalThis.java_customResponse){   //注入 java_customResponse 对象，表示脚本运行于 服务管理 invoke 中
+            /**
+             * 用于服务管理的接口脚本，描述服务的响应对象。<br>
+             * @o2range 服务管理-接口
+             * @o2cn 服务的响应对象
+             * @module server.service.response
+             * @o2category server.service
+             * @o2ordernumber 245
+             * @o2syntax
+             * const res = this.response;
+             */
+            return {
+                /**
+                 * @summary 服务返回一个303跳转。
+                 * @method seeOther
+                 * @methodOf service.service.module:response
+                 * @static
+                 * @param {String} [url] 跳转的url。
+                 * @o2syntax
+                 * this.response.seeOther(url);
+                 */
+                seeOther: function(url){
+                    globalThis.java_customResponse.seeOther(url);
+                },
+                /**
+                 * @summary 服务返回一个301跳转。
+                 * @method redirect
+                 * @methodOf service.service.module:response
+                 * @static
+                 * @param {String} [url] 跳转的url。
+                 * @o2syntax
+                 * this.response.redirect(url);
+                 */
+                redirect: function(url){
+                    globalThis.java_customResponse.temporaryRedirect(url);
+                },
+                /**
+                 * @summary 服务正常返回数据（200）。
+                 * @method setBody
+                 * @methodOf service.service.module:response
+                 * @static
+                 * @param {String|Object} [body] 响应内容，文本或json对象。
+                 * @param {String} [contentType] 响应头的Content-Type。
+                 * @o2syntax
+                 * this.response.setBody(body, contentType);
+                 * @example
+                 * //设置json格式的响应内容
+                 * this.response.setBody({
+                 *     "key1": "value1",
+                 *     "key2": "value2"
+                 * }, "application/json");
+                 */
+                setBody: function(body, contentType=''){
+                    const o = (typeof body==='object') ? JSON.stringify(body) : body;
+                    globalThis.java_customResponse.setBody(o, contentType);
+                },
+                customResponse: globalThis.java_customResponse
+            }
+        }
+        if (globalThis.java_jaxrsResponse) {   //注入 java_jaxrsResponse 对象，表示脚本运行于 服务调用活动，响应脚本 中，并且调用类型为 jaxrs
+            /**
+             * 用于流程配置的服务调用活动中的“响应脚本”，描述调用服务后得到的响应。(注意：调用方式为异步时，“响应脚本”不会执行)<br>
+             * @o2range 流程配置-服务调用活动中的“响应脚本”
+             * @module server.response
+             * @o2cn 服务调用的响应
+             * @o2category server.process
+             * @o2ordernumber 230
+             * @o2syntax
+             * const res = this.response;
+             */
+            return {
+                /**
+                 * @summary jaxrs方式的服务调用活动，请求返回的状态。有四个可能的值：
+                 * <pre><code class="language-js">success : 表示请求成功
+                 * warn : 当调用的是平台内部服务时，虽然请求成功，但产生了警告
+                 * error : 请求调用错误
+                 * connectFatal : 网络连接错误</code></pre>
+                 * @member {String} status
+                 * @memberOf server.module:response
+                 * @o2syntax
+                 * const status = this.response.status;
+                 */
+                get status(){
+                    return globalThis.java_jaxrsResponse.type() || '';
+                },
+                /**
+                 * @summary 请求返回的值，如果是jaxrs服务，得到的是响应的文本，如果是jaxws服务，响应类型取决于服务的返回。
+                 * @member {String|Any} value
+                 * @memberOf server.module:response
+                 * @o2syntax
+                 * const value = this.response.value;
+                 * @example
+                 * //处理json对象的返回信息
+                 * const value = this.response.value;
+                 * const resData = JSON.parse(value);
+                 */
+                get value(){
+                    return globalThis.java_jaxrsResponse.get();
+                },
+                /**
+                 * @summary 获取请求返回的值，如果是jaxrs服务，会尽可能将响应数据转换为json对象，如果不能解析为json对象的，则返回文本，如果是jaxws服务，响应类型取决于服务的返回。
+                 * @method get
+                 * @methodOf server.module:response
+                 * @static
+                 * @return {Object|String|Any} 响应的内容.
+                 * @o2syntax
+                 * const res = this.response.get();
+                 */
+                get(){
+                    const value = globalThis.java_jaxrsResponse.get();
+                    if (JSON.validate(value)){
+                        return JSON.decode(value);
+                    }
+                    return value;
+                }
+            }
+        }
+        if (globalThis.java_jaxwsResponse) {   //注入 java_jaxwsResponse 对象，表示脚本运行于 服务调用活动，响应脚本 中，并且调用类型为 jaxws
+            return {
+                value: globalThis.java_jaxwsResponse,
+                get(){
+                    return globalThis.java_jaxwsResponse || null;
+                }
+            }
+        }
+        return null;
     }
 }
-Object.defineProperties(response, {
-    customResponse: {
-        configurable: true,
-        get: function(){ return globalThis.java_customResponse || null }
+
+/***************************************************************/
+/* workContext -流程脚本中的 workcontext 对象，用于获取流程实例的相关数据  *****/
+/**************************************************************/
+/**
+ * 您可以在流程事件、流程路由事件、流程活动事件中通过workContext获取和流程相关的流程实例对象数据。
+ * @module server.workContext
+ * @o2cn 流程实例
+ * @o2category server.process
+ * @o2range {Process} 所有流程配置中的脚本可以使用此对象
+ * @o2ordernumber 200
+ * @o2syntax
+ * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前流程实例数据，如下：
+ * var context = this.workContext;
+ */
+const workContext = {
+    /**
+     * 当前流程实例正在流转中，并且当前用户有待办，则返回当前用户的待办对象。
+     * 事实上在后端的活动事件中，大部分的情况下，此方法获取到的是taskCompleted对象，因为在人工活动的事件中，除了“待办处理前”事件，其他事件处理时，当前用户的待办都已经转为已办了。
+     * @summary 获取当前流程与当前用户相关的待办或已办对象：task对象或taskCompleted对象。
+     * @methodOf module:server.workContext
+     * @o2ActionOut x_processplatform_assemble_surface.TaskAction.get|example=Task|Task对象:
+     * @method getTask
+     * @static
+     * @return {(Task|TaskCompleted|Null)} 当前用户的待办任务对象：task。当前用户没有对此流程实例的待办时，或流程实例已经流转结束，返回null。
+     * @o2syntax
+     * const task = this.workContext.getTask();
+     */
+    getTask: function(){  //根据work获取当前处理的的task或者TaskCompleted  json字符串 只能在流转的过程中获取到
+        var taskString = globalThis.java_workContext.getTaskOrTaskCompleted();
+        var task = (taskString) ? JSON.parse(taskString) : null;
+        if (task){
+            task.personDn = task.person || "";
+            task.unitDn = task.unit || "";
+            task.unitDnList = task.unitList || "";
+            task.identityDn = task.identity || "";
+            task.creatorPersonDn = task.creatorPerson ||"";
+            task.creatorUnitDn = task.creatorUnit ||"";
+            task.creatorUnitDnList = task.creatorUnitList ||"";
+            task.creatorIdentityDn = task.creatorIdentity ||"";
+        }
+        return task;
+    },
+    /**
+     * 获取当前流程实例对象：work对象或workCompleted对象。
+     * @method getWork
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
+     * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=Work|ignoreNoDescr=true|ignoreProps=[properties,manualTaskIdentityMatrix]|Work对象:
+     * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompleted|ignoreProps=[properties,data,taskCompletedList,readCompletedList,reviewList,recordList,workLogList,storeForm,mobileStoreForm]|WorkCompleted对象:
+     * @o2syntax
+     * const work = this.workContext.getWork();
+     */
+    "getWork": function(){  //work的字符串
+        var work = JSON.parse(globalThis.java_workContext.getWork());
+        work.creatorPersonDn = work.creatorPerson ||"";
+        work.creatorUnitDn = work.creatorUnit ||"";
+        work.creatorUnitDnList = work.creatorUnitList ||"";
+        work.creatorIdentityDn = work.creatorIdentity ||"";
+        return work;
+    },
+
+    /**
+     * 获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+     * @method getTaskList
+     * @methodOf module:server.workContext
+     * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithWork|example=Task
+     * @static
+     * @return {(Task[])} 待办任务列表.
+     * @o2syntax
+     * const taskList = this.workContext.getTaskList();
+     */
+    "getTaskList": function(){return JSON.parse(globalThis.java_workContext.getTaskList());},                       //根据work获取所有的task数组  json字符串
+
+    /**
+     * 获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+     * @method getTaskCompletedList
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(TaskCompleted[])} 已办任务列表.
+     * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithWork|example=Task
+     * @o2syntax
+     * const taskCompletedList = this.workContext.getTaskCompletedList();
+     */
+    "getTaskCompletedList": function(){return JSON.parse(globalThis.java_workContext.getTaskCompletedList());},     //根据work获取所有的TaskCompleted数组  json字符串
+
+    /**
+     * @summary 获取当前流程实例的所有待阅对象数组。如果流程实例无待阅，则返回一个空数组。
+     * @method getReadList
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReadAction.get|example=Read
+     * @o2syntax
+     * const readList = this.workContext.getReadList();
+     */
+    "getReadList": function(){return JSON.parse(globalThis.java_workContext.getReadList());},                       //根据work获取所有的read数组  json字符串
+
+    /**
+     * @summary 获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+     * @method getReadCompletedList
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithWork|example=Read
+     * @o2syntax
+     * const readCompletedList = this.workContext.getReadCompletedList();
+     */
+    "getReadCompletedList": function(){return JSON.parse(globalThis.java_workContext.getReadCompletedList());},     //根据work获取所有的ReadCompleted数组  json字符串
+
+    /**
+     * @summary 获取当前流程实例的所有review对象。如果流程实例没有review，则返回一个空数组。
+     * @method getReviewList
+     * @alias getReviewListByJob
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(Review[])} 当前流程实例的所有review对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReviewAction.listWithJob|example=Review
+     * @o2syntax
+     * const reviewList = this.workContext.getReviewList();
+     */
+    "getReviewList": function(){return JSON.parse(globalThis.java_workContext.getJobReviewList());},
+
+    /**
+     * @summary getTaskListByJob方法的别名。
+     * @method getJobTaskList
+     * @static
+     * @see server.module:workContext.getTaskListByJob
+     */
+    "getJobTaskList": function(){return JSON.parse(globalThis.java_workContext.getJobTaskList());},                 //根据jobid获取所有的task数组  json字符串
+
+    /**
+     * @summary getTaskCompletedListByJob方法的别名。
+     * @method getJobTaskCompletedList
+     * @static
+     * @see server.module:workContext.getTaskCompletedListByJob
+     */
+    "getJobTaskCompletedList": function(){return JSON.parse(globalThis.java_workContext.getJobTaskCompletedList());},   //根据jobid获取所有的TaskCompleted数组  json字符串
+    /**
+     * @summary getReadListByJob方法的别名。
+     * @method getJobReadList
+     * @static
+     * @see server.module:workContext.getReadListByJob
+     */
+    "getJobReadList": function(){return JSON.parse(globalThis.java_workContext.getJobReadList());},                     //根据jobid获取所有的read数组  json字符串
+    /**
+     * @summary getReadCompletedListByJob方法的别名。
+     * @method getJobReadCompletedList
+     * @static
+     * @see server.module:workContext.getReadCompletedListByJob
+     */
+    "getJobReadCompletedList": function(){return JSON.parse(globalThis.java_workContext.getJobReadCompletedList());},   //根据jobid获取所有的ReadCompleted数组  json字符串
+    /**
+     * @summary getReviewList方法的别名。
+     * @method getJobReviewList
+     * @static
+     * @see server.module:workContext.getReviewList
+     */
+    "getJobReviewList": function (){return this.getReviewList();},                                                                        //根据jobid获取所有的Review数组  json字符串
+
+    /**
+     * 根据当前工作的job获取当前流程实例的所有待办对象。如果流程实例已流转完成，则返回一个空数组。
+     * @method getTaskListByJob
+     * @methodOf module:server.workContext
+     * @o2ActionOut x_processplatform_assemble_surface.TaskAction.listWithJob|example=Task
+     * @static
+     * @return {(Task[])} 待办任务列表.
+     * @o2syntax
+     * const taskList = this.workContext.getTaskListByJob();
+     */
+    "getTaskListByJob": function(){return this.getJobTaskList();},
+    /**
+     * 根据当前工作的job获取当前流程实例的所有已办对象。如果流程实例没有任何人处理过，则返回一个空数组。
+     * @method getTaskCompletedListByJob
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(TaskCompleted[])} 已办任务列表.
+     * @o2ActionOut x_processplatform_assemble_surface.TaskCompletedAction.listWithJob|example=Task
+     * @o2syntax
+     * const taskCompletedList = this.workContext.getTaskCompletedListByJob();
+     */
+    "getTaskCompletedListByJob": function(){return this.getJobTaskCompletedList();},
+    /**
+     * @summary 根据当前工作的job获取当前流程实例的所有待阅对象。如果流程实例无待阅，则返回一个空数组。
+     * @method getReadListByJob
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(Read[])} 当前流程实例的所有待阅对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReadAction.listWithJob|example=Read
+     * @o2syntax
+     * const readList = this.workContext.getReadListByJob();
+     */
+    "getReadListByJob": function(){return this.getJobReadList();},
+    /**
+     * @summary 根据当前工作的job获取当前流程实例的所有已阅对象。如果流程实例没有已阅，则返回一个空数组。
+     * @method getReadCompletedListByJob
+     * @methodOf module:server.workContext
+     * @static
+     * @return {(ReadCompleted[])} 当前流程实例的所有已阅对象数组.
+     * @o2ActionOut x_processplatform_assemble_surface.ReadCompletedAction.listWithJob|example=Read
+     * @o2syntax
+     * const readCompletedList = this.workContext.getReadCompletedListByJob();
+     */
+    "getReadCompletedListByJob": function(){return this.getJobReadCompletedList();},
+    /**
+     * @summary getReviewList方法的别名。
+     * @method getReviewListByJob
+     * @static
+     * @see server.module:workContext.getReviewList
+     */
+    "getReviewListByJob": function(){return this.getJobReviewList();},
+
+    /**
+     * 获取当前流程实例所在的活动节点对象：activity对象。
+     * @method getActivity
+     * @static
+     * @return {(Activity|Null)} 当前流程实例所在的活动节点对象，如果当前流程实例已流转完成，则返回null.
+     * <pre><code class='language-js'>{
+     *      "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471", //节点ID
+     *      "name": "办理",  //节点名称
+     *      "description": "", //节点描述
+     *      "alias": "",  //节点别名
+     *      "resetRange": "department", //重置处理人范围
+     *      "resetCount": 0,  //重置处理人数字
+     *      "allowReset": true, //是否允许重置
+     *      "manualMode": "single", //处理方式 单人single, 并行parallel, 串行queue, grab抢办
+     *      "customData": { //节点上的自定义属性，如果没有设置，不输出该值
+     *
+     *      }
+     * }</code></pre>
+     * @o2syntax
+     * const activity = this.workContext.getActivity();
+     */
+    "getActivity": function(){return JSON.parse(globalThis.java_workContext.getActivity());},       //活动对象字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(WorkLog)。
+     * @method getWorkLogList
+     * @static
+     * @return {WorkLog[]} 流程记录对象.
+     * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties,goBackFromActivityType]
+     * @o2syntax
+     * const workLogList = this.workContext.getWorkLogList();
+     */
+    "getWorkLogList": function(){return JSON.parse(globalThis.java_workContext.getWorkLogList());}, //WorkLogList对象数组的字符串
+
+    /**
+     * @summary 获取当前流程实例的所有流程记录(Record)。
+     * @method getRecordList
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * const recordList = this.workContext.getRecordList();
+     */
+    "getRecordList": function(){return JSON.parse(globalThis.java_workContext.getRecordList());}, //RecordList对象数组的字符串，需要新增
+
+    /**
+     * @summary 最后一条Record对象，在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record。
+     * @method getRecord
+     * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
+     * @static
+     * @return {Record[]} 流程记录(Record)对象.
+     * @o2syntax
+     * const record = this.workContext.getRecord();
+     */
+    "getRecord": function(){return JSON.parse(globalThis.java_workContext.getRecord());}, //最后一条Record对象，（在活动流转完成事件中，获取本次流转的record；在其它事件中获取的是整个job的最后一条record，并不是本次流转的record）
+
+    /**
+     * @summary 获取当前流程实例的附件对象列表。
+     * @method getAttachmentList
+     * @static
+     * @return {WorkAttachmentData[]} 附件数据.
+     * @o2ActionOut x_processplatform_assemble_surface.AttachmentAction.getWithWorkOrWorkCompleted|example=Attachment|ignoreProps=[properties]
+     * @o2syntax
+     * //获取附件列表
+     * const attachmentList = this.workContext.getAttachmentList();
+     */
+    "getAttachmentList": function(){return JSON.parse(globalThis.java_workContext.getAttachmentList());},   //附件对象数组的字符串
+
+    /**
+     * @summary 获取可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）。
+     * @method getRouteList
+     * @static
+     * @return {String[]} 路由字符串数组.
+     * @o2syntax
+     * const routeList = this.workContext.getRouteList();
+     */
+    "getRouteList": function(){return JSON.parse(globalThis.java_workContext.getRouteList());},      //可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）
+
+    /**
+     * @summary 重新设置流程实例标题
+     * @method setTitle
+     * @static
+     * @param {String} title - 标题字符串.
+     * @o2syntax
+     * this.workContext.setTitle(title);
+     * @example
+     * this.workContext.setTitle("标题");
+     */
+    "setTitle": function(title){globalThis.java_workContext.setTitle(title);},                       //设置title
+
+
+    "getControl": function(){return null;},
+    "getInquiredRouteList": function(){return null;}
+};
+const workContent = workContext;
+
+/***************************************************************/
+/* assignData - 流程调用脚本，数据脚本
+{
+	data:{},
+	application:"",
+	process:"",
+	identity: "",
+	attachmentList: [],
+	title: "",
+	processing: true
+}
+可通过return 返回assignData,  **********************************/
+/**************************************************************/
+/**
+ * 用于流程配置的流程调用活动中的“数据脚本”和“标题脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
+ * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
+ * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
+ * @module server.assignData
+ * @o2cn 流程实例业务数据
+ * @o2category server.process
+ * @o2ordernumber 210
+ * @example
+ * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
+ * const data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * this.assignData.set(data);
+ * @example
+ * <caption>
+ *    assignData.set方法是为了兼容以前的版本。<br>
+ *    <b>建议通过return一个json对象的方式来设置data内容</b>
+ * </caption>
+ * //也可以通过return一个json对象的方式来代替assignData.set方法
+ * const data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * return data;
+ */
+const assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
+    _data: null,
+    /**
+     * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
+     * @method get
+     * @methodOf module:server.assignData
+     * @static
+     * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
+     * <pre><code class='language-js'>{
+     *        "application": "application id",  //被调用的应用id
+     *        "process": "process id",          //被调用的流程id
+     *        "identity": "xxx@xxx@I",          //被调用流程的启动这身份
+     *        "title": "title",                 //被调用流程实例的标题
+     *        "attachmentList": [],             //要传递到被调用的流程实例的附件对象
+     *        "data": {},                       //要传递到被调用的流程实例的业务数据
+     *        "attachmentSoftCopy"              //如果为true，不拷贝附件文件。默认false  @todo
+     * }</code></pre>
+     * @o2syntax
+     * const data = this.assignData.get();
+     */
+    "get": function(){
+        this.data = JSON.parse(globalThis.java_assignData.get());
+        return this.data;
+    },
+    /**
+     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
+     * @method set
+     * @methodOf module:server.assignData
+     * @static
+     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
+     * @o2syntax
+     * this.assignData.set(data);
+     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
+     * @example
+     * const data = this.assignData.get();
+     * data.data.parentProcessData = "父流程实例的信息";
+     * return data;
+     */
+    "set": function(data){
+        globalThis.java_assignData.set(JSON.stringify(data || this.data));
     }
-});
+};
+Object.defineProperties(assignData, {"data": {
+        "get": function(){
+            if (this._data) return this._data;
+            return JSON.parse(globalThis.java_assignData.get());
+        },
+        "set": function(v){this._data = v;}
+    }}
+);
+
+
+/***************************************************************/
+/* parameters - 服务调用活动，参数脚本，要传入的参数 ******************/
+/*              数据中心查询语句的脚本中，获取语句参数。***************/
+/*   - 调用活动中，如果是webservice调用，则注入 java_jaxwsParameters 对象，parameters 返回一个对象，包含 add 和 remove方法;***************/
+/*   - 调用活动中，如果是restfyl调用，则注入 java_jaxrsParameters 对象，parameters 返回一个对象，包含 put 和 remove方法;******************/
+/*   - 数据中心查询语句的脚本中，则注入 java_parameters json文本，parameters 返回一个json对象，用于获取调用查询语句的参数******************/
+/***************************************************************/
+/**
+ * 用于流程配置的服务调用活动中的“参数脚本”，为jaxrs和jaxws两种服务调用方式传递参数。<br>
+ * 当调用类型为jaxrs时：可使用parameters.put和parameters.remove方法<br/>
+ * 当调用类型为jaxws时：可使用parameters.add和parameters.remove方法<br/>
+ * @o2range 流程配置-服务调用活动中的“参数脚本”中可用
+ * @module server.parameters
+ * @o2cn 服务调用参数
+ * @o2category server.process
+ * @o2ordernumber 215
+ * @deprecated parameters对象已经不建议使用了。建议return一个json对象或数组的方式来设置参数。
+ * @example
+ * //使用jaxrs方式的服务调用活动的参数脚本中
+ * //如果rest服务地址为：xxx/{id}/xx/{name},则需要传入两个参数：id和name，可使用如下代码：
+ * this.parameters.put("id", "id value");
+ * this.parameters.put("name", "name value");
+ *
+ * //或者
+ * this.parameters.put({
+ *     "id": "id value",
+ *     "name": "name value"
+ * });
+ *
+ * @example
+ * //使用jaxws方式的服务调用活动的参数脚本中
+ * //如果需要传入三个参数，可使用如下代码：
+ * this.parameters.add("参数1");
+ * this.parameters.add("参数2");
+ * this.parameters.add("参数3");
+ *
+ * //或者
+ * this.parameters.add(["参数1", "参数2", "参数3"]);
+ *
+ * @example
+ * <caption>
+ *    以上两个例子中使用了parameters对象来收集参数，这主要是为了兼容以前的版本。<br>
+ *    <b>我们更建议通过return一个json对象或数组的方式来设置参数</b>
+ * </caption>
+ * //以上两个例子中使用了parameters对象来收集参数
+ * //更好的方式是：通过return一个json对象或数组的方式来设置参数
+ * //对于jaxrs方式：
+ * return {
+ *     "id": "id value",
+ *     "name": "name value"
+ * }
+ *
+ * //对于jaxws方式：
+ * return ["参数1", "参数2", "参数3"];
+ */
+/**
+ * 用于数据中心查询语句的脚本中，可获取语句参数。json对象，在调用此语句的时候传入<br>
+ * @o2range 数据中心-查询配置-通过脚本创建查询语句
+ * @o2cn 数据中心查询语句参数
+ * @module server.service.parameters
+ * @o2category server.service
+ * @o2ordernumber 255
+ * @o2syntax
+ * var pars = this.parameters;
+ * @example
+ * <caption>
+ *     通过this.statement.execute调用一个名为“task”的查询配置，并传入parameters，代码如下：
+ *     <pre><code class='language-js'>//用一个名为“task”的查询配置，并传入parameters
+ * this.statement.execute({
+ *  "name": "task",
+ *  "mode" : "all",
+ *  "parameter" : {
+ *     "person" : "xxx@xxx@p",  //传入人员参数
+ *     "startTime" : (new Date("2020-01-01")) //传入时间参数
+ *  }
+ * }, function(json){
+ *  var count = json.count; //总数语句执行后返回的数字
+ *  var list = json.data; //查询语句后返回的数组
+ *   //......
+ * });
+ *     </code></pre>
+ *
+ *     在task查询配置的脚本中，parameters对象就可获取到执行查询时传入的parameters对象，以便于动态创建查询语句
+ * </caption>
+ * //动态生成查询指定用户，在指定时间之后的所有待办数据
+ * var user = this.parameters.person;
+ * var startTime = (new Date(this.parameters.startTime)).format("db");  //格式化为yyyy-mm-dd hh:mm:ss
+ * return "SELECT o FROM Task o WHERE o.person='"+user+"' AND o.startTime>{ts '"+startTime+"'}"
+ */
+const parametersDescriptor = {
+    get: function(){
+        if (globalThis.java_jaxwsParameters){   //注入 java_jaxwsParameters 对象，表示脚本运行于 服务调用活动，参数脚本 中，并且调用类型为 jaxws
+            return {
+                /**
+                 * @summary jaxws方式的服务调用活动，“参数脚本”中，使用parameters.add设置参数。
+                 * @method add
+                 * @methodOf module:server.parameters
+                 * @static
+                 * @param {Any|Array} [value] 要设置的参数值。
+                 * @o2syntax
+                 * this.parameters.add(value);
+                 * @deprecated 不建议使用，建议return一个数组的方式来设置参数。如：
+                 * <pre><code class='language-js'>return ["参数1", "参数2", "参数3"];</code></pre>
+                 */
+                add(value){
+                    if (Array.isArray(value)){
+                        value.forEach(function(v){
+                            globalThis.java_jaxwsParameters.add(v);
+                        });
+                    }else{
+                        globalThis.java_jaxwsParameters.add(value);
+                    }
+                },
+                /**
+                 * @summary 服务调用活动，“参数脚本”中，删除已设置参数。
+                 * @method remove
+                 * @methodOf module:server.parameters
+                 * @static
+                 * @param {String|Number} [name] jaxrs方式的服务调用活动，传入要删除参数的key；jaxws方式的服务调用活动，传入要删除的参数的索引。
+                 * @o2syntax
+                 * this.parameters.remove(name);
+                 * @deprecated 不建议使用
+                 */
+                remove(name){
+                    globalThis.java_jaxwsParameters.remove(name);
+                }
+            }
+        }
+        if (globalThis.java_jaxrsParameters){   //注入 java_jaxrsParameters 对象，表示脚本运行于 服务调用活动，参数脚本 中，并且调用类型为 jaxrs
+            return {
+                /**
+                 * @summary jaxrs方式的服务调用活动，“参数脚本”中，使用parameters.put设置参数。
+                 * @method put
+                 * @methodOf module:server.parameters
+                 * @static
+                 * @param {String|Object} [name] 要设置的参数key，或参数json对象。
+                 * @param {String|Number|boolean} [value] 要设置的参数值。
+                 * @o2syntax
+                 * this.parameters.put(name, value);
+                 * this.parameters.put(obj);
+                 * @deprecated 不建议使用，建议return一个json对象的方式来设置参数。如：
+                 * <pre><code class='language-js'>return {
+                 *     "id": "id value",
+                 *     "name": "name value"
+                 * };</code></pre>
+                 */
+                put(name, value){
+                    if ((typeof name)==="object"){
+                        var _keys = Object.keys(name);
+                        for (var i=0; i<_keys.length; i++){
+                           globalThis.java_jaxrsParameters.put(_keys[i], name[_keys[i]]);
+                        }
+                    }else{
+                        globalThis.java_jaxrsParameters.put(name, value);
+                    }
+                },
+                remove(name){
+                    globalThis.java_jaxrsParameters.remove(name);
+                }
+            }
+        }
+        if (globalThis.java_parameters){        //注入 java_parameters 对象，表示脚本运行于 数据中心查询语句的脚本 中
+            return JSON.parse(globalThis.java_parameters)
+        }
+        return null;
+    }
+}
+
+
+/***************************************************************/
+/* body - 服务调用活动，消息体脚本，设置调用消息体 ******************/
+/***************************************************************/
+/**
+ * 用于流程配置的服务调用活动中的“消息体脚本”，仅在jaxrs方式的服务调用活动中可用。<br>
+ * @o2range 流程配置-服务调用活动中的“消息体脚本”，服务协议为jaxrs
+ * @module server.body
+ * @o2cn 服务调用消息体
+ * @o2category server.process
+ * @o2ordernumber 220
+ * @deprecated body对象已经不建议使用了。建议return一个json对象的方式来设置body。如：
+ * <pre><code class='language-js'>return {
+ *     "key1": "value1",
+ *     "key2": "value2",
+ *     "key3": "value3"
+ * };</code></pre>
+ * @example
+ * //设置jaxrs服务调用的消息体
+ * this.body.set({
+ *     "key1": "value1",
+ *     "key2": "value2",
+ *     "key3": "value3"
+ * })
+ *
+ * //或者设置
+ * this.body.set("this is body data");
+ *
+ * @example
+ * <caption>
+ *    body.set方法是为了兼容以前的版本。<br>
+ *    <b>建议通过return一个json对象的方式来设置消息体内容</b>
+ * </caption>
+ * return {
+ *      "key1": "value1",
+ *     "key2": "value2",
+ *     "key3": "value3"
+ * };
+ *
+ * //或
+ * return "this is body data";
+ */
+const body = {
+    /**
+     * @summary 服务调用活动中的“消息体脚本”，用于设置消息体内容。
+     * @method set
+     * @methodOf module:server.body
+     * @static
+     * @param {String|Object} [data] 消息体内容。
+     * @o2syntax
+     * this.body.set(data);
+     * @deprecated 不建议使用，建议return一个json对象或数组的方式来设置body。
+     */
+    set(data){
+        if ((typeof data)==="string"){
+            globalThis.java_jaxrsBody.set(data);
+        }
+        if ((typeof data)==="object"){
+            globalThis.java_jaxrsBody.set(JSON.stringify(data));
+        }
+    }
+};
+
+/***************************************************************/
+/* headers - 服务调用活动，消息头脚本，设置调用消息头 ******************/
+/***************************************************************/
+/**
+ * 用于流程配置的服务调用活动中的“消息头脚本”，仅在jaxrs方式的服务调用活动中可用。<br>
+ * @o2range 流程配置-服务调用活动中的“消息头脚本”，服务协议为jaxrs
+ * @module server.headers
+ * @o2cn 服务调用消息头
+ * @o2category server.process
+ * @o2ordernumber 225
+ * @deprecated headers对象已经不建议使用了，建议return一个json对象的方式来设置headers。如：
+ * <pre><code class='language-js'>return {
+ *     "Content-Type": "application/x-www-form-urlencoded"，
+ *     "Accept-Language": "en"
+ * };</code></pre>
+ * @example
+ * //设置jaxrs服务调用的消息头
+ * this.headers.put("Content-Type", "application/x-www-form-urlencoded");
+ *
+ * //或者
+ * this.headers.put({
+ *      "Content-Type": "application/x-www-form-urlencoded"，
+ *      "Accept-Language": "en"
+ * });
+ *
+ * @example
+ * <caption>
+ *    headers.put方法是为了兼容以前的版本。<br>
+ *    <b>建议通过return一个json对象的方式来设置消息头内容</b>
+ * </caption>
+ * return {
+ *      "Content-Type": "application/x-www-form-urlencoded"，
+ *      "Accept-Language": "en"
+ * };
+ */
+const headers = {
+    /**
+     * @summary jaxrs方式的服务调用活动，“消息头脚本”中，headers.put设置消息头。
+     * @method add
+     * @methodOf module:server.headers
+     * @static
+     * @param {String|Object} [name] 要设置的消息头名称，或消息头json对象。
+     * @param {String} [value] 要设置的消息头值。
+     * @o2syntax
+     * this.headers.put(name, value);
+     * this.headers.put(obj);
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置headers。如：
+     * <pre><code class='language-js'>return {
+     *     "Content-Type": "application/x-www-form-urlencoded"，
+     *     "Accept-Language": "en"
+     * };</code></pre>
+     */
+    put(name, value){
+        try{
+            if ((typeof name)==="object"){
+                var _keys = Object.keys(name);
+                for (var i=0; i<_keys.length; i++){
+                    if (globalThis.java_jaxrsHeaders) globalThis.java_jaxrsHeaders.put(_keys[i], name[_keys[i]]);
+                }
+            }else{
+                if (globalThis.java_jaxrsHeaders) globalThis.java_jaxrsHeaders.put(name, value);
+            }
+        }catch(e){}
+    },
+    /**
+     * @summary jaxrs方式的服务调用活动，“消息头脚本”中，删除已经设置消息头。
+     * @method remove
+     * @methodOf module:server.headers
+     * @static
+     * @param {String} [name] 要删除的消息头名称。
+     * @o2syntax
+     * this.headers.remove(name);
+     * @deprecated 不建议使用
+     */
+    remove(name){
+        try{
+            if (globalThis.java_jaxrsHeaders) globalThis.java_jaxrsHeaders.remove(name);
+        }catch(e){}
+    }
+};
+
+/***************************************************************/
+/* requestText - 服务活动，服务响应脚本，获取请求的文本内容  ******/
+/*               服务管理 invoke 请求消息体的文本内容 *     ******/
+/***************************************************************/
+/**
+ * 调用接口时传入的请求消息体的文本内容。
+ * @o2range 服务管理-接口
+ * @module server.requestText
+ * @o2cn 传入的服务消息体文本
+ * @o2category server.service
+ * @o2ordernumber 250
+ * @o2syntax
+ * const text = this.requestText;
+ * @example
+ * const text = this.requestText; //传入的服务消息体文本
+ * const object = JSON.parse(text); //转成对象
+ */
+/**
+ * 用于流程配置的服务活动中的“服务响应脚本”，获取请求的文本内容。<br>
+ * @o2range 流程配置-服务活动中的“响应脚本”
+ * @module server.requestText
+ * @o2cn 服务调用请求对象
+ * @o2category server.process
+ * @o2ordernumber 235
+ * @o2syntax
+ * const text = this.requestText;
+ * const object = JSON.parse(text); //转成对象
+ */
+const requestTextDescriptor = {
+    get: function(){
+        return globalThis.java_requestText || '';
+    }
+}
+
+/***************************************************************/
+/* request - 服务活动，服务响应脚本，获取请求内容  ****************/
+/*           服务管理 invoke 请求的java对象 java_request *********/
+/***************************************************************/
+const requestDescriptor = {
+    get: function(){
+        if (globalThis.java_request){       //注入java_request对象，表示脚本运行在 服务管理 invoke 中。直接返回 java_request 对象。
+            /**
+             * 调用接口时传入的请求对象。java的 request（java.net.http.HttpRequest）对象。
+             * @o2range 服务管理-接口
+             * @module server.request
+             * @o2cn 传入的服务消息体文本
+             * @o2category server.service
+             * @o2ordernumber 250
+             * @o2syntax
+             * const req = this.request;
+             */
+            globalThis.java_request.getBody = function(){
+                try{
+                    return JSON.parse(globalThis.java_requestText);
+                }catch(e){
+                    return globalThis.java_requestText;
+                }
+            }
+            return globalThis.java_request;
+        }
+        if (globalThis.java_requestText) {  //注入java_requestText对象，表示脚本运行在 服务活动，服务响应脚本 中。
+            /**
+             * 用于流程配置的服务活动中的“服务响应脚本”，描述发起服务的请求对象。<br>
+             * @o2range 流程配置-服务活动中的“响应脚本”
+             * @module server.request
+             * @o2cn 服务调用请求对象
+             * @o2category server.process
+             * @o2ordernumber 235
+             * @o2syntax
+             * const res = this.request;
+             */
+            return {
+                /**
+                 * @summary 获取请求的body内容。
+                 * @method getBody
+                 * @methodOf server.module:request
+                 * @static
+                 * @return {Object|String} 请求的body内容，如果能转换为json，则返回json对象，否则返回请求的内容的文本.
+                 * @o2syntax
+                 * const req = this.request.getBody();
+                 */
+                getBody(){
+                    try{
+                        return JSON.parse(globalThis.java_requestText);
+                    }catch(e){
+                        return globalThis.java_requestText;
+                    }
+                },
+                /**
+                 * @summary 获取请求的body的原始内容。
+                 * @member {String} text
+                 * @memberOf server.module:request
+                 * @o2syntax
+                 * var req = this.request.text;
+                 */
+                get text(){
+                    return globalThis.java_requestText;
+                }
+            }
+        }
+        return null;
+    }
+}
+
+
+/***************************************************************/
+/* expire - 活动时效计算对象，用于设置活动时效 ********************/
+/***************************************************************/
+//活动时效计算对象，流程时效得去掉
+//java_expire,
+//脚本返回JSON数据:
+//{
+//    hour: 3                     //几小时后超时
+//    workHour: 5             //几个工作小时后超时
+//    date: '2016-08-01'   //到达指定时间后超时
+//}
+//设置指定的超时时间:
+//this.expire.setDate([Date or String] date)
+//设置几小时后超时:
+//this.expire.setHour([Int] hour)
+//设置几个工作小时后超时：
+//this.expire.setWorkHour([Int] hour)
+/**
+ * 用于流程配置的人工活动的“时效脚本”中，用于设置超时时间。可以通过设置小时数，工作小时数，和指定时间点来设置超时，如果全部设置，则优先级为：工作小时>小时>时间<br>
+ * @o2range 流程配置-人工活动中的“时效脚本”
+ * @module server.expire
+ * @o2cn 超时时间设置
+ * @o2category server.process
+ * @o2ordernumber 240
+ * @deprecated expire对象已经不建议使用了。建议return一个json对象的方式来设置超时时间。
+ * @example
+ * //设置超时时限为待办产生后5小时
+ * this.expire.setHour(5);
+ *
+ * //设置超时时限为待办产生后5个工作小时（只计算工作时间）
+ * this.expire.setWorkHour(5);
+ *
+ * //设置超时时限为指定时间，如业务数据中的设定的办理期限（processingTime）
+ * this.expire.setDate(this.data.processingTime);
+ *
+ * @example
+ * <caption>
+ *    expire对象是为了兼容以前的版本。<br>
+ *    <b>建议可以直接返回一个json对象来设置超时时间</b>
+ * </caption>
+ * //设置超时时限为待办产生后5小时
+ * return {"hour": 5};
+ *
+ * //设置超时时限为待办产生后5个工作小时（只计算工作时间）
+ * return {"workHour": 5};
+ *
+ * //设置超时时限为指定时间，如业务数据中的设定的办理期限（processingTime）
+ * return {"date": this.data.processingTime};
+ */
+const expire = {
+    /**
+     * @summary 设置超时小时数。
+     * @method setHour
+     * @methodOf server.module:expire
+     * @static
+     * @param {Number} [hour] 超时的小时数。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"hour": 5}</code></pre>
+     */
+    "setHour": function(hour){
+        try{globalThis.java_expire.setHour(hour);}catch(e){}
+    },
+    /**
+     * @summary 设置超时工作小时数。
+     * @method setWorkHour
+     * @methodOf server.module:expire
+     * @static
+     * @param {Number} [hour] 超时的工作小时数。
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"workHour": 5}</code></pre>
+     */
+    "setWorkHour": function(hour){
+        try{globalThis.java_expire.setWorkHour(hour);}catch(e){}
+    },
+    /**
+     * @summary 设置超时时间。
+     * @method setDate
+     * @methodOf server.module:expire
+     * @static
+     * YYYY-MM-DD HH:mm:SS
+     * @param {String} [date] 一个表示日期时间的字符串，按以下格式：
+     * <pre><code class="language-js">yyyy-MM-dd HH:mm:ss   //如2021-09-12 18:26:51</code></pre>
+     * @deprecated 不建议使用，建议return一个json对象的方式来设置超时时间。如：
+     * <pre><code class='language-js'>return {"date": "2021-09-12 18:26:51"}</code></pre>
+     */
+    "setDate": function(date){
+        try{globalThis.java_expire.setDate(date);}catch(e){}
+    }
+};
+
+
+
+/******************************************/
+/******************************************/
+/*  data 和 embedData 处理 **************/
+/******************************************/
+/******************************************/
+/**
+ * 在流程调用活动中。当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件脚本中，可以访问到embedData对象<br/>
+ * embedData对象就是被调用的子流程的业务数据，它是一个类似JSON的对象，您可以用访问JSON对象的方法访问embedData对象的所有数据。<br/>
+ * 如果您需要获取embedData的json文本，请使用embedData.toString()方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
+ * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end terminate
+ * <pre><code class='language-js'>
+ *  var embedStatus = this.workContext.getWork().embedCompleted;
+ *  if (embedStatus=="end"){
+ *      //被调用的子流程正常流转到了结束活动
+ *  }
+ *  if (embedStatus=="cancel"){
+ *      //被调用的子流程流转到了取消活动
+ *  }
+ *  if (embedStatus=="terminate"){
+ *      //被调用的子流程被终止了
+ *  }
+ * </code></pre>
+ * @o2range 流程配置-流程调用活动中，当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件中可用
+ * @module server.embedData
+ * @o2cn 调用活动的子流程业务数据
+ * @o2category server.process
+ * @o2ordernumber 205
+ * @example
+ * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前实例的业务数据，如下：
+ * var embedData = this.embedData;
+ */
+
+/**
+ * 在流程事件、流程路由事件、流程活动事件中通过this.data获取流程实例的业务数据。（内容管理无后台脚本）。<br/>
+ * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
+ * data对象基本上是一个JSON对象，您可以用访问JSON对象的方法访问data对象的所有数据。
+ * @module server.data
+ * @o2cn 流程数据
+ * @o2category server.process
+ * @o2ordernumber 205
+ * @example
+ * //您可以在表单或流程的各个嵌入脚本中，通过this来获取当前实例的业务数据，如下：
+ * var data = this.data;
+ * @borrows module:data#[property] as [property]
+ */
+
+const ArrayList = Java.type('java.util.ArrayList');
+const createProxy = function(target, j_data){
+    target.$Jdata ?? Object.defineProperty(target, '$Jdata', {
+        value: j_data
+    });
+    return new Proxy(target, {
+        get(target, property){
+            return (property!=='$Jdata' && (typeof target[property]==='object' || Array.isArray(target[property]))) ? createProxy(target[property], target.$Jdata[property]) : target[property];
+        },
+        set(target, property, value){
+            if (property==="length" && (target.$Jdata instanceof ArrayList)){
+                while (target.$Jdata.size()>value){
+                    target.$Jdata.remove(target.$Jdata.size()-1);
+                }
+            }else{
+                target.$Jdata[property] = value;
+            }
+            return Reflect.set(...arguments);
+        }
+    });
+}
+
+const _javaDataToJson = (javaData)=>{
+    try{
+        // const Gson = Java.type('com.google.gson.Gson');
+        // const gson = new Gson();
+        // return JSON.parse(gson.toJson(javaData));
+        return JSON.parse(javaData.toString());
+    }catch(e) {
+        return null;
+    }
+}
+
+let _data = null;
+const dataDescriptor = {
+    get(){
+        return _data ?? (()=>{
+            if (!globalThis.java_data) return null;
+            const data = _javaDataToJson(globalThis.java_data);
+            return _data = createProxy(data, globalThis.java_data);
+        })();
+    }
+}
+
+let _embedData = null;
+const embedDataDescriptor = {
+    get(){
+        return _embedData ?? (()=>{
+            if (!globalThis.java_embedData) return null;
+            const Gson = Java.type('com.google.gson.Gson');
+            const gson = new Gson();
+            const data = _javaDataToJson(globalThis.java_embedData);
+            return _embedData = createProxy(data, globalThis.java_embedData);
+        })();
+    }
+}
+
+
+/************************************************************/
+/*  person text直接注入，oauth配置和默认生成口令脚本中使用 *****/
+/************************************************************/
+
+/************************************************************/
+/*  value直接注入，视图显示值中使用 ***************************/
+/************************************************************/
 
 const _get = function(key, java_data){
     if (!globalThis[`o${key}`]) globalThis[`o${key}`] = JSON.parse(java_data);
     return globalThis[`o${key}`];
 }
 const o= {
-    entityManager: { configurable: true, get: function(){return null;} },
-    context: { configurable: true, get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getContext() : null)} },
-    applications: { configurable: true, get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getApplications() : null)} },
-    organization: { configurable: true, get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getOrganization() : null)} },
-    //service: { configurable: true, get: function(){return ((bind.java_resources) ? bind.java_resources.getWebservicesClient() : null)} },
+    entityManager: { get: function(){return null;} },
+    context: { get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getContext() : null)} },
+    applications: { get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getApplications() : null)} },
+    organization: { get: function(){return ((globalThis.java_resources) ? globalThis.java_resources.getOrganization() : null)} },
     /**
      * 获取当前用户对象。
      * @module server.currentPerson
@@ -3140,94 +4224,58 @@ const o= {
      * @o2syntax
      * var user = this.currentPerson;
      */
-    currentPerson: { configurable: true, get: function(){return (globalThis.java_effectivePerson) ? _get('currentPerson', globalThis.java_effectivePerson) : null;} },
-    effectivePerson: { configurable: true, get: function(){return (globalThis.java_effectivePerson) ? _get('effectivePerson', globalThis.java_effectivePerson) : null;} },
+    currentPerson: { get: function(){return (globalThis.java_effectivePerson) ? _get('currentPerson', globalThis.java_effectivePerson) : null;} },
+    effectivePerson: { get: function(){return (globalThis.java_effectivePerson) ? _get('effectivePerson', globalThis.java_effectivePerson) : null;} },
 
-    /**
-     * 用于数据中心查询语句的脚本中，可获取语句参数。json对象，在调用此语句的时候传入<br>
-     * @o2range 数据中心-查询配置-通过脚本创建查询语句
-     * @o2cn 数据中心查询语句参数
-     * @module server.service.parameters
-     * @o2category server.service
-     * @o2ordernumber 255
-     * @o2syntax
-     * var pars = this.parameters;
-     * @example
-     * <caption>
-     *     通过this.statement.execute调用一个名为“task”的查询配置，并传入parameters，代码如下：
-     *     <pre><code class='language-js'>//用一个名为“task”的查询配置，并传入parameters
-     * this.statement.execute({
-     *  "name": "task",
-     *  "mode" : "all",
-     *  "parameter" : {
-     *     "person" : "xxx@xxx@p",  //传入人员参数
-     *     "startTime" : (new Date("2020-01-01")) //传入时间参数
-     *  }
-     * }, function(json){
-     *  var count = json.count; //总数语句执行后返回的数字
-     *  var list = json.data; //查询语句后返回的数组
-     *   //......
-     * });
-     *     </code></pre>
-     *
-     *     在task查询配置的脚本中，parameters对象就可获取到执行查询时传入的parameters对象，以便于动态创建查询语句
-     * </caption>
-     * //动态生成查询指定用户，在指定时间之后的所有待办数据
-     * var user = this.parameters.person;
-     * var startTime = (new Date(this.parameters.startTime)).format("db");  //格式化为yyyy-mm-dd hh:mm:ss
-     * return "SELECT o FROM Task o WHERE o.person='"+user+"' AND o.startTime>{ts '"+startTime+"'}"
-     */
-    parameters: { configurable: true, get: function(){return ((globalThis.java_parameters) ? _get('parameters', globalThis.java_parameters) : null)} },
-    /**
-     * 调用接口时传入的请求消息体的文本内容。
-     * @o2range 服务管理-接口
-     * @module server.requestText
-     * @o2cn 传入的服务消息体文本
-     * @o2category server.service
-     * @o2ordernumber 250
-     * @o2syntax
-     * var text = this.requestText;
-     * @example
-     * var text = this.requestText; //传入的服务消息体文本
-     * var object = JSON.parse(text); //转成对象
-     */
-    requestText: { configurable: true, get: function(){return globalThis.java_requestText || null; } },
-    request: { configurable: true, get: function(){return globalThis.java_request || null; } },
-    resources: { configurable: true, get: function(){return (globalThis.java_resources || null)} },
-    customResponse: { configurable: true, get: function(){return (globalThis.java_customResponse || null)} },
-    message: { configurable: true, get: function(){return (globalThis.java_message) ? _get('message', globalThis.java_message) : null;} },
+    resources: { get: function(){return (globalThis.java_resources || null)} },
+    customResponse: { get: function(){return (globalThis.java_customResponse || null)} },
+    message: { get: function(){return (globalThis.java_message) ? _get('message', globalThis.java_message) : null;} },
 
-    // //========================================================================
-    // //将要导出的对象和方法绑定到 globalThis。（以后将通过 export 和 import 来引入）
-    // //========================================================================
-    // fetch: { configurable: true, enumerable: true, value: fetch },
-    // exec: { configurable: true, enumerable: true, value: exec },
-    // define: { configurable: true, enumerable: true, value: define },
-    // Action: { configurable: true, enumerable: true, value: Action },
-    // log: { configurable: true, enumerable: true, value: log },
-    Actions: { configurable: true, enumerable: true, value: Actions },
-    // print: { configurable: true, value: print },
-    org: { configurable: true, enumerable: true, value: org },
-    processActions: { configurable: true, enumerable: true, value: processActions },
-    cmsActions: { configurable: true, enumerable: true, value: cmsActions },
-    portalActions: { configurable: true, enumerable: true, value: portalActions },
-    serviceActions: { configurable: true, enumerable: true, value: serviceActions },
-    includedScripts: { configurable: true, enumerable: true, value: includedScripts },
-    // include: { configurable: true, enumerable: true, value: include },
-    // Dict: { configurable: true, enumerable: true, value: Dict },
-    // Table: { configurable: true, enumerable: true, value: Table },
-    statement: { configurable: true, enumerable: true, value: statement },
-    view: { configurable: true, enumerable: true, value: view },
-    service: { configurable: true, enumerable: true, value: service },
-    response: { configurable: true, enumerable: true, value: response }
+    //===========================================================================
+    //  将要导出的对象和方法绑定到 globalThis。（以后将通过 export 和 import 来引入）
+    //===========================================================================
+    fetch: { value: fetch },
+    exec: { value: exec },
+    define: { value: define },
+    Action: { value: Action },
+    log: { value: log },
+    Actions: { value: Actions },
+    print: { value: print },
+    org: { value: org },
+    processActions: { value: processActions },
+    cmsActions: { value: cmsActions },
+    portalActions: { value: portalActions },
+    serviceActions: { value: serviceActions },
+    includedScripts: { value: includedScripts },
+    include: { value: include },
+    Dict: { value: Dict },
+    Table: { value: Table },
+    statement: { value: statement },
+    view: { value: view },
+    service: { value: service },
+
+    response: responseDescriptor,
+    parameters: parametersDescriptor,
+    requestText: requestTextDescriptor,
+    request: requestDescriptor,
+
+    workContext: { value: workContext },
+    workContent: { value: workContext },
+    assignData: { value: assignData },
+    body: { value: body },
+    headers: { value: headers },
+    expire: { value: expire },
+
+    // @todo 需要包装为javascript对象
+    data: dataDescriptor,
+    embedData: embedDataDescriptor
+    // embedData: { value: globalThis.embedData }
 };
 
 Object.defineProperties(globalThis, o);
 
 /* 清除 engine */
 globalThis.engine = null;
-
-/* 将要导出的对象和方法bang */
 
 
 //=== java_resources: =============
@@ -3270,5 +4318,3 @@ globalThis.engine = null;
 //=== person: ========================================================
 //  只在系统配置中，默认用户密码设置脚本中使用，获取当前执行到的，即将生成密码的用户。 java对象
 //  getName()、getMobile()、getEmployee() 等获取个人信息的方法
-
-

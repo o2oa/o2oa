@@ -24,7 +24,7 @@
             "./o2web/source/x_component_process_Xform",
             "./o2web/source/x_component_cms_Xform",
             "./o2web/source/x_component_query_Query",
-            "./o2web/source/x_desktop/js/initialScriptText.js",
+//            "./o2web/source/x_desktop/js/initialScriptText.js",
 //            "./o2web/source/x_desktop/js/initialServiceScriptText.js",
             "./o2web/source/x_desktop/ssr/commonScript.js"
 
