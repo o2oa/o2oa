@@ -44,6 +44,7 @@ public class Person extends ConfigObject {
 	public static final Integer DEFAULT_TOKENEXPIREDMINUTES = 60 * 24 * 15;
 	public static final Boolean DEFAULT_TOKENCOOKIEHTTPONLY = true;
 	public static final Boolean DEFAULT_TOKENCOOKIESECURE = false;
+	public static final Boolean DEFAULT_FIRSTLOGINMODIFYPWD = false;
 
 	public static final String DEFAULT_PASSWORDREGEX = "((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{6,}$";
 	public static final String DEFAULT_PASSWORDREGEXHINT = "6位以上,包含数字和字母.";
@@ -60,6 +61,7 @@ public class Person extends ConfigObject {
 		this.codeLogin = DEFAULT_CODELOGIN;
 		this.bindLogin = DEFAULT_BINDLOGIN;
 		this.faceLogin = DEFAULT_FACELOGIN;
+		this.firstLoginModifyPwd = DEFAULT_FIRSTLOGINMODIFYPWD;
 		this.password = DEFAULT_PASSWORD;
 		this.passwordPeriod = DEFAULT_PASSWORDPERIOD;
 		this.register = REGISTER_TYPE_DISABLE;
@@ -92,6 +94,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("是否启用刷脸登录,默认值:false.")
 	private Boolean faceLogin;
+
+	@FieldDescribe("是否启用第一次登陆修改密码,默认值:false")
+	private Boolean firstLoginModifyPwd;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
 	private String password;
@@ -333,5 +338,13 @@ public class Person extends ConfigObject {
 
 	public void setTokenCookieSecure(Boolean tokenCookieSecure) {
 		this.tokenCookieSecure = tokenCookieSecure;
+	}
+
+	public Boolean getFirstLoginModifyPwd() {
+		return BooleanUtils.isTrue(this.firstLoginModifyPwd);
+	}
+
+	public void setFirstLoginModifyPwd(Boolean firstLoginModifyPwd) {
+		this.firstLoginModifyPwd = firstLoginModifyPwd;
 	}
 }

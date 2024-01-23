@@ -15,9 +15,9 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.enums.PersonStatusEnum;
 
-class ActionUnlock extends BaseAction {
+class ActionUnban extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUnlock.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUnban.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -33,13 +33,13 @@ class ActionUnlock extends BaseAction {
 
 			emc.beginTransaction(Person.class);
 			Person entityPerson = emc.find(person.getId(), Person.class);
-			entityPerson.setFailureCount(0);
-			entityPerson.setStatus(PersonStatusEnum.NORMAL.getValue());
-			entityPerson.setStatusDes("");
-			entityPerson.setLockExpireTime(null);
-			emc.check(entityPerson, CheckPersistType.all);
-			emc.commit();
-			CacheManager.notify(Person.class);
+			if(PersonStatusEnum.BAN.getValue().equals(entityPerson.getStatus())) {
+				entityPerson.setStatus(PersonStatusEnum.NORMAL.getValue());
+				entityPerson.setStatusDes("");
+				emc.check(entityPerson, CheckPersistType.all);
+				emc.commit();
+				CacheManager.notify(Person.class);
+			}
 
 			Wo wo = new Wo();
 			wo.setValue(true);

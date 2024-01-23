@@ -552,4 +552,22 @@ public class PersonAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
     }
 
+    @JaxrsMethodDescribe(value = "用户解禁.", action = ActionUnban.class)
+    @POST
+    @Path("unban/{flag}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void unbanPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("人员标识") @PathParam("flag") String flag) {
+        ActionResult<ActionUnban.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionUnban().execute(effectivePerson, flag);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getDefaultActionResultResponse(result));
+    }
+
 }
