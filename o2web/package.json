@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/huqi1980/o2oa_client_web#readme",
   "devDependencies": {
+    "@o2oa/tidy-jsdoc-o2": "latest",
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
     "gulp-cli": "^2.3.0",
@@ -35,10 +36,10 @@
     "gulp-ftp": "^1.1.0",
     "gulp-git": "^2.10.1",
     "gulp-if": "^2.0.2",
+    "gulp-o2oa-asset-rev": "^0.0.19",
     "gulp-rename": "^1.4.0",
     "gulp-sftp-up4": "^0.1.8",
     "gulp-shell": "^0.8.0",
-    "gulp-o2oa-asset-rev": "^0.0.19",
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
     "jasmine-core": "^3.6.0",
@@ -51,6 +52,21 @@
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
     "readline-sync": "^1.4.10",
-    "@o2oa/tidy-jsdoc-o2": "latest"
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.11",
+    "vue-template-compiler": "^2.7.16",
+    "web-vitals": "^3.5.1"
+  },
+  "dependencies": {
+    "@o2oa/component": "^1.1.7",
+    "@o2oa/oovm": "^2.1.59",
+    "@o2oa/oovm-scripts": "^1.0.13",
+    "@o2oa/ui": "^1.0.15",
+    "@o2oa/vue-cli-plugin-o2component": "^1.0.77",
+    "@o2oa/vue-cli-plugin-o2component-vue2": "^1.0.13",
+    "@vue/compiler-sfc": "^3.4.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1"
   }
 }

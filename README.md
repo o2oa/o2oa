@@ -1,196 +1,188 @@
-<p align="center">
-	<a target="_blank" href="https://github.com/o2oa/o2oa/blob/develop/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/o2oa/o2oa"></a>
-	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
-		<img src="https://img.shields.io/badge/JDK-11-green" />
-	</a>
-	<a target="_blank" href="https://gitee.com/o2oa/O2OA/stargazers">
-		<img src="https://gitee.com/o2oa/O2OA/badge/star.svg?theme=dark" alt='gitee star'/>
-	</a>
-	<a target="_blank" href="https://github.com/o2oa/o2oa/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/o2oa/o2oa?style=social"></a>
-</p>
+## 获取源码
 
+[O2OA](https://www.o2oa.net/)是全开源的系统，完整的源码可以免费从gitee或者codechina获取。仓库地址是：
 
-----------------------------------------------------------------------------
+gitee： [https://gitee.com/o2oa/O2OA.git](https://gitee.com/o2oa/O2OA.git)
 
-# O2OA企业应用开发平台 OpenSource OA Platform
+codechina: [https://codechina.csdn.net/O2OA/o2oa.git](https://codechina.csdn.net/O2OA/o2oa.git)
 
-​        O2OA企业应用开发平台是兰德纵横网络技术股份有限公司发布和维护的开源产品，是使用JavaEE技术栈，分布式架构设计的一款真正全代码开源的企业应用定制化开发平台。适用于企业OA、协同办公类信息化系统的建设和开发。
+### gitee仓库
 
-​        平台拥有流程管理、门户管理、信息管理、数据管理和服务管理五大核心能力。用户可以直接使用平台已有功能进行信息信息化建设，平台提供了完整的用户管理，权限管理，流程和信息管理体系，并且提供了大量的开发组件和开箱即用的应用，可以大幅度减化企业信息化建设成本和业务应用开发难度。
+我们打开gitee上的[O2OA](https://www.o2oa.net/)仓库，可以看到源码：（操作：浏览器打开项目仓库主页）
 
-![o2oa](https://static.oschina.net/uploads/space/2018/0918/200301_N9TG_3931542.png)
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350188071.png)
 
+（操作：展开分支）
 
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350477781.png)
 
+我们来介绍一下几个主要有的分支：
 
-# 官方网站:
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><span class="ne-text">develop</span></p></td><td><p class="ne-p"><span class="ne-text">这是主分支，也是我们的开发分支，它有最新的源码，每天都会有大量的提交，最新的功能也会在此分支上。但它没有经过详细的测试，可能会有比较多的bug，适合希望了解<a href="https://www.o2oa.net/">O2OA</a>最新更新和希望研究源码的用户，但不建议在生产环境使用它。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">master</span></p></td><td><p class="ne-p"><span class="ne-text">master分支是最新正式发布的O2OA稳定版源码，经过详细测试，编译后可在生产环境使用。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">develop_java8</span></p></td><td><p class="ne-p"><span class="ne-text">O2OA已经升级到java11版本，为了兼容希望坚持使用java8版本的用户，我们创建了此分支，它与develop分支的更新内容保持一致。如果希望O2OA功能保持最新，但又要使用java8的用户，可以使用此分支编译服务器。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">master_java8</span></p></td><td><p class="ne-p"><span class="ne-text">最后发布的java8稳定版，版本6.2.2。不再更新了，需要Java8版本的可以使用</span></p><p class="ne-p"><span class="ne-text">develop_java8分支。</span></p></td></tr></tbody></table>
 
-开源主页 : https://www.oschina.net/p/o2oa
+如果你需要历史版本的源码，可以切换到对应的tag。（打开标签）
 
-官方网站 : http://www.o2oa.net
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350185989.png)
 
-官方论坛 : https://www.o2oa.net/forum/
+### 克隆源码
 
+建议您先Fork源码到您自己的空间。
 
-# 关于正式环境数据安全相关的建议:
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350157185.png)
 
-O2OA自带的H2数据库是一个内嵌式的内存数据库，适合用于开发环境、功能演示环境，并不适合用作正式环境。
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350323272.png)
 
-如果作为正式环境使用，建议您使用拥有更高性能，更加稳定的商用级别数据库。如Mysql8，Oracle12C，SQLServer 2012等。
+然后进入自己fork的仓库，复制克隆地址:
 
-另外，O2OA提供数据定期备份和恢复的能力，建议您开启正式环境的数据定期备份的功能，以确保数据库异常时可以进行数据恢复。
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350177069.png)
 
+首先我们确保我们自己的机器上安装了git工具，如果没有的话：
 
+windows系统可以到下面的地址下载：[https://git-scm.com/download/win](https://git-scm.com/download/win)
 
-# 支持操作系统：
+centos使用命令：
 
-```shell
-Windows 64Bit, Linux 64Bit[CentOS, RedHat, Ubuntu等], MacOS, AIX, Raspberrypi(树莓派), ARM_Linux, MIPS_Linux, UOS,麒麟等国产操作系统
-```
+yum install -y git
 
+Ubuntu使用命令：
 
+sudo apt-get install git
 
-# 支持数据库：
+然后我们进入自己机器需要获取源码的目录，启动终端或使用git bash，输入以下命令clone源码：
 
-O2OA通过openjpa默认支持以下数据库:
+git clone https://xxxxx
 
-| Database Name                     | Database Version            | JDBC Driver Name                  | JDBC Driver Version |
-| --------------------------------- | --------------------------- | --------------------------------- | ------------------- |
-| Apache Derby                      | 10.1.2.1                    | Apache Derby Embedded JDBC Driver | 10.1.2.1            |
-| Borland Interbase                 | 7.1.0.202                   | Interclient                       | 4.5.1               |
-| Borland JDataStore                | 6.0                         | Borland JDataStore                | 6.0                 |
-| DB2                               | 8.1                         | IBM DB2 JDBC Universal Driver     | 1.0.581             |
-| Empress                           | 8.62                        | Empress Category 2 JDBC Driver    | 8.62                |
-| Firebird                          | 1.5                         | JayBird JCA/JDBC driver           | 1.0.1               |
-| H2 Database Engine                | 1.0                         | H2                                | 1.0                 |
-| Hypersonic Database Engine        | 1.8.0                       | Hypersonic                        | 1.8.0               |
-| Informix Dynamic Server           | 9.30.UC10                   | Informix JDBC driver              | 2.21.JC2            |
-| InterSystems Cache                | 5.0                         | Cache JDBC Driver                 | 5.0                 |
-| Microsoft Access                  | 9.0 (a.k.a. "2000")         | DataDirect SequeLink              | 5.4.0038            |
-| Microsoft SQL Server              | 9.00.1399 (SQL Server 2005) | SQLServer                         | 1.0.809.102         |
-| Microsoft Visual FoxPro           | 7.0                         | DataDirect SequeLink              | 5.4.0038            |
-| MySQL                             | 3.23.43-log                 | MySQL Driver                      | 3.0.14              |
-| MySQL                             | 5.0.26                      | MySQL Driver                      | 3.0.14              |
-| Oracle                            | 8.1,9.2,10.1                | Oracle JDBC driver                | 10.2.0.1.0          |
-| Pointbase                         | 4.4                         | Pointbase JDBC driver             | 4.4 (4.4)           |
-| PostgreSQL                        | 7.2.1                       | PostgreSQL Native Driver          | 8.1                 |
-| PostgreSQL                        | 8.1.5                       | PostgreSQL Native Driver          | 8.1                 |
-| Sybase Adaptive Server Enterprise | 12.5                        | jConnect                          | 5.5 (5.5)           |
+红色部分替换为你自己Fork的仓库地址。如：
 
-主流数据库都包含在内.
+git clone https://gitee.com/o2oa/O2OA.git
 
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071350201220.png)
 
+clone完成后，就可以看到O2OA的源码目录了。
 
-# 国产数据库支持
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071351406718.png)
 
-对与国产数据库的支持是对不同的数据库编写不同的适配方言来实现的，也就是通过定制DBDictionary来实现对接。
+## 编译源码
 
-目前我们已经成功适配的国产数据库如下：
+获取了源码后，我们就可以将源码编译为可运行的O2OA服务器了。
 
-| 数据库                 | 方言                                                   |
-| ---------------------- | ------------------------------------------------------ |
-| 达梦                   | com.x.base.core.openjpa.jdbc.sql.DMDictionary          |
-| 南大通用8s             | com.x.base.core.openjpa.jdbc.sql.GBaseDictionary       |
-| 南大通用华库(mysql5)   | com.x.base.core.openjpa.jdbc.sql.GBaseMySQL5Dictionary |
-| 南大通用华库(mysql8)   | com.x.base.core.openjpa.jdbc.sql.GBaseMySQLDictionary  |
-| 人大金仓V7             | com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary    |
-| 人大金仓V8             | com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary   |
-| 人大金仓V8R6           | com.x.base.core.openjpa.jdbc.sql.Kingbase8R6Dictionary |
-| 神通数据库             | com.x.base.core.openjpa.jdbc.sql.OscarDictionary       |
-| 各种PostgreSQL改造版本 | org.apache.openjpa.jdbc.sql.PostgresDictionary         |
+### 准备编译环境
 
+在编译源码之前，我们需要准备编译环境，O2OA编译需要以下环境：
 
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><span class="ne-text">Node.js</span></p></td><td><p class="ne-p"><span class="ne-text">编译脚本运行环境，14.0.0以上版本</span></p><p class="ne-p"><span class="ne-text"><span>（建议使用<span>Node.js&nbsp;v16 LTS, v17及</span>以上版本的可能会报错）</span></span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">jdk</span></p></td><td><p class="ne-p"><span class="ne-text">根据您要编译的分支，决定使用JDK8 或者是<span> JDK11（推荐）</span></span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">maven</span></p></td><td><p class="ne-p"><span class="ne-text">3.6及以上版本</span></p></td></tr></tbody></table>
 
-# 平台使用手册：
+上述环境安装，在此就不赘述了。
 
-https://www.o2oa.net/handbook.html
+### 检查当前分支是否是master分支
 
+环境准备好后，我们打开终端或windows的命令行提示符，进入O2OA源码目录。默认情况先，现在是主分支，就是master分支，通过以下git命令检查分支
 
+git status
 
-# 源码编译教程:
+![image.png](https://www.o2oa.net/cms/static/upload/image/20230816/1692170496624499.png "1692170496624499.png")
 
-https://www.o2oa.net/cms/source/335.html
+### 编译
 
+切换到您需要的分支后，需要先使用npm安装编译脚本所需要的依赖包，使用以下命令安装：（安装过程可能需要几分钟）
 
+npm install
 
-# 服务器部署教程：
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071351108873.png)
 
-Windows环境：https://www.o2oa.net/cms/serverdeployment/467.html
+如果没有安装过gulp和jsdoc，需要先执行以下命令安装：
 
-Linux环境：https://www.o2oa.net/cms/serverdeployment/468.html
+npm install -g gulp-cli
+npm install -g jsdoc
 
+然后就可以使用以下命令编译了：
 
+npm run build\_ci
 
-# How to Start
+![](https://www.o2oa.net/cms/static/upload/image/20220729/1659071351185604.png)
 
-## windows
+整个编译过程大概需要30分钟。编译完成后，会在目录下生成target/o2server目录，这就是可运行的服务器目录。可以将它拷贝到服务器，运行相应start\_xxx命令就可以运行O2OA了。这个等会编译完成后，我们再看。
 
-1.下载o2server. yyyyMMddHHmmss_ windows.zip程序包。
+### 编译错误解决
 
-2.解压下载后的压缩包到任意目录。
+如果编译的过程中出现下图错误，可通过修改maven源来解决
 
-3.确认开通服务器的80、20020、20030端口。
+![b4320ee7d6ad5795ffcb363b88af7332.JPG](https://www.o2oa.net/cms/static/upload/image/20230816/1692174034167244.jpg "1692174034167244.jpg")
 
-4.打开o2server文件夹,选择start_ windows.bat双击打开。
+### 修改maven
 
-5.启动服务,等待相关服务自动完成。
+### ![38e9e73236402200f49d59b7ca23bb64.JPG](https://www.o2oa.net/cms/static/upload/image/20230816/1692174100150826.jpg "1692174100150826.jpg")
 
-6.自动完成后打开浏览器访问http://127.0.0.1。
+<mirror>
+      <id>alimaven</id>
+      <name>aliyun maven</name>
+      <url>https://maven.aliyun.com/repository/central</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
 
-7.输入用户名xadmin密码o2oa@2022登陆系统。
+优化编译
 
-## linux
+编译特定操作系统版本的O2OA
 
-1.下载o2server. yyyyMMddHHmmss_linux.zip程序包。
+如果我们要编译指定操作系统版本的O2OA，可以使用以下命令：
 
-2.确认开通服务器的80、20020、20030端口。
+**方法一：没有下载JVM和依赖包commons**
 
-3."unzip o2server. syyyMMddHHmmss linux.zip" 解压程序包。
+如果您没有手工下载JVM和依赖包commons，也没有关系，我们可以使用 “build\_ci:xxx” 命令：
 
-4."cd o2server. yyyMMddHHmmss_ linux" 进入解压目录。
+推荐是使用此方式编译，这样可以保证编译程序找到合适的commons版本
 
-5."cd o2server"进入程序目录。
+#编译windows版本
+npm run build\_ci:win
 
-6."./start. linux.sh" 回车启动服务器控制台。
+#编译linux x86版本
+npm run build\_ci:linux
+                
+#编译aix版本
+npm run build\_ci:aix
 
-7.启动服务,等待相关服务自动完成。
+#编译linux arm版本
+npm run build\_ci:arm
 
-8.自动完成后打开浏览器访问http://127.0.0.1。
+#编译windows版本
+npm run build\_ci:macos
 
-9.输入用户名xadmin密码o2oa@2022登陆系统。
+#编译linux mips版本
+npm run build\_ci:mips
 
+#编译树莓派版本
+npm run build\_ci:rpi
 
+编译脚本功能清单
 
-#### 若开发者学习研究O2OA，企业在O2OA应用开发平台上建设内部使用的办公系统，不闭源分发版本，不参与商业项目的使用行为不会构成侵权风险。
+编译脚本的功能清单如下：
 
-#### 如果需要进行转售，闭源分发或者在商业项目中作为项目的一部分使用，请主动联系兰德网络公司购买商用许可。
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><strong>命令</strong></p></td><td><p class="ne-p"><strong>运行</strong></p></td><td><p class="ne-p"><strong>说明</strong></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build_ci</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build_ci</span></p></td><td><p class="ne-p"><span class="ne-text">编译源码，自动下载JVM和依赖包，并构建可以运行在所有支持的操作系统的服务器。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build_ci:xxx</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build_ci:win</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:linux</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:aix</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:arm</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:macos</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:mips</span></p><p class="ne-p"><span class="ne-text">npm run build_ci:rpi</span></p></td><td><p class="ne-p"><span class="ne-text">编译源码，自动下载指定操作系统环境的JVM和依赖包，并构建可以运行在指定操作系统的服务器。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build</span></p></td><td><p class="ne-p"><span class="ne-text">预先下载JVM和依赖包，并放到o2server目录，</span></p><p class="ne-p"><span class="ne-text">编译源码，构建可以运行在所有支持的操作系统的服务器。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build:xxx</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build:win</span></p><p class="ne-p"><span class="ne-text">npm run build:linux</span></p><p class="ne-p"><span class="ne-text">npm run build:aix</span></p><p class="ne-p"><span class="ne-text">npm run build:arm</span></p><p class="ne-p"><span class="ne-text">npm run build:macos</span></p><p class="ne-p"><span class="ne-text">npm run build:mips</span></p><p class="ne-p"><span class="ne-text">npm run build:rpi</span></p></td><td><p class="ne-p"><span class="ne-text">预先下载JVM和依赖包，并放到o2server目录，</span></p><p class="ne-p"><span class="ne-text">编译源码，构建可以运行在指定操作系统的服务器。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build_server</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build_server</span></p></td><td><p class="ne-p"><span class="ne-text">单独编译O2OA服务端</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build_web</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build_web</span></p></td><td><p class="ne-p"><span class="ne-text">单独编译O2OA Web端</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build_api</span></p></td><td><p class="ne-p"><span class="ne-text">npm run build_api</span></p></td><td><p class="ne-p"><span class="ne-text">生成O2OA脚本API文档</span></p></td></tr></tbody></table>
 
-商用许可说明：https://www.o2oa.net/license.html
+## 源码文件结构解析
 
-技术支持服务：https://www.o2oa.net/support.html
+趁服务器编译的过程，我们简单介绍一下源码文件结构。（打开gitee项目主页）
 
+更目录下主要文件和目录：
 
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><span class="ne-text">o2android/</span></p></td><td><p class="ne-p"><span class="ne-text">android端App源码，已经迁移到</span><span class="ne-text"> </span><a href="https://gitee.com/o2oa/o2oa-android" target="_blank" class="ne-link"><span class="ne-text">https://gitee.com/o2oa/o2oa-android</span></a><span class="ne-text"> 仓库中</span></p><p class="ne-p"><span class="ne-text">将在后续App编译课程中详细介绍</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">o2ios/</span></p></td><td><p class="ne-p"><span class="ne-text">ios端App源码，已经迁移到</span><span class="ne-text"> </span><a href="https://gitee.com/o2oa/o2oa-ios" target="_blank" class="ne-link"><span class="ne-text">https://gitee.com/o2oa/o2oa-ios</span></a><span class="ne-text"> 仓库中</span></p><p class="ne-p"><span class="ne-text">将在后续App编译课程中详细介绍</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">o2server/</span></p></td><td><p class="ne-p"><span class="ne-text">服务端源码目录</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">o2web/</span></p></td><td><p class="ne-p"><span class="ne-text">Web端源码目录</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">Jenkins*</span></p></td><td><p class="ne-p"><span class="ne-text">Jenkins流水线文件，我们在持续发布流程中的流水线文件，</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">build.xml</span></p></td><td><p class="ne-p"><span class="ne-text">maven打包文件</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">gulpfile.js</span></p></td><td><p class="ne-p"><span class="ne-text">打包脚本文件</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">...</span></p></td><td><p class="ne-p"><span class="ne-text">略</span></p></td></tr></tbody></table>
 
-# 协议
+### o2web目录结构说明
 
-[AGPL-3.0 开源协议。](./LICENSE)
+前端的源码都放置在o2web目录，其中代码部分都在o2web/source/目录下，其他一些是相关的配置和打包脚本文件，所以我们简单介绍一下o2web/source/目录的内容
 
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><span class="ne-text">o2_core/</span></p></td><td><p class="ne-p"><span class="ne-text">O2OA前端的平台的核心代码，如一些用户认证相关，平台框架相关，服务请求相关的脚本代码。</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">o2_lib/</span></p></td><td><p class="ne-p"><span class="ne-text">O2OA前端会引用到，或者可能会引用到的第三方框架或功能组件，如vue、mootools、ckeditor、echarts等</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">x_component_xxxxx</span></p></td><td><p class="ne-p"><span class="ne-text">每个x_component开头的目录就是一个O2OA平台的一个应用，如：</span></p><p class="ne-p"><span class="ne-text">x_component_Org-是组织管理应用；</span></p><p class="ne-p"><span class="ne-text">x_component_portal_Portal - 是展现门户的应用；</span></p><p class="ne-p"><span class="ne-text">x_component_process_TaskCenter - 是待办中心应用；</span></p><p class="ne-p"><span class="ne-text">x_component_Meeting - 是会议管理应用；</span></p><p class="ne-p"><span class="ne-text">……</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">o2_desktop</span></p></td><td><p class="ne-p"><span class="ne-text">主要放置各种html文件，以及载入前端应用的loader脚本代码</span></p></td></tr></tbody></table>
 
+### o2server目录结构说明
 
-# 关于
+<table class="ne-table"><tbody><tr class="firstRow"><td><p class="ne-p"><span class="ne-text">configSample</span><span class="ne-text">/</span></p></td><td><p class="ne-p"><span class="ne-text">存放</span><span class="ne-text">config</span><span class="ne-text">的配置样例</span><span class="ne-text">,</span><span class="ne-text">在编译过程中会根据注解自动生成默认配置文件</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">localSample</span><span class="ne-text">/</span></p></td><td><p class="ne-p"><span class="ne-text">存放</span><span class="ne-text">local</span><span class="ne-text">目录的配置文件</span><span class="ne-text">,</span><span class="ne-text">目前只有节点标识文件</span><span class="ne-text">node.cfg</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">x_console</span><span class="ne-text">/</span></p></td><td><p class="ne-p"><span class="ne-text">目录存放的是启动的主程序</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">x_*</span><span class="ne-text">_</span><span class="ne-text">core_entity</span><span class="ne-text">/</span></p></td><td><p class="ne-p"><span class="ne-text">实体类项目</span><span class="ne-text">.</span><span class="ne-text">编译后打包成</span><span class="ne-text">jar.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">x_*</span><span class="ne-text">_</span><span class="ne-text">assemble_control</span></p></td><td><p class="ne-p"><span class="ne-text">业务装配模块</span><span class="ne-text">,</span><span class="ne-text">最终向前端提供业务服务</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">x_</span><span class="ne-text">*_</span><span class="ne-text">service_*/</span></p></td><td><p class="ne-p"><span class="ne-text">后台服务模块</span><span class="ne-text">,</span><span class="ne-text">仅对其他模块提供服务</span><span class="ne-text">,</span><span class="ne-text">不向前端开放</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">console_*.sh</span></p></td><td><p class="ne-p"><span class="ne-text">控制台进入脚本</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">restart_*.sh</span></p></td><td><p class="ne-p"><span class="ne-text">服务器重启脚本</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">service_windows.bat</span></p></td><td><p class="ne-p"><span class="ne-text">将服务器作为</span><span class="ne-text">windows</span><span class="ne-text">服务的生成脚本</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">start_*.sh</span></p></td><td><p class="ne-p"><span class="ne-text"></span><span class="ne-text">服务器启动脚本</span><span class="ne-text">.</span></p></td></tr><tr><td><p class="ne-p"><span class="ne-text">stop_*.sh</span></p></td><td><p class="ne-p"><span class="ne-text">服务器停止脚本</span><span class="ne-text">.</span></p></td></tr></tbody></table>
 
-[![img](https://www.o2oa.net/wimg/common/logo_all@1.5x.png)](./assets/O2OA-logo.jpg)
+此时服务器应该编译打包完成，打开源码的target/o2server目录展示，通过命令可以启动服务器：
 
-浙江兰德纵横网络技术股份有限 公司成立于1999年，是浙江省高新技术企业、浙江省信息产业厅认定的软件企业、浙江省信息产业重点企业、浙江省软件业五强企业， 总部拥有5300多平方米的办公场所，员工总数超过600人，在北京、上海、深圳、天津、南京、合肥、郑州、重庆、沈阳、长春、哈尔滨、呼和浩特、济南、南昌等省会城市设立办事处， 服务网络覆盖中国及东南亚部分国家和地区。公司已通过ISO9001：2008国际质量体系认证，并取得了国家系统集成三级资质认证和CMI三级认证的证书。
+windows系统运行：start\_windows.bat
 
-兰德网络是信息技术应用与服务提供商，为客户的计算机信息系统、企业级通信系统的建设提供解决方案和专业化服务。 业务包括：项目咨询、方案设计、应用系统开发、企业信息系统等服务。
+x86的linux系统运行： start\_linux.sh
 
-兰德网络在电信运营企业中拥有良好的品牌形象，我们的通信软件系列产品已广泛应用于中国电信、中国移动、中国联通和中国网通等广大电信运营商的通信系统。 兰德网络已成为中国无线信息服务产业中优秀的商业机构及系统提供商代表，并将成为信息产业、互联网和数据通信服务产业中杰出的系统与服务提供商代表。
+arm的linux系统运行： start\_arm.sh
 
-面向未来，兰德网络的愿景是“致力于更加美好的协作”。我们相信人类的协作一定会有更加美好的图景，等待我们去探索和描绘！
-
-
-
-O2OA（翱途）开发平台是由 **浙江兰德纵横网路技术股份有限公司** 建立和维护的。O2OA（翱途）的名字和标志是属于 **浙江兰德纵横网路技术股份有限公司** 的注册商标。
-
-我们 ❤️ 开源软件！看一下[我们的其他开源项目](https://github.com/o2oa)，瞅一眼[我们的博客](https://my.oschina.net/o2oa)。
+等等。

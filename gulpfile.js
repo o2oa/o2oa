@@ -42,7 +42,7 @@ var git = require('gulp-git');
 //     "windows": "/build/windows.tar.gz"
 // };
 
-var supportedLanguage = ["zh-cn", "en"];
+var supportedLanguage = ["zh-cn", "en", "es","la"];
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";

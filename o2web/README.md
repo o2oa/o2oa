@@ -16,6 +16,8 @@ O2平台Web端应用，它将会随o2server一起编译。您也可以单独编�
 
 先安装npm环境
 
+    $ npm install '@o2oa/oovm-scripts' '@o2oa/vue-cli-plugin-o2component' '@o2oa/vue-cli-plugin-o2component-vue2'
+    $ npm install '@o2oa/ui' "@o2oa/oovm" '@o2oa/component'
     $ npm install
     $ npm i -g gulp-cli
    

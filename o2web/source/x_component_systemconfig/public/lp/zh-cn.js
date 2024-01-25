@@ -74,8 +74,9 @@ o2.xApplication.systemconfig.LP = {
         "languageInfo": "设置服务端语言环境",
         "languageValues": {
             "zh-CN": "简体中文",
-            "en": "英文",
-			"es": "西班牙语"
+            "en": "English",
+            "es": "español",
+            "la": "ພາສາລາວ"
         },
 
         "running": "运行中",

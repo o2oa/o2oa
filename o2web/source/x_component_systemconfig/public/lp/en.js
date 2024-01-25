@@ -74,7 +74,8 @@ o2.xApplication.systemconfig.LP = {
         "languageValues": {
             "zh-CN": "简体中文",
             "en": "English",
-			"es": "Spanish"
+            "es": "español",
+            "la": "ພາສາລາວ"
         },
 
         "running": "Running",

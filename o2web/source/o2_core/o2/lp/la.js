@@ -1,0 +1,517 @@
+o2.LP = window.LP || {
+	"name": "ຊື່",
+	"description": "ລາຍລະອຽດ",
+	"searchKey": "ຄົ້ນຫາ",
+	"desktop_style": "ຫນ້າຈໍ",
+	"flat_style": "flat style",
+	"cmsName" : "ເນື້ອໃນ",
+	"processName" : "ຂະບວນການ",
+	"portalName" : "ປະຕູ",
+	"serviceName" : "ການບໍລິການ"
+};
+
+o2.LP.process = {
+	"unnamed": "ບໍ່ມີຊືື່",
+	"unknow": "ບໍ່ຮູ້",
+	"processConfig": "ການກຳນົດຄ່າຂະບວນການ",
+	"formConfig": "ການກຳນົດຄ່າແບບຟອມ",
+
+	"createCategory": "ສ້າງປະເພດ",
+	"searchCategory": "ຄົ້ນຫາປະເພດ",
+	"noCategoryNotice": "ບໍ່ມີປະເພດຂະບວນການ ທ່ານສາມາດກົດທີ່ນີ້ເພື່ອສ້າງປະເພດຂະບວນການ.",
+	"noProcessNoticeNode": "ບໍ່ມີຂະບວນການ ທ່ານສາມາດກົດທີ່ນີ້ເພື່ອສ້າງຂະບວນການໄດ້",
+
+	"activity": "ກິດຈະກຳ",
+	"route": "ເສັ້ນທາງ",
+	"property": "ຄຸນສົມບັດ",
+	"showJson": "ເບິ່ງ JSON",
+	"unrealized": "ບໍ່ເປັນຄວາມຈິງ",
+	"tools": "ເຄື່ອງມື",
+	"repetitions": "ຊື່ຄຸນສົມບັດຊ້ຳກັນ",
+	"repetitionsValue": "ລາຍການເນື້ອຫາທີ່ຊ້ຳກັນ",
+	"repetitionsEvent": "ຊື່ເຫດການຊ້ຳ",
+	"repetitionsId": "ຕົວລະບຸອົງປະກອບທີ່ຊ້ຳກັນ",
+	"repetitionsOrUnvalid": "ຊື່ຊັບສິນຊ້ຳກັນ ຫຼື ບໍ່ຖຶກຕ້ອງ",
+	"notNullId": "ຕົວລະບຸອົງປະກອບບໍ່ສາມາດເປັນຄ່າວ່າງປາວໄດ້",
+	"editCategory": "ແກ້ໄຂປະເພດ",
+	"createProcess": "ສ້າງຂະບວນການ",
+	"deleteCategory": "ລົບປະເພດ",
+	"deleteProcess": "ລົບຂະບວນການ",
+	"editProcess": "ແກ້ໄຂຂະບວນການ",
+	"createForm": "ສ້າງແບບຟອມ",
+	"deleteForm": "ລົບແບບຟອມ",
+	"editForm": "ແກ້ໄຂແບບຟອມ",
+
+	"menu": {
+		"newRoute": "ສ້າງເສົັ້ນທາງ",
+		"newActivity": "ສ້າງກິດຈະກຳ",
+		"newActivityType": {
+			"manual": "ກິດຈະກຳຄູ່",
+			"condition": "ກິດຈະກຳເງື່ອນໄຂ",
+			"auto": "ກິດຈະກຳ ອັດຕະໂນມັດ",
+			"split": "ກິດຈະກຳ ແຍກ",
+			"merge": "ກິດຈະກຳ ຮ່ວມ",
+			"embed": "ກິດຈະກຳ ຝັງ",
+			"invoke": "ກິດຈະກຳ ຮຽກຮ້ອງ",
+			"begin": "ເລີ່ມ ກິດຈະກຳ",
+			"end": "ສິ້ນສຸດ ກິດຈະກຳ"
+		},
+
+		"copyActivity": "ສຳເນົາ ກິດຈະກຳ",
+
+		"deleteActivity": "ລົບ ການເຄື່ອນໄຫວ",
+		"deleteRoute": "ລົບ ເສັ້ນທາງ",
+
+		"saveProcess": "ບັນທຶກ ຂະບວນການ",
+		"saveProcessNew": "ບັນທຶກເປັນຂະບວນການໃໝ່",
+		"checkProcess": "ກວດສອບ ຂະບວນການ",
+		"exportProcess": "ຂະບວນການ ສົ່ງອອກ",
+		"printProcess": "ຂະບວນການພິມ",
+
+		"showGrid": "ສະແດງຕາຂ່າຍໄຟຟ້າ",
+		"hideGrid": "ຊອ່ນ ຕາຂ່າຍໄຟຟ້າ"
+	},
+	"notice": {
+		"save_success": "ບັນທຶກຂະບວນການສຳເລັດແລ້ວ!",
+		"deleteForm_success": "ລົບແບບຟອມແລ້ວ!",
+		"deleteProcess_success": "ລົບຂະບວນການ!",
+"one_begin": "ສາມາດມີກິດຈະກຳ ເລີ່ມຕົ້ນອີກເທື່ອຫນຶ່ງຕໍ່ຂະບວນການ!",
+	"deleteRoute": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບເສັ້ນທາງທີ່ເລື່ອກ?",
+	"deleteRouteTitle": "ລົບການຢືນຢັນເສັ້ນທາງ",
+	"deleteActivityTitle": "ລົບການຢືນຢັນການເຄື່ອນໄຫວ",
+	"deleteActivity": "ການລົບການເຄື່ອນໄຫວຈະເປັນການລົບທຸກເສັ້ນທາງທີ່ກ່ຽວຂ້ອງກັບການເຄື່ອນໄຫວນີ້, ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບການເຄື່ອນໄຫວທີ່ເລືອກï¼Ÿ",
+	"deleteDecisionTitle": "ລົບການຢືນຢັນການຕັດສິນໃຈ",
+	"deleteDecision": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບການຕັດສິນໃຈທີ່ເລືອກ?",
+	"deleteScriptTitle": "ລົບການຢືນຢັນເນື້ອໃນ",
+	"deleteScript": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບເນື້ຶໃນທີ່ເລືອກ?",
+	"deleteElementTitle": "ລົບການຢືນຢັນອົງປະກອບແບບຟອມ",
+	"deleteElement": "ທ່ານແນ່ໃຈບໍ່ວ່າລົບອົງປະກອບປັດຈຸບັນ ແລະອົງປະກອບລູກຂອງມັນ?",
+	"deleteEventTitle": "ລົບການຢືນຢັນເຫດການ",
+	"deleteEvent": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບເຫດການທີ່ເລືອກ?",
+
+	"deleteActionTitle": "ລົບການຢືນຢັນການດໍາເນີນງານ",
+	"deleteAction": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບຄຳສັ່ງທີ່ເລືອກ?",
+
+	"deleteRowTitle": "ລົບການຢືນຢັນແຖວຕາຕະລາງ",
+	"deleteRow": "ລົບແຖວປັດຈຸບັນແມ່ນແຖວທີ່ຖືກລົບເນື້ອຫາທັງໝົດໃນຕາຕະລາງ, ທ່ານແນ່ໃຈບໍ່ວ່າລົບແຖວທີ່ເລືອກໃນປັດຈຸບັນ?",
+	"deleteColTitle": "ລົບການຢືນຢັນຖັນຕາຕະລາງ",
+	"deleteCol": "ລົບຖັນປັດຈຸບັນແມ່ນຖັນຖືກລົບເນື້ອຫາທັງໝົດໃນຕາຕະລາງ, ທ່ານແນ່ໃຈບໍ່ວ່າລົບຖັນທີ່ເລືອກໃນປັດຈຸບັນ?",
+
+	"deleteProcessTitle": "ລົບການຢືນຢັນຂະບວນການ",
+	"deleteProcess": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບຂະບວນການທີ່ເລືອກ?",
+
+	"deleteFormTitle": "ລົບການຢືນຢັນແບບຟອມ",
+	"deleteForm": "ທ່ານແນ່ໃຈວ່າຕ້ອງການລົບແບບຟອມທີ່ເລືອກ?",
+
+	"deleteTreeNodeTitle": "ລົບການຢືນຢັນບັນທຶກຂໍ້ມູນ",
+	"deleteTreeNode": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບບັນທຶກຂໍ້ມູນທີ່ເລືອກ?",
+
+	"inputScriptName": "ກະລຸນາໃສ່ຊື່ຂອງເນື້ອໃນ!",
+	"inputCategoryName": "ກະລຸນາໃສ່ຊື່ປະເພດຂອງເນື້ອໃນ!"
+},
+"button": {
+	"ok": "ຕົກລົງ",
+		"cancel": "ຍົກເລີກ",
+		"reset": "ກັບຄືນ"
+},
+"formAction": {
+	"insertRow": "ໃສ່ແຖວ",
+		"insertCol": "ໃສ່ຖັນ",
+		"deleteRow": "ລົບແຖວ",
+		"deleteCol": "ລົບຖັນ",
+		"mergerCell": "ລວມຕາຕະລາງ",
+		"splitCell": "ແບ່ງຕາຕະລາງ",
+		"move": "ຍ້າຍ",
+		"copy": "ກອ໋ບປີ້",
+		"delete": "ລົບ",
+		"add": "ເພີ່ມ",
+		"script": "ເນື້ອໃນ",
+		"clickScript": "ກົດເນື້ອໃນເຫດການ",
+		"defaultNode": "ເລີ່ມຕົ້ນບັນທຶກ"
+}
+};
+o2.LP.desktop = {
+	"homepage": "ຫນ້າທໍາອິດ",
+	"taskCenter": "ສູນວຽກ",
+	"info": "ຂໍ້ມູນ",
+	"calendar": "ປະຕິທິນ",
+	"profile": "ປະຫວັດຫຍໍ້",
+	"loadding": "ກຳລັງໂຫຼດລະບົບ, ກະລຸນາລໍຖ້າ......",
+	"lowBrowser": " ເວີຊັນເບົາເຊີຂອງທ່ານຕໍ່າເກີນໄປ ບໍ່ຮັບຮອງ IE8 ແລະເວີຊັນຕໍ່ໄປນີ້",
+	"upgradeBrowser": "ກະລຸນາອັບເດດເບົາເຊີຂອງທ່ານï¼š",
+
+	"menuAction": "ເມນູ",
+	"configAction": "ຕັ້ງຄ່າສະຖານີເຮັດວຽກຂອງທ່ານ",
+	"userMenu": "ຕົວເລືອກຜູ້ໃຊ້",
+	"userChat": "ການສື່ສານອອນໄລນ໌",
+	"styleAction": "ສະຫຼັບຮູບແບບສີສັນ",
+	"showDesktop": "ສະແດງເທິງໜ້າຈໍ",
+	"showMessage": "ຂໍ້ຄວາມ",
+	"logout": "ອອກຈາກລະບົບ",
+	"safeLogout": "ອອກຈາກລະບົບທີ່ປອດໄພ",
+	"safeLogoutTitle": "ການຢືນຢັນການເຂົ້າສູ່ລະບົບທີ່ປອດໄພ",
+	"safeLogoutMessage": "ການເຂົ້າສູ່ລະບົບທີ່ປອດໄພຈະອອກຈາກສະຖານະການເຂົ້າສູ່ລະບົບຂອງທ່ານໃນທຸກອຸປະກອນ, ລວມທັງເຄື່ອງໃຊ້ມືຖືແລະເວັບເບົາເຊີອື່ນໆ. ທ່ານແນ່ໃຈບໍ່ວ່າທ່ານຈະອອກຈາກລະບົບຢ່າງປອດໄພ?",
+	"userConfig": "ຕັ້ງຄ່າ",
+	"application": "ອົງປະກອບ",
+	"widget": "ຄວາມກວ້າງ",
+	"process": "ຂະບວນການ",
+	"nosign": "ແກ້ໄຂລາຍເຊັນຂອງເຈົ້າ",
+	"searchUser": "ຊອກຫາຊື່ຜູ້ໃຊ້",
+	"say": "ເວົ້າ",
+	"clearMessage": "ລ້າງຂໍ້ຄວາມ",
+	"returnZoom": "ຟື້ນຕົວ 100% ",
+
+	"refresh": "ໂຫຼດຫນ້າຈໍຄືນ",
+	"close": "ປິດ",
+	"closeAll": "ປິດທັງໝົດ",
+	"closeOther": "ປິດອື່ນໆ",
+	"openInBrowser": " ເປີດໃນເວັບເບົາເຊີ",
+
+	"lnkAppTitle": "ໃຊ້ເລື່ອຍໆ",
+	"deleteLnk": "ລົບລິ້ງ",
+	"addLnk": "ເພີ່ມລິ້ງ",
+
+	"changeViewTitle": "ສະຫຼັບການຢືນຢັນຮູບແບບ",
+	"changeView": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປ່ຽນຮູບແບບï¼Ÿ<br><br>ຫາກທ່ານເລືອກ \"ຕົກລົງ\", ຫນ້າເວັບຈະໂຫຼດຂໍ້ມູນຄືນໃໝ່ໂດຍກົງ, ແລະຂໍ້ມູນທີ່ບໍ່ໄດ້ບັນທຶກໄວ້ອາດຈະສູນເສຍໄປ..",
+	"refreshMenu": "ກູ້ຄືນຕາມລຳດັບເມນູເລີ່ມຕົ້ນ",
+	"defaultMenuTitle": "ການຢືນຢັນ",
+	"defaultMenuInfor": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການກູ້ຄືນຕາມລຳດັບຄຳສັ່ງ ແລະ ການຈັດກຸ່ມຂອງເມນູໃຫ້ເປັນສະຖານະເລີ່ມຕົ້ນï¼Ÿ",
+
+	"deleteLink": "ລົບລິ້ງ",
+
+	"messsage": {
+		"appliction": "ແອັບພິລເຄຊັນ",
+		"application": "ແອັບ",
+		"process": "ຂະບວນການ",
+		"infor": "ຂໍ້ມູນ",
+		"query": "ຂໍ້ມູນ",
+		"taskMessage": "ການແຈ້ງເຕືອນໜ້າວຽກ",
+		"receiveTask": "ທ່ານໄດ້ຮັບຫນ້າວຽກ, ຫົວຂໍ້ແມ່ນ: ",
+		"activity": "ກິດຈະກໍາ",
+
+		"readMessage": "ອ່ານການແຈ້ງເຕືອນ",
+		"receiveRead": "ທ່ານໄດ້ຮັບການອ່ານ, ຫົວຂໍ້ແມ່ນ: ",
+
+		"reviewMessage": "ກວດສອບການແຈ້ງເຕື່ອນ",
+		"receiveReview": "ທ່ານໄດ້ຮັບການທົບທວນຄືນ, ຫົວຂໍ້ແມ່ນ: ",
+
+		"fileEditorMessage": "ໄຟລ໌ທີ່ໄດ້ຮັບ",
+		"receiveFileEditor": "ໄຟລ໌ທີ່ສົ່ງໃຫ້ທ່ານ: ",
+
+		"fileShareMessage": "ໄຟລ໌ທີ່ແບ່ງປັນ",
+		"receiveFileShare": "ແບ່ງປັນໄຟລ໌ໃຫ້ທ່ານ:",
+
+		"meetingInviteMessage": "ປະຊຸມ",
+		"meetingInvite": "<font style='color: #ea621f'>{person}</font> ເຊີນທ່ານເຂົ້າຮ່ວມໃນກອງປະຊຸມ<font style='color: #ea621f'>{date}</font>: Topics is: \"{subject}\"ï¼Œlocation: <font style='color: #ea621f'>{addr}</font>",
+		"meetingCancelMessage": "ການປະຊຸມ.ຍົກເລີກ",
+		"meetingCancel": "<font style='color: #ea621f'>{person}</font> ຍົກເລີກກອງປະຊຸມ <font style='color: #ea621f'>{date}</font> in <font style='color: #ea621f'>{addr}</font>: \"{subject}\"",
+		"meetingAcceptMessage": "ຄຳເຊີນໃນກອງປະຊຸມໄດ້ຮັບມີການຍອມຮັບ",
+		"meetingAccept": "<font style='color: #ea621f'>{person}</font>ໄດ້ຮັບເອົາຄໍາເຊີນໃນກອງປະຊຸມຂອງທ່ານ, ຈະເຂົ້າຮ່ວມໃນກອງປະຊຸມ <font style='color: #ea621f'>{addr}</font> on <font style='color: #ea621f'>{date}</font>: \"{subject}\"",
+		"meetingRejectMessage": "ການເຊີນເຂົ້າຮ່ວມກອງປະຊຸມໄດ້ຖືກປະຕິເສດ",
+		"meetingReject": "<font style='color: #ea621f'>{person}</font> ໄດ້ປະຕິເສດຄຳເຊີນການເຂົ້າຮ່ວມກອງປະຊຸມຂອງທ່ານແລ້ວ: ເວລາ <font style='color: #ea621f'>{date}</font>; Subject: \"{subject}\"",
+
+		"meetingDeleteInviteMessage": "ຄຳເຊີນປະຊຸມໄດ້ຖືກຍົກເລີກ",
+		"meetingDeleteInvite": "<font style='color: #ea621f'>{person}</font>ຍົກເລີກການປະຊຸມຂອງທ່ານ ຂໍ້ມູນການປະຊຸມ :ເວລາ <font style='color: #ea621f'>{date}</font>, title \"{subject}\", location <font style='color: #ea621f'>{addr}</font>",
+
+		"attendanceAppealInviteMessage": "ມີການຮຽກຮ້ອງການເຂົ້າຮ່ວມງານທີ່ຕ້ອງການອະນຸມັດຈາກທ່ານ",
+		"attendanceAppealInvite": "{subject}",
+		"attendanceAppealAcceptMessage": "ການສະໝັກເຂົ້າຮ່ວມຜ່ານແລ້ວ",
+		"attendanceAppealAccept": "{subject}",
+		"attendanceAppealRejectMessage": "ການອຸທອນການເຂົ້າຮ່ວມລົ້ມເຫລວ",
+		"attendanceAppealReject": "{subject}",
+
+		"canlendarAlarmMessage": "ກຳນົດການ",
+		"canlendarAlarm": "{title}",
+
+		"teamwork": {
+			"executor": "ຜູ້ຮັບມອບໝາຍ",
+			"creatorPerson": "ຜູ້ສ້າງ"
+		},
+
+		"publishDocument": "ເຜີຍແຜ່ເອກະສານ: ",
+
+		"customMessageTitle": "ຂໍ້ຄວາມ: ",
+		"customMessage": "ທ່ານໄດ້ຮັບຂໍ້ຄວາມ: ",
+		"emoji": "ອີໂມຈິ",
+		"processWork": "ວຽກ",
+		"cmsDoc": "ຂໍ້ມູນ",
+	},
+	"styleMenu": {
+		"default": "ຄ່າເລີ່ມຕົ້ນ",
+		"color": "ສີ",
+		"black": "ສີດຳ",
+		"lotus": "ດອກບົວ",
+		"crane": "ເຄນ",
+		"peony": "ດອກໂບຕັນ",
+		"car": "ລົດ",
+		"dock": "ທ່າເຮື່ອ",
+		"panda": "ແພນດ້າ",
+		"star": "ດາວ"
+	},
+	"styleFlatMenu": {
+		"blue": "ສີຟ້າ",
+		"red": "ສີແດງ",
+		"orange": "ສີສົ້ມ",
+		"green": "ສີຂຽວ",
+		"cyan": "ສີຟ້າ",
+		"purple": "ສີມວງ",
+		"gray": "ສີເຖົາ",
+		"darkgreen": "ສີຂຽວເຂັມ",
+		"tan": "ສີແທນ",
+		"navy": "ກອງທັບເຮື່ອ"
+	},
+	"notice": {
+		"unload": "ຖ້າທ່ານປິດ ຫຼື ໂຫຼດໜ້ານີ້ຄືນໃໝ່, ເນື້ອຫາທີ່ບໍ່ໄດ້ບັນທຶກໄວ້ຈະສູນເສຍໄປ, ກະລຸນາຢືນຢັນການດຳເນີນການຂອງທ່ານ",
+		"changePassword": "ລະຫັດຜ່ານຂອງທ່ານໝົດອາຍຸແລ້ວ, ກະລຸນາປ່ຽນໃຫ້ທັນເວລາ",
+		"errorConnectCenter1": "ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບເຊີເວີກາງໄດ້, ກະລຸນາກວດສອບໃຫ້ແນ່ໃຈວ່າຫນຶ່ງໃນທີ່ຢູ່ດັ່ງຕໍ່ໄປນີ້ແມ່ນສາມາດເຂົ້າເຖິງໄດ້: ",
+		"errorConnectCenter2": "ຖ້າບໍ່ມີທີ່ຢູ່ຂ້າງເທິງນີ້ສາມາດເຂົ້າເຖິງໄດ້, ກະລຸນາກວດເບິ່ງເຄືອຂ່າຍຂອງທ່ານ ຫຼືຕິດຕໍ່ຜູ້ເບິ່ງແຍງລະບົບ!"
+	},
+	"login": {
+		"title": "ເຂົ້າສູ່ລະບົບຜູ້ໃຊ້",
+		"loginButton": "ເຂົ້າສູ່ລະບົບ",
+
+		"mobileDownload": "ໂທລະສັບສະແກນລະຫັດ QR ເພື່ອຕິດຕັ້ງ",
+
+		"inputUsernamePassword": "ໃສ່ຊື່ຜູ້ໃຊ້ແລະລະຫັດຜ່ານຂອງທ່ານ...",
+		"loginWait": "ເຂົ້າສູ່ລະບົບ, ກະລຸນາລໍຖ້າ...",
+		"loginError": "ຊື່ຜູ້ໃຊ້ ຫຼືລະຫັດຜ່ານທີ່ໃສ່ບໍ່ຖືກຕ້ອງ, ກະລຸນາໃສ່ໃໝ່...",
+
+		"camera_logining": "ເຂົ້າສູ່ລະບົບ, ກະລຸນາຫັນໜ້າໃສ່ກ້ອງ ...",
+		"camera_logining_1": "ກະລຸນາຮັກສາຮອຍຍິ້ມ ...",
+		"camera_logining_2": "ກະລຸນາເງີຍໜ້າຂື້ນເບິ່ງ...",
+		"camera_logining_3": "ການຢືນຢັນສຳເລັດແລ້ວ...",
+
+		"camera_logining2": "ກະລຸນາຍ້າຍມຸມມອງອື່ນ, ຫຼືປ່ຽນການສະແດງອອກ...",
+		"camera_loginSuccess": "{name} ສະບາຍດີ,ເພື່ອໃຫ້ທ່ານເຂົ້າສູ່ລະບົບ ...",
+		"camera_loginError": "ບໍ່ສາມາດຢືນຢັນຕົວຕົນຂອງທ່ານໄດ້, ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍວິທີອື່ນ ...",
+		"camera_loginError2": "ການເຂົ້າສູ່ລະບົບລົ້ມເຫລວ, ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍວິທີອື່ນ...",
+		"camera_loginError_camera": "ບໍ່ສາມາດເປີດກ້ອງໄດ້, ອາດຈະໃຊ້ງານແລ້ວ..."
+	},
+
+	"action": {
+		"uploadTitle": "ກຳລັງອັບໂຫລດ",
+		"uploadComplete": "ອັບໂຫຼດສຳເລັດ",
+		"sendReady": "ການເຂົ້າລະຫັດຂໍ້ມູນ, ທີ່ກຽມສໍາລັບການສົ່ງຕໍ່ຂໍ້ມູນ ...",
+		"sendStart": "ເລີ່ມການໂອນຍ້າຍ",
+		"sendError": "ການໂອນໄຟລ໌ເກີດຂໍ້ຜິດພາດ",
+		"sendAbort": "ການໂອນໄຟລ໌ຖືກຍົກເລີກ",
+		"speed": "ຄວາມໄວ",
+		"time": "ເວລາທີ່ຜ່ານໄປ",
+		"hour": "ຊົ່ວໂມງ",
+		"minute": "ນາທີ",
+		"second": "ທີສອງ",
+
+		"cancelUploadTitle": "ຍົກເລີກການຢືນຢັນການອັບໂຫລດ",
+		"cancelUpload": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການຍົກເລີກການອັບໂຫລດໄຟລ໌\"{name}\" ?"
+	},
+	"person": {
+		"personEmployee": "ພະນັກງານ",
+		"personMobile": "ເບີໂທລະສັບ",
+		"personMail": "ອີເມລ",
+		"personDuty": "ໜ້າທີ່",
+		"personQQ": " ຜູ້ຄົນ",
+		"personWeixin": "ເວີຍຊິນ",
+		"duty": "ໜ້າທີ"
+	},
+	"collect": {
+		"collectNotConnected": "ບໍ່ສາມາດເຊື່ອມຕໍ່ O2 cloud ໄດ້ ",
+		"collectNotConnectedText": "ບໍ່ສາມາດເຊື່ອມຕໍ່ O2 cloud ໄດ້,ກະລຸນາກວດສອບເຄືອຂ່າຍເຊີບເວີ!"
+	}
+};
+o2.LP.desktop.message = o2.LP.desktop.messsage;
+o2.LP.widget = {
+	"upload": "ອັບໂຫລດ",
+	"uploadTitle": "ອັບໂຫລດ ໄຟລ໌",
+	"uploadInfor": "ກະລຸນາເລືອກໄຟລ໌ທີ່ຈະອັບໂຫລດ",
+	"delete": "ລົບອອກ",
+	"replace": "ແທນທີ່",
+	"select": "ເລືອກ",
+
+	"download": "ດາວໂຫລດ",
+	"share": "ແຊຣ໌",
+	"send": "ສົ່ງ",
+	"downloadAll": "ດາວໂຫລດ ທັງໝົດ",
+	"createFolder": "ສ້າງໂຟນເດີ",
+	"rename": "ປ່ຽນຊື່",
+	"property": "ຄຸນສົມບັດ",
+	"refuseUpload": "ຫ້າມອັບໂຫລດໄຟລ໌ເດັດຂາດ",
+	"refuseUploadHTML": "<div>The type of attachment named <font style='color:#0000ff'>\"{filename}\"</font>ບໍ່ໄດ້ຖືກອະນຸຍາດໃຫ້ອັບໂຫລດແລະຖືກຍົກເວັ້ນ</div>",
+	"refuseUploadNotice" : "ປະເພດຂອງເອກະສານຕິດຄັດທີ່ມີຊື່ \"{filename}\"ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ອັບໂຫລດ",
+	"refuseUploadHTML_size" : "<div>ຂະຫນາດຂອງເອກະສານຕິຄັດທີ່ມີຊື່ <font style='color:#0000ff'>\"{filename}\"</font> ຂະຫນາດໃຫຍ່ເກີນໄປແລະໄດ້ຖືກຍົກເວັ້ນ </font> (ອະນຸຍາດໃຫ້ອັບໂຫລດໄຟລ໌ທີ່ນ້ອຍກວ່າເທົ່ານັ້ນ {size}M) </div>",
+	"refuseUploadNotice_size": ">ຂະຫນາດຂອງເອກະສານຕິຄັດທີ່ມີຊື່ \"{filename}\"ໃຫຍ່ເກີນໄປ (ອະນຸຍາດໃຫ້ອັບໂຫລດເອກະສານທີ່ນ້ອຍກວ່າ {size}M) ",
+
+
+	"list": "ລາຍການ",
+	"sequence": "ລໍາດັບ",
+	"icon": "ໄອຄອນ",
+	"preview": "ເບິ່ງຕົວຢ່າງ",
+	"editAtt" : "ແກ້ໄຂ",
+
+	"min": "ຮູບແບບງ່າຍດາຍ",
+	"max": "ຮູບແບບເຕັມ",
+	"size": "ຂະໜາດ",
+	"uploader": "ຜູ້ອັບໂຫລດ",
+	"uploadTime": "ເວລາ",
+	"modifyTime": "ແກ້ໄຂ",
+	"uploadActivity": "ກິດຈະກໍາ",
+	"attCount": "ໄຟລ໌",
+	"folderCount": "ໂຟນເດີີ້",
+
+	"pictureSize": "ຄວາມກວ້າງ {width}px, ຄວາມສູງ {height}px",
+	"pictureRatio": "ອັດຕາສ່ວນຮູບ{ratio}",
+
+	"ok": "ຕົກລົງ",
+	"cancel": "ຍົກເລີກ",
+	"refresh": "ກັບຄືນໃໝ່",
+	"close": "ປິດ",
+	"open": "ເປີດ",
+	"choiceWork": "ເປີດເອກະສານທາງເລືອກ",
+	"workcompleted": "ຂະບວນການສຳເລັດສົມບູນ",
+
+	"months": ["ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມີຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ເດືຕຸລາ", "ເດືອນພະຈິກ", "ເດືອນທັນວາ"],
+	"days_abbr": ["ອາທິດ", "ວັນຈັນ", "ວັນອັງຄານ", "ວັນພຸດ", "ວັນພະຫັດ", "ວັນສຸກ", "ວັນເສົາ"],
+	"clear": "ຊັດເຈນ",
+	"year": "ປີ ",
+	"month": "ເດືອນ ",
+	"date": " ວັນທີ",
+	"hour": "ຊົ່ວໂມງ",
+	"minute": "ນາທີ",
+	"second": "ທີສອງ",
+	"week": "ວຽກ",
+	"dateGreaterThanCurrentNotice" : "ວັນທີທີ່ເລືອກຈະຕ້ອງຫຼາຍກວ່າວັນທີປັດຈຸບັນ",
+
+	"unknow": "ບໍ່ຮູ້",
+	"uploadImg": "ອັບໂຫລດຮູບພາບ",
+	"clearImg": "ຮູບພາບທີ່ຊັດເຈນ",
+	"clearImg_confirmTitle": "ລົບການຢືນຢັນຮູບພາບ",
+	"clearImg_confirm": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບຮູບພາບï¼Ÿ",
+	"office": "ເປີດໃນເອກະສານຫ້ອງການ",
+	"closeOffice": "ປິດໄຟລ໌ເອກະສານ",
+	"configAttachment": "ກໍານົດການອະນຸຍາດໄຟລ໌ເອກະ",
+	"configAttachmentText": "ກຳນົດຄ່າ",
+	"checkOcrText": "ແກ້ໄຂຂໍ້ຄວາມໃນຮູບພາບທີ່ຮັບຮູ້ອັດຕະໂນມັດ",
+	"order": "ການລຽງລຳດັບໄຟລ໌ເອກະສານ",
+
+	"record": "ບັນທຶກ",
+	"stop": "ຢຸດ",
+	"play": "ຫຼິ້ນ",
+	"save": "ບັນທຶກ",
+	"userRefuse" : "ຜູ້ໃຊ້ປະຕິເສດທີ່ຈະໃຫ້ຂໍ້ມູນ.",
+	"explorerNotSupportDevice" : "ເບົາເຊີບໍ່ຮອງຮັບອຸປະກອນຮາດແວ.",
+	"canNotFindDevice": "ບໍ່ສາມາດຄົ້ນຫາອຸປະກອນຮາດແວທີ່ລະບຸໄວ້ໄດ້.",
+	"canNotOpenMicrophone": "ບໍ່ສາມາດເປີດການບັນທຶກສຽງໄດ້. ຂໍ້ມູນຂໍ້ຍົກເວັ້ນ: ",
+	"explorerNotSupportRecordVoice" : "ເບົາເຊີບໍ່ຮອງຮັບຟັງຊັນການບັນທຶກ",
+
+	"clickToEditCss" : "ກົດທີ່ນີ້ເພື່ອຂຽນ CSS",
+	"uploadSuccess": "ອັບໂຫຼດສຳເລັດ!",
+	"uploadFail": "ອັບໂຫຼດບໍ່ສຳເລັດ, ກະລຸນາອັບໂຫຼດອີກຄັ້ງ!",
+	"selectLocalImage" : "ເລືອກຮູບພາບທ້ອງຖິ່ນ",
+	"selectCloudImage": "ເລືອກຮູບພາບເຊີບເວີ",
+	"reset": "ກັບຄືນ",
+	"uploadOriginalImage": "ອັບໂຫລດຮູບພາບຕົ້ນສະບັບ",
+
+	"startRecord" : "ເລີ່ມການບັນທຶກ",
+	"completeRecord": "ຢຸດການບັນທຶກ",
+	"requireHttps" : "ຟັງຊັນການບັນທຶກວິດີໂອຕ້ອງໃຊ້ https protocol",
+	"canNotToRecordVideo" : "ບໍ່ສາມາດໃຊ້ຟັງຊັນການບັນທຶກວິດີໂອໄດ້. ໂປຣແກຣມເບົາເຊີຂອງທ່ານບໍ່ຮອງຮັບຄຸນສົມບັດຕໍ່ໄປນີ້:",
+
+	"pageJumperTitle": "ໃສ່ໝາຍເລກໜ້າ",
+
+	"scriptAreaEditNotice" : "ກົດທີ່ນີ້ເພື່ອຂຽນລະຫັດເນື້ອໃນ",
+	"empty" : "ຊັດເຈນ",
+	"undo" : "ຍົກເລີກ",
+	"redo" : "ກັບຄືນ",
+	"eraser": "ຢາງລົບ",
+	"input": "ເຂົ້າ",
+	"eraserRadius": "ຂະຫນາດຢາງລົບ",
+	"pen": "ບິກ",
+	"thickness" : "ຄວາມຫນາ",
+	"color" : "ສີ",
+	"insertImage" : "ໃສ່ຮູບພາບ",
+	"imageClipper" : "ຕັດຮູບພາບ",
+	"fontSize": "ຂະໜາດຕົວອັກສອນ",
+	"fontFamily": "ຄອບຄົວ ຕົວອັກສອນ",
+
+	"explorerNotSupportFeatures" : "ໂປຣແກຣມເບົາເຊີຂອງທ່ານບໍ່ຮອງຮັບຄຸນສົມບັດຕໍ່ໄປນີ້:"
+};
+
+o2.LP.widget.SimpleEditor = {
+	"insertEmotion": "ໃສ່ການສະແດງອອກ",
+	"insertImage": "ໃສ່ຮູບພາບ",
+	"Emotions": "regular_smile|smileï¼Œteeth_smile|laugh,angry_smile|angry,confused_smile|confuse,cry_smile|cry,embaressed_smile|awkward,omg_smile|Surprised,sad_smile|sad,shades_smile|cool,tounge_smile|Tongue out,wink_smile|wink,angel_smile|angel,devil_smile|devil,heart|heart,broken_heart|Broken heart,thumbs_up|up,thumbs_down|down,cake|cake,lightbulb|light,envelope|envelope"
+};
+o2.LP.authentication = {
+	"LoginFormTitle": "ຍິນດີຕ້ອນຮັບ",
+	"SignUpFormTitle": "ຍິນດີຕ້ອນຮັບ",
+	"ResetPasswordFormTitle": "ດຶງລະຫັດຜ່ານ",
+	"ChangePasswordFormTitle" : "ລະຫັດຜ່ານໝົດອາຍຸແລ້ວ",
+	"userName": "ຊື່ຜູ້ໃຊ້",
+	"password": "ລະຫັດຜ່ານ",
+	"verificationCode": "ແຄັບຊັນ",
+	"loginAction": "ເຂົ້າສູ່ລະບົບ",
+	"autoLogin": "ການລົງຈອດອັດຕະໂນມັດຕໍ່ໄປ",
+	"signUp": "ການລົງທະບຽນ",
+	"forgetPassword": "ລືມລະຫັດຜ່ານï¼Ÿ",
+	"inputYourUserName": "ໃສ່ຊື່ຂອງທ່ານ",
+	"inputYourPassword": " ໃສ່ລະຫັດຜ່ານຂອງທ່ານ",
+	"inputYourMail": "ກະລຸນາໃສ່ທີ່ຢູ່ອີເມວຂອງທ່ານ",
+	"inputYourMobile": "ກະລຸນາໃສ່ເບີໂທລະສັບມືຖືຂອງທ່ານ",
+	"inputPicVerificationCode": "ກະລຸນາໃສ່ລະຫັດຢືນຢັນຢູ່ເບື້ອງຂວາ",
+	"inputComfirmPassword": "ກະລຸນາຢືນຢັນລະຫັດຜ່ານຂອງທ່ານ",
+	"inputVerificationCode": "ລະຫັດຢືນຢັນ",
+	"confirmPassword": "ຢືນຢັນລະຫັດຜ່ານ",
+	"sendVerification": "ສົ່ງ",
+	"resendVerification": "ສົ່ງຄືນ",
+	"passwordIsSimple": "ກະລຸນາໃຊ້ຕົວເລກປະສົມ ແລະຢ່າງໜ້ອຍ 7 ບິດ",
+	"mobileIsRegisted": "ເບີໂທລະສັບໄດ້ຮັບການລົງທະບຽນແລ້ວ",
+	"mailFormatError": "ກະລຸນາໃສ່ອີເມວທີ່ມີຮູບແບບທີ່ຖືກຕ້ອງ",
+	"hasAccount": "ມີບັນຊີແລ້ວï¼Ÿ",
+	"gotoLogin": "ໄປສູ່ລະບົບ",
+	"weak": "ອ່ອນເພຍ",
+	"middle": "ກາງ",
+	"high": "ສູງ",
+	"userExist": "ຜູ້ໃຊ້ມີຢູ່ແລ້ວ",
+	"userNotExist": "ບໍ່ມີຜູ້ໃຊ້.",
+	"passwordNotEqual": "ລະຫັດຜ່ານບໍ່ສອດຄ່ອງກັບຂ້າງເທິງ, ກະລຸນາລອງໃໝ່ອີກຄັ້ງ",
+	"changeVerification": "ປ່ຽນ",
+	"mail": "ອີເມລ",
+	"genderType": "ເພດ",
+	"genderTypeText": ",ຊາຍ,ຍິງ",
+	"genderTypeValue": "ຊາຍ-ຍິງ",
+	"selectGenderType": "ກະລຸນາເລືອກເພດ",
+	"registeSuccess": "ການລົງທະບຽນສຳເລັດແລ້ວ",
+	"codeLogin": "ເຂົ້າສູ່ລະບົບ SMS",
+	"passwordLogin": "ເຂົ້າສູ່ລະບົບ ລະຫັດຜ່ານ",
+	"bindLogin": "ເຂົ້າສູ່ລະບົບ QRCode",
+	"bingLoginTitle": "ກຳລັງສະແກນລະຫັດ QR",
+	"o2downloadLink": "https://sample.o2oa.net/app/download.html",
+	"loginSuccess": "ເຂົ້າສູ່ລະບົບສຳເລັດ!",
+	"userCheck":"ການຢືນຢັນ",
+	"shotMessageCheck": "ການຢືນຢັນ SMS",
+	"setMewPassword": "ຕັ້ງລະຫັດຜ່ານໃໝ່",
+	"completed": "ສຳເລັດແລ້ວ",
+	"nextStep": "ຕໍ່ໄປ",
+	"mobile": "ໂທລະສັບມືຖື",
+	"setNewPassword": "ຕັ້ງລະຫັດຜ່ານໃໝ່",
+	"confirmNewPassword": "ຢືນຢັນລະຫັດຜ່ານໃຫມ່",
+	"passwordIsWeak": "ຄວາມຍາວຂອງລະຫັດຜ່ານຕ້ອງຫຼາຍກວ່າ 7",
+	"resetPasswordSuccess": "ຣີເຊັດລະຫັດຜ່ານສຳເລັດແລ້ວ!",
+	"resetPasswordFail": "ຣີເຊັດລະຫັດຜ່ານຂອງທ່ານບໍ່ສຳເລັດ!",
+	"resetPasswordSuccessWord": "ກະລຸນາຈື່ລະຫັດຜ່ານໃໝ່ຂອງທ່ານ.",
+	"resetPasswordFailWord": "ກະລຸນາກວດເບິ່ງຊື່ຜູ້ໃຊ້ ແລະລະຫັດຢືນຢັນຂໍ້ຄວາມຂອງທ່ານ",
+	"backtoModify": "ກັບຄືນສໍາລັບການແກ້ໄຂ",
+	"pageNotFound": "ຂໍ້ຜິດພາດ 404 ບໍ່ເຫັນການບໍລິການ ຫຼື ເຊີບເວີຖຶກຕັດການເຊື່ອມຕໍ່",
+	"submitAction" : "ຕົກລົງ",
+	"oldPassword" : "ລະຫັດຜ່ານເກົ່າ",
+	"inputYourOldPassword" : "ໃສ່ລະຫັດຜ່ານຕົ້ນສະບັບ",
+	"newPassword" : "ລະຫັດຜ່ານໃໝ່",
+	"inputYourNewPassword" : "ໃສ່ລະຫັດຜ່ານໃໝ່",
+	"changePasswordSuccess" : "ປ່ຽນລະຫັດຜ່ານສຳເລັດແລ້ວ",
+	"userAppCameraHtml" : "<div>open <div styles='bindTipLinkArea'>APP </div> and scan</div>",
+	"loginToPage": "ເຂົ້າສູ່ລະບົບຫນ້າ",
+	"accessError": "ລົ້ມເຫລວໃນການເຂົ້າເຖິງການບໍລິການພື້ນຫຼັງ"
+
+};
+o2.LP.script = {
+	"error": "Script operation error, please check the following details"
+};

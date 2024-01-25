@@ -88,7 +88,7 @@ if (!window.o2) {
         var _debug = (_href.indexOf("debugger") !== -1);
         var _par = _href.substr(_href.lastIndexOf("?") + 1, _href.length);
 
-        var supportedLanguages = ["zh-cn", "en", "es"];
+        var supportedLanguages = ["zh-cn", "en", "es","la"];
 
         var _lp = _language || navigator.language || "zh-cn";
         //if (!_lp) _lp = "zh-cn";
