@@ -101,6 +101,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	<T extends AbstractWoAuthentication> T user(HttpServletRequest request, HttpServletResponse response,
 			Business business, Person person, Class<T> cls) throws Exception {
 		T t = cls.getDeclaredConstructor().newInstance();
+		if (this.failureLocked(person)) {
+			throw new ExceptionFailureLocked( DateTools.format(person.getLockExpireTime()));
+		}
 		if(PersonStatusEnum.BAN.getValue().equals(person.getStatus())){
 			throw new ExceptionFailureBanned();
 		}
@@ -462,7 +465,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected boolean failureLocked(Person person) {
 		return PersonStatusEnum.LOCK.getValue().equals(person.getStatus()) &&
-				person.getFailureTime() != null && person.getFailureTime().getTime() > System.currentTimeMillis();
+				person.getLockExpireTime() != null && person.getLockExpireTime().getTime() > System.currentTimeMillis();
 	}
 
 	protected void failure(Person person) throws Exception {

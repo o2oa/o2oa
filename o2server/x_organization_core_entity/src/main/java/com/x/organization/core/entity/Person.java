@@ -262,7 +262,7 @@ public class Person extends SliceJpaObject {
 
 	public static final String lastLoginTime_FIELDNAME = "lastLoginTime";
 	@FieldDescribe("最后登录时间.")
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + lastLoginTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + lastLoginTime_FIELDNAME)

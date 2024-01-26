@@ -43,10 +43,10 @@ class ActionWho extends BaseAction {
 			case manager:
 				InitialManager o = Config.token().initialManagerInstance();
 				if (StringUtils.equals(effectivePerson.getDistinguishedName(), o.getName())) {
-					wo = this.manager(null, null, o.getName(), Wo.class);
+					wo = this.manager(request, null, o.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
-					wo = this.user(null, null, business, person, Wo.class);
+					wo = this.user(request, null, business, person, Wo.class);
 				}
 				wo.setTokenType(TokenType.manager);
 				wo.setToken(effectivePerson.getToken());
@@ -55,17 +55,17 @@ class ActionWho extends BaseAction {
 			case securityManager:
 			case auditManager:
 				if (Config.ternaryManagement().isTernaryManagement(effectivePerson.getName())) {
-					wo = this.manager(null, null, effectivePerson.getName(), Wo.class);
+					wo = this.manager(request, null, effectivePerson.getName(), Wo.class);
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
-					wo = this.user(null, null, business, person, Wo.class);
+					wo = this.user(request, null, business, person, Wo.class);
 				}
 				wo.setTokenType(effectivePerson.getTokenType());
 				wo.setToken(effectivePerson.getToken());
 				break;
 			case user:
 				Person person = this.getPerson(business, effectivePerson);
-				wo = this.user(null, null, business, person, Wo.class);
+				wo = this.user(request, null, business, person, Wo.class);
 				break;
 			default:
 				break;
