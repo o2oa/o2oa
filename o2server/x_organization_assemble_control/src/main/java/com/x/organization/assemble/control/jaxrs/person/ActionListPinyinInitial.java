@@ -119,7 +119,7 @@ class ActionListPinyinInitial extends BaseAction {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson, false));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
 		wos = business.person().sort(wos);

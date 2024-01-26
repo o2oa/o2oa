@@ -14,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.enums.PersonStatusEnum;
@@ -26,9 +27,13 @@ class ActionDoLock extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoLock.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			if(DateTools.beforeNowMinutesNullIsTrue(wi.getLockExpiredTime(), -1)){
+				throw new ExceptionInvalidLockTime();
+			}
 			Business business = new Business(emc);
 			Person person = business.person().pick(flag);
 			if (null == person) {
@@ -37,13 +42,13 @@ class ActionDoLock extends BaseAction {
 			if (!effectivePerson.isSecurityManager() && !this.editable(business, effectivePerson, person)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
+			LOGGER.info("{} operate lock user:{} expire:{}", effectivePerson.getDistinguishedName(),
+					person.getDistinguishedName(),wi.getLockExpiredTime());
 			emc.beginTransaction(Person.class);
 			Person entityPerson = emc.find(person.getId(), Person.class);
-			entityPerson.setFailureCount(0);
-			entityPerson.setStatus(PersonStatusEnum.NORMAL.getValue());
-			entityPerson.setStatusDes("");
-			entityPerson.setLockExpireTime(null);
+			entityPerson.setStatus(PersonStatusEnum.LOCK.getValue());
+			entityPerson.setStatusDes(wi.getDesc());
+			entityPerson.setLockExpireTime(wi.getLockExpiredTime());
 			emc.check(entityPerson, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Person.class);
@@ -68,7 +73,7 @@ class ActionDoLock extends BaseAction {
 		private String desc;
 
 		public Date getLockExpiredTime() {
-			return lockExpiredTime;
+			return lockExpiredTime == null ? new Date() : lockExpiredTime;
 		}
 
 		public void setLockExpiredTime(Date lockExpiredTime) {

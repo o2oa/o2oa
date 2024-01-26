@@ -16,6 +16,8 @@ import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -415,6 +417,84 @@ abstract class BaseAction extends StandardJaxrsAction {
 		List<Role> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		for (Role o : os) {
 			o.getPersonList().remove(person.getId());
+		}
+	}
+
+	public class CustomPersonInfo{
+		private String operator;
+		private WrapPerson person;
+		private List<WrapIdentity> identityList;
+
+		public String getOperator() {
+			return operator;
+		}
+
+		public void setOperator(String operator) {
+			this.operator = operator;
+		}
+
+		public WrapPerson getPerson() {
+			return person;
+		}
+
+		public void setPerson(WrapPerson person) {
+			this.person = person;
+		}
+
+		public List<WrapIdentity> getIdentityList() {
+			return identityList;
+		}
+
+		public void setIdentityList(List<WrapIdentity> identityList) {
+			this.identityList = identityList;
+		}
+	}
+
+	public static class WrapPerson extends Person{
+		static WrapCopier<Person, WrapPerson> copier = WrapCopierFactory.wo(Person.class, WrapPerson.class, null,
+				ListTools.toList(JpaObject.FieldsInvisible));
+		private List<String> groupList;
+		private List<String> roleList;
+
+		public List<String> getGroupList() {
+			return groupList == null ? new ArrayList<>() : groupList;
+		}
+
+		public void setGroupList(List<String> groupList) {
+			this.groupList = groupList;
+		}
+
+		public List<String> getRoleList() {
+			return roleList == null ? new ArrayList<>() : roleList;
+		}
+
+		public void setRoleList(List<String> roleList) {
+			this.roleList = roleList;
+		}
+	}
+
+	public static class WrapIdentity extends Identity {
+		static WrapCopier<Identity, WrapIdentity> copier = WrapCopierFactory.wo(Identity.class, WrapIdentity.class, null,
+				ListTools.toList(JpaObject.FieldsInvisible));
+		static WrapCopier<WrapIdentity, Identity> copierIn = WrapCopierFactory.wo(WrapIdentity.class, Identity.class, null,
+				ListTools.toList(JpaObject.FieldsInvisible));
+		private List<String> groupList;
+		private List<String> dutyList;
+
+		public List<String> getGroupList() {
+			return groupList == null ? new ArrayList<>() : groupList;
+		}
+
+		public void setGroupList(List<String> groupList) {
+			this.groupList = groupList;
+		}
+
+		public List<String> getDutyList() {
+			return dutyList == null ? new ArrayList<>() : dutyList;
+		}
+
+		public void setDutyList(List<String> dutyList) {
+			this.dutyList = dutyList;
 		}
 	}
 

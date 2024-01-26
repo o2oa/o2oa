@@ -1,20 +1,5 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -23,6 +8,19 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class RoleFactory extends AbstractFactory {
 
@@ -104,6 +102,24 @@ public class RoleFactory extends AbstractFactory {
 										.comparing(Role::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 				.collect(Collectors.toList());
 		return list;
+	}
+
+	public List<Role> listObjByPerson(String personId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Role.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
+		Root<Role> root = cq.from(Role.class);
+		Predicate p = cb.isMember(personId, root.get(Role_.personList));
+		return em.createQuery(cq.select(root).where(p)).getResultList();
+	}
+
+	public List<String> listByPerson(String personId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Role.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Role> root = cq.from(Role.class);
+		Predicate p = cb.isMember(personId, root.get(Role_.personList));
+		return em.createQuery(cq.select(root.get(Role_.id)).where(p)).getResultList();
 	}
 
 }

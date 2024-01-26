@@ -112,7 +112,7 @@ class ActionListLikePinyin extends BaseAction {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson, false));
 		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
 				.collect(Collectors.toList());
 		List<Person> os = business.entityManagerContainer().list(Person.class, ids);

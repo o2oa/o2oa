@@ -95,7 +95,7 @@ public class Person extends ConfigObject {
 	@FieldDescribe("是否启用刷脸登录,默认值:false.")
 	private Boolean faceLogin;
 
-	@FieldDescribe("是否启用第一次登陆修改密码,默认值:false")
+	@FieldDescribe("是否启用首次登陆修改密码,默认值:false")
 	private Boolean firstLoginModifyPwd;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
