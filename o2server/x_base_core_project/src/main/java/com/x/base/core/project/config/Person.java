@@ -125,8 +125,11 @@ public class Person extends ConfigObject {
 	@FieldDescribe("尝试登录次数")
 	private Integer failureCount;
 
-	@FieldDescribe("token时长,分钟")
+	@FieldDescribe("PC或h5端平台认证token时长,分钟")
 	private Integer tokenExpiredMinutes;
+
+	@FieldDescribe("app端平台认证token时长,分钟")
+	private Integer appTokenExpiredMinutes;
 
 	@FieldDescribe("保存token的cookie是否启用httpOnly")
 	private Boolean tokenCookieHttpOnly;
@@ -346,5 +349,14 @@ public class Person extends ConfigObject {
 
 	public void setFirstLoginModifyPwd(Boolean firstLoginModifyPwd) {
 		this.firstLoginModifyPwd = firstLoginModifyPwd;
+	}
+
+	public Integer getAppTokenExpiredMinutes() {
+		return (this.appTokenExpiredMinutes == null || this.appTokenExpiredMinutes < 0) ? getTokenExpiredMinutes()
+				: this.appTokenExpiredMinutes;
+	}
+
+	public void setAppTokenExpiredMinutes(Integer appTokenExpiredMinutes) {
+		this.appTokenExpiredMinutes = appTokenExpiredMinutes;
 	}
 }

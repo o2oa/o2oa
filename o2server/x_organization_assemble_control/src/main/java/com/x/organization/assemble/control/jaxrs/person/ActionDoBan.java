@@ -99,7 +99,7 @@ class ActionDoBan extends BaseAction {
 			}
 			groupList = business.group().listSupDirectWithIdentityObject(identity.getId());
 			for (Group group : groupList){
-				group.getIdentityList().remove(person.getId());
+				group.getIdentityList().remove(identity.getId());
 				group.setIdentityList(group.getIdentityList());
 				wrapIdentity.getGroupList().add(group.getId());
 			}

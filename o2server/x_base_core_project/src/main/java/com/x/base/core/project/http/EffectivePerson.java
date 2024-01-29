@@ -18,6 +18,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -28,6 +30,8 @@ import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 
 public class EffectivePerson extends GsonPropertyObject {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EffectivePerson.class);
 
 	private static final long serialVersionUID = -6961607633719115852L;
 
@@ -46,6 +50,7 @@ public class EffectivePerson extends GsonPropertyObject {
 	private String remoteAddress = "";
 	private String uri = "";
 	private String userAgent = "";
+	private String client = "";
 
 	private EffectivePerson() {
 
@@ -79,34 +84,42 @@ public class EffectivePerson extends GsonPropertyObject {
 		this(distinguishedName, tokenType, key, Config.person().getEncryptType());
 	}
 
-	public EffectivePerson(String distinguishedName, TokenType tokenType, String key, String encryptType)
+	public EffectivePerson(String distinguishedName, TokenType tokenType, String key, String encryptType) throws Exception{
+		this(distinguishedName, tokenType, HttpToken.CLIENT_H5, key, encryptType);
+	}
+
+	public EffectivePerson(String distinguishedName, TokenType tokenType, String client, String key, String encryptType)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 		this.setDistinguishedName(distinguishedName);
 		this.tokenType = tokenType;
+		this.client = client;
+		if(HttpToken.CLIENT_APP.equals(client)){
+			LOGGER.info(distinguishedName+" 您当前为app客户端访问");
+		}
 		switch (this.tokenType) {
-		case anonymous:
-			this.token = null;
-			break;
-		case user:
-			this.token = this.concreteToken(key, encryptType);
-			break;
-		case manager:
-			this.token = this.concreteToken(key, encryptType);
-			break;
-		case systemManager:
-			this.token = this.concreteToken(key, encryptType);
-			break;
-		case securityManager:
-			this.token = this.concreteToken(key, encryptType);
-			break;
-		case auditManager:
-			this.token = this.concreteToken(key, encryptType);
-			break;
-		case cipher:
-			this.token = this.concreteToken(key, encryptType);
-			break;
+			case anonymous:
+				this.token = null;
+				break;
+			case user:
+				this.token = this.concreteToken(key, encryptType);
+				break;
+			case manager:
+				this.token = this.concreteToken(key, encryptType);
+				break;
+			case systemManager:
+				this.token = this.concreteToken(key, encryptType);
+				break;
+			case securityManager:
+				this.token = this.concreteToken(key, encryptType);
+				break;
+			case auditManager:
+				this.token = this.concreteToken(key, encryptType);
+				break;
+			case cipher:
+				this.token = this.concreteToken(key, encryptType);
+				break;
 		}
 	}
 
@@ -116,6 +129,7 @@ public class EffectivePerson extends GsonPropertyObject {
 			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 		return Crypto.encrypt(this.getTokenType().toString()
 				+ (DateFormatUtils.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss)
+						+ Objects.toString(this.client, HttpToken.CLIENT_H5)
 						+ URLEncoder.encode(this.getDistinguishedName(), "utf-8")),
 				key, encryptType);
 	}
@@ -139,7 +153,7 @@ public class EffectivePerson extends GsonPropertyObject {
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
-		return new EffectivePerson(CIPHER, TokenType.cipher, key, encryptType);
+		return new EffectivePerson(CIPHER, TokenType.cipher, HttpToken.CLIENT_H5, key, encryptType);
 	}
 
 	public TokenType getTokenType() {
@@ -265,4 +279,11 @@ public class EffectivePerson extends GsonPropertyObject {
 		return uri;
 	}
 
+	public String getClient() {
+		return client;
+	}
+
+	public void setClient(String client) {
+		this.client = client;
+	}
 }

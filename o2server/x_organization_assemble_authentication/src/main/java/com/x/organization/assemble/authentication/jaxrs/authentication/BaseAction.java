@@ -81,8 +81,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			tokenType = Config.ternaryManagement().getTokenType(credential);
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher(),
-				Config.person().getEncryptType());
+		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, HttpToken.getClient(request),
+				Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -121,7 +121,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
 			tokenType = TokenType.auditManager;
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
+		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType, HttpToken.getClient(request),
 				Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {

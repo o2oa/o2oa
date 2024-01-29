@@ -68,10 +68,10 @@ class ActionUnban extends BaseAction {
 		Custom custom = getCustomWithName(emc, name);
 		if(custom != null && StringUtils.isNotBlank(custom.getData())){
 			CustomPersonInfo personBanInfo = gson.fromJson(custom.getData(), CustomPersonInfo.class);
+			emc.beginTransaction(Identity.class);
+			emc.beginTransaction(UnitDuty.class);
 			emc.beginTransaction(Group.class);
 			emc.beginTransaction(Role.class);
-			emc.beginTransaction(UnitDuty.class);
-			emc.beginTransaction(Identity.class);
 			for(String groupId : personBanInfo.getPerson().getGroupList()){
 				Group group = emc.find(groupId, Group.class);
 				if(group != null){
@@ -90,7 +90,7 @@ class ActionUnban extends BaseAction {
 				for(String groupId : wrapIdentity.getGroupList()){
 					Group group = emc.find(groupId, Group.class);
 					if(group != null){
-						group.setPersonList(ListTools.add(group.getPersonList(), true, true, identity.getId()));
+						group.setIdentityList(ListTools.add(group.getIdentityList(), true, true, identity.getId()));
 					}
 				}
 				for(String dutyId : wrapIdentity.getDutyList()){

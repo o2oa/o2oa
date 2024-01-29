@@ -453,8 +453,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public static class WrapPerson extends Person{
 		static WrapCopier<Person, WrapPerson> copier = WrapCopierFactory.wo(Person.class, WrapPerson.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible));
-		private List<String> groupList;
-		private List<String> roleList;
+		private List<String> groupList = new ArrayList<>();
+		private List<String> roleList = new ArrayList<>();
 
 		public List<String> getGroupList() {
 			return groupList == null ? new ArrayList<>() : groupList;
@@ -478,8 +478,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 				ListTools.toList(JpaObject.FieldsInvisible));
 		static WrapCopier<WrapIdentity, Identity> copierIn = WrapCopierFactory.wo(WrapIdentity.class, Identity.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible));
-		private List<String> groupList;
-		private List<String> dutyList;
+		private List<String> groupList = new ArrayList<>();
+		private List<String> dutyList = new ArrayList<>();
 
 		public List<String> getGroupList() {
 			return groupList == null ? new ArrayList<>() : groupList;
