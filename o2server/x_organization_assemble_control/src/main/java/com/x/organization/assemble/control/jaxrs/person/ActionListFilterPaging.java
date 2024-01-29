@@ -32,7 +32,7 @@ class ActionListFilterPaging extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			Predicate p = toFilterPredicate(business, wi, effectivePerson);
-			List<Wo> wos = emc.fetchAscPaging(Person.class, Wo.copier, p, page, size, JpaObject.sequence_FIELDNAME);
+			List<Wo> wos = emc.fetchDescPaging(Person.class, Wo.copier, p, page, size, JpaObject.sequence_FIELDNAME);
 			this.updateControl(effectivePerson, business, wos);
 			result.setData(wos);
 			result.setCount(emc.count(Person.class, p));

@@ -95,9 +95,6 @@ public class EffectivePerson extends GsonPropertyObject {
 		this.setDistinguishedName(distinguishedName);
 		this.tokenType = tokenType;
 		this.client = client;
-		if(HttpToken.CLIENT_APP.equals(client)){
-			LOGGER.info(distinguishedName+" 您当前为app客户端访问");
-		}
 		switch (this.tokenType) {
 			case anonymous:
 				this.token = null;
