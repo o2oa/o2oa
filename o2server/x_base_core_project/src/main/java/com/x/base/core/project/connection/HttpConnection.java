@@ -305,7 +305,12 @@ public class HttpConnection {
 	public static void checkAddress(String address) throws Exception{
 		final String addressLower = address.toLowerCase();
 		if(addressLower.startsWith(HTTP_PROTOCOL) || addressLower.startsWith(HTTPS_PROTOCOL)){
-			List<String> httpWhiteList = Config.general().getHttpWhiteList();
+			List<String> httpWhiteList = null;
+			try {
+				httpWhiteList = Config.general().getHttpWhiteList();
+			} catch (Exception e) {
+				LOGGER.debug(e.getMessage());
+			}
 			if(ListTools.isNotEmpty(httpWhiteList)) {
 				Optional<String> optional = httpWhiteList.stream().filter(o -> addressLower.indexOf("://" + o) > -1).findFirst();
 				if (!optional.isPresent()) {
