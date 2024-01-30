@@ -289,6 +289,8 @@ MWF.xApplication.systemconfig.LP={
 		"passwordLengthText": "{n} caracteres, {text}",
 		"passwordRsa": "Transmisión cifrada de contraseñas",
 		"passwordRsaInfo": "Por defecto, el sistema transmite contraseñas en texto claro. Puede habilitar esta opción para activar la transmisión cifrada de contraseñas. (Se requiere reiniciar el servidor después de realizar cambios)",
+		"passwordCheck": "Cambio de contraseña forzado",
+		"passwordCheckInfo": "Si necesitas obligar a un usuario a cambiar su contraseña cuando inicia sesión por primera vez, puedes activar esta opción.",
 		"adminPasswordInfo": "Puede cambiar la contraseña del superadministrador xadmin aquí. (Se requiere reiniciar el servidor después de realizar cambios)",
 		"modifyAdminPassword": "Cambiar la contraseña de administrador",
 		"oldPassword": "Contraseña actual",
