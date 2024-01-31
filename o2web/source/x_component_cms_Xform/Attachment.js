@@ -506,6 +506,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.document) {
             attachments.each(function (att) {
+
+                if( !this.queryDownload( att ) )return;
+
                 if (window.o2android && window.o2android.postMessage) {
                     var body = {
                     type: "downloadAttachment",
@@ -540,6 +543,9 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     openAttachment: function (e, node, attachments) {
         if (this.form.businessData.document) {
             attachments.each(function (att) {
+
+                if( !this.queryOpen( att ) )return;
+
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
