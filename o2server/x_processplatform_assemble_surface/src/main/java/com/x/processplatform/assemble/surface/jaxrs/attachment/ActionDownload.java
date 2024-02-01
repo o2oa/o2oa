@@ -46,10 +46,10 @@ class ActionDownload extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, attachment.getJob())
+			/*if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, attachment.getJob())
 					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
-			}
+			}*/
 
 			if ((!Config.processPlatform().getExtensionEvents().getWorkAttachmentDownloadEvents().isEmpty()) || (Config
 					.processPlatform().getExtensionEvents().getWorkCompletedAttachmentDownloadEvents().isEmpty())) {
