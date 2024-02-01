@@ -253,7 +253,7 @@ public class FileAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "上传文件,并进行压缩,如果文件大小小于指定宽度或者宽度<0,则不进行压缩.为了兼容前台增加的POST方法.", action = ActionUploadOctetStream.class)
 	@POST
 	@Path("upload/referencetype/{referenceType}/reference/{reference}/scale/{scale}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void uploadPostOctetStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
