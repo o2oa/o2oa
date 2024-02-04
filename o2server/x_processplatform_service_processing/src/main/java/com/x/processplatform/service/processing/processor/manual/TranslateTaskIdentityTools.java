@@ -20,7 +20,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.core.entity.content.Data;
@@ -148,7 +147,7 @@ public class TranslateTaskIdentityTools {
 			GraalvmScriptingFactory.eval(source, aeiObjects.bindings(), jsonElement -> {
 				try {
 					addObjectToTaskIdentities(taskIdentities, units, groups,
-							JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(jsonElement));
+							GraalvmScriptingFactory.Helper.stringOrDistinguishedNameAsList(jsonElement));
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}

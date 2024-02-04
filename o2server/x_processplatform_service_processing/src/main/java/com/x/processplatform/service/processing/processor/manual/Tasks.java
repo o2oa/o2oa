@@ -208,7 +208,7 @@ public class Tasks {
 		ExpireScriptResult expire = new ExpireScriptResult();
 		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(), manual,
 				Business.EVENT_MANUALTASKEXPIRE);
-		GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 				.putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
 		GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 			if (null != jsonElement) {

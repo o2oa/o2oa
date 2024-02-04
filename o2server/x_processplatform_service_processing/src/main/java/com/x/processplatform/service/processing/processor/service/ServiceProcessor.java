@@ -55,7 +55,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 			LOGGER.debug("work:{}, serviceValue:{}.", () -> aeiObjects.getWork().getId(),
 					() -> this.gson.toJson(aeiObjects.getWork().getServiceValue()));
 			if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings().putMember(
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings().putMember(
 						GraalvmScriptingFactory.BINDING_NAME_REQUESTTEXT,
 						gson.toJson(aeiObjects.getWork().getServiceValue()));
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),

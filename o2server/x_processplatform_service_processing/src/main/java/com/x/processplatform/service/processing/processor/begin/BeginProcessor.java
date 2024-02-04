@@ -204,8 +204,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 		ExpireScriptResult expire = new ExpireScriptResult();
 		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 				aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
-		GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
-		bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings().putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
 		GraalvmScriptingFactory.eval(source, bindings, o -> {
 			if (null != o) {
 				ExpireScriptResult result = gson.fromJson(o, ExpireScriptResult.class);

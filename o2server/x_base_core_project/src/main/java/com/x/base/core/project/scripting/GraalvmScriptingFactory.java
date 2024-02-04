@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,7 +54,7 @@ public class GraalvmScriptingFactory {
 //	private static final Source STRINGIFYSOURCE = Source.create(LANGUAGE_ID_JS,
 //			"JSON.stringify(" + NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY + ")");
 
-	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();;
+	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();
 	private static Source commonScriptSource;
 
 	private static Type stringsType = new TypeToken<ArrayList<String>>() {
@@ -61,8 +62,7 @@ public class GraalvmScriptingFactory {
 
 	public static JsonElement eval(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
-				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalvmScriptingFactory::notBlockedClass)
-				.build()) {
+				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalvmScriptingFactory::allowClass).build()) {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
 			if (null != bindings) {
 				bindings.entrySet().forEach(en -> bind.putMember(en.getKey(), en.getValue()));
@@ -102,8 +102,8 @@ public class GraalvmScriptingFactory {
 		}
 	}
 
-	private static boolean notBlockedClass(String className) {
-		return !Config.general().getScriptingBlockedClasses().contains(className);
+	private static boolean allowClass(String className) {
+		return Config.general().getScriptingAllowClasses().contains(className);
 	}
 
 	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
@@ -280,7 +280,7 @@ public class GraalvmScriptingFactory {
 
 	}
 
-	private static class Helper {
+	public static class Helper {
 
 		private Helper() {
 			// nothing
@@ -293,7 +293,7 @@ public class GraalvmScriptingFactory {
 		 * @return
 		 * 
 		 */
-		private static List<String> stringOrDistinguishedNameAsList(JsonElement jsonElement) {
+		public static List<String> stringOrDistinguishedNameAsList(JsonElement jsonElement) {
 			List<String> list = new ArrayList<>();
 			if (null != jsonElement) {
 				if (jsonElement.isJsonObject()) {

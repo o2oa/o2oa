@@ -94,7 +94,7 @@ class ActionInput extends BaseAction {
 			Source source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
 			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
 			for (PersonItem o : people) {
-				bindings.put(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PERSON, o);
+				bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PERSON, o);
 				Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
 				if (opt.isPresent()) {
 					o.setPassword(opt.get());

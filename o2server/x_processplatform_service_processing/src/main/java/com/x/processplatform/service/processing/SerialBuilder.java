@@ -71,7 +71,7 @@ public class SerialBuilder {
 		if (StringUtils.isNotEmpty(data)) {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
 			if (!list.isEmpty()) {
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 						.putMember(GraalvmScriptingFactory.BINDING_NAME_SERIAL, this.serial)
 						.putMember(GraalvmScriptingFactory.BINDING_NAME_PROCESS, this.process);
 				for (SerialTextureItem o : list) {

@@ -778,7 +778,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			boolean hasManualStayScript = this.hasManualStayScript(manual);
 			boolean processHasManualStayScript = this.hasManualStayScript(aeiObjects.getProcess());
 			if (hasManualStayScript || processHasManualStayScript) {
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
 				WorkContext workContext = (WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT);
 				// 只有一条待办绑定到task
 				if (aeiObjects.getCreateTasks().size() == 1) {

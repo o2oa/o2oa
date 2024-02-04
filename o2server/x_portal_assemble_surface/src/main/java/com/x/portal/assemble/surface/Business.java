@@ -136,8 +136,8 @@ public class Business {
 		resources.setWebservicesClient(new WebservicesClient());
 		resources.setApplications(ThisApplication.context().applications());
 		GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
-		bindings.put(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-		bindings.put(GraalvmScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON,
+		bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+		bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON,
 				XGsonBuilder.toJson(effectivePerson));
 		return bindings;
 	}

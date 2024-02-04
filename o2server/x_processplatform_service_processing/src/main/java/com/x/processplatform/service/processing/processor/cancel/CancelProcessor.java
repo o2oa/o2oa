@@ -117,11 +117,8 @@ public class CancelProcessor extends AbstractCancelProcessor {
 				aeiObjects.getProcessingAttributes());
 		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedCancelScript(embed)) {
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
-//			// ScriptContext scriptContext = embedAeiObjects.scriptContext();
-//			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-//			bindings.put(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 						embed, Business.EVENT_EMBEDCOMPLETED);

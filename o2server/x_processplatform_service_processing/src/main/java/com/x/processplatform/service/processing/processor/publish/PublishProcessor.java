@@ -20,7 +20,6 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -145,7 +144,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		if (hasTableAssignDataScript(publishTable)) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					publishTable.getTargetAssignDataScript(), publishTable.getTargetAssignDataScriptText());
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, assignBody);
 			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 				if (!jsonElement.isJsonNull()) {
@@ -245,7 +244,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		if (hasCmsAssignDataScript(publish)) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_PUBLISHCMSBODY);
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, assignBody);
 			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 				if (!jsonElement.isJsonNull()) {
@@ -269,7 +268,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			} else {
 				Object o = data.find(str.trim());
 				if (o != null) {
-					list.addAll(JsonScriptingExecutor.Helper.stringOrDistinguishedNameAsList(gson.toJsonTree(o)));
+					list.addAll(GraalvmScriptingFactory.Helper.stringOrDistinguishedNameAsList(gson.toJsonTree(o)));
 				}
 			}
 		}
@@ -300,6 +299,9 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	public class CmsDocument extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -1644861126932404754L;
+
 		private String identity;
 		private String title;
 		private String wf_workId;

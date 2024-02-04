@@ -117,7 +117,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					|| (StringUtils.isNotEmpty(invoke.getJaxwsResponseScriptText()))) {
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 						aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSRESPONSE);
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 						.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXWSRESPONSE, response);
 				Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, bindings);
 				if (opt.isPresent() && BooleanUtils.isFalse(opt.get())) {
@@ -134,7 +134,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				|| (StringUtils.isNotEmpty(invoke.getJaxwsParameterScriptText()))) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXWSPARAMETER);
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXWSPARAMETERS, parameters);
 			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 				JsonArray arr = new JsonArray();
@@ -199,7 +199,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 						aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSRESPONSE);
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 						.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSRESPONSE, jaxrsResponse);
 				Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, bindings);
 				if (opt.isPresent() && BooleanUtils.isFalse(opt.get())) {
@@ -373,7 +373,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 					|| (StringUtils.isNotEmpty(invoke.getJaxrsResponseScriptText()))) {
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 						aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSRESPONSE);
-				GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+				GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 						.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSRESPONSE, jaxrsResponse);
 				Optional<Boolean> opt = GraalvmScriptingFactory.evalAsBoolean(source, bindings);
 				if (opt.isPresent() && BooleanUtils.isFalse(opt.get())) {
@@ -455,7 +455,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsParameterScriptText()))) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSPARAMETER);
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSPARAMETERS, parameters);
 			// map有可能返回null
 			Map<String, String> map = GraalvmScriptingFactory.eval(source, bindings,
@@ -477,7 +477,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsBodyScriptText()))) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSBODY);
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSBODY, jaxrsBody);
 			GraalvmScriptingFactory.eval(source, bindings, jsonElement -> {
 				if (!jsonElement.isJsonNull()) {
@@ -494,7 +494,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 				|| (StringUtils.isNotEmpty(invoke.getJaxrsHeadScriptText()))) {
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getActivity(), Business.EVENT_INVOKEJAXRSHEAD);
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_JAXRSHEADERS, map);
 			map.putAll(GraalvmScriptingFactory.eval(source, bindings, new TypeToken<Map<String, String>>() {
 			}.getType()));

@@ -242,7 +242,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				aeiObjects.getProcessingAttributes());
 		parentAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
 				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),

@@ -138,7 +138,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 		if (this.hasAssignDataScript(embed)) {
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assignData));
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETASSIGNDATA);
@@ -194,7 +194,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 			break;
 		}
 		if (this.hasIdentityScript(embed)) {
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
 			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					embed, Business.EVENT_EMBEDTARGETIDENTITY);
 			List<String> os = GraalvmScriptingFactory.evalAsDistinguishedNames(source, bindings);
@@ -215,7 +215,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 					embed, Business.EVENT_EMBEDTARGETTITLE);
 			WrapScriptObject wrap = new WrapScriptObject();
 			wrap.set(gson.toJson(assignData));
-			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings()
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
 					.putMember(GraalvmScriptingFactory.BINDING_NAME_ASSIGNDATA, wrap);
 			Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
 			if (opt.isPresent()) {
