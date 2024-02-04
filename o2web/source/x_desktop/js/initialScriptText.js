@@ -1550,6 +1550,7 @@ bind.workContext = {
 };
 bind.workContent = bind.workContext;
 //person, 直接注入，oauth配置和默认生成口令脚本中
+
 /**
  * 在流程事件、流程路由事件、流程活动事件中通过this.data获取流程实例的业务数据。（内容管理无后台脚本）。<br/>
  * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
@@ -1564,92 +1565,6 @@ bind.workContent = bind.workContext;
  * @borrows module:data#[property] as [property]
  */
 //bind.data = this.java_data;  //业务数据data，直接注入
-
-
-//流程调用脚本，数据脚本--------------------------------------------
-//{
-//	data:{},
-//	application:"",
-//	process:"",
-//	identity: "",
-//	attachmentList: [],
-//	title: "",
-//	processing: true
-//}
-//后续计划通过return 返回assignData,
-/**
- * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
- * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
- * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
- * @module server.assignData
- * @o2cn 流程实例业务数据
- * @o2category server.process
- * @o2ordernumber 210
- * @example
- * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
- * var data = this.assignData.get();
- * data.data.parentProcessData = "父流程实例的信息";
- * this.assignData.set(data);
- * @example
- * <caption>
- *    assignData.set方法是为了兼容以前的版本。<br>
- *    <b>建议通过return一个json对象的方式来设置data内容</b>
- * </caption>
- * //也可以通过return一个json对象的方式来代替assignData.set方法
- * var data = this.assignData.get();
- * data.data.parentProcessData = "父流程实例的信息";
- * return data;
- */
-bind.assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
-    _data: null,
-    /**
-     * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
-     * @method get
-     * @methodOf module:server.assignData
-     * @static
-     * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
-     * <pre><code class='language-js'>{
-     *        "application": "application id",  //被调用的应用id
-     *        "process": "process id",          //被调用的流程id
-     *        "identity": "xxx@xxx@I",          //被调用流程的启动这身份
-     *        "title": "title",                 //被调用流程实例的标题
-     *        "attachmentList": [],             //要传递到被调用的流程实例的附件对象
-     *        "data": {}                        //要传递到被调用的流程实例的业务数据
-     * }</code></pre>
-     * @o2syntax
-     * var data = this.assignData.get();
-     */
-    "get": function(){
-        this.data = JSON.parse(bind.java_assignData.get());
-        return this.data;
-    },
-    /**
-     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
-     * @method set
-     * @methodOf module:server.assignData
-     * @static
-     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
-     * @o2syntax
-     * this.assignData.set(data);
-     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
-     * @example
-     * var data = this.assignData.get();
-     * data.data.parentProcessData = "父流程实例的信息";
-     * return data;
-     */
-    "set": function(data){
-        bind.java_assignData.set(JSON.stringify(data || this.data));
-    }
-};
-Object.defineProperties(bind.assignData, {"data": {
-        "configurable": true,
-        "get": function(){
-            if (this._data) return this._data;
-            return JSON.parse(bind.java_assignData.get());
-        },
-        "set": function(v){this._data = v;}
-    }});
-//--------------------------------------------------------------
 //封装java对象data, 以兼容javascript对象
 (function (bind) {
     Object.prototype.containsKey = function(key){
@@ -1830,6 +1745,93 @@ Object.defineProperties(bind.assignData, {"data": {
         }
     })
 })(this);
+
+//流程调用脚本，数据脚本--------------------------------------------
+//{
+//	data:{},
+//	application:"",
+//	process:"",
+//	identity: "",
+//	attachmentList: [],
+//	title: "",
+//	processing: true
+//}
+//后续计划通过return 返回assignData,
+/**
+ * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
+ * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
+ * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
+ * @module server.assignData
+ * @o2cn 流程实例业务数据
+ * @o2category server.process
+ * @o2ordernumber 210
+ * @example
+ * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
+ * var data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * this.assignData.set(data);
+ * @example
+ * <caption>
+ *    assignData.set方法是为了兼容以前的版本。<br>
+ *    <b>建议通过return一个json对象的方式来设置data内容</b>
+ * </caption>
+ * //也可以通过return一个json对象的方式来代替assignData.set方法
+ * var data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * return data;
+ */
+bind.assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
+    _data: null,
+    /**
+     * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
+     * @method get
+     * @methodOf module:server.assignData
+     * @static
+     * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
+     * <pre><code class='language-js'>{
+     *        "application": "application id",  //被调用的应用id
+     *        "process": "process id",          //被调用的流程id
+     *        "identity": "xxx@xxx@I",          //被调用流程的启动这身份
+     *        "title": "title",                 //被调用流程实例的标题
+     *        "attachmentList": [],             //要传递到被调用的流程实例的附件对象
+     *        "data": {},                       //要传递到被调用的流程实例的业务数据
+     *        "attachmentSoftCopy"              //如果为true，不拷贝附件文件。默认false  @todo
+     * }</code></pre>
+     * @o2syntax
+     * var data = this.assignData.get();
+     */
+    "get": function(){
+        this.data = JSON.parse(bind.java_assignData.get());
+        return this.data;
+    },
+    /**
+     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
+     * @method set
+     * @methodOf module:server.assignData
+     * @static
+     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
+     * @o2syntax
+     * this.assignData.set(data);
+     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
+     * @example
+     * var data = this.assignData.get();
+     * data.data.parentProcessData = "父流程实例的信息";
+     * return data;
+     */
+    "set": function(data){
+        bind.java_assignData.set(JSON.stringify(data || this.data));
+    }
+};
+Object.defineProperties(bind.assignData, {"data": {
+        "configurable": true,
+        "get": function(){
+            if (this._data) return this._data;
+            return JSON.parse(bind.java_assignData.get());
+        },
+        "set": function(v){this._data = v;}
+    }});
+//--------------------------------------------------------------
+
 //服务调用活动，相关脚本--------------------------------------------
 //调用活动中的参数 java_jaxwsParameters webservice调用;  java_jaxrsParameterss rest调用
 //后续计划通过return 返回json（jaxrs）或数组（jaxws）
@@ -2307,8 +2309,8 @@ bind.expire = {
 /**
  * 在流程调用活动中。当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件脚本中，可以访问到embedData对象<br/>
  * embedData对象就是被调用的子流程的业务数据，它是一个类似JSON的对象，您可以用访问JSON对象的方法访问embedData对象的所有数据。<br/>
- * 如果您需要获取embedData的json文本，请使用embedData.toString()f方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
- * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end
+ * 如果您需要获取embedData的json文本，请使用embedData.toString()方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
+ * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end terminate
  * <pre><code class='language-js'>
  *  var embedStatus = this.workContext.getWork().embedCompleted;
  *  if (embedStatus=="end"){
@@ -2316,6 +2318,9 @@ bind.expire = {
  *  }
  *  if (embedStatus=="cancel"){
  *      //被调用的子流程流转到了取消活动
+ *  }
+ *  if (embedStatus=="terminate"){
+ *      //被调用的子流程被终止了
  *  }
  * </code></pre>
  * @o2range 流程配置-流程调用活动中，当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件中可用
