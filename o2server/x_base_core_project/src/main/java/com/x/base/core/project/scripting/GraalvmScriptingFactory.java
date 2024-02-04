@@ -265,6 +265,10 @@ public class GraalvmScriptingFactory {
 		return Source.create(LANGUAGE_ID_JS, sb.toString());
 	}
 
+	public static Source source(String text) {
+		return Source.create(LANGUAGE_ID_JS, text);
+	}
+
 	public static class Bindings extends LinkedHashMap<String, Object> {
 
 		private static final long serialVersionUID = 304948629493499012L;
