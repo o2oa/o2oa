@@ -7,7 +7,7 @@
     "driverClassName": "",
     "dictionary": "",
     "maxTotal": 100.0,
-    "maxIdle": 0.0,
+    "maxIdle": 15.0,
     "statEnable": true,
     "statFilter": "mergeStat",
     "includes": [],

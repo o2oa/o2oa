@@ -98,7 +98,7 @@ class ActionPostLogin extends BaseAction {
 					.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
 				tokenType = TokenType.auditManager;
 			}
-			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
+			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType, HttpToken.getClient(request),
 					Config.token().getCipher(), Config.person().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();

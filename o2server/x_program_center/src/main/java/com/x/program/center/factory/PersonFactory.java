@@ -96,7 +96,7 @@ public class PersonFactory extends AbstractFactory {
 
 	public void setPassword(Person person, String password) throws Exception {
 		Calendar cal = Calendar.getInstance();
-		person.setChangePasswordTime(cal.getTime());
+		person.setChangePasswordTime(null);
 		person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()));
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod == null || passwordPeriod <= 0) {

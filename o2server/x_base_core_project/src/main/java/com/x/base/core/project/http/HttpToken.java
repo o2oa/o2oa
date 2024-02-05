@@ -32,12 +32,14 @@ public class HttpToken {
 	public static final String X_DISTINGUISHEDNAME = "x-distinguishedName";
 	public static final String X_REQUESTBODY = "x-requestBody";
 	public static final String X_CLIENT = "x-client";
+	public static final String CLIENT_APP = "app";
+	public static final String CLIENT_H5 = "h5";
 	public static final String X_DEBUGGER = "x-debugger";
 	public static final String COOKIE_ANONYMOUS_VALUE = "anonymous";
 	public static final String SET_COOKIE = "Set-Cookie";
 
 	private static final String REGULAREXPRESSION_IP = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
-	private static final String REGULAREXPRESSION_TOKEN = "^(anonymous|user|manager|cipher|systemManager|securityManager|auditManager)([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(\\S{1,})$";
+	private static final String REGULAREXPRESSION_TOKEN = "^(anonymous|user|manager|cipher|systemManager|securityManager|auditManager)([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])(h5|moa|app)?(\\S{1,})$";
 
 	private static final String COOKIE_PART_MIDDLE = "; path=/; domain=";
 	private static final String COOKIE_PART_HTTPONLY = "; HttpOnly";
@@ -94,12 +96,14 @@ public class HttpToken {
 			TokenType tokenType = TokenType.valueOf(matcher.group(1));
 			long diff = (System.currentTimeMillis() - date.getTime());
 			diff = Math.abs(diff);
+			String client = matcher.group(3);
+			String userName = matcher.group(4);
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)
 					|| TokenType.systemManager.equals(tokenType) || TokenType.auditManager.equals(tokenType)
 					|| TokenType.securityManager.equals(tokenType)) {
 				// 启用安全删除
 				if (BooleanUtils.isTrue(Config.person().getEnableSafeLogout())) {
-					String user = URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name());
+					String user = URLDecoder.decode(userName, StandardCharsets.UTF_8.name());
 					Date threshold = Config.resource_node_tokenThresholds().get(user);
 					if ((null != threshold) && threshold.after(date)) {
 					    LOGGER.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
@@ -107,11 +111,11 @@ public class HttpToken {
 						return EffectivePerson.anonymous();
 					}
 				}
-
-				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
+				int expiredMinutes = CLIENT_APP.equals(client) ? Config.person().getAppTokenExpiredMinutes() : Config.person().getTokenExpiredMinutes();
+				if (diff > (60000L * expiredMinutes)) {
 					// 不报错,跳过错误,将用户设置为anonymous
 				    LOGGER.warn("token expired, user:{}, token:{}, remote address:{}.",
-							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain, address);
+							URLDecoder.decode(userName, StandardCharsets.UTF_8.name()), plain, address);
 					return EffectivePerson.anonymous();
 				}
 			}
@@ -119,7 +123,7 @@ public class HttpToken {
 				// 不报错,跳过错误,将用户设置为anonymous
 				return EffectivePerson.anonymous();
 			}
-			return new EffectivePerson(URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), tokenType,
+			return new EffectivePerson(URLDecoder.decode(userName, StandardCharsets.UTF_8.name()), tokenType, client,
 					key, Config.person().getEncryptType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -252,6 +256,23 @@ public class HttpToken {
 			value = Objects.toString(request.getRemoteAddr(), "");
 		}
 		return value;
+	}
+
+	public static String getClient(HttpServletRequest request) {
+		if(request == null){
+			return CLIENT_H5;
+		}
+		String xClient = request.getHeader(X_CLIENT);
+		if (StringUtils.isNotBlank(xClient)) {
+			xClient = xClient.toLowerCase();
+			if (xClient.indexOf("android") != -1) {
+				return CLIENT_APP;
+			}
+			if (xClient.indexOf("ios") != -1) {
+				return CLIENT_APP;
+			}
+		}
+		return CLIENT_H5;
 	}
 
 	private String userAgent(HttpServletRequest request) {
