@@ -253,7 +253,7 @@ public class FileAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "上传文件,并进行压缩,如果文件大小小于指定宽度或者宽度<0,则不进行压缩.为了兼容前台增加的POST方法.", action = ActionUploadOctetStream.class)
 	@POST
 	@Path("upload/referencetype/{referenceType}/reference/{reference}/scale/{scale}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void uploadPostOctetStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
@@ -440,5 +440,24 @@ public class FileAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "获取文件Base64编码后的内容.", action = ActionGetBase64.class)
+	@GET
+	@Path("{id}/binary/base64")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getBase64(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+		ActionResult<ActionGetBase64.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetBase64().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 
 }
