@@ -206,7 +206,7 @@ public class ExternalDataSource extends ConfigObject {
         if ((this.maxIdle == null) || (this.maxIdle < 1)) {
             return DEFAULT_MAXIDLE;
         } else {
-            return this.maxTotal;
+            return this.maxIdle;
         }
     }
 
