@@ -47,6 +47,15 @@
         @changeConfig="(value)=>{tokenExpiredMinutes = value.toInt(); saveConfig('person', 'tokenExpiredMinutes', value.toInt())}"></BaseItem>
 
     <BaseItem
+        :title="lp._loginConfig.appTokenExpired"
+        :info="lp._loginConfig.appTokenExpiredInfo"
+        :config="appTokenExpiredMinutes"
+        :allowEditor="true"
+        min="1"
+        type="number"
+        @changeConfig="(value)=>{appTokenExpiredMinutes = value.toInt(); saveConfig('person', 'appTokenExpiredMinutes', value.toInt())}"></BaseItem>
+
+    <BaseItem
         :title="lp._loginConfig.tokenName"
         :info="lp._loginConfig.tokenNameInfo"
         :config="tokenName"
@@ -96,6 +105,7 @@ import {getConfigData, getConfig, saveConfig} from '@/util/acrions';
 const failureCount = ref(5);
 const failureInterval = ref(15);
 const tokenExpiredMinutes = ref(4320);
+const appTokenExpiredMinutes = ref(4320);
 const tokenName = ref('x-token');
 const enableSafeLogout = ref(false);
 const superPermission = ref(true);
@@ -107,6 +117,11 @@ const load = async () => {
   if (data.failureCount) failureCount.value = data.failureCount;
   if (data.failureInterval) failureInterval.value = data.failureInterval;
   if (data.tokenExpiredMinutes) tokenExpiredMinutes.value = data.tokenExpiredMinutes;
+  if (data.appTokenExpiredMinutes) {
+    appTokenExpiredMinutes.value = data.appTokenExpiredMinutes;
+  }else if(data.tokenExpiredMinutes){
+    appTokenExpiredMinutes.value = data.tokenExpiredMinutes;
+  }
   if (data.tokenName) tokenName.value = data.tokenName;
   enableSafeLogout.value = !!data.enableSafeLogout;
   superPermission.value = data.superPermission!==false;

@@ -10,11 +10,36 @@ MWF.xApplication.Org.PersonExplorer = new Class({
 	options: {
 		"style": "default"
 	},
+    loadToolbar: function(){
+        if (this._isActionManager()) {
+            this.isEditor = true;
+            this.addTopElementNode = new Element("div", {"styles": this.css.addTopGroupNode}).inject(this.toolbarNode);
+            this.addTopElementNode.addEvent("click", function () {
+                this.addTopElement();
+            }.bind(this));
+        }
+        this.filterNode = new Element("div", {"styles": this.css.filterNode}).inject(this.toolbarNode);
+        this.loadFilterTooltip();
+
+        this.createSearchNode();
+        this.loadPingyinArea();
+    },
+    loadFilterTooltip: function(){
+        this.filterTooltip = new MWF.xApplication.Org.PersonExplorer.FilterTooltip(this.app.content, this.filterNode, null, {}, {
+            event : "click"
+        });
+        this.filterTooltip.explorer = this;
+    },
     _isActionManager: function(){
         return (MWF.AC.isOrganizationManager() || MWF.AC.isPersonManager() || MWF.AC.isUnitManager());
     },
-    _listElementNext: function(lastid, count, callback){
-        this.actions.listPersonNext(lastid||"(0)", count, function(json){
+    _listElementNext: function(lastid, count, callback, page){
+        // this.actions.listPersonNext(lastid||"(0)", count, function(json){
+        //     if (callback) {
+        //         callback.apply(this, [json]);
+        //     }
+        // }.bind(this));
+        o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(page, count, this.filterData || {}, function(json){
             if (callback) {
                 callback.apply(this, [json]);
             }
@@ -24,12 +49,19 @@ MWF.xApplication.Org.PersonExplorer = new Class({
         return new MWF.xApplication.Org.PersonExplorer.Person(data, explorer, this.isEditor, i);
     },
     _listElementByKey: function(callback, failure, key){
-        //this.actions.listPersonByPinyin(function(json){
-        this.actions.listPersonByKey(function(json){
+
+        // this.actions.listPersonByKey(function(json){
+        //     if (callback) {
+        //         callback.apply(this, [json]);
+        //     }
+        // }.bind(this), failure, key);
+        o2.Actions.load("x_organization_assemble_control").PersonAction.listFilterPaging(1, 10000, {
+            key: key
+        }, function(json){
             if (callback) {
                 callback.apply(this, [json]);
             }
-        }.bind(this), failure, key);
+        }.bind(this), failure)
     },
     _getAddElementData: function(){
         return {
@@ -601,19 +633,74 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
         //this.explorer.app.lp.edit
         this.nameNode.setStyle("margin-right", "80px");
         if (this.getActionPermission()){
+
             this.resetPasswordAction = new Element("div", {"styles": this.style.titleInforResetPasswordNode, "text": this.item.explorer.app.lp.resetPassword}).inject(this.nameNode, "before");
             this.resetPasswordAction.addEvent("click", function(e){this.resetPassword(e);}.bind(this));
 
             this.expiredTimeAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.expiredTime}).inject(this.nameNode, "before");
             this.expiredTimeAction.addEvent("click", function(e){this.setPasswordExpiredTime(e);}.bind(this));
 
+            this.lockPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.lockPerson}).inject(this.nameNode, "before");
+            this.lockPersonAction.addEvent("click", function(e){this.lockPerson(e);}.bind(this));
+            if( this.data.status === '1' )this.lockPersonAction.hide(); //data.status = 1 表示已锁定
+
             this.unlockPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.unlockPerson}).inject(this.nameNode, "before");
             this.unlockPersonAction.addEvent("click", function(e){this.unlockPerson(e);}.bind(this));
+            if( this.data.status !== '1' )this.unlockPersonAction.hide();
+
+            this.banPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.banPerson}).inject(this.nameNode, "before");
+            this.banPersonAction.addEvent("click", function(e){this.banPerson(e);}.bind(this));
+            if( this.data.status === '2' )this.banPersonAction.hide(); //data.status = 2 表示已禁用
+
+            this.unbanPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.unbanPerson}).inject(this.nameNode, "before");
+            this.unbanPersonAction.addEvent("click", function(e){this.unbanPerson(e);}.bind(this));
+            if( this.data.status !== '2' )this.unbanPersonAction.hide();
+
         }
         if (this.data.control.allowEdit){
             this.iconNode.setStyle("cursor", "pointer");
             this.iconNode.addEvent("click", function(){this.changePersonIcon();}.bind(this));
         }
+    },
+    banPerson: function (){
+        var form = new MWF.xApplication.Org.PersonExplorer.BanPersonForm(this.explorer, {}, {
+            name :  this.data.name || "",
+            onPostOk : function( reason ){
+                o2.Actions.load("x_organization_assemble_control").PersonAction.banPerson(this.data.id, {
+                    desc: reason
+                }, function(){
+                    this.explorer.app.notice( this.explorer.app.lp.banPersonSuccess.replace('{name}', this.data.name) );
+                    this.unbanPersonAction.show();
+                    this.banPersonAction.hide();
+                    window.setTimeout( function (){
+                        this.explorer.currentItem.changeSelectedItem();
+                    }.bind(this), 300)
+                }.bind(this));
+            }.bind(this)
+        });
+        form.create();
+    },
+    unbanPerson: function(e){
+        var _self = this;
+        var text = this.item.explorer.app.lp.unbanPersonText.replace("{name}", this.data.name);
+        this.item.explorer.app.confirm("info", e, this.item.explorer.app.lp.unbanPersonTitle, text, "360", "120", function(){
+            _self.doUnbanPerson();
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
+    doUnbanPerson: function (e){
+        MWF.Actions.load("x_organization_assemble_control").PersonAction.unbanPerson(this.data.id, {}, function(){
+            var text = this.item.explorer.app.lp.unbanPersonSuccess;
+            text = text.replace("{name}", this.data.name);
+            this.item.explorer.app.notice(text, "success");
+            this.unbanPersonAction.hide();
+            this.banPersonAction.show();
+            window.setTimeout( function (){
+                this.explorer.currentItem.changeSelectedItem();
+            }.bind(this), 300)
+        }.bind(this));
     },
     resetPassword: function(e){
         var _self = this;
@@ -634,6 +721,25 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
             this.item.explorer.app.notice(text, "success");
         }.bind(this));
     },
+    lockPerson: function (e){
+        var form = new MWF.xApplication.Org.PersonExplorer.LockPersonForm(this.explorer, {}, {
+            name :  this.data.name || "",
+            onPostOk : function( lockExpiredTime, reason ){
+                o2.Actions.load("x_organization_assemble_control").PersonAction.lockPerson(this.data.id, {
+                    lockExpiredTime: lockExpiredTime,
+                    desc: reason
+                }, function(){
+                    this.explorer.app.notice( this.explorer.app.lp.lockPersonSuccess.replace('{name}', this.data.name) );
+                    this.unlockPersonAction.show();
+                    this.lockPersonAction.hide();
+                    window.setTimeout( function (){
+                        this.explorer.currentItem.changeSelectedItem();
+                    }.bind(this), 300);
+                }.bind(this));
+            }.bind(this)
+        });
+        form.create();
+    },
     unlockPerson : function(e){
         var _self = this;
         var text = this.item.explorer.app.lp.unlockPersonText;
@@ -650,6 +756,11 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
             var text = this.item.explorer.app.lp.unlockPersonSuccess;
             text = text.replace("{name}", this.data.name);
             this.item.explorer.app.notice(text, "success");
+            this.unlockPersonAction.hide();
+            this.lockPersonAction.show();
+            window.setTimeout( function (){
+                this.explorer.currentItem.changeSelectedItem();
+            }.bind(this), 300);
         }.bind(this));
     },
     setPasswordExpiredTime: function(){
@@ -787,40 +898,40 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         var n = this.editContentNode.getElement(".infor_name");
         if (n) n.set("text", this.data.name || "");
 
-        var n = this.editContentNode.getElement(".infor_employee");
+        n = this.editContentNode.getElement(".infor_employee");
         if (n) n.set("text", this.data.employee || "");
 
-        var n = this.editContentNode.getElement(".infor_mobile");
+        n = this.editContentNode.getElement(".infor_mobile");
         if (n) n.set("text", this.data.mobile || "");
 
-        var n = this.editContentNode.getElement(".infor_unique");
+        n = this.editContentNode.getElement(".infor_unique");
         if (n) n.set("text", this.data.unique || "");
 
-        var n = this.editContentNode.getElement(".infor_gender");
+        n = this.editContentNode.getElement(".infor_gender");
         if (n) n.set("text", this.getGenderType());
 
-        var n = this.editContentNode.getElement(".infor_mail");
+        n = this.editContentNode.getElement(".infor_mail");
         if (n) n.set("text", this.data.mail || "");
 
-        var n = this.editContentNode.getElement(".infor_weixin");
+        n = this.editContentNode.getElement(".infor_weixin");
         if (n) n.set("text", this.data.weixin || "");
 
-        var n = this.editContentNode.getElement(".infor_qq");
+        n = this.editContentNode.getElement(".infor_qq");
         if (n) n.set("text", this.data.qq || "");
 
-        var n = this.editContentNode.getElement(".infor_officePhone");
+        n = this.editContentNode.getElement(".infor_officePhone");
         if (n) n.set("text", this.data.officePhone || "");
 
-        var n = this.editContentNode.getElement(".infor_boardDate");
+        n = this.editContentNode.getElement(".infor_boardDate");
         if (n) n.set("text", this.data.boardDate || "");
 
-        var n = this.editContentNode.getElement(".infor_birthday");
+        n = this.editContentNode.getElement(".infor_birthday");
         if (n) n.set("text", this.data.birthday || "");
 
-        var n = this.editContentNode.getElement(".infor_ipAddress");
+        n = this.editContentNode.getElement(".infor_ipAddress");
         if (n) n.set("text", this.data.ipAddress || "");
 
-        var n = this.editContentNode.getElement(".infor_description");
+        n = this.editContentNode.getElement(".infor_description");
         if (n) n.set("text", this.data.description || "");
 
         n = this.editContentNode.getElement(".infor_securityLabel");
@@ -865,6 +976,11 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
     },
 
     getContentHtml: function(){
+        var statusText = "";
+        this.explorer.app.lp.statusOption.each(function (opt){
+            if( opt.value === (this.data.status || "0") )statusText = opt.text;
+        }.bind(this));
+
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.personName+":</td><td class='inforContent infor_name'>"+(this.data.name || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.personUnique+":</td><td class='inforContent infor_unique'>"+(this.data.unique || "")+"</td></tr>";
@@ -881,8 +997,8 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.ipAddress+":</td><td class='inforContent infor_ipAddress'>"+(this.data.ipAddress || "")+"</td>" +
             "<td class='inforTitle'>"+this.explorer.app.lp.description+":</td><td class='inforContent infor_description'>"+(this.data.description || "")+"</td></tr>";
 
-        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td colspan='3' class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
-            "</tr>";
+        html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.securityLabel+":</td><td class='inforContent infor_securityLabel'>"+(this.data.subjectSecurityClearance || "")+"</td>" +
+            "<td class='inforTitle'>"+this.explorer.app.lp.status+":</td><td class='inforContent infor_status'>"+(statusText || "")+"</td></tr>";
 
         html += "<tr><td colspan='4' class='inforAction'></td></tr>";
         //this.baseInforRightNode.set("html", html);
@@ -1273,7 +1389,7 @@ MWF.xApplication.Org.PersonExplorer.PasswordExpiredTimeForm = new Class({
         this.formAreaNode.setStyle("z-index", 1002);
         this.formMaskNode.setStyle("z-index", 1002);
         this.formTableContainer.setStyles({
-            "margin":"40px 40px 0px 40px"
+            "margin":"20px 40px 0px 40px"
         });
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr>" +
@@ -1342,6 +1458,263 @@ MWF.xApplication.Org.PersonExplorer.PasswordExpiredTimeForm = new Class({
         this.formAreaNode.destroy();
         this.fireEvent("postOk", result.expiredTime);
 
+    }
+});
+
+MWF.xApplication.Org.PersonExplorer.LockPersonForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "cms_xform",
+        "width": "580",
+        "height": "330",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : true,
+        "hasBottom": true,
+        "title": MWF.xApplication.Org.LP.lockPerson,
+        "draggable": true,
+        "closeAction": true,
+        "lockExpiredTime": ""
+    },
+    _createTableContent: function () {
+        this.formTopTextNode.addClass("mainColor_color");
+
+        this.formAreaNode.setStyle("z-index", 1002);
+        this.formMaskNode.setStyle("z-index", 1002);
+        this.formTableContainer.setStyles({
+            "margin":"20px 40px 0px 40px"
+        });
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:70px;'></td>" +
+            "   <td styles='formTableValue'>"+MWF.xApplication.Org.LP.lockPersonInfo+"</td>" +
+            "</tr>"+
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:70px;' lable='lockExpiredTime'></td>" +
+            "   <td styles='formTableValue' item='lockExpiredTime'></td>" +
+            "</tr>"+
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:70px;' lable='reason'></td>" +
+            "   <td styles='formTableValue' item='reason'></td>" +
+            "</tr>"+
+            "</table>";
+        this.formTableArea.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: "meeting",
+                isEdited: true,
+                itemTemplate: {
+                    lockExpiredTime: {
+                        text: MWF.xApplication.Org.LP.lockLimitTime,
+                        tType: "date",
+                        notEmpty: true,
+                        value: this.options.lockExpiredTime || "",
+                        attr: {
+                            "readonly":true
+                        },
+                        calendarOptions : {
+                            "secondEnable": false,
+                            "format": "%Y-%m-%d",
+                            "onShow": function () {
+                                this.container.setStyle("z-index", 1003 );
+                            }
+                        }
+                    },
+                    reason: {
+                        text: MWF.xApplication.Org.LP.lockPersonReason,
+                        type: "textarea",
+                        notEmpty: true,
+                        value: this.options.reason || ""
+                    }
+                }
+            }, this.app, this.css);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _createBottomContent: function () {
+
+        this.closeActionNode = new Element("div.formCancelActionNode", {
+            "styles": this.css.formCancelActionNode,
+            "text": this.lp.cancel
+        }).inject(this.formBottomNode);
+
+        this.closeActionNode.addEvent("click", function (e) {
+            this.cancel(e);
+        }.bind(this));
+
+        this.okActionNode = new Element("div.formOkActionNode", {
+            "styles": this.css.formOkActionNode,
+            "text": this.lp.ok
+        }).inject(this.formBottomNode);
+        this.okActionNode.addClass("mainColor_bg");
+
+        this.okActionNode.addEvent("click", function (e) {
+            this.ok(e);
+        }.bind(this));
+
+
+    },
+    ok: function (e) {
+        this.fireEvent("queryOk");
+
+        var result = this.form.getResult(true, null);
+        if( !result ){
+            this.app.notice(this.lp.inputLockExpiredTimeAndReason, "error");
+            return;
+        }
+        (this.formMaskNode || this.formMarkNode).destroy();
+        this.formAreaNode.destroy();
+        this.fireEvent("postOk", [result.lockExpiredTime, result.reason]);
+
+    }
+});
+
+MWF.xApplication.Org.PersonExplorer.BanPersonForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "cms_xform",
+        "width": "580",
+        "height": "290",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : true,
+        "hasBottom": true,
+        "title": MWF.xApplication.Org.LP.banPerson,
+        "draggable": true,
+        "closeAction": true,
+        "publishTime": ""
+    },
+    _createTableContent: function () {
+        this.formTopTextNode.addClass("mainColor_color");
+
+        this.formAreaNode.setStyle("z-index", 1002);
+        this.formMaskNode.setStyle("z-index", 1002);
+        this.formTableContainer.setStyles({
+            "margin":"20px 40px 0px 40px"
+        });
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:70px;'></td>" +
+            "   <td styles='formTableValue'>"+MWF.xApplication.Org.LP.banPersonText.replace("{name}", this.options.name)+"</td>" +
+            "</tr>"+
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:70px;' lable='reason'></td>" +
+            "   <td styles='formTableValue' item='reason'></td>" +
+            "</tr>"+
+            "</table>";
+        this.formTableArea.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: "meeting",
+                isEdited: true,
+                itemTemplate: {
+                    reason: {
+                        text: MWF.xApplication.Org.LP.reason,
+                        type: "textarea",
+                        notEmpty: true,
+                        value: this.options.reason || ""
+                    }
+                }
+            }, this.app, this.css);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _createBottomContent: function () {
+
+        this.closeActionNode = new Element("div.formCancelActionNode", {
+            "styles": this.css.formCancelActionNode,
+            "text": this.lp.cancel
+        }).inject(this.formBottomNode);
+
+        this.closeActionNode.addEvent("click", function (e) {
+            this.cancel(e);
+        }.bind(this));
+
+        this.okActionNode = new Element("div.formOkActionNode", {
+            "styles": this.css.formOkActionNode,
+            "text": this.lp.ok
+        }).inject(this.formBottomNode);
+        this.okActionNode.addClass("mainColor_bg");
+
+        this.okActionNode.addEvent("click", function (e) {
+            this.ok(e);
+        }.bind(this));
+
+
+    },
+    ok: function (e) {
+        this.fireEvent("queryOk");
+
+        var result = this.form.getResult(true, null);
+        if( !result ){
+            this.app.notice(this.lp.inputReason, "error");
+            return;
+        }
+        (this.formMaskNode || this.formMarkNode).destroy();
+        this.formAreaNode.destroy();
+        this.fireEvent("postOk", result.expiredTime);
+
+    }
+});
+
+MWF.xApplication.Org.PersonExplorer.FilterTooltip = new Class({
+    Extends: MTooltips,
+    _customNode : function(node, contentNode){
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0'>" +
+            "<tr>" +
+            "   <td styles='formTableValue' style='width:30px;' lable='key'></td>" +
+            "   <td styles='formTableValue' item='key'></td>" +
+            "</tr>"+
+            "<tr>" +
+            "   <td styles='formTableValue' lable='status'></td>" +
+            "   <td styles='formTableValue' item='status'></td>" +
+            "</tr>"+
+            "<tr>" +
+            "   <td styles='formTableValue'></td>" +
+            "   <td styles='formTableValue'><div class='mainColor_bg' item='searchAction'>"+MWF.xApplication.Org.LP.search+"</div></td>" +
+            "</tr>"+
+            "</table>";
+        this.contentNode.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.contentNode, {}, {
+                style: "execution",
+                isEdited: true,
+                itemTemplate: {
+                    key: {
+                        text: MWF.xApplication.Org.LP.search,
+                        attr:{
+                            placeholder: MWF.xApplication.Org.LP.searchText
+                        }
+                    },
+                    status: {
+                        text: MWF.xApplication.Org.LP.status,
+                        type: "select",
+                        selectValue: MWF.xApplication.Org.LP.statusOption.map(function (opt){
+                            return opt.value;
+                        }),
+                        selectText: MWF.xApplication.Org.LP.statusOption.map(function (opt){
+                            return opt.text;
+                        })
+                    }
+                }
+            });
+            this.form.load();
+
+            var searchAction = this.contentNode.getElement("[item='searchAction'");
+            searchAction.setStyles(this.explorer.css.filterSearchAction);
+            searchAction.addEvent("click", function (){
+                this.explorer.filterData = this.form.getItemsKeyValue();
+                this.explorer.reloadElements();
+            }.bind(this));
+
+        }.bind(this), true);
     }
 });
 

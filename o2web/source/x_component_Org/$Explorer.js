@@ -53,6 +53,7 @@ MWF.xApplication.Org.$Explorer = new Class({
         this.loaddingElement = false;
         this.isElementLoaded = false;
         this.loadElementQueue = 0;
+        this.page = 0;
         this.listNode.empty();
     },
     load: function(){
@@ -361,8 +362,10 @@ MWF.xApplication.Org.$Explorer = new Class({
 
 
     getPageNodeCount: function(){
+        if(this.pageNodeCount)return this.pageNodeCount;
         var size = this.listScrollNode.getSize();
-        return (size.y / 50).toInt() + 5;
+        this.pageNodeCount = (size.y / 50).toInt() + 5;
+        return this.pageNodeCount;
     },
     loadList: function(){
         this.loadElements();
@@ -383,6 +386,7 @@ MWF.xApplication.Org.$Explorer = new Class({
         if (!this.isElementLoaded){
             if (!this.loaddingElement){
                 this.loaddingElement = true;
+                this.page = this.page ? (this.page+1) : 1;
                 var count = this.getPageNodeCount();
                 this._listElementNext(this.getLastLoadedElementId(), count, function(json){
                     if (json.data.length){
@@ -408,7 +412,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                         this.loaddingElement = false;
                     }
 
-                }.bind(this));
+            }.bind(this), this.page);
             }else{
                 if (addToNext) this.loadElementQueue++;
             }
@@ -765,18 +769,22 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             }.bind(this),
             "click": function(e){
                 if (!this.deleteSelected){
-                    if (this.explorer.currentItem){
-                        if (this.explorer.currentItem.unSelected()){
-                            this.selected();
-                        }else{
-                            this.explorer.app.notice(this.explorer.options.lp.elementSave, "error", this.propertyContentNode);
-                        }
-                    }else{
-                        this.selected();
-                    }
+                    this.changeSelectedItem()
                 }
             }.bind(this)
         });
+    },
+
+    changeSelectedItem: function (){
+        if (this.explorer.currentItem){
+            if (this.explorer.currentItem.unSelected()){
+                this.selected();
+            }else{
+                this.explorer.app.notice(this.explorer.options.lp.elementSave, "error", this.propertyContentNode);
+            }
+        }else{
+            this.selected();
+        }
     },
 
     unSelected: function(){
