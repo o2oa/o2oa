@@ -4128,7 +4128,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		var dateIndexArr = []; //日期格式列下标
 		var idx=0;
 		this.columnJsonList.each(function(c){
-			if ( c.mJson && c.mJson.type === "Calendar") {
+			if ( c.mJson && c.mJson.type === "Calendar" && (c.mJson.format === "%Y-%m-%d" || c.mJson.format === "%Y-%m-%d %H:%M:%S")) {
 				dateIndexArr.push(idx);
 			}
 			idx++;
@@ -4412,10 +4412,12 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 				case "Calendar":
 				case "Eldate":
 				case "Eldatetime":
-					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-						flag = false;
+					if( json.format === "%Y-%m-%d" || json.format === "%Y-%m-%d %H:%M:%S" ){
+						if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
+							lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
+							lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
+							flag = false;
+						}
 					}
 					break;
 				default:
