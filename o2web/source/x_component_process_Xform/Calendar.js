@@ -414,6 +414,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
             value = Date.parse( value ).format( format );
             this.setData(value, true);
+        }else{
+            this.setData(value, true);
         }
     }
 });

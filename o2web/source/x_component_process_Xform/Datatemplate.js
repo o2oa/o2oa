@@ -3071,7 +3071,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		var dateIndexArr = []; //日期格式列下标
 		this.template.json.excelFieldConfig.each(function (config, i) {
 			var json = this.form.json.moduleList[config.field];
-			if (json && json.type === "Calendar") {
+			if (json && json.type === "Calendar" && (c.mJson.format === "%Y-%m-%d" || c.mJson.format === "%Y-%m-%d %H:%M:%S")) {
 				dateIndexArr.push(i);
 			}
 		}.bind(this));
@@ -3356,10 +3356,12 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				case "Calendar":
 				case "Eldate":
 				case "Eldatetime":
-					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-						flag = false;
+					if( json.format === "%Y-%m-%d" || json.format === "%Y-%m-%d %H:%M:%S" ) {
+						if (!(isNaN(d) && !isNaN(Date.parse(d)))) {
+							lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop);
+							lineData.errorTextListExcel.push(colInforExcel + d + lp.notValidDate + lp.fullstop);
+							flag = false;
+						}
 					}
 					break;
 				default:
