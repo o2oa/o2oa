@@ -48,6 +48,8 @@ public class General extends ConfigObject {
 					ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
 					ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
 					URL.class.getName(), URI.class.getName()));
+	private static final Set<String> DEFAULT_SCRIPTINGALLOWCLASSES = new HashSet<>(
+			Arrays.asList("java.util.ArrayList"));
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -73,6 +75,7 @@ public class General extends ConfigObject {
 		o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
 		o.configApiEnable = DEFAULT_CONFIGAPIENABLE;
 		o.scriptingBlockedClasses = DEFAULT_SCRIPTINGBLOCKEDCLASSES;
+		o.scriptingAllowClasses = DEFAULT_SCRIPTINGALLOWCLASSES;
 		o.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		o.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 		o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
