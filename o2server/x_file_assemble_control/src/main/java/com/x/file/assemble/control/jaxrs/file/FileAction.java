@@ -41,7 +41,7 @@ public class FileAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "获取指定File.", action = ActionGet.class)
 	@GET
 	@Path("{id}")
-	// @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
