@@ -102,9 +102,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Business business, Person person, Class<T> cls) throws Exception {
 		T t = cls.getDeclaredConstructor().newInstance();
 		if (this.failureLocked(person)) {
-			throw new ExceptionFailureLocked( DateTools.format(person.getLockExpireTime()));
+			throw new ExceptionFailureLocked(DateTools.format(person.getLockExpireTime()));
 		}
-		if(PersonStatusEnum.BAN.getValue().equals(person.getStatus())){
+		if (PersonStatusEnum.BAN.getValue().equals(person.getStatus())) {
 			throw new ExceptionFailureBanned();
 		}
 		person.copyTo(t, Person.password_FIELDNAME, Person.pinyin_FIELDNAME, Person.pinyinInitial_FIELDNAME,
@@ -121,8 +121,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
 			tokenType = TokenType.auditManager;
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType, HttpToken.getClient(request),
-				Config.token().getCipher(), Config.person().getEncryptType());
+		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
+				HttpToken.getClient(request), Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
@@ -141,7 +141,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		t.setIdentityList(listIdentity(business, person.getId()));
 		/** 判断密码是否过期需要修改密码 */
 		this.passwordExpired(t);
-		this.recordLogin(person.getName(), HttpToken.remoteAddress(request), request.getHeader(HttpToken.X_CLIENT));
+		this.recordLogin(person.getDistinguishedName(), HttpToken.remoteAddress(request),
+				request.getHeader(HttpToken.X_CLIENT));
 		return t;
 	}
 
@@ -188,7 +189,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null == person) {
 			return null;
 		}
-		if(PersonStatusEnum.BAN.getValue().equals(person.getStatus())){
+		if (PersonStatusEnum.BAN.getValue().equals(person.getStatus())) {
 			throw new ExceptionFailureBanned();
 		}
 		if (BooleanUtils.isTrue(Config.person().getSuperPermission())
@@ -197,7 +198,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return person;
 		}
 		if (this.failureLocked(person)) {
-			throw new ExceptionFailureLocked( DateTools.format(person.getLockExpireTime()));
+			throw new ExceptionFailureLocked(DateTools.format(person.getLockExpireTime()));
 		}
 
 		if (validatePassword(person, password, credential)) {
@@ -295,8 +296,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private void passwordExpired(AbstractWoAuthentication wo) throws Exception {
 		wo.setPasswordExpired(false);
-		if(Config.person().getFirstLoginModifyPwd()){
-			if(wo.getChangePasswordTime() == null){
+		if (Config.person().getFirstLoginModifyPwd()) {
+			if (wo.getChangePasswordTime() == null) {
 				wo.setPasswordExpired(true);
 				return;
 			}
@@ -440,7 +441,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else {
 			LOGGER.debug("info script:{}.", oauthClient.getInfoScriptText());
 			CompiledScript sc = ScriptingFactory.functionalizationCompile(oauthClient.getInfoScriptText());
-			//ScriptContext scriptContext = new SimpleScriptContext();
+			// ScriptContext scriptContext = new SimpleScriptContext();
 			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			bindings.put("text", body);
@@ -464,15 +465,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected boolean failureLocked(Person person) {
-		return PersonStatusEnum.LOCK.getValue().equals(person.getStatus()) &&
-				person.getLockExpireTime() != null && person.getLockExpireTime().getTime() > System.currentTimeMillis();
+		return PersonStatusEnum.LOCK.getValue().equals(person.getStatus()) && person.getLockExpireTime() != null
+				&& person.getLockExpireTime().getTime() > System.currentTimeMillis();
 	}
 
 	protected void failure(Person person) throws Exception {
 		Integer failureInterval = Config.person().getFailureInterval();
 		if (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(), failureInterval)) {
 			person.setFailureCount(person.getFailureCount() + 1);
-			if(person.getFailureCount() >= Config.person().getFailureCount()){
+			if (person.getFailureCount() >= Config.person().getFailureCount()) {
 				person.setStatus(PersonStatusEnum.LOCK.getValue());
 				person.setLockExpireTime(DateTools.addMinutes(new Date(), failureInterval));
 				person.setStatusDes("登录失败超限次");
