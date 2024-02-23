@@ -83,11 +83,15 @@ public class GraalvmScriptingFactory {
 		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
 			final AtomicReference<String> message = new AtomicReference<>();
 			Consumer<Object> javaCatch = e -> message.set(Objects.toString(e.toString(), ""));
-			v.invokeMember(CATCH, javaCatch);
-			if (!Objects.isNull(message.get())) {
-				throw new ExceptionEvalPromiseScript(message.get());
+			if (v.canInvokeMember(CATCH)) {
+				v.invokeMember(CATCH, javaCatch);
+				if (!Objects.isNull(message.get())) {
+					throw new ExceptionEvalPromiseScript(message.get());
+				}
 			}
-			v.invokeMember(THEN, javaThen);
+			if (v.canInvokeMember(THEN)) {
+				v.invokeMember(THEN, javaThen);
+			}
 		} else {
 			reference.set(v);
 		}
