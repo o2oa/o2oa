@@ -1609,11 +1609,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 keysO.sort();
                 keysP.sort();
+                deep++;
                 for ( i=0; i<keysO.length; i++ ){
                     var key = keysO[i];
                     if( type1 === "array" )key = key.toInt();
                     var valueO = o[key], valueP = p[key];
-                    if( this.compareObjects( valueO, valueP, deep++ ) === false ){
+                    if( this.compareObjects( valueO, valueP, deep ) === false ){
                         return false;
                     }
                 }
