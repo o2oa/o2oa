@@ -748,12 +748,10 @@ public class Config {
 
 	private String commonScript;
 
-// TODO
-//临时修改为不缓存
 	public static synchronized String commonScript() throws IOException {
-//		if (null == instance().commonScript) {
-//			instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
-//		}
+		if (null == instance().commonScript) {
+			instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
+		}
 		instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
 		return instance().commonScript;
 	}

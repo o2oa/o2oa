@@ -46,13 +46,10 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static final String LANGUAGE_ID_JS = "js";
-//	private static final String NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY = "nativeJsObjectBindingToStringify";
 	private static final String THEN = "then";
 	private static final String CATCH = "catch";
 
 	private static final ReentrantLock COMMONSCRIPTLOCK = new ReentrantLock();
-//	private static final Source STRINGIFYSOURCE = Source.create(LANGUAGE_ID_JS,
-//			"JSON.stringify(" + NATIVE_JS_OBJECT_BINDING_TO_STRINGIFY + ")");
 
 	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();
 	private static Source commonScriptSource;
@@ -107,7 +104,7 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return Config.general().getScriptingAllowClasses().contains(className);
+		return !Config.general().getScriptingBlockedClasses().contains(className);
 	}
 
 	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
@@ -194,18 +191,16 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static Source getcommonScriptSource() {
-		// TODO
-		// 临时修改为不缓存
-//		if (null == commonScriptSource) {
-//			COMMONSCRIPTLOCK.lock();
-//			try {
-//				commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
-//			} catch (Exception e) {
-//				LOGGER.error(e);
-//			} finally {
-//				COMMONSCRIPTLOCK.unlock();
-//			}
-//		}
+		if (null == commonScriptSource) {
+			COMMONSCRIPTLOCK.lock();
+			try {
+				commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
+			} catch (Exception e) {
+				LOGGER.error(e);
+			} finally {
+				COMMONSCRIPTLOCK.unlock();
+			}
+		}
 		COMMONSCRIPTLOCK.lock();
 		try {
 			commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());

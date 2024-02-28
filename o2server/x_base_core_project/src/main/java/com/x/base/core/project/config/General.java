@@ -48,8 +48,6 @@ public class General extends ConfigObject {
 					ServerSocket.class.getName(), ZipFile.class.getName(), ZipInputStream.class.getName(),
 					ZipOutputStream.class.getName(), ScriptEngine.class.getName(), ScriptEngineManager.class.getName(),
 					URL.class.getName(), URI.class.getName()));
-	private static final Set<String> DEFAULT_SCRIPTINGALLOWCLASSES = new HashSet<>(
-			Arrays.asList("java.util.ArrayList"));
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
@@ -75,7 +73,6 @@ public class General extends ConfigObject {
 		o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
 		o.configApiEnable = DEFAULT_CONFIGAPIENABLE;
 		o.scriptingBlockedClasses = DEFAULT_SCRIPTINGBLOCKEDCLASSES;
-		o.scriptingAllowClasses = DEFAULT_SCRIPTINGALLOWCLASSES;
 		o.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		o.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 		o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
@@ -128,9 +125,6 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("脚本中禁止用的类名,保持为空则默认禁用Runtime,File,Path.")
 	private Set<String> scriptingBlockedClasses;
-
-	@FieldDescribe("脚本中允许使用的java类.")
-	private Set<String> scriptingAllowClasses;
 
 	@FieldDescribe("http referer 校验正则表达式,可以对CSRF攻击进行防护校验,样例:(.+?)o2oa.net(.+?)")
 	private String refererHeadCheckRegular = "";
@@ -216,10 +210,6 @@ public class General extends ConfigObject {
 	public Integer getRequestLogRetainDays() {
 		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
 				: this.requestLogRetainDays;
-	}
-
-	public Set<String> getScriptingAllowClasses() {
-		return scriptingAllowClasses;
 	}
 
 	public Boolean getRequestLogBodyEnable() {
