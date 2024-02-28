@@ -1916,6 +1916,27 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }.bind(this));
         return flag;
     },
+    validationOtherFlow: function (routeName, opinion, processor, flowData) {
+        this.Macro.environment.form.currentRouteName = routeName;
+        this.Macro.environment.form.opinion = opinion;
+        this.Macro.environment.form.flowData = flowData;
+        if (!this.json.validationOtherFlow) return true;
+        if (!this.json.validationOtherFlow.code) return true;
+        var flag = this.Macro.exec(this.json.validationOtherFlow.code, this);
+        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+        if (flag.toString() !== "true") {
+            MWF.xDesktop.notice(
+                "error",
+                (processor) ? { "x": "center", "y": "top" } : { "x": "right", "y": "top" },
+                flag,
+                (processor) ? processor.container : (layout.mobile ? $(document.body) : this.app.content),
+                null,  //{"x": 0, "y": 30}
+                { "closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000 }
+            );
+            return false;
+        }
+        return true;
+    },
     validation: function (routeName, opinion, processor, medias) {
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
@@ -2665,9 +2686,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             "addTaskOptions":{
                 "isHandwriting": false,
-                "onSubmit": function (names, opinion, mode, before, routeName) {
+                "onSubmit": function (names, opinion, mode, before, routeName, userOpinion) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeAddTask", {mode: mode, opinion: opinion, before: before, names:names});
+                        var data = {mode: mode, opinion: opinion, before: before, names:names, userOpinion:userOpinion};
+                        _self.fireEvent("beforeAddTask", data);
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeAddTask");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2675,6 +2697,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             _self.mask.load();
                         } else {
                             _self.mask.loadNode(_self.app.content);
+                        }
+
+                        if( !_self.validationOtherFlow('addTask', userOpinion, this, data) ){
+                            if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                            return;
                         }
 
                         _self.fireEvent("beforeSave");
@@ -2685,7 +2712,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.AddTaskToPeson(names, opinion, mode, before, routeName, function (workJson) {
-                                _self.fireEvent("afterAddTask", {mode: mode, opinion: opinion, before: before, names:names});
+                                _self.fireEvent("afterAddTask", data);
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterAddTask");
                                 // _self.addResetMessage(workJson.data);
                                 this.destroy();
@@ -2706,9 +2733,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             "resetOptions":{
                 "isHandwriting": false,
-                "onSubmit": function (names, opinion, routeName) {
+                "onSubmit": function (names, opinion, routeName, userOpinion) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeReset", {routeName: routeName, opinion: opinion, names:names});
+                        var data = {routeName: routeName, opinion: opinion, userOpinion:userOpinion, names:names};
+                        _self.fireEvent("beforeReset", data);
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeReset");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2716,6 +2744,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             _self.mask.load();
                         } else {
                             _self.mask.loadNode(_self.app.content);
+                        }
+
+                        if( !_self.validationOtherFlow('reset', userOpinion, this, data) ){
+                            if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                            return;
                         }
 
                         _self.fireEvent("beforeSave");
@@ -2726,7 +2759,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.resetToPeson(names, opinion, routeName, function (workJson) {
-                                _self.fireEvent("afterReset", {routeName: routeName, opinion: opinion, names:names});
+                                _self.fireEvent("afterReset", data);
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterReset");
                                 // _self.addResetMessage(workJson.data);
                                 this.destroy();
@@ -2749,9 +2782,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             },
             "goBackOptions":{
                 "isHandwriting": false,
-                "onSubmit": function (opinion, routeName, activity, way) {
+                "onSubmit": function (opinion, routeName, activity, way, userOpinion) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.fireEvent("beforeGoBack", {routeName: routeName, opinion: opinion, activity:activity, way:way});
+                        var data = {routeName: routeName, opinion: opinion, activity:activity, way:way, userOpinion:userOpinion};
+                        _self.fireEvent("beforeGoBack", data);
                         if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeGoBack");
 
                         _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
@@ -2759,6 +2793,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             _self.mask.load();
                         } else {
                             _self.mask.loadNode(_self.app.content);
+                        }
+
+                        if( !_self.validationOtherFlow('goBack', userOpinion, this, data) ){
+                            if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                            return;
                         }
 
                         _self.fireEvent("beforeSave");
@@ -2769,7 +2808,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterSave");
 
                             _self.goBackToPerson(routeName, opinion, activity, way, function (workJson) {
-                                _self.fireEvent("afterGoBack", {routeName: routeName, opinion: opinion, activity:activity, way:way});
+                                _self.fireEvent("afterGoBack", data);
                                 if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterGoBack");
                                 this.destroy();
                                 hanlderNode.destroy();
@@ -4231,6 +4270,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "way": way
         }
 
+        var flowData = {routeName: "", opinion: opinion, activity:activity, way:way, userOpinion:opinionNode.value};
+        if( !this.validationOtherFlow('goBack', opinionNode.value, null, flowData) ){
+            if (this.mask) { this.mask.hide(); this.mask = null; }
+            return;
+        }
+
         this.submitWork(decision, opinion, null, function () {
             dlg.close();
         }.bind(this));
@@ -4576,12 +4621,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
-            this.fireEvent("beforeReset", {routeName: "", opinion: opinion, names:names});
+            var data = {routeName: "", opinion: opinion, names:names, userOpinion:opinion};
+
+            if( !this.validationOtherFlow('reset', opinion, null, data) ){
+                if (this.mask) { this.mask.hide(); this.mask = null; }
+                return;
+            }
+
+            this.fireEvent("beforeReset", data);
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeReset");
 
             this.resetWorkToPeson(names, opinion, "", function (workJson) {
                 //this.workAction.loadWork(function (workJson) {
-                this.fireEvent("afterReset", {routeName: "", opinion: opinion, names:names});
+                this.fireEvent("afterReset", data);
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterReset");
                 this.addResetMessage(workJson.data);
                 //this.app.notice(MWF.xApplication.process.Xform.LP.resetOk + ": " + MWF.name.cns(names).join(", "), "success");
@@ -6203,11 +6255,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 var opinion = dlg.content.getElement(".addTask_opinion").get("value");
 
+                var data = {mode: mode, opinion: opinion, before: position === "before", names: dlg.identityList, userOpinion: opinion};
+
+                if( !this.validationOtherFlow('addTask', opinion, null, data) ){
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+                    return;
+                }
+
                 this.fireEvent("beforeAddTask", {mode: mode, opinion: opinion, before: position === "before", names: dlg.identityList});
                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
 
                 this.doAddTaskToPeople(dlg.identityList, opinion, mode, position === "before", "", function (json) {
-                        this.fireEvent("afterAddTask", {mode: mode, opinion: opinion, before: position === "before", names: dlg.identityList});
+                        this.fireEvent("afterAddTask", data);
                         if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
                         this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
 

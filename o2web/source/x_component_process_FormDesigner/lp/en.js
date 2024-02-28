@@ -1464,7 +1464,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"base64Encode": "Image Base64 encoding",
 		"imagePreview": "Browsing the original image",
 		"flow": "Continue circulation",
-		"el_iconPosition": "Icon position"
+		"el_iconPosition": "Icon position",
+		"checkOtherFlow": "Verify other circulation methods",
+		"checkOtherFlowNote": "When adding, resetting, or returning, execute the verification script. Obtain the flow method (add as: addTask, reset as: reset, return as: goBack) through this. form. opinion, and other parameters of the flow through this. form. flowData"
 	},
 	"smartbi": {
 		"nosetup": "please install SmartBI APP first",

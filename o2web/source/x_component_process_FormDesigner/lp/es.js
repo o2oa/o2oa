@@ -1463,7 +1463,9 @@ MWF.xApplication.process.FormDesigner.LP={
 		"tableNodeStyles": "Estilo de contenedor de tabla",
 		"logHtmlScript": "Guiones HTML",
 		"flow": "Continuar circulando",
-		"el_iconPosition": "Ubicación del icono"
+		"el_iconPosition": "Ubicación del icono",
+		"checkOtherFlow": "Verificar otros métodos de circulación",
+		"checkOtherFlowNote": "Ejecute el guión de verificación cuando se agregue, restablezca o devuelva, obtenga el método de circulación a través de este.formulario.currentrouteme (agregue la etiqueta a: addatask, restablezca a: reset, devuelva a: goback), obtenga una opinión a través de este.formulario.opinion, obtenga otros parámetros de la circulación a través de este.formulario.flowdata"
 	},
 	"smartbi": {
 		"nosetup": "Por favor, instala la aplicación SmartBI primero",
