@@ -2,11 +2,13 @@ package com.x.base.core.project.scripting;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -49,13 +51,27 @@ public class GraalvmScriptingFactory {
 	private static final String THEN = "then";
 	private static final String CATCH = "catch";
 
-	private static final ReentrantLock COMMONSCRIPTLOCK = new ReentrantLock();
+	private static final ReentrantLock LOCK = new ReentrantLock();
 
 	private static final Engine ENGINE = Engine.newBuilder(LANGUAGE_ID_JS).build();
 	private static Source commonScriptSource;
+	private static Set<String> scriptingBlockedClasses;
 
 	private static Type stringsType = new TypeToken<ArrayList<String>>() {
 	}.getType();
+
+	public static void flush() {
+		LOCK.lock();
+		try {
+			commonScriptSource = null;
+			scriptingBlockedClasses = null;
+		} catch (Exception e) {
+			LOGGER.error(e);
+		} finally {
+			LOCK.unlock();
+		}
+
+	}
 
 	public static JsonElement eval(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
@@ -104,7 +120,7 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static boolean allowClass(String className) {
-		return !Config.general().getScriptingBlockedClasses().contains(className);
+		return !getScriptingBlockedClasses().contains(className);
 	}
 
 	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
@@ -190,24 +206,31 @@ public class GraalvmScriptingFactory {
 		return new ArrayList<>();
 	}
 
+	private static Set<String> getScriptingBlockedClasses() {
+		if (null == scriptingBlockedClasses) {
+			scriptingBlockedClasses = new HashSet<>();
+			LOCK.lock();
+			try {
+				scriptingBlockedClasses.addAll(Config.general().getScriptingBlockedClasses());
+			} catch (Exception e) {
+				LOGGER.error(e);
+			} finally {
+				LOCK.unlock();
+			}
+		}
+		return scriptingBlockedClasses;
+	}
+
 	private static Source getcommonScriptSource() {
 		if (null == commonScriptSource) {
-			COMMONSCRIPTLOCK.lock();
+			LOCK.lock();
 			try {
 				commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
 			} catch (Exception e) {
 				LOGGER.error(e);
 			} finally {
-				COMMONSCRIPTLOCK.unlock();
+				LOCK.unlock();
 			}
-		}
-		COMMONSCRIPTLOCK.lock();
-		try {
-			commonScriptSource = Source.create(LANGUAGE_ID_JS, Config.commonScript());
-		} catch (Exception e) {
-			LOGGER.error(e);
-		} finally {
-			COMMONSCRIPTLOCK.unlock();
 		}
 		return commonScriptSource;
 	}
