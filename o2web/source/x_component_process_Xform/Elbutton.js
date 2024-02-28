@@ -70,7 +70,7 @@ MWF.xApplication.process.Xform.Elbutton = MWF.APPElbutton =  new Class(
         //     html += " style=\""+style+"\"";
         // }
 
-        html += ">"+((this.json.circle!=="yes" && this.json.isText!=="no") ? (this.json.name || this.json.id) : "");
+        html += ">"+((this.json.circle!=="yes" && (this.json.isText!=="no" && this.json.isText)) ? (this.json.name || this.json.id) : "");
         if( this.json.iconPosition === "right" )html += "<i class=\""+ this.json.icon +" el-icon--right\"></i>";
         html += "</el-button>";
         return html;
