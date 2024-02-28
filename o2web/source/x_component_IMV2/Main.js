@@ -334,8 +334,9 @@ MWF.xApplication.IMV2.Main = new Class({
 				}
 			}
 			if (!isOld) {
+				newConv.isNew = true; // 新建的 放在列表的前面
 				var itemNode = _self._createConvItemNode(newConv);
-				_self.conversationNodeItemList.push(itemNode);
+				_self.conversationNodeItemList.unshift(itemNode);
 				_self.tapConv(newConv);
 			}
 		}.bind(this), function (error) {
@@ -389,8 +390,9 @@ MWF.xApplication.IMV2.Main = new Class({
 					}
 					//新会话 创建
 					if (isNew) {
+						nCv.isNew = true; // 新建的 放在列表的前面
 						var itemNode = this._createConvItemNode(nCv);
-						this.conversationNodeItemList.push(itemNode);
+						this.conversationNodeItemList.unshift(itemNode);
 					}
 				}
 				//this.loadConversationList(json.data);
@@ -1677,7 +1679,7 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			}
 
 		}
-		this.node = new Element("div", { "class": "item" }).inject(this.container);
+		this.node = new Element("div", { "class": "item" }).inject(this.container, this.data.isNew ? 'top' : '');
 		this.nodeBaseItem = new Element("div", { "class": "base" }).inject(this.node);
 		var avatarNode = new Element("div", { "class": "avatar" }).inject(this.nodeBaseItem);
 		new Element("img", { "src": convData.avatarUrl, "class": "img" }).inject(avatarNode);
