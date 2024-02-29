@@ -30,10 +30,8 @@ then
 				cp -f -p ${current_dir}/local/update/o2server/$F ${current_dir}/
 			fi
 		done
-		for A in "start" "stop" "restart" "console" "service"
-		do
-			for B in "_windows.bat" "_linux.sh" "_linux_min.sh" "_macos.sh" "_arm.sh" "_mips.sh" "_raspi.sh" "_aix.sh"
-			do
+		for A in "start" "stop" "restart" "console" "service"; do
+			for B in "_windows.bat" "_windows_debug.bat" "_linux.sh" "_linux_debug.sh" "_linux_min.sh" "_macos.sh" "_macos_debug.sh" "_arm.sh" "_arm_debug.sh" "_mips.sh" "_mips_debug.sh" "_raspi.sh" "_raspi_debug.sh" "_aix.sh" "_aix_debug.sh" "_sw.sh" "_sw_debug.sh"; do
 				if [ -f ${current_dir}/local/update/o2server/$A$B ]; then
 					echo "update ${current_dir}/$A$B."
 					cp -f -p ${current_dir}/local/update/o2server/$A$B ${current_dir}/
@@ -48,4 +46,4 @@ then
 		exit 1
 	fi
 fi
-setsid ${current_dir}/jvm/linux_java11/bin/java -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms1g -Xmx3g -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/linux_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms1g -Xmx3g -XX:MinHeapFreeRatio=15 -XX:MaxHeapFreeRatio=30 -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar
