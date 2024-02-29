@@ -21,7 +21,7 @@ if exist "%~dp0local\update" (
 			)	
 		)
 		for  %%A in (start,stop,restart,console,service) do (
-			for  %%B in (_windows.bat,_linux.sh,_linux_min.sh,_macos.sh,_arm.sh,_mips.sh,_raspi.sh,_aix.sh) do (
+			for  %%B in (_windows.bat,_windows_debug.bat,_linux.sh._linux_debug.sh,_linux_min.sh,_macos.sh,_macos_debug.sh,_arm.sh,_arm_debug.sh,_mips.sh,_mips_debug.sh,_raspi.sh,_raspi_debug.sh,_aix.sh,_aix_debug.sh,_sw.sh,_sw_debug.sh) do (
 				if exist "%~dp0local\update\o2server\%%A%%B" (
 					echo update %~dp0%%A%%B
 					copy "%~dp0local\update\o2server\%%A%%B" "%~dp0"
@@ -37,4 +37,4 @@ if exist "%~dp0local\update" (
 	)
 )
 @echo on
-"%~dp0jvm\windows_java11\bin\java" -javaagent:"%~dp0console.jar" -server -Xms2g -Xmx4g -Dnashorn.args=--no-deprecation-warning --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime=ALL-UNNAMED --add-exports jdk.scripting.nashorn/jdk.nashorn.internal.runtime.arrays=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar "%~dp0console.jar"
+"%~dp0jvm\windows_java11\bin\java" -javaagent:"%~dp0console.jar" -server -Xms2g -Xmx4g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar "%~dp0console.jar"

@@ -5,7 +5,6 @@ current_dir="$(
 	pwd
 )"
 cd ${current_dir}
-sudo date
 if [ -d ${current_dir}/local/update ]; then
 	for D in commons configSample localSample jvm servers store config local; do
 		if [ ! -d ${current_dir}/$D ]; then
@@ -42,4 +41,4 @@ if [ -d ${current_dir}/local/update ]; then
 		exit 1
 	fi
 fi
-sudo ${current_dir}/jvm/macos_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=0.0.0.0:20000 -Djava.rmi.server.hostname=127.0.0.1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 --upgrade-module-path=${current_dir}/commons/module_java11/compiler.jar:${current_dir}/commons/module_java11/compiler-management.jar -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/sw_java11/bin/java -javaagent:${current_dir}/console.jar -server -Djava.awt.headless=true -Xms2g -Xmx4g -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${current_dir}/commons/module_java11 -jar ${current_dir}/console.jar
