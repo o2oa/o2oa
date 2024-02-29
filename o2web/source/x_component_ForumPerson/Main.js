@@ -67,7 +67,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 					this.isCurrentUser = this.userName == this.options.personName;
 					var name =  MWFForum.isUseNickName() ? this.personData.nickName : this.options.personName;
 					this.personNameAbbreviate = (name || this.options.personName).split('@')[0];
-					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					var tail = (this.inBrowser && layout.desktop.session.user.name !== "anonymous") ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
 					this.setTitle( this.personNameAbbreviate + tail );
 
 					this.loadApplicationLayout();

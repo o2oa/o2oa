@@ -1,4 +1,6 @@
-MWF.xApplication.Homepage.LP = o2.HPLP = {
+MWF.xApplication = MWF.xApplication || {};
+MWF.xApplication.Homepage = MWF.xApplication.Homepage || {};
+MWF.xApplication.Homepage.LP={
 	"title": "Inicio",
 	"myTask": "Pendiente",
 	"myTaskCompleted": "Completado",
@@ -37,13 +39,10 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"acceptConfirm": "¿Está seguro de que desea asistir a la reunión \"{name}\"?",
 	"rejectConfirmTitle": "Confirmación de rechazo de la reunión",
 	"rejectConfirm": "¿Está seguro de que desea rechazar la reunión \"{name}\"?",
-
-
 	"prevPage": "Página anterior",
 	"nextPage": "Siguiente página",
 	"nextActivity": "Avanzar al siguiente paso",
 	"completedActivityName": "Flujo de trabajo completado",
-
 	"taskStartTime": "Hora de recepción de la tarea pendiente",
 	"taskCompletedTime": "Hora en que se procesó la tarea completada",
 	"readStartTime": "Hora de recepción de la lectura pendiente",
@@ -56,11 +55,11 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"currentUser": "Persona que está procesando actualmente",
 	"publishTime": "Hora de publicación",
 	"publishPerson": "Persona que publicó",
-
 	"download": "Descargar",
 	"today": "Hoy",
 	"allDay": "Todo el día",
 	"calenderInfor": "{name}, ¡Hola! Tiene <div class='o2_homepage_calender_count_flag'>{count}</div> eventos programados para el {date}.",
 	"noCalenderInfor": "{name}, ¡Hola! No hay eventos programados para el {date}.",
 	"dateFormat": "%d de %m de %Y"
-};
+}
+MWF.xApplication.Homepage["lp."+o2.language] = MWF.xApplication.Homepage.LP

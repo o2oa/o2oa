@@ -573,8 +573,7 @@ MWF.ProcessFlow.Reset = new Class({
         var routeName = leftText+":"+n;
 
         this.flow.quickSelector.saveData();
-        this.fireEvent("submit", [names, opinion, routeName]);
-        // this.fireEvent("submit", [names, opinion, keep]);
+        this.fireEvent("submit", [names, opinion, routeName, this.opinion.getValue()]);
     },
     getQuickData: function(){
         return {
@@ -666,7 +665,7 @@ MWF.ProcessFlow.AddTask = new Class({
         var routeName = leftText+":"+n;
 
         this.flow.quickSelector.saveData();
-        this.fireEvent("submit", [names, opinion, mode, before, routeName]);
+        this.fireEvent("submit", [names, opinion, mode, before, routeName, this.opinion.getValue()]);
     },
     setQuickData: function( data ){
         if(this.position)this.position.setValue( data.routeId === "before" ? "true" : null ); //前后加签存在 routeId
@@ -851,7 +850,7 @@ MWF.ProcessFlow.GoBack = new Class({
 
         var routeName = this.lp.goBackTo+activityName;
         debugger;
-        this.fireEvent("submit", [opinion, routeName, activity, way]);
+        this.fireEvent("submit", [opinion, routeName, activity, way, this.opinion.getValue()]);
     },
     // getQuickData: function(){
     //     return {

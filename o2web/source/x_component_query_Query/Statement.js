@@ -1168,6 +1168,7 @@ MWF.xApplication.query.Query.Statement.Item = new Class(
                 "width": "30px",
                 "text-align": "center"
             });
+            if (this.view.json.itemStyles) this.sequenceTd.setStyles(this.view.json.itemStyles);
             this.sequenceTd.set("text", sequence);
         }
 

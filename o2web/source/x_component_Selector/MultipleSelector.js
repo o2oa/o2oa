@@ -26,6 +26,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         if (!options.title)  options.title = MWF.xApplication.Selector.LP.multiSelectTitle;
         this.setOptions(options);
 
+        this.optionsArg = options;
+
         this.path = "../x_component_Selector/$Selector/";
         this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss();
@@ -217,8 +219,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                 "y" : Math.min( containerSize.y, bodySize.y )
             };
 
-
-            var zoom = this.node.getStyle("zoom").toInt() || 0;
+            var zoom = this.node.getStyle("zoom").toInt();
+            zoom = zoom ? (zoom * 100) : 0;
             if( zoom ){
                 size.x = size.x * 100 / zoom;
                 size.y = size.y * 100 / zoom;
@@ -612,6 +614,13 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.options.types.each( function( type, index ){
 
             var options = Object.clone( this.options );
+
+            for (var key in this.optionsArg){
+                if (typeOf(this.optionsArg[key]) === 'function' && (/^on[A-Z]/).test(key)){
+                    options[key] = this.optionsArg[key];
+                }
+            }
+
             if( type.toLowerCase()==="identity" ){
                 options.expand = false;
             }

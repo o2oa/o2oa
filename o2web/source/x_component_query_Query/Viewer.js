@@ -2153,6 +2153,80 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
     notice: function (content, type, target, where, offset, option) {
         this.app.notice(content, type, target, where, offset, option)
     },
+    dialog: function( options ){
+        if( !options )options = {};
+        var opts = {
+            "style" : options.style || "user",
+            "title": options.title || "",
+            "width": options.width || 300,
+            "height" : options.height || 150,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
+            "offset": options.offset || null,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
+            "container": options.container ||  ( layout.mobile ? $(document.body) : this.app.content ),
+            "duration": options.duration || 200,
+            "lp": options.lp || null,
+            "zindex": ( options.zindex || 100 ).toInt(),
+            "buttonList": options.buttonList || [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+                    }
+                }
+            ]
+        };
+
+        var positionNode;
+        if( options.content ) {
+            opts.content = options.content;
+            var parent = opts.content.getParent();
+            if(parent)positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+        }
+
+        opts.onQueryClose = function(){
+            if( positionNode && opts.content ){
+                opts.content.inject( positionNode, "after" );
+                positionNode.destroy();
+            }
+            if( o2.typeOf(options.onQueryClose) === "function" )options.onQueryClose.call( this );
+        }
+
+        for( var key in options ){
+            if( !opts.hasOwnProperty( key ) ){
+                opts[key] = options[key];
+            }
+        }
+        var dialog;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            dialog = o2.DL.open(opts)
+        }, null, false);
+        return dialog;
+    },
+
     //api 使用 结束
 
     loadObserver: function(){
@@ -2342,6 +2416,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class(
                 "width": "30px",
                 "text-align": "center"
             });
+            if (this.view.json.itemStyles) this.sequenceTd.setStyles(this.view.json.itemStyles);
             this.sequenceTd.set("text", sequence);
         }
 

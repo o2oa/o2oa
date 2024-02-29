@@ -21,6 +21,8 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.organization.assemble.authentication.ThisApplication;
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.graalvm.polyglot.Source;
@@ -76,8 +78,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			tokenType = Config.ternaryManagement().getTokenType(credential);
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher(),
-				Config.person().getEncryptType());
+		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, HttpToken.getClient(request),
+				Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -96,7 +98,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 	<T extends AbstractWoAuthentication> T user(HttpServletRequest request, HttpServletResponse response,
 			Business business, Person person, Class<T> cls) throws Exception {
 		T t = cls.getDeclaredConstructor().newInstance();
-		person.copyTo(t, Person.password_FIELDNAME, Person.pinyin_FIELDNAME, Person.pinyinInitial_FIELDNAME);
+		if (this.failureLocked(person)) {
+			throw new ExceptionFailureLocked(DateTools.format(person.getLockExpireTime()));
+		}
+		if (PersonStatusEnum.BAN.getValue().equals(person.getStatus())) {
+			throw new ExceptionFailureBanned();
+		}
+		person.copyTo(t, Person.password_FIELDNAME, Person.pinyin_FIELDNAME, Person.pinyinInitial_FIELDNAME,
+				Person.icon_FIELDNAME, Person.iconLdpi_FIELDNAME, Person.iconMdpi_FIELDNAME);
 		HttpToken httpToken = new HttpToken();
 		TokenType tokenType = TokenType.user;
 		List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
@@ -110,7 +119,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			tokenType = TokenType.auditManager;
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
-				Config.token().getCipher(), Config.person().getEncryptType());
+				HttpToken.getClient(request), Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
@@ -129,7 +138,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 		t.setIdentityList(listIdentity(business, person.getId()));
 		/** 判断密码是否过期需要修改密码 */
 		this.passwordExpired(t);
+		this.recordLogin(person.getDistinguishedName(), HttpToken.remoteAddress(request),
+				request.getHeader(HttpToken.X_CLIENT));
 		return t;
+	}
+
+	protected void recordLogin(String name, String address, String client) throws Exception {
+		QueueLoginRecord.LoginRecord o = new QueueLoginRecord.LoginRecord();
+		o.setAddress(Objects.toString(address, ""));
+		o.setClient(Objects.toString(client, ""));
+		o.setName(Objects.toString(name, ""));
+		o.setDate(new Date());
+		ThisApplication.queueLoginRecord.send(o);
 	}
 
 	protected List<String> listWithCredential(Business business, String credential) throws Exception {
@@ -166,13 +186,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null == person) {
 			return null;
 		}
+		if (PersonStatusEnum.BAN.getValue().equals(person.getStatus())) {
+			throw new ExceptionFailureBanned();
+		}
 		if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 				&& StringUtils.equals(Config.token().getPassword(), password)) {
 			LOGGER.warn("user: {} use superPermission.", person.getName());
 			return person;
 		}
 		if (this.failureLocked(person)) {
-			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
+			throw new ExceptionFailureLocked(DateTools.format(person.getLockExpireTime()));
 		}
 
 		if (validatePassword(person, password, credential)) {
@@ -188,7 +211,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	Person peopleLogin(Business business, List<String> people, String password, String credential) throws Exception {
 		for (String id : people) {
 			Person person = business.entityManagerContainer().find(id, Person.class);
-			if (validatePassword(person, password, credential)) {
+			if (PersonStatusEnum.isNormal(person.getStatus()) && validatePassword(person, password, credential)) {
 				return person;
 			}
 		}
@@ -270,6 +293,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private void passwordExpired(AbstractWoAuthentication wo) throws Exception {
 		wo.setPasswordExpired(false);
+		if (Config.person().getFirstLoginModifyPwd()) {
+			if (wo.getChangePasswordTime() == null) {
+				wo.setPasswordExpired(true);
+				return;
+			}
+		}
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod.intValue() == 0) {
 			return;
@@ -430,15 +459,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return txt;
 	}
 
-	protected boolean failureLocked(Person person) throws Exception {
-		return (((person.getFailureCount() != null) && (person.getFailureCount() >= Config.person().getFailureCount()))
-				&& (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(),
-						Config.person().getFailureInterval())));
+	protected boolean failureLocked(Person person) {
+		return PersonStatusEnum.LOCK.getValue().equals(person.getStatus()) && person.getLockExpireTime() != null
+				&& person.getLockExpireTime().getTime() > System.currentTimeMillis();
 	}
 
 	protected void failure(Person person) throws Exception {
-		if (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(), Config.person().getFailureInterval())) {
+		Integer failureInterval = Config.person().getFailureInterval();
+		if (!DateTools.beforeNowMinutesNullIsTrue(person.getFailureTime(), failureInterval)) {
 			person.setFailureCount(person.getFailureCount() + 1);
+			if (person.getFailureCount() >= Config.person().getFailureCount()) {
+				person.setStatus(PersonStatusEnum.LOCK.getValue());
+				person.setLockExpireTime(DateTools.addMinutes(new Date(), failureInterval));
+				person.setStatusDes("登录失败超限次");
+			}
 		} else {
 			person.setFailureCount(1);
 			person.setFailureTime(new Date());
@@ -468,7 +502,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected boolean isMoaTerminal(HttpServletRequest request) {
-		String xClient = request.getHeader("x-client");
+		String xClient = request.getHeader(HttpToken.X_CLIENT);
 		if (StringUtils.isNotBlank(xClient)) {
 			xClient = xClient.toLowerCase();
 			if (xClient.indexOf("android") != -1) {

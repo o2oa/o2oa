@@ -282,49 +282,49 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
             //再次校验数据（计算的内容）
             var date = new Date();
 
-            var flag = true;
-            this.rowList.each( function(row, index){
-                if( row.errorTextList.length )flag = false;
-            }.bind(this));
+            //var flag = true;
+            // this.rowList.each( function(row, index){
+            //     if( row.errorTextList.length )flag = false;
+            // }.bind(this));
 
-            var arg = {
-                validted : flag,
-                data : this.importedData,
-                rowList : this.rowList
-            };
-            this.fireEvent( "validImport", [arg] );
+            // var arg = {
+            //     validted : flag,
+            //     data : this.importedData,
+            //     rowList : this.rowList
+            // };
+            // this.fireEvent( "import", [arg] );
 
-            Promise.resolve( arg.promise ).then(function(){
-                flag = arg.validted;
+            // Promise.resolve( arg.promise ).then(function(){
+            // flag = arg.validted;
+            //
+            // if( !flag ){
+            //     this.openImportedErrorDlg();
+            //     return;
+            // }
 
-                if( !flag ){
-                    this.openImportedErrorDlg();
-                    return;
-                }
+            var data = this.getData();
 
-                var data = this.getData();
+            this.lookupAction.getUUID(function(json){
+                this.recordId = json.data;
+                this.lookupAction.executImportModel(this.json.id, {
+                    "recordId": this.recordId,
+                    "data" : data
+                }, function () {
+                    //this.showImportingStatus( data, date )
+                    this.progressBar.showImporting( this.recordId, function( data ){
+                        data.data = data;
+                        data.rowList = this.rowList;
+                        this.fireEvent("afterImport", data);
+                        return data;
+                    }.bind(this), date);
 
-                this.lookupAction.getUUID(function(json){
-                    this.recordId = json.data;
-                    this.lookupAction.executImportModel(this.json.id, {
-                        "recordId": this.recordId,
-                        "data" : data
-                    }, function () {
-                        //this.showImportingStatus( data, date )
-                        this.progressBar.showImporting( this.recordId, function( data ){
-                            data.data = data;
-                            data.rowList = this.rowList;
-                            this.fireEvent("afterImport", data);
-                            return data;
-                        }.bind(this), date);
-
-                    }.bind(this), function (xhr) {
-                        var requestJson = JSON.parse(xhr.responseText);
-                        this.app.notice(requestJson.message, "error");
-                        this.progressBar.close();
-                    }.bind(this))
+                }.bind(this), function (xhr) {
+                    var requestJson = JSON.parse(xhr.responseText);
+                    this.app.notice(requestJson.message, "error");
+                    this.progressBar.close();
                 }.bind(this))
             }.bind(this))
+            // }.bind(this))
         },
         objectToString: function (obj, type) {
             if(!obj)return "";

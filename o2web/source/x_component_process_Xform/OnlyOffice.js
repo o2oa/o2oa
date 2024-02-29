@@ -133,7 +133,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     reload : function (){
         this.setData();
         this.node.empty();
-        this.createUpload();
+        if(this.mode !== "read" && this.json.allowUpload){
+            this.createUpload();
+        }
         this.loadDocument();
     },
     loadDocument: function () {
@@ -365,12 +367,29 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }
     },
     getData: function(){
+
         var data = {
             "documentId" : ""
+        };
+        var site = this.json.fileSite?this.json.fileSite:"filetext";
+        if(this.form.businessData.data[this.json.id] && this.form.businessData.data[this.json.id].documentId){
+            data = this.form.businessData.data[this.json.id];
+        }else {
+
+            //判断对应的site里有没有值
+            var attachmentList = this.form.businessData.attachmentList;
+            attachmentList = attachmentList.filter(function(att) {
+                return att.site === site;
+            });
+            if(attachmentList.length>0){
+                data = {
+                    "documentId": attachmentList[0].id,
+                    "appToken": "x_processplatform_assemble_surface"
+                };
+            }
+
         }
-        if(this.form.businessData.data[this.json.id]){
-            data = this.form.businessData.data[this.json.id]
-        }
+
         return data;
     },
     setData: function() {

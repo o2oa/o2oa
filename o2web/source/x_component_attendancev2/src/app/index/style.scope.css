@@ -168,7 +168,7 @@
   line-height: 24px;
   padding: 8px 0px;
   font-weight: normal;
-  position: sticky;
+  /* position: sticky; */
   top: 0;
   z-index: 1;
   width: 120px;
@@ -188,12 +188,12 @@
   position: relative;
 } */
 .scroll-table thead th:first-child {
-  position: sticky;
+  /* position: sticky; */
   left: 0;
   z-index: 2;
 }
 .scroll-table tbody th {
-  position: sticky;
+  /* position: sticky; */
   left: 0;
   background: #ffffff;
   z-index: 1;
@@ -286,6 +286,7 @@
 
 /* mask */
 .cc-mask {
+  z-index: 100;
   position: absolute;
   top: 0;
   bottom: 0;

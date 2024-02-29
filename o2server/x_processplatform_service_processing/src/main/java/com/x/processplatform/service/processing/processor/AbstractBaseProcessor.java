@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +19,11 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.ticket.Tickets;
 import com.x.processplatform.service.processing.Business;
 
 /***
@@ -88,6 +91,10 @@ abstract class AbstractBaseProcessor {
 		aeiObjects.getWork().setDestinationActivity(null);
 		aeiObjects.getWork().setDestinationActivityType(null);
 		aeiObjects.getWork().setForceRouteEnable(false);
+		// 除去人工活动环节，其他环节都去掉tickets值,否则会一直传递下去.
+		if (!Objects.equals(ActivityType.manual, aeiObjects.getActivity().getActivityType())){
+			aeiObjects.getWork().setTickets(new Tickets());			
+		}
 //		aeiObjects.getWork().setDestinationRoute(null);
 //		aeiObjects.getWork().setDestinationRouteName(null);
 		if (StringUtils.isNotEmpty(aeiObjects.getActivity().getForm())) {

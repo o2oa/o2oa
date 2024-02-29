@@ -375,27 +375,52 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		_setOuterActionEvents: function(){
 			this.addActionList = this._getOuterActionModules( [].concat(this.addActionIdList, this.outerAddActionIdList) );
 			this.addActionList.each( function (module) {
-				module.node.addEvents({"click": function(e){
-						this._addLine(e);
+				var addEvent = function (){
+					module.node.addEvents({"click": function(e){
+							this._addLine(e);
 					}.bind(this)});
-				if( !this.editable )module.node.hide();
+					if( !this.editable )module.node.hide();
+				}.bind(this);
+
+				if( module.json.type.substr(0, 2) === "El" ){
+					 module.vm ? addEvent() : module.addEvent("load", addEvent);
+				}else{
+					addEvent();
+				}
+
 			}.bind(this));
 
 			this.deleteActionList = this._getOuterActionModules( [].concat( this.outerDeleteActionIdList ) );
 			this.deleteActionList.each( function (module) {
-				module.node.addEvents({"click": function(e){
+				var addEvent = function (){
+					module.node.addEvents({"click": function(e){
 						this._deleteSelectedLine(e);
 					}.bind(this)});
-				if( !this.editable )module.node.hide();
+					if( !this.editable )module.node.hide();
+				}.bind(this);
+
+				if( module.json.type.substr(0, 2) === "El" ){
+					module.vm ? addEvent() : module.addEvent("load", addEvent);
+				}else{
+					addEvent();
+				}
 			}.bind(this));
 
 			this.selectAllList = this._getOuterActionModules( this.outerSelectAllIdList );
 			this.selectAllList.each( function (module) {
 				// module.setData(""); //默认不选中
-				module.node.addEvents({"click": function(e){
+				var addEvent = function (){
+					module.node.addEvents({"click": function(e){
 						this._checkSelectAll(e);
 					}.bind(this)});
-				if( !this.editable )module.node.hide();
+					if( !this.editable )module.node.hide();
+				}.bind(this);
+
+				if( module.json.type.substr(0, 2) === "El" ){
+					module.vm ? addEvent() : module.addEvent("load", addEvent);
+				}else{
+					addEvent();
+				}
 			}.bind(this));
 			this.selectAllSelector = this.selectAllList[0];
 			if(this.selectAllSelector){
@@ -404,17 +429,33 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this.importActionList = this._getOuterActionModules( this.importActionIdList );
 			this.importActionList.each( function (module) {
-				module.node.addEvents({"click": function(e){
+				var addEvent = function (){
+					module.node.addEvents({"click": function(e){
 						this.importFromExcel();
 					}.bind(this)});
-				if( !this.editable )module.node.hide();
+					if( !this.editable )module.node.hide();
+				}.bind(this);
+
+				if( module.json.type.substr(0, 2) === "El" ){
+					module.vm ? addEvent() : module.addEvent("load", addEvent);
+				}else{
+					addEvent();
+				}
 			}.bind(this));
 
 			this.exportActionList = this._getOuterActionModules( this.exportActionIdList );
 			this.exportActionList.each( function (module) {
-				module.node.addEvents({"click": function(e){
+				var addEvent = function (){
+					module.node.addEvents({"click": function(e){
 						this.exportToExcel();
 					}.bind(this)})
+				}.bind(this);
+
+				if( module.json.type.substr(0, 2) === "El" ){
+					module.vm ? addEvent() : module.addEvent("load", addEvent);
+				}else{
+					addEvent();
+				}
 			}.bind(this));
 		},
 		setOuterActionEvents: function(){
@@ -3030,7 +3071,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		var dateIndexArr = []; //日期格式列下标
 		this.template.json.excelFieldConfig.each(function (config, i) {
 			var json = this.form.json.moduleList[config.field];
-			if (json && json.type === "Calendar") {
+			if (json && json.type === "Calendar" && (c.mJson.format === "%Y-%m-%d" || c.mJson.format === "%Y-%m-%d %H:%M:%S")) {
 				dateIndexArr.push(i);
 			}
 		}.bind(this));
@@ -3315,10 +3356,12 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 				case "Calendar":
 				case "Eldate":
 				case "Eldatetime":
-					if( !( isNaN(d) && !isNaN(Date.parse(d) ))){
-						lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop );
-						lineData.errorTextListExcel.push( colInforExcel + d + lp.notValidDate + lp.fullstop );
-						flag = false;
+					if( json.format === "%Y-%m-%d" || json.format === "%Y-%m-%d %H:%M:%S" ) {
+						if (!(isNaN(d) && !isNaN(Date.parse(d)))) {
+							lineData.errorTextList.push(colInfor + d + lp.notValidDate + lp.fullstop);
+							lineData.errorTextListExcel.push(colInforExcel + d + lp.notValidDate + lp.fullstop);
+							flag = false;
+						}
 					}
 					break;
 				default:

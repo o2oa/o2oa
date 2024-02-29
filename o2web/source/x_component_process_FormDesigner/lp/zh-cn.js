@@ -468,6 +468,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "checkOpinion": "校验意见",
         "checkRoute": "校验路由",
         "checkFlow": "流转校验",
+        "checkOtherFlow": "校验其他流转方式",
+        "checkOtherFlowNote": "当加签、重置、退回时执行该校验脚本,通过this.form.currentRouteName获取流转方式（加签为：addTask,重置为: reset,退回为：goBack），通过this.form.opinion获取意见，通过this.form.flowData获取流转的其他参数",
         "noEventInfo": "注：当以子表单嵌入时，下列事件不会被执行",
         "none": "无",
         "default": "默认",

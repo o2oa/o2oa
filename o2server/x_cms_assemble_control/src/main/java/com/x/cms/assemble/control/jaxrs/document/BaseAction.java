@@ -49,7 +49,9 @@ public class BaseAction extends StandardJaxrsAction {
 			if (null != document) {
 				//修改文档状态
 				document.setDocStatus( stauts );
-				document.setPublishTime( new Date() );
+				if(Document.DOC_STATUS_PUBLISH.equals(stauts)) {
+					document.setPublishTime(new Date());
+				}
 				//保存文档信息
 				emc.check( document, CheckPersistType.all);
 			}

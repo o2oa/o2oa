@@ -289,6 +289,8 @@ MWF.xApplication.systemconfig.LP={
 		"passwordLengthText": "Length: {n}, {text}",
 		"passwordRsa": "Password Encrypted Transmission",
 		"passwordRsaInfo": "The system uses clear text transmission by default, you can enable this option to enable encrypted transmission of passwords. (The server needs to be restarted after modification)",
+		"passwordCheck": "Password forced change",
+		"passwordCheckInfo": "If you need to force a user to change their password when they log in for the first time, you can turn this option on.",
 		"adminPasswordInfo": "You can change the password of the super administrator 'xadmin' here. (The server needs to be restarted after modification)",
 		"modifyAdminPassword": "Modify super administrator password",
 		"oldPassword": "Old",

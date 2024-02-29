@@ -36,17 +36,15 @@ public class ActionSyncOrganizationCallbackPost extends BaseAction {
             String plainText = dingTalkEncryptor.getDecryptMsg(signature, timestamp, nonce, wi.getEncrypt());
             logger.info("解密后的结果：" + plainText);
             DingtalkEvent event = gson.fromJson(plainText, DingtalkEvent.class);
-
             if ("check_url".equals(event.getEventType())) { //检查回调地址
-                logger.info("检查url");
+                logger.info("检查url，无需处理");
             } else if (tags.contains(event.getEventType())) {
-                logger.info("通讯录变更。。。。添加定时任务的队列消息。");
+                logger.info("通讯录变更，添加定时任务的队列消息。");
                 ThisApplication.dingdingSyncOrganizationCallbackRequest.add(new Object());
             } else {
-                logger.info("忽略的。。。。。。。。。。");
+                logger.info("忽略的类型, {}", event.getEventType());
             }
-            Map<String, String> result = dingTalkEncryptor.getEncryptedMap("success", System.currentTimeMillis(), Utils.getRandomStr(8));
-            return result;
+            return dingTalkEncryptor.getEncryptedMap("success", System.currentTimeMillis(), Utils.getRandomStr(8));
         }else {
             throw new ExceptionNotPullSync();
         }

@@ -71,7 +71,7 @@ class ActionEdit extends BaseAction {
 				table.setAlias(wi.getAlias());
 				table.setName(wi.getName());
 			}
-			checkDuplicate(business, query, table);
+			checkDuplicate(business, table);
 			emc.check(table, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Table.class);

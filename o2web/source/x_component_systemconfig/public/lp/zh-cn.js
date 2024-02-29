@@ -331,6 +331,9 @@ o2.xApplication.systemconfig.LP = {
         "passwordRsa": "密码加密传输",
         "passwordRsaInfo": "系统默认使用明文传输，您可以启用此选项，以启用密码的加密传输。(修改后需要重启服务器)",
 
+        "passwordCheck": "密码强制修改",
+        "passwordCheckInfo": "如果需要用户首次登录的时候强制修改密码，可以开启此选项。",
+
 
         "adminPasswordInfo": "您可以在此处修改超级管理员xadmin的密码。(修改后需要重启服务器)",
         "modifyAdminPassword": "修改管理员密码",
@@ -379,8 +382,11 @@ o2.xApplication.systemconfig.LP = {
         "loginErrorCount": "登录错误次数上限",
         "lockTime": "锁定时长（分钟）",
 
-        "tokenExpired": "登录有效时长",
-        "tokenExpiredInfo": "用户登录系统后，如果长时间不和服务器发生交互，系统就会注销次此登录。您可以在此处设置登录有效时长，单位为分钟。",
+        "tokenExpired": "pc端登录有效时长",
+        "tokenExpiredInfo": "用户登录系统后，如果长时间不和服务器发生交互，系统就会注销次此登录。您可以在此处设置登录有效时长，单位为分钟。用于PC端。",
+
+        "appTokenExpired": "app端登录有效时长",
+        "appTokenExpiredInfo": "用户登录系统后，如果长时间不和服务器发生交互，系统就会注销次此登录。您可以在此处设置登录有效时长，单位为分钟。用于移动端。",
 
         "tokenName": "token名称",
         "tokenNameInfo": "系统默认的token名称为x-token，您可以在此处修改token名称，以防止在相同Domain下的Cookie冲突，这在相同Domain下部署多套O2OA时尤其有用。(需要重启服务器)",

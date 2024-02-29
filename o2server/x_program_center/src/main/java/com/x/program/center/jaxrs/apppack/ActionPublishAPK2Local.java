@@ -124,7 +124,7 @@ public class ActionPublishAPK2Local extends BaseAction {
                             updateJpushConfig();
                         }
                         updateAppUrl(wi.getWebUrl());
-                        logger.info("下载发布apk成功。。。。。。");
+                        logger.info("下载发布apk成功！");
                     } else {
                         logger.error(new Exception("错误，没有找到对应的文件对象，id：" + id));
                     }
@@ -205,9 +205,7 @@ public class ActionPublishAPK2Local extends BaseAction {
          * @throws Exception
          */
         private void updateConfigFileOnLine(String fileName, String content) throws Exception {
-            logger.info("更新配置文件。。。。。。。。。。。。。。");
-            logger.info("文件：" + fileName);
-            logger.info("内容：" + content);
+            logger.info("更新配置文件！文件：{} ， 内容：{}", fileName, content);
             JPushConfigSaveWi wi = new JPushConfigSaveWi();
             wi.setFileName(fileName);
             wi.setFileContent(content);
@@ -216,10 +214,10 @@ public class ActionPublishAPK2Local extends BaseAction {
             if (response != null) {
                 ActionSave.Wo wo = response.getData(ActionSave.Wo.class);
                 if (wo != null && wo.getStatus() != null) {
-                    logger.info("修改保存[" + fileName + "]配置文件成功！");
+                    logger.info("修改保存[{}]配置文件成功！", fileName);
                 }
             } else {
-                logger.info("保存[" + fileName + "]配置文件 返回为空！！");
+                logger.info("保存[{}]配置文件失败, 返回为空！", fileName);
             }
         }
     }

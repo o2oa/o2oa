@@ -461,11 +461,6 @@ MWF.xApplication.cms.Xform.LP={
 	"commend": {
 		"do": "Commend",
 		"undo": "Un Commend"
-	},
-	"system": "System",
-	"attachmentSecurity": "Attachment classification identification",
-	"importTooManyNotice": "{n1} pieces of data were imported this time, and a maximum of {n2} pieces of data are allowed to be imported",
-	"importTooFewNotice": "{n1} pieces of data were imported this time, and at least {n2} pieces of data need to be retained",
-	"uploading": "Uploading attachment, please wait for the attachment upload to complete before performing this operation."
+	}
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

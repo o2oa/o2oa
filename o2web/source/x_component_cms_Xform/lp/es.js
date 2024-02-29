@@ -459,9 +459,6 @@ MWF.xApplication.cms.Xform.LP={
 	"commend": {
 		"do": "Me gusta",
 		"undo": "Cancelar 'Me gusta'"
-	},
-	"system": "Sistema",
-	"attachmentSecurity": "Identificación del nivel de confidencialidad del Anexo",
-	"uploading": "Se está cargando el anexo, por favor espere a que se complete la carga del anexo antes de realizar esta operación."
+	}
 }
 MWF.xApplication.cms.Xform["lp."+o2.language] = MWF.xApplication.cms.Xform.LP

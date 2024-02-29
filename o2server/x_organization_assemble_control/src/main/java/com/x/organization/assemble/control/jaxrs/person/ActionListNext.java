@@ -52,10 +52,10 @@ class ActionListNext extends BaseAction {
 						|| business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
 								OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 					result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
-							business.personPredicateWithTopUnit(effectivePerson));
+							business.personPredicateWithTopUnit(effectivePerson, false));
 				} else {
 					result = this.standardListNext(Wo.copier2, id, count, JpaObject.sequence_FIELDNAME, DESC,
-							business.personPredicateWithTopUnit(effectivePerson));
+							business.personPredicateWithTopUnit(effectivePerson, false));
 					List<String> list = ListTools.extractField(result.getData(), JpaObject.id_FIELDNAME, String.class,
 							true, true);
 					List<Wo> wos = Wo.copier.copy(business.person().pick(list));

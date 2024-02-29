@@ -120,7 +120,7 @@
 
     "roomTopArea" : {
         "width" : "100%",
-        "height" : "50px",
+        "min-height" : "50px",
         "background-color" : "#fff",
         "overflow" : "hidden",
         "margin-bottom" : "5px"

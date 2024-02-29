@@ -334,7 +334,13 @@ MWF.xApplication.process.Application.List = new Class({
 			"</table>";
 		this.fileterNode.set("html", html);
 
+		var selectValue = [""];
+		var selectText = [""];
 
+		this.app.processList.each(function(d){
+			selectValue.push(d.id);
+			selectText.push(d.name);
+		})
 		this.form = new MForm(this.fileterNode, {}, {
 			style: "attendance",
 			isEdited: true,
@@ -342,32 +348,12 @@ MWF.xApplication.process.Application.List = new Class({
 				title: {text: lp.subject, "type": "text", "style": {"min-width": "150px"}},
 				activityName: {text: lp.activity, "type": "text", "style": {"min-width": "150px"}},
 				processName: {
-					text: lp.process,
-					"type": "text",
-
+					"text": lp.process,
+					"type": "select",
+					"selectValue" :selectValue,
+					"selectText" :selectText,
 					"style": {"min-width": "150px"},
-					"event": {
 
-						"click": function (item, ev){
-							var v = item.getValue();
-							o2.xDesktop.requireApp("Selector", "package", function(){
-								var options = {
-									"type": "Process",
-									"values": v!==""?[item.getValue().split("|")[1]] : [],
-									"count": 1,
-									"onComplete": function (items) {
-										var arr = [];
-										var arr2 = [];
-										items.each(function (data) {
-											arr.push(data.data);
-											arr2.push(items[0].data.name+"|"+items[0].data.id);
-										});
-										item.setValue(arr2.join(","));
-									}.bind(this)
-								};
-								new o2.O2Selector(this.app.desktop.node, options);
-							}.bind(this),false);
-						}.bind(this)}
 				},
 				credentialList: {
 					"text": lp.creator,
@@ -408,7 +394,7 @@ MWF.xApplication.process.Application.List = new Class({
 									delete result[key];
 								}else if (key === "processName" && result[key] !== "") {
 									//result[key] = result[key][0].split("@")[1];
-									result["processList"] = [result[key].split("|")[1]];
+									result["processList"] = [result[key]];
 									delete result[key];
 								}else if (key === "endTime" && result[key] !== "") {
 									result[key] = result[key] + " 23:59:59"

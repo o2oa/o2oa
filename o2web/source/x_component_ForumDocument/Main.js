@@ -156,7 +156,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				this.restActions.getCategory(this.sectionData.forumId, function (forumData) {
 					this.forumData = forumData.data;
 					this.createTopNode( title );
-					var tail = this.inBrowser ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
+					var tail = (this.inBrowser && layout.desktop.session.user.name !== "anonymous") ? (MWFForum.getSystemConfigValue( MWFForum.BBS_TITLE_TAIL ) || "") : "";
 					this.setTitle( title + tail );
 					this.createMiddleNode();
 				}.bind(this));

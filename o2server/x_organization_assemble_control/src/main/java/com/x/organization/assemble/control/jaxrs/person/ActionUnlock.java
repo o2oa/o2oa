@@ -13,6 +13,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.enums.PersonStatusEnum;
 
 class ActionUnlock extends BaseAction {
 
@@ -33,6 +34,9 @@ class ActionUnlock extends BaseAction {
 			emc.beginTransaction(Person.class);
 			Person entityPerson = emc.find(person.getId(), Person.class);
 			entityPerson.setFailureCount(0);
+			entityPerson.setStatus(PersonStatusEnum.NORMAL.getValue());
+			entityPerson.setStatusDes("");
+			entityPerson.setLockExpireTime(null);
 			emc.check(entityPerson, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Person.class);

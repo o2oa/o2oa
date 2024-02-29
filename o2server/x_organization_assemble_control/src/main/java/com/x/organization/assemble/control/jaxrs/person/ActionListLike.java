@@ -66,6 +66,7 @@ class ActionListLike extends BaseAction {
 		@FieldDescribe("搜索角色范围,为空则不限定")
 		private List<String> roleList = new ArrayList<>();
 
+
 		public String getKey() {
 			return key;
 		}
@@ -117,7 +118,7 @@ class ActionListLike extends BaseAction {
 				return wos;
 			}
 		}
-		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
+		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron, false));
 		List<String> ids = em.createQuery(cq.select(root.get(Person_.id)).where(p)).getResultList().stream().distinct()
 				.collect(Collectors.toList());
 		List<Person> os = business.entityManagerContainer().list(Person.class, ids);
