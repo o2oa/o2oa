@@ -6,18 +6,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Cancel;
@@ -121,18 +117,17 @@ public class CancelProcessor extends AbstractCancelProcessor {
 				aeiObjects.getProcessingAttributes());
 		embedAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedCancelScript(embed)) {
-			ScriptContext scriptContext = embedAeiObjects.scriptContext();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
-				CompiledScript cs = aeiObjects.business().element()
-						.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETED);
-				JsonScriptingExecutor.eval(cs, scriptContext);
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						embed, Business.EVENT_EMBEDCOMPLETED);
+				GraalvmScriptingFactory.eval(source, bindings);
 			}
 			if (this.hasEmbedCompletedCancelScript(embed)) {
-				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDCANCEL);
-				JsonScriptingExecutor.eval(cs, scriptContext);
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						embed, Business.EVENT_EMBEDCOMPLETEDCANCEL);
+				GraalvmScriptingFactory.eval(source, bindings);
 			}
 		}
 		embedAeiObjects.commit();

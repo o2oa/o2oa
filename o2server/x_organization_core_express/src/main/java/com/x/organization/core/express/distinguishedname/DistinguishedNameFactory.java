@@ -1,7 +1,6 @@
 package com.x.organization.core.express.distinguishedname;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
@@ -24,7 +23,7 @@ public class DistinguishedNameFactory {
 		}
 	}
 
-	public List<String> list(Collection<String> values) throws Exception {
+	public List<String> list(List<String> values) throws Exception {
 		return ActionList.execute(context, values);
 	}
 

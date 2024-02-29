@@ -116,24 +116,6 @@ var library = {
 })();
 bind.library = library;
 
-
-//print 重载， console， Error
-/**
- * this.print是一个方法，在服务器控制台输出信息。<br/>
- * @module print()
- * @o2cn 控制台输出打印
- * @o2category server.common
- * @o2ordernumber 145
- *
- * @param {(String)} text 要输出的文本信息。</b>
- * @param {(String)} type 要输出的文本信息的类型，会添加到输出信息的前面，默认为“PRINT”。</b>
- * @example
- * this.print("这是我要输出的信息");
- * //2021-12-20 13:26:24.739 [script] PRINT 这是我要输出的信息
- *
- * this.print("这是一个自定义类型的信息", "MYTYPE");
- * //2021-12-20 13:26:24.765 [script] MYTYPE 这是一个自定义类型的信息
- */
 if (!bind.oPrint) bind.oPrint = print;
 var print = function(str, type){
     var d = new Date();
@@ -159,25 +141,6 @@ var _parsePrint = function(str){
     return text;
 };
 
-/**
- * this.console是一个服务器控制台输出对象，可使用console.log, console.error, console.info, console.warn方法在服务器控制台输入信息。<br/>
- * @module console
- * @o2category server.common
- * @o2ordernumber 155
- * @o2cn 分等级控制台输出
- * @example
- * console.log("这是我要输出的信息");
- * //2021-12-20 13:26:24.739 [script] PRINT 这是我要输出的信息
- *
- * console.error("这是一个错误信息");
- * //2021-12-20 13:26:24.765 [script] ERROR 这是一个错误信息
- *
- * console.info("这是一个普通信息");
- * //2021-12-20 13:26:24.765 [script] INFO 这是一个普通信息
- *
- * console.warn("这是一个警告信息");
- * //2021-12-20 13:26:24.765 [script] WARN 这是一个警告信息
- */
 var console = {
     log: function(){ print(_parsePrint.apply(this, arguments)); },
     error: function(){ print(_parsePrint.apply(this, arguments), "ERROR"); },
@@ -208,53 +171,6 @@ bind.exec = exec;
 
 
 //方法定义
-/**
- * this.define是一个方法，您在脚本中您可以通过this.define()来定义自己的方法。<br/>
- * 通过这种方式定义方法，在不同的应用使用相同的方法名称也不会造成冲突。
- * @module define()
- * @o2category server.common
- * @o2ordernumber 160
- * @o2cn 方法定义
- * @param {(String)} name 定义的方法名称。
- * @param {Function} fun  定义的方法
- * @param {Boolean} [overwrite] 定义的方法是否能被覆盖重写。默认值为true。
- * @o2syntax
- * this.define(name, fun, overwrite)
- * @example
- * <caption>
- *    <b>样例一：</b>在通用脚本中定义一个通用的方法去获取公文管理所有的文种，在查询语句中根据该方法来拼接JPQL。<br/>
- *     1、在内容管理应用中有一个fileRes的应用，在该应用中创建一个脚本，命名为FileSql，并定义方法。
- *     <img src='img/module/include/server_define1.png' />
- * </caption>
- * //定义一个方法
- * this.define("getFileSQL",function(){
- *   var application = ["公司发文","部门发文","党委发文"];
- *   var appSql = " ( ";
- *   for(var i=0;i<application.length;i++){
- *       if(i==application.length-1){
- *           appSql = appSql + " o.applicationName = '"+application[i]+"' "
- *       }else{
- *           appSql = appSql + " o.applicationName = '"+application[i]+"' OR "
- *       }
- *   }
- *   appSql = appSql + " ) ";
- *   return appSql;
- *}.bind(this));
- * @example
- * <caption>
- *      2、在查询语句中使用该方法。
- *     <img src='img/module/include/server_define2.png'/>
- * </caption>
- * this.include({
- *   type : "cms",
- *   application : "fileRes",
- *   name : "FileSql"
- * })
- *
- * var sql = this.getFileSQL();
- *
- * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
- */
 bind.define = function(name, fun, overwrite){
     var over = true;
     if (overwrite===false) over = false;
@@ -362,145 +278,9 @@ bind.Action = function(root, json){
     };
 }
 bind.Action.applications = bind.applications;
-/**
- * 本文档说明如何在后台脚本中使用Actions调用平台的RESTful服务。<br/>
- * 通过访问以下地址来查询服务列表：http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)
- * @module server.Actions
- * @o2cn 服务调用
- * @o2category server.common
- * @o2ordernumber 165
- * @o2syntax
- * //获取Actions
- * this.Actions
- */
+
 bind.Actions = {
     "loadedActions": {},
-    /**
-     * 平台预置了Actions对象用于调用平台提供的服务，您可以使用this.Actions.load来获取这些方法。由于是运行在服务器端，服务都是同步调用。
-     * @method load
-     * @methodOf module:server.Actions
-     * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
-     * 如:
-     *<pre><code class='language-js'>
-     * "x_processplatform_assemble_surface" //流程平台相关服务根
-     * </code></pre>
-     * @return {Object} 返回action对象，用于后续服务调用
-     * @o2syntax
-     * var actions = this.Actions.load( root );
-     * @o2syntax
-     * //获取流程平台服务对象。
-     * var processAction = this.Actions.load("x_processplatform_assemble_surface");
-     * @o2syntax
-     * <caption>
-     *     通过this.Actions.load(root)方法得到action对象，就可以访问此服务下的方法了。<br/>
-     *     访问方法的规则如下：
-     *  </caption>
-     *  var requestString = this.Actions.load( root )[actionName][methodName]( arguements );
-     *
-     *  requestString : 服务返回的响应数据，字符串格式，可以通过 requestObjest = JSON.parse(requestString);解析成对象
-     *
-     *  root : 平台服务根名称，如果 x_processplatform_assemble_surface
-     *
-     *  actionName : 服务下的Action分类名称，如 TaskAction
-     *
-     *  methodName : Action分类下的方法名称，如 get
-     *
-     *  arguements : 需调用的RESTful服务的相关参数。这些参数需要按照先后顺序传入。根据实际情况可以省略某些参数。参数序列分别是:
-     *
-     *      uri的参数, data(Post, Put方法), success, failure, async。
-     *
-     *      uri参数：如果有uri有多个参数，需要按先后顺序传入。
-     *
-     *      data参数：要提交到后台的数据。POST 和 PUT 方法需要传入，GET方法和DELETE方法省略。
-     *
-     *      success参数：服务执行成功时的回调方法，形如 function(json){
-     *          json为后台服务传回的数据
-     *      }。
-     *
-     *      failure 参数：服务执行失败时的回调方法，形如 function(xhr){
-     *          xhr XmlHttpRequest对象，服务器请求失败时有值
-     *       }
-     *      此参数可以省略，如果省略，系统会自动弹出错误信息。
-     *  @o2syntax
-     *  <caption>
-     *  处理返回的数据有两种方式，二选一即可：<br/>
-     *  1、该方法返回的结果是响应数据字符串，通过JSON.parse(responseString)获取对象。<br/>
-     *  2、通过success方法作为第一个参数来处理结果，建议此方法处理请求结果
-     *  </caption>
-     *  //success：arguements中的第一个function对象
-     *  function(json){
-     *    //json为后台服务传回的数据
-     *  }
-     *  @example
-     * <caption>
-     *     <b>样例1:</b>
-     *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
-     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html (v7.2之前版本需要加端口20020)<br/>
-     *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
-     *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
-     *     该服务有以下信息：<br/>
-     *     1、actionName是：TaskAction<br/>
-     *     2、methodName是：V2ListPaging<br/>
-     *     3、有两个url参数，分别是 page(分页), size(每页数量)<br/>
-     *     4、有一系列的body参数<br/>
-     *     5、该服务方法类型是POST<br/>
-     *     根据这些信息我们可以组织出下面的方法：
-     * </caption>
-     * var processAction = this.Actions.load("x_processplatform_assemble_surface"); //获取action
-     * var method = processAction.TaskAction.V2ListPaging; //获取列式方法
-     * //执行方法1
-     * method(
-     *  1,  //uri 第1个参数，如果无uri参数，可以省略
-     *  20, //uri 第2个参数，如果无uri参数，可以省略，如果还有其他uri参数，可以用逗号, 分隔
-     *  {   //body 参数，对POST和PUT请求，该参数必须传，可以为空对象
-     *      processList : [xxx] //具体参数
-     *  },
-     *  function(json){ //正确调用的回调
-     *       //json.data得到服务返回数据
-     *  },
-     *  function(responseJSON){ //可选，错误信息, json格式
-     *      print( JSON.stringify(responseJSON) )
-     *  }
-     * );
-     *
-     * //执行方法2
-     * var responseString = method( 1, 20, {processList : [xxx]} )
-     * var responseObject = JSON.parse(responseObject);
-     * @example
-     * <caption>出错信息responseJSON的格式</caption>
-     * {
-     *       "type": "error", //类型为错误
-     *       "message": "标识为:343434 的 Task 对象不存在.", //提示文本
-     *       "date": "2020-12-29 17:02:13", //出错时间
-     *       "prompt": "com.x.base.core.project.exception.ExceptionEntityNotExist" //后台错误类
-     *}
-     * @example
-     * <caption>
-     *     <b>样例2:</b>
-     *      已知流程实例的workid，在脚本中获取数据，修改后进行保存。
-     * </caption>
-     * //查询服务列表找到获取data数据服务为DataAction的getWithWork方法
-     * //查询服务列表找到更新data数据服务为DataAction的updateWithWork方法
-     *
-     * var workid = "cce8bc22-225a-4f85-8132-7374d546886e";
-     * var data;
-     * this.Actions.load("x_processplatform_assemble_surface").DataAction.getWithWork( //平台封装好的方法
-     *      workid, //uri的参数
-     *      function( json ){ //服务调用成功的回调函数, json为服务传回的数据
-     *          data = json.data; //为变量data赋值
-     *      }.bind(this)
-     * )
-     *
-     * data.subject = "新标题"; //修改数据
-     * this.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithWork(
-     *      workid, //uri的参数
-     *      data, //保存的数据
-     *      function(){ //服务调用成功的回调函数
-     *
-     *      }.bind(this)
-     * );
-     */
     "load": function(root){
         if (this.loadedActions[root]) return this.loadedActions[root];
         var jaxrsString = bind.applications.describeApi(root);
@@ -540,29 +320,7 @@ var getNameFlag = function(name){
         return [(t==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name];
     }
 };
-/**
- * 您可以通过this.org获取组织中的人员、人员属性、组织、组织属性、身份、群组和角色。后端调用都是同步的。
- * @module server.org
- * @o2cn 组织查询
- * @o2category server.common
- * @o2ordernumber 170
- * @property    {GroupFactory}  group   后端的GroupFactory实例，可用于获取group群组相关数据, <a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/GroupFactory.html">查看javadoc</a>
- * @property    {IdentityFactory}  identity   后端的IdentityFactory实例，可用于获取identity身份相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/IdentityFactory.html">查看javadoc</a>
- * @property    {PersonFactory}  person   后端的PersonFactory实例，可用于获取person人员相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonFactory.html">查看javadoc</a>
- * @property    {PersonAttributeFactory}  personAttribute   后端的GroupFactory实例，可用于获取personAttribute人员属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/PersonAttributeFactory.html">查看javadoc</a>
- * @property    {RoleFactory}  role   后端的RoleFactory实例，可用于获取role角色相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/RoleFactory.html">查看javadoc</a>
- * @property    {UnitFactory}  unit   后端的UnitFactory实例，可用于获取unit相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitFactory.html">查看javadoc</a>
- * @property    {UnitAttributeFactory}  unitAttribute   后端的UnitAttributeFactory实例，可用于获取unitAttribute组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitAttributeFactory.html">查看javadoc</a>
- * @property    {UnitDutyFactory}  unitDuty   后端的UnitDutyFactory实例，可用于获取unitDuty组织属性相关数据，<a target="_blank" href="../api/javadoc/organization/doc/index.html?com/x/organization/core/express/group/UnitDutyFactory.html">查看javadoc</a>
- * @o2syntax
- * //您可以通过this来获取当前实例的org对象，如下：
- * var org = this.org;
- *
- *@example
- * //通过后端java类，来获取当前人所在的部门名称
- * var unit = this.org.unit;
- * var unitNames = unit.listWithPerson("张三@xxx@P");
- */
+
 bind.org = {
     "group": function() { return this.oGroup},
     "identity": function() { return this.oIdentity},
@@ -587,19 +345,6 @@ bind.org = {
 
     //群组***************
     //获取群组--返回群组的对象数组
-    /**
-     根据群组标识获取对应的群组对象或数组：group对象或数组
-     * @method getGroup
-     * @o2membercategory group
-     * @methodOf module:server.org
-     * @static
-     * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @return {GroupData|GroupData[]} 返回群组，单个是Object，多个是Array。
-     * @o2ActionOut x_organization_assemble_express.GroupAction.listObject|example=Group
-     * @o2syntax
-     * //返回群组，单个是Object，多个是Array。
-     * var groupList = this.org.getGroup( name );
-     */
     getGroup: function(name){
         var v = this.oGroup.listObject(getNameFlag(name));
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
@@ -608,20 +353,6 @@ bind.org = {
 
     //查询下级群组--返回群组的对象数组
     //nested  布尔  true嵌套下级；false直接下级；默认false；
-    /**
-     根据群组标识获取下级群组的对象数组：group对象数组。
-     * @method listSubGroup
-     * @o2membercategory group
-     * @methodOf module:server.org
-     * @static
-     * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有下级群组；false直接下级群组；默认false。
-     * @return {GroupData[]} 返回群组数组。
-     * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSubDirectObject|example=Group
-     * @o2syntax
-     * //返回嵌套下级群组数组。
-     * var groupList = this.org.listSubGroup( name, true );
-     */
     listSubGroup: function(name, nested){
         var v = null;
         if (nested){
@@ -633,20 +364,6 @@ bind.org = {
     },
     //查询上级群组--返回群组的对象数组
     //nested  布尔  true嵌套上级；false直接上级；默认false；
-    /**
-     根据群组标识获取上级群组的对象数组：group对象数组。
-     * @method listSupGroup
-     * @o2membercategory group
-     * @methodOf module:server.org
-     * @static
-     * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有上级群组；false直接上级群组；默认false。
-     * @return {GroupData[]} 返回群组数组。
-     * @o2ActionOut x_organization_assemble_express.GroupAction.listWithGroupSupDirectObject|example=Group
-     * @o2syntax
-     * //返回嵌套上级群组数组。
-     * var groupList = this.org.listSupGroup( name, true );
-     */
     listSupGroup:function(name, nested){
         var v = null;
         if (nested){
@@ -658,38 +375,12 @@ bind.org = {
     },
 
     //人员所在群组（嵌套）--返回群组的对象数组
-    /**
-     * 根据人员标识获取所有的群组对象数组。如果群组具有群组（group）成员，且群组成员中包含该人员，那么该群组也被返回。
-     * @method listGroupWithPerson
-     * @o2membercategory group
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {GroupData[]} 返回群组对象数组。
-     * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
-     * @o2syntax
-     * //返回群组数组。
-     * var groupList = this.org.listGroupWithPerson( name );
-     */
     listGroupWithPerson:function(name){
         var v = this.oGroup.listWithPerson(getNameFlag(name));
         return this.getObject(this.oGroup, v);
     },
 
     //群组是否拥有角色--返回true, false
-    /**
-     * 群组是否拥有角色。
-     * @method groupHasRole
-     * @o2membercategory role
-     * @methodOf module:server.org
-     * @static
-     * @param {GroupFlag} name - 群组的distinguishedName、name、id、unique属性值，群组对象。
-     * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @return {Boolean} 如果群组拥有角色返回true, 否则返回false。
-     * @o2syntax
-     * //返回判断结果。
-     * var groupList = this.org.groupHasRole( name, roleList );
-     */
     groupHasRole: function(name, role){
         nameFlag = (library.typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
         return this.oGroup.hasRole(nameFlag, getNameFlag(role));
@@ -697,19 +388,6 @@ bind.org = {
 
     //角色***************
     //获取角色--返回角色的对象数组
-    /**
-     * 根据角色标识获取对应的角色对象或数组。
-     * @method getRole
-     * @o2membercategory role
-     * @methodOf module:server.org
-     * @static
-     * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @return {RoleData|RoleData[]} 返回角色，单个为Object，多个为Array。
-     * @o2ActionOut x_organization_assemble_express.RoleAction.listObject|example=Role
-     * @o2syntax
-     * //返回角色，单个为对象，多个为数组。
-     * var roleList = this.org.getRole( name );
-     */
     getRole: function(name){
         var v = this.oRole.listObject(getNameFlag(name));
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
@@ -717,19 +395,6 @@ bind.org = {
     },
 
     //人员所有角色（嵌套）--返回角色的对象数组
-    /**
-     * 根据人员标识获取所有的角色对象数组。如果角色具有群组（group）成员，且群组中包含该人员，那么该角色也被返回。
-     * @method listRoleWithPerson
-     * @o2membercategory role
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {RoleData[]} 返回角色对象数组。
-     * @o2ActionOut x_organization_assemble_express.RoleAction.listWithPersonObject|example=Role
-     * @o2syntax
-     * //返回角色数组。
-     * var roleList = this.org.listRoleWithPerson( name );
-     */
     listRoleWithPerson:function(name){
         var v = this.oRole.listWithPerson(getNameFlag(name));
         return this.getObject(this.oRole, v);
@@ -737,38 +402,12 @@ bind.org = {
 
     //人员***************
     //人员是否拥有角色--返回true, false
-    /**
-     * 人员是否拥有角色。
-     * @method personHasRole
-     * @o2membercategory role
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag} name - 人员的distinguishedName、id、unique属性值，人员对象。
-     * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
-     * @return {Boolean} 如果人员拥有角色返回true, 否则返回false。
-     * @o2syntax
-     * //返回判断结果。
-     * var groupList = this.org.personHasRole( name, roleList );
-     */
     personHasRole: function(name, role){
         nameFlag = (library.typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
 
     //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
-    /**
-     根据人员标识获取对应的人员对象,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
-     * @method getPersonData
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
-     * @return {PersonData} 返回人员对象。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.get|example=PersonData
-     * @o2syntax
-     * //返回人员对象。
-     * var person = this.org.getPersonData( name );
-     */
     getPersonData: function(name){
         var v = this.oPerson.getExt(name);
         var v_json = (!v) ? null: JSON.parse(v.toString());
@@ -776,20 +415,6 @@ bind.org = {
     },
 
     //获取人员--返回人员的对象数组
-    /**
-     根据人员标识获取对应的人员对象或数组：person对象或数组
-     * @method getPerson
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的人（精确匹配）。
-     * @return {PersonData|PersonData[]} 返回人员，单个是Object，多个是Array。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
-     * @o2syntax
-     * //返回人员，单个是对象，多个是数组。
-     * var personList = this.org.getPerson( name );
-     */
     getPerson: function(name, findCN){
         var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
@@ -800,20 +425,6 @@ bind.org = {
 
     //查询下级人员--返回人员的对象数组
     //nested  布尔  true嵌套下级；false直接下级；默认false；
-    /**
-     根据人员标识获取下级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
-     * @method listSubPerson
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
-     * @return {PersonData[]} 返回人员数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSubDirectObject|example=Person
-     * @o2syntax
-     * //返回嵌套下级人员数组。
-     * var personList = this.org.listSubPerson( name, true );
-     */
     listSubPerson: function(name, nested){
         var v = null;
         if (nested){
@@ -826,20 +437,6 @@ bind.org = {
 
     //查询上级人员--返回人员的对象数组
     //nested  布尔  true嵌套上级；false直接上级；默认false；
-    /**
-     *根据人员标识获取上级人员的对象数组：person对象数组。该上下级关系被人员的汇报对象值（superior）决定。
-     * @method listSupPerson
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
-     * @return {PersonData[]} 返回人员数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSupDirectObject|example=Person
-     * @o2syntax
-     * //返回嵌套上级人员数组。
-     * var personList = this.org.listSupPerson( name, true );
-     */
     listSupPerson: function(name, nested){
         var v = null;
         if (nested){
@@ -851,19 +448,6 @@ bind.org = {
     },
 
     //获取群组的所有人员--返回人员的对象数组
-    /**
-     * 根据群组标识获取人员对象成员：person对象数组。
-     * @method listPersonWithGroup
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {GroupFlag|GroupFlag[]} name - 群组的distinguishedName、name、id、unique属性值，群组对象，或上述属性值和对象的数组。
-     * @return {PersonData[]} 返回人员对象数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithGroupObject|example=Person
-     * @o2syntax
-     * //返回人员数组。
-     * var personList = this.org.listPersonWithGroup( group );
-     */
     listPersonWithGroup: function(name){
         var v = this.oPerson.listWithGroup(getNameFlag(name));
         return this.getObject(this.oPerson, v);
@@ -874,57 +458,18 @@ bind.org = {
     },
 
     //获取角色的所有人员--返回人员的对象数组
-    /**
-     * 根据角色标识获取人员对象数组：person对象数组。
-     * @method listPersonWithRole
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {RoleFlag|RoleFlag[]} name - 角色的distinguishedName、name、id、unique属性值，角色对象，或上述属性值和对象的数组。
-     * @return {PersonData[]} 返回人员对象数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithRoleObject|example=Person
-     * @o2syntax
-     * //返回人员数组。
-     * var personList = this.org.listPersonWithRole( role );
-     */
     listPersonWithRole: function(name){
         var v = this.oPerson.listWithRole(getNameFlag(name));
         return this.getObject(this.oPerson, v);
     },
 
     //获取身份的所有人员--返回人员的对象数组
-    /**
-     * 根据身份标识获取人员对象成员：person对象数组。
-     * @method listPersonWithIdentity
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @return {PersonData[]} 返回人员对象数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
-     * @o2syntax
-     * //返回人员数组。
-     * var personList = this.org.listPersonWithIdentity( identity );
-     */
     listPersonWithIdentity: function(name){
         var v = this.oPerson.listWithIdentity(getNameFlag(name));
         return this.getObject(this.oPerson, v);
     },
 
     //获取身份的所有人员--返回人员的对象数组
-    /**
-     * 根据身份标识获取人员对象：person对象数组。
-     * @method getPersonWithIdentity
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @return {PersonData|PersonData[]} 返回人员对象，单个是Object，多个是Array。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
-     * @o2syntax
-     * //返回人员，单个是Object，多个是Array。
-     * var personList = this.org.listPersonWithIdentity( identity );
-     */
     getPersonWithIdentity: function(name){
         var v = this.oPerson.listWithIdentity(getNameFlag(name));
         var arr = this.getObject(this.oPerson, v);
@@ -933,23 +478,6 @@ bind.org = {
 
     //查询组织成员的人员--返回人员的对象数组
     //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-    /**
-     * 根据组织标识获取人员对象成员：person对象数组。
-     * @method listPersonWithUnit
-     * @o2membercategory person
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
-     * @return {PersonData[]} 返回人员对象数组。
-     * @o2ActionOut x_organization_assemble_express.PersonAction.listWithUnitSubDirectObject|example=Person
-     * @o2syntax
-     * //返回组织的直接人员数组。
-     * var personList = this.org.listPersonWithUnit( unit );
-     *
-     * //返回组织的以及嵌套下级组织所有的人员数组。
-     * var personList = this.org.listPersonWithUnit( unit, true );
-     */
     listPersonWithUnit: function(name, nested){
         var v = null;
         if (nested){
@@ -962,62 +490,18 @@ bind.org = {
 
     //人员属性************
     //添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-    /**
-     * 添加人员属性值(在属性中添加values值，如果没有此属性，则创建一个)
-     * @method appendPersonAttribute
-     * @o2membercategory personAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
-     * @param {String} attr 属性名称。
-     * @param {String[]} values 属性值，必须为数组。
-     * @param {Function} [success] 执行成功的回调。
-     * @param {Function} [failure] 执行失败的回调。
-     * @o2syntax
-     * //添加人员属性值
-     * this.org.appendPersonAttribute( person, attribute, valueArray);
-     */
     appendPersonAttribute: function(person, attr, values){
         var personFlag = (library.typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
         return this.oPersonAttribute.appendWithPersonWithName(personFlag, attr, values);
     },
 
     //设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-    /**
-     * 设置人员属性值(将属性值修改为values，如果没有此属性，则创建一个)
-     * @method setPersonAttribute
-     * @o2membercategory personAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
-     * @param {String} attr 属性名称。
-     * @param {String[]} values 属性值，必须为数组。
-     * @param {Function} [success] 执行成功的回调。
-     * @param {Function} [failure] 执行失败的回调。
-     * @o2syntax
-     * //添加人员属性值
-     * this.org.setPersonAttribute( person, attribute, valueArray);
-     */
     setPersonAttribute: function(person, attr, values){
         var personFlag = (library.typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
         return this.oPersonAttribute.setWithPersonWithName(personFlag, attr, values);
     },
 
     //获取人员属性值
-    /**
-     根据人员和属性名称获取属性值数组。
-     * @method getPersonAttribute
-     * @o2membercategory personAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
-     * @param {String} attr 属性名称。
-     * @return {String[]} 返回属性值数组，
-     * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
-     * @o2syntax
-     * //返回该人员的属性值数组。
-     * var attributeList = this.org.getPersonAttribute( person, attr );
-     */
     getPersonAttribute: function(person, attr){
         var personFlag = (library.typeOf(person)==="object") ? (person.distinguishedName || person.id || person.unique || person.name) : person;
         var v = this.oPersonAttribute.listAttributeWithPersonWithName(personFlag, attr);
@@ -1031,19 +515,6 @@ bind.org = {
     },
 
     //列出人员所有属性的名称
-    /**
-     列出人员所有属性的名称数组。
-     * @method listPersonAttributeName
-     * @o2membercategory personAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {String[]} 返回人员属性名称数组，
-     * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
-     * @o2syntax
-     * //返回人员所有属性的名称数组。
-     * var attributeNameList = this.org.listPersonAttributeName( person );
-     */
     listPersonAttributeName: function(name){
         var p = getNameFlag(name);
         var nameList = [];
@@ -1071,19 +542,6 @@ bind.org = {
 
     //身份**********
     //获取身份
-    /**
-     根据身份标识获取对应的身份对象或数组
-     * @method getIdentity
-     * @o2membercategory identity
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @return {IdentityData|IdentityData[]} 返回身份，单个是Object，多个是Array。
-     * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|example=Identity|ignoreNoDescr=true|ignoreProps=[woUnitDutyList,woUnit,woGroupList]
-     * @o2syntax
-     * //返回身份，单个是对象，多个是数组。
-     * var identityList = this.org.getIdentity( name );
-     */
     getIdentity: function(name){
         var v = this.oIdentity.listObject(getNameFlag(name));
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
@@ -1093,19 +551,6 @@ bind.org = {
     },
 
     //列出人员的身份
-    /**
-     * 根据人员标识获取对应的身份对象数组。
-     * @method listIdentityWithPerson
-     * @o2membercategory identity
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {IdentityData[]} 返回身份对象数组。
-     * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithPersonObject|example=Identity
-     * @o2syntax
-     * //返回身份对象数组。
-     * var identityList = this.org.listIdentityWithPerson( person );
-     */
     listIdentityWithPerson: function(name){
         var v = this.oIdentity.listWithPerson(getNameFlag(name));
         return this.getObject(this.oIdentity, v);
@@ -1113,24 +558,6 @@ bind.org = {
 
     //查询组织成员身份--返回身份的对象数组
     //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
-    /**
-     * 根据组织标识获取对应的身份对象数组：identity对象数组。
-     * @method listIdentityWithUnit
-     * @o2membercategory identity
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested] true嵌套的所有身份成员；false直接身份成员；默认false。
-     * @return {IdentityData[]} 返回身份对象数组。
-     * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
-     * @o2syntax
-     * //返回直接组织身份对象数组。
-     * var identityList = this.org.listIdentityWithUnit( unit );
-     *
-     *
-     * //返回嵌套组织身份对象数组。
-     * var identityList = this.org.listIdentityWithUnit( unit, true );
-     */
     listIdentityWithUnit: function(name, nested){
         var v = null;
         if (nested){
@@ -1143,20 +570,6 @@ bind.org = {
 
     //组织**********
     //获取组织
-    /**
-     根据组织标识获取对应的组织：unit对象或数组
-     * @method getUnit
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。]
-     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如综合部），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的部门（精确匹配）。
-     * @return {UnitData|UnitData[]} 单个是Object，多个是Array。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
-     * @o2syntax
-     * //返回组织，单个是对象，多个是数组。
-     * var unitList = this.org.getUnit( name );
-     */
     getUnit: function(name, findCN){
         var v = this.oUnit.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
@@ -1167,20 +580,6 @@ bind.org = {
 
     //查询组织的下级--返回组织的对象数组
     //nested  布尔  true嵌套下级；false直接下级；默认false；
-    /**
-     根据组织标识获取下级组织的对象数组：unit对象数组。
-     * @method listSubUnit
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有下级组织；false直接下级组织；默认false。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSubNestedObject|example=Unit
-     * @o2syntax
-     * //返回嵌套下级组织数组。
-     * var unitList = this.org.listSubUnit( name, true );
-     */
     listSubUnit: function(name, nested){
         var v = null;
         if (nested){
@@ -1193,20 +592,6 @@ bind.org = {
 
     //查询组织的上级--返回组织的对象数组
     //nested  布尔  true嵌套上级；false直接上级；默认false；
-    /**
-     根据组织标识批量获取上级组织的对象数组：unit对象数组。
-     * @method listSupUnit
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @param {Boolean} [nested]  true嵌套的所有上级组织；false直接上级组织；默认false。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
-     * @o2syntax
-     * //返回嵌套上级组织数组。
-     * var unitList = this.org.listSupUnit( name, true );
-     */
     listSupUnit: function(name, nested){
         var v = null;
         if (nested){
@@ -1221,26 +606,6 @@ bind.org = {
     //flag 数字    表示获取第几层的组织
     //     字符串  表示获取指定类型的组织
     //     空     表示获取直接所在的组织
-    /**
-     根据个人身份获取组织：unit对象或数组。
-     * @method getUnitByIdentity
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag} name - 身份的distinguishedName、id、unique属性值，身份对象。
-     * @param {String|Number} [flag]  当值为数字的时候， 表示获取第几层的组织。<br/> 当值为字符串的时候，表示获取指定类型的组织。<br/> 当值为空的时候，表示获取直接所在组织。
-     * @return {UnitData|UnitData[]} 返回对应组织，单个为对象，多个为数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.getWithIdentityWithLevelObject|example=Unit
-     * @o2syntax
-     * //返回直接所在组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name );
-     *
-     * //返回第一层组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name, 1 );
-     *
-     * * //返回类型为company的组织，单个为对象，多个为数组。
-     * var unitList = this.org.getUnitByIdentity( name, "company" );
-     */
     getUnitByIdentity: function(name, flag){
         //getOrgActions();
         var getUnitMethod = "current";
@@ -1266,97 +631,30 @@ bind.org = {
     },
 
     //列出身份所在组织的所有上级组织
-    /**
-     * 批量查询身份所在的组织,并递归查找其上级组织对象.
-     * @method listAllSupUnitWithIdentity
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithIdentitySupNestedObject|example=Unit
-     * @o2syntax
-     * //返回组织数组。
-     * var unitList = this.org.listAllSupUnitWithIdentity( name );
-     */
     listAllSupUnitWithIdentity: function(name){
         var v = this.oUnit.listWithIdentitySupNested(getNameFlag(name));
         return this.getObject(this.oUnit, v);
     },
 
     //获取人员所在的所有组织（直接所在组织）
-    /**
-     * 根据个人标识批量获取组织对象成员：Unit对象数组。
-     * @method listUnitWithPerson
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonObject|example=Unit
-     * @o2syntax
-     * //返回组织数组。
-     * var unitList = this.org.listUnitWithPerson( name );
-     */
     listUnitWithPerson: function(name){
         var v = this.oUnit.listWithPerson(getNameFlag(name));
         return this.getObject(this.oUnit, v);
     },
 
     //列出人员所在组织的所有上级组织
-    /**
-     * 根据个人标识批量查询所在组织及所有上级组织：Unit对象数组。
-     * @method listAllSupUnitWithPerson
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
-     * @return {UnitData[]} 返回个人所在组织及所有上级组织。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonSupNestedObject|example=Unit
-     * @o2syntax
-     * //返回组织数组。
-     * var unitList = this.org.listAllSupUnitWithPerson( name );
-     */
     listAllSupUnitWithPerson: function(name){
         var v = this.oUnit.listWithPersonSupNested(getNameFlag(name));
         return this.getObject(this.oUnit, v);
     },
 
     //根据组织属性，获取所有符合的组织
-    /**
-     * 根据组织属性，获取所有符合的组织。
-     * @method listUnitWithAttribute
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {String} attributeName 组织属性名称。
-     * @param {String} attributeValue 组织属性值。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitAttributeObject|example=Unit
-     * @o2syntax
-     * //返回组织数组。
-     * var unitList = this.org.listUnitWithAttribute( attributeName, attributeName );
-     */
     listUnitWithAttribute: function(name, attribute){
         var v = this.oUnit.listWithUnitAttribute(name, attribute);
         return this.getObject(this.oUnit, v);
     },
 
     //根据组织职务，获取所有符合的组织
-    /**
-     * 根据组织职务，获取所有符合的组织。
-     * @method listUnitWithDuty
-     * @o2membercategory unit
-     * @methodOf module:server.org
-     * @static
-     * @param {String} dutyName 组织职务名称。
-     * @param {IdentityFlag} identity 身份的distinguishedName、id、unique属性值，身份对象。
-     * @return {UnitData[]} 返回组织数组。
-     * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitDutyObject|example=Unit
-     * @o2syntax
-     * //返回组织数组。
-     * var unitList = this.org.listUnitWithDuty( dutyName, identity );
-     */
     listUnitWithDuty: function(name, id){
         var idflag = (library.typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id;
         var v = this.oUnit.listWithUnitDuty(name, idflag);
@@ -1365,20 +663,6 @@ bind.org = {
 
     //组织职务***********
     //获取指定的组织职务的身份
-    /**
-     * 根据职务名称和组织名称获取身份。
-     * @method getDuty
-     * @o2membercategory duty
-     * @methodOf module:server.org
-     * @static
-     * @param {String} dutyName 组织职务名称。
-     * @param {UnitFlag} unit 组织的distinguishedName、id、unique属性值，组织对象。
-     * @return {IdentityData[]} 返回身份数组。
-     * @o2ActionOut x_organization_assemble_express.UnitDutyAction.getWithUnitWithName|example=Identity
-     * @o2syntax
-     * //返回身份数组。
-     * var identityList = this.org.getDuty( dutyName, unit );
-     */
     getDuty: function(duty, id){
         var unit = (library.typeOf(id)==="object") ? (id.distinguishedName || id.id || id.unique || id.name) : id;
         var v = this.oUnitDuty.listIdentityWithUnitWithName(unit, duty);
@@ -1386,18 +670,6 @@ bind.org = {
     },
 
     //获取身份的所有职务名称
-    /**
-     * 批量获取身份的所有职务名称。
-     * @method listDutyNameWithIdentity
-     * @o2membercategory duty
-     * @methodOf module:server.org
-     * @static
-     * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
-     * @return {String[]} 返回职务名称数组。
-     * @o2syntax
-     * //返回职务名称数组。
-     * var dutyNameList = this.org.listDutyNameWithIdentity( identity );
-     */
     listDutyNameWithIdentity: function(name){
         var ids = getNameFlag(name);
         var nameList = [];
@@ -1413,18 +685,6 @@ bind.org = {
     },
 
     //获取组织的所有职务名称
-    /**
-     * 批量获取组织的所有职务名称。
-     * @method listDutyNameWithUnit
-     * @o2membercategory duty
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @return {String[]} 返回职务名称数组。
-     * @o2syntax
-     * //返回职务名称数组。
-     * var dutyNameList = this.org.listDutyNameWithUnit( unit );
-     */
     listDutyNameWithUnit: function(name){
         var ids = getNameFlag(name);
         var nameList = [];
@@ -1440,19 +700,6 @@ bind.org = {
     },
 
     //获取组织的所有职务
-    /**
-     * 批量获取组织的所有职务。
-     * @method listUnitAllDuty
-     * @o2membercategory duty
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @return {Object[]} 返回职务数组
-     * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=Duty
-     * @o2syntax
-     * //返回职务数组。
-     * var dutyList = this.org.listUnitAllDuty( unit );
-     */
     listUnitAllDuty: function(name){
         var u = getNameFlag(name)[0];
         var ds = this.oUnitDuty.listNameWithUnit(u);
@@ -1466,60 +713,18 @@ bind.org = {
 
     //组织属性**************
     //添加组织属性值(在属性中添加values值，如果没有此属性，则创建一个)
-    /**
-     * 添加组织属性值(在属性中添加values值，如果没有此属性，则创建一个)
-     * @method appendUnitAttribute
-     * @o2membercategory unitAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
-     * @param {String} attribute 属性名称。
-     * @param {String[]} valueArray 属性值，必须为数组。
-     * @param {Function} [success] 执行成功的回调。
-     * @param {Function} [failure] 执行失败的回调。
-     * @o2syntax
-     * this.org.appendUnitAttribute( unit, attribute, valueArray);
-     */
     appendUnitAttribute: function(unit, attr, values){
         var unitFlag = (library.typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
         return this.oUnitAttribute.appendWithUnitWithName(unitFlag, attr, values);
     },
 
     //设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
-    /**
-     * 设置组织属性值(将属性值修改为values，如果没有此属性，则创建一个)
-     * @method setUnitAttribute
-     * @o2membercategory unitAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
-     * @param {String} attribute 属性名称。
-     * @param {String[]} valueArray 属性值，必须为数组。
-     * @param {Function} [success] 执行成功的回调。
-     * @param {Function} [failure] 执行失败的回调。
-     * @o2syntax
-     * this.org.setUnitAttribute( unit, attribute, valueArray);
-     */
     setUnitAttribute: function(unit, attr, values){
         var unitFlag = (library.typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
         return this.oUnitAttribute.setWithUnitWithName(unitFlag, attr, values);
     },
 
     //获取组织属性值
-    /**
-     根据组织标识和属性名称获取对应属性值。
-     * @method getUnitAttribute
-     * @o2membercategory unitAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
-     * @param {String} attr 属性名称。
-     * @return {String[]} 返回属性值数组，
-     * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
-     * @o2syntax
-     * //返回该组织的属性值数组。
-     * var attributeList = this.org.getUnitAttribute( unit, attr );
-     */
     getUnitAttribute: function(unit, attr){
         var unitFlag = (library.typeOf(unit)==="object") ? (unit.distinguishedName || unit.id || unit.unique || unit.name) : unit;
         var v = this.oUnitAttribute.listAttributeWithUnitWithName(unitFlag, attr);
@@ -1533,19 +738,6 @@ bind.org = {
     },
 
     //列出组织所有属性的名称
-    /**
-     列出组织所有属性的名称数组。
-     * @method listUnitAttributeName
-     * @o2membercategory unitAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @return {String[]} 返回组织属性名称数组，
-     * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
-     * @o2syntax
-     * //返回组织所有属性的名称数组。
-     * var attributeNameList = this.org.listUnitAttributeName( unit );
-     */
     listUnitAttributeName: function(name){
         var p = getNameFlag(name);
         var nameList = [];
@@ -1561,26 +753,6 @@ bind.org = {
     },
 
     //列出组织的所有属性
-    /**
-     列出组织的所有属性对象数组。
-     * @method listUnitAllAttribute
-     * @o2membercategory unitAttribute
-     * @methodOf module:server.org
-     * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
-     * @return {Object[]} 返回组织属性对象数组，如：
-     * <pre><code class='language-js'>[{
-     *    "name": "部门类别",
-     *    "unit": "开发部@kfb@U",
-     *    "attributeList": [
-     *        "生产部门",
-     *        "二级部门"
-     *    ]
-     * }]</code></pre>
-     * @o2syntax
-     * //返回组织所有属性的对象数组。
-     * var attributeObjectList = this.org.listUnitAllAttribute( unit );
-     */
     listUnitAllAttribute: function(name){
         var u = getNameFlag(name)[0];
         var ds = this.oUnitAttribute.listNameWithUnit(u);
@@ -1652,92 +824,6 @@ bind.serviceActions = new bind.Action("x_program_center", {
 //或者name: "" // 脚本名称/别名/id
 var includedScripts = bind.includedScripts || {};
 bind.includedScripts = includedScripts;
-/**
- * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
- * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
- * @module include()
- * @o2cn 脚本引用
- * @o2category server.common
- * @o2ordernumber 175
- *
- * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。
- * <pre><code class='language-js'>
- *
- * //如果需要引用其他应用的脚本配置，将options设置为Object;
- * this.include({
- *       //type: 应用类型。可以为 portal  process  cms  service。流程脚本默认为process，服务管理中默认为service
- *       type : "portal",
- *       application : "首页", // 门户、流程、CMS的名称、别名、id。 引用服务管理的脚本则忽略该参数。
- *       name : "initScript" // 脚本配置的名称、别名或id
- * });
- *
- * //引用服务管理中的脚本
- * this.include({
- *   "type": "service",
- *   "name": "scriptName"
- * });
- *
- * //引用流程管理中的脚本
- * this.include({
- *   "type": "process",
- *   "application": "appName",
- *   "name": "scriptName"
- * });
- *
- * //引用内容管理中的脚本
- * this.include({
- *   "type": "cms",
- *   "application": "appName",
- *   "name": "scriptName"
- * });
- *
- * //引用门户管理中的脚本
- * this.include({
- *   "type": "portal",
- *   "application": "appName",
- *   "name": "scriptName"
- * });
- * </code></pre>
- * @param {Function} [callback] 加载后执行的回调方法。
- *
- * @o2syntax
- * //您可以在表单、流程、视图和查询视图的各个嵌入脚本中，通过this.include()来引用本应用或其他应用的脚本配置，如下：
- * this.include( optionsOrName, callback )
- * @example
- * <caption>
- *    <b>样例一：</b>在通用脚本中定义一个通用的方法去获取公文管理所有的文种，在查询语句中根据该方法来拼接JPQL。<br/>
- *     1、在内容管理应用中有一个fileRes的应用，在该应用中创建一个脚本，命名为FileSql，并定义方法。
- *     <img src='img/module/include/server_define1.png' />
- * </caption>
- * //定义一个方法
- * this.define("getFileSQL",function(){
- *   var application = ["公司发文","部门发文","党委发文"];
- *   var appSql = " ( ";
- *   for(var i=0;i<application.length;i++){
- *       if(i==application.length-1){
- *           appSql = appSql + " o.applicationName = '"+application[i]+"' "
- *       }else{
- *           appSql = appSql + " o.applicationName = '"+application[i]+"' OR "
- *       }
- *   }
- *   appSql = appSql + " ) ";
- *   return appSql;
- *}.bind(this));
- * @example
- * <caption>
- *      2、在查询语句中使用该方法。
- *     <img src='img/module/include/server_define2.png'/>
- * </caption>
- * this.include({
- *   type : "cms",
- *   application : "fileRes",
- *   name : "FileSql"
- * })
- *
- * var sql = this.getFileSQL();
- *
- * return "SELECT o FROM com.x.processplatform.core.entity.content.Task o WHERE "+sql
- */
 bind.include = function( optionsOrName , callback ){
     var options = optionsOrName;
     if( typeOf( options ) == "string" ){
@@ -1814,51 +900,7 @@ bind.include = function( optionsOrName , callback ){
 //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
 //}
 //或者name: "" // 数据字典名称/别名/id
-/**
- * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
- * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
- * @module server.Dict
- * @o2cn 数据字典
- * @o2category server.common
- * @o2ordernumber 180
- * @o2syntax
- * //您可以通过this.Dict()对本应用或其他应用的数据字典中的数据进行增删改查，如下：
- * var dict = new this.Dict( options )
- * @example
- * var dict = new this.Dict({
- *     //type: 应用类型。可以为process  cms portal service。流程脚本默认为process，服务管理中默认为service。
- *    type : "cms",
- *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
- *    name : "bulletinDictionary", // 数据字典的名称、别名、id
- * });
- *
- * //引用服务管理中的数据字典
- * var dict = new this.Dict({
- *   "type": "service",
- *   "name": "dictName"
- * });
- *
- * //引用流程管理中的数据字典
- * var dict = new this.Dict({
- *   "type": "process",
- *   "application": "appName",
- *   "name": "dictName"
- * });
- *
- * //引用内容管理中的数据字典
- * var dict = new this.Dict({
- *   "type": "cms",
- *   "application": "appName",
- *   "name": "dictName"
- * });
- *
- * //引用门户管理中的数据字典
- * var dict = new this.Dict({
- *   "type": "portal",
- *   "application": "appName",
- *   "name": "dictName"
- * });
- */
+
 bind.Dict = function(optionsOrName){
     var options = optionsOrName;
     if( typeOf( options ) == "string" ){
@@ -1893,78 +935,6 @@ bind.Dict = function(optionsOrName){
         });
         return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
     };
-    /**
-     * 根据路径获取数据字典中的数据。
-     * @method get
-     * @methodOf module:server.Dict
-     * @static
-     * @param {String} [path] 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。当值为空的时候，表示获取数据字典中的所有数据。
-     * @param {Function} [success] 获取数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
-     * @param {Function} [failure] 获取数据失败时的回调。<b>流程设计后台脚本中无此参数。</b>
-     * @return {(Object|Array|String|Number|Boolean)}
-     * 返回数据字典的数据，类型和配置数据字典时候指定的一致。
-     * @o2syntax
-     * var data = dict.get( path, success, failure )
-     * @example
-     * <caption>
-     *     已经配置好了如下图所示的数据字典
-     * <img src='img/module/Dict/dict.png' />
-     * </caption>
-     * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     * });
-     *
-     * var data = dict.get();
-     * //data的值为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 2.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        }
-     *    ]
-     * }
-     *
-     *  var category = dict.get("category");
-     *  //category的值为
-     *  [
-     *     {
-     *        "enable": true,
-     *        "sequence": 1.0,
-     *        "text": "公司公告",
-     *        "value": "company"
-     *    },
-     *     {
-     *       "enable": "false",
-     *       "sequence": 2.0,
-     *        "text": "部门公告",
-     *        "value": "department"
-     *    }
-     *  ]
-     *
-     *  var array0 = dict.get("category.0");
-     *  //array0 的值为
-     *  {
-     *    "enable": true,
-     *    "sequence": 1.0,
-     *    "text": "公司公告",
-     *    "value": "company"
-     * }
-     *
-     * var enable = dict.get("category.0.eanble");
-     * //enable 的值为 true
-     */
     this.get = function(path, success, failure){
         var value = null;
         if( type === "service" ){
@@ -2005,133 +975,6 @@ bind.Dict = function(optionsOrName){
 
         return value;
     };
-    /**
-     * 根据路径修改数据字典的数据。
-     * @method set
-     * @methodOf module:Dict
-     * @instance
-     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
-     * @param {(Object|Array|String|Number|Boolean)} data 修改后的数据
-     * @param {Function} [success] 设置数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
-     * @param {Function} [failure] 设置数据错误时的回调函数。<b>流程设计后台脚本中无此参数。</b>
-     * @o2syntax
-     * dict.set( path, data, success, failure )
-     * @example
-     * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     * });
-     *
-     * dict.set( "category", { text : "系统公告", value : "system" }, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     * @example
-     * <caption>
-     *     对Example add的数据字典进行赋值，如下：
-     * </caption>
-     * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     * });
-     *
-     * dict.set( "archiveOptions", [ { text : "是" }, { text : "否" } ]);
-     *      //数据字典的值变为
-     *  {
-     *     "category": [
-     *         {
-     *             "enable": true,
-     *             "sequence": 1.0,
-     *             "text": "公司公告",
-     *             "value": "company"
-     *         },
-     *         {
-     *             "enable": "false",
-     *             "sequence": 2.0,
-     *             "text": "部门公告",
-     *             "value": "department"
-     *         },
-     *         {
-     *             "sequence" : 3.0,
-     *             "text": "系统公告",
-     *             "value": "system"
-     *         }
-     *
-     *     ],
-     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
-     * }
-     *
-     * dict.set( "category.2", { text : "县级公告", value : "county" }, function(data){
-     *     //data 形如
-     *     //{
-     *     //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
-     *     //}
-     *  }, function(xhr){
-     *     //xhr 为 xmlHttpRequest
-     *  });
-     *
-     *   /数据字典的值变为
-     *  {
-     *     "category": [
-     *         {
-     *             "enable": true,
-     *             "sequence": 1.0,
-     *             "text": "公司公告",
-     *             "value": "company"
-     *         },
-     *         {
-     *             "enable": "false",
-     *             "sequence": 2.0,
-     *             "text": "部门公告",
-     *             "value": "department"
-     *         },
-     *         {
-     *             "text": "县级公告",
-     *             "value": "county"
-     *         }
-     *     ],
-     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
-     * }
-     *
-     * dict.set( "category.1.sequence", 3 );
-     * dict.set( "category.2.sequence", 2 );
-     *      //数据字典的值变为
-     *      {
-     *     "category": [
-     *         {
-     *             "enable": true,
-     *             "sequence": 1.0,
-     *             "text": "公司公告",
-     *             "value": "company"
-     *         },
-     *         {
-     *             "enable": "false",
-     *             "sequence": 3.0,
-     *             "text": "部门公告",
-     *             "value": "department"
-     *         },
-     *         {
-     *             "sequence": 2.0,
-     *             "text": "县级公告",
-     *             "value": "county"
-     *         }
-     *     ],
-     *     "archiveOptions" : [ { text : "是" }, { text : "否" } ]
-     * }
-     * @example
-     * <caption>
-     *     下面是错误的赋值：
-     * </caption>
-     * dict.set( "category_1", { text : "公司公告" } ); //出错，因为category_1在数据字典中不存在
-     */
     this.set = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
@@ -2149,135 +992,6 @@ bind.Dict = function(optionsOrName){
             }, false, false);
         }
     };
-    /**
-     * 根据路径新增数据字典的数据。
-     * @method add
-     * @methodOf module:Dict
-     * @instance
-     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果path在数据字典中已有数据，且原有数据是数组，则数组添加一项；如果原有数据不是数组，则报错。
-     * @param {(Object|Array|String|Number|Boolean)} data 需要新增的数据
-     * @param {Function} [success] 增加数据成功时的回调函数。<b>流程设计后台脚本中无此参数。</b>
-     * @param {Function} [failure] 增加数据错误时的回调函数。<b>流程设计后台脚本中无此参数。</b>
-     * @o2syntax
-     * dict.add( path, data, success, failure )
-     * @example
-     * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     * });
-     *
-     * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     * @example
-     * <caption>
-     *     对get方法样例的数据字典进行赋值，如下：
-     * </caption>
-     * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     * });
-     *
-     * dict.add( "category", { text : "系统公告", value : "system" }, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
-     *    //}
-     * }, function(xhr, text, error){
-     *    //xhr 为 xmlHttpRequest, text 为错误文本， error为Error对象
-     * });
-     *     //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 2.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        },
-     *        {
-     *            "text": "系统公告",
-     *            "value": "system"
-     *        }
-     *    ]
-     * }
-     *
-     *  dict.add( "category.2.sequence", 3 );
-     *     //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 2.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        },
-     *        {
-     *            "sequence" : 3.0,
-     *            "text": "系统公告",
-     *            "value": "system"
-     *        }
-     *    ]
-     * }
-
-     * dict.add( "archiveOptions", {
-     *    "yes" : "是",
-     *    "no" : "否"
-     * });
-     *     //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 2.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        },
-     *        {
-     *            "sequence" : 3.0,
-     *            "text": "系统公告",
-     *            "value": "system"
-     *        }
-     *
-     *    ],
-     *    "archiveOptions" : {
-     *        "yes" : "是",
-     *        "no" : "否"
-     *    }
-     * }
-     * @example
-     * <caption>下面是错误的赋值，如下：</caption>
-     * dict.add( "category.3", { text : "系统公告", value : "system" }); //出错，因为不能对数组下标直接赋值
-     *
-     * dict.add( "category.1.value", { text : "系统公告" } ); //出错，因为不能对已经存在的非数组路径赋值
-     */
     this.add = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
@@ -2295,112 +1009,6 @@ bind.Dict = function(optionsOrName){
             }, false, false);
         }
     };
-    /**
-     * 根据路径删除数据字典的数据。<b>流程设计后台脚本中无此方法。</b>
-     * @method delete
-     * @methodOf module:Dict
-     * @instance
-     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
-     * @param {Function} [success] 删除数据成功时的回调函数。
-     * @param {Function} [failure] 删除数据错误时的回调函数。
-     * @o2syntax
-     * dict.delete( path, success, failure )
-     * @example
-     * var dict = new this.Dict({
-     *    //type: 应用类型。可以为process  cms portal service。默认为process。
-     *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
-     *    name : "bulletinDictionary", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
-     * });
-     *
-     * dict.delete( "category", function(){
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     * @example
-     * <caption>
-     *     对Example set的数据字典进行赋值，如下：
-     * </caption>
-     * var dict = new this.Dict("bulletinDictionary");
-     *
-     * dict.delete( "archiveOptions");
-     * //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 3.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        },
-     *        {
-     *            "sequence": 2.0,
-     *            "text": "县级公告",
-     *            "value": "county"
-     *        }
-     *    ]
-     * }
-     *
-     * dict.delete( "category.2.sequence", function(data){
-     *    //data 形如
-     *    //{
-     *    //    "id": "80ed5f60-500f-4358-8bbc-b7e81f77aa39" //id为数据字典ID
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     * //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 3.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        },
-     *        {
-     *            "text": "县级公告",
-     *            "value": "county"
-     *        }
-     *    ]
-     * }
-     *
-     * dict.delete( "category.2");
-     * //数据字典的值变为
-     * {
-     *    "category": [
-     *        {
-     *            "enable": true,
-     *            "sequence": 1.0,
-     *            "text": "公司公告",
-     *            "value": "company"
-     *        },
-     *        {
-     *            "enable": "false",
-     *            "sequence": 3.0,
-     *            "text": "部门公告",
-     *            "value": "department"
-     *        }
-     *    ]
-     * }
-     * @example
-     * <caption>
-     *     下面是错误的删除：
-     * </caption>
-     * dict.delete( "category_1" ); //出错，因为category_1在数据字典中不存在
-     */
     this["delete"] = function(path, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
@@ -2421,444 +1029,55 @@ bind.Dict = function(optionsOrName){
     this.destory = this["delete"];
 };
 
-/**
- * this.Table是一个工具类，您可以使用这个类对数据中心的数据表进行增删改查操作。
- * @module server.Table
- * @o2cn 数据表执行
- * @o2category server.common
- * @o2ordernumber 185
- * @param {String} tableName 数据表的id、名称或别名。
- * @return {Object} table对象
- * @o2syntax
- * //您可以在脚本中，通过this.Table()来返回Table的对象，如下：
- * var table = new this.Table( tableName )
- */
 bind.Table = function(name){
     this.name = name;
     this.action = Actions.load("x_query_assemble_surface").TableAction;
 
-    /**
-     * 列示表中的行对象,下一页。
-     * @method listRowNext
-     * @methodOf module:server.Table
-     * @instance
-     * @param {String} id  当前页最后一条数据的Id，如果是第一页使用"(0)"。
-     * @param {String|Number} count 下一页的行数
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.listRowNext( id, count, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * table.listRowNext( "0", 20, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "type": "success",
-     *    //    "data":[
-     *    //       {
-     *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
-     *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
-     *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
-     *    //         ... //定义的字段（列）和值
-     *    //        }
-     *   //     ],
-     *   //       "message": "",
-     *   //     "date": "2021-11-01 18:34:19",
-     *   //     "spent": 13,
-     *   //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
     this.listRowNext = function(id, count, success, error, async){
         this.action.listRowNext(this.name, id, count, success, error, async);
     };
-    /**
-     * 列示表中的行对象,上一页。
-     * @method listRowPrev
-     * @methodOf module:server.Table
-     * @instance
-     * @param {String} id  当前页第一条数据的Id，如果是最后一页使用"(0)"。
-     * @param {String|Number} count 上一页的行数
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.listRowPrev( id, count, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * table.listRowPrev( "0", 20, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "type": "success",
-     *    //    "data":[
-     *    //       {
-     *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
-     *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
-     *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
-     *    //         ... //定义的字段（列）和值
-     *    //        }
-     *   //     ],
-     *   //       "message": "",
-     *   //     "date": "2021-11-01 18:34:19",
-     *   //     "spent": 13,
-     *   //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.listRowPrev = function(id, count, success, error, async){
         this.action.listRowPrev(this.name, id, count, success, error, async);
     };
-    /**
-     * 根据条件获取表中的数据。
-     * @method listRowSelect
-     * @methodOf module:server.Table
-     * @instance
-     * @param {String} [where] 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
-     * @param {String} [orderBy] 排序条件，格式为：o.updateTime desc，允许为空
-     * @param {String|Number} [size] 返回结果集数量,允许为空。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.listRowSelect( where, orderBy, size, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * //查询字段name等于zhangsan的数据，结果按updateTime倒序
-     * table.listRowSelect( "o.name='zhangsan'", "o.updateTime desc", 20, function(data){
-     *    //data 形如
-     *    //{
-     *    //    "type": "success",
-     *    //    "data":[
-     *    //       {
-     *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
-     *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
-     *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
-     *    //         ... //定义的字段（列）和值
-     *    //        }
-     *   //     ],
-     *   //       "message": "",
-     *   //     "date": "2021-11-01 18:34:19",
-     *   //     "spent": 13,
-     *   //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.listRowSelect = function(where, orderBy, size, success, error, async){
         this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
     };
     this.listRowSelectWhere = function(where, success, error, async){
         this.action.listRowSelectWhere(this.name, where, success, error, async);
     };
-    /**
-     * 通过where 统计数量。
-     * @method rowCountWhere
-     * @methodOf module:server.Table
-     * @instance
-     * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.rowCountWhere( where, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * //查询字段name等于zhangsan的数据，结果按updateTime倒序
-     * table.rowCountWhere( "o.name='zhangsan'", function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "value": 5 //符合条件数据的总条数
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.rowCountWhere = function(where, success, error, async){
         this.action.rowCountWhere(this.name, where, success, error, async);
     };
-    /**
-     * 删除数据表中指定id的记录。
-     * @method deleteRow
-     * @methodOf module:server.Table
-     * @instance
-     * @param {id} 需要删除记录的id。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.deleteRow( id, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * table.deleteRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "value": true //true表示删除成功，false表示无此数据
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.deleteRow = function(id, success, error, async){
         this.action.rowDelete(this.name, id, success, error, async);
     };
-    /**
-     * 更新指定表中所有行的数据。
-     * @method deleteAllRow
-     * @methodOf module:server.Table
-     * @instance
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.deleteAllRow( success, failure, async )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * table.deleteAllRow( function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "value": 1 //表示删除的条数，0表示无数据
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.deleteAllRow = function(success, error, async){
         this.action.rowDeleteAll(this.name, success, error, async);
     };
-    /**
-     * 获取数据表中指定id的记录。
-     * @method getRow
-     * @methodOf module:server.Table
-     * @instance
-     * @param {id} 需要获取记录的id。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.getRow( id, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     *
-     * table.getRow( "e1f89185-d8b0-4b66-9e34-aed3323d0d79", function(data){
-     *    //data 形如
-     *    //{
-     *    //    "type": "success",
-     *    //    "data":{
-     *    //        "id": "5584e6d1-8088-4694-a948-8968ac8d4923", //数据的id
-     *    //        "createTime": "2021-11-01 16:23:41", //数据创建时间
-     *    //        "updateTime": "2021-11-01 16:23:41", //数据更新时间
-     *    //         ... //定义的字段（列）和值
-     *    //     },
-     *   //     "message": "",
-     *   //     "date": "2021-11-01 18:34:19",
-     *   //     "spent": 13,
-     *   //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.getRow = function(id, success, error, async){
         this.action.rowGet(this.name, id, success, error, async);
     };
-    /**
-     * 往数据表中批量插入数据。
-     * @method insertRow
-     * @methodOf module:server.Table
-     * @instance
-     * @param {Object[]} data 需要插入的数据。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.insertRow( data, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     * var data = [
-     *  {
-     *    "subject": "标题一",
-     *    ... //其他字段
-     *  },
-     *  ...
-     * ];
-     * table.insertRow( data, function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "value": true //true表示插入成功
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
+
     this.insertRow = function(data, success, error, async){
         this.action.rowInsert(this.name, data, success, error, async);
     };
 
-    /**
-     * 往数据表中插入单条数据。
-     * @method addRow
-     * @methodOf module:Table
-     * @instance
-     * @param {Object} data 需要插入的数据。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.addRow( data, success, failure, async )
-     * @example
-     * var table = new this.Table("table1");
-     * var data = {
-     *    "subject": "标题一",
-     *    ... //其他字段
-     *  };
-     * table.addRow( data, function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "id": 2cf3a20d-b166-490b-8d29-05544db3d79b //true表示修改成功
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
     this.addRow = function(data, success, error, async){
         this.action.rowInsertOne(this.name, data, success, error, async);
     };
 
-    /**
-     * 往数据表中修改单条数据。
-     * @method updateRow
-     * @methodOf module:server.Table
-     * @instance
-     * @param {String} id 需要修改的数据id。
-     * @param {Object} data 需要修改的数据。
-     * @param {Function} [success] 调用成功时的回调函数。
-     * @param {Function} [failure] 调用错误时的回调函数。
-     * @o2syntax
-     * table.updateRow( id, data, success, failure )
-     * @example
-     * var table = new this.Table("table1");
-     * var data = {
-     *    "id" : "2cf3a20d-b166-490b-8d29-05544db3d79b",
-     *    "subject": "标题一",
-     *    ... //其他字段
-     *  };
-     * table.updateRow( "2cf3a20d-b166-490b-8d29-05544db3d79b", data, function(data){
-     *    //data 形如
-     *    //{
-     *    //   "type": "success",
-     *    //  "data": {
-     *    //      "value": true //true表示修改成功
-     *    //  },
-     *    //  "message": "",
-     *    //  "date": "2021-11-01 18:32:27"
-     *    //}
-     * }, function(xhr){
-     *    //xhr 为 xmlHttpRequest
-     * });
-     */
     this.updateRow = function(id, data, success, error, async){
         this.action.rowUpdate(this.name, id, data, success, error, async);
     };
 }
 
-/**
- * 您可以通过statement对象，获取执行查询语句或者对查询结果进行选择。<br/>
- * @module server.statement
- * @o2cn 查询视图执行
- * @o2category server.common
- * @o2ordernumber 190
- * @o2syntax
- * //您可以在流程表单、内容管理表单、门户页面或视图中，通过this来获取statement对象，如下：
- * var statement = this.statement;
- */
 bind.statement = {
-    /**
-     * 执行指定的查询语句。
-     * @method execute
-     * @static
-     * @param {Object} statement - 要执行的查询语句的信息。数据格式如下：
-     * <div>以下的filter参数参考<a href='global.html#StatementFilter'>StatementFilter</a>,
-     * parameter参数参考<a href='global.html#StatementParameter'>StatementParameter</a></div>
-     * <pre><code class='language-js'>
-     * {
-     *  "name" : "tesStatement", //（String）必选，查询配置的名称、别名或ID
-     *  "mode" : "all", //（String）必选，“all”、“data”或者“count”，all表示同时执行查询语句和总数语句，data表示执行查询语句，count表示执行总数语句
-     *  "page" : 1, //（number）可选，当前页码，默认为1
-     *  "pageSize" : 20, //（number）可选，每页的数据条数，默认为20
-     *  "filter": [ //（Array）可选，对查询进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件，每个元素数据格式如下：
-     *       {
-     *           "path":"o.title",  //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
-     *           "comparison":"like",
-     *           "value":"关于",
-     *           "formatType":"textValue"
-     *       }
-     *  ],
-     *  parameter : {
-     *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
-     *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
-     *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-     *       "processName" : "test流程", //其他写确定的值
-     *       "?1": "关于" //v8.0后查询语句支持问号加数字的传参
-     *     }
-     * }
-     * </code></pre>
-     * @param {Function} callback - 访问成功后的回调函数
-     * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
-     * @o2syntax
-     * this.statement.execute(statement, callback, async);
-     * @example
-     * //获取“task”查询中的数据
-     * //查询语句为 select o from Task o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
-     * //总数语句为 select count(o.id) from Task o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
-     * //过滤条件为标题o.title包含包含（like））“7月”。
-     * this.statement.execute({
-     *  "name": "task",
-     *  "mode" : "all",
-     *  "filter": [
-     *      {
-     *      "path":"o.title", //查询语句格式为jpql使用o.title，为原生sql中使用xtitle
-     *      "comparison":"like",
-     *      "value":"7月",
-     *      "formatType":"textValue"
-     *      }
-     * ],
-     * "parameter" : {
-     *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
-     *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
-     *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
-     *     "processName" : "test流程", //其他写确定的值
-     *     "?1": "关于" //v8.0后查询语句支持问号加数字的传参
-     *   }
-     * }, function(json){
-     *  var count = json.count; //总数语句执行后返回的数字
-     *  var list = json.data; //查询语句后返回的数组
-     *   //......
-     * });
-     */
      execute: function (obj, callback) {
         if( obj.format ){
             return this._execute(obj, callback, obj.format);
@@ -2972,91 +1191,7 @@ bind.statement = {
     "select": function () {}
 };
 
-/**
- * 您可以通过view对象，获取视图数据或选择视图数据。<br/>
- * @module server.view
- * @o2cn 视图执行
- * @o2category server.common
- * @o2ordernumber 195
- * @o2syntax
- * //您可以在流程表单、内容管理表单或门户页面中，通过this来获取view对象，如下：
- * var view = this.view;
- */
 bind.view = {
-    /**
-     * 获取指定视图的数据。
-     * @method lookup
-     * @static
-     * @param {Object} view - 要访问的视图信息。数据格式如下：<br/>
-     * <caption>以下的filter参数参考<a href='global.html#ViewFilter'>ViewFilter</a></caption>
-     * <pre><code class='language-js'>
-     * {
-     *  "view" : "testView", //（String）必选，视图的名称、别名或ID
-     *  "application" : "test数据中心应用", //（String）必选，视图所在数据应用的名称、别名或ID
-     *  "filter": [ //（Array of Object）可选，对视图进行过滤的条件。json数组格式，每个数组元素描述一个过滤条件。
-     *       {
-     *           "logic":"and",
-     *           "path":"$work.title",
-     *           "comparison":"like",
-     *           "value":"7月",
-     *           "formatType":"textValue"
-     *       }
-     *  ]
-     * }
-     * </code></pre>
-     * @param {Function} callback - 访问成功后的回调函数
-     * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
-     * @o2syntax
-     * this.view.lookup(view, callback, async);
-     * @example
-     * //获取“财务管理”应用中“报销审批数据”视图中的数据
-     * //过滤条件为标题（$work.title）包含包含（like））“7月”。
-     * this.view.lookup({
-     *   "view": "报销审批数据",
-     *   "application": "财务管理",
-     *   "filter": [
-     *       {
-     *           "logic":"and",
-     *           "path":"$work.title",
-     *           "comparison":"like",
-     *           "value":"7月",
-     *           "formatType":"textValue"
-     *       }
-     *   ]
-     *}, function(data){
-     *   var grid = data.grid; //得到过滤后的数据
-     *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
-     *   //......
-     *});
-     * @example
-     * //获取“财务管理”应用中“报销审批数据”视图中的数据
-     * //过滤条件为标题（$work.title）包含包含（like））“7月”，并且总金额大于500小于5000
-     * this.view.lookup({
-     *   "view": "报销审批数据",
-     *   "application": "财务管理",
-     *   "filter": [
-     *       {
-     *           "logic":"and",
-     *           "path":"$work.title",
-     *           "comparison":"like",
-     *           "value":"7月",
-     *           "formatType":"textValue"
-     *       },
-     *       {
-     *           "logic":"and",
-     *           "path":"amount",
-     *           "comparison":"range",
-     *           "value":500,
-     *           "otherValue":5000,
-     *           "formatType":"numberValue"
-     *       },
-     *   ]
-     *}, function(data){
-     *   var grid = data.grid; //得到过滤后的数据
-     *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
-     *   //......
-     *});
-     */
     "lookup": function(view, callback){
         var filterList = {"filterList": (view.filter || null)};
         var value;
@@ -3073,49 +1208,7 @@ bind.view = {
     "select": function(view, callback, options){}
 };
 
-/**
- * 可以通过service对象发起restful请求，或soap协议的webservice调用。
- * @module service
- * @o2cn 通用service调用
- * @o2category server.common
- * @o2syntax
- * var service = this.service;
- * @example
- * //通过get方法发起restful请求，获取json数据
- * var res = this.service.restful("get", "config/myjson.json");
- * if (res.responseCode>=200 && responseCode<300){
- *     var jsonData = res.json;
- * }
- */
 bind.service = {
-    /**
-     * 发起restful请求。
-     * @method restful
-     * @o2category server.common
-     * @param {String} [method] - restful请求方法：get、post、put、delete ...
-     * @param {String} [url] - restful请求地址
-     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
-     * @param {String|Object} [body] - 可选，post、put请求的消息体,传入文本或json对象
-     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
-     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
-     * @return {Object} 返回json格式的请求结果对象，格式如下：
-     * <pre><code class='language-js'>
-     * {
-     *  "responseCode" : 200,   //请求返回的code
-     *  "headers" : {},         //响应头
-     *  "body": "",             //响应的body文本内容
-     *  "json": {}              //响应的body的json格式内容
-     * }
-     * </code></pre>
-     * @o2syntax
-     * var res = this.service.restful(method, url, headers, body, connectTimeout, readTimeout);
-     * @example
-     * //通过get方法发起restful请求，获取json数据
-     * var res = this.service.restful("get", "config/myjson.json");
-     * if (res.responseCode>=200 && res.responseCode<300){
-     *     var jsonData = res.json;
-     * }
-     */
     restful: function(method, url, headers, body, connectTimeout, readTimeout){
         var service = bind.java_resources.getWebservicesClient();
         var bodyData = ((typeof body)==="object") ? JSON.stringify(body) : (body||"");
@@ -3131,70 +1224,14 @@ bind.service = {
         return o;
     },
 
-    /**
-     * 通过get方法发起restful请求。
-     * @method get
-     * @methodOf restful
-     * @static
-     * @param {String} [url] - restful请求地址
-     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
-     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
-     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
-     * @return {Object} 返回json格式的请求结果对象，格式如下：
-     * <pre><code class='language-js'>
-     * {
-     *  "responseCode" : 200,   //请求返回的code
-     *  "headers" : {},         //响应头
-     *  "body": "",             //响应的body文本内容
-     *  "json": {}              //响应的body的json格式内容
-     * }
-     * </code></pre>
-     * @o2syntax
-     * var res = this.service.get(url, headers, connectTimeout, readTimeout);
-     */
     "get": function(url, headers, connectTimeout, readTimeout){
         return this.restful("get", url, headers, "", connectTimeout, readTimeout);
     },
 
-    /**
-     * 通过post方法发起restful请求。
-     * @method post
-     * @static
-     * @param {String} [url] - restful请求地址
-     * @param {Object} [headers] - 可选，json对象，请求的header，默认content-type为：“application/json charset=utf-8”
-     * @param {String|Object} [body] - 可选，post、put请求的消息体,传入文本或json对象
-     * @param {Number} [connectTimeout] - 可选，连接超时时间（毫秒），默认是2000。
-     * @param {Number} [readTimeout] - 可选，传输超时时间（毫秒），默认是300000。
-     * @return {Object} 返回json格式的请求结果对象，格式如下：
-     * <pre><code class='language-js'>
-     * {
-     *  "responseCode" : 200,   //请求返回的code
-     *  "headers" : {},         //响应头
-     *  "body": "",             //响应的body文本内容
-     *  "json": {}              //响应的body的json格式内容
-     * }
-     * </code></pre>
-     * @o2syntax
-     * var res = this.service.post(url, headers, body, connectTimeout, readTimeout);
-     */
     "post": function(url, headers, body, connectTimeout, readTimeout){
         return this.restful("post", url, headers, body, connectTimeout, readTimeout);
     },
 
-    /**
-     * 发起soap协议的webservice请求。
-     * @method soap
-     * @o2category server.common
-     * @param {String} [wsdl] - wsdl文件地址
-     * @param {String} [method] - 要调用的方法名称
-     * @param {Array} [pars] - 方法所需要的参数
-     * @return {Object} 与服务返回的类型有关：
-     * @o2syntax
-     * var res = this.service.soap(wsdl, method, pars);
-     * @example
-     * //模拟通过webservice获取用户
-     * var res = this.service.soap("wsdl/mywsdl.wsdl", "getPerson", ["张三", "李四"]);
-     */
     soap: function(wsdl, method, pars){
         var service = bind.java_resources.getWebservicesClient();
         return service.soap(wsdl, method, pars);
@@ -3513,6 +1550,7 @@ bind.workContext = {
 };
 bind.workContent = bind.workContext;
 //person, 直接注入，oauth配置和默认生成口令脚本中
+
 /**
  * 在流程事件、流程路由事件、流程活动事件中通过this.data获取流程实例的业务数据。（内容管理无后台脚本）。<br/>
  * 这些数据一般情况下是通过您创建的表单收集而来的，也可以通过脚本进行创建和增删改查操作。<br/>
@@ -3527,92 +1565,6 @@ bind.workContent = bind.workContext;
  * @borrows module:data#[property] as [property]
  */
 //bind.data = this.java_data;  //业务数据data，直接注入
-
-
-//流程调用脚本，数据脚本--------------------------------------------
-//{
-//	data:{},
-//	application:"",
-//	process:"",
-//	identity: "",
-//	attachmentList: [],
-//	title: "",
-//	processing: true
-//}
-//后续计划通过return 返回assignData,
-/**
- * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
- * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
- * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
- * @module server.assignData
- * @o2cn 流程实例业务数据
- * @o2category server.process
- * @o2ordernumber 210
- * @example
- * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
- * var data = this.assignData.get();
- * data.data.parentProcessData = "父流程实例的信息";
- * this.assignData.set(data);
- * @example
- * <caption>
- *    assignData.set方法是为了兼容以前的版本。<br>
- *    <b>建议通过return一个json对象的方式来设置data内容</b>
- * </caption>
- * //也可以通过return一个json对象的方式来代替assignData.set方法
- * var data = this.assignData.get();
- * data.data.parentProcessData = "父流程实例的信息";
- * return data;
- */
-bind.assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
-    _data: null,
-    /**
-     * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
-     * @method get
-     * @methodOf module:server.assignData
-     * @static
-     * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
-     * <pre><code class='language-js'>{
-     *        "application": "application id",  //被调用的应用id
-     *        "process": "process id",          //被调用的流程id
-     *        "identity": "xxx@xxx@I",          //被调用流程的启动这身份
-     *        "title": "title",                 //被调用流程实例的标题
-     *        "attachmentList": [],             //要传递到被调用的流程实例的附件对象
-     *        "data": {}                        //要传递到被调用的流程实例的业务数据
-     * }</code></pre>
-     * @o2syntax
-     * var data = this.assignData.get();
-     */
-    "get": function(){
-        this.data = JSON.parse(bind.java_assignData.get());
-        return this.data;
-    },
-    /**
-     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
-     * @method set
-     * @methodOf module:server.assignData
-     * @static
-     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
-     * @o2syntax
-     * this.assignData.set(data);
-     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
-     * @example
-     * var data = this.assignData.get();
-     * data.data.parentProcessData = "父流程实例的信息";
-     * return data;
-     */
-    "set": function(data){
-        bind.java_assignData.set(JSON.stringify(data || this.data));
-    }
-};
-Object.defineProperties(bind.assignData, {"data": {
-        "configurable": true,
-        "get": function(){
-            if (this._data) return this._data;
-            return JSON.parse(bind.java_assignData.get());
-        },
-        "set": function(v){this._data = v;}
-    }});
-//--------------------------------------------------------------
 //封装java对象data, 以兼容javascript对象
 (function (bind) {
     Object.prototype.containsKey = function(key){
@@ -3793,6 +1745,93 @@ Object.defineProperties(bind.assignData, {"data": {
         }
     })
 })(this);
+
+//流程调用脚本，数据脚本--------------------------------------------
+//{
+//	data:{},
+//	application:"",
+//	process:"",
+//	identity: "",
+//	attachmentList: [],
+//	title: "",
+//	processing: true
+//}
+//后续计划通过return 返回assignData,
+/**
+ * 用于流程配置的流程调用活动中的“数据脚本”，可以通过assignData对象获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。<br>
+ * 也可以修改业务数据，并通过assignData的set方法，将业务数据传递到被调用的流程实例。<br/>
+ * @o2range 流程配置-流程调用活动中的“数据脚本”中可用
+ * @module server.assignData
+ * @o2cn 流程实例业务数据
+ * @o2category server.process
+ * @o2ordernumber 210
+ * @example
+ * //在流程调用活动中的“数据脚本”，通过下面的代码修改业务数据，并传递给被调用流程的实例：
+ * var data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * this.assignData.set(data);
+ * @example
+ * <caption>
+ *    assignData.set方法是为了兼容以前的版本。<br>
+ *    <b>建议通过return一个json对象的方式来设置data内容</b>
+ * </caption>
+ * //也可以通过return一个json对象的方式来代替assignData.set方法
+ * var data = this.assignData.get();
+ * data.data.parentProcessData = "父流程实例的信息";
+ * return data;
+ */
+bind.assignData = {     //java_assignData 应用调用活动的创建的流程实例的业务数据处理对象，get set 方法
+    _data: null,
+    /**
+     * @summary 获取要调用的流程的相关信息，以及要传递给被调用流程实例的业务数据。
+     * @method get
+     * @methodOf module:server.assignData
+     * @static
+     * @return {Object} 描述被调用的流程的信息，及要传递的业务数据.
+     * <pre><code class='language-js'>{
+     *        "application": "application id",  //被调用的应用id
+     *        "process": "process id",          //被调用的流程id
+     *        "identity": "xxx@xxx@I",          //被调用流程的启动这身份
+     *        "title": "title",                 //被调用流程实例的标题
+     *        "attachmentList": [],             //要传递到被调用的流程实例的附件对象
+     *        "data": {},                       //要传递到被调用的流程实例的业务数据
+     *        "attachmentSoftCopy"              //如果为true，不拷贝附件文件。默认false  @todo
+     * }</code></pre>
+     * @o2syntax
+     * var data = this.assignData.get();
+     */
+    "get": function(){
+        this.data = JSON.parse(bind.java_assignData.get());
+        return this.data;
+    },
+    /**
+     * @summary 设置修改后的assignData对象。（set方法为了兼容早期的版本。建议使用 return data; 方式直接返回json对象）
+     * @method set
+     * @methodOf module:server.assignData
+     * @static
+     * @param {Object} [data] 要设置的assignData对象，一般情况都是通过assignData.get()获取并做必要修改的对象。
+     * @o2syntax
+     * this.assignData.set(data);
+     * @deprecated set方法已不建议使用了。建议return一个json对象或数组的方式来设置data。
+     * @example
+     * var data = this.assignData.get();
+     * data.data.parentProcessData = "父流程实例的信息";
+     * return data;
+     */
+    "set": function(data){
+        bind.java_assignData.set(JSON.stringify(data || this.data));
+    }
+};
+Object.defineProperties(bind.assignData, {"data": {
+        "configurable": true,
+        "get": function(){
+            if (this._data) return this._data;
+            return JSON.parse(bind.java_assignData.get());
+        },
+        "set": function(v){this._data = v;}
+    }});
+//--------------------------------------------------------------
+
 //服务调用活动，相关脚本--------------------------------------------
 //调用活动中的参数 java_jaxwsParameters webservice调用;  java_jaxrsParameterss rest调用
 //后续计划通过return 返回json（jaxrs）或数组（jaxws）
@@ -4270,8 +2309,8 @@ bind.expire = {
 /**
  * 在流程调用活动中。当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件脚本中，可以访问到embedData对象<br/>
  * embedData对象就是被调用的子流程的业务数据，它是一个类似JSON的对象，您可以用访问JSON对象的方法访问embedData对象的所有数据。<br/>
- * 如果您需要获取embedData的json文本，请使用embedData.toString()f方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
- * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end
+ * 如果您需要获取embedData的json文本，请使用embedData.toString()方法。<b>注意：JSON.stringify()方法不能用于embedData对象</b><br>
+ * 您可以通过work对象的embedCompleted值来判断被调用的子流程是否正常完成。 cancel end terminate
  * <pre><code class='language-js'>
  *  var embedStatus = this.workContext.getWork().embedCompleted;
  *  if (embedStatus=="end"){
@@ -4279,6 +2318,9 @@ bind.expire = {
  *  }
  *  if (embedStatus=="cancel"){
  *      //被调用的子流程流转到了取消活动
+ *  }
+ *  if (embedStatus=="terminate"){
+ *      //被调用的子流程被终止了
  *  }
  * </code></pre>
  * @o2range 流程配置-流程调用活动中，当启用流程等待的情况下，在"子流程成功后"、"子流程取消后"、"子流程完成后"，三个事件中可用

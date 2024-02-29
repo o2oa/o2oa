@@ -81,6 +81,26 @@ public class CacheAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "接收刷新CommonScript指令.", operationId = OPERATIONID_PREFIX + "commonScriptFlush", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCommonScriptFlush.Wo.class)) }) })
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("commonscript/flush")
+	@JaxrsMethodDescribe(value = "接收刷新CommonScript指令.", action = ActionCommonScriptFlush.class)
+	public void commonScriptFlush(@Suspended final AsyncResponse asyncResponse, @Context ServletContext servletContext,
+			@Context HttpServletRequest request) {
+		ActionResult<ActionCommonScriptFlush.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCommonScriptFlush().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@Operation(summary = "显示缓存状态.", operationId = OPERATIONID_PREFIX + "detail", responses = {
 			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDetail.Wo.class)) }) })
 	@GET

@@ -7,12 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -22,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -36,8 +34,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
@@ -51,7 +48,7 @@ import com.x.organization.core.entity.Role;
 
 class ActionInput extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionInput.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionInput.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws Exception {
@@ -94,14 +91,14 @@ class ActionInput extends BaseAction {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
 		Matcher matcher = pattern.matcher(Config.person().getPassword());
 		if (matcher.matches()) {
-			CompiledScript cs = ScriptingFactory
-					.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(1)));
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			Source source = GraalvmScriptingFactory.functionalization(StringEscapeUtils.unescapeJson(matcher.group(1)));
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
 			for (PersonItem o : people) {
-				bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON, o);
-				String pass = JsonScriptingExecutor.evalString(cs, scriptContext);
-				o.setPassword(pass);
+				bindings.putMember(GraalvmScriptingFactory.BINDING_NAME_SERVICE_PERSON, o);
+				Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, bindings);
+				if (opt.isPresent()) {
+					o.setPassword(opt.get());
+				}
 			}
 		} else {
 			for (PersonItem o : people) {
@@ -171,7 +168,7 @@ class ActionInput extends BaseAction {
 						}
 					}
 					people.add(personItem);
-					logger.debug("scan person:{}.", personItem);
+					LOGGER.debug("scan person:{}.", personItem);
 				}
 			}
 		}
@@ -184,7 +181,7 @@ class ActionInput extends BaseAction {
 		Person p = null;
 		boolean validate = true;
 		for (PersonItem o : people) {
-			logger.debug("正在校验用户:{}.", o.getName());
+			LOGGER.debug("正在校验用户:{}.", o.getName());
 			if (StringUtils.isEmpty(o.getName())) {
 				this.setMemo(workbook, configurator, o, "姓名不能为空.");
 				validate = false;
@@ -281,7 +278,7 @@ class ActionInput extends BaseAction {
 					emc.beginTransaction(Person.class);
 					emc.beginTransaction(PersonAttribute.class);
 					for (PersonItem o : list) {
-						logger.debug("正在保存用户:{}.", o.getName());
+						LOGGER.debug("正在保存用户:{}.", o.getName());
 						Person person = new Person();
 						o.copyTo(person);
 						emc.persist(person, CheckPersistType.all);

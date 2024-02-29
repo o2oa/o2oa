@@ -25,8 +25,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
 
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
@@ -34,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -42,8 +41,7 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.organization.OrganizationDefinition;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -200,10 +198,12 @@ public abstract class Plan extends GsonPropertyObject {
 			future.get(300, TimeUnit.SECONDS);
 		}
 		Table table = this.order(fillTable);
-		// 新增测试
 		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
-			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
-			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
+			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
+			// ScriptContext scriptContext =
+			// ScriptingFactory.scriptContextEvalInitialScript();
+			// scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("gird", table);
+			bindings.putMember("gird", table);
 			for (SelectEntry selectEntry : this.selectList) {
 				if (StringTools.ifScriptHasEffectiveCode(selectEntry.code)) {
 					List<ExtractObject> extractObjects = new TreeList<>();
@@ -215,22 +215,27 @@ public abstract class Plan extends GsonPropertyObject {
 						extractObject.setEntry(r);
 						extractObjects.add(extractObject);
 					});
-					scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects", extractObjects);
+					// scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects",
+					// extractObjects);
+					bindings.putMember("extractObjects", extractObjects);
 					StringBuilder text = new StringBuilder();
 					text.append("function executeScript(o){\n");
 					text.append(selectEntry.code);
 					text.append("\n");
 					text.append("}\n");
-					text.append("for each (var extractObject in extractObjects) {\n");
-					text.append("var o= {\n");
+					text.append("for (var key in extractObjects) {\n");
+					text.append("var extractObject = extractObjects[key]\n");
+					text.append("var obj = {\n");
 					text.append("'value':extractObject.getValue(),\n");
 					text.append("'entry':extractObject.getEntry(),\n");
 					text.append("'columnName':extractObject.getColumn()\n");
 					text.append("}\n");
-					text.append("extractObject.setValue(executeScript.apply(o));\n");
+					text.append("extractObject.setValue(executeScript.apply(obj));\n");
 					text.append("}");
-					CompiledScript cs = ScriptingFactory.compile(text.toString());
-					JsonScriptingExecutor.eval(cs, scriptContext);
+					// CompiledScript cs = ScriptingFactory.compile(text.toString());
+					Source source = GraalvmScriptingFactory.source(text.toString());
+//					JsonScriptingExecutor.eval(cs, scriptContext);
+					GraalvmScriptingFactory.eval(source, bindings);
 					for (ExtractObject extractObject : extractObjects) {
 						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
 					}

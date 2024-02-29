@@ -7,16 +7,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
@@ -52,9 +49,9 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	protected void arrivingCommitted(AeiObjects aeiObjects, Begin begin) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterBeginScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTERBEGIN);
-			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 		}
 	}
 
@@ -73,12 +70,11 @@ public class BeginProcessor extends AbstractBeginProcessor {
 		// 设置维护人
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getPermissionWriteScript())
 				|| StringTools.ifScriptHasEffectiveCode(aeiObjects.getProcess().getPermissionWriteScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getProcess(), Business.EVENT_PERMISSIONWRITE);
-			List<String> values = JsonScriptingExecutor.evalDistinguishedNames(cs, aeiObjects.scriptContext()).stream()
-					.distinct().collect(Collectors.toList());
+			List<String> names = GraalvmScriptingFactory.evalAsDistinguishedNames(source, aeiObjects.bindings());
 			ClassifyDistinguishedName classifyDistinguishedName = aeiObjects.business().organization()
-					.classifyDistinguishedNames(values);
+					.classifyDistinguishedNames(names);
 			List<String> distinguishedNames = this.convertToPerson(aeiObjects, classifyDistinguishedName);
 			distinguishedNames.stream().forEach(o -> {
 				Review review = new Review(aeiObjects.getWork(), o);
@@ -206,15 +202,15 @@ public class BeginProcessor extends AbstractBeginProcessor {
 
 	private void expireScript(AeiObjects aeiObjects) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
-		ScriptContext scriptContext = aeiObjects.scriptContext();
-		CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+		Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 				aeiObjects.getProcess(), Business.EVENT_PROCESSEXPIRE);
-		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_EXPIRE, expire);
-		JsonScriptingExecutor.eval(cs, scriptContext, ExpireScriptResult.class, o -> {
+		GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings().putMember(GraalvmScriptingFactory.BINDING_NAME_EXPIRE, expire);
+		GraalvmScriptingFactory.eval(source, bindings, o -> {
 			if (null != o) {
-				expire.setDate(o.getDate());
-				expire.setHour(o.getHour());
-				expire.setWorkHour(o.getWorkHour());
+				ExpireScriptResult result = gson.fromJson(o, ExpireScriptResult.class);
+				expire.setDate(result.getDate());
+				expire.setHour(result.getHour());
+				expire.setWorkHour(result.getWorkHour());
 			}
 		});
 		if (BooleanUtils.isTrue(NumberTools.greaterThan(expire.getWorkHour(), 0))) {

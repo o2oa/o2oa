@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.script.CompiledScript;
-
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Route;
@@ -47,9 +46,9 @@ abstract class AbstractAgentProcessor extends AbstractProcessor {
 			return os;
 		} catch (Exception e) {
 			if (this.hasAgentInterruptScript(agent)) {
-				CompiledScript compiledScript = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), aeiObjects.getActivity(), Business.EVENT_AGENTINTERRUPT);
-				JsonScriptingExecutor.eval(compiledScript, aeiObjects.scriptContext());
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						aeiObjects.getActivity(), Business.EVENT_AGENTINTERRUPT);
+				GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 			}
 			throw e;
 		}

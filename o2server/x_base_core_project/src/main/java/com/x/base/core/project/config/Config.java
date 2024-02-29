@@ -752,6 +752,7 @@ public class Config {
 		if (null == instance().commonScript) {
 			instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
 		}
+		instance().commonScript = BaseTools.readString(PATH_COMMONS_COMMONSCRIPT);
 		return instance().commonScript;
 	}
 
@@ -1201,7 +1202,7 @@ public class Config {
 				JsonObject obj = BaseTools.readConfigObject(DIR_CONFIG + "/" + configName + ".json", JsonObject.class);
 				if (obj != null) {
 					instance().customConfig.put(configName, obj);
-				}else{
+				} else {
 					obj = BaseTools.readConfigObject(DIR_CONFIGSAMPLE + "/" + configName + ".json", JsonObject.class);
 					if (obj != null) {
 						instance().customConfig.put(configName, obj);

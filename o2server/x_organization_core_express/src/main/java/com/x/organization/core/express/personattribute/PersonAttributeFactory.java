@@ -1,7 +1,6 @@
 package com.x.organization.core.express.personattribute;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
@@ -15,7 +14,7 @@ public class PersonAttributeFactory {
 	private AbstractContext context;
 
 	/** 添加个人属性值 */
-	public boolean appendWithPersonWithName(String person, String name, Collection<String> values) throws Exception {
+	public boolean appendWithPersonWithName(String person, String name, List<String> values) throws Exception {
 		return ActionAppendWithPersonWithName.execute(context, person, name, values);
 	}
 
@@ -30,7 +29,7 @@ public class PersonAttributeFactory {
 	}
 
 	/** 添加个人属性值 */
-	public boolean setWithPersonWithName(String person, String name, Collection<String> values) throws Exception {
+	public boolean setWithPersonWithName(String person, String name, List<String> values) throws Exception {
 		return ActionSetWithPersonWithName.execute(context, person, name, values);
 	}
 

@@ -137,6 +137,7 @@ public class ResourceFactory {
 		LinkedBlockingQueue<JsonElement> eventQueue = new LinkedBlockingQueue<>();
 		EventQueueExecutor eventQueueExecutor = new EventQueueExecutor(eventQueue);
 		eventQueueExecutor.start();
+		
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUE, eventQueue);
 		new Resource(Config.RESOURCE_NODE_EVENTQUEUEEXECUTOR, eventQueueExecutor);
 		new Resource(Config.RESOURCE_NODE_APPLICATIONS, new ConcurrentHashMap<String, Object>(10));

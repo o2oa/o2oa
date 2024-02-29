@@ -7,20 +7,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.script.Bindings;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
@@ -160,9 +156,9 @@ public class EndProcessor extends AbstractEndProcessor {
 	protected void executingCommitted(AeiObjects aeiObjects, End end, List<Work> works) throws Exception {
 		if (StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScript())
 				|| StringUtils.isNotEmpty(aeiObjects.getProcess().getAfterEndScriptText())) {
-			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+			Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
 					aeiObjects.getProcess(), Business.EVENT_PROCESSAFTEREND);
-			JsonScriptingExecutor.eval(cs, aeiObjects.scriptContext());
+			GraalvmScriptingFactory.eval(source, aeiObjects.bindings());
 		}
 		// 回写到父Work
 		tryUpdateParentWork(aeiObjects);
@@ -246,18 +242,17 @@ public class EndProcessor extends AbstractEndProcessor {
 				aeiObjects.getProcessingAttributes());
 		parentAeiObjects.entityManagerContainer().beginTransaction(Work.class);
 		if (this.hasEmbedCompletedScript(embed) || this.hasEmbedCompletedEndScript(embed)) {
-			ScriptContext scriptContext = parentAeiObjects.scriptContext();
-			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(ScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings()
+					.putMember(GraalvmScriptingFactory.BINDING_NAME_EMBEDDATA, aeiObjects.getData());
 			if (this.hasEmbedCompletedScript(embed)) {
-				CompiledScript cs = aeiObjects.business().element()
-						.getCompiledScript(aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETED);
-				JsonScriptingExecutor.eval(cs, scriptContext);
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						embed, Business.EVENT_EMBEDCOMPLETED);
+				GraalvmScriptingFactory.eval(source, bindings);
 			}
 			if (this.hasEmbedCompletedEndScript(embed)) {
-				CompiledScript cs = aeiObjects.business().element().getCompiledScript(
-						aeiObjects.getWork().getApplication(), embed, Business.EVENT_EMBEDCOMPLETEDEND);
-				JsonScriptingExecutor.eval(cs, scriptContext);
+				Source source = aeiObjects.business().element().getCompiledScript(aeiObjects.getWork().getApplication(),
+						embed, Business.EVENT_EMBEDCOMPLETEDEND);
+				GraalvmScriptingFactory.eval(source, bindings);
 			}
 			aeiObjects.getWorkDataHelper().update(aeiObjects.getData());
 		}

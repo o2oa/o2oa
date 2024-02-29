@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import javax.script.ScriptContext;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -21,8 +19,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.scripting.GraalvmScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
@@ -100,16 +97,16 @@ class ActionProcessing extends BaseAction {
 				boolean processHasManualBeforeTaskScript, boolean hasManualBeforeTaskScript, Work work)
 				throws Exception {
 			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+			((WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT)).bindTask(task);
 			WorkDataHelper workDataHelper = new WorkDataHelper(business.entityManagerContainer(), work);
 			if (processHasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), process,
-						Business.EVENT_MANUALBEFORETASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), process,
+						Business.EVENT_MANUALBEFORETASK), bindings);
 			}
 			if (hasManualBeforeTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(task.getApplication(), manual,
-						Business.EVENT_MANUALBEFORETASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(task.getApplication(), manual,
+						Business.EVENT_MANUALBEFORETASK), bindings);
 			}
 			workDataHelper.update(aeiObjects.getData());
 			business.entityManagerContainer().commit();
@@ -147,18 +144,17 @@ class ActionProcessing extends BaseAction {
 				Process process, boolean processHasManualAfterTaskScript, boolean hasManualAfterTaskScript, Work work)
 				throws Exception {
 			AeiObjects aeiObjects = new AeiObjects(business, work, manual, new ProcessingAttributes());
-			ScriptContext scriptContext = aeiObjects.scriptContext();
-			((WorkContext) scriptContext.getAttribute(ScriptingFactory.BINDING_NAME_WORKCONTEXT))
+			GraalvmScriptingFactory.Bindings bindings = aeiObjects.bindings();
+			((WorkContext) bindings.get(GraalvmScriptingFactory.BINDING_NAME_WORKCONTEXT))
 					.bindTaskCompleted(taskCompleted);
 			if (processHasManualAfterTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), process,
-						Business.EVENT_MANUALAFTERTASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(taskCompleted.getApplication(),
+						process, Business.EVENT_MANUALAFTERTASK), bindings);
 			}
 			if (hasManualAfterTaskScript) {
-				JsonScriptingExecutor.eval(business.element().getCompiledScript(taskCompleted.getApplication(), manual,
-						Business.EVENT_MANUALAFTERTASK), scriptContext);
+				GraalvmScriptingFactory.eval(business.element().getCompiledScript(taskCompleted.getApplication(),
+						manual, Business.EVENT_MANUALAFTERTASK), bindings);
 			}
-
 		}
 
 		private boolean hasManualAfterTaskScript(Manual manual) {
