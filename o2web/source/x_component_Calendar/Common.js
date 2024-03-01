@@ -211,7 +211,7 @@ MWFCalendar.EventForm = new Class({
 
         if( data.comment ){
             html += "<tr><td styles='formTableTitle' valign='top'><div style='padding-top: 15px;'>"+ this.lp.content +"：</div></td>" +
-                "    <td styles='formTableValue'>"+ this.replaceHrefJavascriptStr(data.comment)+"</td>" +
+                "    <td styles='formTableValue'>"+ this.parseHtml(data.comment)+"</td>" +
                 "</tr>";
         }else{
             html += "<tr><td styles='formTableTitle' valign='top'>"+ this.lp.content +"：</td>" +
@@ -280,7 +280,7 @@ MWFCalendar.EventForm = new Class({
         var data = this.data;
 
         if( data.comment ){
-            data.comment = this.replaceHrefJavascriptStr(data.comment);
+            data.comment = this.parseHtml(data.comment);
         }
 
         if( this.options.isWholeday && this.isNew ){
@@ -1083,6 +1083,33 @@ MWFCalendar.EventForm = new Class({
     removeAttribute: function(str, attribute){
         var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
         return str.replace( regexp, "" );
+    },
+    parseHtml: function(html){
+        html = this.replaceHrefJavascriptStr(html);
+        html = this.replaceOnAttribute(html);
+        return html;
+    },
+    replaceOnAttribute: function (htmlString){
+
+        var tempDiv = document.createElement('div');
+
+        tempDiv.innerHTML = htmlString;
+
+        var elements = tempDiv.getElementsByTagName('*');
+
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+
+            var attributeNames = element.getAttributeNames();
+
+            for (var j = 0; j < attributeNames.length; j++) {
+                var attributeName = attributeNames[j];
+                if (attributeName.substr(0,2).toLowerCase() === 'on') {
+                    element.removeAttribute(attributeName);
+                }
+            }
+        }
+        return tempDiv.innerHTML;
     },
     replaceHrefJavascriptStr: function( html ){
         debugger;

@@ -2797,7 +2797,8 @@ MDomItem.Rtf = new Class({
             this.items.push( this.editor );
         }.bind(this));
     },
-    loadRead : function(){var _self = this;
+    loadRead : function(){
+        var _self = this;
         var item;
         var name = this.options.name;
         var value = this.options.value || this.options.defaultValue ;
@@ -2844,6 +2845,29 @@ MDomItem.Rtf = new Class({
         var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
         return str.replace( regexp, "" );
     },
+    parseHtml: function(html){
+        html = this.replaceHrefJavascriptStr(html);
+        html = this.replaceOnAttribute(html);
+        html = this.parseOnerror(html);
+        return html;
+    },
+    parseOnerror: function(html){
+        var regexp_all = /(i?)(<img)([^>]+>)/gmi;
+        var images = html.match(regexp_all);
+        if(images){
+            if (images.length){
+                for (var i=0; i<images.length; i++){
+                    var image = images[i];
+
+                    var image1 = this.removeAttribute(image, "onerror");
+                    image1 = this.addAttribute(image1, "onerror", "MWF.xDesktop.setImageSrc()");
+
+                    html = html.replace(image, image1);
+                }
+            }
+        }
+        return html;
+    },
     replaceHrefJavascriptStr: function( html ){
         var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
         var as = html.match(regexp_a_all);
@@ -2861,6 +2885,28 @@ MDomItem.Rtf = new Class({
         }
         return html;
     },
+    replaceOnAttribute: function (htmlString){
+
+        var tempDiv = document.createElement('div');
+
+        tempDiv.innerHTML = htmlString;
+
+        var elements = tempDiv.getElementsByTagName('*');
+
+        for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+
+            var attributeNames = element.getAttributeNames();
+
+            for (var j = 0; j < attributeNames.length; j++) {
+                var attributeName = attributeNames[j];
+                if (attributeName.substr(0,2).toLowerCase() === 'on') {
+                    element.removeAttribute(attributeName);
+                }
+            }
+        }
+        return tempDiv.innerHTML;
+    },
     loadLazyImage: function(node, html, callback){
         if( this.options && this.options.imageLazyLoading) {
             o2.require("o2.widget.ImageLazyLoader", null, false);
@@ -2869,7 +2915,7 @@ MDomItem.Rtf = new Class({
                 if (callback) callback();
             }.bind(this));
         }else{
-            node.set("html", this.replaceHrefJavascriptStr(html));
+            node.set("html", this.parseHtml(html));
             if (callback) callback();
         }
     },
