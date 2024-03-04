@@ -91,19 +91,19 @@ public class GraalvmScriptingFactory {
 	}
 
 	private static JsonElement promise(Context context, Value v) throws ExceptionEvalPromiseScript {
-		final AtomicReference<Value> reference = new AtomicReference<>();
-		Consumer<Value> javaThen = reference::set;
+		final AtomicReference<Object> reference = new AtomicReference<>();
 		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
 			final AtomicReference<String> message = new AtomicReference<>();
+			Consumer<Object> javaThen = reference::set;
 			Consumer<Object> javaCatch = e -> message.set(Objects.toString(e.toString(), ""));
+			if (v.canInvokeMember(THEN)) {
+				v.invokeMember(THEN, javaThen);
+			}
 			if (v.canInvokeMember(CATCH)) {
 				v.invokeMember(CATCH, javaCatch);
 				if (!Objects.isNull(message.get())) {
 					throw new ExceptionEvalPromiseScript(message.get());
 				}
-			}
-			if (v.canInvokeMember(THEN)) {
-				v.invokeMember(THEN, javaThen);
 			}
 		} else {
 			reference.set(v);
@@ -111,8 +111,8 @@ public class GraalvmScriptingFactory {
 		if (Objects.isNull(reference.get())) {
 			return JsonNull.INSTANCE;
 		}
-		if (reference.get().isHostObject()) {
-			return gson.toJsonTree(reference.get().asHostObject());
+		if ((reference.get() instanceof Value) && ((Value) reference.get()).isHostObject()) {
+			return gson.toJsonTree(((Value) reference.get()).asHostObject());
 		} else {
 			return gson.fromJson(context.getBindings(LANGUAGE_ID_JS).getMember("JSON")
 					.invokeMember("stringify", reference.get()).asString(), JsonElement.class);

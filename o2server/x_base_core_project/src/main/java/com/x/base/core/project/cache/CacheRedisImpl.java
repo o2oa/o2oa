@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.script.CompiledScript;
+import org.graalvm.polyglot.Source;
 
 import com.x.base.core.project.jaxrs.WrapClearCacheRequest;
 import com.x.base.core.project.logger.Logger;
@@ -43,7 +43,7 @@ public class CacheRedisImpl implements Cache {
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) {
 		// 无法序列化CompiledScript类型,在使用Redis缓存无法缓存CompiledScript类型,直接跳过
-		if ((null != o) && (!(o instanceof CompiledScript))) {
+		if ((null != o) && (!(o instanceof Source))) {
 			try (Jedis jedis = RedisTools.getJedis();
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					ObjectOutputStream oos = new ObjectOutputStream(baos)) {
