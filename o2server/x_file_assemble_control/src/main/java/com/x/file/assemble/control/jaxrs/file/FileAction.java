@@ -256,13 +256,16 @@ public class FileAction extends StandardJaxrsAction {
 	@Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void uploadPostOctetStream(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("文件类型") @PathParam("referenceType") String referenceType,
+			@JaxrsParameterDescribe("文件类型：processPlatformJob|processPlatformForm|mindInfo|portalPage|" +
+					"cmsDocument|forumDocument|forumReply|component|teamworkProject") @PathParam("referenceType") String referenceType,
 			@JaxrsParameterDescribe("关联id") @PathParam("reference") String reference,
-			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale, byte[] bytes) {
+			@JaxrsParameterDescribe("缩放") @PathParam("scale") Integer scale,
+									  @FormDataParam(FILE_FIELD)  byte[] bytes,
+									  @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionUploadOctetStream.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadOctetStream().execute(effectivePerson, referenceType, reference, scale, bytes);
+			result = new ActionUploadOctetStream().execute(effectivePerson, referenceType, reference, scale, bytes, disposition);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
