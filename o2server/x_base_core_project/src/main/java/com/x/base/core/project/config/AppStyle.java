@@ -38,6 +38,8 @@ public class AppStyle extends ConfigObject {
 		this.needGray = false;
 		this.appExitAlert = "";
 		this.contactPermissionView = "addressPowerView"; // 默认视图名 addressPowerView 可到应用市场下载通讯录应用查看
+		this.speechScript = "";
+		this.promotionPageScript = "";
 
 	}
 
@@ -161,8 +163,28 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("首页信息中心，分类过滤条件.")
 	private List<String> cmsCategoryFilterList = new ArrayList<>();
 
+	@FieldDescribe("语音助手 invoke 脚本")
+	private String speechScript;
 
-	
+	@FieldDescribe("推广页 invoke 脚本")
+	private String promotionPageScript;
+
+
+	public String getSpeechScript() {
+		return speechScript;
+	}
+
+	public void setSpeechScript(String speechScript) {
+		this.speechScript = speechScript;
+	}
+
+	public String getPromotionPageScript() {
+		return promotionPageScript;
+	}
+
+	public void setPromotionPageScript(String promotionPageScript) {
+		this.promotionPageScript = promotionPageScript;
+	}
 
 	public Boolean getNeedGray() {
 		return needGray;
