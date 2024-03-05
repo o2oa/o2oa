@@ -3,8 +3,10 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
+import com.google.gson.JsonObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -169,6 +171,16 @@ public class AppStyle extends ConfigObject {
 	@FieldDescribe("推广页 invoke 脚本")
 	private String promotionPageScript;
 
+	@FieldDescribe("扩展参数")
+	private JsonObject extendParam;
+
+	public JsonObject getExtendParam() {
+		return extendParam;
+	}
+
+	public void setExtendParam(JsonObject extendParam) {
+		this.extendParam = extendParam;
+	}
 
 	public String getSpeechScript() {
 		return speechScript;
