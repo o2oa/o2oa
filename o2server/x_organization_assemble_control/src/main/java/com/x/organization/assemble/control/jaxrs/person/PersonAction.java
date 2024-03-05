@@ -625,4 +625,23 @@ public class PersonAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
+    @JaxrsMethodDescribe(value = "分页查询删除(注销)用户信息.", action = ActionListDeletePaging.class)
+    @POST
+    @Path("list/delete/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listDeletePaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                 @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                                 @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+        ActionResult<List<ActionListDeletePaging.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListDeletePaging().execute(effectivePerson, page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+    }
+
 }

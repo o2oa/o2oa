@@ -1,9 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,6 +53,8 @@ import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+	protected static final String PERSON_DELETE_CUSTOM_NAME = "person#delete";
 
 	private static final List<String> KEYWORDS = ListUtils
 			.unmodifiableList(Arrays.asList(Token.defaultInitialManager, TernaryManagement.INIT_SYSTEM_MANAGER,
@@ -418,8 +417,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	public class CustomPersonInfo{
+	protected static class CustomPersonInfo extends GsonPropertyObject{
+		@FieldDescribe("操作人")
 		private String operator;
+		@FieldDescribe("操作时间")
+		private Date operateTime;
+		@FieldDescribe("被操作用户对象")
 		private WrapPerson person;
 		private List<WrapIdentity> identityList;
 
@@ -429,6 +432,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setOperator(String operator) {
 			this.operator = operator;
+		}
+
+		public Date getOperateTime() {
+			return operateTime;
+		}
+
+		public void setOperateTime(Date operateTime) {
+			this.operateTime = operateTime;
 		}
 
 		public WrapPerson getPerson() {
