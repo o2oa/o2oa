@@ -282,9 +282,6 @@ public class HttpConnection {
 
 	public static String readResultString(HttpURLConnection connection) throws Exception {
 		String result = "";
-		try (InputStream input = connection.getInputStream()) {
-			result = IOUtils.toString(input, StandardCharsets.UTF_8);
-		}
 		int code = connection.getResponseCode();
 		if (code == HttpURLConnection.HTTP_OK) {
 			try (InputStream input = connection.getInputStream()) {
