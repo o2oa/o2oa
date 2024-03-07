@@ -50,7 +50,8 @@ var jvmUrls = {
     "risc_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/risc_java11",
     "mips_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/mips_java11",
     "raspi_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspi_java11",
-    "windows_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows_java11"
+    "windows_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows_java11",
+    "sw_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/sw_java11"
 };
 
 var scripts = {
@@ -62,7 +63,8 @@ var scripts = {
     "risc": ["o2server/*risc*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "mips": ["o2server/*mips*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "raspi": ["o2server/*raspi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
+    "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "sw": ["o2server/*sw*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
