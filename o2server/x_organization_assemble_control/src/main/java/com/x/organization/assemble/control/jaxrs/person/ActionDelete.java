@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import java.util.Date;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -109,9 +110,10 @@ class ActionDelete extends BaseAction {
 		emc.beginTransaction(Custom.class);
 		Custom custom = new Custom();
 		custom.setPerson(person.getDistinguishedName());
-		custom.setName("person#delete");
+		custom.setName(PERSON_DELETE_CUSTOM_NAME);
 		CustomPersonInfo customPersonInfo = new CustomPersonInfo();
 		customPersonInfo.setOperator(effectivePerson.getDistinguishedName());
+		customPersonInfo.setOperateTime(new Date());
 		customPersonInfo.setPerson(WrapPerson.copier.copy(person));
 		custom.setData(gson.toJson(customPersonInfo));
 		emc.persist(custom);
