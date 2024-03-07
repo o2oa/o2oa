@@ -262,7 +262,7 @@ public class HttpConnection {
 			map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
 					ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
 		} catch (Exception e) {
-			if(LOGGER.isDebugEnabled()) {
+			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(e.getMessage());
 			}
 		}
@@ -286,7 +286,14 @@ public class HttpConnection {
 			result = IOUtils.toString(input, StandardCharsets.UTF_8);
 		}
 		int code = connection.getResponseCode();
-		if (code != 200) {
+		if (code == HttpURLConnection.HTTP_OK) {
+			try (InputStream input = connection.getInputStream()) {
+				result = IOUtils.toString(input, StandardCharsets.UTF_8);
+			}
+		} else {
+			try (InputStream input = connection.getErrorStream()) {
+				result = IOUtils.toString(input, StandardCharsets.UTF_8);
+			}
 			throw new IllegalStateException("connection{url:" + connection.getURL() + "}, response error{responseCode:"
 					+ code + "}, response:" + result + ".");
 		}
@@ -302,22 +309,23 @@ public class HttpConnection {
 		}
 	}
 
-	public static void checkAddress(String address) throws Exception{
+	public static void checkAddress(String address) throws Exception {
 		final String addressLower = address.toLowerCase();
-		if(addressLower.startsWith(HTTP_PROTOCOL) || addressLower.startsWith(HTTPS_PROTOCOL)){
+		if (addressLower.startsWith(HTTP_PROTOCOL) || addressLower.startsWith(HTTPS_PROTOCOL)) {
 			List<String> httpWhiteList = null;
 			try {
 				httpWhiteList = Config.general().getHttpWhiteList();
 			} catch (Exception e) {
 				LOGGER.debug(e.getMessage());
 			}
-			if(ListTools.isNotEmpty(httpWhiteList)) {
-				Optional<String> optional = httpWhiteList.stream().filter(o -> addressLower.indexOf("://" + o) > -1).findFirst();
+			if (ListTools.isNotEmpty(httpWhiteList)) {
+				Optional<String> optional = httpWhiteList.stream().filter(o -> addressLower.indexOf("://" + o) > -1)
+						.findFirst();
 				if (!optional.isPresent()) {
 					throw new ExceptionUnlawfulAddress(address);
 				}
 			}
-		}else{
+		} else {
 			throw new ExceptionNotSupportProtocol(address);
 		}
 	}
