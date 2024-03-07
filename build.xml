@@ -79,9 +79,9 @@
 		<length file="${preName}-${VERSION}-sw.zip" property="length_sw"/>
 		<script language="javascript">
 			<![CDATA[
-			var length_arm_bytes = project.getProperty("length_sw");
-			var length_arm_kbytes = Math.round((length_sw_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_arm_mbytes = Math.round((length_sw_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_sw_bytes = project.getProperty("length_sw");
+			var length_sw_kbytes = Math.round((length_sw_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_sw_mbytes = Math.round((length_sw_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_sw_mb", length_sw_mbytes);
 		]]>
 		</script>
