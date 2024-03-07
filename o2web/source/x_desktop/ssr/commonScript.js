@@ -3473,7 +3473,7 @@ const workContext = {
      * @summary 获取可选路由对象数组的字符串（流转事件中，获取到流转中的可选路由列表，根据当前work状态获取）。
      * @method getRouteList
      * @static
-     * @return {String[]} 路由字符串数组.
+     * @return {Route[]} 路由字符串数组.
      * @o2syntax
      * const routeList = this.workContext.getRouteList();
      */
@@ -4147,7 +4147,7 @@ const createProxy = function(target, j_data){
     });
     return new Proxy(target, {
         get(target, property){
-            return (property!=='$Jdata' && (typeof target[property]==='object' || Array.isArray(target[property]))) ? createProxy(target[property], target.$Jdata[property]) : target[property];
+            return (property!=='$Jdata' && target[property] && (typeof target[property]==='object' || Array.isArray(target[property]))) ? createProxy(target[property], target.$Jdata[property]) : target[property];
         },
         set(target, property, value){
             if (property==="length" && (target.$Jdata instanceof ArrayList)){
@@ -4189,8 +4189,8 @@ const embedDataDescriptor = {
     get(){
         return _embedData ?? (()=>{
             if (!globalThis.java_embedData) return null;
-            const Gson = Java.type('com.google.gson.Gson');
-            const gson = new Gson();
+            // const Gson = Java.type('com.google.gson.Gson');
+            // const gson = new Gson();
             const data = _javaDataToJson(globalThis.java_embedData);
             return _embedData = createProxy(data, globalThis.java_embedData);
         })();
