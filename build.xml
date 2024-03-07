@@ -75,6 +75,16 @@
 			project.setNewProperty("length_arm_mb", length_arm_mbytes);
 		]]>
 		</script>
+		<checksum file="${preName}-${VERSION}-sw.zip" property="build_sw.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-sw.zip" property="length_sw"/>
+		<script language="javascript">
+			<![CDATA[
+			var length_arm_bytes = project.getProperty("length_sw");
+			var length_arm_kbytes = Math.round((length_sw_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_arm_mbytes = Math.round((length_sw_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_sw_mb", length_sw_mbytes);
+		]]>
+		</script>
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
 		</tstamp>
@@ -142,6 +152,15 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-${VERSION}-linux-arm.zip",
 			"sha256": "${build_arm.sha}"
+			},
+			"sw": {
+			"system": "sw",
+			"name": "o2server-${VERSION}-sw",
+			"fileName": "o2server-${VERSION}-sw.zip",
+			"fileSize": "${length_sw_mb}MB",
+			"updateTime": "${TODAY}",
+			"url": "/download/o2server-${VERSION}-sw.zip",
+			"sha256": "${build_sw.sha}"
 			},
 			"jvm_windows": {}
 			}
@@ -211,6 +230,15 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-${VERSION}-linux-arm.zip",
 			"sha256": "${build_arm.sha}"
+			},
+			"sw": {
+			"system": "sw",
+			"name": "o2server-${VERSION}-sw",
+			"fileName": "o2server-${VERSION}-sw.zip",
+			"fileSize": "${length_sw_mb}MB",
+			"updateTime": "${TODAY}",
+			"url": "/download/o2server-${VERSION}-sw.zip",
+			"sha256": "${build_sw.sha}"
 			},
 			"source":{
 			"name":"o2oa-master",
@@ -375,6 +403,27 @@
 				<include name="start_arm_debug.sh"/>
 				<include name="console_arm.sh"/>
 				<include name="stop_arm.sh"/>
+			</zipfileset>
+		</zip>
+	</target>
+	<target name="zip_sw">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-sw.zip" update="false">
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
+				<include name="commons/"/>
+				<exclude name="commons/ext/" />
+				<include name="configSample/"/>
+				<include name="localSample/"/>
+				<include name="servers/"/>
+				<include name="store/"/>
+				<include name="console.jar"/>
+				<include name="index.html"/>
+				<include name="version.o2"/>
+				<include name="console.jar"/>
+				<include name="jvm/arm_java11/"/>
+				<include name="start_sw.sh"/>
+				<include name="start_sw_debug.sh"/>
+				<include name="console_sw.sh"/>
+				<include name="stop_sw.sh"/>
 			</zipfileset>
 		</zip>
 	</target>
