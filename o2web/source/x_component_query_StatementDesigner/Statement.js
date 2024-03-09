@@ -1719,6 +1719,49 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             }, false);
         }
     },
+    loadViewNodes: function(){
+        this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
+        this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
+
+        this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
+        this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewTitleNode);
+
+        this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewTitleNode);
+
+        this.autoAddColumnsNode = new Element("div.autoAddColumnsNode", {
+            styles: this.css.autoAddColumnsNode,
+            title: this.designer.lp.autoAddColumns
+        }).inject(this.viewTitleContentNode);
+        if( this.json.data.selectList && this.json.data.selectList.length ){
+            this.autoAddColumnsNode.hide();
+        }
+
+
+        this.viewTitleTableNode = new Element("table", {
+            "styles": this.css.viewTitleTableNode,
+            "border": "0px",
+            "cellPadding": "0",
+            "cellSpacing": "0"
+        }).inject(this.viewTitleContentNode);
+        this.viewTitleTrNode = new Element("tr", {"styles": this.css.viewTitleTrNode}).inject(this.viewTitleTableNode);
+
+
+        this.viewContentScrollNode = new Element("div", {"styles": this.css.viewContentScrollNode}).inject(this.viewAreaNode);
+        this.viewContentNode = new Element("div", {"styles": this.css.viewContentNode}).inject(this.viewContentScrollNode);
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.viewContentScrollNode, {"style": "view", "distance": 100, "indent": false});
+        }.bind(this));
+
+        this.contentLeftNode = new Element("div", {"styles": this.css.contentLeftNode}).inject(this.viewContentNode);
+        this.contentRightNode = new Element("div", {"styles": this.css.contentRightNode}).inject(this.viewContentNode);
+        this.viewContentBodyNode = new Element("div", {"styles": this.css.viewContentBodyNode}).inject(this.viewContentNode);
+        this.viewContentTableNode = new Element("table", {
+            "styles": this.css.viewContentTableNode,
+            "border": "0px",
+            "cellPadding": "0",
+            "cellSpacing": "0"
+        }).inject(this.viewContentBodyNode);
+    },
     setEvent: function () {
         this.areaNode.addEvents({
             "click": function (e) {
@@ -1740,6 +1783,36 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
             this.addColumn();
             e.stopPropagation();
         }.bind(this));
+        this.autoAddColumnsNode.addEvent("click", function (e) {
+            this.autoAddColumns();
+            e.stopPropagation();
+        }.bind(this));
+    },
+    autoAddColumns: function(){
+        MWF.require("MWF.widget.UUID", null, false);
+        var d = this.statement.data;
+        var className = d.entityCategory === "dynamic" ? d.table : d.entityClassName;
+        if( !className )return;
+        var pre = ["sql", "sqlScript"].contains(d.format) ? "x" : "";
+        o2.Actions.load("x_query_assemble_designer").QueryAction.getEntityProperties(
+            className,
+            d.entityCategory,
+            function(json){
+                this.json.data.selectList = (json.data||[]).map( function ( field ) {
+                    return {
+                        "id": (new MWF.widget.UUID).id,
+                        "column": field.name,
+                         "path": pre ? (pre + field.name) : field.name,
+                        "displayName": field.description || field.name,
+                        "orderType": "original"
+                    }
+                }.bind(this));
+
+                this.json.data.selectList.each(function (d) {
+                    this.items.push(new MWF.xApplication.query.StatementDesigner.View.Column(d, this));
+                }.bind(this));
+            }.bind(this)
+        )
     },
     selected: function () {
         if (this.statement.currentSelectedModule) {
@@ -2256,6 +2329,7 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
+        this.view.autoAddColumnsNode.hide();
         this.load();
     },
     refreshColumnPathData: function () {
@@ -2334,6 +2408,11 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         this.isSelected = false;
         this._hideActions();
         this.hideProperty();
+    },
+    _destroy: function (){
+        if( !this.view.json.data.selectList  || !this.view.json.data.selectList.length ){
+            this.view.autoAddColumnsNode.show();
+        }
     },
     addColumn: function(e, data){
         MWF.require("MWF.widget.UUID", function(){

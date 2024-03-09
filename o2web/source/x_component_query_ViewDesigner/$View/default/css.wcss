@@ -97,10 +97,20 @@
         "background": "url(../x_component_query_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
         "float": "right"
     },
+    "autoAddColumnsNode":{
+        "width": "34px",
+        "height": "40px",
+        "padding-left": "24px",
+        "position": "absolute",
+        "left": "0",
+        "top": "0",
+        "background": "url(../x_component_query_ViewDesigner/$View/default/icon/autoAddColumns.png) 10px center no-repeat"
+    },
 
     "viewTitleContentNode": {
         "margin": "0px 31px",
-        "height": "40px"
+        "height": "40px",
+        "position": "relative"
     },
     "viewTitleTableNode": {
         "width": "100%",
