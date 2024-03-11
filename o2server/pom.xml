@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>8.3</version>
+	<version>9.0</version>
 	<packaging>pom</packaging>
 	<description>O2OA企业应用开发平台 OpenSource OA Platform</description>
 	<url>https://github.com/o2oa/o2oa</url>
@@ -1066,127 +1066,127 @@
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_correlation_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_correlation_core_express</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>8.3</version>
+				<version>9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lingala.zip4j</groupId>
