@@ -323,6 +323,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 this.addColumn(o);
                 this.columnListEditNameInput.set("value", "");
                 this.columnListEditDescriptionInput.set("value", "");
+                this.columnListEditTypeSelect.selectedIndex = 0;
                 this.columnListEditNameInput.focus();
             }
         }

@@ -1697,9 +1697,12 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
 
         this.view.setViewWidth();
 
+        this._destroy();
+
         MWF.release(this);
         delete this;
     },
+    _destroy: function(){},
     addColumn: function(e, data){
         MWF.require("MWF.widget.UUID", function(){
             var json;

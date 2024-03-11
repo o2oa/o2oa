@@ -89,6 +89,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "reviewInstanceSql":"可阅读(PP_C_REVIEW)",
     "documentInstanceSql":"内容管理文档(CMS_DOCUMENT)",
 
+    "autoAddColumns": "根据数据表生成列",
+
     "propertyTemplate": {
         // "statementFormat": "如何创建语句：",
         // "statementJpql": "直接编写JPQL创建语句",

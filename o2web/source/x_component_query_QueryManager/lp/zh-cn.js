@@ -26,6 +26,7 @@ MWF.xApplication.query.QueryManager.LP = {
 
     "deleteElementTitle": "删除设计确认",
     "deleteElement": "是否确定要删除选中的设计元素？",
+    "deleteElementTable": "删除后系统会自动删除对应的查询配置，是否确定要删除选中的表格？",
 
     "viewName": "视图",
     "statName": "统计",
