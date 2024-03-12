@@ -1203,6 +1203,7 @@ function createHistoryJsonFile(url, fileName, host){
                     downloadJson.raspi.url = host+downloadJson.raspi.url
                     downloadJson.mips.url = host+downloadJson.mips.url
                     downloadJson.arm.url = host+downloadJson.arm.url
+                    downloadJson.sw.url = host+downloadJson.sw.url;
                     let append = true;
                     for (var i=0; i<historyJsons.length; i++){
                         var o = historyJsons[i];
