@@ -72,5 +72,12 @@ o2.xApplication.Template.LP = {
 		"close": "关闭",
 		"max": "最大化",
 		"restore": "还原"
+	},
+
+	"excelUtils": {
+		"promptTitle": '输入提示',
+		"prompt": '请从下拉列表中选择一个值',
+		"errorTitle": '输入错误',
+		"error": '你输入的值不在列表中'
 	}
 };

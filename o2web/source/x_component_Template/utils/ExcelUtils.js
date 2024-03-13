@@ -121,39 +121,53 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
         // this.exportToExcel(array, "导出数据"+(new Date).format("db"));
+        if( !MWF.xApplication.Template.LP ){
+            MWF.xDesktop.requireApp("Template", "lp." + MWF.language, null, false);
+        }
         this._loadExportResource(function (){
             var workbook = new ExcelJS.Workbook();
-            var sheet = workbook.addWorksheet('sheet1');
+            var sheet = workbook.addWorksheet('Sheet1');
             //sheet.properties.defaultRowHeight = 25;
 
+            var titleArray = array[0];
             this.appendDataToSheet(sheet, array, colWidthArr, dateIndexArray, numberIndexArray);
 
-            workbook.xlsx.writeBuffer().then(function(buffer){
-                var blob = new Blob([buffer]);
-                this._openDownloadDialog(blob, fileName + ".xlsx", callback);
-            }.bind(this));
-        }.bind(this))
+            var hasValidation = false;
+            var ps = titleArray.map(function( title ){
+                if( o2.typeOf(title) === 'object' && title.options ){
+                    hasValidation = true;
+                    return title.options;
+                }
+                return null;
+            });
+            if(hasValidation){
+                Promise.all(ps).then(function(args){
+                    for( var i=0; i<args.length; i++ ){
+                        if(args[i])titleArray[i].optionsValue = args[i];
+                    }
+                    this.setDataValidation(workbook, sheet, titleArray);
+                    this.downloadExcel(workbook, fileName, callback);
+                }.bind(this));
+            }else{
+                this.downloadExcel(workbook, fileName, callback);
+            }
+        }.bind(this));
+    },
+    downloadExcel: function(workbook, fileName, callback){
+        workbook.xlsx.writeBuffer().then(function(buffer){
+            var blob = new Blob([buffer]);
+            this._openDownloadDialog(blob, fileName + ".xlsx", callback);
+        }.bind(this));
     },
     appendDataToSheet: function (sheet, array, colWidthArr, dateIndexArray, numberIndexArray){
         var titleRow = sheet.getRow(1);
         var titleArray = array.shift();
         titleArray.each( function( title, i ){
-            var value, options;
-            if( o2.typeOf(title) === 'object' ){
-                value = title.text;
-                options = title.options;
-            }else{
-                value = title;
-            }
             sheet.getColumn(i+1).width = colWidthArr[i] ? (colWidthArr[i] / 10) : 20;
             var cell = titleRow.getCell(i+1);
-            cell.value = value;
+            cell.value = o2.typeOf(title) === 'object' ? title.text : title;
             cell.font = { name: '宋体', family: 4, size: 12, bold: true };
-            // cell.fill = {
-            //     type: 'pattern',
-            //     pattern:'solid',
-            //     fgColor:{argb:'FFFFFF'}
-            // };
+            // cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFFF'} };
             cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
         });
 
@@ -170,6 +184,42 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                 cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: !isNumber };
             });
         });
+    },
+    setDataValidation: function (workbook, dataSheet, titleArray){
+        var validationSheet = workbook.addWorksheet('Validation');
+        validationSheet.state = 'hidden'; //hidden 隐藏   veryHidden 从“隐藏/取消隐藏”对话框中隐藏工作表
+
+        var colIndex = 0;
+        titleArray.each(function(title, i){
+            var optionsValue = o2.typeOf(title) === 'object' && title.optionsValue;
+            if( !optionsValue )return;
+
+            colIndex++;
+
+            var optionsArray = o2.typeOf(optionsValue) === "array" ? optionsValue : [optionsValue];
+            validationSheet.getColumn(colIndex).values = optionsArray;
+
+            var colName = this.index2ColName(colIndex-1);
+
+            var dataValidation = {
+                type: 'list',
+                allowBlank: true,
+                showErrorMessage: true,
+                showInputMessage: false,
+                formulae: ['=Validation!$'+colName+'$1:$'+colName+'$'+optionsArray.length], // 这里引用Validation Sheet的内容 '=Validation!A1:A3'
+                //formulae: ['"'+optionsArray.join(",")+'"'],
+                promptTitle: MWF.xApplication.Template.LP.excelUtils.promptTitle,
+                prompt: MWF.xApplication.Template.LP.excelUtils.prompt,
+                errorTitle: MWF.xApplication.Template.LP.excelUtils.errorTitle,
+                error: MWF.xApplication.Template.LP.excelUtils.error
+            };
+
+            var dataColName = this.index2ColName(i);
+            for (var rowIndex = 2; rowIndex <= 3000; rowIndex++) {
+                const cell = dataSheet.getCell(dataColName+rowIndex);
+                cell.dataValidation = dataValidation;
+            }
+        }.bind(this));
     },
     // exportToExcel2: function(array, fileName, colWidthArr, dateIndexArray, numberIndexArray, callback){
     //     // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
