@@ -17,7 +17,10 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
 
 /**
  * 申诉流程结束后回填数据
@@ -60,13 +63,21 @@ public class ActionUpdateForEnd extends BaseAction {
             emc.check(info, CheckPersistType.all);
             emc.commit();
             if (wi.getResult() == 1) { // 审批 同意 更新打卡记录 否则不动
-                AttendanceV2CheckInRecord record =   emc.find(info.getRecordId(), AttendanceV2CheckInRecord.class);
+                AttendanceV2CheckInRecord record = emc.find(info.getRecordId(), AttendanceV2CheckInRecord.class);
                 if (record != null) {
                     emc.beginTransaction(AttendanceV2CheckInRecord.class);
                     // 申诉成功后，更新打卡状态
                     record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
                     record.setAppealId(info.getId()); // 申诉完成回填审核数据id
                     record.setDescription("申诉完成！");
+                    try {
+                        if (BooleanUtils.isTrue(wi.getNeedResetTime())) {
+                            Date onDutyTime = DateTools.parse(record.getRecordDateString() + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                            record.setRecordDate(onDutyTime);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error(e);
+                    }
                     emc.check(record, CheckPersistType.all);
                     emc.commit();
                     // 申诉成功后，重新生成对应的数据
@@ -94,6 +105,16 @@ public class ActionUpdateForEnd extends BaseAction {
         private String reason;
         @FieldDescribe("流程的jobId，申诉流程结束后写入")
         private String jobId;
+        @FieldDescribe("是否需要重置打卡时间")
+        private Boolean needResetTime;
+
+        public Boolean getNeedResetTime() {
+            return needResetTime;
+        }
+
+        public void setNeedResetTime(Boolean needResetTime) {
+            this.needResetTime = needResetTime;
+        }
 
         public Integer getResult() {
             return result;
