@@ -16,6 +16,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -31,6 +32,9 @@ class ActionList extends BaseAction {
 	 */
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if(effectivePerson.isAnonymous()){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = new ArrayList<>();
 			Business business = new Business(emc);
